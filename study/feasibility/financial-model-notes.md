@@ -107,3 +107,26 @@ Base case, 5 ha, capital RWF 35M, recalculated with zero errors:
 - M3's technology adds cost without, so far, any modelled yield or price benefit. That benefit has to be evidenced before it is modelled.
 
 Next: replace the costs with quotes (T12), then run the sensitivity log on the Sensitivity sheet.
+
+## Sensitivity (2026-10-19; M1 base, 5 ha, one driver at a time; costs still placeholders)
+
+| Driver | NPV at 0.8× / 1.2× (RWF M) | Funding gap at 0.8× / 1.2× (RWF M) |
+|---|---|---|
+| Base case | −32.7 | 6.8 |
+| **Capital costs** | −27.9 / −37.5 | **0.8 / 12.8** |
+| Livestock price | −34.7 / −30.6 | 11.2 / 2.4 (EBITDA > 0 from Y7 at 1.2×) |
+| Fruit price | −34.3 / −31.1 | 10.3 / 3.3 |
+| Fruit yield | −34.0 / −31.3 | 9.7 / 3.9 |
+| Labour cost | −31.7 / −33.6 | 5.1 / 8.4 |
+| Purchased feed | −31.9 / −33.4 | 5.0 / 8.6 |
+| Mortality, transport | within ±0.2 | within ±0.5 |
+| Tree maturity delay +1 / +2 yrs | −34.0 / −35.3 | 9.0 / 11.3 |
+| Farm size 2 ha / 10 ha | −36.4 / −37.5 | 20.4 / 12.4 (10 ha: EBITDA > 0 from Y6) |
+| **M2 at 10 ha** | **−7.2** | 21.7 (peak 56.7; EBITDA > 0 from Y2) |
+
+**Reading [E]:**
+- Capital cost is the single largest lever, so real quotes and phasing matter more than any agronomic assumption.
+- Livestock and fruit prices come next. Selling above farm-gate is the cheapest improvement available.
+- No single ±20% change makes M1 viable. Farm size alone doesn't either, because costs scale with area.
+- The diversified model on more land has the best NPV, at the price of a larger funding need. That points to a validated pilot first, then scaling with outside money once there is evidence.
+- Recompute when the quotes arrive (T12, T17).
