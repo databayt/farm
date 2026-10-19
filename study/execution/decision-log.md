@@ -32,3 +32,12 @@ Context: the placeholder avocado curve reached 110 kg per tree by year 10. The c
 
 **D-009 · 2026-10-19 · Livestock house placement follows the 200 m kraal rule; livestock purchase depends on RVF status.**
 Context: Law 48/2018 Art 42(6), re-read in the gazette text, bars kraals within 200 m of lake banks. An RVF quarantine has covered the Eastern Province since 2026-06-26. Consequence: the zoning must place Z3 housing at least 200 m from the lake; the livestock gate (G4) requires the quarantine to be lifted in the farm's district.
+
+**D-010 · 2026-10-19 · Model inputs follow the Stage 4 farm design (zone A base).**
+Context: the design found that feed caps the herd at about 20 does on 5 ha (not 40–60) and that water caps the orchard. It also found no sheep or passion fruit in the eastern zones (low demand; woodiness virus) and that pole thinning needs a special permit. Consequence: the M1 gap falls to RWF 4.6M and EBITDA turns positive in year 7; M2 turns positive in year 2. No model closes the gap in the base case. Revisit: when the location is confirmed (zone D changes crops and sheep) and when quotes arrive.
+
+**D-011 · 2026-10-19 · No external capital now; self-funded validation first.**
+Context: the financing strategy (`../investment/financing-strategy.md`) and the sensitivity runs agree. Capital costs and prices dominate, and there is no evidence yet (site, title, buyers). Consequence: the pitch deck asks for nothing. Spending is released in tranches as gates pass; outside money is reconsidered once there is a validated pilot.
+
+**D-012 · 2026-10-19 · `/docs` must stay private.**
+Context: the docs site renders buyer contacts, supplier leads, draft outreach and the finances. Consequence: never deploy `/docs` publicly. The Stage 6 public website is a separate route set; gate or exclude `/docs` before any deploy.

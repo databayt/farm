@@ -1,48 +1,57 @@
 # Project status
 
-Updated: 2026-10-19 · Stage: **1 of 7 — discovery and desk research, complete pending founder input**
+Updated: 2026-10-19 · **Desk work for all seven stages is drafted. Everything site-specific waits for the founder's location and title, and for field work.**
+Read it as a docs site: `pnpm dev` → http://localhost:3000/docs (52 pages). Keep `/docs` private: it contains buyer contacts and finances (D-012).
 
-## Done
+## Where each stage stands
 
-- Workspace, evidence rules (`CLAUDE.md`), the brief preserved verbatim.
-- Discovery pack: questionnaire, site inspection checklist, soil and water testing plan, zoning concept.
-- Desk research in five streams (`study/research/`), with registers of 306 sources, 329 price observations, 35 supplier leads and 53 buyer prospects (`study/registers/`). Every citation resolves.
-- Preliminary report separating verified facts from estimates, assumptions and unknowns (`study/research/preliminary-report.md`).
-- Decision-matrix framework (`study/feasibility/decision-matrix.md`).
-- Financial model with sourced prices, the BNR rate and the researched avocado ramp. It recalculates with zero errors. Costs are still placeholders.
-- First-90-days plan with decision gates (`study/execution/first-90-days.md`); decision log; assumptions register.
+| Stage | Desk deliverables | What is blocked |
+|---|---|---|
+| 1 Discovery | Questionnaire, site checklist, soil/water plan, zoning, location candidates | The pin or UPI; the site visit |
+| 2 Market research | Markets and prices, crops, livestock, buyers (53 prospects), suppliers, **regulations** | Buyer interviews, price collection, supplier visits |
+| 3 Feasibility | Decision matrix (provisional scores), financial model with sensitivity, **risk register** | Site scores; real quotes for every cost |
+| 4 Farm design | Integrated design, crop, livestock, feed and pasture, water and soil plans, written by candidate zone | Location, soil and water tests, flood line |
+| 5 Engineering | Technology tiers, electrical, irrigation control logic, IoT, software and AI assistant, commissioning | Site loads, water source, signal survey |
+| 6 Commercial | Buyer strategy, sales plan, outreach drafts, brand, pitch, one-pager, financing strategy, website plan | Interviews; the farm's name; the first sales |
+| 7 Execution | First 90 days, five-year roadmap (tasks T01–T85, gates G0–G9), operating procedures, recordkeeping | Gate G0 |
 
-## What we know now (headline)
+## What we know (headline)
 
-- The lake brings hard legal limits: no installations within 50 m of the lake bank, no kraal within 200 m, and a permit for irrigation over 1 ha.
-- Foreign holders get leases (up to 99 years), not freehold.
-- Current prices exist (e-Soko).
-- An RVF quarantine covers the Eastern Province.
-- With today's evidence and placeholder costs, a 5 ha farm on RWF 35M shows a funding gap of about RWF 7M in the conservative and diversified models. Overheads are as large as the revenue from mature lines.
-- Details are in the preliminary report.
+- **Location:** "Kuroshira" matches no place name. The best match is Lake Rumira at Gashora, Bugesera.
+- **Lake rules:** no structures within 50 m of the lake and no livestock house within 200 m. Irrigating over 1 ha or pumping from the lake needs a permit. A foreign holder gets a lease, not freehold.
+- **Livestock now:** the Rift Valley fever quarantine is in force in the Eastern Province, and moving animals needs prior vet authorisation. Selling live animals avoids meat licensing. Laws on animal husbandry and on plants and seed have passed parliament but are not yet gazetted.
+- **The design limits:**
+  - feed caps the herd at about 20 does on 5 ha;
+  - water caps the orchard;
+  - mango is the safer bet where water is unproven;
+  - no passion fruit or sheep in the eastern zones.
+- **The money:** with design-corrected inputs and placeholder costs, the funding gap is RWF 4.6M (M1, EBITDA positive from year 7) to RWF 5.2M (M2, positive from year 2) against RWF 35M. Capital cost is the biggest lever. **No outside capital now:** fund a validation phase yourself, then release money in tranches at each gate.
+- **Technology:** manual operation with meters and pump protection first. A monitoring kit (about RWF 1.4–3.1M [E]) only after planting. No full automation at this scale.
+- **First sales channel:** buyers that collect direct from farms (Afri-Farmers type), plus exporter outgrower terms for avocado.
 
-## In progress / next
+## Questions for the founder (ranked)
 
-- Waiting on the founder's P1 answers, then the site-specific baseline (task T03).
-- Get real quotes into the model (T12, T17). This is the most valuable next step.
-- Stage 2: field validation (buyer interviews, price collection, supplier visits).
+1. **Where is the farm?** A Google Maps pin of the gate, or the UPI on the land title.
+2. **What is the title?** Freehold or lease, the holder (you or a company, Rwandan or foreign-owned), the dates, and the land use stated on it.
+3. **How far is it from the lake's flood line,** and does it touch a swamp?
+4. **What water does it have,** and does it last through June–August? Has anyone tested a borehole?
+5. **What is on the land now?** Buildings, trees, fencing, power, signal.
+6. **Money and time:** is the ~RWF 35M available now or in tranches? How many days a week can you be on site? Would you consider more land, or a partner?
+7. **Name:** does the farm have one? Brand options are in the brand page.
 
-## Questions for the founder (ranked by how much they change the plan)
+## Next actions
 
-1. **Where is the farm?** A Google Maps pin of the gate, or the UPI on the land title. Also, if you can: the place name spelled in Kinyarwanda, the lake's name, and the last town on the road. ("Kuroshira" matches nothing; the closest is Lake Rumira at Gashora, Bugesera.)
-2. **What exactly is the title?** Freehold or emphyteutic lease, the holder (you personally or a company; Rwandan or foreign-owned), the start and expiry dates, and the land use stated on it. Under the 2021 land law this decides whether long-cycle trees are safe.
-3. **How far is the land from the lake's flood line, and does it touch a swamp?** No farm structure is allowed within 50 m and no livestock house within 200 m.
-4. **What water is on or next to the land,** and does it last through June–August?
-5. **What does the land have now?** Buildings, trees, fencing, power, phone signal.
-6. **The capital: how and when?** Is the RWF ~35M available now or in tranches, and would you consider a loan, a partner or reinvesting early sales? And would you consider more land, given that the overheads are heavy for 5 ha?
-7. **Your time:** how many days a week you can be on site, and whether someone can live there.
+- T01: send the answers to Q1–Q2 (gate G0).
+- T05/T06: the site visit and soil and water samples.
+- T12: quotes for fencing, tanks, the animal house and labour. Then rerun the model (the most valuable next step).
+- T09: 15–20 buyer interviews, starting with the direct-collecting aggregators.
 
-The full questionnaire is in `study/discovery/farm-questionnaire.md`.
+## Open risks (from `study/feasibility/risk-register.md`)
 
-## Open risks to watch
-
-- The title type and term (long-cycle crops).
-- Usable area after the buffers.
-- RVF restrictions on buying and moving animals.
-- Avocado yield uncertainty (RWF 2–8M/ha at maturity depending on management).
-- Overheads relative to farm size.
+- Scale vs overheads.
+- The funding gap.
+- Founder dependence.
+- The title or tenure.
+- RVF and livestock rules.
+- Avocado yields.
+- Water availability.

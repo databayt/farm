@@ -130,3 +130,25 @@ Next: replace the costs with quotes (T12), then run the sensitivity log on the S
 - No single ±20% change makes M1 viable. Farm size alone doesn't either, because costs scale with area.
 - The diversified model on more land has the best NPV, at the price of a larger funding need. That points to a validated pilot first, then scaling with outside money once there is evidence.
 - Recompute when the quotes arrive (T12, T17).
+
+## Results after the Stage 4 design inputs (2026-10-19)
+
+The farm design (`../design/`) corrected the herd and land inputs:
+- feed caps the herd at 20 breeding does on 5 ha;
+- no sheep in the eastern zones;
+- slower, lighter local goats;
+- an orchard of avocado and mango at 156 and 100 trees per ha, with no passion fruit outside the highland zone (woodiness virus);
+- no pole income (permit);
+- no livestock insurance (MKT-21).
+
+Base case, 5 ha:
+
+| Run | Investment 10 yrs | Peak funding need | Funding gap | EBITDA > 0 | NPV 12% real | Feed self-sufficiency Y5 |
+|---|---:|---:|---:|---|---:|---:|
+| M1 base | 22.3M | 39.6M | 4.6M | Y7 | −31.2M | 100% |
+| M2 base | 33.7M | 40.2M | 5.2M | Y2 | −29.0M | 100% |
+| M3 base | 52.1M | 68.7M | 33.7M | Y5 | −52.3M | 100% |
+| M1 downside | 29.3M | 82.7M | 47.7M | never | −54.1M | 100% |
+| M1 upside | 17.4M | 25.2M | 0 | Y4 | −6.5M (IRR 4.3%) | 100% |
+
+The sensitivity table above was run on the earlier inputs. Its ranking of drivers (capital costs first, then prices) still holds, but rerun it after the quotes arrive.
