@@ -1,0 +1,15 @@
+{
+  // farm — the open farm study (databayt). Workers Static Assets ONLY, as in thmanyah:
+  // no `main`, no Worker code, no container. `CF_STATIC=1 next build` writes a static
+  // export to out/ and Cloudflare serves it. Deploy: pnpm deploy:cf
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "farm",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  },
+  "routes": [{ "pattern": "farm.databayt.org/*", "zone_name": "databayt.org" }]
+}
