@@ -5,7 +5,7 @@
 This repo holds two things:
 
 1. `study/` — the feasibility study and business plan for developing an existing 2–10 ha farm near a lake in the broader Kigali region. Internal working documents, built in stages per the brief at `study/brief/master-prompt.txt`.
-2. `src/` — the farm's future website (Next.js 16). Not built until Stage 6; leave it alone until then.
+2. `src/` — the Next.js 16 app. Today it serves the study at `/docs` (generated from `study/` by `scripts/sync-docs.mjs`; never edit `content/docs` by hand). The public website comes in Stage 6.
 
 Current stage, open questions and next actions: `PROJECT_STATUS.md`. Why things changed: `study/execution/decision-log.md`.
 

@@ -49,6 +49,10 @@ uv run --with openpyxl python scripts/build_financial_model.py
 
 This writes `study/feasibility/financial-model.xlsx`. The inputs are on the `Assumptions` and `Models` sheets. A scenario switch (downside / base / upside) and a farm-model switch (M1 / M2 / M3) sit on the `Control` sheet.
 
+## Read the study as docs
+
+`pnpm dev` and open http://localhost:3000/docs. The study renders as a docs site (the hogwarts / shadcn docs block); `scripts/sync-docs.mjs` generates it from `study/` on every dev and build. See `src/components/docs/README.md`.
+
 ## Website (Stage 6)
 
 Next.js 16 · React 19 · Tailwind CSS 4:
