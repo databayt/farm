@@ -1,7 +1,7 @@
 # Project status
 
 Updated: 2026-10-19 · **Desk work for all seven stages is drafted. Everything site-specific waits for the founder's location and title, and for field work.**
-Read it as a docs site: `pnpm dev` → http://localhost:3000/docs (52 pages). Keep `/docs` private: it contains buyer contacts and finances (D-012).
+**Live and public:** https://farm.databayt.org/docs (52 pages) · repo https://github.com/databayt/farm (D-013). Don't add private material (negotiated prices, personal documents).
 
 ## Where each stage stands
 

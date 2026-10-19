@@ -41,3 +41,6 @@ Context: the financing strategy (`../investment/financing-strategy.md`) and the 
 
 **D-012 · 2026-10-19 · `/docs` must stay private.**
 Context: the docs site renders buyer contacts, supplier leads, draft outreach and the finances. Consequence: never deploy `/docs` publicly. The Stage 6 public website is a separate route set; gate or exclude `/docs` before any deploy.
+
+**D-013 · 2026-10-19 · The study is public; supersedes D-012.**
+Context: the founder decided to publish the study openly in the databayt org (public repo `databayt/farm`) and to serve `/docs` publicly at https://farm.databayt.org. It includes buyer and supplier contacts as published by those businesses, draft outreach and the finances. Consequence: the docs are deployed as a static site on Cloudflare (Workers Static Assets, Worker `farm`); nothing private (no `.env`, no credentials) is in the repo. Revisit: before adding anything that is not meant to be public, such as negotiated prices, a counterpart's private details or the founder's personal documents.

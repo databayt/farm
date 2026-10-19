@@ -53,6 +53,14 @@ This writes `study/feasibility/financial-model.xlsx`. The inputs are on the `Ass
 
 `pnpm dev` and open http://localhost:3000/docs. The study renders as a docs site (the hogwarts / shadcn docs block); `scripts/sync-docs.mjs` generates it from `study/` on every dev and build. See `src/components/docs/README.md`.
 
+## Deploy (public)
+
+Live at https://farm.databayt.org: a static export served by Cloudflare Workers Static Assets (Worker `farm`, `wrangler.jsonc`), as in thmanyah.
+
+```bash
+pnpm deploy:cf   # CF_STATIC=1 next build → out/ → wrangler deploy
+```
+
 ## Website (Stage 6)
 
 Next.js 16 · React 19 · Tailwind CSS 4:
