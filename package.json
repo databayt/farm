@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "postinstall": "node scripts/sync-docs.mjs && fumadocs-mdx",
-    "build:cf": "CF_STATIC=1 next build",
+    "build:cf": "node scripts/sync-docs.mjs && CF_STATIC=1 next build",
     "deploy:cf": "pnpm build:cf && wrangler deploy"
   },
   "dependencies": {
