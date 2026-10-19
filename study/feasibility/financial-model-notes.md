@@ -70,10 +70,40 @@ Hand checks against independent arithmetic:
 
 The workbook is saved without cached values (openpyxl). Excel and Numbers calculate on opening; some file previewers show empty cells until then.
 
-## Inputs and their status
+## Inputs and their status (2026-10-19)
 
-Updated in the Stage 1 synthesis: which inputs are now sourced ([V] or [E]) and which remain placeholders ([A] or [U]). See below.
+- **Sourced:**
+  - exchange rate RWF 1,475.24/USD [V MKT-04];
+  - farm-gate prices for avocado, mango, passion fruit, papaya, tree tomato and citrus [E, e-Soko medians MKT-03]; macadamia [V CRP-08];
+  - goat and sheep live-weight prices and breeding-female prices [E from MKT-16 and MKT-15];
+  - the avocado yield ramp (half an Australian irrigated benchmark, CRP-45), with an upside multiplier of 2.0 matching the irrigated Rwandan exporter's yields (CRP-20).
+- **Still placeholders [A/U], 52 rows:**
+  - every capital and operating cost;
+  - herd performance;
+  - pasture yields;
+  - the other crops' yield curves;
+  - densities;
+  - tax treatment.
 
-## Results
+## Results (2026-10-19; costs are placeholders, so directional only)
 
-Filled in once the inputs are sourced. Until then the outputs are illustrative only and must not be quoted.
+Base case, 5 ha, capital RWF 35M, recalculated with zero errors:
+
+| Run | Investment 10 yrs | Peak funding need | Funding gap | EBITDA > 0 | Payback | NPV 12% real |
+|---|---:|---:|---:|---|---|---:|
+| M1 base | 22.2M | 41.8M (month 120) | 6.8M | not within 10 yrs | beyond Y10 | −32.7M |
+| M2 base | 41.3M | 42.6M (month 12) | 7.6M | Y2 | beyond Y10 | −30.5M |
+| M3 base | 73.3M | 87.8M | 52.8M | Y2 | beyond Y10 | −73.7M |
+| M1 downside | 30.1M | 95.0M | 60.0M | never | beyond Y10 | −59.1M |
+| M1 upside | 17.0M | 22.6M | 0 | Y3 | Y8 | +0.7M (IRR 10.7%) |
+
+**Reading:**
+- On 5 ha, about RWF 3M a year of fixed overheads absorbs the revenue of a 1.25 ha avocado block plus a 40-doe herd. The result turns on:
+  - yields (irrigated vs rain-fed avocado);
+  - selling above farm-gate;
+  - cheaper overheads;
+  - farm size.
+- M2's early positive EBITDA comes from passion fruit and papaya. It erodes as replanting and bought feed rise (feed self-sufficiency 49% in year 5).
+- M3's technology adds cost without, so far, any modelled yield or price benefit. That benefit has to be evidenced before it is modelled.
+
+Next: replace the costs with quotes (T12), then run the sensitivity log on the Sensitivity sheet.

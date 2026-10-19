@@ -56,7 +56,7 @@ CONTROL = [
 # Downside holds the pessimistic value whichever direction that is (a higher cost, a lower price).
 A = [
     # General
-    ("FX", "General", "Exchange rate", "RWF per USD", 1470, 1470, 1470, "A", PENDING, "Verify against the BNR reference rate"),
+    ("FX", "General", "Exchange rate", "RWF per USD", 1475.24, 1475.24, 1475.24, "V", "MKT-04", "BNR average rate, 2026-10-19"),
     ("DR", "General", "Real discount rate", "per year", 0.14, 0.12, 0.10, "A", "judgement", "Real terms: the model is in constant 2026 RWF"),
     ("TAX", "General", "Income tax rate on profit", "share", 0.28, 0.28, 0.28, "U", PENDING, "Confirm agricultural income treatment with RRA"),
     ("CREDIT", "General", "Share of sales on credit", "share", 0.6, 0.5, 0.3, "A", "judgement", f"Collected {RECEIVABLE_LAG_M} month later"),
@@ -121,8 +121,8 @@ LIVESTOCK = [
     ("CULL", "Adult cull rate", "share per yr", (0.15, 0.15, 0.15), (0.15, 0.15, 0.15), "A", ""),
     ("SALEWT", f"Live weight at sale ({SALE_AGE_M} months)", "kg", (20, 24, 28), (22, 26, 30), "A", ""),
     ("ADULTWT", "Adult live weight (culls)", "kg", (32, 35, 38), (30, 33, 36), "A", ""),
-    ("PRICE", "Sale price, live weight", "RWF per kg", (3_000, 3_500, 4_000), (2_800, 3_200, 3_600), "A", ""),
-    ("FPRICE", "Breeding female purchase price", "RWF per head", (60_000, 50_000, 45_000), (55_000, 45_000, 40_000), "A", ""),
+    ("PRICE", "Sale price, live weight", "RWF per kg", (1_800, 2_300, 2_800), (1_800, 2_300, 3_000), "E", "MKT-16 2022 per-head prices + CPI meat rise (MKT-15); LVS-56, MKT-P210"),
+    ("FPRICE", "Breeding female purchase price", "RWF per head", (65_000, 55_000, 45_000), (60_000, 50_000, 40_000), "E", "MKT-16 2022 medium doe 35-40k, inflated; MKT-P210"),
     ("MPRICE", "Breeding male purchase price", "RWF per head", (250_000, 200_000, 150_000), (200_000, 150_000, 120_000), "A", ""),
     ("BPREM", "Price premium for breeding-stock sales", "share", (0.2, 0.3, 0.4), (0.2, 0.3, 0.4), "A", ""),
     ("DMI_A", "Dry-matter intake, adult", "kg DM per day", (1.2, 1.1, 1.0), (1.3, 1.2, 1.1), "A", ""),
@@ -138,20 +138,30 @@ SPECIES = [("GT", "Goats"), ("SH", "Sheep")]
 # The yield curve assumes planting in year 1 at the Season B rains; cycle 0 = perennial.
 CROPS = [
     ("AVO", "Avocado (grafted)", 204, (0.80, 0.88, 0.93), (3_000, 2_500, 2_000), (1_500, 1_200, 1_000),
-     (0.7, 1.0, 1.2), (0.75, 0.85, 0.90), (300, 400, 500), 0, [0, 0, 5, 15, 30, 50, 70, 90, 100, 110]),
+     (0.6, 1.0, 2.0), (0.75, 0.85, 0.90), (400, 600, 700), 0, [0, 0, 6, 13, 19, 22.5, 24, 24, 24, 24]),
     ("MAN", "Mango (grafted)", 156, (0.80, 0.88, 0.93), (2_500, 2_000, 1_500), (1_500, 1_200, 1_000),
-     (0.7, 1.0, 1.2), (0.70, 0.80, 0.85), (250, 350, 450), 0, [0, 0, 5, 15, 30, 45, 60, 75, 90, 100]),
+     (0.7, 1.0, 1.2), (0.70, 0.80, 0.85), (700, 1_000, 1_300), 0, [0, 0, 5, 15, 30, 45, 60, 75, 90, 100]),
     ("PAS", "Passion fruit", 1_111, (0.75, 0.85, 0.90), (500, 300, 200), (2_500, 2_000, 1_600),
-     (0.7, 1.0, 1.2), (0.75, 0.85, 0.90), (500, 700, 900), 3, [2, 10, 6, 0, 0, 0, 0, 0, 0, 0]),
+     (0.7, 1.0, 1.2), (0.75, 0.85, 0.90), (1_500, 1_800, 2_000), 3, [2, 10, 6, 0, 0, 0, 0, 0, 0, 0]),
     ("PAP", "Papaya", 1_667, (0.75, 0.85, 0.90), (400, 300, 200), (800, 600, 500),
-     (0.7, 1.0, 1.2), (0.70, 0.80, 0.85), (200, 300, 400), 3, [5, 30, 20, 0, 0, 0, 0, 0, 0, 0]),
+     (0.7, 1.0, 1.2), (0.70, 0.80, 0.85), (500, 700, 750), 3, [5, 30, 20, 0, 0, 0, 0, 0, 0, 0]),
     ("TTO", "Tree tomato", 1_667, (0.75, 0.85, 0.90), (300, 200, 150), (600, 500, 400),
-     (0.7, 1.0, 1.2), (0.70, 0.80, 0.85), (300, 400, 500), 4, [0, 10, 15, 10, 0, 0, 0, 0, 0, 0]),
+     (0.7, 1.0, 1.2), (0.70, 0.80, 0.85), (1_000, 1_300, 1_500), 4, [0, 10, 15, 10, 0, 0, 0, 0, 0, 0]),
     ("CIT", "Citrus", 400, (0.80, 0.88, 0.93), (2_500, 2_000, 1_500), (1_200, 1_000, 800),
-     (0.7, 1.0, 1.2), (0.70, 0.80, 0.85), (250, 350, 450), 0, [0, 0, 5, 15, 30, 45, 60, 70, 80, 90]),
+     (0.7, 1.0, 1.2), (0.70, 0.80, 0.85), (600, 800, 1_000), 0, [0, 0, 5, 15, 30, 45, 60, 70, 80, 90]),
     ("MAC", "Macadamia (nut in shell)", 204, (0.80, 0.88, 0.93), (4_000, 3_500, 3_000), (1_500, 1_200, 1_000),
-     (0.7, 1.0, 1.2), (0.85, 0.90, 0.95), (800, 1_000, 1_200), 0, [0, 0, 0, 1, 3, 6, 9, 12, 15, 18]),
+     (0.7, 1.0, 1.2), (0.85, 0.90, 0.95), (1_100, 1_250, 1_400), 0, [0, 0, 0, 1, 3, 6, 9, 12, 15, 18]),
 ]
+
+PRICE_SRC = {  # farm-gate price evidence; e-Soko medians are 30-day, to 2026-10-14
+    "AVO": ("E", "MKT-03 national 600, Rwamagana 400, Kigali 700"),
+    "MAN": ("E", "MKT-03 national median 1,100; CRP-09 500-600"),
+    "PAS": ("E", "MKT-03 national 1,800, Kigali 2,000"),
+    "PAP": ("E", "MKT-03 national median 700"),
+    "TTO": ("E", "MKT-03 national median 1,300"),
+    "CIT": ("E", "MKT-03 orange 800; MKT-02 FAOSTAT 2024 917"),
+    "MAC": ("V", "CRP-08 farm-gate 1,100-1,400"),
+}
 
 # Boundary timber: (id, parameter, unit, d/b/u, label, note)
 TIMBER = [
@@ -460,7 +470,7 @@ def build_assumptions(ws):
     for suffix, name, unit, gt, sh, label, note in LIVESTOCK:
         for code, species in SPECIES:
             vals = gt if code == "GT" else sh
-            rows.append((f"{code}_{suffix}", f"Livestock: {species}", name, unit, *vals, label, PENDING, note))
+            rows.append((f"{code}_{suffix}", f"Livestock: {species}", name, unit, *vals, label, note if label in ("V", "E") else PENDING, "" if label in ("V", "E") else note))
     for key, cname, dens, surv, seed, plant, ymult, mkt, price, cycle, curve in CROPS:
         grp = f"Crop: {cname}"
         rows.append((f"{key}_DENS", grp, "Planting density", "plants per ha", dens, dens, dens, "A", PENDING, "Design choice; confirm spacing"))
@@ -469,7 +479,7 @@ def build_assumptions(ws):
         rows.append((f"{key}_PLANT", grp, "Planting (hole, compost, labour, trellis)", "RWF per plant", *plant, "A", PENDING, ""))
         rows.append((f"{key}_YMULT", grp, "Yield multiplier on the curve", "factor", *ymult, "A", PENDING, ""))
         rows.append((f"{key}_MKT", grp, "Marketable share of harvest", "share", *mkt, "A", PENDING, ""))
-        rows.append((f"{key}_PRICE", grp, "Farm-gate price", "RWF per kg", *price, "A", PENDING, ""))
+        rows.append((f"{key}_PRICE", grp, "Farm-gate price", "RWF per kg", *price, *PRICE_SRC.get(key, ("A", PENDING)), "Downside/upside from zone and market ranges"))
         rows.append((f"{key}_CYCLE", grp, "Replant cycle (0 = perennial)", "years", cycle, cycle, cycle, "A", PENDING, ""))
     for tid, name, unit, vals, label, note in TIMBER:
         rows.append((tid, "Boundary timber", name, unit, *vals, label, PENDING, note))
@@ -1195,7 +1205,7 @@ def main():
         ws.sheet_view.showGridLines = False
     OUT.parent.mkdir(parents=True, exist_ok=True)
     wb.save(OUT)
-    print(f"wrote {OUT.relative_to(ROOT)}")
+    print(f"wrote {OUT}")
 
 
 if __name__ == "__main__":

@@ -26,3 +26,9 @@ Context: the brief asks for a 24-month monthly cash flow and annual projections 
 
 **D-007 · 2026-10-19 · Stage 1 does not recommend a farm model.**
 Context: site suitability carries 24% of the decision-matrix weight and is unknown. Consequence: the three models are defined and costed with placeholders; the recommendation is a Stage 3 deliverable, gated on site data, buyer interviews and real costs.
+
+**D-008 · 2026-10-19 · Model inputs updated from research; the avocado curve is cut by about 75%.**
+Context: the placeholder avocado curve reached 110 kg per tree by year 10. The crop research found no Rwandan yield-by-age data and proposes half an Australian irrigated benchmark (about 24 kg per tree at maturity, CRP-45), with irrigated Rwandan exporters at 12–15 t/ha (CRP-20). The base curve now follows the planning case, with an upside multiplier of 2.0. Prices now come from e-Soko medians (MKT-03), and FX from the BNR (MKT-04). Consequence: every model shows a funding gap in the base case, and the binding question becomes overheads vs scale, not technology. Revisit: when Rwandan orchard records or quotes arrive.
+
+**D-009 · 2026-10-19 · Livestock house placement follows the 200 m kraal rule; livestock purchase depends on RVF status.**
+Context: Law 48/2018 Art 42(6), re-read in the gazette text, bars kraals within 200 m of lake banks. An RVF quarantine has covered the Eastern Province since 2026-06-26. Consequence: the zoning must place Z3 housing at least 200 m from the lake; the livestock gate (G4) requires the quarantine to be lifted in the farm's district.

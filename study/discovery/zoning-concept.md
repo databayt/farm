@@ -23,7 +23,8 @@ The layout follows how often each area needs attention and where water and prote
 3. **Sheep may graze under mature orchard rows** only where research supports it for that species, and only with guards on the trunks.
 4. **Manure from the animal house is composted before it goes on fruit trees.** It never goes raw near fruit close to harvest, for food safety.
 5. **Shade for animals** comes from boundary and fodder trees, not from the productive orchard.
-6. **No livestock access to the lake or wetland buffer** unless research confirms it is lawful, and even then the water is piped to troughs to protect banks and animal health.
+6. **Legal distances [V LOC-01, LOC-02]:** no farm or livestock installation within 50 m of the lake bank (measured from the furthest flood line), and no animal house or kraal within **200 m** (Law 48/2018 Art 42). Z3 housing is placed with these lines on the base map.
+7. **No livestock access to the lake or wetland buffer** unless research confirms it is lawful, and even then the water is piped to troughs to protect banks and animal health.
 
 ## Provisional land shares by farm model [A]
 
