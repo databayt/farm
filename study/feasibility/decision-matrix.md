@@ -87,7 +87,34 @@ Dairy goats are scored only if the livestock research shows a real goat-milk mar
 
 Scores are filled in during the Stage 1 synthesis for the criteria that do not depend on the site. They are marked `[E]` (from research) or `[A]` (provisional), and the site-dependent criteria stay blank until the site visit. See the scoring table below (updated after research).
 
-_(Scoring table: populated in the research synthesis, below.)_
+Provisional scores, 2026-10-19 [E]. These cover the 15 criteria that do not depend on the site (76 of the 100 weight points). The four site criteria (location 10, water 6, climate 5, soil 3) stay **blank until the site visit**, so the ranking can still change. The scores are the main session's judgement from the Stage 1 evidence:
+- demand and buyers: e-Soko volumes and prices (MKT-03), NAEB exporter lists (BUY-31), the goat-meat trade (LVS-02);
+- time to revenue: the crop and livestock research;
+- pests: CRP-33 (passion fruit virus), LVS-10 (worms);
+- profit: the model's per-hectare outputs with placeholder costs.
+
+| Line | Demand (10) | Buyers (9) | Profit (9) | Invest (8) | 1st rev (7) | Pests (5) | Opex (4) | Labour (4) | Full prod (3) | Post-harv (3) | Volatility (3) | Scale (3) | Livestock (3) | Environ (3) | Founder (2) | Score /76 | % of max |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| L01 Avocado (grafted) | 5 | 5 | 3 | 3 | 2 | 4 | 4 | 4 | 2 | 4 | 3 | 5 | 3 | 4 | 3 | 56.2 | 74% |
+| L03 Passion fruit | 4 | 4 | 4 | 3 | 4 | 2 | 3 | 2 | 5 | 3 | 3 | 3 | 2 | 3 | 3 | 51.4 | 68% |
+| L16 Beekeeping | 3 | 3 | 3 | 4 | 3 | 3 | 4 | 4 | 3 | 5 | 3 | 3 | 3 | 5 | 3 | 51.2 | 67% |
+| L14 Tree nursery | 3 | 3 | 3 | 4 | 4 | 3 | 3 | 2 | 4 | 4 | 3 | 3 | 3 | 4 | 4 | 50.0 | 66% |
+| L09 Boundary timber | 3 | 3 | 2 | 5 | 1 | 4 | 5 | 5 | 1 | 5 | 4 | 3 | 4 | 4 | 2 | 49.8 | 66% |
+| L05 Tree tomato | 3 | 3 | 3 | 4 | 4 | 3 | 3 | 3 | 4 | 3 | 3 | 3 | 2 | 3 | 3 | 48.6 | 64% |
+| L04 Papaya | 3 | 3 | 3 | 4 | 4 | 3 | 3 | 3 | 5 | 2 | 3 | 3 | 2 | 3 | 3 | 48.6 | 64% |
+| L10 Goats, meat | 4 | 3 | 3 | 3 | 3 | 2 | 3 | 2 | 3 | 4 | 3 | 3 | 4 | 3 | 4 | 47.4 | 62% |
+| L02 Mango (grafted) | 4 | 3 | 3 | 3 | 2 | 3 | 4 | 4 | 2 | 3 | 2 | 3 | 3 | 4 | 3 | 47.2 | 62% |
+| L06 Citrus | 3 | 3 | 3 | 3 | 2 | 2 | 4 | 4 | 2 | 4 | 3 | 3 | 3 | 4 | 3 | 45.4 | 60% |
+| L11 Goats, breeding stock | 3 | 2 | 3 | 2 | 2 | 2 | 3 | 2 | 2 | 4 | 3 | 3 | 4 | 3 | 5 | 40.4 | 53% |
+| L08 Macadamia | 2 | 2 | 2 | 3 | 1 | 4 | 4 | 4 | 1 | 5 | 2 | 3 | 3 | 4 | 3 | 39.8 | 52% |
+| L12 Sheep, meat | 2 | 2 | 2 | 3 | 3 | 2 | 3 | 2 | 3 | 4 | 3 | 2 | 4 | 3 | 3 | 38.8 | 51% |
+
+**Reading [E]:**
+- Avocado leads on demand and buyers, but it is slow.
+- Passion fruit, papaya and tree tomato bring cash early, but carry disease and replanting risk.
+- Goats for meat are the strongest livestock line. Sheep trail on demand in the eastern zones (LOC-24).
+- A **tree nursery** and **beekeeping** rank well as cheap complements; they were not in the model yet.
+- None of this passes the gates (G1 legal, G2 site, G3 buyer evidence, G4 fundable) until the site and buyer evidence exist.
 
 ## Farm models
 
