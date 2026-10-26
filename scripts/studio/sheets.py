@@ -148,8 +148,7 @@ def a103_plan(m) -> Sheet:
     s.dim(X(lo.o1[0]), Y(lo.W) + 3, X(lo.o1[1]), Y(lo.W) + 3, f"slider {lo.o1[1] - lo.o1[0]:.0f}", -4)
     s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:.0f}", -4)
     # door swings
-    s.line(X(lo.bdoor[0]), Y(lo.bath_y1 + lo.part_t) + 1, X(lo.bdoor[1] + (lo.bdoor[1] - lo.bdoor[0])),
-           Y(lo.bath_y1 + lo.part_t) + 1, "#111", 0.25, "1,0.8")  # sliding door and where it parks
+    s.arc(X(lo.bdoor[0]), Y(lo.bath_y1), (lo.bdoor[1] - lo.bdoor[0]) / sc, 270, 360)  # door swings into the bathroom
     for y0, y1, lab in (lo.fridge + ("fridge",), lo.hob + ("hob",), lo.sink + ("sink",)):
         s.dim(X(lo.galley_x0) - 4, Y(y0), X(lo.galley_x0) - 4, Y(y1), f"{y1 - y0:.0f} {lab}", 3)
     for (lx, ly, t) in ((800, 1100, "BED 1,600 x 2,000"), ((lo.galley_x0 + lo.part_x0) / 2, 1650, "GALLEY 900"),
@@ -204,9 +203,11 @@ def plan_bw(m) -> str:
     # partition to the cross wall; the cross wall with its sliding-door opening; the door leaf
     cy0, cy1 = lo.bath_y1, lo.bath_y1 + lo.cross_t
     box(lo.part_x0, 0, lo.bath_x0, cy1, ink, 0.1)
-    box(lo.bath_x0, cy0, lo.bdoor[0], cy1, ink, 0.1)
-    box(lo.bdoor[1], cy0, lo.L, cy1, ink, 0.1)
-    box(lo.bdoor[0], cy1 + 10, lo.bdoor[1] + 20, cy1 + 45, "#fff", 0.18)
+    d0, d1 = lo.bdoor
+    box(lo.bath_x0, cy0, d0 + 18, cy1, ink, 0.1)
+    box(d1, cy0, lo.L, cy1, ink, 0.1)
+    s.line(X(d0 + 18), Y(cy0), X(d0 + 18), Y(cy0 - (d1 - d0)), ink, sw)
+    s.arc(X(d0 + 18), Y(cy0), (d1 - d0 - 18) / sc, 270, 360, ink, 0.18, "0.8,0.6")
     # bathroom: shower tray with its drain, WC, basin
     tx0, tx1, ty0, ty1 = lo.tray
     box(tx0, ty0, tx1, ty1)
@@ -222,23 +223,6 @@ def plan_bw(m) -> str:
     s.dim(X(0), Y(lo.W) + 4, X(lo.L), Y(lo.W) + 4, f"{lo.L:,.0f}", 4, 2.4)
     s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:,.0f}", -4, 2.4)
     return s.bare(ox + (lo.L + 300) / sc + 10, Y(lo.W) + 14)
-
-
-def plan_facts(m) -> dict:
-    """The few numbers the web page lists beside the plan."""
-    lo = m["lo"]
-    checks = [c for c in m["checks"] if not c["id"].startswith(("E-", "P-"))]
-    tx0, tx1, ty0, ty1 = lo.tray
-    return {
-        "inside": f"{lo.L:,.0f} × {lo.W:,.0f} mm",
-        "floor": f"{lo.L * lo.W / 1e6:.1f} m²",
-        "height": f"{lo.H:,.0f} mm",
-        "bed": "1,600 × 2,000 mm",
-        "galley": f"{lo.sink[1]:,.0f} mm",
-        "shower": f"{tx1 - tx0:,.0f} × {ty1 - ty0:,.0f} mm",
-        "checks": len(checks),
-        "passed": sum(1 for c in checks if c["result"] == "pass"),
-    }
 
 
 def a201_elev(m) -> Sheet:

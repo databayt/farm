@@ -505,7 +505,7 @@ $SPLINESEGS
   9
 $HANDSEED
   5
-3D
+3F
   9
 $SURFTAB1
  70
@@ -1463,7 +1463,7 @@ ACAD
   0
 APPID
   5
-3A
+3C
 330
 3
 100
@@ -1477,7 +1477,7 @@ HATCHBACKGROUNDCOLOR
   0
 APPID
   5
-3B
+3D
 330
 3
 100
@@ -2124,6 +2124,72 @@ K3-H-10
 2049.0
  21
 784.0
+ 31
+0.0
+100
+AcDbText
+ 73
+2
+  0
+LWPOLYLINE
+  5
+3A
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbPolyline
+ 90
+4
+ 70
+1
+ 10
+10.0
+ 20
+1108.0
+ 10
+1510.0
+ 20
+1108.0
+ 10
+1510.0
+ 20
+1191.0
+ 10
+10.0
+ 20
+1191.0
+  0
+TEXT
+  5
+3B
+330
+17
+100
+AcDbEntity
+  8
+LABEL
+100
+AcDbText
+ 10
+760.0
+ 20
+1149.5
+ 30
+0.0
+ 40
+20.75
+  1
+K1-09
+ 72
+1
+ 11
+760.0
+ 21
+1149.5
  31
 0.0
 100
@@ -3121,7 +3187,7 @@ CREATED_BY_EZDXF
   3
 WRITTEN_BY_EZDXF
 350
-3C
+3E
   0
 DICTIONARYVAR
   5
@@ -3137,7 +3203,7 @@ DictionaryVariables
   0
 DICTIONARYVAR
   5
-3C
+3E
 330
 2D
 100

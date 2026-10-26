@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
 import { StudioViewer } from "@/components/docs/studio-viewer"
 import model from "../../../../public/designs/studio/model/parts.json"
-import plan from "../../../../public/designs/studio/render/plan.json"
 import totals from "../../../../public/designs/studio/data/totals.json"
 
 // Public showcase of the container-studio design package (study/studio, D-014..D-016).
@@ -25,7 +24,7 @@ const rwf = (n: number) => `RWF ${(n / 1e6).toFixed(1)}M`
 const FEATURES = [
   { title: "Sleep", text: "Queen bed up to 1.6 × 2.0 m across the quiet end, with open shelves either side of the headboard, reading lights and USB-C." },
   { title: "Cook", text: "A galley on the bathroom wall: under-counter fridge, two-zone induction hob, sink, drinking-water filter. No gas indoors." },
-  { title: "Wash", text: "Shower, WC and basin in one row: the shower and WC behind a sliding door, the basin outside it." },
+  { title: "Wash", text: "Shower, WC and basin in one row: the shower and WC behind a door, the basin outside it." },
   { title: "Sit", text: "A seating room: a two-seat sofa, a table and two chairs, by the 3 m sliding glass wall onto the deck." },
   { title: "Roof", text: "An open roof terrace with lounge chairs behind a timber-topped rail, up a steel stair; a canopy shades the deck." },
   { title: "Stay cool", text: "The roof deck shades the steel, EPS insulation is sealed to it, a wall fan moves the air, and the AC is ready." },
@@ -239,32 +238,12 @@ export default function StudioPage() {
       <section id="plans">
         <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
           <h2 className="text-3xl font-semibold tracking-tight">2D</h2>
-          {/* The simplified plan (render/plan.svg, black on transparent; inverted in dark mode) and the
-              few sizes that matter (render/plan.json), both written by the generator. */}
-          <div className="mt-6 grid min-h-0 flex-1 items-center gap-10 lg:grid-cols-[2fr_1fr]">
+          {/* The simplified plan (render/plan.svg, black on transparent; inverted in dark mode), written by
+              the generator, across the full width. */}
+          <div className="mt-6 flex min-h-0 flex-1 items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${D}/render/plan.svg`} alt="Plan: the bed at one end, a sofa with a table and two chairs, the galley on the bathroom wall, and and at the other end the shower and WC behind a sliding door, with the basin outside it."
+            <img src={`${D}/render/plan.svg`} alt="Plan: the bed at one end, a sofa with a table and two chairs, the galley on the bathroom wall, and at the other end the shower and WC behind a door, with the basin outside it."
               className="w-full object-contain lg:max-h-full dark:invert" />
-            <div className="text-sm">
-            <dl className="divide-y">
-              {[
-                ["Inside", plan.inside],
-                ["Floor", plan.floor],
-                ["Ceiling", plan.height],
-                ["Bed", plan.bed],
-                ["Galley", plan.galley],
-                ["Shower", plan.shower],
-              ].map(([k, v]) => (
-                <div key={k} className="flex justify-between gap-4 py-2.5">
-                  <dt className="text-muted-foreground">{k}</dt>
-                  <dd className="tabular-nums">{v}</dd>
-                </div>
-              ))}
-            </dl>
-            <p className="text-muted-foreground border-t pt-3">
-              {plan.passed === plan.checks ? `All ${plan.checks} layout checks pass.` : `${plan.passed} of ${plan.checks} layout checks pass.`}
-            </p>
-            </div>
           </div>
         </div>
         <div className="px-4 pb-6 md:px-10">

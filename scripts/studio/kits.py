@@ -6,7 +6,7 @@ from dataclasses import replace
 
 import params as P
 from joinery import LEG, T12, T18, carcass
-from layout import AISLE_MIN, GALLEY_D, WC_D, WORKTOP_D, Layout
+from layout import AISLE_MIN, GALLEY_D, SOFA_D, SOFA_H, WC_D, WORKTOP_D, Layout
 from model import Box, Bought, KeepOut, Kit, Op, Part, Step
 
 STEEL_T = 3.0
@@ -165,7 +165,7 @@ def k2_bath(lo: Layout) -> Kit:
     door_h = 2050.0
     # frame studs (40 x 40 timber): the partition, then the cross wall and its door opening
     studs = [Box(px0 + 18, y, 0, px0 + 58, y + 40, lo.H) for y in (0.0, 800.0, cy0 - 40)]
-    studs += [Box(x, cy0 + 18, 0, x + 40, cy0 + 58, lo.H) for x in (px1, d1, lo.L - 40)]
+    studs += [Box(x, cy0 + 18, 0, x + 40, cy0 + 58, lo.H) for x in (d1, lo.L - 40)]
     for i, b in enumerate(studs):
         k.buy(Bought(f"K2-STUD{i + 1}", "Stud 40 x 40 treated", "K2", "timber", "carpentry", 1, "each", "stud", b,
                      step="S06", layer="envelope", color="timber"))
@@ -178,17 +178,15 @@ def k2_bath(lo: Layout) -> Kit:
 
     for a, b in split(0, cy1):
         part("Partition skin (galley face)", Box(px0, a, 0, px0 + T18, b, lo.H), ex=(-300, 0, 0))
-    for a, b in split(px0, d0):
-        part("Cross wall skin (lobby face)", Box(a, cy1 - T18, 0, b, cy1, lo.H), ex=(0, 300, 0))
     part("Cross wall skin over the door", Box(d0, cy1 - T18, door_h, d1, cy1, lo.H), ex=(0, 300, 0))
     for a, b in split(d1, lo.L):
         part("Cross wall skin (lobby face)", Box(a, cy1 - T18, 0, b, cy1, lo.H), ex=(0, 300, 0))
-    part("Door jamb (end-A side)", Box(d0, cy0, 0, d0 + T18, cy1 - T18, door_h), step="S07", ex=(-200, 0, 0))
-    part("Door jamb (end-B side)", Box(d1 - T18, cy0, 0, d1, cy1 - T18, door_h), step="S07", ex=(200, 0, 0))
+    part("Door jamb (hinge side)", Box(d0, cy0, 0, d0 + T18, cy1 - T18, door_h), step="S07", ex=(-200, 0, 0))
+    part("Door jamb (latch side)", Box(d1 - T18, cy0, 0, d1, cy1 - T18, door_h), step="S07", ex=(200, 0, 0))
     part("Door head", Box(d0 + T18, cy0, door_h - T18, d1 - T18, cy1 - T18, door_h), step="S07", ex=(0, 0, 200))
-    k.buy(Bought("K2-DOOR", f"Sliding door leaf {d1 - d0 + 40:.0f} x 2,050 on a top track, moisture-resistant, "
-                 "privacy latch", "K2", "doors", "carpentry", 1, "each", "doorleaf",
-                 Box(d0 - 20, cy1, 10, d1 + 20, cy1 + 40, door_h + 10), step="S07", color="door"))
+    k.buy(Bought("K2-DOOR", f"Door leaf {d1 - d0 - 2 * T18:.0f} x 2,030, moisture-resistant, opens into the "
+                 "bathroom, privacy lock", "K2", "doors", "carpentry", 1, "each", "doorleaf",
+                 Box(d0 + T18 + 2, cy0 + 10, 10, d1 - T18 - 2, cy0 + 50, door_h - T18 - 2), step="S07", color="door"))
     # wet walls: cement board + membrane + tiles inside the bathroom, and a splashback behind the basin
     for wid, nm, b in (
         ("BACK", "back wall", Box(px1, -12, 0, lo.L, 0, lo.H)),
@@ -240,14 +238,13 @@ def k2_bath(lo: Layout) -> Kit:
                 "K2-WC"),
         KeepOut("KO-SHOWER", Box(tx0 - 10, ty1, 0, tx1 - 700, ty1 + 600, 1800), "Shower entry 600", "K2-TRAY"),
         KeepOut("KO-BASIN", Box(bx0 - 600, by0, 0, bx0, by1, 1500), "Standing space at the basin", "K2-BASIN"),
-        KeepOut("KO-BDOOR", Box(d0, cy0 - 600, 0, d1, cy0, 2000), "Inside the bathroom door, 600 clear", "K2-DOOR"),
-        KeepOut("KO-SLIDE", Box(d1 + 20, cy1, 0, d1 + 20 + (d1 - d0), cy1 + 40, 2000),
-                "Sliding door parks along the cross wall", "K2-DOOR"),
+        KeepOut("KO-BDOOR", Box(d0 + T18, cy0 - (d1 - d0), 0, d1, cy0, 2000),
+                "Door swing into the bathroom (hinged by the partition)", "K2-DOOR"),
     ]
     k.steps += [
         Step("S06", "K2", "Stand the partition and cross-wall frames and fix the skins",
              [p.id for p in k.parts if p.step == "S06"], {"F": 40}, 2),
-        Step("S07", "K2", "Fit the door frame, the top track and the sliding bathroom door",
+        Step("S07", "K2", "Fit the door frame and hang the bathroom door",
              [p.id for p in k.parts if p.step == "S07"], {"F": 16}, 2),
         Step("S08", "K2", "Cement board, membrane and tiles on the wet walls; coved vinyl floor", [], {}, 2),
         Step("S09", "K2", "Set the shower tray, ledge and fixed screen", [], {}, 2),
@@ -384,13 +381,14 @@ def k5_storage(lo: Layout) -> Kit:
 def k6_living(lo: Layout) -> Kit:
     k = Kit("K6", "Seating: sofa, table and chairs", "carpentry", "workshop")
     sx0, sx1 = lo.sofa
-    k.buy(Bought("K6-SOFA", f"Compact two-seat sofa about {sx1 - sx0:.0f} x 850, washable covers", "K6", "furnishing",
-                 "furnishing", 1, "each", "sofa", Box(sx0, 0, 0, sx1, 850, 800), step="S17", layer="furniture",
+    k.buy(Bought("K6-SOFA", f"Low two-seat sofa about {sx1 - sx0:.0f} x {SOFA_D:.0f}, {SOFA_H:.0f} high, washable "
+                 "covers", "K6", "furnishing", "furnishing", 1, "each", "sofa", Box(sx0, 0, 0, sx1, SOFA_D, SOFA_H),
+                 step="S17", layer="furniture",
                  color="fabric"))
     # seating room: a table in front of the sofa and two chairs facing it from the glass side,
     # all flat-pack ply on cross-halving legs; the chairs have a back panel
     tw, td = 600.0, 500.0
-    tx0, ty0 = (sx0 + sx1) / 2 - tw / 2, 950.0
+    tx0, ty0 = (sx0 + sx1) / 2 - tw / 2, SOFA_D + 100
     k.add(Part("K6-01", f"Table top {tw:.0f} x {td:.0f}", "K6", "PLY18", Box(tx0, ty0, 732, tx0 + tw, ty0 + td, 750),
                step="S17", edges="L2S2", explode=(0, 0, 200)))
     k.add(Part("K6-02", "Table leg A (cross-halving slot)", "K6", "PLY18",

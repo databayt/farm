@@ -2,8 +2,9 @@
 
 Bed and storage wall at end A, a seating room in the middle (sofa on the back wall, a table
 and two chairs), a galley along the bathroom partition. At end B the shower, the WC and the
-basin stand in one row against the end wall: shower and WC behind a sliding door, the basin
-outside it in a small wash lobby under the W1 window.
+basin stand in one row against the end wall: shower and WC behind a door, the basin
+outside it in a small wash lobby under the W1 window. The bathroom is only as long as the WC
+and its front zone need, which leaves more of the container to the room.
 
 Frame: x from the lined face of end A (bed) to end B (bath); y from the lined back wall to
 the front glass wall; z from the finished floor. All mm.
@@ -41,13 +42,15 @@ class Layout:
     tray: tuple[float, float, float, float]  # x0, x1, y0, y1
     wc_cy: float  # WC centreline along the end wall
     basin: tuple[float, float, float, float]  # in the wash lobby, outside the bathroom door
-    bdoor: tuple[float, float]  # x range of the sliding door opening in the cross wall
+    bdoor: tuple[float, float]  # x range of the door opening in the cross wall (hinged at bdoor[0])
     w1_sill: float
     w1_head: float
 
 
 BED_X1 = 1640
-SOFA_W = 1150  # compact two-seat sofa, bought
+SOFA_W = 1300  # low two-seat sofa, bought
+SOFA_D = 750
+SOFA_H = 700
 SEAT_PAD = 20  # least gap between the bed and the sofa
 GALLEY = (550, 400, 500)  # fridge bay, hob base, sink base, from the back wall
 GALLEY_D = 600
@@ -57,8 +60,9 @@ TRAYS = (1400, 1200, 1100, 1000)
 PART_T = 70
 LEDGE_MIN = 100
 WC_SIDE = 400  # WC centreline to any side obstruction
-WC_D = 550  # short-projection close-coupled WC: the bathroom is only about 1.3 m deep
-BDOOR_W = 600  # clear opening of the sliding bathroom door
+WC_D = 550  # short-projection close-coupled WC
+BDOOR_W = 600  # bathroom door, opening into the bathroom
+BATH_L = WC_D + 600  # the bathroom is as short as the WC and its 600 mm front zone allow
 
 
 def build(o1_shift: float = 0.0) -> Layout:
@@ -73,7 +77,11 @@ def build(o1_shift: float = 0.0) -> Layout:
     o1 = (opening("o1_start", P.O1_X0), opening("o1_end", P.O1_X1) + o1_shift)
     o2 = (opening("o2_start", P.O2_X0), opening("o2_end", P.O2_X1))
 
-    part_x0 = o1[1] + 30  # partition living face lands on the solid strip after the glazing
+    # the bathroom is sized by the WC, not by the glazing: the partition only has to land on the
+    # solid strip after the glazing, which it does across the whole survey band
+    part_x0 = L - BATH_L - PART_T
+    if part_x0 < o1[1] + 30:
+        raise LayoutError(f"partition at {part_x0:.0f} would stand in front of the glazing ending at {o1[1]:.0f}")
     if part_x0 + PART_T > o2[0] - 150:
         raise LayoutError(f"partition at {part_x0:.0f} runs into the old door at {o2[0]:.0f}")
     y = 0.0
@@ -103,7 +111,7 @@ def build(o1_shift: float = 0.0) -> Layout:
         raise LayoutError(f"basin ends at {basin[3]:.0f}, past the front wall at {W:.0f}")
     if y > bath_y1 - 30:
         raise LayoutError(f"galley ends at {y:.0f}, past the bathroom wall at {bath_y1:.0f}")
-    bdoor = (bath_x0 + 10, bath_x0 + 10 + BDOOR_W)
+    bdoor = (bath_x0, bath_x0 + BDOOR_W)
     return Layout(
         L=L, W=W, H=H, o1=o1, o1_head=P.O1_HEAD.value, o2=o2, bed_x1=BED_X1, sofa=sofa, galley_x0=galley_x0,
         fridge=zones[0], hob=zones[1], sink=zones[2], part_x0=part_x0, part_t=PART_T, bath_x0=bath_x0,

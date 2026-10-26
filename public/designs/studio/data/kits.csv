@@ -1,6 +1,6 @@
 kit,name,trade,made_where,parts,bought_lines
 K1,Insulation and lining,carpentry,site,15,27
-K2,Bathroom shell and fixtures,carpentry + tiling + plumbing,workshop + site,14,25
+K2,Bathroom shell and fixtures,carpentry + tiling + plumbing,workshop + site,13,24
 K3,Kitchen,carpentry,workshop,36,8
 K4,Bed,carpentry,workshop,12,2
 K5,Storage wall,carpentry,workshop,14,1
