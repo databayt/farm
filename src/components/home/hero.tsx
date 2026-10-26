@@ -1,57 +1,27 @@
-import { getImageProps } from "next/image"
 import { ArrowDown } from "lucide-react"
 
 import { AmbientVideo } from "./ambient-video"
-import { ASSETS } from "./assets"
 import { IMAGES, VIDEOS } from "./assets.generated"
 import { copy } from "./copy"
 import { EDGE_LEFT, EDGE_RIGHT } from "./edges"
-import { Caption, Pending } from "./render"
-
-// The LCP image: an art-directed <picture> (the upright still on portrait phones) fetched with
-// high priority. getImageProps can't carry a blur placeholder, so the LQIP is the wrapper's
-// background and the photo fades in when the root layout's listener stamps data-loaded.
-function HeroPicture() {
-  const land = IMAGES.gate
-  if (!land) return <Pending id="gate" className="items-end justify-start pt-28 pr-6 text-right md:pr-10" />
-  const upright = IMAGES["gate-portrait"]
-  const alt = ASSETS.gate.alt
-  const uprightSet = upright
-    ? getImageProps({ src: upright.src, width: upright.width, height: upright.height, alt, sizes: "100vw" }).props.srcSet
-    : undefined
-  const { props } = getImageProps({
-    src: land.src,
-    width: land.width,
-    height: land.height,
-    alt,
-    sizes: "100vw",
-    loading: "eager",
-    fetchPriority: "high",
-  })
-  return (
-    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${land.blurDataURL}")` }}>
-      <picture>
-        {uprightSet ? <source media="(orientation: portrait)" srcSet={uprightSet} sizes="100vw" /> : null}
-        <img
-          {...props}
-          alt={alt}
-          data-blur-up="plain"
-          className="farm-settle absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-700 data-[loaded]:opacity-100 motion-reduce:opacity-100"
-        />
-      </picture>
-    </div>
-  )
-}
+import { Caption, ClipPicture, captionFor } from "./render"
 
 export function Hero() {
-  const { eyebrow, title, lead, walk, film } = copy.hero
+  const { eyebrow, title, lead, planned, today, walk, film } = copy.hero
+  // The opening still is the hero clip's first frame, or the gate render when there is no clip.
+  const opening = (VIDEOS.hero ?? IMAGES.gate)?.source
   return (
     <section
       id="top"
       aria-labelledby="hero-title"
       className="bg-soil text-chalk relative isolate flex h-[100svh] min-h-[600px] flex-col justify-end overflow-hidden"
     >
-      <HeroPicture />
+      <ClipPicture
+        clip="hero"
+        upright="hero-portrait"
+        preload
+        pendingClassName="items-end justify-start pt-28 pr-6 text-right md:pr-10"
+      />
       <AmbientVideo
         landscape={VIDEOS.hero?.src}
         portrait={VIDEOS["hero-portrait"]?.src}
@@ -74,7 +44,7 @@ export function Hero() {
         >
           {title}
         </h1>
-        <p className="farm-intro-2 text-chalk/90 mt-6 max-w-xl text-lg text-pretty md:text-xl">{lead}</p>
+        <p className="farm-intro-2 text-chalk/90 mt-6 max-w-xl text-lg text-pretty md:text-xl">{`${lead} ${opening === "today" ? today : planned}`}</p>
         <div className="farm-intro-3 mt-8 flex flex-wrap gap-3">
           <a
             href="#way-in"
@@ -92,7 +62,7 @@ export function Hero() {
         </div>
       </div>
       <p className={`absolute bottom-7 ${EDGE_LEFT}`}>
-        <Caption>{VIDEOS.hero ? copy.captions.film : copy.captions.render}</Caption>
+        <Caption>{captionFor(opening, Boolean(VIDEOS.hero))}</Caption>
       </p>
     </section>
   )

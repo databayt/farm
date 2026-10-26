@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 
+import { IMAGES } from "./assets.generated"
 import { copy } from "./copy"
 import { Render } from "./render"
 import { SectionHead } from "./section-head"
@@ -22,7 +23,14 @@ export function Work() {
             <p className="text-muted-foreground mt-3 max-w-lg text-lg text-pretty">{text.text}</p>
           </article>
         ))}
-        <Render id="classroom" sizes="100vw" className="farm-reveal aspect-[16/9] rounded-2xl md:col-span-2 lg:aspect-[21/9]" />
+        {/* No footage shows a class, so this one waits for its render. */}
+        {IMAGES.classroom ? (
+          <Render
+            id="classroom"
+            sizes="100vw"
+            className="farm-reveal aspect-[16/9] rounded-2xl md:col-span-2 lg:aspect-[21/9]"
+          />
+        ) : null}
       </div>
 
       <div className="mx-auto mt-24 max-w-7xl px-4 md:mt-32 md:px-8">

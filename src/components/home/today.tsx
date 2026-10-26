@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils"
 
 import { Compare } from "./compare"
+import { IMAGES } from "./assets.generated"
 import { copy } from "./copy"
 import { Render } from "./render"
 import { SectionHead } from "./section-head"
@@ -11,9 +12,14 @@ const LAYOUT = [
   { span: "lg:col-span-12", sizes: "100vw" },
 ]
 
+// Only pairs whose plan is rendered: a frame of the footage can't stand in for "as planned".
+export const todayPairs = copy.today.pairs.filter((pair) => IMAGES[pair.planned]?.source === "render")
+
 // The real photographs, each against the plan from the same viewpoint (D-018).
 export function Today() {
-  const { eyebrow, title, lead, planned, pairs } = copy.today
+  const { eyebrow, title, lead, planned } = copy.today
+  const pairs = todayPairs
+  if (pairs.length === 0) return null
   return (
     <section id="today" aria-labelledby="today-title" className="bg-muted py-24 md:py-32">
       <SectionHead id="today-title" eyebrow={eyebrow} title={title} lead={lead} />

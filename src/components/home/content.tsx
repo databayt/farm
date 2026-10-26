@@ -12,13 +12,16 @@ import { Location } from "./location"
 import { OpenStudy } from "./open-study"
 import { SitePlan } from "./site-plan"
 import { Stay } from "./stay"
-import { Today } from "./today"
+import { Today, todayPairs } from "./today"
 import { Work } from "./work"
 
 // The Digital Farm homepage: a walk from the public road into the courtyard, then the plan in
 // the open (D-017, D-018). data-theme="farm" scopes the palette in globals.css; images come
-// from assets.generated.ts and fall back to labelled placeholders until each render exists.
+// from assets.generated.ts: concept renders where they exist, frames of the footage labelled
+// "Today" where they don't yet (D-019), and labelled placeholders where neither exists.
 export function HomeContent() {
+  // The Today section waits for the "-planned" renders, and its link with it.
+  const nav = copy.nav.filter((link) => link.href !== "#today" || todayPairs.length > 0)
   return (
     <div data-theme="farm" className={cn(display.variable, "bg-background text-foreground flex flex-1 flex-col")}>
       <a
@@ -27,7 +30,7 @@ export function HomeContent() {
       >
         {copy.skip}
       </a>
-      <Header title={copy.hero.title} nav={copy.nav} cta={copy.cta} menu={copy.menu} />
+      <Header title={copy.hero.title} nav={nav} cta={copy.cta} menu={copy.menu} />
       <main>
         <Hero />
         <Arrival />

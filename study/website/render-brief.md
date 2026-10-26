@@ -2,7 +2,7 @@
 
 Status: Stage 6 · Date: 2026-10-26 · For whoever renders the homepage's images and video (D-017, D-018)
 
-The homepage shows the compound as it is planned, not as it stands. Its images and video are **concept renders**, made from the prompts below in your own tools. Each render is anchored on reference frames from the site footage of 2026-10-25, so the land, the lake, the light and the containers stay true to the place. On the site every render is captioned "Concept render · planned". The real photographs appear only in the before/after sliders, captioned "Today · 2026-10-25". No paid generation API is used (D-018).
+The homepage shows the compound as it is planned, not as it stands. Its images and video are **concept renders**, made from the prompts below in your own tools. Each render is anchored on reference frames from the site footage of 2026-10-25, so the land, the lake, the light and the containers stay true to the place. On the site every render is captioned "Concept render · planned". Until a render exists, a people-free frame of the footage stands in for it, captioned "Today · 2026-10-25" (D-019). The real photographs also appear in the before/after sliders. No paid generation API is used (D-018).
 
 ## 1. How to render
 
@@ -11,7 +11,7 @@ The homepage shows the compound as it is planned, not as it stands. Its images a
 3. **Paste the prompt,** then the site bible (§3), then the reference line (§3).
 4. **Keep the best of a few tries.** Check it against the QA list (§7).
 5. **Save it as `assets/renders/<id>.png`** for a still or `assets/renders/<id>.mp4` for a video, using the exact id below.
-6. **Run `pnpm site:assets`.** It makes the web sizes, the blur placeholders and the video encodes, and the homepage picks them up.
+6. **Run `pnpm site:assets`.** It makes the web sizes, the blur placeholders and the video encodes, and the homepage picks them up. Each render replaces the footage standing in for its slot.
 
 **Format.** Stills are 16:9 unless noted, at the largest size the tool offers (2560 px wide or more), as PNG or the best JPEG. Videos are image-to-video from the approved still (frame 1), 8 s (5–6 s is fine; the site loops it), 1080p, one continuous shot, with no music and no text.
 

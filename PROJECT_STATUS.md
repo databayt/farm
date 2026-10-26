@@ -21,7 +21,7 @@ Three existing 20 ft containers on site were planned as identical farm-stay gues
 
 ## Website (new, 2026-10-26)
 
-The homepage is being rebuilt as a showcase of the planned Digital Farm compound. An outer gate leads to green parking, a rock road and an inner gate. Inside, three guest rooms sit in the joined 40 ft pair, two studios and the office in the 20 ft row, and a 40 ft study room behind them (D-017). The images are labelled concept renders (D-018). They are rendered from `study/website/render-brief.md` with reference frames from the site footage. The live homepage changes once the P0 renders are in `assets/renders/` and `pnpm site:assets` has run.
+The homepage is being rebuilt as a showcase of the planned Digital Farm compound. An outer gate leads to green parking, a rock road and an inner gate. Inside, three guest rooms sit in the joined 40 ft pair, two studios and the office in the 20 ft row, and a 40 ft study room behind them (D-017). The images will be labelled concept renders (D-018), rendered from `study/website/render-brief.md` with reference frames from the site footage. Until then the live homepage shows frames and clips from that footage, each labelled "Today" (D-019). A render saved in `assets/renders/` replaces its stand-in the next time `pnpm site:assets` runs.
 
 ## What we know (headline)
 

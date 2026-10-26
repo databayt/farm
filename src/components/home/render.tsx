@@ -1,16 +1,43 @@
 import type * as React from "react"
+import { getImageProps } from "next/image"
 
 import { cn } from "@/lib/utils"
 import { BlurImage } from "@/components/atom/blur-image"
 
-import { ASSETS, TONES, type AssetId, type Kind } from "./assets"
-import { IMAGES } from "./assets.generated"
+import { ASSETS, CLIPS, TONES, type Asset, type AssetId, type ClipId, type Kind } from "./assets"
+import { IMAGES, VIDEOS, type SiteImage, type Source } from "./assets.generated"
 import { copy } from "./copy"
 
 const CAPTION: Record<Kind, string> = {
   render: copy.captions.render,
   today: copy.captions.today,
   design: copy.captions.design,
+}
+
+/** What a picture is decides its label: a render shows the plan, a footage frame shows today. */
+export function captionFor(source: Source | undefined, film = false) {
+  if (source === "today") return copy.captions.today
+  if (source === "design") return copy.captions.design
+  return film ? copy.captions.film : copy.captions.render
+}
+
+/** A footage frame standing in for a render (D-019) is described as it is, not as planned. */
+export function imageAlt(id: AssetId, source: Source) {
+  const asset: Asset = ASSETS[id]
+  return source === "today" && asset.kind === "render" ? (asset.today ?? asset.alt) : asset.alt
+}
+
+function clipAlt(id: ClipId, source: Source) {
+  return source === "today" ? CLIPS[id].today : ASSETS[CLIPS[id].still].alt
+}
+
+/** The still a clip plays over: its first frame, or its image slot when there is no clip. */
+export function stillFor(id: ClipId): { image: SiteImage; alt: string } | null {
+  const video = VIDEOS[id]
+  if (video) return { image: video.poster, alt: clipAlt(id, video.source) }
+  const slot = CLIPS[id].still
+  const image = IMAGES[slot]
+  return image ? { image, alt: imageAlt(slot, image.source) } : null
 }
 
 export function Caption({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -67,13 +94,12 @@ export function Render({
   captionClassName?: string
 }) {
   const image = IMAGES[id]
-  const asset = ASSETS[id]
   return (
     <figure className={cn("bg-muted relative overflow-hidden", className)}>
       {image ? (
         <BlurImage
           src={image.src}
-          alt={asset.alt}
+          alt={imageAlt(id, image.source)}
           fill
           sizes={sizes}
           preload={preload}
@@ -86,9 +112,62 @@ export function Render({
       )}
       {caption ? (
         <figcaption className={cn("absolute bottom-3 left-3", captionClassName)}>
-          <Caption>{CAPTION[asset.kind]}</Caption>
+          <Caption>{image ? captionFor(image.source) : CAPTION[ASSETS[id].kind]}</Caption>
         </figcaption>
       ) : null}
     </figure>
+  )
+}
+
+// The still under a full-bleed clip, as an art-directed <picture>: the upright cut's first frame
+// on portrait screens. getImageProps can't carry a blur placeholder, so the LQIP is the wrapper's
+// background and the photo fades in when the root layout's listener stamps data-loaded. With
+// `preload` it is the page's LCP image: fetched early at high priority and shown as soon as it
+// decodes, since Chrome doesn't count an image that is still at opacity 0.
+export function ClipPicture({
+  clip,
+  upright,
+  preload,
+  pendingClassName,
+}: {
+  clip: ClipId
+  upright?: ClipId
+  preload?: boolean
+  pendingClassName?: string
+}) {
+  const land = stillFor(clip)
+  if (!land) return <Pending id={CLIPS[clip].still} className={pendingClassName} />
+  const up = upright ? stillFor(upright) : null
+  const uprightSet = up
+    ? getImageProps({ src: up.image.src, width: up.image.width, height: up.image.height, alt: up.alt, sizes: "100vw" })
+        .props.srcSet
+    : undefined
+  const { props } = getImageProps({
+    src: land.image.src,
+    width: land.image.width,
+    height: land.image.height,
+    alt: land.alt,
+    sizes: "100vw",
+    ...(preload ? ({ loading: "eager", fetchPriority: "high" } as const) : {}),
+  })
+  return (
+    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${land.image.blurDataURL}")` }}>
+      <picture>
+        {uprightSet ? <source media="(orientation: portrait)" srcSet={uprightSet} sizes="100vw" /> : null}
+        <img
+          {...props}
+          alt={land.alt}
+          data-blur-up="plain"
+          // The pre-paint listener may stamp data-loaded before hydration.
+          suppressHydrationWarning
+          className={cn(
+            "absolute inset-0 size-full object-cover",
+            preload
+              ? "farm-settle"
+              : "opacity-0 transition-opacity duration-700 data-[loaded]:opacity-100 motion-reduce:opacity-100",
+          )}
+        />
+      </picture>
+    </div>
   )
 }

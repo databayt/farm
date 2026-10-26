@@ -28,7 +28,13 @@ export function Arrival() {
               data-step={i}
               className="flex flex-col gap-4 border-t py-10 first:border-t-0 lg:min-h-[72vh] lg:justify-center lg:border-t-0 lg:py-0"
             >
-              <Render id={step.id} sizes="100vw" className="mb-2 aspect-[4/3] rounded-2xl lg:hidden" />
+              {/* Hidden from lg up, where the sticky picture takes over; 1px there keeps a desktop
+                  that fetches it anyway to the smallest file. */}
+              <Render
+                id={step.id}
+                sizes="(min-width: 1024px) 1px, 100vw"
+                className="mb-2 aspect-[4/3] rounded-2xl lg:hidden"
+              />
               <p className="text-leaf font-mono text-xs tracking-[0.22em]">{step.n}</p>
               <h3 className="font-display text-4xl leading-none font-normal md:text-6xl">{step.title}</h3>
               <p className="text-muted-foreground max-w-md text-lg text-pretty">{step.text}</p>
