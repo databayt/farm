@@ -2,7 +2,7 @@
 
 // The floor, built in fast motion as the reader scrolls, seen from straight above: the empty base, then the
 // flat wood sheets dropped in one by one and screwed down, then the planks laid row by row from the back
-// wall, then the bathroom end: its vinyl unrolled from the back wall and the shower tray set on it. The
+// wall, then the bathroom end: its vinyl unrolled from the back wall in one sheet. The
 // section is one screen tall per stage and stays pinned; reaching a stage runs its build like a time-lapse
 // (scrolling back takes it apart, last build first). Every piece is cropped from its layer's transparent
 // render (scripts/studio/render/floor.html, which also writes the piece rectangles), so the pieces meet
@@ -14,7 +14,7 @@ import { cx } from "@/lib/cx"
 type Rect = number[] // [x, y, w, h] as fractions of the picture
 type Stage = { title: string; text: string }
 
-const SECS = [2.4, 3.2, 1.8] // seconds each build takes: sheets, planks, bathroom
+const SECS = [2.4, 3.2, 1.2] // seconds each build takes: sheets, planks, bathroom
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
 const out = (t: number) => 1 - (1 - t) ** 3
 
@@ -31,8 +31,8 @@ function Piece({ src, r }: { src: string; r: Rect }) {
 }
 
 export function FloorLayers({ src, pieces, alts, stages }: {
-  src: { base: string; sheets: string; screws: string; planks: string; vinyl: string; tray: string }
-  pieces: { aspect: number; sheets: Rect[]; planks: Rect[]; vinyl: Rect; tray: Rect }
+  src: { base: string; sheets: string; screws: string; planks: string; vinyl: string }
+  pieces: { aspect: number; sheets: Rect[]; planks: Rect[]; vinyl: Rect }
   alts: [string, string, string, string]; stages: [Stage, Stage, Stage, Stage]
 }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -46,7 +46,7 @@ export function FloorLayers({ src, pieces, alts, stages }: {
   useEffect(() => {
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     const els = (r: React.RefObject<HTMLDivElement | null>) => Array.from(r.current?.querySelectorAll<HTMLElement>("[data-piece]") ?? [])
-    const S = els(sheetsRef), K = els(screwsRef), P = els(planksRef), [V, T] = els(bathRef), roll = rollRef.current
+    const S = els(sheetsRef), K = els(screwsRef), P = els(planksRef), [V] = els(bathRef), roll = rollRef.current
     const c = [0, 0, 0] // each build's clock, 0 (not started) to 1 (done)
     let stage = 0, last = performance.now(), frame = 0
 
@@ -67,11 +67,10 @@ export function FloorLayers({ src, pieces, alts, stages }: {
         if (k) { k.style.opacity = String(u); k.style.transform = u >= 1 ? "" : `scale(${1.03 - 0.03 * u})` }
       })
       P.forEach((el, i) => drop(el, clamp((c[1] - (i / P.length) * 0.85) / 0.15), 30))
-      // the vinyl unrolls from the back wall, the roll riding its front edge; then the tray drops on
-      const v = out(clamp(c[2] / 0.6))
+      // the vinyl unrolls from the back wall, the roll riding its front edge
+      const v = out(c[2])
       if (V) { V.style.opacity = c[2] > 0 ? "1" : "0"; V.style.clipPath = `inset(0 0 ${(1 - v) * 100}% 0)` }
       if (roll) { roll.style.opacity = c[2] > 0 && v < 1 ? "1" : "0"; roll.style.top = `${(pieces.vinyl[1] + pieces.vinyl[3] * v) * 100}%` }
-      if (T) drop(T, clamp((c[2] - 0.65) / 0.3), 60)
     }
     const tick = (now: number) => {
       frame = 0
@@ -128,7 +127,6 @@ export function FloorLayers({ src, pieces, alts, stages }: {
             </div>
             <div ref={bathRef} role="img" aria-label={alts[3]}>
               <Piece src={src.vinyl} r={pieces.vinyl} />
-              <Piece src={src.tray} r={pieces.tray} />
             </div>
             {/* the vinyl still on its roll: a grey cylinder across the bathroom, riding the unrolled edge */}
             <div ref={rollRef} aria-hidden className="absolute h-[3%] -translate-y-1/2 rounded-full opacity-0 shadow-md"
