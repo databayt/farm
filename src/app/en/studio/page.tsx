@@ -5,7 +5,6 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
-import { StudioViewer } from "@/components/docs/studio-viewer"
 import { FloorLayers } from "@/components/docs/floor-layers"
 import { ItemRail } from "@/components/docs/item-rail"
 import { bedStock } from "@/lib/bed-stock"
@@ -284,7 +283,7 @@ export default function StudioPage() {
       {/* 3D, full screen and in the 2D section's pattern: a black-and-white line drawing of the furnished
           room seen from the front (render/front-line.png, inverted in dark mode), then the same view rendered
           realistically (render/front-real.jpg). Both come from scripts/studio/render/room.html, built from
-          render/scene.json; the live model follows for anyone exploring. */}
+          render/scene.json. */}
       <section id="model">
         <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
           <h2 className="text-3xl font-semibold tracking-tight">3D</h2>
@@ -302,10 +301,6 @@ export default function StudioPage() {
             className="h-auto w-full" />
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
         </figure>
-        <div className="mx-auto w-full max-w-5xl px-4 pb-6 md:px-6">
-          <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
-            title="Container studio, Layout B" />
-        </div>
       </section>
 
       {/* Bed: the bed corner as a rail of product cards (after databayt.org's products rail); the card in focus
