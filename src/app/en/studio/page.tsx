@@ -50,23 +50,21 @@ export default function StudioPage() {
   const sheets = Object.values(totals.sheets as Record<string, number>).reduce((a, b) => a + b, 0)
   return (
     <main className="w-full flex-1">
-      <section className="bg-[#f4f1ec]">
-        {/* Rendered from studio.glb by scripts/studio/render/hero.html: walls and roof removed, only the base */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`${D}/render/studio-hero.jpg`} width={2400} height={1350} fetchPriority="high"
-          alt="The finished studio on its container base, walls and roof removed: queen bed, kitchen, table and stools, bathroom with walk-in shower"
-          className="mx-auto h-auto w-full max-w-7xl" />
-      </section>
-
       <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
-      <section className="mt-10 grid gap-6 md:mt-12 md:grid-cols-[1.4fr_1fr] md:items-end">
-        <div className="space-y-4">
+      <section className="mt-6 grid items-center gap-8 md:mt-10 md:grid-cols-[1fr_1.05fr] md:gap-12">
+        {/* Two panels, as in the reference pin: the finished studio outside, then a cutaway with the roof and
+            front wall removed. Rendered from studio.glb by scripts/studio/render/hero.html. */}
+        <div className="overflow-hidden rounded-xl border md:order-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`${D}/render/studio-hero.jpg`} width={1600} height={2010} fetchPriority="high"
+            alt="Top: the finished studio on its deck with a roof terrace and transparent canopies. Bottom: a cutaway with the roof and front wall removed, showing the bed, kitchen, table and bathroom."
+            className="h-auto w-full" />
+        </div>
+        <div className="space-y-5 md:order-1">
           <p className="text-muted-foreground text-sm">Farm · container studios · rev A</p>
           <h1 className="text-4xl font-semibold tracking-tight text-balance md:text-5xl">
             Three guest studios, built like flat-pack furniture
           </h1>
-        </div>
-        <div className="space-y-5">
           <p className="text-muted-foreground text-lg text-balance">
             Three 20 ft containers already on the farm become identical farm-stay studios: bed, kitchen,
             shower and a roof terrace. Every part is cut, drilled and numbered in Kigali, then assembled

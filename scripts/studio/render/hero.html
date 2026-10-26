@@ -1,24 +1,30 @@
 <!doctype html>
 <!--
-  Renders the studio hero image (public/designs/studio/model/studio-hero.png) from studio.glb:
-  walls and roof removed, only the base, floor, furniture and fixtures, soft shadows and outlines.
-  Serve the repo root (python3 -m http.server 3000 from ~/farm), open
-  /scripts/studio/render/hero.html, and screenshot the canvas (see scripts/studio/render/README.md).
+  Renders the /en/studio hero (public/designs/studio/render/studio-hero.jpg) from studio.glb in the
+  two-panel pattern of the reference pin: the finished studio outside (top) and a cutaway with the
+  roof and front wall removed (bottom). Serve the repo root on :3000 (python3 -m http.server 3000),
+  open /scripts/studio/render/hero.html at 1600 x 2010, and screenshot #sheet.
+  Pillows, throw, rug, plants, the deck sofa and the existing front deck are render-only props.
 -->
 <html>
 <head>
 <meta charset="utf-8">
-<style>html,body{margin:0;background:#f4f1ec}canvas{display:block}</style>
+<style>
+html,body{margin:0;background:#fff}
+#sheet{width:1600px;height:2010px;display:flex;flex-direction:column;gap:10px;background:#fff}
+#sheet img{width:1600px;height:1000px;display:block}
+</style>
 <script type="importmap">
 {"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
 </script>
 </head>
 <body>
+<div id="sheet"><img id="top" alt=""><img id="bottom" alt=""></div>
 <script type="module">
 import * as THREE from "three"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
 
-const W = 2400, H = 1350
+const W = 1600, H = 1000
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true })
 renderer.setPixelRatio(1)
 renderer.setSize(W, H)
@@ -26,95 +32,208 @@ renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.outputColorSpace = THREE.SRGBColorSpace
 renderer.toneMapping = THREE.ACESFilmicToneMapping
-renderer.toneMappingExposure = 1.05
-document.body.appendChild(renderer.domElement)
 
-const scene = new THREE.Scene()
-scene.background = new THREE.Color("#f4f1ec")
-scene.add(new THREE.HemisphereLight(0xffffff, 0xd8cbb8, 1.5))
-const sun = new THREE.DirectionalLight(0xfff4e6, 2.6)
-sun.position.set(1.5, 12, 4.5)
-sun.target.position.set(2.9, 0, 1.1)
-sun.castShadow = true
-sun.shadow.mapSize.set(4096, 4096)
-Object.assign(sun.shadow.camera, { left: -6, right: 6, top: 6, bottom: -6, near: 0.5, far: 30 })
-sun.shadow.bias = -0.0004
-sun.shadow.radius = 6
-scene.add(sun, sun.target)
-const fill = new THREE.DirectionalLight(0xffffff, 0.6)
-fill.position.set(8, 5, -4)
-scene.add(fill)
-
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.16 }))
-ground.rotation.x = -Math.PI / 2
-ground.position.y = -0.19
-ground.receiveShadow = true
-scene.add(ground)
-
-// keep: base, floors, furniture, fixtures, the bathroom partition; drop every wall, the roof, services
-const hide = (id) =>
-  (/^K0-/.test(id) && id !== "K0-FLOOR") ||
-  (/^K1-/.test(id) && id !== "K1-SPC") ||
-  /^K2-CB-(BACK|ENDB|FRONT)/.test(id) || /^K2-STUD/.test(id) ||
-  /^K(7|8|10|11)-/.test(id) || id === "K9-HEATER-BOX" || /^K3-W[12]-/.test(id) || id === "K3-HS" || id === "K3-HOOD"
-
-const COLORS = {
-  PLY18: "#e2c9a0", PLY12: "#e8d3ae", MPLY18: "#d8bb8c", WTOP38: "#9a6a3e", floor: "#c99b6b", base: "#3b3d40",
-  white: "#f7f7f5", glass: "#bfe0f2", stainless: "#c4c8cc", black: "#26282b", tile: "#eceff1", fabric: "#eeeeee",
-  door: "#f0ece4", timber: "#c99b6b", electric: "#ffd23f", steel: "#5b5e63",
+// ------------------------------------------------------------ procedural textures
+function tex(draw, w = 512, h = 512) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h
+  draw(c.getContext("2d"), w, h)
+  const t = new THREE.CanvasTexture(c)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.wrapS = t.wrapT = THREE.RepeatWrapping
+  return t
 }
-
-const gltf = await new GLTFLoader().loadAsync("/public/designs/studio/model/studio.glb")
-const lines = new THREE.LineBasicMaterial({ color: 0x3a342c, transparent: true, opacity: 0.55 })
-const edges = []
-gltf.scene.traverse((o) => {
-  if (!o.isMesh) return
-  if (hide(o.name)) { o.visible = false; return }
-  const key = o.material.name
-  const col = new THREE.Color(COLORS[key] ?? "#dddddd")
-  const glass = key === "glass"
-  o.material = new THREE.MeshStandardMaterial({
-    color: col, roughness: glass ? 0.05 : key === "stainless" ? 0.35 : 0.8, metalness: key === "stainless" ? 0.5 : 0,
-    transparent: glass, opacity: glass ? 0.35 : 1, side: THREE.DoubleSide,
-  })
-  if (o.name === "K4-MATT") o.material.color.set("#f6f6f4")
-  o.castShadow = !glass
-  o.receiveShadow = true
-  edges.push(o)
+const corrugated = (base, dark, light) => tex((g, w, h) => {
+  g.fillStyle = base; g.fillRect(0, 0, w, h)
+  const n = 16
+  for (let i = 0; i < n; i++) {
+    const x = (i / n) * w
+    g.fillStyle = dark; g.fillRect(x, 0, w / n * 0.28, h)
+    g.fillStyle = light; g.fillRect(x + w / n * 0.55, 0, w / n * 0.12, h)
+  }
 })
-scene.add(gltf.scene)
-gltf.scene.updateMatrixWorld(true)
-for (const o of edges) {
-  const g = new THREE.EdgesGeometry(o.geometry)
-  const l = new THREE.LineSegments(g, lines)
-  l.matrixAutoUpdate = false
-  l.matrix.copy(o.matrixWorld)
+const planks = tex((g, w, h) => {
+  const tones = ["#9c6236", "#a86b3c", "#8f5830", "#b07444", "#975e33"]
+  const rows = 16, rh = h / rows
+  for (let r = 0; r < rows; r++) {
+    let x = -((r * 173) % 400)
+    while (x < w) {
+      const len = 300 + ((r * 97 + Math.abs(x)) % 260)
+      g.fillStyle = tones[(r * 7 + Math.abs(x)) % tones.length]; g.fillRect(x, r * rh, len, rh)
+      g.fillStyle = "rgba(40,20,5,0.5)"; g.fillRect(x, r * rh, 2, rh)
+      x += len
+    }
+    g.fillStyle = "rgba(40,20,5,0.55)"; g.fillRect(0, r * rh, w, 2)
+  }
+}, 1024, 1024)
+
+// ------------------------------------------------------------ model
+const COLORS = {
+  PLY18: "#e2c9a0", PLY12: "#ece6da", MPLY18: "#dcc09a", WTOP38: "#c49566", base: "#26282b",
+  white: "#f6f6f4", glass: "#9fc4e8", stainless: "#bfc4c9", black: "#2a2c30", tile: "#f1f2f2", fabric: "#f4f4f4",
+  door: "#f0ece4", timber: "#8a5a34", TIMBER: "#8a5a34", electric: "#f6d34a", STEEL: "#3c3f44", POLY: "#b9c9cf",
+  MESH: "#3c3f44", STAIRFRAME: "#3c3f44", steel: "#7a2c25",
+}
+const gltf = await new GLTFLoader().loadAsync("/public/designs/studio/model/studio.glb")
+const root = gltf.scene
+root.updateMatrixWorld(true)
+const parts = await (await fetch("/public/designs/studio/model/parts.json")).json()
+const byId = Object.fromEntries(parts.parts.map((p) => [p.id, p]))
+const meshes = []
+root.traverse((o) => {
+  if (!o.isMesh) return
+  const p = byId[o.name]
+  o.userData.pname = p?.name ?? ""
+  o.userData.key = o.material.name
+  meshes.push(o)
+})
+const shellRed = corrugated("#8e3b30", "#6c2a22", "#a04a3e")
+const shellGrey = corrugated("#55585d", "#3a3d41", "#6a6d72")
+// the GLB cube has no texture coordinates; textured parts get a unit box with UVs (same 0..1 extent)
+const uvBox = new THREE.BoxGeometry(1, 1, 1).translate(0.5, 0.5, 0.5)
+const lineMat = new THREE.LineBasicMaterial({ color: 0x24211d, transparent: true, opacity: 0.5 })
+
+function style(o, mode) {
+  const id = o.name, key = o.userData.key
+  const s = new THREE.Vector3(); o.getWorldScale(s)
+  let m
+  if (/^K0-(BACK|ENDA|ENDB|FRONT|ROOF)/.test(id)) {
+    const t = (mode === "out" ? shellRed : shellGrey).clone()
+    t.repeat.set(Math.max(s.x, s.z) / 1.1, id === "K0-ROOF" ? 1 : 1); t.needsUpdate = true
+    m = new THREE.MeshStandardMaterial({ map: t, roughness: 0.65, metalness: 0.15 })
+    o.geometry = uvBox
+  } else if (id === "K1-SPC") {
+    const t = planks.clone(); t.repeat.set(s.x / 1.8, s.z / 1.8); t.needsUpdate = true
+    m = new THREE.MeshStandardMaterial({ map: t, roughness: 0.5 })
+    o.geometry = uvBox
+  } else if (id === "K0-FLOOR") {
+    m = new THREE.MeshStandardMaterial({ color: "#222427", roughness: 0.8 })
+  } else {
+    const clear = key === "glass" || key === "POLY"
+    m = new THREE.MeshStandardMaterial({
+      color: COLORS[key] ?? "#dddddd", roughness: clear ? 0.06 : key === "stainless" ? 0.3 : 0.75,
+      metalness: key === "stainless" ? 0.5 : 0, transparent: clear, opacity: key === "POLY" ? 0.5 : clear ? 0.42 : 1,
+    })
+  }
+  if (id === "K4-MATT") m.color.set("#f7f7f5")
+  o.material = m
+  o.castShadow = !m.transparent
+  o.receiveShadow = true
+}
+const edges = new Map()
+function outline(o, scene) {
+  let l = edges.get(o)
+  if (!l) {
+    l = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry), lineMat)
+    l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld); edges.set(o, l)
+  }
   scene.add(l)
 }
 
-// render-only props (not part of the build): pillows, throw, rug, plant
-const prop = (w, h, d, x, y, z, color, round = 0.8) => {
-  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color, roughness: round }))
-  m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; scene.add(m); return m
+// ------------------------------------------------------------ props (render only)
+function box(scene, w, h, d, x, y, z, color, rough = 0.85) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ color, roughness: rough }))
+  m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; scene.add(m); return m
 }
-prop(0.62, 0.13, 0.38, 0.45, 0.72, 0.42, "#ffffff")
-prop(0.62, 0.13, 0.38, 1.17, 0.72, 0.42, "#ffffff")
-prop(1.62, 0.025, 0.55, 0.82, 0.665, 1.75, "#7d8590")
-prop(1.2, 0.01, 0.9, 2.95, 0.005, 1.95, "#e9e2d6", 1)
-const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.26, 24), new THREE.MeshStandardMaterial({ color: "#5d5f63", roughness: 0.6 }))
-pot.position.set(3.75, 0.13, 2.05); pot.castShadow = true; scene.add(pot)
-for (let i = 0; i < 7; i++) {
-  const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 12), new THREE.MeshStandardMaterial({ color: "#4f7d3a", roughness: 0.7 }))
-  leaf.scale.set(1, 1.8, 0.35); const a = (i / 7) * Math.PI * 2
-  leaf.position.set(3.75 + Math.cos(a) * 0.1, 0.48 + (i % 2) * 0.08, 2.05 + Math.sin(a) * 0.1)
-  leaf.rotation.set(Math.sin(a) * 0.5, a, Math.cos(a) * 0.5); leaf.castShadow = true; scene.add(leaf)
+function plant(scene, x, y, z, s = 1) {
+  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.12 * s, 0.09 * s, 0.24 * s, 24),
+    new THREE.MeshStandardMaterial({ color: "#6b6e73", roughness: 0.6 }))
+  pot.position.set(x, y + 0.12 * s, z); pot.castShadow = true; scene.add(pot)
+  for (let i = 0; i < 9; i++) {
+    const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.11 * s, 16, 12),
+      new THREE.MeshStandardMaterial({ color: i % 2 ? "#4c7a35" : "#5e8f3f", roughness: 0.7 }))
+    const a = (i / 9) * Math.PI * 2
+    leaf.scale.set(1, 2, 0.35)
+    leaf.position.set(x + Math.cos(a) * 0.09 * s, y + (0.42 + (i % 3) * 0.07) * s, z + Math.sin(a) * 0.09 * s)
+    leaf.rotation.set(Math.sin(a) * 0.6, a, Math.cos(a) * 0.6); leaf.castShadow = true; scene.add(leaf)
+  }
 }
-const plant2 = pot.clone(); plant2.scale.setScalar(0.5); plant2.position.set(3.25, 0.965, 0.25); scene.add(plant2)
+function lights(scene, sunPos, target, half = 9) {
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xcfc5b6, 1.35))
+  const sun = new THREE.DirectionalLight(0xfff3e2, 2.6)
+  sun.position.copy(sunPos); sun.target.position.copy(target); sun.castShadow = true
+  sun.shadow.mapSize.set(4096, 4096)
+  Object.assign(sun.shadow.camera, { left: -half, right: half, top: half, bottom: -half, near: 0.5, far: 50 })
+  sun.shadow.bias = -0.0004
+  scene.add(sun, sun.target)
+  const fill = new THREE.DirectionalLight(0xffffff, 0.5); fill.position.set(9, 5, -5); scene.add(fill)
+}
 
-const camera = new THREE.PerspectiveCamera(24, W / H, 0.1, 100)
-camera.position.set(1.0, 8.6, 10.4)
-camera.lookAt(2.95, 0.7, 1.0)
-renderer.render(scene, camera)
+// ------------------------------------------------------------ top: the finished studio outside
+function exterior() {
+  const scene = new THREE.Scene()
+  scene.background = tex((g, w, h) => {
+    const grd = g.createLinearGradient(0, 0, 0, h)
+    grd.addColorStop(0, "#a9c8df"); grd.addColorStop(0.6, "#e6edf0"); grd.addColorStop(1, "#e9efe4")
+    g.fillStyle = grd; g.fillRect(0, 0, w, h)
+  }, 4, 256)
+  const ground = new THREE.Mesh(new THREE.CircleGeometry(60, 64), new THREE.MeshStandardMaterial({ color: "#7aa257", roughness: 1 }))
+  ground.rotation.x = -Math.PI / 2; ground.position.y = -0.72; ground.receiveShadow = true; scene.add(ground)
+  for (let i = 0; i < 30; i++) {
+    const t = new THREE.Mesh(new THREE.SphereGeometry(1.1 + (i % 4) * 0.35, 18, 14),
+      new THREE.MeshStandardMaterial({ color: ["#4b7539", "#5c8844", "#3f6a31"][i % 3], roughness: 1 }))
+    t.scale.y = 1.7; t.position.set(-16 + i * 1.35, 1.8 + (i % 3) * 0.5, -10 - (i % 2) * 1.6); scene.add(t)
+  }
+  for (const o of meshes) {
+    o.visible = !/^K1-(BAT|EPS)|^K8-|^K2-STUD/.test(o.name) && !/^Stair stringers/.test(o.userData.pname)
+    style(o, "out")
+    if (o.userData.key === "MESH") Object.assign(o.material, { transparent: true, opacity: 0.28 })
+    if (o.visible && (/^K0-/.test(o.name) || /^K11-/.test(o.name) || o.name === "K10-W1WIN")) outline(o, scene)
+  }
+  scene.add(root)
+  // existing front deck (film-faced boards on a red steel frame) with railing, render-only
+  const L = 6.06, z0 = 2.345, x0 = -0.13
+  box(scene, L + 0.1, 0.06, 1.5, x0 + L / 2, -0.04, z0 + 0.75, "#5b3a24", 0.65)
+  for (const x of [x0 + 0.05, x0 + 2, x0 + 4, x0 + L - 0.05]) box(scene, 0.06, 0.66, 0.06, x, -0.4, z0 + 1.45, "#7a2c25")
+  box(scene, L + 0.1, 0.05, 0.05, x0 + L / 2, 1.0, z0 + 1.47, "#7a2c25")
+  box(scene, L + 0.1, 0.025, 0.025, x0 + L / 2, 0.55, z0 + 1.47, "#7a2c25")
+  for (const x of [x0 + 0.05, x0 + 2, x0 + 4, x0 + L - 0.05]) box(scene, 0.04, 1.0, 0.04, x, 0.5, z0 + 1.47, "#7a2c25")
+  box(scene, 1.6, 0.42, 0.62, 2.1, 0.21, z0 + 1.0, "#e1e0dc")
+  box(scene, 1.6, 0.4, 0.14, 2.1, 0.62, z0 + 1.28, "#8f9399")
+  box(scene, 0.7, 0.36, 0.45, 2.1, 0.18, z0 + 0.45, "#7a4d2c", 0.6)
+  plant(scene, 3.7, 0, z0 + 1.15, 1.7)
+  lights(scene, new THREE.Vector3(-5, 13, 9), new THREE.Vector3(2.9, 0, 1.6), 11)
+  const cam = new THREE.PerspectiveCamera(31, W / H, 0.1, 300)
+  cam.position.set(-6.8, 3.0, 15.5)
+  cam.lookAt(2.6, 2.3, 1.5)
+  renderer.render(scene, cam)
+  scene.remove(root)
+  return renderer.domElement.toDataURL("image/png")
+}
+
+// ------------------------------------------------------------ bottom: the cutaway
+function cutaway() {
+  const scene = new THREE.Scene()
+  scene.background = new THREE.Color("#e9e9e7")
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: 0.12 }))
+  ground.rotation.x = -Math.PI / 2; ground.position.y = -0.19; ground.receiveShadow = true; scene.add(ground)
+  for (const o of meshes) {
+    const n = o.userData.pname
+    o.visible = !(
+      /^K0-(ROOF|FRONT|SLIDER)/.test(o.name) || /^K1-(BAT|EPS)/.test(o.name) || /^(Ceiling|Front)/.test(n) ||
+      /^K2-CB-FRONT|^K2-STUD|^K(7|8|10|11)-/.test(o.name) || o.name === "K9-HEATER-BOX"
+    )
+    style(o, "in")
+    if (o.visible) outline(o, scene)
+  }
+  scene.add(root)
+  box(scene, 0.62, 0.13, 0.38, 0.45, 0.72, 0.42, "#ffffff")
+  box(scene, 0.62, 0.13, 0.38, 1.17, 0.72, 0.42, "#ffffff")
+  box(scene, 1.62, 0.03, 0.62, 0.82, 0.665, 1.72, "#7c838c")
+  box(scene, 1.25, 0.01, 0.95, 3.0, 0.006, 1.92, "#ddd6ca", 1)
+  plant(scene, 3.72, 0, 2.02)
+  plant(scene, 3.25, 0.9, 0.22, 0.5)
+  plant(scene, 1.1, 1.1, 0.07, 0.45)
+  lights(scene, new THREE.Vector3(1.5, 12, 4.5), new THREE.Vector3(2.9, 0, 1.1))
+  const cam = new THREE.PerspectiveCamera(30, W / H, 0.1, 100)
+  cam.position.set(-2.4, 7.4, 8.6)
+  cam.lookAt(2.75, 0.5, 1.05)
+  renderer.render(scene, cam)
+  scene.remove(root)
+  return renderer.domElement.toDataURL("image/png")
+}
+
+document.getElementById("top").src = exterior()
+document.getElementById("bottom").src = cutaway()
 document.body.dataset.ready = "1"
 </script>
 </body>
