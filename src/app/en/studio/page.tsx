@@ -31,6 +31,20 @@ const FEATURES = [
   { title: "Stay cool", text: "The roof deck shades the steel, EPS insulation is sealed to it, a wall fan moves the air, and the AC is ready." },
 ]
 
+// The bedroom, piece by piece (Bedroom section): each one rendered on its own by
+// scripts/studio/render/room.html?item=<id>, as a line drawing and in materials.
+const BEDROOM = [
+  { id: "bed", name: "Bed frame", size: "1.64 × 2.02 m · headboard 1.0 m", text: "Pine in medium oak: headboard, side and foot rails, a centre beam and a slat base. Two storage-box fronts in the room side." },
+  { id: "box", name: "Storage box × 2", size: "0.60 × 0.70 × 0.29 m", text: "An open pine tray on four castors that rolls out from under the bed, with a finger-pull slot." },
+  { id: "mattress", name: "Mattress", size: "160 × 200 × 20 cm", text: "Queen size, a quilted cover with piping round both edges." },
+  { id: "sheets", name: "Bed sheets", size: "for 160 × 200 cm", text: "Fitted sheet, flat sheet and two pillowcases in white cotton." },
+  { id: "duvet", name: "Duvet", size: "200 × 220 cm", text: "A light duvet in a white cover; Kigali nights stay mild." },
+  { id: "pillow", name: "Pillow × 2", size: "50 × 70 cm", text: "Two soft pillows, one per side." },
+  { id: "bedside", name: "Bedside table", size: "0.34 × 0.34 × 0.55 m", text: "A thick pine top on four square legs, with a lower shelf." },
+  { id: "lamp", name: "Table lamp", size: "Ø 0.26 × 0.42 m", text: "A round black base, a thin stem and a linen drum shade. USB-C sits at the bedside." },
+  { id: "walllamp", name: "Wall reading lamp", size: "arm 0.24 m", text: "A black wall plate and a curved arm with a cone head over the wall-side pillow." },
+]
+
 const STEPS = [
   { n: "1", title: "Measure", text: "Survey the container; the model regenerates every drawing from the real numbers." },
   { n: "2", title: "Cut in Kigali", text: "A Gisozi workshop rips and crosscuts sheets on a panel saw, following the cutting diagrams." },
@@ -273,6 +287,36 @@ export default function StudioPage() {
         <div className="mx-auto w-full max-w-5xl px-4 pb-6 md:px-6">
           <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
             title="Container studio, Layout B" />
+        </div>
+      </section>
+
+      {/* Bedroom, full width: the bed corner broken into the pieces bought or built, each as a line
+          drawing (2D, inverted in dark mode) beside the same piece in materials (3D). */}
+      <section id="bedroom" className="px-4 pt-10 pb-10 md:px-10">
+        <h2 className="text-3xl font-semibold tracking-tight">Bedroom</h2>
+        <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+          The bed corner, piece by piece: what it is, how big, and how it looks in 2D and 3D.
+        </p>
+        <div className="mt-6 grid gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-2 xl:grid-cols-3">
+          {BEDROOM.map((b) => (
+            <article key={b.id} className="bg-background p-4 md:p-5">
+              <div className="grid grid-cols-2 gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`${D}/render/bedroom/${b.id}-line.png`} width={1200} height={900} loading="lazy"
+                  alt={`${b.name}, line drawing`} className="h-auto w-full dark:invert" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`${D}/render/bedroom/${b.id}-real.jpg`} width={1200} height={900} loading="lazy"
+                  alt={`${b.name}, rendered in its materials`} className="h-auto w-full" />
+              </div>
+              <div className="mt-3 flex items-baseline justify-between gap-4">
+                <h3 className="font-medium">{b.name}</h3>
+                <span className="text-muted-foreground shrink-0 text-sm tabular-nums">{b.size}</span>
+              </div>
+              <p className="text-muted-foreground mt-1 text-sm">{b.text}</p>
+            </article>
+          ))}
+          {/* nine pieces: fill the empty cell left when two columns are showing */}
+          <div className="bg-background hidden md:block xl:hidden" />
         </div>
       </section>
 

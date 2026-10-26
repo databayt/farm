@@ -7,7 +7,10 @@
     ?mode=real  realistic render: materials, sun, soft shadows, AO        -> render/front-real.jpg
 
   Serve the repo root on :3000 (python3 -m http.server 3000), open this page at 2400 x 1150 and
-  screenshot #out once body[data-ready] is set. The furniture follows the photos in ~/farm/ikea
+  screenshot #out once body[data-ready] is set.
+
+    &item=<id>  one bedroom piece on its own, three-quarter view, 1200 x 900 (ITEMS below)
+                -> render/bedroom/<id>-line.png and <id>-real.jpg, for the Bedroom section The furniture follows the photos in ~/farm/ikea
   for look (FRIDHULT sofa, MALM bed with storage boxes, LACK tables, a vessel basin on a black
   console, a wall-hung WC, a frameless shower screen); sizes come from the design. Pillows, duvet,
   cushions, towels, books, plants and the kettle are render-only props. Textures are drawn
@@ -39,9 +42,12 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
 import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
-const MODE = new URLSearchParams(location.search).get("mode") === "real" ? "real" : "line"
+const Q = new URLSearchParams(location.search)
+const MODE = Q.get("mode") === "real" ? "real" : "line"
 const LINE = MODE === "line"
-const FW = 2400, FH = 1100
+const ITEM = Q.get("item")
+const [FW, FH] = ITEM ? [1200, 900] : [2400, 1100]
+Object.assign(document.getElementById("out").style, { width: `${FW}px`, height: `${FH}px` })
 const S = await (await fetch(`/public/designs/studio/render/scene.json?${Date.now()}`)).json()
 const m = (v) => v / 1000 // layout mm -> metres; three: x = x, y = height (layout z), z = depth (layout y)
 
@@ -81,6 +87,17 @@ const T = LINE ? {} : {
       g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1)
     }
     for (let y = 0; y < h; y += 3) { g.fillStyle = "rgba(0,0,0,0.035)"; g.fillRect(0, y, w, 1) }
+  }, 256, 256),
+  // quilted mattress ticking: white, a diamond stitch; one tile is 0.3 m (see add)
+  quilt: tex((g, w, h) => {
+    g.fillStyle = "#f6f5f1"; g.fillRect(0, 0, w, h)
+    g.filter = "blur(3px)"
+    g.strokeStyle = "rgba(150,146,138,0.55)"; g.lineWidth = 5
+    g.beginPath(); g.moveTo(0, h / 2); g.lineTo(w / 2, 0); g.lineTo(w, h / 2); g.lineTo(w / 2, h); g.closePath(); g.stroke()
+    g.filter = "none"
+    for (const [x, y] of [[0, 0], [w, 0], [0, h], [w, h], [w / 2, h / 2]]) { // tufts at the crossings
+      g.fillStyle = "rgba(120,116,108,0.45)"; g.beginPath(); g.arc(x, y, 6, 0, Math.PI * 2); g.fill()
+    }
   }, 256, 256),
   // white marble with soft grey veins, after the RIVI bathroom
   marble: tex((g, w, h) => {
@@ -246,6 +263,8 @@ function mat(name) {
       worktop: () => std({ color: "#c4996a", roughness: 0.45 }),
       fabric: () => std({ map: T.fabric, roughness: 0.95 }),
       linen: () => std({ color: "#f7f6f2", roughness: 0.9 }),
+      sheet: () => std({ color: "#f1efe8", roughness: 0.92 }),
+      mattress: () => std({ map: T.quilt, roughness: 0.9 }),
       duvet: () => std({ color: "#eef0ef", roughness: 0.92 }),
       throw: () => std({ color: "#8c8f93", roughness: 0.95 }),
       yellow: () => std({ color: "#e2b43a", roughness: 0.9 }),
@@ -302,6 +321,7 @@ function boardUV(geo, tile, cut = true) {
 function add(geo, name, opts = {}) {
   if (!LINE && name === "pine") boardUV(geo, BOARD)
   if (!LINE && name === "floor") boardUV(geo, FLOOR, false)
+  if (!LINE && name === "mattress") boardUV(geo, [0.3, 0.3], false)
   const mesh = new THREE.Mesh(geo, mat(name))
   mesh.castShadow = !LINE && name !== "glass" && name !== "floor" && name !== "vinyl" && !opts.noShadow
   mesh.receiveShadow = !LINE
@@ -373,6 +393,7 @@ const L = m(S.L), W = m(S.W), H = m(S.H), e = m(S.lining)
 const px0 = m(S.part_x0), bx0 = m(S.bath_x0), cy0 = m(S.bath_y1), cy1 = m(S.bath_y1 + S.cross_t), wb = m(S.wall_b)
 
 // ------------------------------------------------------------ the room: floor, walls, section cuts
+if (!ITEM) {
 box(-e, -0.03, -e, px0, 0, W + e, "floor", 0, { noShadow: true })
 box(px0, -0.03, -e, L + e, 0, W + e, "vinyl", 0, { noShadow: true })
 cutWall(-e, 0, -e, bx0, H, 0, "wall") // back wall, living side
@@ -391,53 +412,117 @@ box(bx0 - 0.012, 0, 0, bx0, H, cy0, "marble")
 // the cross wall is cut low so the shower and WC show behind it; the door opening is left open
 const cut = 0.55, d0 = m(S.bdoor[0]), d1 = m(S.bdoor[1])
 cutWall(d1, 0, cy0, L, cut, cy1, "marble")
+}
 
 // ------------------------------------------------------------ bed (MALM look), bedside table, reading lamps
-{
-  const x1 = m(S.bed_x1), z0 = m(S.bed_y0), z1 = m(S.bed_y1)
-  box(0, 0, 0, x1, 1.0, z0, "pine", 0.008) // tall headboard, straight on the back wall
-  box(0, 0, z0, x1, 0.45, z1, "pine", 0.01) // high frame, tight to end A
-  // two storage boxes in the room side, each front with a finger-pull slot
-  for (const [da, db] of S.drawers) {
-    const a = m(da) + 0.003, b = m(db) - 0.003
-    box(x1, 0.062, a, x1 + 0.006, 0.35, b, "pine", 0.004)
-    box(x1 + 0.004, 0.296, (a + b) / 2 - 0.09, x1 + 0.0068, 0.322, (a + b) / 2 + 0.09, LINE ? "white" : "black", 0.004)
-  }
-  box(0.025, 0.45, z0 + 0.02, x1 - 0.025, 0.65, 0.66, "linen", 0.05) // mattress, seen at the head
-  box(0.012, 0.45, 0.62, x1 - 0.012, 0.69, z1, "duvet", 0.06) // duvet over the mattress
-  box(0.01, 0.65, 0.62, x1 - 0.01, 0.715, 0.8, "duvet", 0.03) // turned-down fold
-  for (const px of [0.1, x1 / 2 + 0.03]) box(px, 0.65, z0 + 0.05, px + x1 / 2 - 0.13, 0.8, z0 + 0.4, "linen", 0.07) // pillows
-  // bedside table (LACK look): thick top, thick legs, a lower shelf
-  const [bx0_, , bz0_, bx1_, bh, bz1_] = L3(S.bedside)
+// the pieces the Bedroom section shows one by one are functions, so the room and ?item= draw the same thing
+function bedsideTable([x0, , z0, x1, h, z1]) { // LACK look: thick top, thick legs, a lower shelf
   const lg = 0.036
-  box(bx0_, bh - 0.035, bz0_, bx1_, bh, bz1_, "pine", 0.006)
-  for (const lx of [bx0_, bx1_ - lg]) for (const lz of [bz0_, bz1_ - lg]) box(lx, 0, lz, lx + lg, bh - 0.035, lz + lg, "pine", 0.003)
-  box(bx0_ + lg, 0.18, bz0_ + lg, bx1_ - lg, 0.198, bz1_ - lg, "pine", 0.003)
-  // reading lamp on it: round base, thin stem, linen drum shade
-  const [lx0, ly0, lz0, lx1, ly1, lz1] = L3(S.lamp)
-  const lcx = (lx0 + lx1) / 2, lcz = (lz0 + lz1) / 2
-  cyl(lcx, ly0 + 0.012, lcz, 0.07, 0.024, "black", "y", 40, 0.06)
-  cyl(lcx, ly0 + 0.15, lcz, 0.007, 0.26, "black")
+  box(x0, h - 0.035, z0, x1, h, z1, "pine", 0.006)
+  for (const lx of [x0, x1 - lg]) for (const lz of [z0, z1 - lg]) box(lx, 0, lz, lx + lg, h - 0.035, lz + lg, "pine", 0.003)
+  box(x0 + lg, 0.18, z0 + lg, x1 - lg, 0.198, z1 - lg, "pine", 0.003)
+}
+function tableLamp([x0, y0, z0, x1, y1, z1]) { // round base, thin stem, linen drum shade
+  const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2
+  cyl(cx, y0 + 0.012, cz, 0.07, 0.024, "black", "y", 40, 0.06)
+  cyl(cx, y0 + 0.15, cz, 0.007, 0.26, "black")
   const shade = add(new THREE.CylinderGeometry(0.1, 0.13, 0.18, 48, 1, true), "shade")
   shade.material = shade.material.clone(); shade.material.side = THREE.DoubleSide
-  shade.position.set(lcx, ly1 - 0.09, lcz)
-  // a wall reading lamp over the wall-side pillow
-  box(0.26, 1.12, 0, 0.34, 1.2, 0.012, "black", 0.004)
+  shade.position.set(cx, y1 - 0.09, cz)
+  if (!LINE) {
+    const glow = new THREE.PointLight(0xffd9a0, 0.7, 1.6)
+    glow.position.set(cx, y1 - 0.12, cz); scene.add(glow)
+  }
+}
+function wallLamp(x) { // a wall plate, a curved arm, a cone head over the pillow
+  box(x - 0.04, 1.12, 0, x + 0.04, 1.2, 0.012, "black", 0.004)
   const arm = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0.3, 1.16, 0.012), new THREE.Vector3(0.3, 1.21, 0.12), new THREE.Vector3(0.3, 1.15, 0.23),
+    new THREE.Vector3(x, 1.16, 0.012), new THREE.Vector3(x, 1.21, 0.12), new THREE.Vector3(x, 1.15, 0.23),
   ])
   add(new THREE.TubeGeometry(arm, 24, 0.006, 10, false), "black")
   const head = add(new THREE.CylinderGeometry(0.03, 0.055, 0.08, 32, 1, true), "black")
   head.material = head.material.clone(); head.material.side = THREE.DoubleSide
-  head.position.set(0.3, 1.11, 0.24)
-  if (!LINE) {
-    const glow = new THREE.PointLight(0xffd9a0, 0.7, 1.6)
-    glow.position.set(lcx, ly1 - 0.12, lcz); scene.add(glow)
-  }
+  head.position.set(x, 1.11, 0.24)
+}
+function drawerFront(x1, a, b) { // a storage box front in the bed's room side, with a finger-pull slot
+  box(x1, 0.062, a, x1 + 0.006, 0.35, b, "pine", 0.004)
+  box(x1 + 0.004, 0.296, (a + b) / 2 - 0.09, x1 + 0.0068, 0.322, (a + b) / 2 + 0.09, LINE ? "white" : "black", 0.004)
+}
+if (!ITEM) {
+  const x1 = m(S.bed_x1), z0 = m(S.bed_y0), z1 = m(S.bed_y1)
+  box(0, 0, 0, x1, 1.0, z0, "pine", 0.008) // tall headboard, straight on the back wall
+  box(0, 0, z0, x1, 0.45, z1, "pine", 0.01) // high frame, tight to end A
+  for (const [da, db] of S.drawers) drawerFront(x1, m(da) + 0.003, m(db) - 0.003) // two storage boxes
+  box(0.025, 0.45, z0 + 0.02, x1 - 0.025, 0.65, 0.66, "linen", 0.05) // mattress, seen at the head
+  box(0.012, 0.45, 0.62, x1 - 0.012, 0.69, z1, "duvet", 0.06) // duvet over the mattress
+  box(0.01, 0.65, 0.62, x1 - 0.01, 0.715, 0.8, "duvet", 0.03) // turned-down fold
+  for (const px of [0.1, x1 / 2 + 0.03]) box(px, 0.65, z0 + 0.05, px + x1 / 2 - 0.13, 0.8, z0 + 0.4, "linen", 0.07) // pillows
+  bedsideTable(L3(S.bedside))
+  tableLamp(L3(S.lamp))
+  wallLamp(0.3) // over the wall-side pillow
 }
 
+// ------------------------------------------------------------ the Bedroom section: each piece on its own
+// sizes from the layout where it has them (bed, boxes, bedside, lamp); bedding at standard queen sizes
+const ITEMS = {
+  // the frame without its bedding: headboard, side and foot rails, the slat base, the two box fronts
+  bed() {
+    const x1 = m(S.bed_x1), z0 = m(S.bed_y0), z1 = m(S.bed_y1), t = 0.022
+    box(0, 0, 0, x1, 1.0, z0, "pine", 0.008)
+    box(0, 0, z0, t, 0.45, z1, "pine", 0.006)
+    box(x1 - t, 0, z0, x1, 0.45, z1, "pine", 0.006)
+    box(t, 0, z1 - t, x1 - t, 0.45, z1, "pine", 0.006)
+    box(x1 / 2 - 0.03, 0.06, z0, x1 / 2 + 0.03, 0.41, z1 - t, "pine", 0.004) // centre beam
+    for (let z = z0 + 0.06; z < z1 - t - 0.07; z += 0.1) box(t, 0.41, z, x1 - t, 0.428, z + 0.068, "pine", 0.004) // slats
+    for (const [da, db] of S.drawers) drawerFront(x1, m(da) + 0.003, m(db) - 0.003)
+  },
+  // one storage box pulled out: an open tray on four castors behind its front
+  box() {
+    const [da, db] = S.drawers[0], len = m(db) - m(da) - 0.006, dep = 0.7
+    slab(0, 0, dep, len, 0.004, 0.07, 0.012, "pine")
+    ring(0, 0, dep, len, 0.004, 0.012, 0.082, 0.24, "pine")
+    drawerFront(dep, -0.004, len + 0.004)
+    for (const x of [0.05, dep - 0.05]) for (const z of [0.04, len - 0.04]) cyl(x, 0.035, z, 0.03, 0.02, "black", "x", 24)
+  },
+  mattress() { // 160 x 200 x 20 cm, quilted top, piping round both edges
+    const w = 1.6, l = 2.0, h = 0.2
+    box(0, 0, 0, w, h, l, "mattress", 0.045)
+    for (const y of [0.012, h - 0.012]) box(-0.003, y - 0.004, -0.003, w + 0.003, y + 0.004, l + 0.003, "white", 0.004)
+  },
+  // fitted sheet, flat sheet and two pillowcases, folded and stacked
+  sheets() {
+    const w = 0.42, d = 0.32, folds = [[0.07, 0], [0.05, 0.12], [0.035, -0.08]]
+    let y = 0
+    for (const [h, a] of folds) {
+      const p = box(-w / 2, 0, -d / 2, w / 2, h, d / 2, "sheet", 0.018)
+      p.position.set(0, y + h / 2, 0); p.rotation.y = a
+      const f = box(-w / 2, 0, -d / 2 + 0.01, w / 2 - 0.012, 0.004, d / 2 - 0.01, "sheet", 0.002) // the top fold
+      f.position.set(0, y + h - 0.002, 0); f.rotation.y = a
+      y += h
+    }
+  },
+  duvet() { // 200 x 220 cm, folded in six: three soft layers
+    let y = 0
+    for (let i = 0; i < 3; i++) {
+      const h = 0.07, p = box(-0.5, 0, -0.37, 0.5, h, 0.37, "duvet", 0.03)
+      p.position.set(0, y + h / 2, 0); p.rotation.y = (i - 1) * 0.02
+      y += h - 0.012
+    }
+  },
+  pillow() { // two 50 x 70 cm pillows, one resting on the other
+    const p1 = box(-0.35, 0, -0.25, 0.35, 0.14, 0.25, "linen", 0.068)
+    p1.position.set(0, 0.07, 0)
+    const p2 = box(-0.35, 0, -0.25, 0.35, 0.13, 0.25, "linen", 0.064)
+    p2.position.set(0.04, 0.19, 0.03); p2.rotation.set(0, 0.18, 0.04)
+  },
+  bedside() { bedsideTable(L3(S.bedside)) },
+  lamp() { tableLamp(L3(S.lamp)) },
+  walllamp() { wallLamp(0.3) },
+}
+if (ITEM) ITEMS[ITEM]()
+
 // ------------------------------------------------------------ seating: FRIDHULT-look sofa, LACK-look table, two chairs
-{
+if (!ITEM) {
   const [sx0, , sz0, sx1, sh, sz1] = L3(S.sofa)
   const arm = 0.09, legH = 0.06
   for (const lx of [sx0 + 0.06, sx1 - 0.06]) for (const lz of [sz0 + 0.06, sz1 - 0.06]) cyl(lx, legH / 2, lz, 0.018, legH, "pine", "y", 20, 0.022)
@@ -481,7 +566,7 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
 }
 
 // ------------------------------------------------------------ galley on the partition
-{
+if (!ITEM) {
   const gx = m(S.galley_x0), wt = 0.62, run = m(S.sink[1])
   const fr0 = m(S.fridge[0]), fr1 = m(S.fridge[1]), hb0 = m(S.hob[0]), hb1 = m(S.hob[1]), sk0 = m(S.sink[0])
   box(gx + 0.04, 0, 0, px0, 0.1, run, "black") // plinth, set back
@@ -552,7 +637,7 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
 }
 
 // ------------------------------------------------------------ bathroom: shower, WC, basin (look of the photos)
-{
+if (!ITEM) {
   // shower: low tray with a round drain, frameless glass screen, a bar and a round head on end wall B
   const [tx0, , tz0, tx1, ty1, tz1] = L3(S.tray)
   box(tx0, 0, tz0, tx1, ty1, tz1, "ceramic", 0.01)
@@ -606,20 +691,28 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
 }
 
 // ------------------------------------------------------------ camera: a front view, verticals straight
-const cx = L / 2
-const camera = new THREE.PerspectiveCamera(56, FW / FH, 0.1, 100)
-camera.position.set(cx, 3.3, W + 5.2)
-camera.lookAt(cx, 3.3, 0) // level; the view offset below frames the room without tilting
-camera.updateMatrixWorld(); camera.updateProjectionMatrix()
 const bb = new THREE.Box3()
 for (const o of meshes) bb.expandByObject(o)
+const mid = bb.getCenter(new THREE.Vector3())
+const cx = ITEM ? mid.x : L / 2
+const camera = new THREE.PerspectiveCamera(ITEM ? 30 : 56, FW / FH, 0.1, 100)
+if (ITEM) { // a piece on its own: three-quarter view from the front right, a little above
+  const r = bb.getBoundingSphere(new THREE.Sphere()).radius
+  camera.position.copy(mid).addScaledVector(new THREE.Vector3(0.75, 0.6, 1).normalize(), r * 4)
+  camera.lookAt(mid)
+} else {
+  camera.position.set(cx, 3.3, W + 5.2)
+  camera.lookAt(cx, 3.3, 0) // level; the view offset below frames the room without tilting
+}
+camera.updateMatrixWorld(); camera.updateProjectionMatrix()
 let px = [Infinity, Infinity, -Infinity, -Infinity]
 for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
   const p = new THREE.Vector3(xx, yy, zz).project(camera)
   const X = ((p.x + 1) / 2) * FW, Y = ((1 - p.y) / 2) * FH
   px = [Math.min(px[0], X), Math.min(px[1], Y), Math.max(px[2], X), Math.max(px[3], Y)]
 }
-let w = (px[2] - px[0]) * 1.04, h = (px[3] - px[1]) * 1.06
+const pad = ITEM ? 1.16 : 1
+let w = (px[2] - px[0]) * 1.04 * pad, h = (px[3] - px[1]) * 1.06 * pad
 if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
 camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
 
@@ -646,14 +739,22 @@ if (LINE) {
   scene.environmentIntensity = 0.45
   scene.add(new THREE.HemisphereLight(0xffffff, 0xd8cdbc, 0.55))
   const sun = new THREE.DirectionalLight(0xffefd6, 2.4)
-  sun.position.set(cx - 2.6, 5.5, W + 4.5); sun.target.position.set(cx, 0, W / 2)
+  if (ITEM) { sun.position.set(mid.x - 2, mid.y + 5, mid.z + 3.5); sun.target.position.copy(mid) }
+  else { sun.position.set(cx - 2.6, 5.5, W + 4.5); sun.target.position.set(cx, 0, W / 2) }
   sun.castShadow = true
   sun.shadow.mapSize.set(4096, 4096)
   Object.assign(sun.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5, near: 0.5, far: 20 })
   sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
   scene.add(sun, sun.target)
-  const strip = new THREE.PointLight(0xfff1d6, 0.6, 2.2) // LED under the overhead cabinet
-  strip.position.set(px0 - 0.3, 1.72, m(S.sink[1]) / 2); scene.add(strip)
+  if (ITEM) { // the piece stands on the white page: only its shadow shows
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: 0.16 }))
+    ground.rotation.x = -Math.PI / 2; ground.position.set(mid.x, bb.min.y, mid.z); ground.receiveShadow = true
+    scene.add(ground)
+  }
+  if (!ITEM) {
+    const strip = new THREE.PointLight(0xfff1d6, 0.6, 2.2) // LED under the overhead cabinet
+    strip.position.set(px0 - 0.3, 1.72, m(S.sink[1]) / 2); scene.add(strip)
+  }
   const composer = new EffectComposer(renderer)
   composer.setSize(FW, FH)
   composer.addPass(new RenderPass(scene, camera))
