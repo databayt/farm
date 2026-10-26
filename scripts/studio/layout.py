@@ -1,7 +1,9 @@
 """Layout B (D-020): zone schedule from the envelope and the survey-driven rules.
 
 Bed and storage wall at end A, a seating room in the middle (sofa on the back wall, a table
-and two chairs), a galley along the bathroom partition, the bathroom at end B.
+and two chairs), a galley along the bathroom partition. At end B the shower, the WC and the
+basin stand in one row against the end wall: shower and WC behind a sliding door, the basin
+outside it in a small wash lobby under the W1 window.
 
 Frame: x from the lined face of end A (bed) to end B (bath); y from the lined back wall to
 the front glass wall; z from the finished floor. All mm.
@@ -34,10 +36,12 @@ class Layout:
     part_x0: float  # partition living face
     part_t: float
     bath_x0: float
+    bath_y1: float  # cross wall between the bathroom (shower + WC) and the wash lobby
+    cross_t: float
     tray: tuple[float, float, float, float]  # x0, x1, y0, y1
-    wc_cx: float
-    basin: tuple[float, float, float, float]
-    bdoor: tuple[float, float]  # y range of the bathroom door opening
+    wc_cy: float  # WC centreline along the end wall
+    basin: tuple[float, float, float, float]  # in the wash lobby, outside the bathroom door
+    bdoor: tuple[float, float]  # x range of the sliding door opening in the cross wall
     w1_sill: float
     w1_head: float
 
@@ -52,7 +56,9 @@ AISLE_MIN = 800  # worktop edge to the sofa
 TRAYS = (1400, 1200, 1100, 1000)
 PART_T = 70
 LEDGE_MIN = 100
-BDOOR = (1500.0, 2230.0)
+WC_SIDE = 400  # WC centreline to any side obstruction
+WC_D = 550  # short-projection close-coupled WC: the bathroom is only about 1.3 m deep
+BDOOR_W = 600  # clear opening of the sliding bathroom door
 
 
 def build(o1_shift: float = 0.0) -> Layout:
@@ -75,8 +81,6 @@ def build(o1_shift: float = 0.0) -> Layout:
     for w in GALLEY:
         zones.append((y, y + w))
         y += w
-    if y > BDOOR[0] - 30:
-        raise LayoutError(f"galley ends at {y:.0f}, into the bathroom door at {BDOOR[0]:.0f}")
     galley_x0 = part_x0 - GALLEY_D
     # the seating group is centred between the bed and the galley aisle
     mid = (BED_X1 + part_x0 - WORKTOP_D - AISLE_MIN) / 2
@@ -91,11 +95,18 @@ def build(o1_shift: float = 0.0) -> Layout:
     if tray_len is None:
         raise LayoutError(f"bathroom {room:.0f} mm long: no tray fits")
     tray = (L - tray_len, L, 0.0, 900.0)
-    basin = (L - 300, L, 1000.0, 1400.0)
-    wc_cx = min((o2[0] + o2[1]) / 2, basin[0] - 400 - 8)
-    wc_cx = max(wc_cx, bath_x0 + 400)
+    # one row against end wall B: shower, WC, then (past the cross wall) the basin
+    wc_cy = tray[3] + WC_SIDE
+    bath_y1 = wc_cy + WC_SIDE
+    basin = (L - 300, L, bath_y1 + PART_T + 50, bath_y1 + PART_T + 450)
+    if basin[3] > W - 20:
+        raise LayoutError(f"basin ends at {basin[3]:.0f}, past the front wall at {W:.0f}")
+    if y > bath_y1 - 30:
+        raise LayoutError(f"galley ends at {y:.0f}, past the bathroom wall at {bath_y1:.0f}")
+    bdoor = (bath_x0 + 10, bath_x0 + 10 + BDOOR_W)
     return Layout(
         L=L, W=W, H=H, o1=o1, o1_head=P.O1_HEAD.value, o2=o2, bed_x1=BED_X1, sofa=sofa, galley_x0=galley_x0,
-        fridge=zones[0], hob=zones[1], sink=zones[2], part_x0=part_x0, part_t=PART_T, bath_x0=bath_x0, tray=tray,
-        wc_cx=wc_cx, basin=basin, bdoor=BDOOR, w1_sill=1150.0, w1_head=2040.0,
+        fridge=zones[0], hob=zones[1], sink=zones[2], part_x0=part_x0, part_t=PART_T, bath_x0=bath_x0,
+        bath_y1=bath_y1, cross_t=PART_T, tray=tray, wc_cy=wc_cy, basin=basin, bdoor=bdoor, w1_sill=1150.0,
+        w1_head=2040.0,
     )

@@ -148,7 +148,8 @@ def a103_plan(m) -> Sheet:
     s.dim(X(lo.o1[0]), Y(lo.W) + 3, X(lo.o1[1]), Y(lo.W) + 3, f"slider {lo.o1[1] - lo.o1[0]:.0f}", -4)
     s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:.0f}", -4)
     # door swings
-    s.arc(X(lo.part_x0), Y(lo.bdoor[0]), 700 / sc, 90, 180)
+    s.line(X(lo.bdoor[0]), Y(lo.bath_y1 + lo.part_t) + 1, X(lo.bdoor[1] + (lo.bdoor[1] - lo.bdoor[0])),
+           Y(lo.bath_y1 + lo.part_t) + 1, "#111", 0.25, "1,0.8")  # sliding door and where it parks
     for y0, y1, lab in (lo.fridge + ("fridge",), lo.hob + ("hob",), lo.sink + ("sink",)):
         s.dim(X(lo.galley_x0) - 4, Y(y0), X(lo.galley_x0) - 4, Y(y1), f"{y1 - y0:.0f} {lab}", 3)
     for (lx, ly, t) in ((800, 1100, "BED 1,600 x 2,000"), ((lo.galley_x0 + lo.part_x0) / 2, 1650, "GALLEY 900"),
@@ -200,18 +201,19 @@ def plan_bw(m) -> str:
     hx = lo.part_x0 - 310
     for hy in (lo.hob[0] + 110, lo.hob[1] - 110):
         s.circle(X(hx), Y(hy), 90 / sc, "none", ink, sw)
-    # partition with the door opening, door leaf and swing
-    box(lo.part_x0, 0, lo.bath_x0, lo.bdoor[0], ink, 0.1)
-    box(lo.part_x0, lo.bdoor[1], lo.bath_x0, lo.W, ink, 0.1)
-    s.line(X(lo.part_x0), Y(lo.bdoor[0]), X(lo.part_x0 - 700), Y(lo.bdoor[0]), ink, sw)
-    s.arc(X(lo.part_x0), Y(lo.bdoor[0]), 700 / sc, 90, 180, ink, 0.18, "0.8,0.6")
+    # partition to the cross wall; the cross wall with its sliding-door opening; the door leaf
+    cy0, cy1 = lo.bath_y1, lo.bath_y1 + lo.cross_t
+    box(lo.part_x0, 0, lo.bath_x0, cy1, ink, 0.1)
+    box(lo.bath_x0, cy0, lo.bdoor[0], cy1, ink, 0.1)
+    box(lo.bdoor[1], cy0, lo.L, cy1, ink, 0.1)
+    box(lo.bdoor[0], cy1 + 10, lo.bdoor[1] + 20, cy1 + 45, "#fff", 0.18)
     # bathroom: shower tray with its drain, WC, basin
     tx0, tx1, ty0, ty1 = lo.tray
     box(tx0, ty0, tx1, ty1)
     s.circle(X((tx0 + tx1) / 2), Y((ty0 + ty1) / 2), 45 / sc, "none", ink, sw)
     wc = by_id["K2-WC"]
-    box(wc.x0, wc.y1 - 180, wc.x1, wc.y1)
-    s.circle(X((wc.x0 + wc.x1) / 2), Y(wc.y1 - 400), 190 / sc, "#fff", ink, sw)
+    box(wc.x1 - 180, wc.y0, wc.x1, wc.y1)
+    s.circle(X(wc.x1 - 400), Y((wc.y0 + wc.y1) / 2), 190 / sc, "#fff", ink, sw)
     bs = by_id["K2-BASIN"]
     box(bs.x0, bs.y0, bs.x1, bs.y1)
     for x0, x1, lab in ((0, lo.bed_x1, "BED"), (*lo.sofa, "SEATING"),
@@ -381,7 +383,7 @@ def e101_layout(m) -> Sheet:
     s.table(250, 150, [("Pt", 10), ("Cct", 10), ("Description", 88), ("z", 12)], rows[:24], 1.6, 3.0)
     s.note(40, 150, [
         "Mounting heights z above the finished floor (mm). Sockets in the bathroom: none.",
-        "Bathroom light IP65; extract fan in the W1 panel; switches outside the bathroom.",
+        "Bathroom light IP65; extract fan through the back wall; switches outside the bathroom.",
         "Cables run in 20 mm conduit inside the batten cavity, in vertical drops and in",
         "horizontal zones at 300 and 1,100; grommets at every steel penetration.",
         "Outdoor points (deck, roof, stair) IP65/66 on the bonded steelwork.",

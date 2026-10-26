@@ -5,6 +5,6 @@
  "bed": "1,600 × 2,000 mm",
  "galley": "1,450 mm",
  "shower": "1,200 × 900 mm",
- "checks": 14,
- "passed": 14
+ "checks": 16,
+ "passed": 16
 }

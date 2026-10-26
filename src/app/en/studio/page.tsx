@@ -25,7 +25,7 @@ const rwf = (n: number) => `RWF ${(n / 1e6).toFixed(1)}M`
 const FEATURES = [
   { title: "Sleep", text: "Queen bed up to 1.6 × 2.0 m across the quiet end, with open shelves either side of the headboard, reading lights and USB-C." },
   { title: "Cook", text: "A galley on the bathroom wall: under-counter fridge, two-zone induction hob, sink, drinking-water filter. No gas indoors." },
-  { title: "Wash", text: "A 1.2 m walk-in shower, WC and basin. Hot water from an 80 L heater through a thermostatic mixer." },
+  { title: "Wash", text: "Shower, WC and basin in one row: the shower and WC behind a sliding door, the basin outside it." },
   { title: "Sit", text: "A seating room: a two-seat sofa, a table and two chairs, by the 3 m sliding glass wall onto the deck." },
   { title: "Roof", text: "An open roof terrace with lounge chairs behind a timber-topped rail, up a steel stair; a canopy shades the deck." },
   { title: "Stay cool", text: "The roof deck shades the steel, EPS insulation is sealed to it, a wall fan moves the air, and the AC is ready." },
@@ -243,7 +243,7 @@ export default function StudioPage() {
               few sizes that matter (render/plan.json), both written by the generator. */}
           <div className="mt-6 grid min-h-0 flex-1 items-center gap-10 lg:grid-cols-[2fr_1fr]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${D}/render/plan.svg`} alt="Plan: the bed at one end, a sofa with a table and two chairs, the galley on the bathroom wall, and the bathroom with shower, WC and basin at the other end."
+            <img src={`${D}/render/plan.svg`} alt="Plan: the bed at one end, a sofa with a table and two chairs, the galley on the bathroom wall, and and at the other end the shower and WC behind a sliding door, with the basin outside it."
               className="w-full object-contain lg:max-h-full dark:invert" />
             <div className="text-sm">
             <dl className="divide-y">

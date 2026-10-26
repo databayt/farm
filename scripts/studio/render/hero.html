@@ -211,7 +211,8 @@ function cutaway() {
     const n = o.userData.pname
     o.visible = !(
       /^K0-(ROOF|FRONT|SLIDER)/.test(o.name) || /^K1-(BAT|EPS)/.test(o.name) || /^(Ceiling|Front)/.test(n) ||
-      /^K2-CB-FRONT|^K2-STUD|^K(7|8|10|11)-/.test(o.name) || o.name === "K9-HEATER-BOX" || o.name === "K6-SOFA"
+      /^K2-CB-(FRONT|CROSS)|^K2-STUD|^K2-DOOR|^K(7|8|10|11)-/.test(o.name) || o.name === "K9-HEATER-BOX" ||
+      o.name === "K6-SOFA" || /^(Cross wall|Door jamb|Door head)/.test(n)
     )
     style(o, "in")
     if (o.visible) outline(o, scene)

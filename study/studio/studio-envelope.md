@@ -26,8 +26,8 @@ The 28 mm container floor is insecticide-treated [V STU-02, STU-07]. Seal it wit
 
 ## Openings and ventilation
 
-- **W1, the old narrow door:** the leaf comes off; 2 mm steel with 40 mm EPS is welded into the frame up to 1,150 mm, and an obscure louvre window with insect mesh goes above. The bathroom's 100 mm extract fan exits through the infill, so no new hole is cut in a bracing wall.
-- **No new windows in the back or end walls.** Those walls now brace the box; any new hole there is at most 152 mm, one per 2.44 m [V STU-03]. The only one planned is a 75 mm sleeve for a future split AC.
+- **W1, the old narrow door:** the leaf comes off; 2 mm steel with 40 mm EPS is welded into the frame up to 1,150 mm, and an obscure louvre window with insect mesh goes above. W1 now lights the wash lobby. The bathroom's 100 mm extract fan leaves through one 110 mm hole in the back wall, inside the rule below (at most 152 mm, one per 2.44 m) and about 4 m from the AC sleeve.
+- **No new windows in the back or end walls.** Those walls now brace the box; any new hole there is at most 152 mm, one per 2.44 m [V STU-03]. The only ones planned are a 75 mm sleeve for a future split AC and a 110 mm hole for the bathroom fan.
 - **Ventilation targets:** whole unit 13 L/s, bathroom extract 15 L/s, trickle vents 10,000 mm2 [V STU-08, UK guidance]. The louvred vent strip, the W1 louvre and the slider give cross-ventilation; a wall fan moves air at the bed.
 - **Insect mesh** on the slider, W1 and every vent.
 - **Security:** a keyed lock and a secondary bolt on the slider, the only door.

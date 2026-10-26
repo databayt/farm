@@ -89,7 +89,7 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], Kit]:
         Point("L1", "light", 800, W / 2, H, "Ceiling light, bed", "C1", 12),
         Point("L2", "light", 2300, W / 2, H, "Ceiling light, living", "C1", 12),
         Point("L3", "light", lo.galley_x0 - 200, W / 2, H, "Ceiling light, galley", "C1", 12),
-        Point("L4", "light", (lo.bath_x0 + lo.L) / 2, W / 2, H, "Bathroom light IP65", "C1", 12),
+        Point("L4", "light", (lo.bath_x0 + lo.L) / 2, lo.bath_y1 / 2, H, "Bathroom light IP65", "C1", 12),
         Point("L5", "light", 300, 140, 1050, "Reading light 1", "C1", 4),
         Point("L6", "light", lo.bed_x1 - 300, 140, 1050, "Reading light 2", "C1", 4),
         Point("L7", "light", lo.part_x0 - 300, (lo.fridge[0] + lo.sink[1]) / 2, 1790, "Under-cabinet LED strip", "C1",
@@ -99,7 +99,7 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], Kit]:
         Point("L10", "light", -900, W + 900, 1500, "Stair light IP65", "C1", 8),
         Point("S1", "switch", lo.o1[1] - 150, W - 40, 1100, "Entry: living + kitchen + deck", "C1"),
         Point("S2", "switch", lo.bed_x1 - 60, 160, 900, "Bed: ceiling light (2-way)", "C1"),
-        Point("S3", "switch", lo.part_x0, lo.bdoor[1] + 120, 1100, "Bathroom light + fan (outside)", "C1"),
+        Point("S3", "switch", lo.bdoor[1] + 120, lo.bath_y1 + lo.cross_t, 1100, "Bathroom light + fan (outside)", "C1"),
         Point("S4", "switch", -400, W + 600, 1100, "Roof and stair lights (IP65, stair foot)", "C1"),
         Point("P1", "usb", 260, 132, 600, "Bedside socket + USB-C 1", "C2", 200),
         Point("P2", "usb", lo.bed_x1 - 260, 132, 600, "Bedside socket + USB-C 2", "C2", 200),
@@ -114,7 +114,7 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], Kit]:
               P.HOB_KW.value * 1000),
         Point("P10", "outlet", lo.part_x0, lo.sink[1] - 60, 1700, "Heater DP switch + timer", "C5",
               P.HEATER_KW.value * 1000),
-        Point("F1", "fan", lo.o2[1] - 60, W, 1950, "Bathroom extract 100 mm (in W1 panel)", "C6", 20),
+        Point("F1", "fan", lo.L - 900, 0, 2100, "Bathroom extract 100 mm (one 110 mm hole in the back wall)", "C6", 20),
         Point("F2", "fan", 1800, 0, 2100, "Wall fan", "C6", 50),
         Point("P11", "outlet", 900, 0, 2150, "AC provision: isolator", "C7", 1000),
     ]
@@ -210,7 +210,7 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], Kit, dict[str, float]]:
     vz = -260.0  # pipe zone in the void under the floor (cross-members are 122 deep)
     tx0, tx1, ty0, ty1 = lo.tray
     shower = ((tx0 + tx1) / 2, 450.0)
-    wc = (lo.wc_cx, W - 180)
+    wc = (lo.L - 180, lo.wc_cy)
     basin = ((lo.basin[0] + lo.basin[1]) / 2, (lo.basin[2] + lo.basin[3]) / 2)
     sink = (lo.part_x0 - 300, (lo.sink[0] + lo.sink[1]) / 2)
     heater = (lo.part_x0 - 250, 500.0)  # lying in the overhead cabinet over the galley
@@ -222,9 +222,9 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], Kit, dict[str, float]]:
         PipeRun("D2", "waste", 50, [(shower[0], shower[1], -30), (shower[0], shower[1], vz + 40),
                                      (lo.L - 160, shower[1], vz + 15), (lo.L - 160, ic[1], vz - 5),
                                      (lo.L - 100, ic[1], vz - 10)], "Shower (90 mm tray waste) joins the soil run"),
-        PipeRun("D3", "waste", 40, [(basin[0], basin[1], -30), (basin[0], basin[1], vz + 30),
-                                     (lo.L - 220, basin[1], vz + 20), (lo.L - 220, ic[1], vz + 10),
-                                     (lo.L - 100, ic[1], vz)], "Basin joins the soil run"),
+        PipeRun("D3", "waste", 40, [(basin[0], basin[1], -30), (basin[0], basin[1], vz + 45),
+                                     (lo.L - 220, basin[1], vz + 40), (lo.L - 220, ic[1], vz + 8),
+                                     (lo.L - 100, ic[1], vz)], "Basin (wash lobby) joins the soil run"),
         PipeRun("D4", "waste", 50, [(sink[0], sink[1], -30), (sink[0], sink[1], vz + 60),
                                      (lo.L + 900, sink[1], vz - 30)], "Kitchen sink to the grease trap (separate soak pit)"),
         PipeRun("V1", "vent", 75, [(lo.L - 100, ic[1], vz - 35), (lo.L + 120, ic[1], vz - 35), (lo.L + 120, 0, 2700),
@@ -233,8 +233,8 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], Kit, dict[str, float]]:
                                     (heater[0], 150, 300)], "Cold main in: stop valve, filter, check meter"),
         PipeRun("W2", "cold", 20, [(heater[0], 150, 300), (heater[0], 150, 1850)], "Cold feed to the heater"),
         PipeRun("W3", "cold", 20, [(heater[0], 150, 300), (sink[0], 150, 300), (sink[0], sink[1], 650)], "Cold to sink"),
-        PipeRun("W4", "cold", 20, [(lo.L - 60, 150, vz), (lo.L - 60, 150, 300), (lo.L - 60, wc[1] - 250, 300),
-                                    (wc[0], W - 40, 200)], "Cold to WC cistern"),
+        PipeRun("W4", "cold", 20, [(lo.L - 60, 150, vz), (lo.L - 60, 150, 300), (lo.L - 60, wc[1] + 120, 300)],
+                "Cold to WC cistern"),
         PipeRun("W5", "cold", 20, [(lo.L - 60, 150, 300), (lo.L - 60, basin[1], 650)], "Cold to basin"),
         PipeRun("H1", "hot", 20, [(heater[0], 250, 1850), (heater[0], 250, 400), (lo.bath_x0 + 40, 250, 400)],
                 "Hot (60 C) from the heater to the mixing valve"),
