@@ -1,5 +1,6 @@
 point,kind,circuit,description,x_mm,y_mm,z_mm,watts
 DB,db,,Unit board on the back wall by the galley,3678,0,1625,0
+PI,inlet,,"Power inlet 63 A IP67 (IEC 60309 blue, 2P+E), outside behind the board",3678,-80,1225,0
 L1,light,C1,"Ceiling light, bed",800,1126,2323,12
 L2,light,C1,"Ceiling light, living",2300,1126,2323,12
 L3,light,C1,"Ceiling light, galley",3778,1126,2323,12

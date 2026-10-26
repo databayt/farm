@@ -54,7 +54,6 @@ O2_X1 = Param(5510, "mm", "E", "AS-14")
 
 # ----------------------------------------------------------------------------- services
 SUPPLY_V = Param(230, "V", "V", "STU-18")
-FEEDER_LENGTH = Param(30, "m", "A", "")  # site board to each unit; set from the site plan
 HEATER_L = Param(80, "L", "E", "AS-18")
 HEATER_KW = Param(2.0, "kW", "A", "")
 HOB_KW = Param(3.5, "kW", "A", "")

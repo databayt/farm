@@ -63,6 +63,7 @@ K6,furnishing,furnishing,Blackout curtain + track for the 3 m slider,1,set,60000
 K6,glazing,glazier,"Insect screens: slider (sliding), W1, vents",1,set,90000,A,AS-21,90000,
 K7,finishes,painting,Joinery finish: medium-oak stain + clear matte PU varnish over pine (all furniture),6,L,14000,A,AS-21,84000,"medium-oak stain + clear matte PU varnish for pine, per L"
 K8,electrical,electrical,Unit board on the back wall by the galley,1,each,45000,A,AS-21,45000,"enclosure, 12 ways"
+K8,electrical,electrical,"Power inlet 63 A IP67 (IEC 60309 blue, 2P+E), outside behind the board",1,each,45000,A,AS-21,45000,"surface, IP67"
 K8,electrical,electrical,"Ceiling light, bed",1,each,15000,A,AS-21,15000,
 K8,electrical,electrical,"Ceiling light, living",1,each,15000,A,AS-21,15000,
 K8,electrical,electrical,"Ceiling light, galley",1,each,15000,A,AS-21,15000,
@@ -96,6 +97,8 @@ K8,electrical,electrical,"Cable 4.0 mm2 T+E/singles in conduit, Induction hob",8
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, 80 L water heater",7,m,750,A,AS-21,5250,per m
 K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Extract fan and wall fan",9,m,500,A,AS-21,4500,per m
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, AC provision",7,m,750,A,AS-21,5250,per m
+K8,electrical,electrical,"Cable 10 mm2 tails, inlet to main switch, through a gland in the back wall",2,m,2500,A,AS-21,5000,per m
+K8,electrical,electrical,"Matching 63 A plug (IEC 60309 blue), for whatever supply cable",1,each,25000,A,AS-21,25000,IP67
 K8,electrical,electrical,PVC conduit 20 mm + boxes,60,m,600,A,AS-21,36000,per m
 K8,electrical,electrical,Surge protection device type 2,1,each,60000,A,AS-21,60000,
 K8,electrical,electrical,RCD 40 A 30 mA type A (or RCBOs),1,each,45000,A,AS-21,45000,

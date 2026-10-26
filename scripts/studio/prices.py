@@ -47,6 +47,8 @@ PRICES: dict[str, tuple[float, str, str, str]] = {
     "usbsocket": (15_000, "A", "AS-21", ""), "fcu": (9_000, "A", "AS-21", ""), "fan": (35_000, "A", "AS-21", ""),
     "db": (45_000, "A", "AS-21", "enclosure, 12 ways"), "cable1.5": (500, "A", "AS-21", "per m"),
     "cable2.5": (750, "A", "AS-21", "per m"), "cable4.0": (1_200, "A", "AS-21", "per m"),
+    "cable10.0": (2_500, "A", "AS-21", "per m"), "inlet": (45_000, "A", "AS-21", "surface, IP67"),
+    "plug": (25_000, "A", "AS-21", "IP67"),
     "conduit": (600, "A", "AS-21", "per m"), "spd": (60_000, "A", "AS-21", ""), "rcd": (45_000, "A", "AS-21", ""),
     "mcb": (6_000, "A", "AS-21", ""), "mainsw": (40_000, "A", "AS-21", ""), "earthrod": (35_000, "A", "AS-21", ""),
     "alarm": (20_000, "A", "AS-21", ""), "extinguisher": (55_000, "A", "AS-21", ""), "bonding": (25_000, "A", "AS-21", ""),

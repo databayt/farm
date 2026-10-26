@@ -41,7 +41,7 @@ def a001_cover(m, index: list[tuple[str, str]]) -> Sheet:
         f"MALM-style bed up to 1,600 x 2,000 with two storage boxes, bedside table and lamp · sofa, low table, two chairs",
         f"Galley {lo.sink[1]:.0f} mm on the bathroom wall: fridge, induction, sink; 80 L heater overhead",
         f"Bathroom {lo.L - lo.bath_x0:.0f} x {lo.W:.0f} mm · shower tray {lo.tray[1] - lo.tray[0]:.0f} x 900",
-        f"Max demand about {m['md']['total_A']:.0f} A per unit (heater/hob priority relay) · feeder {m['feeder']['size_mm2']:.0f} mm2",
+        f"Max demand about {m['md']['total_A']:.0f} A per unit (heater/hob priority relay) · {m['inlet']['rating_A']:.0f} A inlet",
         f"Shared septic {m['site']['septic_m3']:.1f} m3, 2 chambers 2:1 · storage tank {m['site']['tank_m3']:.1f} m3",
         "Roof terrace on the corner castings, open guardrail · tinted polycarbonate canopy over the front deck",
         "",
@@ -401,7 +401,7 @@ def e101_layout(m) -> Sheet:
         x, y = ox + max(-1500, p.x) / sc, oy + min(p.y, lo.W + 800) / sc
         if p.kind == "light":
             sym_lamp(s, x, y)
-        elif p.kind in ("socket", "usb", "outlet"):
+        elif p.kind in ("socket", "usb", "outlet", "inlet"):
             sym_socket(s, x, y)
         elif p.kind == "switch":
             sym_switch(s, x, y)
@@ -424,57 +424,43 @@ def e101_layout(m) -> Sheet:
 
 
 def e201_sld(m) -> Sheet:
-    s = Sheet("E-201", "Single-line diagram: site and unit board", "NTS")
-    fd = m["feeder"]
-    # site
-    s.text(30, 30, "SITE", 3, weight="bold")
-    sym_box(s, 60, 45, "REG meter", 18, 6)
-    s.line(60, 48, 60, 56)
-    sym_box(s, 60, 60, "Site board", 20, 6)
-    s.text(72, 61, "main switch, SPD type 1+2, earth bar", 2.0)
-    for i, ph in enumerate(("L1", "L2", "L3")):
-        x = 40 + i * 30
-        s.line(60, 63, x, 72)
-        sym_breaker(s, x, 72, f"40 A ({ph})")
-        s.line(x, 83, x, 95)
-        s.text(x + 1.5, 92, f"{fd['size_mm2']:.0f} mm2 SWA", 1.8)
-        sym_box(s, x, 99, f"Studio {i + 1}", 16, 6)
-    s.line(110, 63, 130, 72)
-    sym_breaker(s, 130, 72, "Pumps")
-    s.note(30, 112, [
-        "3-phase supply preferred, one studio per phase; otherwise single phase sized by REG.",
-        f"Feeder {fd['size_mm2']:.0f} mm2 Cu SWA, {fd['length_m']:.0f} m [A], drop {fd['drop_pct']:.1f} % at max demand.",
-        "TT earthing: one earth rod per container; no PME to a steel structure unless certified (STU-37).",
-    ], 2.3)
-    # unit board
-    ox = 210
-    s.text(ox, 30, "UNIT BOARD (identical in all three studios)", 3, weight="bold")
-    s.line(ox + 10, 40, ox + 10, 46)
-    s.text(ox + 12, 43, "from the site board", 2)
-    sym_breaker(s, ox + 10, 46, "Main switch 40 A DP")
-    s.line(ox + 10, 57, ox + 10, 60)
-    sym_breaker(s, ox + 10, 60, "RCD 40 A 30 mA type A", rcd=True)
-    s.line(ox + 10, 71, ox + 10, 75)
-    s.line(ox + 10, 75, ox + 10 + 8 * 20, 75)
-    s.rect(ox + 50, 42, 14, 8, "#fff")
-    s.text(ox + 57, 47, "SPD T2", 2, "middle")
-    s.line(ox + 50, 46, ox + 10, 46 + 4)
+    s = Sheet("E-201", "Single-line diagram: inlet and unit board", "NTS")
+    sup, x0, dx = m["inlet"], 60, 42
+    s.text(30, 32, "ONE STUDIO, FROM ITS INLET TO EVERY CIRCUIT", 4, weight="bold")
+    # supply side: anything at 230 V plugs into the inlet
+    s.line(x0, 42, x0, 56)
+    s.text(x0 + 3, 47, "any 230 V supply: grid, site board, generator or inverter", 2.6)
+    sym_box(s, x0, 60, f"Inlet {sup['rating_A']:.0f} A IP67", 34, 8)
+    s.text(x0 + 20, 61, "IEC 60309 blue, 2P+E, outside the back wall", 2.4)
+    s.line(x0, 64, x0, 76)
+    s.text(x0 + 3, 71, f"{sup['tails_mm2']:.0f} mm2 tails through a gland", 2.4)
+    sym_breaker(s, x0, 76, "Main switch 40 A DP + kWh meter")
+    s.line(x0, 87, x0, 98)
+    s.line(x0, 92, x0 + 110, 92)
+    sym_box(s, x0 + 118, 92, "SPD type 2", 16, 6)
+    s.line(x0 + 126, 92, x0 + 134, 92)
+    sym_earth(s, x0 + 134, 92)
+    sym_breaker(s, x0, 98, "RCD 40 A 30 mA type A", rcd=True)
+    s.line(x0, 109, x0, 118)
+    # the board: one breaker per circuit off the RCD
+    n = len(m["circuits"])
+    s.line(x0, 118, x0 + (n - 1) * dx, 118)
     for i, c in enumerate(m["circuits"]):
-        x = ox + 10 + i * 20
-        s.line(x, 75, x, 80)
-        sym_breaker(s, x, 80, c.breaker)
-        s.line(x, 91, x, 100)
-        s.text(x, 105, c.id, 2.4, "middle", "bold")
-        s.text(x, 109, f"{c.cable:g} mm2", 1.8, "middle")
+        x = x0 + i * dx
+        s.line(x, 118, x, 124)
+        sym_breaker(s, x, 124, c.breaker)
+        s.line(x, 135, x, 142)
+        s.text(x, 148, c.id, 3.2, "middle", "bold")
+        s.text(x, 153, f"{c.cable:g} mm2", 2.4, "middle")
         for j, word in enumerate(c.name.split(":")[0].split(" ")[:4]):
-            s.text(x, 113 + j * 2.6, word, 1.6, "middle")
-    s.note(ox, 140, [
+            s.text(x, 158 + j * 3.2, word, 2.2, "middle")
+    s.note(30, 186, [
+        f"The studio plugs in: whatever feeds the inlet protects its cable at 40 A or less and carries {m['md']['total_A']:.0f} A.",
         "C4 hob and C5 heater share a priority relay: the heater pauses while the hob runs.",
-        f"Diversified maximum demand about {m['md']['total_A']:.0f} A per unit (AS-19).",
-        "RCD type A on all circuits (or one RCBO per circuit). SPD type 2 at each unit.",
-        "Ratings are design intent: a RURA class A electrician designs and certifies (STU-15).",
-        "Wiring standard RS 565-1:2011 (STU-14); confirm every rating against it.",
-    ], 2.3)
+        f"Diversified maximum demand about {m['md']['total_A']:.0f} A (AS-19). RCD type A on all circuits (or RCBOs).",
+        "TT earthing: the studio's own earth rod at the board; never rely on the supply's earth (STU-37).",
+        "Ratings are design intent: a RURA class A electrician designs and certifies (STU-15), to RS 565-1:2011 (STU-14).",
+    ], 2.8)
     return s
 
 

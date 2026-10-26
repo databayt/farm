@@ -22,7 +22,7 @@ AMBIENT_FACTOR = 0.94  # 35 C ambient inside a warm steel box [A]
 @dataclass
 class Point:
     id: str
-    kind: str  # light | switch | socket | usb | outlet | fan | db
+    kind: str  # light | switch | socket | usb | outlet | fan | db | inlet
     x: float
     y: float
     z: float
@@ -139,17 +139,26 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], Kit]:
         if c.id in ("C2", "C3", "C7"):
             c.design_w = max(c.design_w, c.In * P.SUPPLY_V.value * (0.5 if c.id == "C2" else 0.75))
     circuits.append(Circuit("C8", "Spare", "B16", 2.5))
+    # the studio plugs in: a weatherproof inlet outside the back wall, straight behind the board
+    sup = inlet(max_demand(circuits)["total_A"])
+    pin = Point("PI", "inlet", db.x, -80, db.z - 400,
+                f"Power inlet {sup['rating_A']:.0f} A IP67 (IEC 60309 blue, 2P+E), outside behind the board")
+    pts.insert(1, pin)
     k = Kit("K8", "Electrical", "electrical", "site")
     for p in pts:
         k.buy(Bought(f"K8-{p.id}", p.label, "K8", "electrical", "electrical", 1, "each",
                      {"light": "luminaire", "switch": "switch", "socket": "socket", "usb": "usbsocket",
-                      "outlet": "fcu", "fan": "fan", "db": "db"}[p.kind],
+                      "outlet": "fcu", "fan": "fan", "db": "db", "inlet": "inlet"}[p.kind],
                      Box(p.x - 40, p.y - 20, p.z - 40, p.x + 40, p.y + 20, p.z + 40), step="S19",
                      layer="electrical", color="electric"))
     for c in circuits[:-1]:
         k.buy(Bought(f"K8-CBL-{c.id}", f"Cable {c.cable} mm2 T+E/singles in conduit, {c.name}", "K8", "electrical",
                      "electrical", round(c.length_m * (len(c.loads) or 1) * 0.6 + 5, 0), "m", f"cable{c.cable}",
                      step="S05"))
+    k.buy(Bought("K8-TAILS", f"Cable {sup['tails_mm2']:g} mm2 tails, inlet to main switch, through a gland in the back "
+                 "wall", "K8", "electrical", "electrical", 2, "m", f"cable{sup['tails_mm2']}", step="S05"))
+    k.buy(Bought("K8-PLUG", f"Matching {sup['rating_A']:.0f} A plug (IEC 60309 blue), for whatever supply cable",
+                 "K8", "electrical", "electrical", 1, "each", "plug", step="S19"))
     k.buy(Bought("K8-CONDUIT", "PVC conduit 20 mm + boxes", "K8", "electrical", "electrical", 60, "m", "conduit",
                  step="S05"))
     k.buy(Bought("K8-SPD", "Surge protection device type 2", "K8", "electrical", "electrical", 1, "each", "spd",
@@ -192,16 +201,12 @@ def max_demand(circuits: list[Circuit]) -> dict[str, float]:
             "total_A": total}
 
 
-def feeder(md_a: float) -> dict[str, float]:
-    """Smallest SWA feeder size from the site board that carries the unit and keeps drop under 2 %."""
-    L = P.FEEDER_LENGTH.value
-    for s in (6.0, 10.0, 16.0):
-        iz, mv = CABLE[s]
-        drop = mv * md_a * L / 1000 / P.SUPPLY_V.value * 100
-        if iz * 0.9 >= 40 and drop <= 2.5:
-            return {"size_mm2": s, "drop_pct": drop, "Iz": iz * 0.9, "length_m": L}
-    return {"size_mm2": 16.0, "drop_pct": CABLE[16.0][1] * md_a * L / 1000 / P.SUPPLY_V.value * 100,
-            "Iz": CABLE[16.0][0] * 0.9, "length_m": L}
+def inlet(md_a: float) -> dict[str, float]:
+    """The studio's one connection to any supply: the smallest IEC 60309 inlet above the maximum demand, and tails
+    to the 40 A main switch sized to carry it. Whatever feeds the inlet protects its cable at 40 A or less."""
+    rating = next(r for r in (16.0, 32.0, 63.0, 125.0) if r >= md_a)
+    tails = next(s for s in (6.0, 10.0, 16.0) if CABLE[s][0] * AMBIENT_FACTOR >= 40)
+    return {"rating_A": rating, "tails_mm2": tails}
 
 
 # ------------------------------------------------------------------------------- plumbing

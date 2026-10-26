@@ -9,6 +9,10 @@ Status: design intent. Every rating is an assumption [A, AS-19] until a RURA-lic
 - REG installs and owns the meters [V STU-16], and re-selling power may need a licence, so the per-unit meters are **check meters for monitoring only**; electricity is included in the room rate.
 - Ask REG whether the supply covers three studios plus the borehole and booster pumps (about 3 x 33 A diversified plus pumps) [E].
 
+## The studio's inlet
+
+Each studio is wired as a closed unit that plugs in. A 63 A IP67 inlet (IEC 60309 blue, 2P+E) sits outside the back wall, straight behind the unit board, with 10 mm2 tails through a gland to the main switch; a matching plug ships with it. 63 A is the smallest standard inlet above the 33 A diversified demand [E]. Any 230 V source can feed it — the site board above, a generator or a solar inverter — as long as it protects its own cable at 40 A or less. The studio keeps its own earth rod (TT), so it never relies on the supply's earth.
+
 ![E-201 Single-line diagram](../../public/designs/studio/drawings/e-201.svg)
 
 ## Unit board and circuits
@@ -19,7 +23,7 @@ Main switch 40 A double-pole, a type 2 surge protection device, and a 30 mA type
 
 [Table: Diversified maximum demand per studio](../../public/designs/studio/data/demand.csv)
 
-The generator checks every circuit for design current within the breaker within the derated cable capacity, and a voltage drop under 3% for lighting and 5% for the rest, including the 10 mm2 feeder from the site board (30 m assumed) [E]. Cable data are typical IEC values for PVC copper in conduit, derated for a warm steel box; confirm them against the cable actually bought (Legend Cables makes cable in Kigali [V STU-34]).
+The generator checks every circuit for design current within the breaker within the derated cable capacity, and a voltage drop under 3% for lighting and 5% for the rest [E]. The supply cable to the inlet is sized on site, once the source is chosen. Cable data are typical IEC values for PVC copper in conduit, derated for a warm steel box; confirm them against the cable actually bought (Legend Cables makes cable in Kigali [V STU-34]).
 
 ![E-202 Circuit schedule, earthing and bonding](../../public/designs/studio/drawings/e-202.svg)
 

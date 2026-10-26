@@ -159,7 +159,7 @@ def write_tables(m, out: Path, layouts) -> dict:
     wcsv(d / "points.csv", ["point", "kind", "circuit", "description", "x_mm", "y_mm", "z_mm", "watts"],
          [[p.id, p.kind, p.circuit, p.label, round(p.x), round(p.y), round(p.z), round(p.watts)] for p in m["points"]])
     wcsv(d / "demand.csv", ["item", "amps"], [[k, round(v, 1)] for k, v in m["md"].items()] +
-         [["feeder_mm2", m["feeder"]["size_mm2"]], ["feeder_drop_pct", round(m["feeder"]["drop_pct"], 2)]])
+         [["inlet_A", m["inlet"]["rating_A"]], ["tails_mm2", m["inlet"]["tails_mm2"]]])
     wcsv(d / "pipes.csv", ["run", "system", "dn", "length_m", "fall", "note"],
          [[r.id, r.system, r.dn, round(r.length / 1000, 1), f"1:{r.fall():.0f}" if r.system in ("soil", "waste") else "",
            r.note] for r in m["runs"]])

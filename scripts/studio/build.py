@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import params as P  # noqa: E402
 from kits import all_kits  # noqa: E402
 from layout import build as build_layout  # noqa: E402
-from services import electrical, feeder, max_demand, plumbing  # noqa: E402
+from services import electrical, inlet, max_demand, plumbing  # noqa: E402
 from validate import check  # noqa: E402
 
 
@@ -33,9 +33,9 @@ def model(o1_shift: float = 0.0):
     kits.insert(8, k8)
     kits.insert(9, k9)
     md = max_demand(circuits)
-    fd = feeder(md["total_A"])
+    sup = inlet(md["total_A"])
     return {"lo": lo, "kits": kits, "points": pts, "circuits": circuits, "runs": runs, "site": site, "md": md,
-            "feeder": fd}
+            "inlet": sup}
 
 
 def write_all(m: dict, out: Path, pdf: bool) -> list[str]:
