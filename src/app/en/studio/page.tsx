@@ -105,19 +105,14 @@ export default function StudioPage() {
           alt="A finished container studio at golden hour: a sliding glass wall open onto a timber deck with red railings, a kitchenette and bed inside, a steel stair to lounge chairs on the roof, and eucalyptus behind."
           className="absolute inset-0 size-full object-cover object-[50%_55%]" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
-          <div className="mx-auto w-full max-w-5xl px-4 pt-24 pb-10 md:px-6 md:pb-14">
-            <p className="text-sm text-white/80">Farm · container studios · rev A · Concept render, planned</p>
-            <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">
-              Three guest studios, built like flat-pack furniture
+          <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
+            <p className="text-sm text-white/80">Concept render</p>
+            <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">
+              Three studios, built flat-pack
             </h1>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild>
-                <a href="#plans">See the plans</a>
-              </Button>
-              <Button asChild variant="outline" className="border-white/60 bg-white/10 text-white hover:bg-white/20">
-                <a href="#model">Explore the 3D model</a>
-              </Button>
-            </div>
+            <Button asChild className="mt-6">
+              <a href="#plans">See the plans</a>
+            </Button>
           </div>
         </div>
       </section>
