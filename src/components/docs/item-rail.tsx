@@ -67,7 +67,7 @@ export function ItemRail({ items }: { items: RailItem[] }) {
           <button key={x.src} type="button" onClick={() => setActive(i)} aria-pressed={i === active}
             className={cx("bg-muted/60 flex aspect-[4/3] w-[80%] shrink-0 snap-start flex-col rounded-3xl p-6 text-start transition-shadow md:w-[calc((100%-2rem)/3)]",
               "focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none",
-              i === active ? "ring-foreground/25 ring-2" : "hover:ring-foreground/10 hover:ring-2")}>
+              i === active ? "ring-foreground ring-1" : "hover:ring-foreground/20 hover:ring-1")}>
             <span className="text-base font-medium tracking-tight">{x.title}</span>
             <span className="relative mt-2 min-h-0 flex-1">
               {/* eslint-disable-next-line @next/next/no-img-element */}

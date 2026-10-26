@@ -8,7 +8,7 @@ import { Figure } from "@/components/docs/figure"
 import { StudioViewer } from "@/components/docs/studio-viewer"
 import { FloorLayers } from "@/components/docs/floor-layers"
 import { ItemRail } from "@/components/docs/item-rail"
-import { BedPieces, bedStock } from "@/components/docs/bed-pieces"
+import { bedStock } from "@/lib/bed-stock"
 import model from "../../../../public/designs/studio/model/parts.json"
 import totals from "../../../../public/designs/studio/data/totals.json"
 import floorPieces from "../../../../public/designs/studio/render/floor-pieces.json"
@@ -315,11 +315,6 @@ export default function StudioPage() {
         <div className="mt-6">
           <ItemRail items={bedRail()} />
         </div>
-      </section>
-
-      {/* The bed itself, broken into its smallest pieces: stock, cutting, each piece, assembly. */}
-      <section id="bed" className="pt-6 pb-16">
-        <BedPieces />
       </section>
 
       {/* Floor, pinned while it builds up in fast motion, seen from above: the empty container, then flat
