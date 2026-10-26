@@ -11,6 +11,7 @@ import { ItemRail } from "@/components/docs/item-rail"
 import { BedPieces } from "@/components/docs/bed-pieces"
 import model from "../../../../public/designs/studio/model/parts.json"
 import totals from "../../../../public/designs/studio/data/totals.json"
+import floorPieces from "../../../../public/designs/studio/render/floor-pieces.json"
 
 // Public showcase of the container-studio design package (study/studio, D-014..D-016).
 // Every number here comes from the generated package; the docs hold the evidence.
@@ -313,19 +314,20 @@ export default function StudioPage() {
         <BedPieces />
       </section>
 
-      {/* Floor, pinned while it builds up: the empty container, then each layer of the living floor
-          (sheets.py "FLOOR (living)"), one screen of scroll per stage. Renders: scripts/studio/render/floor.html. */}
+      {/* Floor, pinned while it builds up in fast motion, seen from above: the empty container, then flat
+          wood sheets screwed down, then the planks. Renders: scripts/studio/render/floor.html. */}
       <section id="floor">
-        <FloorLayers base={`${D}/render/floor-base.webp`} epoxy={`${D}/render/floor-epoxy.webp`} spc={`${D}/render/floor-spc.webp`}
+        <FloorLayers base={`${D}/render/floor-base.webp`} sheets={`${D}/render/floor-sheets.webp`}
+          screws={`${D}/render/floor-screws.webp`} planks={`${D}/render/floor-planks.webp`} pieces={floorPieces}
           alts={[
-            "The container's base alone, from above a corner: worn 28 mm plywood panels with rows of screws, in a red steel frame with a corner casting at each corner.",
-            "A grey satin epoxy seal over the whole plywood floor.",
-            "Natural oak SPC planks over the living area; the bathroom end keeps the grey epoxy.",
+            "The container's base from straight above: worn plywood panels with rows of screws, in a red steel frame with a corner casting at each corner.",
+            "Flat wood sheets laid over the whole floor and screwed down.",
+            "Oak planks laid over the living area; the bathroom end stays on the sheets.",
           ]}
           stages={[
-            { title: "The empty container", text: "28 mm treated hardwood ply in 1.16 × 2.4 m panels, screwed to steel cross-members every 300 mm, inside the base frame and its four corner castings. Never sanded." },
-            { title: "Layer 1 · Epoxy seal", text: "Primer and a 100%-solids epoxy coat seal the treated ply wall to wall." },
-            { title: "Layer 2 · Underlay + SPC oak", text: "A thin underlay and 5 mm SPC in natural oak over the living area. The bathroom end gets coved vinyl later." },
+            { title: "The empty container", text: "28 mm treated hardwood ply in 1.16 × 2.4 m panels, screwed to steel cross-members every 300 mm, inside the base frame and its four corner castings." },
+            { title: "Layer 1 · Flat wood", text: "2.44 × 1.22 m sheets laid wall to wall, joints staggered, and screwed down every 300 mm." },
+            { title: "Layer 2 · Planks", text: "Oak planks laid row by row from the back wall over the living area, joints staggered. The bathroom end gets vinyl later." },
           ]} />
       </section>
 
