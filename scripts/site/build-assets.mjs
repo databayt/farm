@@ -77,21 +77,25 @@ function collect(registered, exts) {
 }
 
 // Every width (even past the master's size, so no srcset entry 404s), a 20 px blur placeholder,
-// and a URL hashed on the pixels. .rotate() applies the EXIF orientation before sharp drops the
-// metadata, GPS included. Wider files carry more pixels per screen pixel on most displays, so
-// they can take a lower quality. A clip's poster takes less again: it sits under a gradient and
-// the film, and on the hero it is the LCP image, so its weight counts twice.
+// and a URL hashed on the files served, so a new encode is a new URL under the immutable cache.
+// .rotate() applies the EXIF orientation before sharp drops the metadata, GPS included. Wider
+// files carry more pixels per screen pixel on most displays, so they can take a lower quality.
+// A clip's poster takes less again: it sits under a gradient and the film, and the hero's is the
+// first image a phone downloads.
 async function writeImage(name, input, source, { poster = false } = {}) {
   const { data, info } = await sharp(input).rotate().toBuffer({ resolveWithObject: true })
   const scale = Math.min(1, WIDTHS[WIDTHS.length - 1] / info.width)
+  const served = []
   for (const w of WIDTHS) {
     const quality = { 640: 78, 960: 76, 1280: 72, 1920: 68 }[w] - (poster ? 14 : 0)
-    await sharp(data).resize({ width: w, withoutEnlargement: true }).webp({ quality, effort: 6, smartSubsample: true })
-      .toFile(join(OUT_IMG, `${name}-${w}.webp`))
+    const file = await sharp(data).resize({ width: w, withoutEnlargement: true })
+      .webp({ quality, effort: 6, smartSubsample: true }).toBuffer()
+    writeFileSync(join(OUT_IMG, `${name}-${w}.webp`), file)
+    served.push(file)
   }
   const lqip = await sharp(data).resize({ width: 20 }).webp({ quality: 40 }).toBuffer()
   return {
-    src: `/site/img/${name}.webp?v=${hash(data)}`,
+    src: `/site/img/${name}.webp?v=${hash(Buffer.concat(served))}`,
     width: Math.round(info.width * scale),
     height: Math.round(info.height * scale),
     blurDataURL: `data:image/webp;base64,${lqip.toString("base64")}`,

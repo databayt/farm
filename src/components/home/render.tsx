@@ -122,8 +122,8 @@ export function Render({
 // The still under a full-bleed clip, as an art-directed <picture>: the upright cut's first frame
 // on portrait screens. getImageProps can't carry a blur placeholder, so the LQIP is the wrapper's
 // background and the photo fades in when the root layout's listener stamps data-loaded. With
-// `preload` it is the page's LCP image: fetched early at high priority and shown as soon as it
-// decodes, since Chrome doesn't count an image that is still at opacity 0.
+// `preload` it is the hero: fetched early at high priority and shown as soon as it decodes, no
+// fade. (Chrome treats a full-viewport image as background, so the LCP is the header's text.)
 export function ClipPicture({
   clip,
   upright,
