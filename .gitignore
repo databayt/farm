@@ -49,3 +49,4 @@ __pycache__/
 # fumadocs (generated)
 /.source/
 /content/docs/
+/.wrangler/

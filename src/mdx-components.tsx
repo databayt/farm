@@ -5,6 +5,8 @@ import type { MDXComponents } from "mdx/types"
 
 import { cn } from "@/lib/utils"
 import { Callout } from "@/components/docs/callout"
+import { Figure } from "@/components/docs/figure"
+import { StudioViewer } from "@/components/docs/studio-viewer"
 
 const mdxComponents = {
   // Allows customizing built-in components, e.g. to add styling.
@@ -65,9 +67,12 @@ const mdxComponents = {
       {...props}
     />
   ),
-  a: ({ className, ...props }) => (
+  a: ({ className, href, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <a
       className={cn("font-medium underline underline-offset-4", className)}
+      href={href}
+      // generated design files download instead of opening as text
+      download={/^\/designs\/.+\.(dxf|zip|pdf|xlsx|csv|glb|json)$/.test(href ?? "") ? true : undefined}
       {...props}
     />
   ),
@@ -161,6 +166,8 @@ const mdxComponents = {
     return <code className={className} {...props} />
   },
   Callout,
+  Figure,
+  StudioViewer,
 } satisfies MDXComponents
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {

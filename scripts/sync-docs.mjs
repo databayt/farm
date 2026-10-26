@@ -7,12 +7,19 @@
 // derived (never edit it by hand). Each page gets frontmatter from its H1 and
 // status line, MDX-unsafe characters are escaped outside code, links between
 // study files become /docs links, and the registers become tables.
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
-import { basename, dirname, join } from "node:path"
+//
+// Directives (a line on its own, so the study stays readable on GitHub):
+//   ![Caption](../../public/designs/x.svg)       -> <Figure> (drawing on a white sheet)
+//   [Title](../../public/designs/x/studio.glb)   -> <StudioViewer> (needs parts.json + studio-poster.svg beside it)
+//   [Table: Title](../../public/designs/x.csv)   -> a Markdown table plus a download link
+// Other links into public/ become /designs/... downloads; a missing file fails the sync.
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
+import { basename, dirname, join, relative, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
 const OUT = join(ROOT, "content", "docs")
+const PUBLIC = join(ROOT, "public")
 
 // Sidebar order. A string starting with "---" is a group label (fumadocs separator).
 const PAGES = [
@@ -50,6 +57,32 @@ const PAGES = [
   { slug: "iot-architecture", src: "study/engineering/iot-architecture.md" },
   { slug: "software-architecture", src: "study/engineering/software-architecture.md" },
   { slug: "commissioning", src: "study/engineering/commissioning-plan.md" },
+  "---Container studios---",
+  { slug: "studio", src: "study/studio/studio.md" },
+  { slug: "studio-site", src: "study/studio/studio-site.md" },
+  { slug: "studio-design", src: "study/studio/studio-design.md" },
+  { slug: "studio-envelope", src: "study/studio/studio-envelope.md" },
+  { slug: "studio-roof", src: "study/studio/studio-roof.md" },
+  { slug: "studio-flatpack", src: "study/studio/studio-flatpack.md" },
+  { slug: "studio-kits", src: "study/studio/studio-kits.md" },
+  { slug: "studio-electrical", src: "study/studio/studio-electrical.md" },
+  { slug: "studio-plumbing", src: "study/studio/studio-plumbing.md" },
+  { slug: "studio-sourcing", src: "study/studio/studio-sourcing.md" },
+  { slug: "studio-fabrication", src: "study/studio/studio-fabrication.md" },
+  { slug: "studio-assembly", src: "study/studio/studio-assembly.md" },
+  { slug: "studio-bom", src: "study/studio/studio-bom.md" },
+  { slug: "studio-budget", src: "study/studio/studio-budget.md" },
+  { slug: "studio-permits", src: "study/studio/studio-permits.md" },
+  {
+    slug: "studio-cut-list", csv: "public/designs/studio/data/cut-list.csv", title: "Studio cut list",
+    description: "Every sheet part of one studio: size, material, edge banding and machining counts.",
+    columns: ["id", "name", "material", "length_mm", "width_mm", "thickness_mm", "edges", "step"],
+  },
+  {
+    slug: "studio-bom-table", csv: "public/designs/studio/data/bom.csv", title: "Studio bill of materials",
+    description: "Every line of one studio's bill of materials, with the price label and source.",
+    columns: ["kit", "category", "item", "qty_per_unit", "unit", "unit_price_rwf", "label", "source", "total_per_unit_rwf"],
+  },
   "---Go to market---",
   { slug: "buyer-strategy", src: "study/go-to-market/buyer-strategy.md" },
   { slug: "sales-plan", src: "study/go-to-market/sales-plan.md" },
@@ -99,7 +132,20 @@ const PAGES = [
 ]
 
 const entries = PAGES.filter((p) => typeof p !== "string")
-const slugBySource = new Map(entries.map((p) => [basename(p.src ?? p.csv), p.slug]))
+const toPosix = (p) => p.split(sep).join("/")
+const slugByPath = new Map(entries.map((p) => [p.src ?? p.csv, p.slug]))
+
+/** Resolve a link target written in a study file to an absolute path. */
+const resolveTarget = (src, target) => resolve(ROOT, dirname(src), decodeURI(target))
+
+/** /designs/... URL for a file under public/, or null; a missing file is an error. */
+function publicUrl(abs, where) {
+  if (!abs.startsWith(PUBLIC + sep)) return null
+  if (!existsSync(abs)) throw new Error(`${where}: missing file ${toPosix(relative(ROOT, abs))}`)
+  return "/" + toPosix(relative(PUBLIC, abs))
+}
+
+const attr = (v) => `{${JSON.stringify(v)}}`
 
 /** RFC 4180 CSV → array of objects keyed by the header row. */
 function parseCsv(text) {
@@ -135,18 +181,77 @@ function escapeProse(line) {
     .join("")
 }
 
-/** Links to other study files become /docs links; links to files the site doesn't serve become code. */
-function rewriteLinks(line) {
-  return line.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (match, text, target) => {
+/** Links to other study files become /docs links, links into public/ become downloads, others become code. */
+function rewriteLinks(line, src) {
+  return line.replace(/(!?)\[([^\]]+)\]\(([^)\s]+)\)/g, (match, bang, text, target) => {
+    if (bang) throw new Error(`${src}: put images on their own line (${target})`)
     if (/^(https?:|mailto:|#)/.test(target)) return match
     const [path, hash] = target.split("#")
-    const slug = slugBySource.get(basename(path))
+    const abs = resolveTarget(src, path)
+    const slug = slugByPath.get(toPosix(relative(ROOT, abs)))
     if (slug) return `[${text}](/docs${slug === "index" ? "" : `/${slug}`}${hash ? `#${hash}` : ""})`
+    const url = publicUrl(abs, src)
+    if (url) return `[${text}](${url})`
     return text.includes("`") ? text : `\`${text}\``
   })
 }
 
 const yaml = (s) => JSON.stringify(s)
+
+function csvCell(key, value) {
+  const v = (value ?? "").replace(/\s+/g, " ").replace(/\|/g, "\\|")
+  if (key === "url" && /^https?:\/\//.test(v)) {
+    const host = new URL(v).hostname.replace(/^www\./, "")
+    return `[${host}](${v})`
+  }
+  return escapeProse(v)
+}
+
+function csvTable(rows, columns) {
+  return [
+    `| ${columns.join(" | ")} |`,
+    `| ${columns.map(() => "---").join(" | ")} |`,
+    ...rows.map((r) => `| ${columns.map((c) => csvCell(c, r[c])).join(" | ")} |`),
+  ].join("\n")
+}
+
+/** A directive line becomes JSX or a table; anything else returns null. */
+function blockDirective(line, src) {
+  let mm = line.match(/^\s*!\[([^\]]*)\]\(([^)\s]+)\)\s*$/)
+  if (mm) {
+    const abs = resolveTarget(src, mm[2])
+    const url = publicUrl(abs, src)
+    if (!url || !/\.(svg|png|jpe?g|webp)$/i.test(url)) throw new Error(`${src}: images must be files under public/ (${mm[2]})`)
+    let size = ""
+    if (url.endsWith(".svg")) {
+      const vb = readFileSync(abs, "utf8").match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/)
+      if (vb) size = ` width={${Math.round(vb[1] * 4)}} height={${Math.round(vb[2] * 4)}}`
+    }
+    return `<Figure src=${attr(url)} caption=${attr(mm[1])}${size} />`
+  }
+  mm = line.match(/^\s*\[Table:\s*([^\]]+)\]\(([^)\s]+\.csv)\)\s*$/)
+  if (mm) {
+    const abs = resolveTarget(src, mm[2])
+    const url = publicUrl(abs, src)
+    if (!existsSync(abs)) throw new Error(`${src}: missing table ${mm[2]}`)
+    const rows = parseCsv(readFileSync(abs, "utf8"))
+    const columns = rows.length ? Object.keys(rows[0]) : []
+    const where = url ? `[download CSV](${url})` : `source \`${toPosix(relative(ROOT, abs))}\``
+    return `**${escapeProse(mm[1])}** · ${where}\n\n${csvTable(rows, columns)}`
+  }
+  mm = line.match(/^\s*\[([^\]]+)\]\(([^)\s]+\.glb)\)\s*$/)
+  if (mm) {
+    const abs = resolveTarget(src, mm[2])
+    const url = publicUrl(abs, src)
+    const dir = dirname(abs)
+    const parts = publicUrl(join(dir, "parts.json"), src)
+    const poster = publicUrl(join(dir, "studio-poster.svg"), src)
+    return `<StudioViewer src=${attr(url)} parts=${attr(parts)} poster=${attr(poster)} title=${attr(mm[1])} />`
+  }
+  return null
+}
+
+const isDirective = (l) => /^\s*!\[[^\]]*\]\([^)]+\)\s*$/.test(l) || /^\s*\[(Table:[^\]]*|[^\]]+)\]\([^)\s]+\.(csv|glb)\)\s*$/.test(l)
 
 function fromMarkdown({ src, title, description: fixed }) {
   const lines = readFileSync(join(ROOT, src), "utf8").split("\n")
@@ -155,7 +260,7 @@ function fromMarkdown({ src, title, description: fixed }) {
   const body = lines.slice(h1 + 1)
   const meta = /^(\s*[-*]\s+)?(\*\*)?(Status|Researched|Location dependency|Updated|Created|File|Inputs|Date|Spending rule|Purpose|Labels|Evidence labels)\b/
   const status = body.find((l) => /^(Status|Updated):/.test(l))
-  const firstText = body.find((l) => l.trim() && !meta.test(l) && !/^(#|\||>|```|---)/.test(l.trim()))
+  const firstText = body.find((l) => l.trim() && !meta.test(l) && !isDirective(l) && !/^(#|\||>|```|---)/.test(l.trim()))
   const sentence = firstText?.replace(/^\s*([-*]|\d+\.)\s+/, "").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
   const description = fixed ?? (sentence ?? status ?? heading)
     .replace(/[*_`]/g, "").replace(/\s+/g, " ").trim()
@@ -163,7 +268,9 @@ function fromMarkdown({ src, title, description: fixed }) {
   let inFence = false
   const out = body.map((line) => {
     if (/^\s*(```|~~~)/.test(line)) { inFence = !inFence; return line }
-    return inFence ? line : escapeProse(rewriteLinks(line))
+    if (inFence) return line
+    const block = blockDirective(line, src)
+    return block !== null ? `\n${block}\n` : escapeProse(rewriteLinks(line, src))
   })
   return `---\ntitle: ${yaml(title ?? heading)}\ndescription: ${yaml(description)}\n---\n\n` +
     `{/* Generated by scripts/sync-docs.mjs from ${src}. Edit the source, not this file. */}\n` +
@@ -172,22 +279,11 @@ function fromMarkdown({ src, title, description: fixed }) {
 
 function fromCsv({ csv, title, description, columns }) {
   const rows = parseCsv(readFileSync(join(ROOT, csv), "utf8"))
-  const cell = (key, value) => {
-    const v = (value ?? "").replace(/\s+/g, " ").replace(/\|/g, "\\|")
-    if (key === "url" && /^https?:\/\//.test(v)) {
-      const host = new URL(v).hostname.replace(/^www\./, "")
-      return `[${host}](${v})`
-    }
-    return escapeProse(v)
-  }
-  const table = [
-    `| ${columns.join(" | ")} |`,
-    `| ${columns.map(() => "---").join(" | ")} |`,
-    ...rows.map((r) => `| ${columns.map((c) => cell(c, r[c])).join(" | ")} |`),
-  ].join("\n")
+  const url = publicUrl(join(ROOT, csv), csv)
+  const file = url ? `[\`${csv}\`](${url})` : `\`${csv}\``
   return `---\ntitle: ${yaml(title)}\ndescription: ${yaml(description)}\n---\n\n` +
     `{/* Generated by scripts/sync-docs.mjs from ${csv}. Edit the source, not this file. */}\n\n` +
-    `${rows.length} rows · source file \`${csv}\` (all columns there; selected columns here).\n\n${table}\n`
+    `${rows.length} rows · source file ${file} (all columns there; selected columns here).\n\n${csvTable(rows, columns)}\n`
 }
 
 rmSync(OUT, { recursive: true, force: true })

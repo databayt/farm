@@ -46,3 +46,13 @@ To add a page, add the study file to `PAGES` in `scripts/sync-docs.mjs`. A
 ## Checks
 
 `pnpm lint`, `npx tsc --noEmit`, and `pnpm build`, which prerenders all pages.
+
+## Figures, 3D models and tables in study pages
+
+A line on its own in a study Markdown file becomes a component (see the header of `scripts/sync-docs.mjs`):
+
+- `![Caption](../../public/designs/x.svg)` renders `<Figure>` (a drawing on a white sheet card).
+- `[Title](../../public/designs/x/studio.glb)` renders `<StudioViewer>` (three.js, loaded on demand; needs `parts.json` and `studio-poster.svg` beside the GLB).
+- `[Table: Title](path/to/file.csv)` renders the CSV as a table, with a download link when the file is under `public/`.
+
+Other links into `public/` become downloads; a missing file fails the sync.
