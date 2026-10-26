@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
   // A static export cannot partially prerender, so the export turns these off.
   cacheComponents: !STATIC,
   partialPrefetching: !STATIC,
+  // No optimiser on Workers Static Assets: the homepage's widths are pre-built by
+  // scripts/site/build-assets.mjs and src/lib/image-loader.ts picks one (both builds).
+  images: {
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
+    deviceSizes: [640, 960, 1280, 1920],
+    imageSizes: [],
+  },
   reactCompiler: true,
   turbopack: {
     rules: {

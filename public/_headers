@@ -1,0 +1,4 @@
+# Cloudflare Workers Static Assets. The homepage's images and clips are addressed with a
+# content hash (?v=…, scripts/site/build-assets.mjs), so they can be cached for good.
+/site/*
+  Cache-Control: public, max-age=31536000, immutable
