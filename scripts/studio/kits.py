@@ -421,7 +421,7 @@ def k6_living(lo: Layout) -> Kit:
                Box(tx0 + 60, ty0 + td / 2 - 9, 0, tx0 + tw - 60, ty0 + td / 2 + 9, th - T18), step="S17", edges="L2S2"))
     k.add(Part("K6-03", "Table leg B (cross-halving slot)", "K6", "PLY18",
                Box(tx0 + tw / 2 - 9, ty0 + 50, 0, tx0 + tw / 2 + 9, ty0 + td - 50, th - T18), step="S17", edges="L2S2"))
-    cy0, cw, seat = ty0 + td + 70, float(CHAIR_W), 420.0
+    cy0, cw, seat = ty0 + td + 70, float(CHAIR_W), 400.0
     for i, cx in enumerate((lo.seat_cx - CHAIR_GAP / 2 - cw, lo.seat_cx + CHAIR_GAP / 2)):
         n = 4 + 4 * i
         k.add(Part(f"K6-{n:02d}", f"Chair {i + 1} seat", "K6", "PLY18", Box(cx, cy0, seat - T18, cx + cw, cy0 + cw, seat),
@@ -457,7 +457,7 @@ def k7_trims(lo: Layout) -> Kit:
                Box(X - 530, 0, 2300, X - 518, run, lo.H), step="S18"))
     k.add(Part("K7-20", "Galley end panel (scribed to the floor on site)", "K7", "PLY12",
                Box(X - GALLEY_D, run, 0, X, run + 12, 900 - 38), step="S18"))
-    k.buy(Bought("K7-STAIN", "Joinery finish: natural oak-tone stain + satin PU varnish (all furniture)", "K7",
+    k.buy(Bought("K7-STAIN", "Joinery finish: clear matte PU varnish over golden pine, knots kept (all furniture)", "K7",
                  "finishes", "painting", 6, "L", "stain", step="S18"))
     k.steps.append(Step("S18", "K7", "Scribe and pin the trims; caulk and paint", [p.id for p in k.parts],
                         {"F": 60}, 1))

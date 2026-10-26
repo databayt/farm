@@ -64,7 +64,7 @@ PRICES: dict[str, tuple[float, str, str, str]] = {
     "sofa": (450_000, "A", "AS-21", "compact two-seat sofa, washable covers"),
     "wcframe": (220_000, "A", "AS-21", "slim concealed cistern frame + dual-flush plate"),
     "lamp": (35_000, "A", "AS-21", "table lamp with linen shade, LED bulb"),
-    "stain": (14_000, "A", "AS-21", "oak-tone wood stain + satin PU varnish, per L"),
+    "stain": (14_000, "A", "AS-21", "clear matte PU varnish for pine joinery, per L"),
     "stairframe": (450_000, "A", "AS-21", "stringers, handrails, footings"),
 }
 

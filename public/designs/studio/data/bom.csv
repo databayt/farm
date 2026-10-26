@@ -3,7 +3,7 @@ K1-K7,boards,carpentry,MPLY18 sheet 2440x1220x18,3,sheet,60000,A,AS-21,180000,18
 K1-K7,boards,carpentry,PLY12 sheet 2440x1220x12,15,sheet,35000,A,AS-21,525000,12 mm plywood
 K1-K7,boards,carpentry,PLY18 sheet 2440x1220x18,8,sheet,45000,A,AS-21,360000,"18 mm plywood or MR melamine board, 2440 x 1220"
 K1-K7,boards,carpentry,WTOP38 sheet 3050x650x38,1,sheet,90000,A,AS-21,90000,38 mm worktop blank 3000 x 620
-K1-K7,boards,carpentry,"ABS edge band (2 mm visible, 0.8 mm hidden)",88.6,m,600,A,AS-21,53160,"ABS edge band, per metre"
+K1-K7,boards,carpentry,"ABS edge band (2 mm visible, 0.8 mm hidden)",88,m,600,A,AS-21,52800,"ABS edge band, per metre"
 K2-K7,hardware,carpentry,Bag A: Confirmat screw 7 x 50,37.8,each,60,A,AS-21,2268,
 K2-K7,hardware,carpentry,Bag B: Wood dowel 8 x 35,25.2,each,20,A,AS-21,504,
 K2-K7,hardware,carpentry,Bag C: Connector bolt M6 x 60 + barrel nut 10 mm,31.5,each,600,A,AS-21,18900,
@@ -61,7 +61,7 @@ K5,hardware,carpentry,"Coat hooks, hanging rail by the door and a folding luggag
 K6,furnishing,furnishing,"Low two-seat sofa about 1300 x 750, 700 high, soft dark grey washable covers",1,each,450000,A,AS-21,450000,"compact two-seat sofa, washable covers"
 K6,furnishing,furnishing,Blackout curtain + track for the 3 m slider,1,set,60000,A,AS-21,60000,
 K6,glazing,glazier,"Insect screens: slider (sliding), W1, vents",1,set,90000,A,AS-21,90000,
-K7,finishes,painting,Joinery finish: natural oak-tone stain + satin PU varnish (all furniture),6,L,14000,A,AS-21,84000,"oak-tone wood stain + satin PU varnish, per L"
+K7,finishes,painting,"Joinery finish: clear matte PU varnish over golden pine, knots kept (all furniture)",6,L,14000,A,AS-21,84000,"clear matte PU varnish for pine joinery, per L"
 K8,electrical,electrical,Unit board on the back wall by the galley,1,each,45000,A,AS-21,45000,"enclosure, 12 ways"
 K8,electrical,electrical,"Ceiling light, bed",1,each,15000,A,AS-21,15000,
 K8,electrical,electrical,"Ceiling light, living",1,each,15000,A,AS-21,15000,
