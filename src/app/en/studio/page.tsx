@@ -284,7 +284,7 @@ export default function StudioPage() {
             className="h-auto w-full" />
         </div>
         <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
-          title="Container studio, Layout A" />
+          title="Container studio, Layout B" />
       </section>
 
       {/* The building blocks: the studio is eleven kits. */}
