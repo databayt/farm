@@ -221,10 +221,10 @@ export default function StudioPage() {
           <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
             <p className="text-sm text-white/80">Concept render</p>
             <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">
-              Three studios, built flat-pack
+              A studio on the farm, built flat-pack
             </h1>
             <Button asChild className="mt-6">
-              <a href="#plans">See the plans</a>
+              <Link href="/#enquire">Book</Link>
             </Button>
           </div>
         </div>
