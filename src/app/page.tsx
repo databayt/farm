@@ -15,12 +15,15 @@ export default function Home() {
         feasibility study, in the open: research, design, engineering, finance and the plan, with
         every claim labelled verified, estimated, assumed or unknown.
       </p>
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <Button asChild>
           <Link href="/docs">Read the study</Link>
         </Button>
         <Button asChild variant="outline">
           <Link href="/docs/preliminary-report">Preliminary report</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link href="/en/studio">Container studios</Link>
         </Button>
       </div>
     </main>
