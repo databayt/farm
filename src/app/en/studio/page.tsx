@@ -5,12 +5,13 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
-import { FloorLayers } from "@/components/docs/floor-layers"
+import { BuildUp } from "@/components/docs/build-up"
 import { ItemRail } from "@/components/docs/item-rail"
 import { bedStock } from "@/lib/bed-stock"
 import model from "../../../../public/designs/studio/model/parts.json"
 import totals from "../../../../public/designs/studio/data/totals.json"
 import floorPieces from "../../../../public/designs/studio/render/floor-pieces.json"
+import wallPieces from "../../../../public/designs/studio/render/wall-pieces.json"
 
 // Public showcase of the container-studio design package (study/studio, D-014..D-016).
 // Every number here comes from the generated package; the docs hold the evidence.
@@ -315,22 +316,52 @@ export default function StudioPage() {
       {/* Floor, pinned while it builds up in fast motion, seen from above: the empty container, then flat
           wood sheets screwed down, then the planks, then the bathroom's vinyl. Renders: scripts/studio/render/floor.html. */}
       <section id="floor">
-        <FloorLayers pieces={floorPieces}
-          src={{
-            base: `${D}/render/floor-base.webp`, sheets: `${D}/render/floor-sheets.webp`, screws: `${D}/render/floor-screws.webp`,
-            planks: `${D}/render/floor-planks.webp`, vinyl: `${D}/render/floor-vinyl.webp`,
-          }}
-          alts={[
-            "The container's base from straight above: worn plywood panels with rows of screws, in a red steel frame with a corner casting at each corner.",
-            "Flat wood sheets laid over the whole floor and screwed down.",
-            "Oak planks laid over the living area.",
-            "The bathroom end in grey safety vinyl, in one sheet.",
+        <BuildUp title="Floor" base={`${D}/render/floor-base.webp`} aspect={floorPieces.aspect}
+          baseAlt="The container's base from straight above: worn plywood panels with rows of screws, in a red steel frame with a corner casting at each corner."
+          builds={[
+            { secs: 2.4, label: "Flat wood sheets laid over the whole floor and screwed down.", groups: [
+              { src: `${D}/render/floor-sheets.webp`, rects: floorPieces.sheets, kind: "drop", from: 0, to: 0.75, rise: 60 },
+              { src: `${D}/render/floor-screws.webp`, rects: floorPieces.sheets, kind: "fix", from: 0, to: 0.75 },
+            ] },
+            { secs: 3.2, label: "Oak planks laid over the living area.", groups: [
+              { src: `${D}/render/floor-planks.webp`, rects: floorPieces.planks, kind: "drop", from: 0, to: 0.85, rise: 30 },
+            ] },
+            { secs: 1.2, label: "The bathroom end in grey safety vinyl, in one sheet.", groups: [
+              { src: `${D}/render/floor-vinyl.webp`, rects: [floorPieces.vinyl], kind: "unroll", from: 0, to: 1 },
+            ] },
           ]}
           stages={[
             { title: "The empty container", text: "28 mm treated hardwood ply in 1.16 × 2.4 m panels, screwed to steel cross-members every 300 mm, inside the base frame and its four corner castings." },
             { title: "Layer 1 · Flat wood", text: "2.44 × 1.22 m sheets laid wall to wall, joints staggered, and screwed down every 300 mm." },
             { title: "Layer 2 · Planks", text: "Oak planks laid row by row from the back wall over the living area, joints staggered." },
             { title: "The bathroom side", text: "Safety vinyl in one sheet with no joints, coved 100 mm up the walls." },
+          ]} />
+      </section>
+
+      {/* Wall, in the floor's pattern: the back wall seen straight on, the bare corrugated steel first, then
+          its lining put up in fast motion. Renders: scripts/studio/render/wall.html. */}
+      <section id="wall">
+        <BuildUp title="Wall" base={`${D}/render/wall-base.webp`} aspect={wallPieces.aspect}
+          baseAlt="The container's back wall seen from inside: red corrugated steel, scuffed, with rust low down and lashing rings, framed by the rails, corner posts and corner castings."
+          builds={[
+            { secs: 2.4, label: "Battens up the wall with white insulation boards between them.", groups: [
+              { src: `${D}/render/wall-battens.webp`, rects: wallPieces.battens, kind: "drop", from: 0, to: 0.35 },
+              { src: `${D}/render/wall-eps.webp`, rects: wallPieces.eps, kind: "drop", from: 0.45, to: 0.85 },
+            ] },
+            { secs: 2, label: "Four numbered plywood lining panels screwed to the battens.", groups: [
+              { src: `${D}/render/wall-panels.webp`, rects: wallPieces.panels, kind: "drop", from: 0, to: 0.7, rise: 60 },
+              { src: `${D}/render/wall-screws.webp`, rects: wallPieces.panels, kind: "fix", from: 0, to: 0.7 },
+            ] },
+            { secs: 2.4, label: "The bathroom end in cement board and white marble-look tiles.", groups: [
+              { src: `${D}/render/wall-cement.webp`, rects: wallPieces.cement, kind: "drop", from: 0, to: 0, rise: 60 },
+              { src: `${D}/render/wall-tiles.webp`, rects: wallPieces.tiles, kind: "drop", from: 0.25, to: 0.85, rise: 24 },
+            ] },
+          ]}
+          stages={[
+            { title: "The empty container", text: "1.6 mm corrugated steel, 36 mm deep at 278 mm pitch, between the rails, corner posts and castings. Rust treated and primed first." },
+            { title: "Layer 1 · Battens + insulation", text: "38 × 50 treated battens at 600 mm centres, EPS fitted between them and every joint foam-sealed." },
+            { title: "Layer 2 · Lining panels", text: "12 mm plywood panels, numbered and cut in the workshop, screwed to each batten every 300 mm." },
+            { title: "The bathroom side", text: "12 mm cement board and a waterproof membrane, then 300 × 600 tiles laid from the floor up." },
           ]} />
       </section>
 

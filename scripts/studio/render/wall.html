@@ -1,0 +1,344 @@
+<!doctype html>
+<!--
+  The /en/studio wall section, the pattern of the floor section (floor.html): the back wall seen straight on
+  from inside, the container's bare corrugated steel first, then its lining built on in layers, each layer
+  rendered as its own transparent picture so the page can put the pieces up one by one.
+
+    ?layer=base     the bare wall as it arrives, in its frame              -> render/wall-base.webp
+    ?layer=battens  layer 1: 38 x 50 battens at 600 centres (S03)          -> render/wall-battens.webp
+    ?layer=eps      ... and EPS between them, foam-sealed (S03)            -> render/wall-eps.webp
+    ?layer=panels   layer 2: the numbered 12 mm ply lining panels (S04)    -> render/wall-panels.webp
+    ?layer=screws   the screws into the battens                            -> render/wall-screws.webp
+    ?layer=cement   the bathroom side: 12 mm cement board (S08)            -> render/wall-cement.webp
+    ?layer=tiles    ... and its tiles, 300 x 600, from the floor up (S08)   -> render/wall-tiles.webp
+
+  Every layer is the full scene lit as one, cut down to its own meshes by a mask pass, so they stack
+  exactly. window.PIECES lists each piece as a rectangle in fractions of the picture, in the order it
+  goes up (-> render/wall-pieces.json).
+
+  The wall follows the generator (kits.py K1, sheets.py "WALL (steel to room)") and the CIMC 20 ft spec
+  [STU-02]: 1.6 mm side wall, 36 mm-deep corrugation at 278 mm pitch; battens at 600 centres up to the
+  bathroom; ply panels split evenly to the partition line, no wider than 1,220. The frame round it: the
+  bottom and top side rails, the corner posts and the four corner castings, each with its side hole.
+
+  Serve the repo root (python3 -m http.server <port>), open this page at 2400 x 1070, wait for
+  body[data-ready] (attached) and save window.OUT (a PNG data URL with alpha).
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>html,body{margin:0;background:#fff}</style>
+<script type="importmap">
+{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<script type="module">
+import * as THREE from "three"
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js"
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
+import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+
+const LAYER = new URLSearchParams(location.search).get("layer") ?? "base"
+const FW = 2400, FH = 1070
+const S = await (await fetch(`/public/designs/studio/render/scene.json?${Date.now()}`)).json()
+const m = (v) => v / 1000 // layout mm -> metres; three: x along the wall, y up, z out of the wall into the room
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true })
+renderer.setPixelRatio(1)
+renderer.setSize(FW, FH)
+renderer.outputColorSpace = THREE.SRGBColorSpace
+renderer.toneMapping = THREE.ACESFilmicToneMapping
+renderer.toneMappingExposure = 1.05
+renderer.shadowMap.enabled = true
+renderer.shadowMap.type = THREE.PCFShadowMap
+const scene = new THREE.Scene()
+scene.background = new THREE.Color(12, 12, 12)
+
+// ------------------------------------------------------------ dimensions (metres)
+const L = m(S.L), H = m(S.H), e = m(S.lining), px0 = m(S.part_x0), bx0 = m(S.bath_x0)
+const X0 = -e, X1 = L + e // the wall between the end walls' steel
+const STEEL = -e // the inner face of the corrugation's ribs; battens and ply build out to 0
+const DEPTH = 0.036, PITCH = 0.278, BAT = [0.05, 0.038], PLY = 0.012
+const TOP = H + 0.05 // the roof's underside over the lining
+const POST = 0.113, RAIL = 0.158, TRAIL = 0.06, CAST = [0.178, 0.118] // frame members, as seen face on
+
+// ------------------------------------------------------------ textures
+let seed = 7
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+function tex(draw, w = 2048, h = 1024) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h
+  seed = 7
+  draw(c.getContext("2d"), w, h)
+  const t = new THREE.CanvasTexture(c)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.anisotropy = 8
+  return t
+}
+// a texture over a wall rectangle [x0, y0, x1, y1]: canvas x with x, canvas y down from y1
+const area = (r, w = 2048, h = 1024) => ({ r, w, h, px: (x) => ((x - r[0]) / (r[2] - r[0])) * w, py: (y) => ((r[3] - y) / (r[3] - r[1])) * h })
+
+// the bare wall: the box's red paint, scuffed and marked by cargo, rust weeping from the floor line and the
+// odd scrape. One texture over the whole wall face, so ribs and valleys carry the same marks
+const WALL = area([X0, 0, X1, TOP])
+const steelTex = tex((g, w, h) => {
+  g.fillStyle = "#93433a"; g.fillRect(0, 0, w, h)
+  for (let i = 0; i < 9000; i++) {
+    g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.04)"
+    g.fillRect(rnd() * w, rnd() * h, 2 + rnd() * 4, 2 + rnd() * 4)
+  }
+  for (let i = 0; i < 60; i++) { // cargo scuffs, mostly low
+    const x = rnd() * w, y = h * (0.45 + rnd() * 0.55)
+    g.strokeStyle = `rgba(${rnd() > 0.5 ? "220,190,170" : "40,20,15"},${0.08 + rnd() * 0.12})`; g.lineWidth = 1 + rnd() * 3
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + (rnd() - 0.5) * 220, y + (rnd() - 0.5) * 30); g.stroke()
+  }
+  for (let i = 0; i < 18; i++) { // rust weeping up from the floor line
+    const x = rnd() * w, r = 10 + rnd() * 30, len = 30 + rnd() * 120
+    const gr = g.createLinearGradient(0, h, 0, h - len)
+    gr.addColorStop(0, "rgba(110,52,20,0.55)"); gr.addColorStop(1, "rgba(110,52,20,0)")
+    g.fillStyle = gr; g.fillRect(x - r, h - len, 2 * r, len)
+  }
+  for (let i = 0; i < 6; i++) { // ghosts of old labels and tape
+    g.fillStyle = `rgba(230,215,200,${0.06 + rnd() * 0.06})`
+    g.fillRect(rnd() * w, h * (0.2 + rnd() * 0.5), 40 + rnd() * 80, 20 + rnd() * 40)
+  }
+})
+// treated pine battens
+const BATTENS = []
+for (let x = 0; x <= m(S.bath_x0) + 1e-6; x += 0.6) BATTENS.push(Math.min(x, bx0 - BAT[0]))
+const battenTex = tex((g, w, h) => {
+  g.fillStyle = "#c9a56e"; g.fillRect(0, 0, w, h)
+  for (let i = 0; i < 160; i++) {
+    const x = rnd() * w
+    g.strokeStyle = `rgba(120,80,40,${0.06 + rnd() * 0.12})`; g.lineWidth = 1 + rnd() * 2
+    g.beginPath(); g.moveTo(x, 0); g.bezierCurveTo(x + (rnd() - 0.5) * 8, h * 0.3, x + (rnd() - 0.5) * 8, h * 0.7, x, h); g.stroke()
+  }
+  g.fillStyle = "rgba(90,120,70,0.10)"; g.fillRect(0, 0, w, h) // the green cast of the treatment
+}, 256, 1024)
+// EPS: white beads
+const epsTex = tex((g, w, h) => {
+  g.fillStyle = "#f4f4f1"; g.fillRect(0, 0, w, h)
+  for (let i = 0; i < 30000; i++) {
+    g.fillStyle = `rgba(0,0,0,${0.02 + rnd() * 0.05})`
+    g.beginPath(); g.arc(rnd() * w, rnd() * h, 1 + rnd() * 2.2, 0, 7); g.fill()
+  }
+}, 1024, 1024)
+epsTex.wrapS = epsTex.wrapT = THREE.RepeatWrapping
+// the lining: 12 mm ply under a light PU varnish, split evenly to the partition line, no wider than 1,220,
+// each panel pencilled with its number
+const PANELS = []
+{
+  const n = Math.ceil((px0 - 0) / 1.22), w = px0 / n
+  for (let i = 0; i < n; i++) PANELS.push([i * w, 0, (i + 1) * w, H])
+}
+const LIN = area([0, 0, px0, H])
+const panelTex = tex((g, w, h) => {
+  const tones = ["#e6d3b1", "#e1cca8", "#e9d8b8", "#dfc9a4"]
+  PANELS.forEach(([a, , b], i) => {
+    const x = LIN.px(a), xw = LIN.px(b) - x
+    g.fillStyle = tones[i % tones.length]; g.fillRect(x, 0, xw, h)
+    for (let k = 0; k < 50; k++) { // face grain up the panel
+      const gx = x + rnd() * xw
+      g.strokeStyle = `rgba(150,110,60,${0.05 + rnd() * 0.08})`; g.lineWidth = 1 + rnd() * 2
+      g.beginPath(); g.moveTo(gx, 0)
+      g.bezierCurveTo(gx + (rnd() - 0.5) * 14, h * 0.3, gx + (rnd() - 0.5) * 14, h * 0.7, gx + (rnd() - 0.5) * 8, h)
+      g.stroke()
+    }
+    g.strokeStyle = "rgba(110,80,45,0.55)"; g.lineWidth = 2; g.strokeRect(x + 1, 1, xw - 2, h - 2)
+    g.fillStyle = "rgba(70,70,75,0.55)"; g.font = "22px sans-serif"
+    g.fillText(`K1-${String(i + 1).padStart(2, "0")}`, x + 14, h - 18)
+  })
+})
+// the bathroom side: cement board, then 300 x 600 tiles in white marble, laid from the floor up
+const BATH = area([px0, 0, X1, H], 512, 1024)
+const cementTex = tex((g, w, h) => {
+  g.fillStyle = "#b9bab6"; g.fillRect(0, 0, w, h)
+  for (let i = 0; i < 20000; i++) {
+    g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"
+    g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
+  }
+}, 512, 1024)
+const TILES = []
+for (let y = 0, r = 0; y < H - 0.01; y += 0.6, r++) {
+  for (let x = px0; x < X1 - 0.01; x += 0.3) TILES.push([x, y, Math.min(X1, x + 0.3), Math.min(H, y + 0.6), r])
+}
+const tileTex = tex((g, w, h) => {
+  g.fillStyle = "#cfcfcc"; g.fillRect(0, 0, w, h) // grout
+  for (const [a, b, c, d] of TILES) {
+    const x = BATH.px(a) + 2, y = BATH.py(d) + 2, tw = BATH.px(c) - BATH.px(a) - 4, th = BATH.py(b) - BATH.py(d) - 4
+    g.save(); g.beginPath(); g.rect(x, y, tw, th); g.clip()
+    g.fillStyle = "#f2f1ee"; g.fillRect(x, y, tw, th)
+    g.filter = "blur(1px)"
+    for (let i = 0; i < 6; i++) { // soft grey veins, after room.html's marble
+      g.strokeStyle = `rgba(110,112,116,${0.08 + rnd() * 0.2})`; g.lineWidth = 0.6 + rnd() * 2
+      g.beginPath(); let vx = x + rnd() * tw, vy = y + rnd() * th; g.moveTo(vx, vy)
+      for (let k = 0; k < 4; k++) {
+        const nx = vx + (rnd() - 0.3) * 120, ny = vy + (rnd() - 0.5) * 90
+        g.quadraticCurveTo(vx + (rnd() - 0.5) * 60, vy + (rnd() - 0.5) * 60, nx, ny); vx = nx; vy = ny
+      }
+      g.stroke()
+    }
+    g.filter = "none"; g.restore()
+  }
+}, 512, 1024)
+
+const std = (o) => new THREE.MeshStandardMaterial(o)
+const MAT = {
+  steel: std({ map: steelTex, roughness: 0.6, metalness: 0.25 }),
+  frame: std({ color: "#7e372d", roughness: 0.6, metalness: 0.3 }),
+  cast: std({ color: "#5f2a22", roughness: 0.75, metalness: 0.35 }),
+  hole: std({ color: "#151210", roughness: 1 }),
+  ring: std({ color: "#3c3e40", roughness: 0.5, metalness: 0.8 }),
+  batten: std({ map: battenTex, roughness: 0.8 }),
+  eps: std({ map: epsTex, roughness: 0.95 }),
+  panel: std({ map: panelTex, roughness: 0.6 }),
+  screw: std({ color: "#3a3a3c", roughness: 0.4, metalness: 0.8 }),
+  cement: std({ map: cementTex, roughness: 0.9 }),
+  tile: std({ map: tileTex, roughness: 0.25 }),
+}
+
+// ------------------------------------------------------------ geometry
+const meshes = [], layers = { base: [], battens: [], eps: [], panels: [], screws: [], cement: [], tiles: [] }
+function add(mesh, layer) { scene.add(mesh); meshes.push(mesh); layers[layer].push(mesh); return mesh }
+// a box between two corners; `a` (an area) maps its texture once across the wall face
+function box(x0, y0, z0, x1, y1, z1, name, layer = "base", a) {
+  const geo = new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0)
+  if (a) {
+    const pos = geo.attributes.position, uv = geo.attributes.uv
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i) + (x0 + x1) / 2, y = pos.getY(i) + (y0 + y1) / 2
+      uv.setXY(i, (x - a.r[0]) / (a.r[2] - a.r[0]), (y - a.r[1]) / (a.r[3] - a.r[1]))
+    }
+  }
+  const mesh = new THREE.Mesh(geo, MAT[name])
+  mesh.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2)
+  mesh.castShadow = true; mesh.receiveShadow = true
+  return add(mesh, layer)
+}
+
+// the wall: a skin with trapezoid-ish ribs standing in from it every 278 mm
+box(X0, 0, STEEL - DEPTH - 0.002, X1, TOP, STEEL - DEPTH, "steel", "base", WALL)
+for (let x = X0 + PITCH / 4; x + PITCH / 2 <= X1; x += PITCH) {
+  box(x, 0, STEEL - DEPTH, x + PITCH / 2 - 0.03, TOP, STEEL, "steel", "base", WALL)
+  box(x - 0.015, 0, STEEL - DEPTH, x, TOP, STEEL - DEPTH / 2, "steel", "base", WALL) // the sloped flanks, stepped
+  box(x + PITCH / 2 - 0.03, 0, STEEL - DEPTH, x + PITCH / 2 - 0.015, TOP, STEEL - DEPTH / 2, "steel", "base", WALL)
+}
+// the frame round it: bottom rail under the floor line, top rail over the roof line, corner posts, castings
+box(X0 - POST, -RAIL, STEEL - 0.06, X1 + POST, 0, STEEL + 0.002, "frame")
+box(X0 - POST, TOP, STEEL - 0.06, X1 + POST, TOP + TRAIL, STEEL + 0.002, "frame")
+for (const [xa, xb] of [[X0 - POST, X0], [X1, X1 + POST]]) box(xa, -RAIL, STEEL - 0.06, xb, TOP + TRAIL, STEEL + 0.004, "frame")
+const oval = new THREE.CylinderGeometry(0.025, 0.025, 0.003, 32)
+for (const [xa, xb] of [[X0 - POST - 0.04, X0 - POST - 0.04 + CAST[0]], [X1 + POST + 0.04 - CAST[0], X1 + POST + 0.04]]) {
+  for (const [ya, yb] of [[-RAIL - 0.01, -RAIL - 0.01 + CAST[1] + 0.03], [TOP + TRAIL - CAST[1] + 0.01, TOP + TRAIL + 0.01]]) {
+    box(xa, ya, STEEL - 0.06, xb, yb, STEEL + 0.01, "cast")
+    const hole = new THREE.Mesh(oval, MAT.hole)
+    hole.rotation.x = Math.PI / 2; hole.scale.set(1.56, 1, 1) // 78 x 51 mm side hole
+    hole.position.set((xa + xb) / 2, (ya + yb) / 2, STEEL + 0.0115)
+    add(hole, "base")
+  }
+}
+// lashing rings along the floor line and under the roof, about a metre apart
+for (let x = X0 + 0.5; x < X1 - 0.3; x += 1.0) for (const y of [0.06, TOP - 0.07]) {
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.022, 0.006, 8, 24), MAT.ring)
+  ring.position.set(x, y, STEEL + 0.006)
+  add(ring, "base")
+}
+
+// layer 1: battens up to the bathroom, then EPS between them and on to end B
+for (const x of BATTENS) box(x, 0, STEEL, x + BAT[0], H, STEEL + BAT[1], "batten", "battens", area([x, 0, x + BAT[0], H], 256, 1024))
+const EPS = []
+{
+  const cuts = [X0, ...BATTENS.flatMap((x) => [x, x + BAT[0]]), X1]
+  for (let i = 0; i < cuts.length; i += 2) if (cuts[i + 1] - cuts[i] > 0.005) EPS.push([cuts[i], cuts[i + 1]])
+}
+const epsArea = { r: [X0, 0, X0 + 1.2, 1.2] }
+for (const [a, b] of EPS) box(a, 0, STEEL + 0.002, b, H, STEEL + BAT[1] - 0.003, "eps", "eps", epsArea)
+
+// layer 2: the lining panels on the battens, screws into each batten every 300 mm
+const LZ = STEEL + BAT[1]
+for (const [a, , b] of PANELS) box(a, 0, LZ, b - 0.002, H, LZ + PLY, "panel", "panels", LIN)
+const head = new THREE.CylinderGeometry(0.0055, 0.0055, 0.0015, 16)
+for (const [a, , b] of PANELS) {
+  for (const x of BATTENS) {
+    const cx = x + BAT[0] / 2
+    if (cx < a + 0.01 || cx > b - 0.01) continue
+    for (let y = 0.15; y < H - 0.05; y += 0.3) {
+      const s = new THREE.Mesh(head, MAT.screw)
+      s.rotation.x = Math.PI / 2; s.position.set(cx, y, LZ + PLY + 0.0008)
+      add(s, "screws")
+    }
+  }
+}
+// the bathroom side: cement board on the studs, then the tiles on it
+box(px0, 0, LZ, X1, H, LZ + PLY, "cement", "cement", BATH)
+box(px0, 0, LZ + PLY, X1, H, LZ + PLY + 0.01, "tile", "tiles", BATH)
+
+const ORDER = ["base", "battens", "eps", "panels", "screws", "cement", "tiles"]
+const show = ORDER.slice(0, ORDER.indexOf(LAYER) + 1)
+for (const [k, list] of Object.entries(layers)) for (const o of list) o.visible = show.includes(k)
+
+// ------------------------------------------------------------ camera: straight at the wall, end A on the left
+const pad = 0.08
+const VX0 = X0 - POST - 0.04 - pad, VX1 = X1 + POST + 0.04 + pad
+const yc = (-RAIL - 0.01 + TOP + TRAIL + 0.01) / 2, half = ((VX1 - VX0) * FH) / FW / 2
+const cxm = (VX0 + VX1) / 2
+const camera = new THREE.OrthographicCamera(-(VX1 - VX0) / 2, (VX1 - VX0) / 2, half, -half, 0.1, 50)
+camera.position.set(cxm, yc, 10)
+camera.lookAt(cxm, yc, 0)
+camera.updateProjectionMatrix()
+const fx = (x) => (x - VX0) / (VX1 - VX0), fy = (y) => (yc + half - y) / (2 * half)
+
+// ------------------------------------------------------------ colour pass: daylight raking from end A
+const pmrem = new THREE.PMREMGenerator(renderer)
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+scene.environmentIntensity = 0.45
+scene.add(new THREE.HemisphereLight(0xffffff, 0xd8cdbc, 0.6))
+const sun = new THREE.DirectionalLight(0xffefd6, 2.2)
+sun.position.set(X0 - 3, H + 2, 4); sun.target.position.set(L / 2, H / 2, STEEL)
+sun.castShadow = true
+sun.shadow.mapSize.set(4096, 4096)
+Object.assign(sun.shadow.camera, { left: -6, right: 6, top: 6, bottom: -6, near: 0.5, far: 25 })
+sun.shadow.bias = -0.0002; sun.shadow.normalBias = 0.01; sun.shadow.radius = 3
+scene.add(sun, sun.target)
+const composer = new EffectComposer(renderer)
+composer.setSize(FW, FH)
+composer.addPass(new RenderPass(scene, camera))
+const ao = new GTAOPass(scene, camera, FW, FH)
+ao.output = GTAOPass.OUTPUT.Default
+ao.blendIntensity = 0.7
+composer.addPass(ao)
+composer.addPass(new OutputPass())
+composer.render()
+const color = document.createElement("canvas"); color.width = FW; color.height = FH
+color.getContext("2d").drawImage(renderer.domElement, 0, 0)
+
+// ------------------------------------------------------------ mask pass: this layer's meshes, white
+const black = new THREE.MeshBasicMaterial({ color: 0x000000 }), white = new THREE.MeshBasicMaterial({ color: 0xffffff })
+for (const o of meshes) o.material = layers[LAYER].includes(o) ? white : black
+scene.background = new THREE.Color(0x000000); scene.environment = null
+renderer.toneMapping = THREE.NoToneMapping; renderer.shadowMap.enabled = false
+renderer.render(scene, camera)
+const mask = document.createElement("canvas"); mask.width = FW; mask.height = FH
+mask.getContext("2d").drawImage(renderer.domElement, 0, 0)
+const out = color.getContext("2d").getImageData(0, 0, FW, FH)
+const a = mask.getContext("2d").getImageData(0, 0, FW, FH).data
+for (let i = 0; i < a.length; i += 4) out.data[i + 3] = a[i]
+color.getContext("2d").putImageData(out, 0, 0)
+window.OUT = color.toDataURL("image/png")
+
+// ------------------------------------------------------------ the pieces, in the order they go up
+const rect = (x0, y0, x1, y1) => [fx(x0), fy(y1), fx(x1) - fx(x0), fy(y0) - fy(y1)].map((v) => +v.toFixed(5))
+window.PIECES = {
+  aspect: FW / FH,
+  battens: BATTENS.map((x) => rect(x, 0, x + BAT[0], H)),
+  eps: EPS.map(([a, b]) => rect(a, 0, b, H)),
+  panels: PANELS.map(([a, y0, b, y1]) => rect(a, y0, b, y1)),
+  cement: [rect(px0, 0, X1, H)],
+  tiles: TILES.map(([a, b, c, d]) => rect(a, b, c, d)), // row by row from the floor, each row from the partition
+}
+document.body.dataset.ready = "1"
+</script>
+</body>
+</html>
