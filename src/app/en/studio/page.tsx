@@ -225,7 +225,7 @@ export default function StudioPage() {
           <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
             <p className="text-sm text-white/80">Digital Farm</p>
             <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">
-              A studio in nature, with forest vibes
+              Studio in nature, with forest vibes
             </h1>
             <Button asChild className="mt-6">
               <Link href="/#enquire">Book</Link>
