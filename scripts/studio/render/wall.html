@@ -9,6 +9,7 @@
     ?layer=eps      ... and EPS between them, foam-sealed (S03)            -> render/wall-eps.webp
     ?layer=panels   layer 2: the numbered 12 mm ply lining panels (S04)    -> render/wall-panels.webp
     ?layer=screws   the screws into the battens                            -> render/wall-screws.webp
+    ?layer=paint    layer 3: primer + off-white satin paint, rolled on      -> render/wall-paint.webp
     ?layer=cement   the bathroom side: 12 mm cement board (S08)            -> render/wall-cement.webp
     ?layer=tiles    ... and its tiles, 300 x 600, from the floor up (S08)   -> render/wall-tiles.webp
 
@@ -184,6 +185,16 @@ const tileTex = tex((g, w, h) => {
   }
 }, 512, 1024)
 
+// the finish: room.html's off-white (#f0ece3) in a satin sheen, the roller's faint stipple and lap marks
+const paintTex = tex((g, w, h) => {
+  g.fillStyle = "#f0ece3"; g.fillRect(0, 0, w, h)
+  for (let i = 0; i < 40000; i++) {
+    g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.05)" : "rgba(120,110,95,0.035)"
+    g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
+  }
+  for (let x = 0; x < w; x += LIN.px(0.3) - LIN.px(0)) { g.fillStyle = "rgba(120,110,95,0.025)"; g.fillRect(x, 0, 6, h) }
+})
+
 const std = (o) => new THREE.MeshStandardMaterial(o)
 const MAT = {
   steel: std({ map: steelTex, roughness: 0.6, metalness: 0.25 }),
@@ -195,12 +206,13 @@ const MAT = {
   eps: std({ map: epsTex, roughness: 0.95 }),
   panel: std({ map: panelTex, roughness: 0.6 }),
   screw: std({ color: "#3a3a3c", roughness: 0.4, metalness: 0.8 }),
+  paint: std({ map: paintTex, roughness: 0.32 }), // satin: a soft sheen, short of gloss
   cement: std({ map: cementTex, roughness: 0.9 }),
   tile: std({ map: tileTex, roughness: 0.25 }),
 }
 
 // ------------------------------------------------------------ geometry
-const meshes = [], layers = { base: [], battens: [], eps: [], panels: [], screws: [], cement: [], tiles: [] }
+const meshes = [], layers = { base: [], battens: [], eps: [], panels: [], screws: [], paint: [], cement: [], tiles: [] }
 function add(mesh, layer) { scene.add(mesh); meshes.push(mesh); layers[layer].push(mesh); return mesh }
 // a box between two corners; `a` (an area) maps its texture once across the wall face
 function box(x0, y0, z0, x1, y1, z1, name, layer = "base", a) {
@@ -271,11 +283,19 @@ for (const [a, , b] of PANELS) {
     }
   }
 }
+// layer 3: the paint over the lining, filling the joints and screw heads
+box(0, 0, LZ + PLY + 0.0016, px0, H, LZ + PLY + 0.0018, "paint", "paint", LIN)
+const STRIPS = [] // the roller's passes, about 300 mm wide, from end A
+{
+  const n = Math.ceil(px0 / 0.3)
+  for (let i = 0; i < n; i++) STRIPS.push([(i * px0) / n, ((i + 1) * px0) / n])
+}
+
 // the bathroom side: cement board on the studs, then the tiles on it
 box(px0, 0, LZ, X1, H, LZ + PLY, "cement", "cement", BATH)
 box(px0, 0, LZ + PLY, X1, H, LZ + PLY + 0.01, "tile", "tiles", BATH)
 
-const ORDER = ["base", "battens", "eps", "panels", "screws", "cement", "tiles"]
+const ORDER = ["base", "battens", "eps", "panels", "screws", "paint", "cement", "tiles"]
 const show = ORDER.slice(0, ORDER.indexOf(LAYER) + 1)
 for (const [k, list] of Object.entries(layers)) for (const o of list) o.visible = show.includes(k)
 
@@ -335,6 +355,7 @@ window.PIECES = {
   battens: BATTENS.map((x) => rect(x, 0, x + BAT[0], H)),
   eps: EPS.map(([a, b]) => rect(a, 0, b, H)),
   panels: PANELS.map(([a, y0, b, y1]) => rect(a, y0, b, y1)),
+  paint: STRIPS.map(([a, b]) => rect(a, 0, b, H)),
   cement: [rect(px0, 0, X1, H)],
   tiles: TILES.map(([a, b, c, d]) => rect(a, b, c, d)), // row by row from the floor, each row from the partition
 }

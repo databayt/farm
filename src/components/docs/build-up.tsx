@@ -4,7 +4,8 @@
 // is one screen tall per stage and stays pinned; reaching a stage runs its build like a time-lapse, and
 // scrolling back takes it apart, last build first. Each build lays groups of pieces one after another:
 // "drop" pieces fall from above (large, high and shadowed, then landing), "fix" pieces (screws) pop in
-// after the matching drop lands, and an "unroll" piece rolls out from its top edge behind a roll. Every
+// after the matching drop lands, an "unroll" piece rolls out from its top edge behind a roll, and "wipe"
+// pieces are painted on one after another, each from its top edge down like a roller pass. Every
 // piece is cropped from its layer's transparent render (scripts/studio/render/floor.html, wall.html, which
 // also write the piece rectangles), so the pieces meet exactly. Styles are written straight to the pieces
 // each frame; React re-renders only when the stage changes.
@@ -13,7 +14,7 @@ import { useEffect, useRef, useState } from "react"
 import { cx } from "@/lib/cx"
 
 type Rect = number[] // [x, y, w, h] as fractions of the picture
-export type Group = { src: string; rects: Rect[]; kind: "drop" | "fix" | "unroll"; from: number; to: number; rise?: number }
+export type Group = { src: string; rects: Rect[]; kind: "drop" | "fix" | "unroll" | "wipe"; from: number; to: number; rise?: number }
 export type Build = { secs: number; label: string; groups: Group[] }
 type Stage = { title: string; text: string }
 
@@ -64,6 +65,10 @@ export function BuildUp({ title, base, baseAlt, aspect, builds, stages }: {
         else if (g.kind === "fix") { // after the matching drop lands
           const u = clamp((c[i] - s - DUR) / 0.06)
           el.style.opacity = String(u); el.style.transform = u >= 1 ? "" : `scale(${1.03 - 0.03 * u})`
+        } else if (g.kind === "wipe") { // a roller pass, top to bottom
+          const v = out(clamp((c[i] - s) / DUR))
+          el.style.opacity = v > 0 ? "1" : "0"
+          el.style.clipPath = `inset(0 0 ${(1 - v) * 100}% 0)`
         } else { // unroll down from the top edge, the roll riding the front
           const v = out(clamp((c[i] - g.from) / span)), [, ry, , rh] = g.rects[k]
           el.style.opacity = c[i] > g.from ? "1" : "0"
@@ -135,7 +140,7 @@ export function BuildUp({ title, base, baseAlt, aspect, builds, stages }: {
             ))}
           </div>
         </div>
-        <div className={cx("grid gap-4", n === 4 ? "md:grid-cols-4" : "md:grid-cols-3")}>
+        <div className={cx("grid gap-4", { 3: "md:grid-cols-3", 4: "md:grid-cols-4", 5: "md:grid-cols-5" }[n])}>
           {stages.map((s, i) => (
             <div key={s.title} className={cx("border-t-2 pt-3 transition-opacity duration-500",
               i === active ? "border-foreground opacity-100" : "border-border hidden opacity-40 md:block")}>

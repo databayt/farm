@@ -304,15 +304,6 @@ export default function StudioPage() {
         </figure>
       </section>
 
-      {/* Bed: the bed corner as a rail of product cards (after databayt.org's products rail); the card in focus
-          shows its size, source and cost below. */}
-      <section id="bedroom" className="pt-10 pb-10">
-        <h2 className="px-4 text-3xl font-semibold tracking-tight md:px-10">Bed</h2>
-        <div className="mt-6">
-          <ItemRail items={bedRail()} />
-        </div>
-      </section>
-
       {/* Floor, pinned while it builds up in fast motion, seen from above: the empty container, then flat
           wood sheets screwed down, then the planks, then the bathroom's vinyl. Renders: scripts/studio/render/floor.html. */}
       <section id="floor">
@@ -339,7 +330,7 @@ export default function StudioPage() {
       </section>
 
       {/* Wall, in the floor's pattern: the back wall seen straight on, the bare corrugated steel first, then
-          its lining put up in fast motion. Renders: scripts/studio/render/wall.html. */}
+          its lining put up in fast motion and painted off-white. Renders: scripts/studio/render/wall.html. */}
       <section id="wall">
         <BuildUp title="Wall" base={`${D}/render/wall-base.webp`} aspect={wallPieces.aspect}
           baseAlt="The container's back wall seen from inside: red corrugated steel, scuffed, with rust low down and lashing rings, framed by the rails, corner posts and corner castings."
@@ -352,6 +343,9 @@ export default function StudioPage() {
               { src: `${D}/render/wall-panels.webp`, rects: wallPieces.panels, kind: "drop", from: 0, to: 0.7, rise: 60 },
               { src: `${D}/render/wall-screws.webp`, rects: wallPieces.panels, kind: "fix", from: 0, to: 0.7 },
             ] },
+            { secs: 2, label: "The lining rolled in off-white satin paint.", groups: [
+              { src: `${D}/render/wall-paint.webp`, rects: wallPieces.paint, kind: "wipe", from: 0, to: 0.85 },
+            ] },
             { secs: 2.4, label: "The bathroom end in cement board and white marble-look tiles.", groups: [
               { src: `${D}/render/wall-cement.webp`, rects: wallPieces.cement, kind: "drop", from: 0, to: 0, rise: 60 },
               { src: `${D}/render/wall-tiles.webp`, rects: wallPieces.tiles, kind: "drop", from: 0.25, to: 0.85, rise: 24 },
@@ -361,8 +355,18 @@ export default function StudioPage() {
             { title: "The empty container", text: "1.6 mm corrugated steel, 36 mm deep at 278 mm pitch, between the rails, corner posts and castings. Rust treated and primed first." },
             { title: "Layer 1 · Battens + insulation", text: "38 × 50 treated battens at 600 mm centres, EPS fitted between them and every joint foam-sealed." },
             { title: "Layer 2 · Lining panels", text: "12 mm plywood panels, numbered and cut in the workshop, screwed to each batten every 300 mm." },
+            { title: "Layer 3 · Paint", text: "Joints and screw heads filled, a vapour-retarding primer, then off-white paint in a satin sheen, rolled on." },
             { title: "The bathroom side", text: "12 mm cement board and a waterproof membrane, then 300 × 600 tiles laid from the floor up." },
           ]} />
+      </section>
+
+      {/* Bed: the bed corner as a rail of product cards (after databayt.org's products rail); the card in focus
+          shows its size, source and cost below. */}
+      <section id="bedroom" className="pt-10 pb-10">
+        <h2 className="px-4 text-3xl font-semibold tracking-tight md:px-10">Bed</h2>
+        <div className="mt-6">
+          <ItemRail items={bedRail()} />
+        </div>
       </section>
 
       {/* The numbers and the drawing set behind the 2D and 3D. */}
