@@ -25,7 +25,7 @@ K1,insulation,carpentry,"EPS insulation, ceiling",13.06,m2,9000,A,AS-21,117540,"
 K1,insulation,carpentry,"EPS insulation, end-A",5.23,m2,9000,A,AS-21,47070,"EPS 40 mm per m2 (STU-19 lists sizes, no prices)"
 K1,insulation,carpentry,PU foam adhesive and gap filler (750 ml),12,each,7000,A,AS-21,84000,
 K1,finishes,painting,Primer + 100%-solids epoxy floor seal,14,m2,12000,A,AS-21,168000,per m2
-K1,finishes,carpentry,"SPC flooring 5 mm, natural red-wood decor, + underlay (living area)",11.1,m2,18000,A,AS-21,199800,per m2
+K1,finishes,carpentry,"SPC flooring 5 mm, rustic natural oak decor, + underlay (living area)",11.1,m2,18000,A,AS-21,199800,per m2
 K1,finishes,painting,Rust converter + zinc primer for steel,4,L,8000,A,AS-21,32000,per L
 K1,finishes,painting,Vapour-retarding primer + off-white paint for the linings,10,L,9000,A,AS-21,90000,per L
 K2,doors,carpentry,"Door leaf 564 x 2,030, moisture-resistant, opens into the bathroom, privacy lock",1,each,90000,A,AS-21,90000,
@@ -61,7 +61,7 @@ K5,hardware,carpentry,"Coat hooks, hanging rail by the door and a folding luggag
 K6,furnishing,furnishing,"Low two-seat sofa about 1300 x 750, 700 high, soft dark grey washable covers",1,each,450000,A,AS-21,450000,"compact two-seat sofa, washable covers"
 K6,furnishing,furnishing,Blackout curtain + track for the 3 m slider,1,set,60000,A,AS-21,60000,
 K6,glazing,glazier,"Insect screens: slider (sliding), W1, vents",1,set,90000,A,AS-21,90000,
-K7,finishes,painting,Joinery finish: honey-tone stain + clear matte PU varnish over pine (all furniture),6,L,14000,A,AS-21,84000,"honey-tone stain + clear matte PU varnish for pine, per L"
+K7,finishes,painting,Joinery finish: medium-oak stain + clear matte PU varnish over pine (all furniture),6,L,14000,A,AS-21,84000,"medium-oak stain + clear matte PU varnish for pine, per L"
 K8,electrical,electrical,Unit board on the back wall by the galley,1,each,45000,A,AS-21,45000,"enclosure, 12 ways"
 K8,electrical,electrical,"Ceiling light, bed",1,each,15000,A,AS-21,15000,
 K8,electrical,electrical,"Ceiling light, living",1,each,15000,A,AS-21,15000,

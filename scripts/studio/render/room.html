@@ -62,6 +62,7 @@ scene.background = LINE ? new THREE.Color("#ffffff") : new THREE.Color(12, 12, 1
 // ------------------------------------------------------------ procedural textures (real mode)
 function tex(draw, w = 512, h = 512) {
   const c = document.createElement("canvas"); c.width = w; c.height = h
+  seed = 7 // each texture draws its own fresh sequence, so editing one never reshuffles another
   draw(c.getContext("2d"), w, h)
   const t = new THREE.CanvasTexture(c)
   t.colorSpace = THREE.SRGBColorSpace
@@ -108,43 +109,101 @@ const T = LINE ? {} : {
       g.stroke()
     }
   }),
-  // pine in a darker honey tone: calm, faint grain and only a few soft knots (the founder's
-  // reference wood, ~/Downloads/IMG_3235.jpg, toned down)
+  // pine under a medium-oak finish, after the founder's bed reference (~/farm/ikea/coleridge-bed-frame-
+  // with-footboard-product-medium-oak-2.jpg.webp): golden amber, a soft waxed patina, fine brushed grain,
+  // small pin knots. One tile is 1.2 x 0.6 m of board with the grain along u (see woodUV); a mark that
+  // crosses an edge is drawn again on the far side, so the tile repeats without a seam
   pine: tex((g, w, h) => {
-    g.fillStyle = "#a06a34"; g.fillRect(0, 0, w, h)
-    for (let i = 0; i < 70; i++) {
-      const y = rnd() * h, dark = rnd() > 0.5
-      g.strokeStyle = dark ? `rgba(110,68,28,${0.04 + rnd() * 0.07})` : `rgba(200,150,90,${0.04 + rnd() * 0.06})`
-      g.lineWidth = 1 + rnd() * 3
-      g.beginPath(); g.moveTo(0, y)
-      g.bezierCurveTo(w * 0.33, y + (rnd() - 0.5) * 18, w * 0.66, y + (rnd() - 0.5) * 18, w, y + (rnd() - 0.5) * 8)
-      g.stroke()
+    const wrap = (x, y, rx, ry, f) => {
+      for (const dx of [-w, 0, w]) for (const dy of [-h, 0, h]) {
+        if (x + dx + rx < 0 || x + dx - rx > w || y + dy + ry < 0 || y + dy - ry > h) continue
+        f(x + dx, y + dy)
+      }
     }
-    for (let k = 0; k < 3; k++) {
-      const x = rnd() * w, y = rnd() * h, rx = 5 + rnd() * 6
-      const grd = g.createRadialGradient(x, y, 0, x, y, rx * 1.4)
-      grd.addColorStop(0, "rgba(90,54,22,0.35)"); grd.addColorStop(1, "rgba(90,54,22,0)")
-      g.fillStyle = grd; g.beginPath(); g.ellipse(x, y, rx * 1.4, rx * 0.8, 0, 0, Math.PI * 2); g.fill()
+    g.fillStyle = "#ae7a48"; g.fillRect(0, 0, w, h)
+    const staves = 5, sh = h / staves // the boards of an edge-glued panel, each a shade apart
+    for (let s = 0; s < staves; s++) {
+      g.fillStyle = rnd() > 0.5 ? `rgba(232,186,122,${0.05 + rnd() * 0.1})` : `rgba(138,84,38,${0.04 + rnd() * 0.08})`
+      g.fillRect(0, s * sh, w, sh)
+    }
+    g.filter = "blur(12px)" // waxed patina: soft clouds drawn out along the grain
+    for (let i = 0; i < 70; i++) {
+      const x = rnd() * w, y = rnd() * h, rx = 50 + rnd() * 170, ry = 8 + rnd() * 24
+      g.fillStyle = rnd() > 0.45 ? `rgba(146,88,38,${0.07 + rnd() * 0.12})` : `rgba(238,196,132,${0.07 + rnd() * 0.12})`
+      wrap(x, y, rx + 30, ry + 30, (X, Y) => { g.beginPath(); g.ellipse(X, Y, rx, ry, 0, 0, Math.PI * 2); g.fill() })
+    }
+    g.filter = "none"
+    for (let i = 0; i < 2600; i++) { // fine brushed fibres
+      const x = rnd() * w, y = rnd() * h, len = 20 + rnd() * 110, dy = (rnd() - 0.5) * 1.5
+      g.strokeStyle = rnd() > 0.35 ? `rgba(116,70,30,${0.04 + rnd() * 0.08})` : `rgba(244,206,148,${0.04 + rnd() * 0.07})`
+      g.lineWidth = 0.6 + rnd() * 0.7
+      wrap(x + len / 2, y, len / 2 + 2, 3, (X, Y) => {
+        g.beginPath(); g.moveTo(X - len / 2, Y); g.lineTo(X + len / 2, Y + dy); g.stroke()
+      })
+    }
+    for (let i = 0; i < 22; i++) { // long grain lines, level at both ends so they meet across the seam
+      const y = rnd() * h, a = (rnd() - 0.5) * 14, b = (rnd() - 0.5) * 14
+      g.strokeStyle = `rgba(126,76,32,${0.06 + rnd() * 0.1})`; g.lineWidth = 0.8 + rnd() * 1.4
+      wrap(w / 2, y, w / 2, 12, (X, Y) => {
+        g.beginPath(); g.moveTo(X - w / 2, Y); g.bezierCurveTo(X - w / 6, Y + a, X + w / 6, Y + b, X + w / 2, Y); g.stroke()
+      })
+    }
+    for (let k = 0; k < 16; k++) { // pin knots: an amber halo, sometimes a short spike along the grain, a dark core
+      const x = rnd() * w, y = rnd() * h, r = 1.6 + rnd() * 2.4, spike = rnd() > 0.55 ? 20 + rnd() * 50 : 0
+      wrap(x, y, Math.max(r * 5, spike) + 2, r * 3 + 2, (X, Y) => {
+        g.save(); g.translate(X, Y); g.scale(1, 0.58)
+        const halo = g.createRadialGradient(0, 0, 0, 0, 0, r * 4.5)
+        halo.addColorStop(0, "rgba(120,70,28,0.45)"); halo.addColorStop(1, "rgba(120,70,28,0)")
+        g.fillStyle = halo; g.beginPath(); g.arc(0, 0, r * 4.5, 0, Math.PI * 2); g.fill()
+        g.restore()
+        if (spike) {
+          g.strokeStyle = "rgba(92,52,20,0.32)"; g.lineWidth = 1.2
+          g.beginPath(); g.moveTo(X - spike, Y + 1); g.quadraticCurveTo(X, Y - 1, X + spike, Y + 1); g.stroke()
+        }
+        g.fillStyle = "rgba(68,36,14,0.9)"; g.beginPath(); g.ellipse(X, Y, r * 1.2, r, 0, 0, Math.PI * 2); g.fill()
+      })
+    }
+    for (let i = 0; i < 50; i++) { // a few distress specks, kept faint (the founder asked for fewer holes)
+      g.fillStyle = `rgba(90,52,22,${0.1 + rnd() * 0.15})`; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 1.5, 1)
     }
   }, 1024, 512),
-  // SPC floor planks
+  // rustic natural oak planks after the founder's floor reference (~/farm/ikea/images.jpeg): warm honey-tan
+  // boards of varied tone and random length, fine joints, long grain with arches, a few small knots
   planks: tex((g, w, h) => {
-    const tones = ["#8c4b30", "#7f4229", "#975739", "#86462d", "#914f33"] // natural red hardwood
-    const rows = 10, rh = h / rows
+    const tones = ["#b98b5b", "#c39663", "#a97c4f", "#bd9264", "#ae8255", "#c79b6a", "#b38556"]
+    const rows = 14, rh = h / rows
     for (let r = 0; r < rows; r++) {
-      let x = -((r * 173) % 400)
+      let x = -((r * 211) % 700)
       while (x < w) {
-        const len = 360 + ((r * 97 + Math.abs(x)) % 240)
-        g.fillStyle = tones[(r * 7 + Math.abs(x)) % tones.length]; g.fillRect(x, r * rh, len, rh)
-        for (let k = 0; k < 6; k++) {
-          g.fillStyle = "rgba(90,60,30,0.06)"; g.fillRect(x, r * rh + rnd() * rh, len, 1)
+        const len = 520 + Math.floor(rnd() * 520), y0 = r * rh
+        g.fillStyle = tones[Math.floor(rnd() * tones.length)]; g.fillRect(x, y0, len, rh)
+        for (let i = 0; i < 9; i++) { // long grain
+          const y = y0 + rnd() * rh
+          g.strokeStyle = `rgba(110,72,38,${0.08 + rnd() * 0.14})`; g.lineWidth = 0.7 + rnd() * 1.4
+          g.beginPath(); g.moveTo(x, y)
+          g.bezierCurveTo(x + len * 0.3, y + (rnd() - 0.5) * 6, x + len * 0.7, y + (rnd() - 0.5) * 6, x + len, y + (rnd() - 0.5) * 4)
+          g.stroke()
         }
-        g.fillStyle = "rgba(60,40,20,0.45)"; g.fillRect(x, r * rh, 2, rh)
+        if (rnd() > 0.35) { // grain arches
+          const cx = x + len * (0.25 + rnd() * 0.5), cy = y0 + rh * (0.3 + rnd() * 0.4)
+          for (let k = 1; k <= 4; k++) {
+            g.strokeStyle = `rgba(104,66,34,${0.10 + rnd() * 0.12})`; g.lineWidth = 0.9
+            g.beginPath(); g.moveTo(cx - 40 * k, cy - 3 * k)
+            g.quadraticCurveTo(cx + 30 * k, cy, cx - 40 * k, cy + 3 * k + 2); g.stroke()
+          }
+        }
+        for (let k = 0; k < (rnd() > 0.6 ? 2 : rnd() > 0.5 ? 1 : 0); k++) { // small knots
+          const kx = x + 30 + rnd() * (len - 60), ky = y0 + 6 + rnd() * (rh - 12), kr = 2 + rnd() * 3.5
+          const grd = g.createRadialGradient(kx, ky, 0, kx, ky, kr * 2.4)
+          grd.addColorStop(0, "rgba(58,34,16,0.95)"); grd.addColorStop(0.45, "rgba(90,56,26,0.55)"); grd.addColorStop(1, "rgba(120,80,40,0)")
+          g.fillStyle = grd; g.beginPath(); g.ellipse(kx, ky, kr * 2.4, kr * 1.4, 0, 0, Math.PI * 2); g.fill()
+        }
+        g.fillStyle = "rgba(70,44,22,0.55)"; g.fillRect(x, y0, 2, rh) // end joint
         x += len
       }
-      g.fillStyle = "rgba(60,40,20,0.4)"; g.fillRect(0, r * rh, w, 2)
+      g.fillStyle = "rgba(70,44,22,0.5)"; g.fillRect(0, r * rh, w, 2) // long joint
     }
-  }, 1024, 1024),
+  }, 2048, 1024),
 }
 
 // ------------------------------------------------------------ materials
@@ -160,7 +219,7 @@ function mat(name) {
     const std = (o) => new THREE.MeshStandardMaterial(o)
     x = {
       wall: () => std({ color: "#f0ece3", roughness: 0.88 }), // off-white painted linings
-      pine: () => std({ map: T.pine, roughness: 0.62 }), // golden knotty pine joinery, matte
+      pine: () => std({ map: T.pine, roughness: 0.62 }), // pine joinery in medium oak, satin
       white: () => std({ color: "#f3f2ee", roughness: 0.55 }),
       ply: () => std({ map: T.ply, roughness: 0.6 }),
       worktop: () => std({ color: "#c4996a", roughness: 0.45 }),
@@ -172,7 +231,7 @@ function mat(name) {
       blue: () => std({ color: "#8ea2b4", roughness: 0.9 }),
       marble: () => std({ map: T.marble, roughness: 0.22 }),
       vinyl: () => std({ color: "#dcdcda", roughness: 0.6 }),
-      floor: () => std({ map: T.planks, roughness: 0.55 }),
+      floor: () => std({ map: T.planks, color: "#d1c8c1", roughness: 0.55 }), // a slight warm shade so the lit floor matches the oak reference
       ceramic: () => new THREE.MeshPhysicalMaterial({ color: "#fbfbfa", roughness: 0.12, clearcoat: 0.7, clearcoatRoughness: 0.1 }),
       black: () => std({ color: "#1f2023", roughness: 0.45, metalness: 0.5 }),
       hob: () => std({ color: "#0f1012", roughness: 0.12, metalness: 0.2 }),
@@ -197,7 +256,27 @@ function mat(name) {
 
 // ------------------------------------------------------------ geometry helpers (metres)
 const meshes = []
+// wood at true scale: each face projects the board texture from its own plane, grain along the piece's
+// longest side (on an end face, along the longer edge), each piece cut from a different part of the board
+const BOARD = [1.2, 0.6] // metres one pine tile covers along and across the grain
+function woodUV(geo) {
+  geo.computeBoundingBox()
+  const size = geo.boundingBox.getSize(new THREE.Vector3()).toArray()
+  const long = size.indexOf(Math.max(...size))
+  const pos = geo.attributes.position, nrm = geo.attributes.normal, uv = geo.attributes.uv
+  const du = (meshes.length * 0.618034) % 1, dv = (meshes.length * 0.414214) % 1
+  for (let i = 0; i < pos.count; i++) {
+    const n = [Math.abs(nrm.getX(i)), Math.abs(nrm.getY(i)), Math.abs(nrm.getZ(i))]
+    const plane = [0, 1, 2].filter((a) => a !== n.indexOf(Math.max(...n)))
+    const ua = plane.includes(long) ? long : size[plane[0]] >= size[plane[1]] ? plane[0] : plane[1]
+    const va = plane.find((a) => a !== ua)
+    const p = [pos.getX(i), pos.getY(i), pos.getZ(i)]
+    uv.setXY(i, du + p[ua] / BOARD[0], dv + p[va] / BOARD[1])
+  }
+  uv.needsUpdate = true
+}
 function add(geo, name, opts = {}) {
+  if (!LINE && name === "pine") woodUV(geo)
   const mesh = new THREE.Mesh(geo, mat(name))
   mesh.castShadow = !LINE && name !== "glass" && name !== "floor" && name !== "vinyl" && !opts.noShadow
   mesh.receiveShadow = !LINE
