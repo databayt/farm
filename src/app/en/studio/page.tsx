@@ -49,13 +49,24 @@ const SHEETS = [
 export default function StudioPage() {
   const sheets = Object.values(totals.sheets as Record<string, number>).reduce((a, b) => a + b, 0)
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-12 md:px-6 md:py-16">
-      <section className="grid items-center gap-8 md:grid-cols-2">
-        <div className="space-y-5">
+    <main className="w-full flex-1">
+      <section className="bg-[#f4f1ec]">
+        {/* Rendered from studio.glb by scripts/studio/render/hero.html: walls and roof removed, only the base */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`${D}/render/studio-hero.jpg`} width={2400} height={1350} fetchPriority="high"
+          alt="The finished studio on its container base, walls and roof removed: queen bed, kitchen, table and stools, bathroom with walk-in shower"
+          className="mx-auto h-auto w-full max-w-7xl" />
+      </section>
+
+      <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
+      <section className="mt-10 grid gap-6 md:mt-12 md:grid-cols-[1.4fr_1fr] md:items-end">
+        <div className="space-y-4">
           <p className="text-muted-foreground text-sm">Farm · container studios · rev A</p>
           <h1 className="text-4xl font-semibold tracking-tight text-balance md:text-5xl">
             Three guest studios, built like flat-pack furniture
           </h1>
+        </div>
+        <div className="space-y-5">
           <p className="text-muted-foreground text-lg text-balance">
             Three 20 ft containers already on the farm become identical farm-stay studios: bed, kitchen,
             shower and a roof terrace. Every part is cut, drilled and numbered in Kigali, then assembled
@@ -69,11 +80,6 @@ export default function StudioPage() {
               <Link href="/docs/studio">Read the design package</Link>
             </Button>
           </div>
-        </div>
-        <div className="overflow-hidden rounded-xl border bg-white">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${D}/model/studio-poster.svg`} alt="The furnished studio with the front wall and roof removed"
-            className="h-auto w-full" />
         </div>
       </section>
 
@@ -167,6 +173,7 @@ export default function StudioPage() {
           </Button>
         </div>
       </section>
+      </div>
     </main>
   )
 }
