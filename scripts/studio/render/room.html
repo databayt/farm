@@ -11,6 +11,9 @@
 
     &item=<id>  one bedroom piece on its own, three-quarter view, 1200 x 900 (ITEMS below)
                 -> render/bedroom/<id>.webp, for the Bedroom section
+    &item=<sofa|table|chairs|units|fridge|hob|sink|hood|overhead|shower|wc|basin|mirror>  one piece of the
+                room on its own: the room is built and every mesh not tagged with it is dropped (TAG below)
+                -> render/<seating|galley|bath>/<id>.webp, for the rails under the Bed one
     &bed=<K4-nn | exploded>  one bed piece, or the whole bed pulled apart, from render/bed/parts.json
                 (scripts/studio/render/bed_parts.py) -> render/bed/<id>.webp, for the Bed section
   A piece on its own renders on a transparent ground (real mode): save the data URL in #out as is. The furniture follows the photos in ~/farm/ikea
@@ -50,6 +53,9 @@ const MODE = Q.get("mode") === "real" ? "real" : "line"
 const LINE = MODE === "line"
 const BED = Q.get("bed")
 const ITEM = Q.get("item") ?? (BED ? "bedparts" : null)
+// pieces cut out of the room itself: each mesh carries the tag set when it was made
+const ROOM_ITEMS = new Set(["sofa", "table", "chairs", "units", "fridge", "hob", "sink", "hood", "overhead", "shower", "wc", "basin", "mirror"])
+let TAG = ""
 const BEDP = BED || ITEM === "bed" ? await (await fetch(`/public/designs/studio/render/bed/parts.json?${Date.now()}`)).json() : null
 const [FW, FH] = ITEM ? [1200, 900] : [2400, 1100]
 Object.assign(document.getElementById("out").style, { width: `${FW}px`, height: `${FH}px` })
@@ -330,6 +336,7 @@ function add(geo, name, opts = {}) {
   if (!LINE && name === "floor") boardUV(geo, FLOOR, false)
   if (!LINE && name === "mattress") boardUV(geo, [0.3, 0.3], false)
   const mesh = new THREE.Mesh(geo, mat(name))
+  mesh.userData.tag = TAG
   mesh.castShadow = !LINE && name !== "glass" && name !== "floor" && name !== "vinyl" && !opts.noShadow
   mesh.receiveShadow = !LINE
   if (opts.rot) mesh.rotation.set(...opts.rot)
@@ -560,10 +567,11 @@ function bedParts(sel) {
       }
     }
 }
-if (ITEM) ITEMS[ITEM]()
+if (ITEM && !ROOM_ITEMS.has(ITEM)) ITEMS[ITEM]()
 
 // ------------------------------------------------------------ seating: FRIDHULT-look sofa, LACK-look table, two chairs
-if (!ITEM) {
+if (!ITEM || ROOM_ITEMS.has(ITEM)) {
+  TAG = "sofa"
   const [sx0, , sz0, sx1, sh, sz1] = L3(S.sofa)
   const arm = 0.09, legH = 0.06
   for (const lx of [sx0 + 0.06, sx1 - 0.06]) for (const lz of [sz0 + 0.06, sz1 - 0.06]) cyl(lx, legH / 2, lz, 0.018, legH, "pine", "y", 20, 0.022)
@@ -583,6 +591,7 @@ if (!ITEM) {
   const c2 = box(-0.19, -0.19, -0.06, 0.19, 0.19, 0.06, "blue", 0.06)
   c2.position.set(sx1 - arm - 0.22, 0.56, sz0 + 0.34); c2.rotation.set(-0.35, -0.25, -0.12)
 
+  TAG = "table"
   const [tx0, , tz0, tx1, th, tz1] = L3(S.table)
   const leg = 0.028, top = 0.04 // slim legs under a solid top
   box(tx0, th - top, tz0, tx1, th, tz1, "pine", 0.006)
@@ -590,6 +599,7 @@ if (!ITEM) {
     box(lx, 0, lz, lx + leg, th - top, lz + leg, "pine", 0.003)
   }
 
+  TAG = "chairs"
   for (const c of S.chairs) {
     const [cx0, , cz0, cx1, ch, cz1] = L3(c)
     const seatY = 0.4
@@ -607,7 +617,8 @@ if (!ITEM) {
 }
 
 // ------------------------------------------------------------ galley on the partition
-if (!ITEM) {
+if (!ITEM || ROOM_ITEMS.has(ITEM)) {
+  TAG = "units"
   const gx = m(S.galley_x0), wt = 0.62, run = m(S.sink[1])
   const fr0 = m(S.fridge[0]), fr1 = m(S.fridge[1]), hb0 = m(S.hob[0]), hb1 = m(S.hob[1]), sk0 = m(S.sink[0])
   box(gx + 0.04, 0, 0, px0, 0.1, run, "black") // plinth, set back
@@ -616,11 +627,16 @@ if (!ITEM) {
   box(gx, 0, run, px0, 0.862, run + 0.012, "pine") // galley end panel (K7)
   // fronts with shadow gaps: fridge door (white), two hob drawers, the sink door; bar handles
   const front = (z0, z1, y0, y1, name) => box(gx - 0.019, y0, z0 + 0.002, gx - 0.001, y1, z1 - 0.002, name, 0.004)
+  TAG = "fridge"
   front(fr0, fr1, 0.1, 0.858, "white")
+  if (ITEM === "fridge") box(gx, 0.1, fr0 + 0.01, px0, 0.85, fr1 - 0.01, "white", 0.01) // its body, hidden in the room
+  cyl(gx - 0.035, 0.8, (fr0 + fr1) / 2, 0.006, Math.min(0.16, fr1 - fr0 - 0.08), "steel", "z", 16)
+  TAG = "units"
   front(hb0, hb1, 0.1, 0.476, "pine"); front(hb0, hb1, 0.482, 0.858, "pine")
   front(sk0, run, 0.1, 0.858, "pine")
   const bar = (y, z0, z1) => cyl(gx - 0.035, y, (z0 + z1) / 2, 0.006, Math.min(0.16, z1 - z0 - 0.08), "steel", "z", 16)
-  bar(0.8, fr0, fr1); bar(0.43, hb0, hb1); bar(0.82, hb0, hb1); bar(0.8, sk0, run)
+  bar(0.43, hb0, hb1); bar(0.82, hb0, hb1); bar(0.8, sk0, run)
+  TAG = "hob"
   // wide induction hob after the founder's photo: black glass, two zones side by side, two chrome knobs at
   // the front left
   const [hx0, , hz0, hx1, , hz1] = L3(S.hob_box)
@@ -635,6 +651,7 @@ if (!ITEM) {
     cyl(hx0 + 0.035, 0.912, kz, 0.017, 0.012, "black", "y", 32)
     cyl(hx0 + 0.035, 0.924, kz, 0.013, 0.012, "steel", "y", 32)
   }
+  TAG = "units"
   // worktop in four pieces around the sink cut-out, so the bowl's depth shows
   const [sx0, , sz0, sx1, , sz1] = L3(S.sink_box)
   const sox0 = sx0 + 0.025, sox1 = sx1 - 0.025, soz0 = sz0 + 0.025, soz1 = sz1 - 0.025, wx = px0 - wt
@@ -642,6 +659,7 @@ if (!ITEM) {
   box(wx, 0.862, soz1, px0, 0.9, run + 0.002, "worktop", 0.004)
   box(wx, 0.862, soz0, sox0, 0.9, soz1, "worktop")
   box(sox1, 0.862, soz0, px0, 0.9, soz1, "worktop")
+  TAG = "sink"
   // inset steel sink: a thin rim, a 180 mm deep bowl with rounded corners, a drain; then the tap
   ring(sx0, sz0, sx1, sz1, 0.035, 0.025, 0.9, 0.003, "steel")
   ring(sox0, soz0, sox1, soz1, 0.03, 0.008, 0.72, 0.18, "steel")
@@ -654,6 +672,7 @@ if (!ITEM) {
     new THREE.Vector3(tapX - 0.09, 1.22, tapZ), new THREE.Vector3(tapX - 0.17, 1.12, tapZ),
   ])
   add(new THREE.TubeGeometry(curve, 40, 0.011, 16, false), "steel")
+  TAG = "overhead"
   // overhead cabinet with two doors, and the hood under it
   const [ox0, oy0, oz0, ox1, oy1, oz1] = L3(S.overhead)
   box(ox0 + 0.02, oy0, oz0, ox1, oy1, oz1, "pine")
@@ -663,6 +682,7 @@ if (!ITEM) {
     box(ox0, oy0 + 0.002, z0 + 0.002, ox0 + 0.02, oy1 - 0.002, z0 + half - 0.002, "pine", 0.004)
     cyl(ox0 - 0.015, oy0 + 0.06, z0 + half / 2, 0.006, 0.16, "steel", "z", 16)
   }
+  TAG = "hood"
   // slim black hood after the founder's photo, on its shelf (K3-HS), a row of small buttons on its front
   const [hdx0, hdy0, hdz0, hdx1, hdy1, hdz1] = L3(S.hood)
   box(hdx0, hdy0, hdz0, hdx1, hdy1, hdz1, "hoodblack", 0.008)
@@ -671,6 +691,7 @@ if (!ITEM) {
     const bz = (hdz0 + hdz1) / 2 + 0.04 + i * 0.026
     box(hdx0 - 0.003, hdy0 + 0.045, bz, hdx0 + 0.001, hdy0 + 0.055, bz + 0.012, "white", 0.002)
   }
+  TAG = "prop"
   // on the worktop: a kettle and a small plant
   cyl(px0 - 0.22, 0.9 + 0.09, fr0 + 0.25, 0.075, 0.18, "white", "y", 32, 0.06)
   const handle = add(new THREE.TorusGeometry(0.055, 0.012, 12, 32, Math.PI), "white")
@@ -678,7 +699,8 @@ if (!ITEM) {
 }
 
 // ------------------------------------------------------------ bathroom: shower, WC, basin (look of the photos)
-if (!ITEM) {
+if (!ITEM || ROOM_ITEMS.has(ITEM)) {
+  TAG = "shower"
   // shower: low tray with a round drain, frameless glass screen, a bar and a round head on end wall B
   const [tx0, , tz0, tx1, ty1, tz1] = L3(S.tray)
   box(tx0, 0, tz0, tx1, ty1, tz1, "ceramic", 0.01)
@@ -693,6 +715,7 @@ if (!ITEM) {
   box(wb - 0.06, 1.05, barZ - 0.09, wb, 1.17, barZ + 0.09, "steel", 0.02) // thermostatic valve
   cyl(wb - 0.075, 1.11, barZ, 0.03, 0.03, "black", "x")
 
+  TAG = "wc"
   // WC: a wall-hung pan straight off the finished end wall, no box; the flush plate sits on the wall above
   const [wx0, wy0, wz0, wx1, wy1, wz1] = L3(S.wc)
   box(wx0, wy0, wz0 + 0.005, wx1, wy1 - 0.03, wz1 - 0.005, "ceramic", 0.07) // pan
@@ -701,10 +724,12 @@ if (!ITEM) {
   box(wb - 0.006, 0.93, pcz - 0.12, wb, 1.09, pcz + 0.12, "steel", 0.006) // flush plate
   box(wb - 0.009, 0.97, pcz - 0.1, wb - 0.005, 1.05, pcz - 0.006, "steel", 0.004) // two buttons
   box(wb - 0.009, 0.97, pcz + 0.006, wb - 0.005, 1.05, pcz + 0.1, "steel", 0.004)
+  TAG = "prop"
   // roll holder on the cross wall's bath face
   cyl(L - 0.45, 0.72, cy0 - 0.05, 0.055, 0.1, "white", "x", 32)
   box(L - 0.52, 0.715, cy0 - 0.012, L - 0.38, 0.725, cy0, "steel")
 
+  TAG = "basin"
   // basin: white vessel basin on a black metal console with a slatted shelf and two rolled towels
   const [bx0_, , bz0, bx1_, , bz1] = L3(S.basin)
   const top = 0.8, cx0 = L - 0.33, cz0 = cy1 + 0.02, cz1 = W - 0.01
@@ -725,11 +750,15 @@ if (!ITEM) {
   cyl((vx0 + vx1) / 2, by + 0.0215, (vz0 + vz1) / 2, 0.022, 0.003, "steel", "y", 32)
   box(L - 0.045, by, (bz0 + bz1) / 2 - 0.015, L - 0.015, by + 0.27, (bz0 + bz1) / 2 + 0.015, "black", 0.006) // tap
   box(L - 0.12, by + 0.24, (bz0 + bz1) / 2 - 0.013, L - 0.03, by + 0.27, (bz0 + bz1) / 2 + 0.013, "black", 0.006)
+  TAG = "mirror"
   // a rounded LED mirror above
   const [mx0, my0, mz0, mx1, my1, mz1] = L3(S.mirror)
   box(L - 0.03, my0, mz0, L - 0.012, my1 - 0.08, mz1, "led", 0.05)
   box(L - 0.034, my0 + 0.02, mz0 + 0.02, L - 0.03, my1 - 0.1, mz1 - 0.02, "mirror", 0.04)
 }
+
+TAG = ""
+if (ROOM_ITEMS.has(ITEM)) for (const o of meshes.splice(0)) o.userData.tag === ITEM ? meshes.push(o) : scene.remove(o)
 
 // ------------------------------------------------------------ camera: a front view, verticals straight
 const bb = new THREE.Box3()
@@ -739,7 +768,10 @@ const cx = ITEM ? mid.x : L / 2
 const camera = new THREE.PerspectiveCamera(ITEM ? 30 : 56, FW / FH, 0.1, 100)
 if (ITEM) { // a piece on its own: three-quarter view from the front right, a little above
   const r = bb.getBoundingSphere(new THREE.Sphere()).radius
-  camera.position.copy(mid).addScaledVector(new THREE.Vector3(0.75, 0.6, 1).normalize(), r * 4)
+  // galley and bathroom pieces face the room's -x side; the chairs are seen from the table
+  const side = [-1, 0.6, 0.75], view = { chairs: [0.75, 0.6, -1], shower: [-0.6, 0.6, 1] }[ITEM]
+    ?? (["units", "fridge", "hob", "sink", "hood", "overhead", "wc", "basin", "mirror"].includes(ITEM) ? side : [0.75, 0.6, 1])
+  camera.position.copy(mid).addScaledVector(new THREE.Vector3(...view).normalize(), r * 4)
   camera.lookAt(mid)
 } else {
   camera.position.set(cx, 3.3, W + 5.2)

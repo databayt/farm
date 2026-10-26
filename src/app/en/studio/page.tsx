@@ -44,7 +44,7 @@ function bedRail() {
   const items = [
     { id: "bed", title: "Bed frame", size: "1.64 × 2.02 m, headboard 1.0 m, top at 0.45 m",
       where: "Built: board from Gisozi (Agakiriro), cut in a Gisozi workshop", cost: `RWF ${frw(Math.round(bedStock().total))} of stock`,
-      note: "Includes the two storage boxes that roll out from under it on castors (0.60 × 0.62 × 0.29 m each). Every piece is in the section below." },
+      note: "Includes the two storage boxes that roll out from under it on castors (0.60 × 0.62 × 0.29 m each)." },
     { id: "mattress", title: "Mattress", size: "160 × 200 × 20 cm", where: "Rwanda Foam Ltd, Kigali", cost: `RWF ${frw(180_000)} estimate`,
       note: "Sizes not confirmed yet; the frame takes 152 × 183 up to 160 × 200 cm." },
     { id: "sheets", title: "Bed sheets", size: "Fitted sheet, flat sheet and 2 pillowcases for 160 × 200 cm", ...unsourced },
@@ -57,10 +57,67 @@ function bedRail() {
     { id: "walllamp", title: "Wall reading lamp", size: "Arm 0.24 m from the wall", where: "With the electrical kit (K8)",
       cost: `RWF ${frw(15_000)} estimate`, note: "Over the wall-side pillow." },
   ]
+  return rail("bedroom", items)
+}
+
+type RailRow = { id: string; title: string; size: string; where: string; cost: string; note?: string }
+function rail(dir: string, items: RailRow[]) {
   return items.map((x) => ({
-    src: `${D}/render/bedroom/${x.id}.webp`, alt: x.title, title: x.title, note: x.note,
+    src: `${D}/render/${dir}/${x.id}.webp`, alt: x.title, title: x.title, note: x.note,
     details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: x.where }, { label: "Cost", value: x.cost }],
   }))
+}
+
+// board for the pieces the workshop cuts (cut-list.csv), priced by the share of each sheet they take
+const SHEET_RWF: Record<string, number> = { PLY18: 45_000, PLY12: 35_000 }
+function boardCost(keep: (id: string) => boolean) {
+  return readCsv("cut-list.csv").filter((r) => keep(r.id)).reduce((n, r) =>
+    n + (r.material === "WTOP38" ? 90_000 : ((Number(r.length_mm) * Number(r.width_mm)) / (2440 * 1220)) * (SHEET_RWF[r.material] ?? 0)), 0)
+}
+const est = (n: number) => `RWF ${frw(Math.round(n / 100) * 100)} estimate`
+const built = (n: number, what = "of board") => `RWF ${frw(Math.round(n / 100) * 100)} ${what}`
+const HARDWARE_DISTRICT = "Not found online yet: the hardware district"
+
+// The Seating, Galley and Bath rails, in the Bed rail's pattern: renders from room.html?item=<id> (the room's
+// own meshes, so the picture is the piece in the 3D view); sizes from render/scene.json and the BOM
+function seatingRail() {
+  return rail("seating", [
+    { id: "sofa", title: "Sofa", size: "1.30 × 0.75 m, 0.70 m high", where: "Not sourced yet", cost: est(450_000),
+      note: "A low two-seat sofa in soft dark grey, with washable covers." },
+    { id: "table", title: "Table", size: "0.86 × 0.50 m, 0.55 m high", where: "Built in the workshop from 18 mm board (kit K6)",
+      cost: built(boardCost((id) => /^K6-0[1-3]$/.test(id))), note: "A low wide table: the top on two legs that slot together." },
+    { id: "chairs", title: "Chairs × 2", size: "0.40 × 0.40 m, seat at 0.40 m, back 0.80 m", where: "Built in the workshop from 18 mm board (kit K6)",
+      cost: built(boardCost((id) => /^K6-(0[4-9]|1[01])$/.test(id)), "of board for both") },
+  ])
+}
+function galleyRail() {
+  return rail("galley", [
+    { id: "units", title: "Base units", size: "1.60 m run, 0.62 m deep, worktop at 0.90 m",
+      where: "Built in the workshop from 18 mm board, 38 mm worktop (kit K3)",
+      cost: built(boardCost((id) => /^K3-(0|H-|S-|PL|WT)/.test(id)) + 8 * 1_500, "of board, worktop and legs"),
+      note: "A fridge bay, a hob base with two drawers and a sink base with a door, on adjustable legs behind a plinth." },
+    { id: "fridge", title: "Fridge", size: "About 90 L, under the counter", where: "Kanis Retail (online)", cost: `RWF ${frw(265_000)}`,
+      note: "A published price (Kanis, 2026-10-26), not a placeholder." },
+    { id: "hob", title: "Induction hob", size: "590 × 350 mm, two zones side by side, about 3.5 kW", where: "Not sourced yet", cost: est(250_000),
+      note: "Black glass with front knobs. No gas indoors." },
+    { id: "sink", title: "Sink and tap", size: "Inset bowl about 380 × 420 mm", where: HARDWARE_DISTRICT, cost: est(70_000 + 45_000),
+      note: "Stainless single bowl with a mixer tap. A drinking-water filter goes under it (RWF 80,000 estimate)." },
+    { id: "hood", title: "Cooker hood", size: "600 mm wide, slim", where: "Not sourced yet", cost: est(90_000 + boardCost((id) => id === "K3-HS")),
+      note: "Black, recirculating with a charcoal filter, on its own shelf under the cabinet." },
+    { id: "overhead", title: "Wall cabinet", size: "1.60 × 0.50 m, 0.50 m high", where: "Built in the workshop from 18 mm board (kit K3)",
+      cost: built(boardCost((id) => id.startsWith("K3-T-"))), note: "Two doors, hung on the steel rail over the galley." },
+  ])
+}
+function bathRail() {
+  return rail("bath", [
+    { id: "shower", title: "Shower", size: "Tray 1,000 × 900 mm, glass screen 700 × 2,000 mm", where: HARDWARE_DISTRICT, cost: est(120_000 + 180_000),
+      note: "A low tray with a 90 mm waste and a fixed 8 mm toughened glass screen." },
+    { id: "wc", title: "WC", size: "Wall-hung, 520 mm projection", where: HARDWARE_DISTRICT, cost: est(150_000 + 220_000),
+      note: "A soft-close seat, on a slim concealed cistern frame with a dual-flush plate." },
+    { id: "basin", title: "Basin", size: "400 × 300 mm", where: HARDWARE_DISTRICT, cost: est(90_000),
+      note: "With a mixer and a bottle trap, outside the shower door." },
+    { id: "mirror", title: "Mirror", size: "0.40 × 0.65 m", where: HARDWARE_DISTRICT, cost: est(25_000), note: "4 mm glass over the basin." },
+  ])
 }
 
 const STEPS = [
@@ -362,12 +419,15 @@ export default function StudioPage() {
 
       {/* Bed: the bed corner as a rail of product cards (after databayt.org's products rail); the card in focus
           shows its size, source and cost below. */}
-      <section id="bedroom" className="pt-10 pb-10">
-        <h2 className="px-4 text-3xl font-semibold tracking-tight md:px-10">Bed</h2>
-        <div className="mt-6">
-          <ItemRail items={bedRail()} />
-        </div>
-      </section>
+      {[{ id: "bedroom", title: "Bed", items: bedRail() }, { id: "seating", title: "Seating", items: seatingRail() },
+        { id: "galley", title: "Galley", items: galleyRail() }, { id: "bath", title: "Bath", items: bathRail() }].map((r) => (
+        <section key={r.id} id={r.id} className="pt-10 pb-10">
+          <h2 className="px-4 text-3xl font-semibold tracking-tight md:px-10">{r.title}</h2>
+          <div className="mt-6">
+            <ItemRail items={r.items} />
+          </div>
+        </section>
+      ))}
 
       {/* The numbers and the drawing set behind the 2D and 3D. */}
       <section id="sheets">
