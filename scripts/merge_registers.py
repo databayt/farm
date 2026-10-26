@@ -26,7 +26,7 @@ COLUMNS = {
     "buyers": ["id", "name", "category", "location", "buys", "direct_from_farms", "public_contact", "url", "approach",
                "source_id", "status", "notes"],
 }
-PREFIX_ORDER = ["LOC", "MKT", "CRP", "LVS", "BUY", "REG", "ENG", "FIN"]
+PREFIX_ORDER = ["LOC", "MKT", "CRP", "LVS", "BUY", "REG", "ENG", "FIN", "DSN", "GTM", "STU"]
 
 
 def kind_of(path: Path) -> str | None:
@@ -127,7 +127,7 @@ def main(clean: bool) -> int:
     import re
     cited: dict[str, set[str]] = {}
     for doc in (ROOT / "study").rglob("*.md"):
-        for sid in re.findall(r"\b(?:LOC|MKT|CRP|LVS|BUY|REG|ENG|FIN)-\d{2,3}\b", doc.read_text(encoding="utf-8")):
+        for sid in re.findall(r"\b(?:LOC|MKT|CRP|LVS|BUY|REG|ENG|FIN|DSN|GTM|STU)-\d{2,3}\b", doc.read_text(encoding="utf-8")):
             cited.setdefault(sid, set()).add(doc.relative_to(ROOT).as_posix())
     unresolved = sorted(set(cited) - known, key=sort_key)
     for sid in unresolved:

@@ -37,6 +37,10 @@ Scale: probability and impact from 1 (low) to 5 (high); score = P × I. Ratings 
 | R23 | Foreign-exchange exposure (imported inputs, USD-priced equipment) | 2 | 2 | 4 | RWF weakening | Buy locally; price in RWF | Delay purchases | F |
 | R24 | Founder dependence (one person holds the plan, the tech and the sales) | 4 | 4 | 16 | Tasks slip when the founder is away | SOPs, records, a trained manager, documented systems | A partner or manager | F |
 | R25 | Inflation (urban CPI +17.2% in Sept 2026; meat +33.6%) [V MKT-15] | 4 | 2 | 8 | Input costs above quotes | Lock quotes; stage purchases | Re-price; re-phase | F |
+| R26 | Roof terrace, canopy or opening frame overloaded: the glazed side no longer braces the box [V STU-03] | 2 | 5 | 10 | Racking, binding doors, a sagging slider head | Loads only on the corner castings; survey the opening frame; engineer's sign-off | Close the roof to guests; add bracing | F |
+| R27 | Septic siting or soakage fails (borehole distance, groundwater, percolation) [V STU-10, STU-11] | 3 | 4 | 12 | No site 50 m from the borehole; slow percolation | Site plan before fabrication; percolation test | A sealed tank emptied on a schedule | F |
+| R28 | The containers differ from the photo or are out of square (one rests on a rock) | 3 | 3 | 9 | Survey differences above 150 mm or diagonals above 13 mm | Survey all three; level the supports; scribe strips | Re-run the generator per unit; fillers | F |
+| R29 | The approval does not cover the roof terrace, the canopy or guest use | 2 | 4 | 8 | The sector asks for an amended permit; RDB asks for a licence | File the approval reference; ask about amendments before building the roof kit | Fit out the interior first; build the roof kit later | F |
 
 ## How it is used
 

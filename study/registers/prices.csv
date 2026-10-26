@@ -328,3 +328,12 @@ LVS-P60,"Beef boneless, retail (comparator)",per kg,11500,retail,"Nyarugenge Mar
 LVS-P61,"Live sheep, 30-35 kg animal",per head,100000,"live animal, market (farmer quote)","Mukamira Livestock Market, Nyabihu District",2024-05-08,LVS-56,[V],"Farmer quote: 'a sheep weighing between 30 to 35 kilograms sells for Rwf100,000'; most buyers are Congolese traders. [E] about Rwf2,900-3,300 per kg live weight (100,000 / 35 and 100,000 / 30)."
 LVS-P62,Goat meat,per kg,3500,retail (abattoir staff statement),"Kigali (Saban abattoir, Nyabugogo)",2018-01-01,LVS-53,[V],"Older than 5 years: 'a kilo of goat meat goes for Rwf3,500' while beef was Rwf2,000/kg at the time."
 LVS-P63,Beef (comparator),per kg,2000,retail (abattoir staff statement),"Kigali (Saban abattoir, Nyabugogo)",2018-01-01,LVS-53,[V],Older than 5 years; for the goat-to-beef price ratio only.
+STU-P01,"Electric water heater 50 L 2,000 W (TRONIC WT 1050)",each,252000,retail,"Kigali (Kanis, online)",2026-10-26,STU-25,[V],Out of stock when read.
+STU-P02,Electric water heater 50 L (Roch),each,144000,retail,"Kigali (Kanis, online)",2026-10-26,STU-25,[V],Read via a search-engine copy.
+STU-P03,Mini fridge 90 L (Von),each,265000,retail,"Kigali (Kanis, online)",2026-10-26,STU-26,[V],Read via a search-engine copy.
+STU-P04,Turnkey container house (lowest listed),per house,24000000,retail (listing),Kigali (Rwanda Container Builds),2024-01-24,STU-27,[V],"The listing also shows 30,000,000 and 42,000,000; specification not stated. A benchmark only."
+STU-P05,"REG low-voltage connection, network within 37 m",per connection,56000,tariff,Rwanda (REG),2026-10-26,STU-16,[V],Undated page read via a search-engine copy.
+STU-P06,"Electricity, hotels under 660,000 kWh per year",per kWh,239,tariff,Rwanda,2025-10-01,STU-17,[V],Press report of the RURA tariff.
+STU-P07,"Electricity, residential above 50 kWh per month",per kWh,369,tariff,Rwanda,2025-10-01,STU-17,[V],Press report of the RURA tariff.
+STU-P08,"RURA electrician licence, class A (person)",per licence,30000,fee,Rwanda (RURA),2026-10-26,STU-15,[V],"Plus a RWF 25,000 application fee; RWF 100,000 for a company."
+STU-P09,RDB tourism operating licence,per licence,80000,fee,Rwanda (RDB),2017-01-01,STU-35,[V],From a 2017 page; the fee may have changed.
