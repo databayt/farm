@@ -49,9 +49,9 @@ The 3D drawing and the realistic image on the studio page are rendered from the 
 | Surface | Finish | Why |
 |---|---|---|
 | Walls and ceiling (living) | 12 mm ply, vapour-retarding primer and off-white paint | Light and calm; the primer seals the insulation from room air; repaintable |
-| Floor (living) | Epoxy seal over the treated container floor, then 5 mm SPC in a dark smoked-oak decor | The original floor is insecticide-treated; never sand it [V STU-07] |
+| Floor (living) | Epoxy seal over the treated container floor, then 5 mm SPC in a natural red-wood decor | The original floor is insecticide-treated; never sand it [V STU-07] |
 | Bathroom walls | Cement board, liquid membrane, ceramic tiles | Fully waterproof; easy to clean between guests |
 | Bathroom floor | Safety vinyl coved 100 mm up the walls, low-profile tray | No joints at the floor; the tray keeps IP zone 1 small [V STU-38] |
-| Furniture | Golden knotty pine: 18 mm pine-faced ply or solid pine, clear matte PU varnish, knots kept, ABS edges; marine ply in the bathroom | The founder's reference finish; Kigali carpenters work pine every day; warm against off-white walls and a darker floor |
+| Furniture | Golden knotty pine: 18 mm pine-faced ply or solid pine, clear matte PU varnish, knots kept, ABS edges; marine ply in the bathroom | The founder's reference finish; Kigali carpenters work pine every day; warm against off-white walls and the natural red floor |
 | Worktop | 38 mm laminate or hardwood | Field check (AS-24) |
 | Outside | Existing paint kept; steelwork for the roof painted to match | Founder did not ask for a repaint |

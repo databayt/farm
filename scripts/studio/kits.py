@@ -145,7 +145,7 @@ def k1_lining(lo: Layout) -> Kit:
                  "pufoam"))
     k.buy(Bought("K1-EPOXY", "Primer + 100%-solids epoxy floor seal", "K1", "finishes", "painting", 14, "m2",
                  "epoxy"))
-    k.buy(Bought("K1-SPC", "SPC flooring 5 mm, smoked-oak decor, + underlay (living area)", "K1", "finishes", "carpentry",
+    k.buy(Bought("K1-SPC", "SPC flooring 5 mm, natural red-wood decor, + underlay (living area)", "K1", "finishes", "carpentry",
                  round(lo.part_x0 * lo.W / 1e6 * 1.08, 1), "m2", "spc", Box(0, 0, -5, lo.part_x0, lo.W, 0),
                  step="S05", layer="envelope", color="floor"))
     k.buy(Bought("K1-RUST", "Rust converter + zinc primer for steel", "K1", "finishes", "painting", 4, "L", "primer"))
