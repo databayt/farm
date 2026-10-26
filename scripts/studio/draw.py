@@ -116,6 +116,11 @@ class Sheet:
                 cx += w
         return y + rh * (len(rows) + 1)
 
+    def bare(self, w: float, h: float) -> str:
+        """The drawing alone on a transparent ground: no frame, title block or stamp (web figures)."""
+        return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {f(w)} {f(h)}" '
+                f'font-family="Helvetica, Arial, sans-serif">' + "".join(self.body) + "</svg>\n")
+
     # -------------------------------------------------------------- frame
     def svg(self) -> str:
         W, H = self.W, self.H

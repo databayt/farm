@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import params as P
-from draw import (FILL, SYS, Sheet, iso, iso_draw, ortho, sym_box, sym_breaker, sym_earth, sym_lamp, sym_socket,
+from draw import (FILL, SYS, Sheet, iso, iso_draw, ortho, project_box, sym_box, sym_breaker, sym_earth, sym_lamp, sym_socket,
                   sym_switch)
 from model import Box
 
@@ -158,6 +158,35 @@ def a103_plan(m) -> Sheet:
     rows = [[r["id"], r["rule"][:58], r["result"], r["detail"][:34]] for r in m["checks"] if not r["id"].startswith(("E-", "P-"))]
     s.table(40, 160, [("Check", 22), ("Rule", 110), ("Result", 16), ("Value", 70)], rows, 1.8, 3.3)
     return s
+
+
+def plan_bw(m) -> str:
+    """The furniture plan in black and white, for the web: walls solid, furniture in outline,
+    wall-hung units dashed, zone and overall dimensions; no sheet, title block or checks."""
+    lo, s = m["lo"], Sheet("", "")
+    sc, ox, oy, ink = 25, 8.0, 22.0, "#111"
+    X = lambda x: ox + x / sc  # noqa: E731
+    Y = lambda y: oy + y / sc  # noqa: E731
+    walls = items(m, kits=["K0"], layers=["shell"], exclude_layers=())
+    ortho(s, "plan", [(b, ink, n) for (b, fl, n, i, *_x) in walls if i not in ("K0-ROOF", "K0-FLOOR", "K0-SLIDER")],
+          ox, oy, sc, sw=0.1)
+    ortho(s, "plan", [(b, "#fff", n) for (b, fl, n, i, *_x) in walls if i == "K0-SLIDER"], ox, oy, sc, sw=0.15)
+    it = [t for t in items(m, layers=["furniture", "fixtures"]) if t[0].z0 < lo.H - 200]
+    low = [(b, "#fff", n) for (b, fl, n, *_r) in it if b.z0 < 1400]
+    ortho(s, "plan", low, ox, oy, sc, sw=0.18)
+    for (b, *_r) in it:
+        if b.z0 >= 1400:  # wall-hung: dashed, above the counter
+            a0, b0, a1, b1 = project_box("plan", b)
+            s.rect(X(a0), Y(b0), (a1 - a0) / sc, (b1 - b0) / sc, "none", ink, 0.15, dash="0.8,0.6")
+    s.arc(X(lo.part_x0), Y(lo.bdoor[0]), 700 / sc, 90, 180, ink, 0.18, "0.8,0.6")
+    for x0, x1, lab in ((0, lo.bed_x1, "BED"), (*lo.sofa, "SOFA"), (lo.galley_x0, lo.part_x0, "GALLEY"),
+                        (lo.bath_x0, lo.L, "BATH")):
+        s.dim(X(x0), oy - 6, X(x1), oy - 6, f"{x1 - x0:.0f}", 3, 2.4)
+        s.text(X((x0 + x1) / 2), oy - 15, lab, 2.6, "middle", "bold", ink)
+    s.dim(X(0), Y(lo.W) + 4, X(lo.L), Y(lo.W) + 4, f"{lo.L:.0f} inside", 4, 2.4)
+    s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:.0f}", -4, 2.4)
+    s.text(X(2700), Y(1300), "LIVING / DINING", 2.6, "middle", "bold", ink)
+    return s.bare(ox + (lo.L + 300) / sc + 10, Y(lo.W) + 14)
 
 
 def a201_elev(m) -> Sheet:
