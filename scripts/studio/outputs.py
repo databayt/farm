@@ -317,7 +317,7 @@ def write_drawings(m, out: Path, layouts) -> list[tuple[str, str, str]]:
         files.append((s.number, s.title, fn))
     wcsv(out / "data" / "drawings.csv", ["number", "title", "file"], [list(f) for f in files])
     (out / "render" / "plan.svg").write_text(S.plan_bw(m))
-    (out / "render" / "front.svg").write_text(S.front_bw(m))
+    (out / "render" / "scene.json").write_text(json.dumps(S.scene_json(m), indent=1) + "\n")
     _ = lo
     return files
 

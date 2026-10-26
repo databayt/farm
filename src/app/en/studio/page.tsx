@@ -248,17 +248,27 @@ export default function StudioPage() {
         </div>
       </section>
 
-      {/* 3D, full screen and in the 2D section's pattern: the same simplified pieces in a black-and-white
-          front view (render/front.svg, inverted in dark mode); the live model follows for anyone exploring. */}
+      {/* 3D, full screen and in the 2D section's pattern: a black-and-white line drawing of the furnished
+          room seen from the front (render/front-line.png, inverted in dark mode), then the same view rendered
+          realistically (render/front-real.jpg). Both come from scripts/studio/render/room.html, built from
+          render/scene.json; the live model follows for anyone exploring. */}
       <section id="model">
         <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
           <h2 className="text-3xl font-semibold tracking-tight">3D</h2>
           <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${D}/render/front.svg`} alt="The studio in 3D, seen from the front with the front wall off: the bed with shelf towers, the sofa, table and chairs, the galley with its overhead cabinet, and the bathroom with shower and WC behind a door, the basin outside it."
+            <img src={`${D}/render/front-line.png`} width={2400} height={1100}
+              alt="Line drawing of the studio seen from the front with the front wall off: the bed with its headboard shelf and two shelf towers, the sofa with a table and two chairs, the galley with hob, sink and overhead cabinet, and the bathroom with the shower, the WC and the basin on its console outside the door."
               className="w-full object-contain lg:max-h-full dark:invert" />
           </div>
         </div>
+        <figure className="px-4 pb-10 md:px-10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`${D}/render/front-real.jpg`} width={2400} height={1100} loading="lazy"
+            alt="The same view rendered with materials and daylight: a white bed, a light grey sofa with yellow and blue cushions, a white table and plywood chairs, the plywood galley, and a white marble bathroom with a glass shower screen, the WC and a basin on a black metal console."
+            className="h-auto w-full" />
+          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
+        </figure>
         <div className="mx-auto w-full max-w-5xl px-4 pb-6 md:px-6">
           <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
             title="Container studio, Layout B" />

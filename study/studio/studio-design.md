@@ -42,6 +42,8 @@ Clear height is about 2,323 mm after a 60 mm ceiling and a 10 mm floor [E, AS-15
 
 Use the layer switches to strip the studio back to the container, the explode slider to pull every kit apart, and the step slider to rebuild it in assembly order. Click any part to see its id, size and step.
 
+The 3D drawing and the realistic image on the studio page are rendered from the same layout numbers (`render/scene.json`, written by the generator) by `scripts/studio/render/room.html`: one furnished room seen from the front with the front wall off, drawn once as black-and-white line art and once with materials and daylight. The furniture takes its look from product photos the founder chose (a FRIDHULT-style sofa, a MALM-style bed, a LACK-style table, a vessel basin on a black console, a square wall-hung-style WC, a frameless shower screen); sizes, layout and the bill of materials stay as designed. Pillows, throws, cushions, towels, books and plants are render-only props.
+
 ## Finishes
 
 | Surface | Finish | Why |

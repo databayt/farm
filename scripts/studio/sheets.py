@@ -224,126 +224,38 @@ def plan_bw(m) -> str:
     return s.bare(ox + (lo.L + 300) / sc + 10, Y(lo.W) + 14)
 
 
-def front_bw(m) -> str:
-    """The 3D counterpart of plan_bw: the same simplified pieces as outlines in black and white, seen
-    from the front and above. The back and end walls stand full height, the front wall is a low curb,
-    and the bathroom walls are cut at 0.7 m with black tops, as on the plan."""
+def scene_json(m) -> dict:
+    """The layout numbers render/room.html builds its detailed 3D room from (mm, layout frame:
+    x from end A, y from the back wall, z from the finished floor). Boxes are [x0, y0, z0, x1, y1, z1]."""
     lo = m["lo"]
-    by_id = {i: b for (b, fl, n, i, *_x) in items(m, layers=None, exclude_layers=())}
-    L, W, H, e = lo.L, lo.W, lo.H, 50.0
-    cut, curb = 700.0, 120.0
-    cy0, cy1 = lo.bath_y1, lo.bath_y1 + lo.cross_t
-    d0, d1 = lo.bdoor
-    sx0, sx1 = lo.sofa
-    X0 = lo.part_x0 - 620
-    pieces: list[tuple[Box, bool]] = [  # (box, cut wall with a black top)
-        (Box(-e, -e, -40, L + e, W + e, 0), False),  # floor
-        (Box(-e, -e, 0, L + e, 0, H), False),  # back wall
-        (Box(L, 0, 0, L + e, W, H), False),  # end B
-        (Box(-e, 0, 0, 0, W, H), False),  # end A
-        (Box(0, W, 0, lo.o1[0], W + e, curb), True),  # front wall either side of the glazing and W1
-        (Box(lo.o1[1], W, 0, lo.o2[0], W + e, curb), True),
-        (Box(lo.o2[1], W, 0, L + e, W + e, curb), True),
-        (Box(lo.part_x0, 0, 0, lo.bath_x0, cy1, cut), True),  # partition
-        (Box(lo.bath_x0, cy0, 0, d0 + 18, cy1, cut), True),  # cross wall, door opening between
-        (Box(d1, cy0, 0, L, cy1, cut), True),
-        # bed, pillows, headboard and the two shelf towers
-        (Box(0, 150, 0, lo.bed_x1, 2170, 450), False),
-        (Box(20, 170, 450, lo.bed_x1 - 20, 2150, 650), False),
-        (Box(0, 0, 0, lo.bed_x1, 150, 1100), False),
-        (Box(120, 220, 650, lo.bed_x1 / 2 - 40, 520, 740), False),
-        (Box(lo.bed_x1 / 2 + 40, 220, 650, lo.bed_x1 - 120, 520, 740), False),
-        (Box(0, 0, 1100, 400, 150, 2200), False),
-        (Box(lo.bed_x1 - 400, 0, 1100, lo.bed_x1, 150, 2200), False),
-        # sofa: seat, back, arms
-        (Box(sx0, 0, 0, sx1, 750, 400), False),
-        (Box(sx0 + 120, 0, 400, sx1 - 120, 200, 700), False),
-        (Box(sx0, 0, 0, sx0 + 120, 750, 560), False),
-        (Box(sx1 - 120, 0, 0, sx1, 750, 560), False),
-        # galley: counter with hob and sink, overhead cabinet
-        (Box(X0, 0, 0, lo.part_x0, lo.sink[1], 900), False),
-        (Box(X0 + 60, lo.hob[0] + 60, 900, lo.part_x0 - 60, lo.hob[1] - 60, 910), False),
-        (Box(X0 + 90, lo.sink[0] + 60, 896, lo.part_x0 - 120, lo.sink[1] - 60, 900), False),
-        (Box(lo.part_x0 - 500, 0, 1800, lo.part_x0, lo.sink[1], 2300), False),
-    ]
-    for i, b in by_id.items():  # the table and the chairs, as built
-        if i.startswith("K6-") and i != "K6-SOFA" and b.z1 > 300:
-            pieces.append((b, False))
-    wc = by_id["K2-WC"]
-    for i in ("K2-TRAY", "K2-SCREEN", "K2-BASIN"):
-        pieces.append((by_id[i], False))
-    pieces += [(Box(wc.x0, wc.y0, 0, wc.x1 - 180, wc.y1, 420), False),
-               (Box(wc.x1 - 180, wc.y0, 0, wc.x1, wc.y1, 780), False)]
-    bx0, bx1, by0, by1 = lo.basin
-    pieces.append((Box(L - 138, by0, 1250, L, by1, 1900), False))
+    found = [(b, n, i) for (b, fl, n, i, *_x) in items(m, layers=None, exclude_layers=())]
 
-    # one-point perspective from in front of the glass, a little above the roof line: the front wall
-    # is off, the end walls recede to the middle, and the plan reads the same way round as the 2D
-    cx, cy, cz, ink = L / 2, W + 5200.0, 3300.0, "#111"
-    boxes = [b for b, _ in pieces]
+    def box(b) -> list[float]:
+        return [round(v, 1) for v in (b.x0, b.y0, b.z0, b.x1, b.y1, b.z1)]
 
-    def proj(x, y, z):
-        d = cy - y
-        return ((x - cx) / d * 1000, (cz - z) / d * 1000)
+    def union(pick) -> list[float]:
+        bs = [b for (b, n, i) in found if pick(i, n)]
+        return [round(v, 1) for v in (min(b.x0 for b in bs), min(b.y0 for b in bs), min(b.z0 for b in bs),
+                                      max(b.x1 for b in bs), max(b.y1 for b in bs), max(b.z1 for b in bs))]
 
-    pts = [proj(x, y, z) for b in boxes for x in (b.x0, b.x1) for y in (b.y0, b.y1) for z in (b.z0, b.z1)]
-    u0, v0 = min(p[0] for p in pts), min(p[1] for p in pts)
-    u1, v1 = max(p[0] for p in pts), max(p[1] for p in pts)
-    sc, pad = 400 / (u1 - u0), 6.0
-    sh = Sheet("", "")
-
-    def P_(x, y, z):
-        u, v = proj(x, y, z)
-        return (pad + (u - u0) * sc, pad + (v - v0) * sc)
-
-    # painter's order: behind = wholly farther back, else wholly below, else farther from the centre line
-    n = len(boxes)
-    after: list[set[int]] = [set() for _ in range(n)]
-    for i in range(n):
-        for j in range(i + 1, n):
-            a_, b_ = boxes[i], boxes[j]
-            if a_.y1 <= b_.y0 + 0.5:
-                after[i].add(j)
-            elif b_.y1 <= a_.y0 + 0.5:
-                after[j].add(i)
-            elif a_.z1 <= b_.z0 + 0.5:
-                after[i].add(j)
-            elif b_.z1 <= a_.z0 + 0.5:
-                after[j].add(i)
-            elif a_.x1 <= b_.x0 + 0.5 or b_.x1 <= a_.x0 + 0.5:
-                da = min(abs(a_.x0 - cx), abs(a_.x1 - cx))
-                db = min(abs(b_.x0 - cx), abs(b_.x1 - cx))
-                (after[i] if da > db else after[j]).add(j if da > db else i)
-    indeg = [0] * n
-    for i in range(n):
-        for j in after[i]:
-            indeg[j] += 1
-    key = lambda i: (boxes[i].y1, boxes[i].z1)  # noqa: E731
-    ready = sorted((i for i in range(n) if indeg[i] == 0), key=key)
-    order: list[int] = []
-    while ready:
-        i = ready.pop(0)
-        order.append(i)
-        for j in after[i]:
-            indeg[j] -= 1
-            if indeg[j] == 0:
-                ready.append(j)
-        ready.sort(key=key)
-    order += sorted((i for i in range(n) if i not in order), key=key)
-    for k in order:
-        b, wall = boxes[k], pieces[k][1]
-        if b.x1 <= cx:  # left of the eye: the inner (+x) side shows
-            sh.poly([P_(b.x1, b.y0, b.z0), P_(b.x1, b.y1, b.z0), P_(b.x1, b.y1, b.z1), P_(b.x1, b.y0, b.z1)],
-                    "#fff", ink, 0.3)
-        elif b.x0 >= cx:  # right of the eye: the inner (-x) side shows
-            sh.poly([P_(b.x0, b.y0, b.z0), P_(b.x0, b.y1, b.z0), P_(b.x0, b.y1, b.z1), P_(b.x0, b.y0, b.z1)],
-                    "#fff", ink, 0.3)
-        if b.z1 < cz:
-            sh.poly([P_(b.x0, b.y0, b.z1), P_(b.x1, b.y0, b.z1), P_(b.x1, b.y1, b.z1), P_(b.x0, b.y1, b.z1)],
-                    ink if wall else "#fff", ink, 0.3)
-        sh.poly([P_(b.x0, b.y1, b.z0), P_(b.x1, b.y1, b.z0), P_(b.x1, b.y1, b.z1), P_(b.x0, b.y1, b.z1)],
-                "#fff", ink, 0.3)
-    return sh.bare((u1 - u0) * sc + 2 * pad, (v1 - v0) * sc + 2 * pad)
+    by_id = {i: b for (b, n, i) in found}
+    return {
+        "rev": P.REV,
+        "L": lo.L, "W": lo.W, "H": lo.H, "lining": P.LINING_WALL.value,
+        "o1": list(lo.o1), "o1_head": lo.o1_head, "o2": list(lo.o2), "w1_sill": lo.w1_sill, "w1_head": lo.w1_head,
+        "bed_x1": lo.bed_x1,
+        "towers": [union(lambda i, n: i.startswith("K5-L-")), union(lambda i, n: i.startswith("K5-R-"))],
+        "sofa": box(by_id["K6-SOFA"]),
+        "table": union(lambda i, n: i in ("K6-01", "K6-02", "K6-03")),
+        "chairs": [union(lambda i, n, c=c: i.startswith("K6-") and n.startswith(f"Chair {c} ")) for c in (1, 2)],
+        "part_x0": lo.part_x0, "part_t": lo.part_t, "galley_x0": lo.galley_x0,
+        "fridge": list(lo.fridge), "hob": list(lo.hob), "sink": list(lo.sink),
+        "overhead": union(lambda i, n: i.startswith("K3-T-")),
+        "hood": box(by_id["K3-HOOD"]), "hob_box": box(by_id["K3-HOB"]), "sink_box": box(by_id["K3-SINK"]),
+        "bath_x0": lo.bath_x0, "bath_y1": lo.bath_y1, "cross_t": lo.cross_t, "bdoor": list(lo.bdoor),
+        "tray": box(by_id["K2-TRAY"]), "screen": box(by_id["K2-SCREEN"]), "wc": box(by_id["K2-WC"]),
+        "basin": box(by_id["K2-BASIN"]), "mirror": union(lambda i, n: n.startswith("Mirror cabinet")),
+    }
 
 
 def a201_elev(m) -> Sheet:

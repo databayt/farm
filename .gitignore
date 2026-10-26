@@ -53,3 +53,5 @@ __pycache__/
 /public/footage/
 # render masters, references and today stills (scripts/site); only web variants in public/site are committed
 /assets/
+# product photos used as look references for the studio renders (scripts/studio/render/room.html); never committed or published
+/ikea/
