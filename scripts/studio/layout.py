@@ -43,8 +43,8 @@ class Layout:
 
 
 BED_X1 = 1640
-SOFA_X0 = BED_X1 + 20
 SOFA_W = 1150  # compact two-seat sofa, bought
+SEAT_PAD = 20  # least gap between the bed and the sofa
 GALLEY = (550, 400, 500)  # fridge bay, hob base, sink base, from the back wall
 GALLEY_D = 600
 WORKTOP_D = 620
@@ -78,7 +78,11 @@ def build(o1_shift: float = 0.0) -> Layout:
     if y > BDOOR[0] - 30:
         raise LayoutError(f"galley ends at {y:.0f}, into the bathroom door at {BDOOR[0]:.0f}")
     galley_x0 = part_x0 - GALLEY_D
-    sofa = (SOFA_X0, SOFA_X0 + SOFA_W)
+    # the seating group is centred between the bed and the galley aisle
+    mid = (BED_X1 + part_x0 - WORKTOP_D - AISLE_MIN) / 2
+    sofa = (mid - SOFA_W / 2, mid + SOFA_W / 2)
+    if sofa[0] < BED_X1 + SEAT_PAD:
+        raise LayoutError(f"sofa at {sofa[0]:.0f} touches the bed at {BED_X1}")
     if part_x0 - WORKTOP_D - sofa[1] < AISLE_MIN:
         raise LayoutError(f"galley aisle {part_x0 - WORKTOP_D - sofa[1]:.0f} mm, under {AISLE_MIN}")
     bath_x0 = part_x0 + PART_T

@@ -381,15 +381,15 @@ def k6_living(lo: Layout) -> Kit:
                  color="fabric"))
     # seating room: a table in front of the sofa and two chairs facing it from the glass side,
     # all flat-pack ply on cross-halving legs; the chairs have a back panel
-    tw, td = 600.0, 600.0
-    tx0, ty0 = (sx0 + sx1) / 2 - tw / 2, 1000.0
+    tw, td = 600.0, 500.0
+    tx0, ty0 = (sx0 + sx1) / 2 - tw / 2, 950.0
     k.add(Part("K6-01", f"Table top {tw:.0f} x {td:.0f}", "K6", "PLY18", Box(tx0, ty0, 732, tx0 + tw, ty0 + td, 750),
                step="S17", edges="L2S2", explode=(0, 0, 200)))
     k.add(Part("K6-02", "Table leg A (cross-halving slot)", "K6", "PLY18",
                Box(tx0 + 50, ty0 + td / 2 - 9, 0, tx0 + tw - 50, ty0 + td / 2 + 9, 732), step="S17", edges="L2S2"))
     k.add(Part("K6-03", "Table leg B (cross-halving slot)", "K6", "PLY18",
                Box(tx0 + tw / 2 - 9, ty0 + 50, 0, tx0 + tw / 2 + 9, ty0 + td - 50, 732), step="S17", edges="L2S2"))
-    cy0, cw = ty0 + td + 100, 420.0
+    cy0, cw = ty0 + td + 70, 400.0  # chair backs stay well clear of the glass entrance
     for i, cx in enumerate((tx0 + tw / 2 - cw - 20, tx0 + tw / 2 + 20)):
         n = 4 + 4 * i
         k.add(Part(f"K6-{n:02d}", f"Chair {i + 1} seat", "K6", "PLY18", Box(cx, cy0, 432, cx + cw, cy0 + cw, 450),

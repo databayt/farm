@@ -189,8 +189,7 @@ def plan_bw(m) -> str:
     t = by_id["K6-01"]
     box(t.x0, t.y0, t.x1, t.y1)
     for c in (1, 2):
-        seat = next(b for i, b in by_id.items() if i.startswith("K6-") and b.z0 == 432 and
-                    abs(b.size[0] - 420) < 1 and (b.x0 < t.x0 + 300) == (c == 1))
+        seat = by_id[f"K6-{4 * c:02d}"]
         box(seat.x0, seat.y0, seat.x1, seat.y1)
         box(seat.x0, seat.y1 - 60, seat.x1, seat.y1, ink, 0.1)
     # galley: worktop, sink, two hob rings

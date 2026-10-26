@@ -26,7 +26,7 @@ A first version faced the WC along the container. The generator showed it failed
 
 [Table: Clearance and layout checks](../../public/designs/studio/data/checks.csv)
 
-The partition's living face sits 30 mm past the end of the glazing, on the strip of solid steel before the old door. If the survey moves the glazing, the partition and the galley move with it, and the galley aisle takes up the difference: about 980 mm from the worktop to the sofa at the photo estimate, 830 mm if the glazing ends 150 mm earlier. The build fails, rather than drawing something unbuildable, if any keep-out zone is blocked: the WC's 600 mm front zone, the shower entry, the door and drawer sweeps, and an 800 mm galley aisle.
+The partition's living face sits 30 mm past the end of the glazing, on the strip of solid steel before the old door. If the survey moves the glazing, the partition and the galley move with it, and the seating group re-centres between the bed and the galley aisle: about 100 mm from the bed and a 900 mm aisle from the worktop to the sofa at the photo estimate, about 825 mm of aisle if the glazing ends 150 mm earlier. The table and chairs stand back from the glass so the sliding wall stays a clear entrance. The build fails, rather than drawing something unbuildable, if any keep-out zone is blocked: the WC's 600 mm front zone, the shower entry, the door and drawer sweeps, and an 800 mm galley aisle.
 
 ## Elevations and sections
 

@@ -16,7 +16,7 @@ S3,switch,C1,Bathroom light + fan (outside),4410,2350,1100,0
 S4,switch,C1,"Roof and stair lights (IP65, stair foot)",-400,2852,1100,0
 P1,usb,C2,Bedside socket + USB-C 1,260,132,600,200
 P2,usb,C2,Bedside socket + USB-C 2,1380,132,600,200
-P3,socket,C2,Socket by the sofa,1760,0,300,500
+P3,socket,C2,Socket by the sofa,1840,0,300,500
 P4,socket,C2,"Socket, living (front strip)",1180,2252,300,500
 P5,socket,C2,Deck socket IP66,2600,2312,400,300
 P6,socket,C3,Worktop socket 1 (double),4410,275,1100,2000
