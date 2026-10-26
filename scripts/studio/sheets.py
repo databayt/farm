@@ -191,7 +191,6 @@ def plan_bw(m) -> str:
     for c in (1, 2):
         seat = by_id[f"K6-{4 * c:02d}"]
         box(seat.x0, seat.y0, seat.x1, seat.y1)
-        box(seat.x0, seat.y1 - 60, seat.x1, seat.y1, ink, 0.1)
     # galley: worktop, sink, two hob rings
     X0 = lo.part_x0 - 620
     box(X0, 0, lo.part_x0, lo.sink[1])
