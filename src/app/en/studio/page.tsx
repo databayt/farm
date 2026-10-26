@@ -300,12 +300,12 @@ export default function StudioPage() {
   const pieces = Object.fromEntries(kits.map((k) => [k.id, piecesOf(k.id)]))
   return (
     <main className="w-full flex-1">
-      {/* First screen: a photoreal concept render of the finished studio (D-018), made in Nano Banana from the
-          site footage and studio-exterior.jpg, the model render from studio.glb that the docs keep using. */}
+      {/* First screen: a photoreal concept render of the finished studio (D-018), made in Gemini (2026-10-27):
+          the yellow container on its red deck in the eucalyptus, the slider open on the bed and the galley. */}
       <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#a9c8df]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={`${D}/render/studio-hero.jpg`} width={2400} height={1340} fetchPriority="high"
-          alt="A finished container studio at golden hour: a sliding glass wall open onto a timber deck with red railings, a kitchenette and bed inside, a steel stair to lounge chairs on the roof, and eucalyptus behind."
+          alt="A yellow container studio at golden hour under a dark roof canopy: the sliding glass wall open on a bed, a sofa with two chairs and the galley, a red-railed timber deck with a bistro table and a potted plant, a steel ladder up the side, and eucalyptus behind."
           className="absolute inset-0 size-full object-cover object-[50%_55%]" />
         {/* D-018: an AI image is always labelled as a concept render. */}
         <span className="absolute end-4 bottom-4 z-10 rounded-full bg-black/40 px-2.5 py-1 text-xs text-white/85 backdrop-blur md:end-10">
