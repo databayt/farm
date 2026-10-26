@@ -323,17 +323,17 @@ export default function StudioPage() {
       {/* Floor, pinned while it builds up: the empty container, then each layer of the living floor
           (sheets.py "FLOOR (living)"), one screen of scroll per stage. Renders: scripts/studio/render/floor.html. */}
       <section id="floor">
-        <FloorLayers stages={[
-          { src: `${D}/render/floor-0.jpg`, title: "The empty container",
-            alt: "The empty container from above the open front: corrugated steel walls and the original 28 mm plywood floor with rows of screws.",
-            text: "The box as it arrives: 28 mm treated plywood on steel cross-members. Never sanded." },
-          { src: `${D}/render/floor-1.jpg`, title: "Layer 1 · Epoxy seal",
-            alt: "The same container with the plywood floor sealed in a grey satin epoxy coat.",
-            text: "Primer and a 100%-solids epoxy coat seal the treated ply wall to wall." },
-          { src: `${D}/render/floor-2.jpg`, title: "Layer 2 · Underlay + SPC oak",
-            alt: "The same container with natural oak SPC planks over the living area; the bathroom end still shows the grey epoxy.",
-            text: "A thin underlay and 5 mm SPC in natural oak over the living area. The bathroom end gets coved vinyl later." },
-        ]} />
+        <FloorLayers base={`${D}/render/floor-base.webp`} epoxy={`${D}/render/floor-epoxy.webp`} spc={`${D}/render/floor-spc.webp`}
+          alts={[
+            "The container's base alone, from above a corner: worn 28 mm plywood panels with rows of screws, in a red steel frame with a corner casting at each corner.",
+            "A grey satin epoxy seal over the whole plywood floor.",
+            "Natural oak SPC planks over the living area; the bathroom end keeps the grey epoxy.",
+          ]}
+          stages={[
+            { title: "The empty container", text: "28 mm treated hardwood ply in 1.16 × 2.4 m panels, screwed to steel cross-members every 300 mm, inside the base frame and its four corner castings. Never sanded." },
+            { title: "Layer 1 · Epoxy seal", text: "Primer and a 100%-solids epoxy coat seal the treated ply wall to wall." },
+            { title: "Layer 2 · Underlay + SPC oak", text: "A thin underlay and 5 mm SPC in natural oak over the living area. The bathroom end gets coved vinyl later." },
+          ]} />
       </section>
 
       {/* The numbers and the drawing set behind the 2D and 3D. */}

@@ -1,30 +1,32 @@
 <!doctype html>
 <!--
-  The /en/studio floor section: the bare container seen from above the front, with the front wall
-  and roof off, at each stage of the living floor (sheets.py "FLOOR (living)", kits.py S02 + S05).
+  The /en/studio floor section: the container's base alone (no walls, no roof), seen from above the
+  front-left corner, and the two layers of the living floor (sheets.py "FLOOR (living)", kits.py S02 + S05)
+  rendered as separate transparent pictures, so the page can lay them on in motion.
 
-    ?stage=0  the empty container: 28 mm treated plywood on the cross-members  -> render/floor-0.jpg
-    ?stage=1  layer 1: primer + epoxy seal over the ply (S02)                 -> render/floor-1.jpg
-    ?stage=2  layer 2: underlay + 5 mm SPC oak in the living area (S05);      -> render/floor-2.jpg
-              the bathroom end keeps the seal until its coved vinyl (S08)
+    ?layer=base   the empty base as it arrives                                    -> render/floor-base.webp
+    ?layer=epoxy  layer 1: primer + epoxy seal, wall to wall (S02)               -> render/floor-epoxy.webp
+    ?layer=spc    layer 2: underlay + 5 mm SPC oak over the living area (S05)    -> render/floor-spc.webp
 
-  Serve the repo root on :3000 (python3 -m http.server 3000), open this page at 2400 x 1350 and
-  screenshot #out once body[data-ready] is set. The plank texture is room.html's, so the finished
-  floor matches the 3D section; change both together.
+  Each picture is the full scene lit as one, cut down to its own layer by a mask pass, so the three stack
+  exactly. The base follows the CIMC 20 ft spec and the container references [STU-02, STU-07]: 28 mm
+  insecticide-treated hardwood ply in 1,160 x 2,400 mm panels laid along the box, screwed to C-section
+  cross-members about 300 mm apart; bottom side rails and end sills; four ISO 1161 bottom corner castings
+  (178 x 162 x 118 mm, an oval hole in the top, side and end).
+
+  Serve the repo root on :3000 (python3 -m http.server 3000), open this page at 2400 x 1350, wait for
+  body[data-ready] and save window.OUT (a PNG data URL with alpha). The plank texture is room.html's,
+  so the finished floor matches the 3D section; change both together.
 -->
 <html>
 <head>
 <meta charset="utf-8">
-<style>
-html,body{margin:0;background:#fff}
-#out{display:block;width:2400px;height:1350px}
-</style>
+<style>html,body{margin:0;background:#fff}</style>
 <script type="importmap">
 {"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
 </script>
 </head>
 <body>
-<img id="out" alt="">
 <script type="module">
 import * as THREE from "three"
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js"
@@ -33,7 +35,8 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
 import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
-const STAGE = Number(new URLSearchParams(location.search).get("stage") ?? 0)
+const LAYER = new URLSearchParams(location.search).get("layer") ?? "base"
+const STAGE = { base: 0, epoxy: 1, spc: 2 }[LAYER]
 const FW = 2400, FH = 1350
 const S = await (await fetch(`/public/designs/studio/render/scene.json?${Date.now()}`)).json()
 const m = (v) => v / 1000 // layout mm -> metres; three: x = x, y = height (layout z), z = depth (layout y)
@@ -47,7 +50,16 @@ renderer.toneMappingExposure = 1.05
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFShadowMap
 const scene = new THREE.Scene()
-scene.background = new THREE.Color(12, 12, 12) // white page after tone mapping, as in room.html
+scene.background = new THREE.Color(12, 12, 12)
+
+// ------------------------------------------------------------ dimensions (metres)
+const L = m(S.L), W = m(S.W), e = m(S.lining), px0 = m(S.part_x0)
+// the floor between the steel: the layout's lining face is 50 mm in from it
+const X0 = -e, X1 = L + e, Z0 = -e, Z1 = W + e
+// the outside of the base: 6,058 x 2,438 (ISO 20 ft); the sills and side rails take up the rest
+const OX = (6.058 - (X1 - X0)) / 2, OZ = (2.438 - (Z1 - Z0)) / 2
+const BX0 = X0 - OX, BX1 = X1 + OX, BZ0 = Z0 - OZ, BZ1 = Z1 + OZ
+const PLY = 0.028, RAIL = 0.158, CAST = [0.178, 0.118, 0.162] // casting: along x, height, along z
 
 // ------------------------------------------------------------ procedural textures
 let seed = 7
@@ -61,46 +73,60 @@ function tex(draw, w = 512, h = 512) {
   t.anisotropy = 8
   return t
 }
-// a container floor: marine ply boards laid along the box, darkened by the treatment, with the rows of
-// screws into each cross-member. Covers the whole floor (FLOOR_ALL) once.
+// the container floor at true scale over (X1 - X0) x (Z1 - Z0): two runs of 1,160 mm panels along the box,
+// 2,400 long with an offcut at the end, staggered; the face grain runs across the box; a row of screws over
+// every cross-member; the treatment has darkened it, and years of cargo have worn and stained it
+const PX = 2048 / (X1 - X0), PZ = 1024 / (Z1 - Z0) // px per metre
 const ply = tex((g, w, h) => {
-  const tones = ["#7a4a2c", "#86553a", "#6f4428", "#8b5a3c", "#7d4f31"]
-  const rows = 5, rh = h / rows
-  for (let r = 0; r < rows; r++) {
-    const y0 = r * rh
-    g.fillStyle = tones[r % tones.length]; g.fillRect(0, y0, w, rh)
-    for (let i = 0; i < 26; i++) { // veneer grain
-      const y = y0 + rnd() * rh
-      g.strokeStyle = `rgba(50,28,14,${0.06 + rnd() * 0.12})`; g.lineWidth = 0.8 + rnd() * 2
-      g.beginPath(); g.moveTo(0, y)
-      g.bezierCurveTo(w * 0.3, y + (rnd() - 0.5) * 14, w * 0.7, y + (rnd() - 0.5) * 14, w, y + (rnd() - 0.5) * 8)
-      g.stroke()
+  const tones = ["#6e4630", "#7b5036", "#664029", "#80553a", "#73492f", "#5f3c27"]
+  const half = h / 2
+  const runs = [[2.4, 2.4], [1.2, 2.4, 2.4]] // the second run starts with a half panel: no joint lines up
+  runs.forEach((run, r) => {
+    let x = 0, k = r * 3
+    for (const len of [...run, 99]) {
+      const x1 = Math.min(w, x + len * PX), y0 = r * half
+      g.fillStyle = tones[k++ % tones.length]; g.fillRect(x, y0, x1 - x, half)
+      for (let i = 0; i < 90; i++) { // face veneer grain, across the box
+        const gx = x + rnd() * (x1 - x)
+        g.strokeStyle = `rgba(40,22,10,${0.05 + rnd() * 0.1})`; g.lineWidth = 0.8 + rnd() * 2.2
+        g.beginPath(); g.moveTo(gx, y0)
+        g.bezierCurveTo(gx + (rnd() - 0.5) * 10, y0 + half * 0.3, gx + (rnd() - 0.5) * 10, y0 + half * 0.7, gx + (rnd() - 0.5) * 6, y0 + half)
+        g.stroke()
+      }
+      g.fillStyle = "rgba(25,14,6,0.7)"; g.fillRect(x1 - 2, y0, 3, half) // butt joint over a cross-member
+      x = x1
+      if (x >= w) break
     }
-    g.fillStyle = "rgba(30,16,8,0.6)"; g.fillRect(0, y0, w, 3) // board joint
-  }
-  for (let i = 0; i < 14; i++) { // wear and old stains
-    const x = rnd() * w, y = rnd() * h, r = 30 + rnd() * 120
+  })
+  g.fillStyle = "rgba(25,14,6,0.7)"; g.fillRect(0, half - 1, w, 3) // the long joint down the middle
+  for (let i = 0; i < 22; i++) { // cargo wear, scuffs and old stains
+    const x = rnd() * w, y = rnd() * h, r = 20 + rnd() * 110
     const gr = g.createRadialGradient(x, y, 0, x, y, r)
-    gr.addColorStop(0, `rgba(35,20,10,${0.10 + rnd() * 0.12})`); gr.addColorStop(1, "rgba(35,20,10,0)")
+    const a = 0.08 + rnd() * 0.14
+    gr.addColorStop(0, rnd() > 0.3 ? `rgba(30,16,8,${a})` : `rgba(190,150,110,${a * 0.7})`); gr.addColorStop(1, "rgba(0,0,0,0)")
     g.fillStyle = gr; g.fillRect(x - r, y - r, 2 * r, 2 * r)
   }
-  for (let x = 40; x < w; x += w / 19) { // screws into the cross-members, about 300 mm apart
-    for (let r = 0; r < rows; r++) for (const f of [0.3, 0.7]) {
-      g.fillStyle = "#2b2622"; g.beginPath(); g.arc(x, r * rh + rh * f, 3, 0, 7); g.fill()
+  for (let i = 0; i < 40; i++) { // forklift and pallet scrapes along the box
+    const x = rnd() * w, y = rnd() * h
+    g.strokeStyle = `rgba(200,165,125,${0.06 + rnd() * 0.1})`; g.lineWidth = 1 + rnd() * 2
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + 40 + rnd() * 160, y + (rnd() - 0.5) * 8); g.stroke()
+  }
+  for (let x = 0.15 * PX; x < w; x += 0.3 * PX) { // screws over each cross-member, four per panel width
+    for (const f of [0.06, 0.32, 0.68, 0.94]) for (const r of [0, 1]) {
+      g.fillStyle = "#2a2420"; g.beginPath(); g.arc(x, r * half + half * f, 3.2, 0, 7); g.fill()
     }
   }
 }, 2048, 1024)
-// the epoxy seal: a grey satin coat that still shows the board joints and screw heads under it
+// the epoxy seal: a grey satin coat; the joints and screw heads still telegraph through it
 const epoxy = tex((g, w, h) => {
-  g.fillStyle = "#9a9c9c"; g.fillRect(0, 0, w, h)
-  for (let i = 0; i < 4000; i++) {
-    g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"
+  g.fillStyle = "#a3a5a5"; g.fillRect(0, 0, w, h)
+  for (let i = 0; i < 5000; i++) {
+    g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)"
     g.fillRect(rnd() * w, rnd() * h, 2 + rnd() * 3, 2 + rnd() * 3)
   }
-  const rows = 5, rh = h / rows
-  for (let r = 1; r < rows; r++) { g.fillStyle = "rgba(60,60,60,0.25)"; g.fillRect(0, r * rh, w, 2) }
-  for (let x = 40; x < w; x += w / 19) for (let r = 0; r < rows; r++) for (const f of [0.3, 0.7]) {
-    g.fillStyle = "rgba(70,70,70,0.35)"; g.beginPath(); g.arc(x, r * rh + rh * f, 3, 0, 7); g.fill()
+  g.fillStyle = "rgba(60,60,60,0.18)"; g.fillRect(0, h / 2 - 1, w, 2)
+  for (let x = 0.15 * PX; x < w; x += 0.3 * PX) for (const f of [0.03, 0.16, 0.34, 0.47, 0.53, 0.66, 0.84, 0.97]) {
+    g.fillStyle = "rgba(70,70,70,0.22)"; g.beginPath(); g.arc(x, h * f, 3, 0, 7); g.fill()
   }
 }, 2048, 1024)
 // room.html's oak planks: boards about 133 mm wide, 0.9-1.8 m long, laid like a fitter would
@@ -156,17 +182,18 @@ const planks = tex((g, w, h) => {
 
 const std = (o) => new THREE.MeshStandardMaterial(o)
 const MAT = {
-  ply: std({ map: ply, roughness: 0.8 }),
-  epoxy: std({ map: epoxy, roughness: 0.32 }),
+  ply: std({ map: ply, roughness: 0.82 }),
+  epoxy: std({ map: epoxy, roughness: 0.3 }),
   floor: std({ map: planks, color: "#d1c8c1", roughness: 0.55 }), // room.html's floor material
-  steel: std({ color: "#c9c7c1", roughness: 0.6, metalness: 0.25 }), // the box's factory-painted inside
-  cut: std({ color: "#2c2c2c", roughness: 0.9 }),
+  steel: std({ color: "#8e3f33", roughness: 0.55, metalness: 0.3 }), // the studio's red box (the roof's #9c4436)
+  cast: std({ color: "#5f2a22", roughness: 0.75, metalness: 0.35 }), // cast steel, a shade darker than the rails
+  hole: std({ color: "#151210", roughness: 1 }),
 }
 
-// ------------------------------------------------------------ geometry (metres)
-const meshes = []
-// a box between two corners; a floor box maps its texture once across `span` (x, z extent) from `at`
-function box(x0, y0, z0, x1, y1, z1, name, span) {
+// ------------------------------------------------------------ geometry
+const meshes = [], layers = { base: [], epoxy: [], spc: [] }
+// a box between two corners; `span` [x0, z0, sx, sz] maps a floor texture once across it from above
+function box(x0, y0, z0, x1, y1, z1, name, layer = "base", span) {
   const geo = new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0)
   if (span) {
     const pos = geo.attributes.position, uv = geo.attributes.uv
@@ -177,48 +204,44 @@ function box(x0, y0, z0, x1, y1, z1, name, span) {
   }
   const mesh = new THREE.Mesh(geo, MAT[name])
   mesh.position.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2)
-  mesh.castShadow = !span; mesh.receiveShadow = true
-  scene.add(mesh); meshes.push(mesh)
+  mesh.castShadow = true; mesh.receiveShadow = true
+  scene.add(mesh); meshes.push(mesh); layers[layer].push(mesh)
   return mesh
 }
+const FLOORSPAN = [X0, Z0, X1 - X0, Z1 - Z0]
 
-const L = m(S.L), W = m(S.W), H = m(S.H), e = m(S.lining), px0 = m(S.part_x0)
-// the bare box: steel at the lining's outer face, so the floor spans wall to wall
-const X0 = -e, X1 = L + e, Z0 = -e, Z1 = W + e
-const ALL = [X0, Z0, X1 - X0, Z1 - Z0]
-
-// floor: the ply always; then the seal; then the SPC over the living area (its 7 mm reads as a step at the
-// partition line, where the bathroom's vinyl will meet it)
-box(X0, -0.12, Z0, X1, 0, Z1, STAGE >= 1 ? "epoxy" : "ply", ALL)
-if (STAGE >= 2) box(X0, 0, Z0, px0, 0.007, Z1, "floor", [X0, Z0, 4.8, 2.4])
-box(X0, -0.12, Z1, X1, 0, Z1 + 0.006, "cut") // the front cut edge of the floor
-
-// corrugated steel: a 2 mm skin with trapezoid valleys every 278 mm, 36 mm deep, facing in
-const P = 0.278, D = 0.036
-function corrugated(axis, a0, a1, fixed, inward) {
-  const t = 0.004
-  if (axis === "x") box(a0, 0, fixed - (inward > 0 ? t : 0), a1, H, fixed + (inward > 0 ? 0 : t), "steel")
-  else box(fixed - (inward > 0 ? t : 0), 0, a0, fixed + (inward > 0 ? 0 : t), H, a1, "steel")
-  for (let a = a0 + P / 4; a + P / 2 <= a1; a += P) { // the ribs stand in from the skin
-    const r0 = a, r1 = a + P / 2 - 0.03
-    const f0 = inward > 0 ? fixed : fixed - D, f1 = inward > 0 ? fixed + D : fixed
-    if (axis === "x") box(r0, 0, f0, r1, H, f1, "steel")
-    else box(f0, 0, r0, f1, H, r1, "steel")
-  }
+// the frame: bottom side rails and end sills, their tops flush with the floor
+box(BX0 + CAST[0], -RAIL, BZ0, BX1 - CAST[0], 0, Z0, "steel") // back side rail
+box(BX0 + CAST[0], -RAIL, Z1, BX1 - CAST[0], 0, BZ1, "steel") // front side rail
+box(BX0, -RAIL, BZ0 + CAST[2], X0, 0, BZ1 - CAST[2], "steel") // end sill A
+box(X1, -RAIL, BZ0 + CAST[2], BX1, 0, BZ1 - CAST[2], "steel") // end sill B
+// a lip along the front rail, so the C-section reads
+box(BX0 + CAST[0], -RAIL, BZ1 - 0.004, BX1 - CAST[0], -RAIL + 0.012, BZ1 + 0.03, "steel")
+// the ply on the cross-members
+box(X0, -PLY, Z0, X1, 0, Z1, "ply", "base", FLOORSPAN)
+// four bottom corner castings: they carry the box, so they stand lowest, 10 mm below the rails, and their
+// tops rise past the floor; drawn taller than ISO's 118 so they read at this scale
+for (const [xa, xb] of [[BX0, BX0 + CAST[0]], [BX1 - CAST[0], BX1]]) for (const [za, zb] of [[BZ0, BZ0 + CAST[2]], [BZ1 - CAST[2], BZ1]]) {
+  const y0 = -RAIL - 0.01, y1 = 0.045 // proud of the floor, where the corner post would stand
+  box(xa, y0, za, xb, y1, zb, "cast")
+  const cx = (xa + xb) / 2, cz = (za + zb) / 2, d = 0.003
+  box(cx - 0.062, y1, cz - 0.032, cx + 0.062, y1 + d, cz + 0.032, "hole") // top: the twistlock hole
+  const sz = zb > Z1 ? zb : za, sd = zb > Z1 ? 1 : -1 // side hole on the long face
+  box(cx - 0.039, y0 + 0.04, sz - (sd < 0 ? d : 0), cx + 0.039, y0 + 0.09, sz + (sd > 0 ? d : 0), "hole")
+  const ex = xb > X1 ? xb : xa, ed = xb > X1 ? 1 : -1 // end hole
+  box(ex - (ed < 0 ? d : 0), y0 + 0.04, cz - 0.032, ex + (ed > 0 ? d : 0), y0 + 0.09, cz + 0.032, "hole")
 }
-corrugated("x", X0, X1, Z0, 1) // back wall
-corrugated("z", Z0, Z1, X0, 1) // end A
-corrugated("z", Z0, Z1, X1, -1) // end B
-// the cut tops of the walls, dark, so the section reads
-box(X0 - 0.004, H, Z0 - 0.004, X1 + 0.004, H + 0.01, Z0 + D, "cut")
-box(X0 - 0.004, H, Z0, X0 + D, H + 0.01, Z1, "cut")
-box(X1 - D, H, Z0, X1 + 0.004, H + 0.01, Z1, "cut")
+// layer 1: the seal over the whole ply; layer 2: underlay + SPC over the living area, to the partition line
+box(X0, 0, Z0, X1, 0.003, Z1, "epoxy", "epoxy", FLOORSPAN)
+box(X0, 0.003, Z0, px0, 0.010, Z1, "floor", "spc", [X0, Z0, 4.8, 2.4])
+for (const o of layers.epoxy) o.visible = STAGE >= 1
+for (const o of layers.spc) o.visible = STAGE >= 2
 
-// ------------------------------------------------------------ camera: from above the open front
-const cx = (X0 + X1) / 2
-const camera = new THREE.PerspectiveCamera(40, FW / FH, 0.1, 100)
-camera.position.set(cx, 5.6, W + 5.4)
-camera.lookAt(cx, 0.4, W / 2 - 0.2)
+// ------------------------------------------------------------ camera: above the front-left corner
+const cx = (BX0 + BX1) / 2
+const camera = new THREE.PerspectiveCamera(32, FW / FH, 0.1, 100)
+camera.position.set(cx - 2.2, 4.6, W + 6.2)
+camera.lookAt(cx, -0.1, W / 2)
 camera.updateMatrixWorld(); camera.updateProjectionMatrix()
 const bb = new THREE.Box3()
 for (const o of meshes) bb.expandByObject(o)
@@ -228,22 +251,23 @@ for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) fo
   const X = ((p.x + 1) / 2) * FW, Y = ((1 - p.y) / 2) * FH
   px = [Math.min(px[0], X), Math.min(px[1], Y), Math.max(px[2], X), Math.max(px[3], Y)]
 }
-let w = (px[2] - px[0]) * 1.06, h = (px[3] - px[1]) * 1.08
+let w = (px[2] - px[0]) * 1.04, h = (px[3] - px[1]) * 1.12
 if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
 camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
 
-// ------------------------------------------------------------ render: room.html's daylight
+// ------------------------------------------------------------ colour pass: room.html's daylight
 const pmrem = new THREE.PMREMGenerator(renderer)
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
 scene.environmentIntensity = 0.45
-scene.add(new THREE.HemisphereLight(0xffffff, 0xd8cdbc, 0.55))
+const lights = [new THREE.HemisphereLight(0xffffff, 0xd8cdbc, 0.55)]
 const sun = new THREE.DirectionalLight(0xffefd6, 2.4)
 sun.position.set(cx - 2.6, 5.5, W + 4.5); sun.target.position.set(cx, 0, W / 2)
 sun.castShadow = true
 sun.shadow.mapSize.set(4096, 4096)
 Object.assign(sun.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5, near: 0.5, far: 20 })
 sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
-scene.add(sun, sun.target)
+lights.push(sun, sun.target)
+scene.add(...lights)
 const composer = new EffectComposer(renderer)
 composer.setSize(FW, FH)
 composer.addPass(new RenderPass(scene, camera))
@@ -253,7 +277,23 @@ ao.blendIntensity = 0.85
 composer.addPass(ao)
 composer.addPass(new OutputPass())
 composer.render()
-document.getElementById("out").src = renderer.domElement.toDataURL("image/png")
+const color = document.createElement("canvas"); color.width = FW; color.height = FH
+color.getContext("2d").drawImage(renderer.domElement, 0, 0)
+
+// ------------------------------------------------------------ mask pass: this picture's own meshes, white
+const black = new THREE.MeshBasicMaterial({ color: 0x000000 }), white = new THREE.MeshBasicMaterial({ color: 0xffffff })
+for (const o of meshes) o.material = layers[LAYER].includes(o) ? white : black
+scene.background = new THREE.Color(0x000000); scene.environment = null
+renderer.toneMapping = THREE.NoToneMapping; renderer.shadowMap.enabled = false
+renderer.render(scene, camera)
+const mask = document.createElement("canvas"); mask.width = FW; mask.height = FH
+mask.getContext("2d").drawImage(renderer.domElement, 0, 0)
+
+const out = color.getContext("2d").getImageData(0, 0, FW, FH)
+const a = mask.getContext("2d").getImageData(0, 0, FW, FH).data
+for (let i = 0; i < a.length; i += 4) out.data[i + 3] = a[i]
+color.getContext("2d").putImageData(out, 0, 0)
+window.OUT = color.toDataURL("image/png")
 document.body.dataset.ready = "1"
 </script>
 </body>
