@@ -472,13 +472,20 @@ const ITEMS = {
     box(0, 0, z0, t, 0.45, z1, "pine", 0.006)
     box(x1 - t, 0, z0, x1, 0.45, z1, "pine", 0.006)
     box(t, 0, z1 - t, x1 - t, 0.45, z1, "pine", 0.006)
-    box(x1 / 2 - 0.03, 0.06, z0, x1 / 2 + 0.03, 0.41, z1 - t, "pine", 0.004) // centre beam
-    for (let z = z0 + 0.06; z < z1 - t - 0.07; z += 0.1) box(t, 0.41, z, x1 - t, 0.428, z + 0.068, "pine", 0.004) // slats
+    // the deck as kit K4 cuts it: two 18 mm panels on the spine, drilled with 30 mm vent holes
+    for (const [a, b] of [[t, x1 / 2 - 0.001], [x1 / 2 + 0.001, x1 - t]]) {
+      box(a, 0.432, z0, b, 0.45, z1 - t, "pine", 0.003)
+      for (let u = a + 0.08; u < b - 0.05; u += 0.16) for (let v = z0 + 0.1; v < z1 - 0.1; v += 0.2) {
+        const hole = add(new THREE.CircleGeometry(0.015, 24), LINE ? "white" : "black")
+        hole.rotation.x = -Math.PI / 2; hole.position.set(u, 0.4505, v)
+        if (LINE) hole.userData.edgesFrom = new THREE.CircleGeometry(0.015, 24)
+      }
+    }
     for (const [da, db] of S.drawers) drawerFront(x1, m(da) + 0.003, m(db) - 0.003)
   },
   // one storage box pulled out: an open tray on four castors behind its front
   box() {
-    const [da, db] = S.drawers[0], len = m(db) - m(da) - 0.006, dep = 0.7
+    const [da, db] = S.drawers[0], len = m(db) - m(da) - 0.006, dep = 0.6
     slab(0, 0, dep, len, 0.004, 0.07, 0.012, "pine")
     ring(0, 0, dep, len, 0.004, 0.012, 0.082, 0.24, "pine")
     drawerFront(dep, -0.004, len + 0.004)

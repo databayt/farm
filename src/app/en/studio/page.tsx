@@ -34,8 +34,8 @@ const FEATURES = [
 // The bedroom, piece by piece (Bedroom section): each one rendered on its own by
 // scripts/studio/render/room.html?item=<id>, as a line drawing and in materials.
 const BEDROOM = [
-  { id: "bed", name: "Bed frame", size: "1.64 × 2.02 m · headboard 1.0 m", text: "Pine in medium oak: headboard, side and foot rails, a centre beam and a slat base. Two storage-box fronts in the room side." },
-  { id: "box", name: "Storage box × 2", size: "0.60 × 0.70 × 0.29 m", text: "An open pine tray on four castors that rolls out from under the bed, with a finger-pull slot." },
+  { id: "bed", name: "Bed frame", size: "1.64 × 2.02 m · headboard 1.0 m", text: "Pine in medium oak: headboard, side and foot rails, a spine and a deck of two panels drilled for air. Two storage-box fronts in the room side." },
+  { id: "box", name: "Storage box × 2", size: "0.60 × 0.62 × 0.29 m", text: "An open ply tray on four castors that rolls out from under the bed, with a finger-pull slot." },
   { id: "mattress", name: "Mattress", size: "160 × 200 × 20 cm", text: "Queen size, a quilted cover with piping round both edges." },
   { id: "sheets", name: "Bed sheets", size: "for 160 × 200 cm", text: "Fitted sheet, flat sheet and two pillowcases in white cotton." },
   { id: "duvet", name: "Duvet", size: "200 × 220 cm", text: "A light duvet in a white cover; Kigali nights stay mild." },
