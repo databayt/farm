@@ -176,11 +176,33 @@ const T = LINE ? {} : {
   planks: tex((g, w, h) => {
     const tones = ["#b98b5b", "#c39663", "#a97c4f", "#bd9264", "#ae8255", "#c79b6a", "#b38556"]
     const rows = 18, rh = h / rows
+    // laid as a fitter would: random lengths, each end joint at least 300 mm from those in the row before
+    // and 150 mm from two rows back (no staircases, no H-joints); shades drawn from a shuffled bag, so each
+    // appears evenly and never twice side by side
+    const MIN1 = 128, MIN2 = 64 // 300 and 150 mm at 0.4267 px/mm
+    let bag = [], last = -1, above = [], above2 = []
+    const shade = () => {
+      if (!bag.length) {
+        bag = tones.map((_, i) => i)
+        for (let i = bag.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [bag[i], bag[j]] = [bag[j], bag[i]] }
+      }
+      let i = bag.pop()
+      if (i === last && bag.length) { const j = bag.pop(); bag.unshift(i); i = j }
+      return tones[(last = i)]
+    }
+    const clear = (j) => above.every((p) => Math.abs(p - j) >= MIN1) && above2.every((p) => Math.abs(p - j) >= MIN2)
     for (let r = 0; r < rows; r++) {
-      let x = -((r * 157) % 520)
+      const joints = []
+      let x = -Math.floor(rnd() * 700)
       while (x < w) {
-        const len = 384 + Math.floor(rnd() * 384), y0 = r * rh
-        g.fillStyle = tones[Math.floor(rnd() * tones.length)]; g.fillRect(x, y0, len, rh)
+        const y0 = r * rh
+        let len = 0
+        for (let t = 0; t < 40; t++) { // a length whose end joint clears the rows above
+          len = 384 + Math.floor(rnd() * 384)
+          if (x + len >= w || clear(x + len)) break
+        }
+        joints.push(x + len)
+        g.fillStyle = shade(); g.fillRect(x, y0, len, rh)
         for (let i = 0; i < 7; i++) { // long grain
           const y = y0 + rnd() * rh
           g.strokeStyle = `rgba(110,72,38,${0.08 + rnd() * 0.14})`; g.lineWidth = 0.7 + rnd() * 1.4
@@ -199,6 +221,7 @@ const T = LINE ? {} : {
         g.fillStyle = "rgba(70,44,22,0.55)"; g.fillRect(x, y0, 2, rh) // end joint
         x += len
       }
+      above2 = above; above = joints
       g.fillStyle = "rgba(70,44,22,0.5)"; g.fillRect(0, r * rh, w, 2) // long joint
     }
   }, 2048, 1024),
