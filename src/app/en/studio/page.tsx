@@ -83,6 +83,14 @@ const BOM_GROUPS = ["Board and protection", "Earthing and bonding", "Cable and c
   "Sockets and outlets", "Fans", "Alarms", "Appliances", "Labour"]
 
 type BomLine = { item: string; qty: number; unit: string; price: number; total: number; label: string }
+type BomGroup = { name: string; lines: BomLine[]; total: number }
+
+const bomLine = (r: Record<string, string>, item = r.item): BomLine => ({
+  item, qty: Number(r.qty_per_unit), unit: r.unit, price: Number(r.unit_price_rwf), total: Number(r.total_per_unit_rwf), label: r.label,
+})
+
+const tally = (groups: Map<string, BomLine[]>): BomGroup[] =>
+  [...groups].filter(([, l]) => l.length).map(([name, lines]) => ({ name, lines, total: lines.reduce((n, l) => n + l.total, 0) }))
 
 // Every electrical line of the BOM, sorted into the groups an electrician buys by.
 function electricalBom(points: Record<string, string>[]) {
@@ -100,15 +108,72 @@ function electricalBom(points: Record<string, string>[]) {
       : kind ? POINT_GROUP[kind]
       : /light|LED/i.test(r.item) ? "Lights"
       : "Board and protection"
-    groups.get(group)!.push({
-      item: r.item.replace(/^Cable ([\d.]+) mm2 T\+E\/singles in conduit, /, "Cable $1 mm², "),
-      qty: Number(r.qty_per_unit), unit: r.unit, price: Number(r.unit_price_rwf), total: Number(r.total_per_unit_rwf), label: r.label,
-    })
+    groups.get(group)!.push(bomLine(r, r.item.replace(/^Cable ([\d.]+) mm2 T\+E\/singles in conduit, /, "Cable $1 mm², ")))
   }
-  return [...groups].filter(([, l]) => l.length).map(([name, lines]) => ({ name, lines, total: lines.reduce((n, l) => n + l.total, 0) }))
+  return tally(groups)
 }
 
 const frw = (n: number) => n.toLocaleString("en-US")
+
+const PLUMB_GROUPS = ["Sanitaryware", "Hot water", "Supply pipe", "Drain and vent pipe", "Valves and fittings",
+  "Drinking water", "Labour"]
+
+// Every plumbing line of the BOM, sorted the same way: what is fixed to the wall, then what runs behind it.
+function plumbingBom() {
+  const groups = new Map<string, BomLine[]>(PLUMB_GROUPS.map((g) => [g, []]))
+  for (const r of readCsv("bom.csv")) {
+    const plumber = r.category === "labour" && r.item.startsWith("Plumber")
+    if (r.trade !== "plumbing" && !plumber) continue
+    const group = plumber ? "Labour"
+      : r.category === "sanitaryware" ? "Sanitaryware"
+      : /heater|thermostatic/i.test(r.item) ? "Hot water"
+      : /^PPR/.test(r.item) ? "Supply pipe"
+      : /^uPVC/.test(r.item) ? "Drain and vent pipe"
+      : /drinking/i.test(r.item) ? "Drinking water"
+      : "Valves and fittings"
+    groups.get(group)!.push(bomLine(r))
+  }
+  return tally(groups)
+}
+
+function BomTable({ groups, total, label }: { groups: BomGroup[]; total: number; label: string }) {
+  return (
+    <div className="mt-6 overflow-x-auto rounded-xl border">
+      <table className="w-full text-sm">
+        <thead className="text-muted-foreground bg-muted/40">
+          <tr>
+            <th className="px-3 py-2 text-start font-medium">Item</th>
+            <th className="px-3 py-2 text-end font-medium">Qty</th>
+            <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Unit price (RWF)</th>
+            <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Total (RWF)</th>
+          </tr>
+        </thead>
+        {groups.map((g) => (
+          <tbody key={g.name}>
+            <tr className="border-t bg-muted/20">
+              <th colSpan={3} className="px-3 py-2 text-start font-semibold">{g.name}</th>
+              <td className="px-3 py-2 text-end font-semibold tabular-nums">{frw(g.total)}</td>
+            </tr>
+            {g.lines.map((l, i) => (
+              <tr key={`${l.item}-${i}`} className="border-t">
+                <td className="px-3 py-2 ps-6">{l.item}</td>
+                <td className="px-3 py-2 text-end whitespace-nowrap tabular-nums">{l.qty} {l.unit === "each" ? "" : l.unit}</td>
+                <td className="text-muted-foreground px-3 py-2 text-end tabular-nums">{frw(l.price)}</td>
+                <td className="px-3 py-2 text-end tabular-nums">{frw(l.total)}</td>
+              </tr>
+            ))}
+          </tbody>
+        ))}
+        <tfoot>
+          <tr className="border-t-2">
+            <th colSpan={3} className="px-3 py-3 text-start font-semibold">{label}</th>
+            <td className="px-3 py-3 text-end font-semibold tabular-nums">{frw(total)}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  )
+}
 
 const mm = (n: number) => n.toLocaleString("en-US")
 
@@ -137,6 +202,11 @@ export default function StudioPage() {
   const points = readCsv("points.csv")
   const bom = electricalBom(points)
   const bomTotal = bom.reduce((n, g) => n + g.total, 0)
+  const pipes = readCsv("pipes.csv")
+  const water = Object.fromEntries(readCsv("site-water.csv").map((r) => [r.item, r.value]))
+  const shared = readCsv("shared-works.csv").filter((w) => !/site board|REG/i.test(w.item))
+  const plumbing = plumbingBom()
+  const plumbingTotal = plumbing.reduce((n, g) => n + g.total, 0)
   const pieces = Object.fromEntries(kits.map((k) => [k.id, piecesOf(k.id)]))
   return (
     <main className="w-full flex-1">
@@ -402,44 +472,124 @@ export default function StudioPage() {
             Everything the electrician buys for one studio: about RWF {frw(bomTotal)}. Prices are placeholders until
             three quotes come in for each line.
           </p>
-          <div className="mt-6 overflow-x-auto rounded-xl border">
+          <BomTable groups={bom} total={bomTotal} label="Electrical, one studio" />
+          <p className="text-muted-foreground mt-3 text-sm">
+            Full list for every trade: <a href={`${D}/data/bom.xlsx`} download className="underline underline-offset-4">bom.xlsx</a>
+            {" · "}<a href={`${D}/data/circuits.csv`} download className="underline underline-offset-4">circuits.csv</a>
+            {" · "}<a href={`${D}/data/points.csv`} download className="underline underline-offset-4">points.csv</a>
+          </p>
+        </div>
+      </section>
+
+      {/* Plumbing: four full-width sections, from the tank down to every item bought. */}
+      <section id="plumbing" className="scroll-mt-20 border-t bg-muted/40 py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+          <p className="text-muted-foreground text-sm font-medium">Plumbing · 1 of 4</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">Water in, water out</h2>
+          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+            WASAC water, the borehole and rain from the canopies fill one shared tank, and a pump sends it to the three
+            studios. Toilets and showers drain to a new shared septic tank; kitchen sinks drain to their own grease
+            trap.
+          </p>
+          <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
+            {[
+              [`${mm(Number(water.daily_L))} L`, `a day for ${water.persons} guests`],
+              [`${water.tank_m3} m³`, "storage tank, about 4 days"],
+              [`${water.septic_m3} m³`, `septic tank, chambers ${water.chamber1_m3} + ${water.chamber2_m3} m³`],
+              [`${water.pump_lpm} L/min`, "booster pump"],
+            ].map(([v, l]) => (
+              <div key={l} className="bg-background p-5">
+                <div className="text-2xl font-semibold tracking-tight">{v}</div>
+                <div className="text-muted-foreground mt-1 text-sm">{l}</div>
+              </div>
+            ))}
+          </div>
+          <Figure src={`${D}/drawings/p-301.svg`} caption="P-301 · Site water and sanitation schematic" />
+        </div>
+      </section>
+
+      <section id="pipes" className="scroll-mt-20 border-t py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+          <p className="text-muted-foreground text-sm font-medium">Plumbing · 2 of 4</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">{pipes.length} pipe runs in each studio</h2>
+          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+            The sink, heater, shower, basin and WC sit within about 1.5 m of each other, so the pipes stay short. Drains
+            hang under the raised floor, so the bathroom has no step.
+          </p>
+          <Figure src={`${D}/drawings/p-101.svg`} caption="P-101 · Plumbing layout plan (supply and drainage)" />
+          <div className="overflow-x-auto rounded-xl border">
             <table className="w-full text-sm">
               <thead className="text-muted-foreground bg-muted/40">
                 <tr>
-                  <th className="px-3 py-2 text-start font-medium">Item</th>
-                  <th className="px-3 py-2 text-end font-medium">Qty</th>
-                  <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Unit price (RWF)</th>
-                  <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Total (RWF)</th>
+                  {["Run", "System", "Size", "Length", "Fall", "What it does"].map((h) => (
+                    <th key={h} className="px-3 py-2 text-start font-medium whitespace-nowrap">{h}</th>
+                  ))}
                 </tr>
               </thead>
-              {bom.map((g) => (
-                <tbody key={g.name}>
-                  <tr className="border-t bg-muted/20">
-                    <th colSpan={3} className="px-3 py-2 text-start font-semibold">{g.name}</th>
-                    <td className="px-3 py-2 text-end font-semibold tabular-nums">{frw(g.total)}</td>
+              <tbody>
+                {pipes.map((p) => (
+                  <tr key={p.run} className="border-t">
+                    <td className="px-3 py-2 font-medium">{p.run}</td>
+                    <td className="px-3 py-2">{p.system}</td>
+                    <td className="px-3 py-2 whitespace-nowrap tabular-nums">DN{p.dn}</td>
+                    <td className="px-3 py-2 whitespace-nowrap tabular-nums">{p.length_m} m</td>
+                    <td className="px-3 py-2 tabular-nums">{p.fall || "–"}</td>
+                    <td className="text-muted-foreground px-3 py-2">{p.note}</td>
                   </tr>
-                  {g.lines.map((l, i) => (
-                    <tr key={`${l.item}-${i}`} className="border-t">
-                      <td className="px-3 py-2 ps-6">{l.item}</td>
-                      <td className="px-3 py-2 text-end whitespace-nowrap tabular-nums">{l.qty} {l.unit === "each" ? "" : l.unit}</td>
-                      <td className="text-muted-foreground px-3 py-2 text-end tabular-nums">{frw(l.price)}</td>
-                      <td className="px-3 py-2 text-end tabular-nums">{frw(l.total)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              ))}
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="hot-water" className="scroll-mt-20 border-t bg-muted/40 py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+          <p className="text-muted-foreground text-sm font-medium">Plumbing · 3 of 4</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">The pipework in 3D</h2>
+          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+            An 80 L heater in the kitchen&rsquo;s tall unit stores water at 60 °C. A thermostatic valve sends 41&ndash;44 °C to
+            the shower and basin so no guest is scalded; the kitchen sink gets hot water direct. Every pipe is
+            pressure-tested before the walls close.
+          </p>
+          <Figure src={`${D}/drawings/p-201.svg`} caption="P-201 · Pipework isometric (unit)" />
+        </div>
+      </section>
+
+      <section id="plumbing-bom" className="scroll-mt-20 border-t py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+          <p className="text-muted-foreground text-sm font-medium">Plumbing · 4 of 4</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">Bill of materials</h2>
+          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+            Everything the plumber buys for one studio: about RWF {frw(plumbingTotal)}. Prices are placeholders until
+            three quotes come in for each line.
+          </p>
+          <BomTable groups={plumbing} total={plumbingTotal} label="Plumbing, one studio" />
+          <h3 className="mt-10 text-xl font-semibold tracking-tight">Shared by all three studios</h3>
+          <div className="mt-4 overflow-x-auto rounded-xl border">
+            <table className="w-full text-sm">
+              <tbody>
+                {shared.map((w) => (
+                  <tr key={w.item} className="border-t first:border-0">
+                    <td className="px-3 py-2">{w.item}</td>
+                    <td className="px-3 py-2 text-end tabular-nums">{frw(Number(w.rwf))}</td>
+                  </tr>
+                ))}
+              </tbody>
               <tfoot>
                 <tr className="border-t-2">
-                  <th colSpan={3} className="px-3 py-3 text-start font-semibold">Electrical, one studio</th>
-                  <td className="px-3 py-3 text-end font-semibold tabular-nums">{frw(bomTotal)}</td>
+                  <th className="px-3 py-3 text-start font-semibold">Water and sanitation, once for the site</th>
+                  <td className="px-3 py-3 text-end font-semibold tabular-nums">
+                    {frw(shared.reduce((n, w) => n + Number(w.rwf), 0))}
+                  </td>
                 </tr>
               </tfoot>
             </table>
           </div>
           <p className="text-muted-foreground mt-3 text-sm">
             Full list for every trade: <a href={`${D}/data/bom.xlsx`} download className="underline underline-offset-4">bom.xlsx</a>
-            {" · "}<a href={`${D}/data/circuits.csv`} download className="underline underline-offset-4">circuits.csv</a>
-            {" · "}<a href={`${D}/data/points.csv`} download className="underline underline-offset-4">points.csv</a>
+            {" · "}<a href={`${D}/data/pipes.csv`} download className="underline underline-offset-4">pipes.csv</a>
+            {" · "}<a href={`${D}/data/site-water.csv`} download className="underline underline-offset-4">site-water.csv</a>
           </p>
         </div>
       </section>
