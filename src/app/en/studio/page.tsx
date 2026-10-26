@@ -268,25 +268,24 @@ export default function StudioPage() {
         </div>
       </section>
 
-      <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
-      {/* 3D: the furnished cutaway, then the live model. */}
-      <section id="model" className="mt-16 scroll-mt-20">
-        <p className="text-muted-foreground text-sm font-medium">3D</p>
-        <h2 className="mt-1 text-3xl font-semibold tracking-tight">The studio in 3D</h2>
-        <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-          The same model draws every sheet above. Switch layers, pull the kits apart, replay the assembly step by
-          step, and tap a part to see its number.
-        </p>
-        <div className="mt-6 overflow-hidden rounded-xl border">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${D}/render/studio-cutaway.jpg`} width={1600} height={1000} loading="lazy"
-            alt="Cutaway with the roof and front wall removed: queen bed, kitchen with induction hob and sink, table and stools, and the bathroom with a walk-in shower."
-            className="h-auto w-full" />
+      {/* 3D, full screen and in the 2D section's pattern: the same simplified pieces in a black-and-white
+          isometric (render/iso.svg, inverted in dark mode); the live model follows for anyone exploring. */}
+      <section id="model">
+        <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
+          <h2 className="text-3xl font-semibold tracking-tight">3D</h2>
+          <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={`${D}/render/iso.svg`} alt="The studio in 3D, seen from the bed end: the bed with shelf towers, the sofa, table and chairs, the galley with its overhead cabinet, and the bathroom with shower and WC behind a door, the basin outside it."
+              className="w-full object-contain lg:max-h-full dark:invert" />
+          </div>
         </div>
-        <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
-          title="Container studio, Layout B" />
+        <div className="mx-auto w-full max-w-5xl px-4 pb-6 md:px-6">
+          <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
+            title="Container studio, Layout B" />
+        </div>
       </section>
 
+      <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
       {/* The building blocks: the studio is eleven kits. */}
       <section id="blocks" className="mt-16 scroll-mt-20">
         <p className="text-muted-foreground text-sm font-medium">Building blocks</p>

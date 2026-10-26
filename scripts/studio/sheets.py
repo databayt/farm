@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import params as P
-from draw import (FILL, SYS, Sheet, iso, iso_draw, ortho, project_box, sym_box, sym_breaker, sym_earth, sym_lamp, sym_socket,
+from draw import (FILL, SYS, Sheet, iso, iso_draw, iso_order, ortho, project_box, sym_box, sym_breaker, sym_earth, sym_lamp, sym_socket,
                   sym_switch)
 from model import Box
 
@@ -223,6 +223,83 @@ def plan_bw(m) -> str:
     s.dim(X(0), Y(lo.W) + 4, X(lo.L), Y(lo.W) + 4, f"{lo.L:,.0f}", 4, 2.4)
     s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:,.0f}", -4, 2.4)
     return s.bare(ox + (lo.L + 300) / sc + 10, Y(lo.W) + 14)
+
+
+def iso_bw(m) -> str:
+    """The 3D counterpart of plan_bw: the same simplified pieces as outlines in a black-and-white
+    isometric, seen from the bed end and the front. The far walls stand full height; the front and
+    end-A walls are low curbs, and the bathroom walls are cut at 1 m with black tops, as on the plan."""
+    lo = m["lo"]
+    by_id = {i: b for (b, fl, n, i, *_x) in items(m, layers=None, exclude_layers=())}
+    L, W, H, e = lo.L, lo.W, lo.H, 50.0
+    cut, curb = 1000.0, 120.0
+    cy0, cy1 = lo.bath_y1, lo.bath_y1 + lo.cross_t
+    d0, d1 = lo.bdoor
+    sx0, sx1 = lo.sofa
+    X0 = lo.part_x0 - 620
+    pieces: list[tuple[Box, bool]] = [  # (box, cut wall with a black top)
+        (Box(-e, -e, -40, L + e, W + e, 0), False),  # floor
+        (Box(-e, -e, 0, L + e, 0, H), False),  # back wall
+        (Box(L, 0, 0, L + e, W, H), False),  # end B
+        (Box(-e, 0, 0, 0, W, curb), True),  # end A, as a curb
+        (Box(0, W, 0, lo.o1[0], W + e, curb), True),  # front wall either side of the glazing and W1
+        (Box(lo.o1[1], W, 0, lo.o2[0], W + e, curb), True),
+        (Box(lo.o2[1], W, 0, L + e, W + e, curb), True),
+        (Box(lo.part_x0, 0, 0, lo.bath_x0, cy1, cut), True),  # partition
+        (Box(lo.bath_x0, cy0, 0, d0 + 18, cy1, cut), True),  # cross wall, door opening between
+        (Box(d1, cy0, 0, L, cy1, cut), True),
+        # bed, pillows, headboard and the two shelf towers
+        (Box(0, 150, 0, lo.bed_x1, 2170, 450), False),
+        (Box(20, 170, 450, lo.bed_x1 - 20, 2150, 650), False),
+        (Box(0, 0, 0, lo.bed_x1, 150, 1100), False),
+        (Box(120, 220, 650, lo.bed_x1 / 2 - 40, 520, 740), False),
+        (Box(lo.bed_x1 / 2 + 40, 220, 650, lo.bed_x1 - 120, 520, 740), False),
+        (Box(0, 0, 1100, 400, 150, 2200), False),
+        (Box(lo.bed_x1 - 400, 0, 1100, lo.bed_x1, 150, 2200), False),
+        # sofa: seat, back, arms
+        (Box(sx0, 0, 0, sx1, 750, 400), False),
+        (Box(sx0 + 120, 0, 400, sx1 - 120, 200, 700), False),
+        (Box(sx0, 0, 0, sx0 + 120, 750, 560), False),
+        (Box(sx1 - 120, 0, 0, sx1, 750, 560), False),
+        # galley: counter with hob and sink, overhead cabinet
+        (Box(X0, 0, 0, lo.part_x0, lo.sink[1], 900), False),
+        (Box(X0 + 60, lo.hob[0] + 60, 900, lo.part_x0 - 60, lo.hob[1] - 60, 910), False),
+        (Box(X0 + 90, lo.sink[0] + 60, 896, lo.part_x0 - 120, lo.sink[1] - 60, 900), False),
+        (Box(lo.part_x0 - 500, 0, 1800, lo.part_x0, lo.sink[1], 2300), False),
+    ]
+    for i, b in by_id.items():  # the table and the chairs, as built
+        if i.startswith("K6-") and i != "K6-SOFA" and b.z1 > 300:
+            pieces.append((b, False))
+    wc = by_id["K2-WC"]
+    for i in ("K2-TRAY", "K2-SCREEN", "K2-BASIN"):
+        pieces.append((by_id[i], False))
+    pieces += [(Box(wc.x0, wc.y0, 0, wc.x1 - 180, wc.y1, 420), False),
+               (Box(wc.x1 - 180, wc.y0, 0, wc.x1, wc.y1, 780), False)]
+    bx0, bx1, by0, by1 = lo.basin
+    pieces.append((Box(L - 138, by0, 1250, L, by1, 1900), False))
+
+    # look from the end-A front corner: mirror x so the isometric's near faces are the end-A ones,
+    # then flip the picture back so the bed reads on the left, as on the plan
+    boxes = [Box(L - b.x1, b.y0, b.z0, L - b.x0, b.y1, b.z1) for b, _ in pieces]
+    pts = [iso(x, y, z) for b in boxes for x in (b.x0, b.x1) for y in (b.y0, b.y1) for z in (b.z0, b.z1)]
+    u0, v0 = min(p[0] for p in pts), min(p[1] for p in pts)
+    u1, v1 = max(p[0] for p in pts), max(p[1] for p in pts)
+    sc, pad, ink = 0.06, 6.0, "#111"
+    sh = Sheet("", "")
+
+    def P_(x, y, z):
+        u, v = iso(x, y, z)
+        return (pad + (u1 - u) * sc, pad + (v - v0) * sc)
+
+    for k in iso_order(boxes):
+        b, wall = boxes[k], pieces[k][1]
+        top = [P_(b.x0, b.y0, b.z1), P_(b.x1, b.y0, b.z1), P_(b.x1, b.y1, b.z1), P_(b.x0, b.y1, b.z1)]
+        front = [P_(b.x0, b.y1, b.z0), P_(b.x1, b.y1, b.z0), P_(b.x1, b.y1, b.z1), P_(b.x0, b.y1, b.z1)]
+        side = [P_(b.x1, b.y0, b.z0), P_(b.x1, b.y1, b.z0), P_(b.x1, b.y1, b.z1), P_(b.x1, b.y0, b.z1)]
+        sh.poly(side, "#fff", ink, 0.3)
+        sh.poly(front, "#fff", ink, 0.3)
+        sh.poly(top, ink if wall else "#fff", ink, 0.3)
+    return sh.bare((u1 - u0) * sc + 2 * pad, (v1 - v0) * sc + 2 * pad)
 
 
 def a201_elev(m) -> Sheet:
