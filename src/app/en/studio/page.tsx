@@ -8,7 +8,7 @@ import { Figure } from "@/components/docs/figure"
 import { StudioViewer } from "@/components/docs/studio-viewer"
 import { FloorLayers } from "@/components/docs/floor-layers"
 import { ItemRail } from "@/components/docs/item-rail"
-import { BedPieces } from "@/components/docs/bed-pieces"
+import { BedPieces, bedStock } from "@/components/docs/bed-pieces"
 import model from "../../../../public/designs/studio/model/parts.json"
 import totals from "../../../../public/designs/studio/data/totals.json"
 import floorPieces from "../../../../public/designs/studio/render/floor-pieces.json"
@@ -34,19 +34,34 @@ const FEATURES = [
   { title: "Stay cool", text: "The roof deck shades the steel, EPS insulation is sealed to it, a wall fan moves the air, and the AC is ready." },
 ]
 
-// The bedroom, piece by piece (Bedroom section): each one rendered on its own by
-// scripts/studio/render/room.html?item=<id>, as a line drawing and in materials.
-const BEDROOM = [
-  { id: "bed", name: "Bed frame", size: "1.64 × 2.02 m · headboard 1.0 m", text: "Board in medium oak: a headboard, rails all round, a spine, and wooden slats laid across with a fine gap." },
-  { id: "box", name: "Storage box × 2", size: "0.60 × 0.62 × 0.29 m", text: "An open ply tray on four castors that rolls out from under the bed." },
-  { id: "mattress", name: "Mattress", size: "160 × 200 × 20 cm", text: "Queen size, a quilted cover with piping round both edges." },
-  { id: "sheets", name: "Bed sheets", size: "for 160 × 200 cm", text: "Fitted sheet, flat sheet and two pillowcases in white cotton." },
-  { id: "duvet", name: "Duvet", size: "200 × 220 cm", text: "A light duvet in a white cover; Kigali nights stay mild." },
-  { id: "pillow", name: "Pillow × 2", size: "50 × 70 cm", text: "Two soft pillows, one per side." },
-  { id: "bedside", name: "Bedside table", size: "0.34 × 0.34 × 0.55 m", text: "A thick pine top on four square legs, with a lower shelf." },
-  { id: "lamp", name: "Table lamp", size: "Ø 0.26 × 0.42 m", text: "A round black base, a thin stem and a linen drum shade. USB-C sits at the bedside." },
-  { id: "walllamp", name: "Wall reading lamp", size: "arm 0.24 m", text: "A black wall plate and a curved arm with a cone head over the wall-side pillow." },
-]
+// The Bed rail: each piece rendered on its own by scripts/studio/render/room.html?item=<id>, with what it
+// measures, where it comes from and what it costs. Prices are the BOM's placeholders (AS-21) until quoted.
+function bedRail() {
+  const k5 = readCsv("cut-list.csv").filter((r) => r.kit === "K5")
+    .reduce((a, r) => a + (Number(r.length_mm) * Number(r.width_mm)) / 1e6, 0)
+  const board = (k5 / (2.44 * 1.22)) * 45_000
+  const unsourced = { where: "Not sourced yet", cost: "Not in the budget yet" }
+  const items = [
+    { id: "bed", title: "Bed frame", size: "1.64 × 2.02 m, headboard 1.0 m, top at 0.45 m",
+      where: "Built: board from Gisozi (Agakiriro), cut in a Gisozi workshop", cost: `RWF ${frw(Math.round(bedStock().total))} of stock`,
+      note: "Includes the two storage boxes that roll out from under it on castors (0.60 × 0.62 × 0.29 m each). Every piece is in the section below." },
+    { id: "mattress", title: "Mattress", size: "160 × 200 × 20 cm", where: "Rwanda Foam Ltd, Kigali", cost: `RWF ${frw(180_000)} estimate`,
+      note: "Sizes not confirmed yet; the frame takes 152 × 183 up to 160 × 200 cm." },
+    { id: "sheets", title: "Bed sheets", size: "Fitted sheet, flat sheet and 2 pillowcases for 160 × 200 cm", ...unsourced },
+    { id: "duvet", title: "Duvet", size: "200 × 220 cm", ...unsourced },
+    { id: "pillow", title: "Pillows × 2", size: "50 × 70 cm each", ...unsourced },
+    { id: "bedside", title: "Bedside table", size: "0.34 × 0.34 × 0.55 m", where: "Built with the bed from 18 mm board (kit K5)",
+      cost: `RWF ${frw(Math.round(board))} of board`, note: "A thick top on four legs, each two strips glued face to face, and a lower shelf." },
+    { id: "lamp", title: "Table lamp", size: "Ø 0.26 m, 0.42 m high", where: "Not sourced yet", cost: `RWF ${frw(35_000)} estimate`,
+      note: "A linen drum shade and an LED E27 bulb." },
+    { id: "walllamp", title: "Wall reading lamp", size: "Arm 0.24 m from the wall", where: "With the electrical kit (K8)",
+      cost: `RWF ${frw(15_000)} estimate`, note: "Over the wall-side pillow." },
+  ]
+  return items.map((x) => ({
+    src: `${D}/render/bedroom/${x.id}.webp`, alt: x.title, title: x.title, note: x.note,
+    details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: x.where }, { label: "Cost", value: x.cost }],
+  }))
+}
 
 const STEPS = [
   { n: "1", title: "Measure", text: "Survey the container; the model regenerates every drawing from the real numbers." },
@@ -293,19 +308,12 @@ export default function StudioPage() {
         </div>
       </section>
 
-      {/* Bedroom: the bed corner as a rail of product cards (after databayt.org's products rail), each piece
-          rendered on its own by scripts/studio/render/room.html?item=<id>. */}
+      {/* Bed: the bed corner as a rail of product cards (after databayt.org's products rail); the card in focus
+          shows its size, source and cost below. */}
       <section id="bedroom" className="pt-10 pb-10">
-        <div className="px-4 md:px-10">
-          <h2 className="text-3xl font-semibold tracking-tight">Bedroom</h2>
-          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            The bed corner, piece by piece: what it is and how big.
-          </p>
-        </div>
+        <h2 className="px-4 text-3xl font-semibold tracking-tight md:px-10">Bed</h2>
         <div className="mt-6">
-          <ItemRail items={BEDROOM.map((b) => ({
-            src: `${D}/render/bedroom/${b.id}.webp`, alt: b.name, category: b.size, title: b.name, text: b.text,
-          }))} />
+          <ItemRail items={bedRail()} />
         </div>
       </section>
 

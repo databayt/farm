@@ -52,11 +52,8 @@ function steps(ps: Part[]) {
   return out
 }
 
-export function BedPieces() {
-  const g = groups()
-  const slats = bed.parts.filter((p) => p.type === "Deck slat")
-  const zs = slats.map((p) => p.box[1]).sort((a, b) => a - b)
-  const pitch = zs[1] - zs[0], gap = pitch - slats[0].size[1]
+// the stock one bed needs, with placeholder prices (the Bed rail's card quotes the same total)
+export function bedStock() {
   const sheets18 = bed.sheets.filter((s) => s.material === "PLY18").length
   const sheets12 = bed.sheets.filter((s) => s.material === "PLY12").length
   const edge = bed.parts.reduce((n, p) => n + p.edgeM, 0)
@@ -68,6 +65,15 @@ export function BedPieces() {
     { item: "Wood glue, medium-oak stain, satin varnish", qty: "1 set", where: "Ameki Color, Gikondo", cost: 0 },
   ]
   const total = buy.reduce((n, b) => n + b.cost, 0)
+  return { sheets18, sheets12, buy, total }
+}
+
+export function BedPieces() {
+  const g = groups()
+  const slats = bed.parts.filter((p) => p.type === "Deck slat")
+  const zs = slats.map((p) => p.box[1]).sort((a, b) => a - b)
+  const pitch = zs[1] - zs[0], gap = pitch - slats[0].size[1]
+  const { sheets18, sheets12, buy, total } = bedStock()
 
   return (
     <div className="px-4 md:px-10">
