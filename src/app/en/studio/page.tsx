@@ -234,7 +234,7 @@ export default function StudioPage() {
         </div>
       </section>
 
-      {/* 2D, full screen: the furniture plan fills the first screen, the sheets behind it follow. */}
+      {/* 2D, full screen: the simplified plan fills the screen; 3D follows straight after. */}
       <section id="plans">
         <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
           <h2 className="text-3xl font-semibold tracking-tight">2D</h2>
@@ -246,6 +246,27 @@ export default function StudioPage() {
               className="w-full object-contain lg:max-h-full dark:invert" />
           </div>
         </div>
+      </section>
+
+      {/* 3D, full screen and in the 2D section's pattern: the same simplified pieces in a black-and-white
+          front view (render/front.svg, inverted in dark mode); the live model follows for anyone exploring. */}
+      <section id="model">
+        <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
+          <h2 className="text-3xl font-semibold tracking-tight">3D</h2>
+          <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={`${D}/render/front.svg`} alt="The studio in 3D, seen from the front with the front wall off: the bed with shelf towers, the sofa, table and chairs, the galley with its overhead cabinet, and the bathroom with shower and WC behind a door, the basin outside it."
+              className="w-full object-contain lg:max-h-full dark:invert" />
+          </div>
+        </div>
+        <div className="mx-auto w-full max-w-5xl px-4 pb-6 md:px-6">
+          <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
+            title="Container studio, Layout B" />
+        </div>
+      </section>
+
+      {/* The numbers and the drawing set behind the 2D and 3D. */}
+      <section id="sheets">
         <div className="px-4 pb-6 md:px-10">
           <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
             {[
@@ -265,23 +286,6 @@ export default function StudioPage() {
               <Figure key={id} src={`${D}/drawings/${id}.svg`} caption={`${id.toUpperCase()} · ${title}`} />
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* 3D, full screen and in the 2D section's pattern: the same simplified pieces in a black-and-white
-          isometric (render/iso.svg, inverted in dark mode); the live model follows for anyone exploring. */}
-      <section id="model">
-        <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
-          <h2 className="text-3xl font-semibold tracking-tight">3D</h2>
-          <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${D}/render/iso.svg`} alt="The studio in 3D, seen from the bed end: the bed with shelf towers, the sofa, table and chairs, the galley with its overhead cabinet, and the bathroom with shower and WC behind a door, the basin outside it."
-              className="w-full object-contain lg:max-h-full dark:invert" />
-          </div>
-        </div>
-        <div className="mx-auto w-full max-w-5xl px-4 pb-6 md:px-6">
-          <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
-            title="Container studio, Layout B" />
         </div>
       </section>
 

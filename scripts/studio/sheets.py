@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import params as P
-from draw import (FILL, SYS, Sheet, iso, iso_draw, iso_order, ortho, project_box, sym_box, sym_breaker, sym_earth, sym_lamp, sym_socket,
+from draw import (FILL, SYS, Sheet, iso, iso_draw, ortho, project_box, sym_box, sym_breaker, sym_earth, sym_lamp, sym_socket,
                   sym_switch)
 from model import Box
 
@@ -225,14 +225,14 @@ def plan_bw(m) -> str:
     return s.bare(ox + (lo.L + 300) / sc + 10, Y(lo.W) + 14)
 
 
-def iso_bw(m) -> str:
-    """The 3D counterpart of plan_bw: the same simplified pieces as outlines in a black-and-white
-    isometric, seen from the bed end and the front. The far walls stand full height; the front and
-    end-A walls are low curbs, and the bathroom walls are cut at 1 m with black tops, as on the plan."""
+def front_bw(m) -> str:
+    """The 3D counterpart of plan_bw: the same simplified pieces as outlines in black and white, seen
+    from the front and above. The back and end walls stand full height, the front wall is a low curb,
+    and the bathroom walls are cut at 0.7 m with black tops, as on the plan."""
     lo = m["lo"]
     by_id = {i: b for (b, fl, n, i, *_x) in items(m, layers=None, exclude_layers=())}
     L, W, H, e = lo.L, lo.W, lo.H, 50.0
-    cut, curb = 1000.0, 120.0
+    cut, curb = 700.0, 120.0
     cy0, cy1 = lo.bath_y1, lo.bath_y1 + lo.cross_t
     d0, d1 = lo.bdoor
     sx0, sx1 = lo.sofa
@@ -241,7 +241,7 @@ def iso_bw(m) -> str:
         (Box(-e, -e, -40, L + e, W + e, 0), False),  # floor
         (Box(-e, -e, 0, L + e, 0, H), False),  # back wall
         (Box(L, 0, 0, L + e, W, H), False),  # end B
-        (Box(-e, 0, 0, 0, W, curb), True),  # end A, as a curb
+        (Box(-e, 0, 0, 0, W, H), False),  # end A
         (Box(0, W, 0, lo.o1[0], W + e, curb), True),  # front wall either side of the glazing and W1
         (Box(lo.o1[1], W, 0, lo.o2[0], W + e, curb), True),
         (Box(lo.o2[1], W, 0, L + e, W + e, curb), True),
@@ -278,27 +278,72 @@ def iso_bw(m) -> str:
     bx0, bx1, by0, by1 = lo.basin
     pieces.append((Box(L - 138, by0, 1250, L, by1, 1900), False))
 
-    # look from the end-A front corner: mirror x so the isometric's near faces are the end-A ones,
-    # then flip the picture back so the bed reads on the left, as on the plan
-    boxes = [Box(L - b.x1, b.y0, b.z0, L - b.x0, b.y1, b.z1) for b, _ in pieces]
-    pts = [iso(x, y, z) for b in boxes for x in (b.x0, b.x1) for y in (b.y0, b.y1) for z in (b.z0, b.z1)]
+    # one-point perspective from in front of the glass, a little above the roof line: the front wall
+    # is off, the end walls recede to the middle, and the plan reads the same way round as the 2D
+    cx, cy, cz, ink = L / 2, W + 5200.0, 3300.0, "#111"
+    boxes = [b for b, _ in pieces]
+
+    def proj(x, y, z):
+        d = cy - y
+        return ((x - cx) / d * 1000, (cz - z) / d * 1000)
+
+    pts = [proj(x, y, z) for b in boxes for x in (b.x0, b.x1) for y in (b.y0, b.y1) for z in (b.z0, b.z1)]
     u0, v0 = min(p[0] for p in pts), min(p[1] for p in pts)
     u1, v1 = max(p[0] for p in pts), max(p[1] for p in pts)
-    sc, pad, ink = 0.06, 6.0, "#111"
+    sc, pad = 400 / (u1 - u0), 6.0
     sh = Sheet("", "")
 
     def P_(x, y, z):
-        u, v = iso(x, y, z)
-        return (pad + (u1 - u) * sc, pad + (v - v0) * sc)
+        u, v = proj(x, y, z)
+        return (pad + (u - u0) * sc, pad + (v - v0) * sc)
 
-    for k in iso_order(boxes):
+    # painter's order: behind = wholly farther back, else wholly below, else farther from the centre line
+    n = len(boxes)
+    after: list[set[int]] = [set() for _ in range(n)]
+    for i in range(n):
+        for j in range(i + 1, n):
+            a_, b_ = boxes[i], boxes[j]
+            if a_.y1 <= b_.y0 + 0.5:
+                after[i].add(j)
+            elif b_.y1 <= a_.y0 + 0.5:
+                after[j].add(i)
+            elif a_.z1 <= b_.z0 + 0.5:
+                after[i].add(j)
+            elif b_.z1 <= a_.z0 + 0.5:
+                after[j].add(i)
+            elif a_.x1 <= b_.x0 + 0.5 or b_.x1 <= a_.x0 + 0.5:
+                da = min(abs(a_.x0 - cx), abs(a_.x1 - cx))
+                db = min(abs(b_.x0 - cx), abs(b_.x1 - cx))
+                (after[i] if da > db else after[j]).add(j if da > db else i)
+    indeg = [0] * n
+    for i in range(n):
+        for j in after[i]:
+            indeg[j] += 1
+    key = lambda i: (boxes[i].y1, boxes[i].z1)  # noqa: E731
+    ready = sorted((i for i in range(n) if indeg[i] == 0), key=key)
+    order: list[int] = []
+    while ready:
+        i = ready.pop(0)
+        order.append(i)
+        for j in after[i]:
+            indeg[j] -= 1
+            if indeg[j] == 0:
+                ready.append(j)
+        ready.sort(key=key)
+    order += sorted((i for i in range(n) if i not in order), key=key)
+    for k in order:
         b, wall = boxes[k], pieces[k][1]
-        top = [P_(b.x0, b.y0, b.z1), P_(b.x1, b.y0, b.z1), P_(b.x1, b.y1, b.z1), P_(b.x0, b.y1, b.z1)]
-        front = [P_(b.x0, b.y1, b.z0), P_(b.x1, b.y1, b.z0), P_(b.x1, b.y1, b.z1), P_(b.x0, b.y1, b.z1)]
-        side = [P_(b.x1, b.y0, b.z0), P_(b.x1, b.y1, b.z0), P_(b.x1, b.y1, b.z1), P_(b.x1, b.y0, b.z1)]
-        sh.poly(side, "#fff", ink, 0.3)
-        sh.poly(front, "#fff", ink, 0.3)
-        sh.poly(top, ink if wall else "#fff", ink, 0.3)
+        if b.x1 <= cx:  # left of the eye: the inner (+x) side shows
+            sh.poly([P_(b.x1, b.y0, b.z0), P_(b.x1, b.y1, b.z0), P_(b.x1, b.y1, b.z1), P_(b.x1, b.y0, b.z1)],
+                    "#fff", ink, 0.3)
+        elif b.x0 >= cx:  # right of the eye: the inner (-x) side shows
+            sh.poly([P_(b.x0, b.y0, b.z0), P_(b.x0, b.y1, b.z0), P_(b.x0, b.y1, b.z1), P_(b.x0, b.y0, b.z1)],
+                    "#fff", ink, 0.3)
+        if b.z1 < cz:
+            sh.poly([P_(b.x0, b.y0, b.z1), P_(b.x1, b.y0, b.z1), P_(b.x1, b.y1, b.z1), P_(b.x0, b.y1, b.z1)],
+                    ink if wall else "#fff", ink, 0.3)
+        sh.poly([P_(b.x0, b.y1, b.z0), P_(b.x1, b.y1, b.z0), P_(b.x1, b.y1, b.z1), P_(b.x0, b.y1, b.z1)],
+                "#fff", ink, 0.3)
     return sh.bare((u1 - u0) * sc + 2 * pad, (v1 - v0) * sc + 2 * pad)
 
 
