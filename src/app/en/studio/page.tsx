@@ -1,9 +1,12 @@
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import type { Metadata } from "next"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
 import { StudioViewer } from "@/components/docs/studio-viewer"
+import model from "../../../../public/designs/studio/model/parts.json"
 import totals from "../../../../public/designs/studio/data/totals.json"
 
 // Public showcase of the container-studio design package (study/studio, D-014..D-016).
@@ -35,19 +38,63 @@ const STEPS = [
   { n: "5", title: "Assemble", text: "Two people, one tool set, 27 wordless steps, from insulation to the roof terrace." },
 ]
 
-const SHEETS = [
-  ["a-103", "Furniture and dimension plan"],
-  ["a-201", "Interior elevations"],
+// 2D: the plan first, then the sheets that explain it.
+const PLANS = [
+  ["a-201", "Interior elevations: back wall and front wall"],
+  ["a-202", "End elevations and cross-section"],
   ["s-101", "Roof terrace, canopies and stair"],
-  ["e-201", "Single-line diagram"],
-  ["p-301", "Site water and sanitation"],
-  ["j-103", "Kitchen kit, exploded"],
-  ["j-104", "Bed kit, exploded"],
-  ["c-101", "Cutting diagrams for a panel saw"],
+  ["a-401", "Wall, roof and floor build-up"],
+  ["e-101", "Electrical layout"],
+  ["p-101", "Plumbing: supply and drainage"],
 ]
+
+// The sheet that shows each kit best: the exploded joinery drawings, or the services and build-up sheets.
+const KIT_SHEET: Record<string, string> = {
+  K1: "j-101", K2: "j-102", K3: "j-103", K4: "j-104", K5: "j-105", K6: "j-106",
+  K7: "j-107", K8: "e-101", K9: "p-201", K10: "a-401", K11: "j-108",
+}
+
+const MATERIAL: Record<string, string> = {
+  PLY12: "12 mm ply", PLY18: "18 mm board", MPLY18: "18 mm marine ply", WTOP38: "38 mm worktop",
+  STEEL: "steel", TIMBER: "hardwood", POLY: "polycarbonate", MESH: "steel mesh", STAIRFRAME: "steel",
+  white: "fitting", electric: "electrical", eps: "EPS foam", tile: "tiled board", base: "steel",
+}
+
+type Kit = { id: string; name: string; trade: string; where: string; bought: number }
+type Piece = { name: string; qty: number; size: string; material: string }
+
+// kits.csv is written by the studio generator; one quoted field holds a comma.
+function readKits(): Kit[] {
+  const csv = readFileSync(join(process.cwd(), "public/designs/studio/data/kits.csv"), "utf8")
+  return csv.trim().split("\n").slice(1).map((line) => {
+    const f = line.match(/("[^"]*"|[^,]+)(?=,|$)/g)!.map((s) => s.replace(/^"|"$/g, ""))
+    return { id: f[0], name: f[1], trade: f[2], where: f[3], bought: Number(f[5]) }
+  })
+}
+
+const mm = (n: number) => n.toLocaleString("en-US")
+
+// Collapse numbered copies ("Stair tread 5", "Joist RHS 80x40x3") into one row with a count.
+function piecesOf(kit: string): Piece[] {
+  const rows = new Map<string, Piece>()
+  for (const p of model.parts.filter((p) => p.kit === kit)) {
+    const name = p.name.replace(/\s*\([^)]*\)/g, "").replace(/ \d{1,2}$/, "").trim()
+    const size = [...p.size].sort((a, b) => b - a).map(mm).join(" × ")
+    const row = rows.get(name)
+    if (row) {
+      row.qty += 1
+      if (row.size !== size) row.size = "varies"
+    } else {
+      rows.set(name, { name, qty: 1, size, material: MATERIAL[p.material] ?? p.material })
+    }
+  }
+  return [...rows.values()]
+}
 
 export default function StudioPage() {
   const sheets = Object.values(totals.sheets as Record<string, number>).reduce((a, b) => a + b, 0)
+  const kits = readKits()
+  const pieces = Object.fromEntries(kits.map((k) => [k.id, piecesOf(k.id)]))
   return (
     <main className="w-full flex-1">
       {/* First screen: a photoreal concept render of the finished studio (D-018), made in Nano Banana from the
@@ -65,7 +112,7 @@ export default function StudioPage() {
             </h1>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button asChild>
-                <a href="#inside">See inside</a>
+                <a href="#plans">See the plans</a>
               </Button>
               <Button asChild variant="outline" className="border-white/60 bg-white/10 text-white hover:bg-white/20">
                 <a href="#model">Explore the 3D model</a>
@@ -76,38 +123,136 @@ export default function StudioPage() {
       </section>
 
       <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
-      <section id="inside" className="mt-14 grid scroll-mt-20 items-center gap-8 md:grid-cols-[1fr_1.15fr] md:gap-12">
-        <div className="space-y-5">
-          <h2 className="text-3xl font-semibold tracking-tight text-balance">Everything a guest needs in 13 m²</h2>
-          <p className="text-muted-foreground text-lg text-balance">
-            Three 20 ft containers already on the farm become identical farm-stay studios: bed, kitchen,
-            shower and a roof terrace. Every part is cut, drilled and numbered in Kigali, then assembled
-            on site, the IKEA way.
-          </p>
-          <Button asChild variant="outline">
-            <Link href="/docs/studio">Read the design package</Link>
-          </Button>
+      {/* 2D: the furniture plan, then the sheets behind it. */}
+      <section id="plans" className="mt-14 scroll-mt-20">
+        <p className="text-muted-foreground text-sm font-medium">2D</p>
+        <h2 className="mt-1 text-3xl font-semibold tracking-tight text-balance">Everything a guest needs in 13 m²</h2>
+        <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+          Three 20 ft containers already on the farm become identical farm-stay studios: bed, kitchen,
+          shower and a roof terrace. One set of drawings serves all three.
+        </p>
+        <Figure src={`${D}/drawings/a-103.svg`} caption="A-103 · Furniture and dimension plan" />
+        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
+          {[
+            ["13.1 m²", "net floor per studio"],
+            ["11 kits", `${sheets} sheets per studio`],
+            ["56 sheets", "drawings, generated"],
+            [rwf(totals.unit_with_contingency), "per studio, placeholder prices"],
+          ].map(([v, l]) => (
+            <div key={l} className="bg-background p-5">
+              <div className="text-2xl font-semibold tracking-tight">{v}</div>
+              <div className="text-muted-foreground mt-1 text-sm">{l}</div>
+            </div>
+          ))}
         </div>
-        <div className="overflow-hidden rounded-xl border">
+        <div className="mt-4 grid gap-x-6 md:grid-cols-2">
+          {PLANS.map(([id, title]) => (
+            <Figure key={id} src={`${D}/drawings/${id}.svg`} caption={`${id.toUpperCase()} · ${title}`} />
+          ))}
+        </div>
+      </section>
+
+      {/* 3D: the furnished cutaway, then the live model. */}
+      <section id="model" className="mt-16 scroll-mt-20">
+        <p className="text-muted-foreground text-sm font-medium">3D</p>
+        <h2 className="mt-1 text-3xl font-semibold tracking-tight">The studio in 3D</h2>
+        <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+          The same model draws every sheet above. Switch layers, pull the kits apart, replay the assembly step by
+          step, and tap a part to see its number.
+        </p>
+        <div className="mt-6 overflow-hidden rounded-xl border">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`${D}/render/studio-cutaway.jpg`} width={1600} height={1000} loading="lazy"
             alt="Cutaway with the roof and front wall removed: queen bed, kitchen with induction hob and sink, table and stools, and the bathroom with a walk-in shower."
             className="h-auto w-full" />
         </div>
+        <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
+          title="Container studio, Layout A" />
       </section>
 
-      <section className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
-        {[
-          ["13.1 m²", "net floor per studio"],
-          ["11 kits", `${sheets} sheets per studio`],
-          ["56 sheets", "drawings, generated"],
-          [rwf(totals.unit_with_contingency), "per studio, placeholder prices"],
-        ].map(([v, l]) => (
-          <div key={l} className="bg-background p-5">
-            <div className="text-2xl font-semibold tracking-tight">{v}</div>
-            <div className="text-muted-foreground mt-1 text-sm">{l}</div>
-          </div>
-        ))}
+      {/* The building blocks: one studio is eleven kits. */}
+      <section id="blocks" className="mt-16 scroll-mt-20">
+        <p className="text-muted-foreground text-sm font-medium">Building blocks</p>
+        <h2 className="mt-1 text-3xl font-semibold tracking-tight">Eleven kits make one studio</h2>
+        <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+          Each kit is packed flat, labelled and handed to one trade. The same eleven kits are made three times.
+        </p>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {kits.map((k) => (
+            <a key={k.id} href={`#${k.id.toLowerCase()}`} className="group overflow-hidden rounded-xl border transition-colors hover:border-foreground/30">
+              <div className="aspect-[4/3] overflow-hidden border-b bg-white p-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`${D}/drawings/${KIT_SHEET[k.id]}.svg`} alt={`${k.id} ${k.name}`} loading="lazy"
+                  className="size-full object-contain" />
+              </div>
+              <div className="p-4">
+                <div className="text-muted-foreground text-xs font-medium">{k.id}</div>
+                <h3 className="mt-1 font-medium">{k.name}</h3>
+                <p className="text-muted-foreground mt-1 text-sm">
+                  {pieces[k.id].reduce((n, p) => n + p.qty, 0)} pieces · {k.trade} · {k.where}
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* Each block broken into its pieces, straight from the model's part list. */}
+      <section id="pieces" className="mt-16 scroll-mt-20">
+        <p className="text-muted-foreground text-sm font-medium">Pieces</p>
+        <h2 className="mt-1 text-3xl font-semibold tracking-tight">Every kit, piece by piece</h2>
+        <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+          Open a kit to see what is in the box. Sizes are in millimetres, largest first.
+        </p>
+        <div className="mt-6 divide-y rounded-xl border">
+          {kits.map((k) => (
+            <details key={k.id} id={k.id.toLowerCase()} className="group scroll-mt-20">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-muted/50">
+                <span>
+                  <span className="text-muted-foreground me-2 text-sm">{k.id}</span>
+                  <span className="font-medium">{k.name}</span>
+                </span>
+                <span className="text-muted-foreground shrink-0 text-sm">
+                  {pieces[k.id].reduce((n, p) => n + p.qty, 0)} pieces
+                  <span className="ms-2 inline-block transition-transform group-open:rotate-90">›</span>
+                </span>
+              </summary>
+              <div className="grid gap-6 px-4 pb-6 md:grid-cols-[1fr_1.2fr]">
+                <div className="md:sticky md:top-16 md:self-start">
+                  <Figure src={`${D}/drawings/${KIT_SHEET[k.id]}.svg`} caption={`${KIT_SHEET[k.id].toUpperCase()} · ${k.name}`} />
+                </div>
+                <div className="my-6 overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="text-muted-foreground text-start">
+                      <tr className="border-b">
+                        <th className="py-2 pe-3 text-start font-medium">Piece</th>
+                        <th className="py-2 pe-3 text-end font-medium">Qty</th>
+                        <th className="py-2 pe-3 text-start font-medium">Size</th>
+                        <th className="hidden py-2 text-start font-medium sm:table-cell">Material</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pieces[k.id].map((p) => (
+                        <tr key={p.name} className="border-b last:border-0">
+                          <td className="py-2 pe-3">{p.name}</td>
+                          <td className="py-2 pe-3 text-end tabular-nums">{p.qty}</td>
+                          <td className="text-muted-foreground py-2 pe-3 whitespace-nowrap tabular-nums">{p.size}</td>
+                          <td className="text-muted-foreground hidden py-2 whitespace-nowrap sm:table-cell">{p.material}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {k.bought > 0 ? (
+                    <p className="text-muted-foreground mt-3 text-sm">
+                      Plus {k.bought} bought lines (fixings, fittings, cable, pipe) in the{" "}
+                      <a href={`${D}/data/bom.csv`} download className="underline underline-offset-4">bill of materials</a>.
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
       </section>
 
       <section className="mt-16">
@@ -120,15 +265,6 @@ export default function StudioPage() {
             </div>
           ))}
         </div>
-      </section>
-
-      <section id="model" className="mt-16 scroll-mt-20">
-        <h2 className="text-2xl font-semibold tracking-tight">The studio in 3D</h2>
-        <p className="text-muted-foreground mt-2">
-          Switch layers, pull the kits apart, replay the assembly step by step, and tap a part to see its number.
-        </p>
-        <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
-          title="Container studio, Layout A" />
       </section>
 
       <section className="mt-16">
@@ -144,15 +280,6 @@ export default function StudioPage() {
             </li>
           ))}
         </ol>
-      </section>
-
-      <section className="mt-16">
-        <h2 className="text-2xl font-semibold tracking-tight">Drawings</h2>
-        <div className="mt-2 grid gap-x-6 md:grid-cols-2">
-          {SHEETS.map(([id, title]) => (
-            <Figure key={id} src={`${D}/drawings/${id}.svg`} caption={`${id.toUpperCase()} · ${title}`} />
-          ))}
-        </div>
       </section>
 
       <section className="mt-16 grid gap-6 md:grid-cols-2">
