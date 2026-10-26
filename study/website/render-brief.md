@@ -20,7 +20,7 @@ The homepage shows the compound as it is planned, not as it stands. Its images a
 ## 2. The planned compound (every render must agree)
 
 - **Entrance.** An outer gate of galvanised five-bar tubular leaves stands between fieldstone posts. Beside it, a low fieldstone sign wall carries the words **DIGITAL FARM**. Behind the gate are a green parking lawn of grass pavers under shade trees, a **rock road** of hand-laid local stone setts (Rwandan pavé), and an **inner gate** of eucalyptus slats on an oxide-red steel frame.
-- **The tenant courtyard.** A level lawn with the existing round fieldstone fire pit, laid out as an L:
+- **The tenant courtyard.** A level lawn with the existing round fieldstone fire pit, laid out as an L (confirmed by the founder on 2026-10-26):
   - **Left:** the guest-room block. Two 40 ft containers are joined side by side into one long, low saffron-yellow building, about 12 × 4.9 m. It holds three en-suite rooms, each about 19 m² [E, D-017] with a bed, shower and WC but no kitchen. Each room has an oxide-red door and window onto a shared eucalyptus veranda.
   - **Right, at 90°:** three 20 ft containers in a row on the existing raised oxide-red steel decks. Two are **studios** in deep oxide red, built to the studio design (`/en/studio`): a 3 m sliding glass wall, a kitchenette, a shower and WC, and a roof terrace under a clear canopy. The third is the **farm office** in saffron yellow.
   - **Behind the right row:** one 40 ft **study and training room** in muted teal, with tall glazed doors along one long side onto a timber deck.
