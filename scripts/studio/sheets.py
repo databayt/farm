@@ -220,8 +220,8 @@ def plan_bw(m) -> str:
     for x0, x1, lab in ((0, lo.bed_x1, "BED"), (*lo.sofa, "SEATING"),
                         (lo.part_x0 - 620, lo.part_x0, "GALLEY"), (lo.bath_x0, lo.L, "BATH")):
         s.text(X((x0 + x1) / 2), oy - 7, lab, 2.6, "middle", "bold", ink)
-    s.dim(X(0), Y(lo.W) + 4, X(lo.L), Y(lo.W) + 4, f"{lo.L:,.0f}", 4, 2.4)
-    s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:,.0f}", -4, 2.4)
+    s.dim(X(0), Y(lo.W) + 4, X(lo.L), Y(lo.W) + 4, f"{lo.L:,.0f}", 4, 2.4, inline=True)
+    s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:,.0f}", -4, 2.4, inline=True)
     return s.bare(ox + (lo.L + 300) / sc + 10, Y(lo.W) + 14)
 
 

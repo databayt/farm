@@ -70,21 +70,35 @@ class Sheet:
         self.add(f'<path d="M{f(x0)},{f(y0)} A{f(r)},{f(r)} 0 {large} {sweep} {f(x1)},{f(y1)}" fill="none" '
                  f'stroke="{stroke}" stroke-width="{f(sw)}" stroke-dasharray="{dash}"/>')
 
-    def dim(self, x1, y1, x2, y2, label, off=6.0, size=2.2) -> None:
-        """Aligned dimension with ticks, offset perpendicular to the measured line."""
+    def dim(self, x1, y1, x2, y2, label, off=6.0, size=2.2, inline: bool = False) -> None:
+        """Aligned dimension with ticks, offset perpendicular to the measured line. inline: the number
+        sits centred on the line, which stops either side of it and carries on."""
         dx, dy = x2 - x1, y2 - y1
         L = math.hypot(dx, dy) or 1
         nx, ny = -dy / L * off, dx / L * off
         a, b = (x1 + nx, y1 + ny), (x2 + nx, y2 + ny)
         self.line(x1, y1, a[0] + nx * 0.15, a[1] + ny * 0.15, "#555", 0.13)
         self.line(x2, y2, b[0] + nx * 0.15, b[1] + ny * 0.15, "#555", 0.13)
-        self.line(*a, *b, "#333", 0.18)
-        for p in (a, b):
-            self.line(p[0] - 1, p[1] + 1, p[0] + 1, p[1] - 1, "#111", 0.3)
         ang = math.degrees(math.atan2(dy, dx))
         if ang > 90 or ang <= -90:
             ang += 180
         mx, my = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2
+        if inline:
+            half = len(str(label)) * size * 0.3 + size * 0.5  # gap around the number
+            ux, uy = (b[0] - a[0]) / (L / 1), (b[1] - a[1]) / (L / 1)
+            n = math.hypot(ux, uy) or 1
+            ux, uy = ux / n, uy / n
+            self.line(*a, mx - ux * half, my - uy * half, "#333", 0.18)
+            self.line(mx + ux * half, my + uy * half, *b, "#333", 0.18)
+            for p in (a, b):
+                self.line(p[0] - 1, p[1] + 1, p[0] + 1, p[1] - 1, "#111", 0.3)
+            self.add(f'<text x="{f(mx)}" y="{f(my)}" font-size="{f(size)}" text-anchor="middle" '
+                     f'dominant-baseline="central" fill="#111" transform="rotate({f(ang)} {f(mx)} {f(my)})">'
+                     f'{escape(str(label))}</text>')
+            return
+        self.line(*a, *b, "#333", 0.18)
+        for p in (a, b):
+            self.line(p[0] - 1, p[1] + 1, p[0] + 1, p[1] - 1, "#111", 0.3)
         self.text(mx - math.sin(math.radians(ang)) * 0.8, my - 0.8 * math.cos(math.radians(ang)), label, size,
                   "middle", rot=ang)
 
