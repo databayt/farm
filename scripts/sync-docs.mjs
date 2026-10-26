@@ -97,6 +97,7 @@ const PAGES = [
   { slug: "website-sitemap", src: "study/website/sitemap.md" },
   { slug: "website-copy", src: "study/website/website-copy.md" },
   { slug: "website-plan", src: "study/website/implementation-plan.md" },
+  { slug: "website-render-brief", src: "study/website/render-brief.md" },
   "---Execution---",
   { slug: "first-90-days", src: "study/execution/first-90-days.md" },
   { slug: "five-year-roadmap", src: "study/execution/five-year-roadmap.md" },

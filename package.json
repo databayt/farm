@@ -13,7 +13,9 @@
     "postinstall": "node scripts/sync-docs.mjs && fumadocs-mdx",
     "build:cf": "node scripts/sync-docs.mjs && CF_STATIC=1 next build",
     "deploy:cf": "pnpm build:cf && wrangler deploy",
-    "studio:build": "uv run --with-requirements scripts/studio/requirements.txt python scripts/studio/build.py"
+    "studio:build": "uv run --with-requirements scripts/studio/requirements.txt python scripts/studio/build.py",
+    "site:refs": "node scripts/site/refs.mjs",
+    "site:assets": "node scripts/site/build-assets.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -42,6 +44,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "sharp": "0.35.5",
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.151.2"

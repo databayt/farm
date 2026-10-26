@@ -51,3 +51,5 @@ __pycache__/
 /content/docs/
 /.wrangler/
 /public/footage/
+# render masters, references and today stills (scripts/site); only web variants in public/site are committed
+/assets/
