@@ -13,8 +13,8 @@ S11,K3,"Assemble the fridge bay, hob base and sink base on their legs along the 
 S12,K3,Assemble the overhead cabinet; hang it and the heater cradle on the steel rail,7,,2,Lift the cabinet up: two people.
 S13,K3,Scribe and fix the worktop; drop in the sink and hob; plinth,2,Fx12,2,
 S14,K3,Fix the hood shelf under the overhead cabinet and hang the hood,1,Fx8,2,
-S15,K4,Bolt the bed frame and the side panel; drop in the lift-up deck panels,12,Cx20 Kx8,2,
-S16,K5,Stand the two shelf towers on the headboard shelf and fix them to the back wall,14,Fx8,2,
+S15,K4,Fix the headboard to the back wall; bolt the frame; drop in the deck; slide in the storage boxes,21,Cx20 Kx8,2,
+S16,K5,Glue the leg strips; screw the top and the shelf; set the table by the bed head,10,Fx16,1,
 S17,K6,Place the sofa; slot together the table and the two chairs,11,,1,
 S18,K7,Scribe and pin the trims; caulk and paint,7,Fx60,1,
 S19,K8,"Second fix: unit board, devices, lights, alarms; test and certify",0,,1,Certificate from a RURA class A electrician before power-on.

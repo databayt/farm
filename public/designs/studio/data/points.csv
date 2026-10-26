@@ -4,19 +4,18 @@ L1,light,C1,"Ceiling light, bed",800,1126,2323,12
 L2,light,C1,"Ceiling light, living",2300,1126,2323,12
 L3,light,C1,"Ceiling light, galley",3778,1126,2323,12
 L4,light,C1,Bathroom light IP65,5223,850,2323,12
-L5,light,C1,Reading light 1,300,140,1050,4
-L6,light,C1,Reading light 2,1340,140,1050,4
+L5,light,C1,Wall reading light over the bed (wall side),300,0,1150,4
 L7,light,C1,Under-cabinet LED strip,4278,725,1790,10
 L8,light,C1,Deck light IP65,2900,2312,2350,10
 L9,light,C1,Roof terrace lights IP65 (x2),1500,1126,2723,20
 L10,light,C1,Stair light IP65,-900,3152,1500,8
 S1,switch,C1,Entry: living + kitchen + deck,4230,2212,1100,0
-S2,switch,C1,Bed: ceiling light (2-way),1580,160,900,0
+S2,switch,C1,"Bed: ceiling light (2-way), over the bedside table",1810,0,1000,0
 S3,switch,C1,Bathroom light + fan (outside),5368,1770,1100,0
 S4,switch,C1,"Roof and stair lights (IP65, stair foot)",-400,2852,1100,0
-P1,usb,C2,Bedside socket + USB-C 1,260,132,600,200
-P2,usb,C2,Bedside socket + USB-C 2,1380,132,600,200
-P3,socket,C2,Socket by the sofa,1849,0,300,500
+P1,usb,C2,Socket + USB-C in the headboard (wall side),300,18,750,200
+P2,usb,C2,Bedside socket + USB-C (reading lamp),1810,0,650,200
+P3,socket,C2,Socket by the sofa,2100,0,300,500
 P4,socket,C2,"Socket, living (front strip)",1180,2252,300,500
 P5,socket,C2,Deck socket IP66,2600,2312,400,300
 P6,socket,C3,Worktop socket 1 (double),4578,275,1100,2000

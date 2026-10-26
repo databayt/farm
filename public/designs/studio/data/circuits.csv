@@ -1,5 +1,5 @@
 circuit,serves,device,cable_mm2,design_A,derated_Iz_A,run_m,drop_pct,points
-C1,"Lighting (incl. bathroom IP65, deck, roof, stair)",B6,1.5,0.5,16.4,10.2,0.06,L1 L2 L3 L4 L5 L6 L7 L8 L9 L10 S1 S2 S3 S4
+C1,"Lighting (incl. bathroom IP65, deck, roof, stair)",B6,1.5,0.4,16.4,10.2,0.06,L1 L2 L3 L4 L5 L7 L8 L9 L10 S1 S2 S3 S4
 C2,"Sockets: bedside USB, living, deck",B16,2.5,8,22.6,8.2,0.51,P1 P2 P3 P4 P5
 C3,Kitchen sockets and fridge,B16,2.5,13.5,22.6,4.3,0.45,P6 P7 P8
 C4,Induction hob,B20,4,15.2,30.1,4.5,0.33,P9

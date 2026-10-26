@@ -90,19 +90,19 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], Kit]:
         Point("L2", "light", 2300, W / 2, H, "Ceiling light, living", "C1", 12),
         Point("L3", "light", lo.galley_x0 - 200, W / 2, H, "Ceiling light, galley", "C1", 12),
         Point("L4", "light", (lo.bath_x0 + lo.L) / 2, lo.bath_y1 / 2, H, "Bathroom light IP65", "C1", 12),
-        Point("L5", "light", 300, 140, 1050, "Reading light 1", "C1", 4),
-        Point("L6", "light", lo.bed_x1 - 300, 140, 1050, "Reading light 2", "C1", 4),
+        Point("L5", "light", 300, 0, 1150, "Wall reading light over the bed (wall side)", "C1", 4),
         Point("L7", "light", lo.part_x0 - 300, (lo.fridge[0] + lo.sink[1]) / 2, 1790, "Under-cabinet LED strip", "C1",
               10),
         Point("L8", "light", 2900, W + 60, 2350, "Deck light IP65", "C1", 10),
         Point("L9", "light", 1500, W / 2, H + 400, "Roof terrace lights IP65 (x2)", "C1", 20),
         Point("L10", "light", -900, W + 900, 1500, "Stair light IP65", "C1", 8),
         Point("S1", "switch", lo.o1[1] - 150, W - 40, 1100, "Entry: living + kitchen + deck", "C1"),
-        Point("S2", "switch", lo.bed_x1 - 60, 160, 900, "Bed: ceiling light (2-way)", "C1"),
+        Point("S2", "switch", lo.bedside[0] + 170, 0, 1000, "Bed: ceiling light (2-way), over the bedside table",
+              "C1"),
         Point("S3", "switch", lo.bdoor[1] + 120, lo.bath_y1 + lo.cross_t, 1100, "Bathroom light + fan (outside)", "C1"),
         Point("S4", "switch", -400, W + 600, 1100, "Roof and stair lights (IP65, stair foot)", "C1"),
-        Point("P1", "usb", 260, 132, 600, "Bedside socket + USB-C 1", "C2", 200),
-        Point("P2", "usb", lo.bed_x1 - 260, 132, 600, "Bedside socket + USB-C 2", "C2", 200),
+        Point("P1", "usb", 300, lo.bed_y0, 750, "Socket + USB-C in the headboard (wall side)", "C2", 200),
+        Point("P2", "usb", lo.bedside[0] + 170, 0, 650, "Bedside socket + USB-C (reading lamp)", "C2", 200),
         Point("P3", "socket", lo.sofa[0] + 100, 0, 300, "Socket by the sofa", "C2", 500),
         Point("P4", "socket", lo.o1[0] - 200, W, 300, "Socket, living (front strip)", "C2", 500),
         Point("P5", "socket", 2600, W + 60, 400, "Deck socket IP66", "C2", 300),
@@ -210,7 +210,7 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], Kit, dict[str, float]]:
     vz = -260.0  # pipe zone in the void under the floor (cross-members are 122 deep)
     tx0, tx1, ty0, ty1 = lo.tray
     shower = ((tx0 + tx1) / 2, 450.0)
-    wc = (lo.L - 180, lo.wc_cy)
+    wc = (lo.wall_b + 20, lo.wc_cy)  # the wall-hung pan drains into the frame in the end wall
     basin = ((lo.basin[0] + lo.basin[1]) / 2, (lo.basin[2] + lo.basin[3]) / 2)
     sink = (lo.part_x0 - 300, (lo.sink[0] + lo.sink[1]) / 2)
     heater = (lo.part_x0 - 250, 500.0)  # lying in the overhead cabinet over the galley
@@ -233,8 +233,8 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], Kit, dict[str, float]]:
                                     (heater[0], 150, 300)], "Cold main in: stop valve, filter, check meter"),
         PipeRun("W2", "cold", 20, [(heater[0], 150, 300), (heater[0], 150, 1850)], "Cold feed to the heater"),
         PipeRun("W3", "cold", 20, [(heater[0], 150, 300), (sink[0], 150, 300), (sink[0], sink[1], 650)], "Cold to sink"),
-        PipeRun("W4", "cold", 20, [(lo.L - 60, 150, vz), (lo.L - 60, 150, 300), (lo.L - 60, wc[1] + 120, 300)],
-                "Cold to WC cistern"),
+        PipeRun("W4", "cold", 20, [(lo.L - 20, 150, vz), (lo.L - 20, 150, 1000), (lo.L - 20, wc[1], 1000)],
+                "Cold to the concealed WC cistern"),
         PipeRun("W5", "cold", 20, [(lo.L - 60, 150, 300), (lo.L - 60, basin[1], 650)], "Cold to basin"),
         PipeRun("H1", "hot", 20, [(heater[0], 250, 1850), (heater[0], 250, 400), (lo.bath_x0 + 40, 250, 400)],
                 "Hot (60 C) from the heater to the mixing valve"),

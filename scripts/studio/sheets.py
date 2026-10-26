@@ -6,7 +6,7 @@ from draw import (FILL, SYS, Sheet, iso, iso_draw, ortho, project_box, sym_box, 
                   sym_switch)
 from model import Box
 
-KIT_NAMES = {"K1": "Insulation and lining", "K2": "Bathroom", "K3": "Kitchen", "K4": "Bed", "K5": "Storage wall",
+KIT_NAMES = {"K1": "Insulation and lining", "K2": "Bathroom", "K3": "Kitchen", "K4": "Bed", "K5": "Bedside table",
              "K6": "Sofa, table and chairs", "K7": "Trims", "K8": "Electrical", "K9": "Plumbing",
              "K10": "Steel and glazing", "K11": "Roof terrace"}
 
@@ -38,7 +38,7 @@ def a001_cover(m, index: list[tuple[str, str]]) -> Sheet:
     s.text(20, 41, "IKEA-style flat-pack fit-out of standard 20 ft containers · materials and fabrication in Kigali", 3.4)
     y = s.note(20, 54, [
         f"Net interior {lo.L:.0f} x {lo.W:.0f} x {lo.H:.0f} mm ({lo.L * lo.W / 1e6:.1f} m2) · Layout B (D-020)",
-        f"Bed up to 1,600 x 2,000 with a storage wall · seating room: sofa, table, two chairs",
+        f"MALM-style bed up to 1,600 x 2,000 with two storage boxes, bedside table and lamp · sofa, low table, two chairs",
         f"Galley {lo.sink[1]:.0f} mm on the bathroom wall: fridge, induction, sink; 80 L heater overhead",
         f"Bathroom {lo.L - lo.bath_x0:.0f} x {lo.W:.0f} mm · shower tray {lo.tray[1] - lo.tray[0]:.0f} x 900",
         f"Max demand about {m['md']['total_A']:.0f} A per unit (heater/hob priority relay) · feeder {m['feeder']['size_mm2']:.0f} mm2",
@@ -177,11 +177,20 @@ def plan_bw(m) -> str:
           ox, oy, sc, sw=0.1)
     g = by_id["K0-SLIDER"]
     box(g.x0, g.y0, g.x1, g.y1, "#fff", 0.15)
-    # bed: frame, headboard, two pillows
-    box(0, 0, lo.bed_x1, 2170)
-    s.line(X(0), Y(150), X(lo.bed_x1), Y(150), ink, sw)
+    fm, fb = by_id["K0-FRONT-MID"], by_id["K0-FRONT-B"]
+    box(fm.x1, fm.y0, fb.x0, fm.y1, ink, 0.1)  # W1: steel infill below the window sill, solid on plan
+    # bed on the back wall: frame, headboard, two pillows, the storage boxes dashed underneath
+    box(0, 0, lo.bed_x1, lo.bed_y1)
+    s.line(X(0), Y(lo.bed_y0), X(lo.bed_x1), Y(lo.bed_y0), ink, sw)
     for px in (120, lo.bed_x1 / 2 + 40):
-        box(px, 220, px + lo.bed_x1 / 2 - 160, 520)
+        box(px, lo.bed_y0 + 60, px + lo.bed_x1 / 2 - 160, lo.bed_y0 + 360)
+    for ya, yb in lo.drawers:
+        s.rect(X(lo.bed_x1 - 618), Y(ya), 600 / sc, (yb - ya) / sc, "none", ink, 0.15, dash="0.8,0.6")
+    # bedside table with the reading lamp
+    bx0, bx1, bd = lo.bedside
+    box(bx0, 0, bx1, bd)
+    s.circle(X((bx0 + bx1) / 2), Y(bd / 2), 110 / sc, "none", ink, sw)
+    s.circle(X((bx0 + bx1) / 2), Y(bd / 2), 22 / sc, "none", ink, sw)
     # seating: sofa (back and arms), table, two chairs with their backs to the glass
     sb = by_id["K6-SOFA"]
     box(sb.x0, sb.y0, sb.x1, sb.y1)
@@ -208,12 +217,15 @@ def plan_bw(m) -> str:
     s.line(X(d0 + 18), Y(cy0), X(d0 + 18), Y(cy0 - (d1 - d0)), ink, sw)
     s.arc(X(d0 + 18), Y(cy0), (d1 - d0 - 18) / sc, 270, 360, ink, 0.18, "0.8,0.6")
     # bathroom: shower tray with its drain, WC, basin
+    box(lo.wall_b, 0, lo.L, cy0, ink, 0.1)  # end wall built out over the concealed cistern
     tx0, tx1, ty0, ty1 = lo.tray
     box(tx0, ty0, tx1, ty1)
     s.circle(X((tx0 + tx1) / 2), Y((ty0 + ty1) / 2), 45 / sc, "none", ink, sw)
-    wc = by_id["K2-WC"]
-    box(wc.x1 - 180, wc.y0, wc.x1, wc.y1)
-    s.circle(X(wc.x1 - 400), Y((wc.y0 + wc.y1) / 2), 190 / sc, "#fff", ink, sw)
+    wc = by_id["K2-WC"]  # wall-hung pan, rounded at the front
+    s.add(f'<rect x="{X(wc.x0):.2f}" y="{Y(wc.y0):.2f}" width="{(wc.x1 - wc.x0) / sc:.2f}" '
+          f'height="{(wc.y1 - wc.y0) / sc:.2f}" rx="{120 / sc:.2f}" fill="#fff" stroke="{ink}" stroke-width="{sw}"/>')
+    s.add(f'<rect x="{X(wc.x0 + 60):.2f}" y="{Y(wc.y0 + 50):.2f}" width="{(wc.x1 - wc.x0 - 140) / sc:.2f}" '
+          f'height="{(wc.y1 - wc.y0 - 100) / sc:.2f}" rx="{90 / sc:.2f}" fill="none" stroke="{ink}" stroke-width="{sw}"/>')
     bs = by_id["K2-BASIN"]
     box(bs.x0, bs.y0, bs.x1, bs.y1)
     for x0, x1, lab in ((0, lo.bed_x1, "BED"), (*lo.sofa, "SEATING"),
@@ -244,7 +256,8 @@ def scene_json(m) -> dict:
         "L": lo.L, "W": lo.W, "H": lo.H, "lining": P.LINING_WALL.value,
         "o1": list(lo.o1), "o1_head": lo.o1_head, "o2": list(lo.o2), "w1_sill": lo.w1_sill, "w1_head": lo.w1_head,
         "bed_x1": lo.bed_x1,
-        "towers": [union(lambda i, n: i.startswith("K5-L-")), union(lambda i, n: i.startswith("K5-R-"))],
+        "bed_y0": lo.bed_y0, "bed_y1": lo.bed_y1, "drawers": [list(d) for d in lo.drawers],
+        "bedside": union(lambda i, n: i.startswith("K5-") and i[3:].isdigit()), "lamp": box(by_id["K5-LAMP"]),
         "sofa": box(by_id["K6-SOFA"]),
         "table": union(lambda i, n: i in ("K6-01", "K6-02", "K6-03")),
         "chairs": [union(lambda i, n, c=c: i.startswith("K6-") and n.startswith(f"Chair {c} ")) for c in (1, 2)],
@@ -253,6 +266,7 @@ def scene_json(m) -> dict:
         "overhead": union(lambda i, n: i.startswith("K3-T-")),
         "hood": box(by_id["K3-HOOD"]), "hob_box": box(by_id["K3-HOB"]), "sink_box": box(by_id["K3-SINK"]),
         "bath_x0": lo.bath_x0, "bath_y1": lo.bath_y1, "cross_t": lo.cross_t, "bdoor": list(lo.bdoor),
+        "wall_b": lo.wall_b,
         "tray": box(by_id["K2-TRAY"]), "screen": box(by_id["K2-SCREEN"]), "wc": box(by_id["K2-WC"]),
         "basin": box(by_id["K2-BASIN"]), "mirror": union(lambda i, n: n.startswith("Mirror cabinet")),
     }

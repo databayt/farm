@@ -1,7 +1,7 @@
 """Checks that fail the build: geometry, clearances, services, nesting, BOM, steps."""
 from __future__ import annotations
 
-from layout import WC_D
+from layout import AISLE_MIN, WC_D
 from model import Box, Kit
 
 TOUCH_OK = {  # pairs of kits whose solids may legitimately touch or interlock
@@ -63,9 +63,10 @@ def check(kits: list[Kit], lo, circuits, md, runs) -> tuple[list[str], list[dict
     rule("R-WC-SIDE2", "WC centreline to the bathroom wall (mm)", lo.bath_y1 - lo.wc_cy, 400)
     rule("R-WC-FRONT", "Clear space in front of the WC (mm)", lo.L - WC_D - lo.bath_x0, 600)
     rule("R-BDOOR", "Bathroom door clear opening (mm)", lo.bdoor[1] - lo.bdoor[0], 600)
-    rule("R-AISLE", "Galley aisle, worktop to the sofa (mm)", lo.part_x0 - 620 - lo.sofa[1], 800)
+    rule("R-AISLE", "Walkway, worktop to the sofa end (mm)", lo.part_x0 - 620 - lo.sofa[1], AISLE_MIN)
+    rule("R-BEDSIDE", "Sofa clear of the bedside table (mm)", lo.sofa[0] - lo.bedside[1], 20)
     rule("R-GALLEY", "Galley clear of the bathroom wall end (mm)", lo.bath_y1 - lo.sink[1], 30)
-    rule("R-BED", "Room beside the bed foot (mm)", lo.W - 2170, 50)
+    rule("R-BED", "Room beside the bed foot (mm)", lo.W - lo.bed_y1, 50)
     rule("R-HEIGHT", "Clear height (mm)", lo.H, 2250)
     rule("R-PART", "Partition clear of the old door (mm)", lo.o2[0] - (lo.part_x0 + lo.part_t), 150)
     # electrical

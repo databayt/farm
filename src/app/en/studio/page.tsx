@@ -22,10 +22,10 @@ const D = "/designs/studio"
 const rwf = (n: number) => `RWF ${(n / 1e6).toFixed(1)}M`
 
 const FEATURES = [
-  { title: "Sleep", text: "Queen bed up to 1.6 × 2.0 m across the quiet end, with open shelves either side of the headboard, reading lights and USB-C." },
+  { title: "Sleep", text: "A queen bed up to 1.6 × 2.0 m against the wall, with two storage boxes underneath, a bedside table, a reading lamp and USB-C." },
   { title: "Cook", text: "A galley on the bathroom wall: under-counter fridge, two-zone induction hob, sink, drinking-water filter. No gas indoors." },
-  { title: "Wash", text: "Shower, WC and basin in one row: the shower and WC behind a door, the basin outside it." },
-  { title: "Sit", text: "A seating room: a two-seat sofa, a table and two chairs, by the 3 m sliding glass wall onto the deck." },
+  { title: "Wash", text: "Shower, WC and basin in one row: a wall-hung WC and the shower behind a door, the basin outside it." },
+  { title: "Sit", text: "A seating room: a two-seat sofa, a low wide table and two chairs, by the 3 m sliding glass wall onto the deck." },
   { title: "Roof", text: "An open roof terrace with lounge chairs behind a timber-topped rail, up a steel stair; a canopy shades the deck." },
   { title: "Stay cool", text: "The roof deck shades the steel, EPS insulation is sealed to it, a wall fan moves the air, and the AC is ready." },
 ]
@@ -258,14 +258,14 @@ export default function StudioPage() {
           <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`${D}/render/front-line.png`} width={2400} height={1100}
-              alt="Line drawing of the studio seen from the front with the front wall off: the bed with its headboard shelf and two shelf towers, the sofa with a table and two chairs, the galley with hob, sink and overhead cabinet, and the bathroom with the shower, the WC and the basin on its console outside the door."
+              alt="Line drawing of the studio seen from the front with the front wall off: the bed against the wall with two storage boxes, a bedside table with a reading lamp, the sofa with a low table and two chairs, the galley with hob, sink and overhead cabinet, and the bathroom with the shower, a wall-hung WC and the basin on its console outside the door."
               className="w-full object-contain lg:max-h-full dark:invert" />
           </div>
         </div>
         <figure className="px-4 pb-10 md:px-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`${D}/render/front-real.jpg`} width={2400} height={1100} loading="lazy"
-            alt="The same view rendered with materials and daylight: a white bed, a light grey sofa with yellow and blue cushions, a white table and plywood chairs, the plywood galley, and a white marble bathroom with a glass shower screen, the WC and a basin on a black metal console."
+            alt="The same view rendered with materials and daylight: a white bed with storage boxes and a lit bedside lamp, a light grey sofa with yellow and blue cushions, a white table and plywood chairs, the plywood galley, and a white marble bathroom with a glass shower screen, a wall-hung WC and a basin on a black metal console."
             className="h-auto w-full" />
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
         </figure>

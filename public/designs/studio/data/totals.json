@@ -3,13 +3,13 @@
  "shared_with_contingency": 5584400.0,
  "sheets": {
   "MPLY18": 3,
-  "PLY12": 14,
+  "PLY12": 15,
   "PLY18": 8,
   "WTOP38": 1
  },
- "three_units_total": 51377240.15,
- "unit_materials_labour": 13273287,
- "unit_with_contingency": 15264280.049999999,
+ "three_units_total": 52223118.05,
+ "unit_materials_labour": 13518469,
+ "unit_with_contingency": 15546239.35,
  "usd_rate": 1475.91,
- "verified_share": 0.01996491147972616
+ "verified_share": 0.01960281153139457
 }

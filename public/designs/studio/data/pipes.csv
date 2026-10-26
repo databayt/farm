@@ -7,7 +7,7 @@ V1,vent,75,6,,Open vent up end B to 900 above the guardrail
 W1,cold,25,2.9,,"Cold main in: stop valve, filter, check meter"
 W2,cold,20,1.6,,Cold feed to the heater
 W3,cold,20,1.2,,Cold to sink
-W4,cold,20,1.8,,Cold to WC cistern
+W4,cold,20,2.4,,Cold to the concealed WC cistern
 W5,cold,20,1.9,,Cold to basin
 H1,hot,20,1.8,,Hot (60 C) from the heater to the mixing valve
 H2,hot,20,1.2,,"Hot to sink (direct 60 C, labelled)"

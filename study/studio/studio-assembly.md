@@ -26,7 +26,7 @@ The drawings are wordless, IKEA-style: new parts in white with a heavy line, fin
 
 ![AS-15 Bed](../../public/designs/studio/drawings/as-15.svg)
 
-![AS-16 Storage wall](../../public/designs/studio/drawings/as-16.svg)
+![AS-16 Bedside table](../../public/designs/studio/drawings/as-16.svg)
 
 ![AS-17 Sofa, table and chairs](../../public/designs/studio/drawings/as-17.svg)
 

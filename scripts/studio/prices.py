@@ -62,6 +62,8 @@ PRICES: dict[str, tuple[float, str, str, str]] = {
     "mesh_m2": (15_000, "A", "AS-21", "welded mesh infill per m2"),
     "cable_m": (3_000, "A", "AS-21", "4 mm stainless wire rope + tensioners, per m"),
     "sofa": (450_000, "A", "AS-21", "compact two-seat sofa, washable covers"),
+    "wcframe": (220_000, "A", "AS-21", "slim concealed cistern frame + dual-flush plate"),
+    "lamp": (35_000, "A", "AS-21", "table lamp with linen shade, LED bulb"),
     "stairframe": (450_000, "A", "AS-21", "stringers, handrails, footings"),
 }
 

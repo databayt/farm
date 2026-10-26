@@ -8,9 +8,9 @@
 
   Serve the repo root on :3000 (python3 -m http.server 3000), open this page at 2400 x 1150 and
   screenshot #out once body[data-ready] is set. The furniture follows the photos in ~/farm/ikea
-  for look only (FRIDHULT sofa, MALM bed, LACK table, a vessel basin on a black console, a square
-  wall-hung-style WC, a frameless shower screen); sizes come from the design. Pillows, duvet,
-  throw, cushions, towels, books, plants and the kettle are render-only props. Textures are drawn
+  for look (FRIDHULT sofa, MALM bed with storage boxes, LACK tables, a vessel basin on a black
+  console, a wall-hung WC, a frameless shower screen); sizes come from the design. Pillows, duvet,
+  cushions, towels, books, plants and the kettle are render-only props. Textures are drawn
   here procedurally; no photo is copied into the render.
 -->
 <html>
@@ -56,7 +56,8 @@ if (!LINE) {
   renderer.shadowMap.type = THREE.PCFShadowMap
 }
 const scene = new THREE.Scene()
-scene.background = new THREE.Color(LINE ? "#ffffff" : "#efece6")
+// white page ground; in real mode tone mapping would dim plain white to grey, so it starts brighter
+scene.background = LINE ? new THREE.Color("#ffffff") : new THREE.Color(12, 12, 12)
 
 // ------------------------------------------------------------ procedural textures (real mode)
 function tex(draw, w = 512, h = 512) {
@@ -167,6 +168,7 @@ function mat(name) {
       book1: () => std({ color: "#c8b79a", roughness: 0.8 }), book2: () => std({ color: "#7f8f7a", roughness: 0.8 }),
       book3: () => std({ color: "#b56b4f", roughness: 0.8 }), book4: () => std({ color: "#41536b", roughness: 0.8 }),
       towel: () => std({ color: "#d8cdbd", roughness: 0.95 }),
+      shade: () => std({ color: "#efe6d4", roughness: 0.9, emissive: "#ffd9a0", emissiveIntensity: 0.35 }),
     }[name]?.() ?? std({ color: "#dddddd", roughness: 0.7 })
   }
   MAT[name] = x
@@ -219,8 +221,32 @@ function plant(x, y, z, s = 1) {
   }
 }
 
+// a rounded rectangle in the floor plane (world x, z), drawn in shape space (u = x, v = -z)
+function rr(path, x0, z0, x1, z1, r) {
+  const u0 = x0, u1 = x1, v0 = -z1, v1 = -z0
+  path.moveTo(u0 + r, v0)
+  path.lineTo(u1 - r, v0); path.absarc(u1 - r, v0 + r, r, -Math.PI / 2, 0, false)
+  path.lineTo(u1, v1 - r); path.absarc(u1 - r, v1 - r, r, 0, Math.PI / 2, false)
+  path.lineTo(u0 + r, v1); path.absarc(u0 + r, v1 - r, r, Math.PI / 2, Math.PI, false)
+  path.lineTo(u0, v0 + r); path.absarc(u0 + r, v0 + r, r, Math.PI, 1.5 * Math.PI, false)
+  return path
+}
+function extrude(shape, y0, h, name, bevel = 0) {
+  const g = new THREE.ExtrudeGeometry(shape, {
+    depth: h, curveSegments: 16, bevelEnabled: bevel > 0, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 3,
+  })
+  return add(g, name, { pos: [0, y0, 0], rot: [-Math.PI / 2, 0, 0] })
+}
+const slab = (x0, z0, x1, z1, r, y0, h, name, bevel = 0) => extrude(rr(new THREE.Shape(), x0, z0, x1, z1, r), y0, h, name, bevel)
+// a hollow rounded rectangle: walls t thick, open at the top, so a bowl's depth shows
+function ring(x0, z0, x1, z1, r, t, y0, h, name, bevel = 0) {
+  const shape = rr(new THREE.Shape(), x0, z0, x1, z1, r)
+  shape.holes.push(rr(new THREE.Path(), x0 + t, z0 + t, x1 - t, z1 - t, Math.max(r - t, 0.004)))
+  return extrude(shape, y0, h, name, bevel)
+}
+
 const L = m(S.L), W = m(S.W), H = m(S.H), e = m(S.lining)
-const px0 = m(S.part_x0), bx0 = m(S.bath_x0), cy0 = m(S.bath_y1), cy1 = m(S.bath_y1 + S.cross_t)
+const px0 = m(S.part_x0), bx0 = m(S.bath_x0), cy0 = m(S.bath_y1), cy1 = m(S.bath_y1 + S.cross_t), wb = m(S.wall_b)
 
 // ------------------------------------------------------------ the room: floor, walls, section cuts
 box(-e, -0.03, -e, px0, 0, W + e, "floor", 0, { noShadow: true })
@@ -228,14 +254,13 @@ box(px0, -0.03, -e, L + e, 0, W + e, "vinyl", 0, { noShadow: true })
 cutWall(-e, 0, -e, bx0, H, 0, "wall") // back wall, living side
 cutWall(bx0, 0, -e, L + e, H, 0, "marble") // back wall, bathroom
 cutWall(-e, 0, 0, 0, H, W, "wall") // end A
-cutWall(L, 0, 0, L + e, H, cy0, "marble") // end B, bathroom
+cutWall(wb, 0, 0, L + e, H, cy0, "marble") // end B, bathroom: built out flat over the concealed cistern
 cutWall(L, 0, cy1, L + e, H, W, "marble") // end B behind the basin
 cutWall(L, 0, cy0, L + e, H, cy1, "wall")
-// front wall off: a low curb either side of the glazing and around the old door (W1)
+// front wall off: a low curb either side of the sliding glass (the entrance)
 const curb = 0.12
 cutWall(-e, 0, W, m(S.o1[0]), curb, W + e, "wall")
-cutWall(m(S.o1[1]), 0, W, m(S.o2[0]), curb, W + e, "wall")
-cutWall(m(S.o2[1]), 0, W, L + e, curb, W + e, "wall")
+cutWall(m(S.o1[1]), 0, W, L + e, curb, W + e, "wall") // solid past the glazing: W1 has steel infill below its sill
 // the partition between the galley and the bathroom stands full height, in place
 cutWall(px0, 0, 0, bx0, H, cy1, "wall")
 box(bx0 - 0.012, 0, 0, bx0, H, cy0, "marble")
@@ -243,34 +268,47 @@ box(bx0 - 0.012, 0, 0, bx0, H, cy0, "marble")
 const cut = 0.55, d0 = m(S.bdoor[0]), d1 = m(S.bdoor[1])
 cutWall(d1, 0, cy0, L, cut, cy1, "marble")
 
-// ------------------------------------------------------------ bed (MALM look) and the storage wall
+// ------------------------------------------------------------ bed (MALM look), bedside table, reading lamps
 {
-  const x1 = m(S.bed_x1), z0 = 0.15, z1 = 2.17
-  box(0.0, 0.0, z0, x1, 0.36, z1, "white", 0.012) // high frame
-  box(0.0, 0.0, 0.132, x1, 1.082, z0 + 0.001, "white", 0.01) // tall flat headboard
-  box(0.0, 1.082, 0.0, x1, 1.1, 0.15, "white", 0.004) // headboard shelf
-  box(0.025, 0.36, z0 + 0.02, x1 - 0.025, 0.58, 0.66, "linen", 0.05) // mattress, seen at the head
-  box(0.012, 0.36, 0.62, x1 - 0.012, 0.64, z1, "duvet", 0.06) // duvet, resting on the frame
-  box(0.01, 0.6, 0.62, x1 - 0.01, 0.665, 0.8, "duvet", 0.03) // turned-down fold
-  for (const px of [0.1, x1 / 2 + 0.03]) box(px, 0.58, 0.2, px + x1 / 2 - 0.13, 0.73, 0.56, "linen", 0.07) // pillows
-  box(0.01, 0.6, 1.7, x1 - 0.01, 0.665, 2.0, "throw", 0.03) // throw at the foot
-  for (const t of S.towers) {
-    const [tx0, ty0, tz0, tx1, ty1, tz1] = L3(t)
-    box(tx0, ty0, tz0, tx0 + 0.018, ty1, tz1, "white")
-    box(tx1 - 0.018, ty0, tz0, tx1, ty1, tz1, "white")
-    box(tx0, ty1 - 0.018, tz0, tx1, ty1, tz1, "white")
-    for (let i = 1; i <= 3; i++) {
-      const y = ty0 + ((ty1 - ty0) * i) / 4
-      box(tx0 + 0.018, y, tz0, tx1 - 0.018, y + 0.018, tz1, "white")
-    }
-    // a few books and a plant on the shelves
-    let bx = tx0 + 0.04
-    for (let k = 0; k < 5; k++) {
-      const bw = 0.025 + (k % 2) * 0.012, bh = 0.18 + (k % 3) * 0.03
-      box(bx, ty0, tz0 + 0.02, bx + bw, ty0 + bh, tz1 - 0.02, `book${(k % 4) + 1}`, 0.003)
-      bx += bw + 0.004
-    }
-    plant((tx0 + tx1) / 2, ty0 + (ty1 - ty0) / 2 + 0.018, (tz0 + tz1) / 2, 0.55)
+  const x1 = m(S.bed_x1), z0 = m(S.bed_y0), z1 = m(S.bed_y1)
+  box(0, 0, 0, x1, 1.0, z0, "white", 0.008) // tall headboard, straight on the back wall
+  box(0, 0, z0, x1, 0.45, z1, "white", 0.01) // high frame, tight to end A
+  // two storage boxes in the room side, each front with a finger-pull slot
+  for (const [da, db] of S.drawers) {
+    const a = m(da) + 0.003, b = m(db) - 0.003
+    box(x1, 0.062, a, x1 + 0.006, 0.35, b, "white", 0.004)
+    box(x1 + 0.004, 0.296, (a + b) / 2 - 0.09, x1 + 0.0068, 0.322, (a + b) / 2 + 0.09, LINE ? "white" : "black", 0.004)
+  }
+  box(0.025, 0.45, z0 + 0.02, x1 - 0.025, 0.65, 0.66, "linen", 0.05) // mattress, seen at the head
+  box(0.012, 0.45, 0.62, x1 - 0.012, 0.69, z1, "duvet", 0.06) // duvet over the mattress
+  box(0.01, 0.65, 0.62, x1 - 0.01, 0.715, 0.8, "duvet", 0.03) // turned-down fold
+  for (const px of [0.1, x1 / 2 + 0.03]) box(px, 0.65, z0 + 0.05, px + x1 / 2 - 0.13, 0.8, z0 + 0.4, "linen", 0.07) // pillows
+  // bedside table (LACK look): thick top, thick legs, a lower shelf
+  const [bx0_, , bz0_, bx1_, bh, bz1_] = L3(S.bedside)
+  const lg = 0.036
+  box(bx0_, bh - 0.035, bz0_, bx1_, bh, bz1_, "white", 0.006)
+  for (const lx of [bx0_, bx1_ - lg]) for (const lz of [bz0_, bz1_ - lg]) box(lx, 0, lz, lx + lg, bh - 0.035, lz + lg, "white", 0.003)
+  box(bx0_ + lg, 0.18, bz0_ + lg, bx1_ - lg, 0.198, bz1_ - lg, "white", 0.003)
+  // reading lamp on it: round base, thin stem, linen drum shade
+  const [lx0, ly0, lz0, lx1, ly1, lz1] = L3(S.lamp)
+  const lcx = (lx0 + lx1) / 2, lcz = (lz0 + lz1) / 2
+  cyl(lcx, ly0 + 0.012, lcz, 0.07, 0.024, "black", "y", 40, 0.06)
+  cyl(lcx, ly0 + 0.15, lcz, 0.007, 0.26, "black")
+  const shade = add(new THREE.CylinderGeometry(0.1, 0.13, 0.18, 48, 1, true), "shade")
+  shade.material = shade.material.clone(); shade.material.side = THREE.DoubleSide
+  shade.position.set(lcx, ly1 - 0.09, lcz)
+  // a wall reading lamp over the wall-side pillow
+  box(0.26, 1.12, 0, 0.34, 1.2, 0.012, "black", 0.004)
+  const arm = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0.3, 1.16, 0.012), new THREE.Vector3(0.3, 1.21, 0.12), new THREE.Vector3(0.3, 1.15, 0.23),
+  ])
+  add(new THREE.TubeGeometry(arm, 24, 0.006, 10, false), "black")
+  const head = add(new THREE.CylinderGeometry(0.03, 0.055, 0.08, 32, 1, true), "black")
+  head.material = head.material.clone(); head.material.side = THREE.DoubleSide
+  head.position.set(0.3, 1.11, 0.24)
+  if (!LINE) {
+    const glow = new THREE.PointLight(0xffd9a0, 0.7, 1.6)
+    glow.position.set(lcx, ly1 - 0.12, lcz); scene.add(glow)
   }
 }
 
@@ -302,7 +340,7 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
 
   for (const c of S.chairs) {
     const [cx0, , cz0, cx1, ch, cz1] = L3(c)
-    const seatY = 0.45
+    const seatY = 0.42
     box(cx0 + 0.01, seatY - 0.03, cz0 + 0.01, cx1 - 0.01, seatY, cz1 - 0.04, "ply", 0.012) // seat
     for (const lx of [cx0 + 0.035, cx1 - 0.035]) for (const lz of [cz0 + 0.04, cz1 - 0.06]) {
       cyl(lx, (seatY - 0.03) / 2, lz, 0.016, seatY - 0.03, "ply", "y", 20, 0.012) // tapered legs
@@ -321,8 +359,9 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
   const gx = m(S.galley_x0), wt = 0.62, run = m(S.sink[1])
   const fr0 = m(S.fridge[0]), fr1 = m(S.fridge[1]), hb0 = m(S.hob[0]), hb1 = m(S.hob[1]), sk0 = m(S.sink[0])
   box(gx + 0.04, 0, 0, px0, 0.1, run, "black") // plinth, set back
-  box(gx, 0.1, 0, px0, 0.862, run, "ply") // carcasses
-  box(px0 - wt, 0.862, 0, px0, 0.9, run + 0.002, "worktop", 0.004) // worktop
+  box(gx, 0.1, 0, px0, 0.862, sk0, "ply") // carcasses
+  box(gx, 0.1, sk0, px0, 0.7, run, "ply") // the sink base stops under the bowl
+  box(gx, 0, run, px0, 0.862, run + 0.012, "ply") // galley end panel (K7)
   // fronts with shadow gaps: fridge door (white), two hob drawers, the sink door; bar handles
   const front = (z0, z1, y0, y1, name) => box(gx - 0.019, y0, z0 + 0.002, gx - 0.001, y1, z1 - 0.002, name, 0.004)
   front(fr0, fr1, 0.1, 0.858, "white")
@@ -337,10 +376,18 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
     const ring = add(new THREE.RingGeometry(0.075, 0.085, 48), LINE ? "white" : "steel")
     ring.rotation.x = -Math.PI / 2; ring.position.set((hx0 + hx1) / 2, 0.9065, hz0 + (hz1 - hz0) * k)
   }
-  // sink: a rounded steel rim with a darker basin inside, and a curved tap
+  // worktop in four pieces around the sink cut-out, so the bowl's depth shows
   const [sx0, , sz0, sx1, , sz1] = L3(S.sink_box)
-  box(sx0, 0.896, sz0, sx1 - 0.04, 0.902, sz1, "steel", 0.03)
-  box(sx0 + 0.03, 0.8, sz0 + 0.03, sx1 - 0.07, 0.9025, sz1 - 0.03, "steel", 0.04)
+  const sox0 = sx0 + 0.025, sox1 = sx1 - 0.025, soz0 = sz0 + 0.025, soz1 = sz1 - 0.025, wx = px0 - wt
+  box(wx, 0.862, 0, px0, 0.9, soz0, "worktop", 0.004)
+  box(wx, 0.862, soz1, px0, 0.9, run + 0.002, "worktop", 0.004)
+  box(wx, 0.862, soz0, sox0, 0.9, soz1, "worktop")
+  box(sox1, 0.862, soz0, px0, 0.9, soz1, "worktop")
+  // inset steel sink: a thin rim, a 180 mm deep bowl with rounded corners, a drain; then the tap
+  ring(sx0, sz0, sx1, sz1, 0.035, 0.025, 0.9, 0.003, "steel")
+  ring(sox0, soz0, sox1, soz1, 0.03, 0.008, 0.72, 0.18, "steel")
+  slab(sox0, soz0, sox1, soz1, 0.03, 0.714, 0.006, "steel")
+  cyl((sox0 + sox1) / 2, 0.7215, (soz0 + soz1) / 2, 0.035, 0.003, LINE ? "white" : "black", "y", 40)
   const tapX = px0 - 0.05, tapZ = (sz0 + sz1) / 2
   cyl(tapX, 0.94, tapZ, 0.018, 0.08, "steel")
   const curve = new THREE.CatmullRomCurve3([
@@ -363,7 +410,6 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
   cyl(px0 - 0.22, 0.9 + 0.09, fr0 + 0.25, 0.075, 0.18, "white", "y", 32, 0.06)
   const handle = add(new THREE.TorusGeometry(0.055, 0.012, 12, 32, Math.PI), "white")
   handle.position.set(px0 - 0.22, 0.99, fr0 + 0.33); handle.rotation.set(0, Math.PI / 2, -Math.PI / 2)
-  plant(px0 - 0.3, 0.9, run - 0.12, 0.6)
 }
 
 // ------------------------------------------------------------ bathroom: shower, WC, basin (look of the photos)
@@ -376,19 +422,20 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
   box(gx0, gy0, gz0, gx1, gy1, gz1, "glass")
   box(gx0 - 0.004, gy0, gz0 - 0.002, gx0 + 0.004, gy1, gz1 + 0.002, "steel") // the free edge
   box(gx1 - 0.012, gy0, gz0 - 0.004, gx1, gy1, gz1 + 0.004, "steel") // wall channel
-  const barX = L - 0.035, barZ = (tz0 + tz1) / 2
+  const barX = wb - 0.035, barZ = (tz0 + tz1) / 2
   cyl(barX, 1.45, barZ, 0.012, 1.0, "steel")
   cyl(barX - 0.02, 1.98, barZ, 0.1, 0.015, "steel", "x", 48) // shower head
-  box(L - 0.06, 1.05, barZ - 0.09, L, 1.17, barZ + 0.09, "steel", 0.02) // thermostatic valve
-  cyl(L - 0.075, 1.11, barZ, 0.03, 0.03, "black", "x")
+  box(wb - 0.06, 1.05, barZ - 0.09, wb, 1.17, barZ + 0.09, "steel", 0.02) // thermostatic valve
+  cyl(wb - 0.075, 1.11, barZ, 0.03, 0.03, "black", "x")
 
-  // WC: square, softly rounded bowl with its seat; boxed-in cistern with a brushed flush plate
-  const [wx0, , wz0, wx1, , wz1] = L3(S.wc)
-  box(wx1 - 0.16, 0, wz0 - 0.08, wx1, 1.05, wz1 + 0.08, "marble") // boxed-in cistern
-  box(wx1 - 0.165, 0.84, (wz0 + wz1) / 2 - 0.11, wx1 - 0.158, 0.99, (wz0 + wz1) / 2 + 0.11, "steel", 0.006)
-  box(wx1 - 0.169, 0.88, (wz0 + wz1) / 2 - 0.04, wx1 - 0.164, 0.95, (wz0 + wz1) / 2 + 0.04, "steel", 0.004)
-  box(wx0, 0.2, wz0 + 0.01, wx1 - 0.16, 0.39, wz1 - 0.01, "ceramic", 0.06) // bowl
-  box(wx0 - 0.005, 0.39, wz0 + 0.005, wx1 - 0.165, 0.42, wz1 - 0.005, "ceramic", 0.03) // seat and lid
+  // WC: a wall-hung pan straight off the finished end wall, no box; the flush plate sits on the wall above
+  const [wx0, wy0, wz0, wx1, wy1, wz1] = L3(S.wc)
+  box(wx0, wy0, wz0 + 0.005, wx1, wy1 - 0.03, wz1 - 0.005, "ceramic", 0.07) // pan
+  box(wx0 - 0.004, wy1 - 0.03, wz0, wx1 - 0.03, wy1, wz1, "ceramic", 0.03) // seat and lid
+  const pcz = (wz0 + wz1) / 2
+  box(wb - 0.006, 0.93, pcz - 0.12, wb, 1.09, pcz + 0.12, "steel", 0.006) // flush plate
+  box(wb - 0.009, 0.97, pcz - 0.1, wb - 0.005, 1.05, pcz - 0.006, "steel", 0.004) // two buttons
+  box(wb - 0.009, 0.97, pcz + 0.006, wb - 0.005, 1.05, pcz + 0.1, "steel", 0.004)
   // roll holder on the cross wall's bath face
   cyl(L - 0.45, 0.72, cy0 - 0.05, 0.055, 0.1, "white", "x", 32)
   box(L - 0.52, 0.715, cy0 - 0.012, L - 0.38, 0.725, cy0, "steel")
@@ -406,8 +453,11 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
   }
   for (const tz of [cz0 + 0.12, cz0 + 0.25]) cyl(cx0 + 0.15, 0.32, tz, 0.05, 0.24, "towel", "x", 32)
   const by = top + 0.02
-  box(bx0_ + 0.01, by, bz0 + 0.03, bx1_ - 0.03, by + 0.13, bz1 - 0.03, "ceramic", 0.04) // vessel basin
-  box(bx0_ + 0.03, by + 0.125, bz0 + 0.05, bx1_ - 0.05, by + 0.131, bz1 - 0.05, LINE ? "white" : "steel", 0.03) // inner rim
+  // vessel basin: thin ceramic walls; its bowl and drain show from above
+  const vx0 = bx0_ + 0.012, vx1 = bx1_ - 0.03, vz0 = bz0 + 0.03, vz1 = bz1 - 0.03
+  ring(vx0, vz0, vx1, vz1, 0.045, 0.012, by, 0.13, "ceramic")
+  slab(vx0 + 0.006, vz0 + 0.006, vx1 - 0.006, vz1 - 0.006, 0.04, by, 0.02, "ceramic")
+  cyl((vx0 + vx1) / 2, by + 0.0215, (vz0 + vz1) / 2, 0.022, 0.003, "steel", "y", 32)
   box(L - 0.045, by, (bz0 + bz1) / 2 - 0.015, L - 0.015, by + 0.27, (bz0 + bz1) / 2 + 0.015, "black", 0.006) // tap
   box(L - 0.12, by + 0.24, (bz0 + bz1) / 2 - 0.013, L - 0.03, by + 0.27, (bz0 + bz1) / 2 + 0.013, "black", 0.006)
   // a rounded LED mirror above
