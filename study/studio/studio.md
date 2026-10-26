@@ -13,10 +13,10 @@ Everything on these pages comes from one parametric model (`scripts/studio/`). T
 | Item | Specification |
 |---|---|
 | Interior | About 5,798 x 2,252 x 2,323 mm net (13.1 m2) after insulation and lining [E, AS-13, AS-15] |
-| Bed | Queen platform up to 1,600 x 2,000, laid across end A, a drawer and lift-up storage, headboard with reading lights and USB-C, open shelf towers either side |
+| Bed | Queen platform up to 1,600 x 2,000, laid across end A, lift-up storage underneath, headboard with reading lights and USB-C, open shelf towers either side |
 | Kitchen | 1.45 m galley on the bathroom wall: under-counter fridge, two-zone induction hob, sink; an overhead cabinet holds the 80 L water heater |
 | Bathroom | 1,318 x 2,252: 1,200 x 900 walk-in shower, WC on the old-door infill, basin, mirror cabinet |
-| Living | Compact two-seat sofa and coffee table, a table for two by the 3 m sliding glass wall, coat hooks and a luggage rack, wall fan, split-AC provision |
+| Seating | Compact two-seat sofa, a table and two chairs by the 3 m sliding glass wall, coat hooks and a luggage rack, wall fan, split-AC provision |
 | Envelope | EPS between battens, 12 mm ply linings, sealed floor with SPC, insect mesh everywhere |
 | Outside | Roof terrace with chairs on the corner castings behind an open guardrail (steel posts, hardwood top rail, stainless cables), tinted polycarbonate over the front deck, straight steel stair with a landing |
 | Services | REG grid, own unit board with SPD and 30 mA RCD, about 33 A demand; WASAC/borehole/rain via a shared tank and booster; shared septic tank |

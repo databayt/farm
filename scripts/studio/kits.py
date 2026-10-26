@@ -331,24 +331,15 @@ def k4_bed(lo: Layout) -> Kit:
     part("Rail, room side (plinth)", Box(X1 - T18, Y0, 0, X1, Y1, 60), list(bolts), "L1", ex=(250, 0, 0))
     part("Rail, head", Box(T18, Y0, 0, X1 - T18, Y0 + T18, ZT - T18), list(bolts), ex=(0, -200, 0))
     part("Rail, foot", Box(T18, Y1 - T18, 0, X1 - T18, Y1, ZT - T18), list(bolts), "L1", ex=(0, 200, 0))
-    part("Spine (drawer back)", Box(922, Y0 + T18, 0, 940, Y1 - T18, ZT - T18), ex=(0, 0, 150))
-    part("Drawer divider", Box(940, 1400 - 9, 0, X1 - T18, 1400 + 9, ZT - T18 - 80), ex=(0, 0, 150))
+    part("Spine", Box(922, Y0 + T18, 0, 940, Y1 - T18, ZT - T18), ex=(0, 0, 150))
     for i, (a, b) in enumerate(split(T18, X1 - T18, 820)):
         part(f"Deck panel {i + 1} (ventilated, lifts on struts)", Box(a, Y0, ZT - T18, b, Y1, ZT),
              [Op("drill", "B", 80 + 160 * j, 100 + 200 * r, 30, T18, joint="vent")
               for j in range(int((b - a - 100) // 160)) for r in range(int((Y1 - Y0 - 150) // 200))],
              ex=(0, 0, 300))
-    # the sofa stands against the bed's back half, so only the front half has a drawer;
-    # the back half is reached by lifting the deck
-    part("Side panel by the sofa", Box(X1 - T18, Y0 + T18, 60, X1, 1400 - 9, ZT - T18 - 80), [], "L2S2",
+    # no drawers: the chairs stand by the bed's room side, so storage is under the lift-up deck
+    part("Side panel, room side", Box(X1 - T18, Y0 + T18, 60, X1, Y1 - T18, ZT - T18 - 80), [], "L2S2",
          ex=(300, 0, 0))
-    for i, (ya, yb) in enumerate(((1400.0 + 9, Y1 - T18),)):
-        part(f"Drawer {i + 1} front", Box(X1 - T18, ya, 62, X1, yb, ZT - T18 - 82), [], "L2S2", ex=(500, 0, 0))
-        x0 = 960.0
-        for nm, b in (("side 1", Box(x0, ya + 10, 70, X1 - T18, ya + 22, 300)), ("side 2", Box(x0, yb - 22, 70, X1 - T18, yb - 10, 300)),
-                      ("back", Box(x0, ya + 22, 70, x0 + 12, yb - 22, 300)),
-                      ("bottom", Box(x0 + 12, ya + 22, 70, X1 - T18, yb - 22, 82))):
-            part(f"Drawer {i + 1} {nm}", b, ex=(500, 0, 0), mat="PLY12")
     # headboard unit on the back wall: shelf top at 1,100 with reading lights and USB-C
     part("Headboard front", Box(0, 132, ZT, X1, 150, 1100), [Op("cutout", "A", 200, 520, w=68, h=68, joint="usb"),
                                                               Op("cutout", "A", X1 - 268, 520, w=68, h=68, joint="usb")],
@@ -358,12 +349,9 @@ def k4_bed(lo: Layout) -> Kit:
     k.buy(Bought("K4-MATT", "Mattress up to 1,600 x 2,000 (local size, e.g. 5 x 6 ft), 200 mm", "K4", "bedding",
                  "furnishing", 1, "each", "mattress", Box(20, Y0 + 10, ZT, X1 - 20, Y1 - 10, ZT + 200), step="S15",
                  color="fabric"))
-    k.buy(Bought("K4-CASTOR", "Castors 50 mm for the drawer", "K4", "hardware", "carpentry", 4, "each", "castor"))
     k.buy(Bought("K4-STRUT", "Gas struts + lift-up hinges for the deck panels", "K4", "hardware", "carpentry", 2,
                  "set", "strut"))
-    k.keepouts.append(KeepOut("KO-DRAWERS", Box(X1, 1400, 0, X1 + 700, Y1 - T18, 450), "Drawer pull-out 700",
-                              "K4"))
-    k.steps.append(Step("S15", "K4", "Bolt the bed frame, drop in the deck panels, slide in the drawers",
+    k.steps.append(Step("S15", "K4", "Bolt the bed frame and the side panel; drop in the lift-up deck panels",
                         [p.id for p in k.parts], {"C": 20, "K": 8}, 2))
     return k
 
@@ -386,43 +374,37 @@ def k5_storage(lo: Layout) -> Kit:
 
 # ------------------------------------------------------------------------------- K6 living
 def k6_living(lo: Layout) -> Kit:
-    k = Kit("K6", "Living: sofa, tables and stools", "carpentry", "workshop")
+    k = Kit("K6", "Seating: sofa, table and chairs", "carpentry", "workshop")
     sx0, sx1 = lo.sofa
     k.buy(Bought("K6-SOFA", f"Compact two-seat sofa about {sx1 - sx0:.0f} x 850, washable covers", "K6", "furnishing",
                  "furnishing", 1, "each", "sofa", Box(sx0, 0, 0, sx1, 850, 800), step="S17", layer="furniture",
                  color="fabric"))
-    # coffee table in front of the sofa: a 600 x 400 top on two cross-halving legs
-    cx0, cy0 = sx0 + 300, 950.0
-    k.add(Part("K6-10", "Coffee table top 600 x 400", "K6", "PLY18", Box(cx0, cy0, 382, cx0 + 600, cy0 + 400, 400),
-               step="S17", edges="L2S2", explode=(0, 0, 200)))
-    k.add(Part("K6-11", "Coffee table leg A (cross-halving slot)", "K6", "PLY18",
-               Box(cx0 + 50, cy0 + 191, 0, cx0 + 550, cy0 + 209, 382), step="S17", edges="L2S2"))
-    k.add(Part("K6-12", "Coffee table leg B (cross-halving slot)", "K6", "PLY18",
-               Box(cx0 + 291, cy0 + 50, 0, cx0 + 309, cy0 + 350, 382), step="S17", edges="L2S2"))
-    xs = lo.bed_x1 + 700 + 20  # past the bed-drawer pull-out
-    xe = lo.part_x0 - (lo.bdoor[1] - lo.bdoor[0]) + 40 - 5  # short of the bathroom door sweep
-    tw = min(600.0, xe - xs - 2 * 320 - 40)
-    if tw < 500:
-        raise ValueError(f"dining zone too short: table {tw:.0f} mm")
-    tx0, ty0 = xs + 340, 1650.0
-    k.add(Part("K6-01", f"Table top {tw:.0f} x 600", "K6", "PLY18", Box(tx0, ty0, 732, tx0 + tw, ty0 + 600, 750),
+    # seating room: a table in front of the sofa and two chairs facing it from the glass side,
+    # all flat-pack ply on cross-halving legs; the chairs have a back panel
+    tw, td = 600.0, 600.0
+    tx0, ty0 = (sx0 + sx1) / 2 - tw / 2, 1000.0
+    k.add(Part("K6-01", f"Table top {tw:.0f} x {td:.0f}", "K6", "PLY18", Box(tx0, ty0, 732, tx0 + tw, ty0 + td, 750),
                step="S17", edges="L2S2", explode=(0, 0, 200)))
     k.add(Part("K6-02", "Table leg A (cross-halving slot)", "K6", "PLY18",
-               Box(tx0 + 50, ty0 + 291, 0, tx0 + tw - 50, ty0 + 309, 732), step="S17", edges="L2S2"))
+               Box(tx0 + 50, ty0 + td / 2 - 9, 0, tx0 + tw - 50, ty0 + td / 2 + 9, 732), step="S17", edges="L2S2"))
     k.add(Part("K6-03", "Table leg B (cross-halving slot)", "K6", "PLY18",
-               Box(tx0 + tw / 2 - 9, ty0 + 50, 0, tx0 + tw / 2 + 9, ty0 + 550, 732), step="S17", edges="L2S2"))
-    for i, sx in enumerate((tx0 - 340, tx0 + tw + 20)):
-        k.add(Part(f"K6-{4 + 3 * i:02d}", f"Stool {i + 1} seat", "K6", "PLY18",
-                   Box(sx, ty0 + 140, 432, sx + 320, ty0 + 460, 450), step="S17", edges="L2S2"))
-        k.add(Part(f"K6-{5 + 3 * i:02d}", f"Stool {i + 1} leg A", "K6", "PLY18",
-                   Box(sx + 20, ty0 + 291, 0, sx + 300, ty0 + 309, 432), step="S17", edges="L2S2"))
-        k.add(Part(f"K6-{6 + 3 * i:02d}", f"Stool {i + 1} leg B", "K6", "PLY18",
-                   Box(sx + 151, ty0 + 160, 0, sx + 169, ty0 + 440, 432), step="S17", edges="L2S2"))
+               Box(tx0 + tw / 2 - 9, ty0 + 50, 0, tx0 + tw / 2 + 9, ty0 + td - 50, 732), step="S17", edges="L2S2"))
+    cy0, cw = ty0 + td + 100, 420.0
+    for i, cx in enumerate((tx0 + tw / 2 - cw - 20, tx0 + tw / 2 + 20)):
+        n = 4 + 4 * i
+        k.add(Part(f"K6-{n:02d}", f"Chair {i + 1} seat", "K6", "PLY18", Box(cx, cy0, 432, cx + cw, cy0 + cw, 450),
+                   step="S17", edges="L2S2"))
+        k.add(Part(f"K6-{n + 1:02d}", f"Chair {i + 1} leg A", "K6", "PLY18",
+                   Box(cx + 20, cy0 + cw / 2 - 9, 0, cx + cw - 20, cy0 + cw / 2 + 9, 432), step="S17", edges="L2S2"))
+        k.add(Part(f"K6-{n + 2:02d}", f"Chair {i + 1} leg B", "K6", "PLY18",
+                   Box(cx + cw / 2 - 9, cy0 + 20, 0, cx + cw / 2 + 9, cy0 + cw - 38, 432), step="S17", edges="L2S2"))
+        k.add(Part(f"K6-{n + 3:02d}", f"Chair {i + 1} back", "K6", "PLY18",
+                   Box(cx, cy0 + cw - 18, 0, cx + cw, cy0 + cw, 820), step="S17", edges="L2S2"))
     k.buy(Bought("K6-CURT", "Blackout curtain + track for the 3 m slider", "K6", "furnishing", "furnishing", 1,
                  "set", "curtain", step="S17"))
     k.buy(Bought("K6-MESH", "Insect screens: slider (sliding), W1, vents", "K6", "glazing", "glazier", 1, "set",
                  "mesh", step="S05"))
-    k.steps.append(Step("S17", "K6", "Place the sofa; slot together the coffee table, dining table and stools",
+    k.steps.append(Step("S17", "K6", "Place the sofa; slot together the table and the two chairs",
                         [p.id for p in k.parts], {}, 1))
     return k
 

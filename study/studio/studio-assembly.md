@@ -28,7 +28,7 @@ The drawings are wordless, IKEA-style: new parts in white with a heavy line, fin
 
 ![AS-16 Storage wall](../../public/designs/studio/drawings/as-16.svg)
 
-![AS-17 Sofa, tables and stools](../../public/designs/studio/drawings/as-17.svg)
+![AS-17 Sofa, table and chairs](../../public/designs/studio/drawings/as-17.svg)
 
 ![AS-20 Roof deck beams](../../public/designs/studio/drawings/as-20.svg)
 

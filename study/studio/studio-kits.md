@@ -18,7 +18,7 @@ One studio is eleven kits. K1 to K7 are flat-pack woodwork from the carpentry wo
 
 ![J-105 Kit K5: storage wall](../../public/designs/studio/drawings/j-105.svg)
 
-![J-106 Kit K6: sofa, tables and stools](../../public/designs/studio/drawings/j-106.svg)
+![J-106 Kit K6: sofa, table and chairs](../../public/designs/studio/drawings/j-106.svg)
 
 ![J-107 Kit K7: trims](../../public/designs/studio/drawings/j-107.svg)
 

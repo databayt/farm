@@ -4,7 +4,6 @@ KO-SHOWER,Shower entry 600,pass,
 KO-BASIN,Standing space at the basin,pass,
 KO-BDOOR,"Bathroom door swing (opens outward, hinge at y 1,500)",pass,
 KO-KITCHEN,Galley aisle 800 (worktop to the sofa),pass,
-KO-DRAWERS,Drawer pull-out 700,pass,
 R-TRAY,Shower tray length (mm),pass,1200 >= 1000
 R-WC-SIDE,WC centreline to the end wall (mm),pass,708 >= 400
 R-WC-SIDE2,WC centreline to the partition (mm),pass,610 >= 400

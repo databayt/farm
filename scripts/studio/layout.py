@@ -1,7 +1,7 @@
 """Layout B (D-020): zone schedule from the envelope and the survey-driven rules.
 
-Bed and storage wall at end A, living in the middle (sofa on the back wall, coffee table, a
-dining table by the glass), a galley along the bathroom partition, the bathroom at end B.
+Bed and storage wall at end A, a seating room in the middle (sofa on the back wall, a table
+and two chairs), a galley along the bathroom partition, the bathroom at end B.
 
 Frame: x from the lined face of end A (bed) to end B (bath); y from the lined back wall to
 the front glass wall; z from the finished floor. All mm.

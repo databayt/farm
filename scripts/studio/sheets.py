@@ -7,7 +7,7 @@ from draw import (FILL, SYS, Sheet, iso, iso_draw, ortho, project_box, sym_box, 
 from model import Box
 
 KIT_NAMES = {"K1": "Insulation and lining", "K2": "Bathroom", "K3": "Kitchen", "K4": "Bed", "K5": "Storage wall",
-             "K6": "Sofa, tables and stools", "K7": "Trims", "K8": "Electrical", "K9": "Plumbing",
+             "K6": "Sofa, table and chairs", "K7": "Trims", "K8": "Electrical", "K9": "Plumbing",
              "K10": "Steel and glazing", "K11": "Roof terrace"}
 
 
@@ -38,7 +38,7 @@ def a001_cover(m, index: list[tuple[str, str]]) -> Sheet:
     s.text(20, 41, "IKEA-style flat-pack fit-out of standard 20 ft containers · materials and fabrication in Kigali", 3.4)
     y = s.note(20, 54, [
         f"Net interior {lo.L:.0f} x {lo.W:.0f} x {lo.H:.0f} mm ({lo.L * lo.W / 1e6:.1f} m2) · Layout B (D-020)",
-        f"Bed up to 1,600 x 2,000 with a storage wall · sofa, coffee table, dining for two",
+        f"Bed up to 1,600 x 2,000 with a storage wall · seating room: sofa, table, two chairs",
         f"Galley {lo.sink[1]:.0f} mm on the bathroom wall: fridge, induction, sink; 80 L heater overhead",
         f"Bathroom {lo.L - lo.bath_x0:.0f} x {lo.W:.0f} mm · shower tray {lo.tray[1] - lo.tray[0]:.0f} x 900",
         f"Max demand about {m['md']['total_A']:.0f} A per unit (heater/hob priority relay) · feeder {m['feeder']['size_mm2']:.0f} mm2",
@@ -161,32 +161,83 @@ def a103_plan(m) -> Sheet:
 
 
 def plan_bw(m) -> str:
-    """The furniture plan in black and white, for the web: walls solid, furniture in outline,
-    wall-hung units dashed, zone and overall dimensions; no sheet, title block or checks."""
+    """The plan for the web, simplified: walls, glazing, one outline per piece of furniture, the
+    bathroom door swing, zone names and the overall size. No carcass detail, sheet or checks."""
     lo, s = m["lo"], Sheet("", "")
-    sc, ox, oy, ink = 25, 8.0, 22.0, "#111"
+    sc, ox, oy, ink, sw = 25, 8.0, 16.0, "#111", 0.22
     X = lambda x: ox + x / sc  # noqa: E731
     Y = lambda y: oy + y / sc  # noqa: E731
+    by_id = {i: b for (b, fl, n, i, *_x) in items(m, layers=None, exclude_layers=())}
+
+    def box(x0, y0, x1, y1, fill="#fff", w=sw) -> None:
+        s.rect(X(x0), Y(y0), (x1 - x0) / sc, (y1 - y0) / sc, fill, ink, w)
+
     walls = items(m, kits=["K0"], layers=["shell"], exclude_layers=())
     ortho(s, "plan", [(b, ink, n) for (b, fl, n, i, *_x) in walls if i not in ("K0-ROOF", "K0-FLOOR", "K0-SLIDER")],
           ox, oy, sc, sw=0.1)
-    ortho(s, "plan", [(b, "#fff", n) for (b, fl, n, i, *_x) in walls if i == "K0-SLIDER"], ox, oy, sc, sw=0.15)
-    it = [t for t in items(m, layers=["furniture", "fixtures"]) if t[0].z0 < lo.H - 200]
-    low = [(b, "#fff", n) for (b, fl, n, *_r) in it if b.z0 < 1400]
-    ortho(s, "plan", low, ox, oy, sc, sw=0.18)
-    for (b, *_r) in it:
-        if b.z0 >= 1400:  # wall-hung: dashed, above the counter
-            a0, b0, a1, b1 = project_box("plan", b)
-            s.rect(X(a0), Y(b0), (a1 - a0) / sc, (b1 - b0) / sc, "none", ink, 0.15, dash="0.8,0.6")
+    g = by_id["K0-SLIDER"]
+    box(g.x0, g.y0, g.x1, g.y1, "#fff", 0.15)
+    # bed: frame, headboard, two pillows
+    box(0, 0, lo.bed_x1, 2170)
+    s.line(X(0), Y(150), X(lo.bed_x1), Y(150), ink, sw)
+    for px in (120, lo.bed_x1 / 2 + 40):
+        box(px, 220, px + lo.bed_x1 / 2 - 160, 520)
+    # seating: sofa (back and arms), table, two chairs with their backs to the glass
+    sb = by_id["K6-SOFA"]
+    box(sb.x0, sb.y0, sb.x1, sb.y1)
+    box(sb.x0 + 130, sb.y0 + 220, sb.x1 - 130, sb.y1)
+    t = by_id["K6-01"]
+    box(t.x0, t.y0, t.x1, t.y1)
+    for c in (1, 2):
+        seat = next(b for i, b in by_id.items() if i.startswith("K6-") and b.z0 == 432 and
+                    abs(b.size[0] - 420) < 1 and (b.x0 < t.x0 + 300) == (c == 1))
+        box(seat.x0, seat.y0, seat.x1, seat.y1)
+        box(seat.x0, seat.y1 - 60, seat.x1, seat.y1, ink, 0.1)
+    # galley: worktop, sink, two hob rings
+    X0 = lo.part_x0 - 620
+    box(X0, 0, lo.part_x0, lo.sink[1])
+    sk = by_id["K3-SINK"]
+    box(sk.x0, sk.y0, sk.x1, sk.y1)
+    hx = lo.part_x0 - 310
+    for hy in (lo.hob[0] + 110, lo.hob[1] - 110):
+        s.circle(X(hx), Y(hy), 90 / sc, "none", ink, sw)
+    # partition with the door opening, door leaf and swing
+    box(lo.part_x0, 0, lo.bath_x0, lo.bdoor[0], ink, 0.1)
+    box(lo.part_x0, lo.bdoor[1], lo.bath_x0, lo.W, ink, 0.1)
+    s.line(X(lo.part_x0), Y(lo.bdoor[0]), X(lo.part_x0 - 700), Y(lo.bdoor[0]), ink, sw)
     s.arc(X(lo.part_x0), Y(lo.bdoor[0]), 700 / sc, 90, 180, ink, 0.18, "0.8,0.6")
-    for x0, x1, lab in ((0, lo.bed_x1, "BED"), (*lo.sofa, "SOFA"), (lo.galley_x0, lo.part_x0, "GALLEY"),
-                        (lo.bath_x0, lo.L, "BATH")):
-        s.dim(X(x0), oy - 6, X(x1), oy - 6, f"{x1 - x0:.0f}", 3, 2.4)
-        s.text(X((x0 + x1) / 2), oy - 15, lab, 2.6, "middle", "bold", ink)
-    s.dim(X(0), Y(lo.W) + 4, X(lo.L), Y(lo.W) + 4, f"{lo.L:.0f} inside", 4, 2.4)
-    s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:.0f}", -4, 2.4)
-    s.text(X(2700), Y(1300), "LIVING / DINING", 2.6, "middle", "bold", ink)
+    # bathroom: shower tray with its drain, WC, basin
+    tx0, tx1, ty0, ty1 = lo.tray
+    box(tx0, ty0, tx1, ty1)
+    s.circle(X((tx0 + tx1) / 2), Y((ty0 + ty1) / 2), 45 / sc, "none", ink, sw)
+    wc = by_id["K2-WC"]
+    box(wc.x0, wc.y1 - 180, wc.x1, wc.y1)
+    s.circle(X((wc.x0 + wc.x1) / 2), Y(wc.y1 - 400), 190 / sc, "#fff", ink, sw)
+    bs = by_id["K2-BASIN"]
+    box(bs.x0, bs.y0, bs.x1, bs.y1)
+    for x0, x1, lab in ((0, lo.bed_x1, "BED"), (*lo.sofa, "SEATING"),
+                        (lo.part_x0 - 620, lo.part_x0, "GALLEY"), (lo.bath_x0, lo.L, "BATH")):
+        s.text(X((x0 + x1) / 2), oy - 7, lab, 2.6, "middle", "bold", ink)
+    s.dim(X(0), Y(lo.W) + 4, X(lo.L), Y(lo.W) + 4, f"{lo.L:,.0f}", 4, 2.4)
+    s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:,.0f}", -4, 2.4)
     return s.bare(ox + (lo.L + 300) / sc + 10, Y(lo.W) + 14)
+
+
+def plan_facts(m) -> dict:
+    """The few numbers the web page lists beside the plan."""
+    lo = m["lo"]
+    checks = [c for c in m["checks"] if not c["id"].startswith(("E-", "P-"))]
+    tx0, tx1, ty0, ty1 = lo.tray
+    return {
+        "inside": f"{lo.L:,.0f} × {lo.W:,.0f} mm",
+        "floor": f"{lo.L * lo.W / 1e6:.1f} m²",
+        "height": f"{lo.H:,.0f} mm",
+        "bed": "1,600 × 2,000 mm",
+        "galley": f"{lo.sink[1]:,.0f} mm",
+        "shower": f"{tx1 - tx0:,.0f} × {ty1 - ty0:,.0f} mm",
+        "checks": len(checks),
+        "passed": sum(1 for c in checks if c["result"] == "pass"),
+    }
 
 
 def a201_elev(m) -> Sheet:

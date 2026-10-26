@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
 import { StudioViewer } from "@/components/docs/studio-viewer"
 import model from "../../../../public/designs/studio/model/parts.json"
+import plan from "../../../../public/designs/studio/render/plan.json"
 import totals from "../../../../public/designs/studio/data/totals.json"
 
 // Public showcase of the container-studio design package (study/studio, D-014..D-016).
@@ -25,7 +26,7 @@ const FEATURES = [
   { title: "Sleep", text: "Queen bed up to 1.6 × 2.0 m across the quiet end, with open shelves either side of the headboard, reading lights and USB-C." },
   { title: "Cook", text: "A galley on the bathroom wall: under-counter fridge, two-zone induction hob, sink, drinking-water filter. No gas indoors." },
   { title: "Wash", text: "A 1.2 m walk-in shower, WC and basin. Hot water from an 80 L heater through a thermostatic mixer." },
-  { title: "Live", text: "A two-seat sofa and coffee table, and a table for two by the 3 m sliding glass wall that opens onto the deck." },
+  { title: "Sit", text: "A seating room: a two-seat sofa, a table and two chairs, by the 3 m sliding glass wall onto the deck." },
   { title: "Roof", text: "An open roof terrace with lounge chairs behind a timber-topped rail, up a steel stair; a canopy shades the deck." },
   { title: "Stay cool", text: "The roof deck shades the steel, EPS insulation is sealed to it, a wall fan moves the air, and the AC is ready." },
 ]
@@ -197,7 +198,6 @@ function piecesOf(kit: string): Piece[] {
 export default function StudioPage() {
   const sheets = Object.values(totals.sheets as Record<string, number>).reduce((a, b) => a + b, 0)
   const kits = readKits()
-  const checks = readCsv("checks.csv").filter((c) => !/^[EP]-/.test(c.id))
   const circuits = readCsv("circuits.csv")
   const demand = Object.fromEntries(readCsv("demand.csv").map((r) => [r.item, r.amps]))
   const points = readCsv("points.csv")
@@ -238,39 +238,32 @@ export default function StudioPage() {
       {/* 2D, full screen: the furniture plan fills the first screen, the sheets behind it follow. */}
       <section id="plans">
         <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
-          <p className="text-muted-foreground text-sm font-medium">2D</p>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight text-balance">Everything a guest needs in 13 m²</h2>
-          <p className="text-muted-foreground mt-2 max-w-3xl text-lg text-balance">
-            A 20 ft container becomes a farm-stay studio for two: bed, kitchen, shower and a roof terrace, all in
-            one set of drawings.
-          </p>
-          {/* The plan drawn straight on the page (render/plan.svg, black on transparent; inverted in dark
-              mode), with the layout checks the generator runs beside it. */}
-          <div className="mt-6 grid min-h-0 flex-1 items-center gap-8 lg:grid-cols-[1.7fr_1fr]">
+          <h2 className="text-3xl font-semibold tracking-tight">2D</h2>
+          {/* The simplified plan (render/plan.svg, black on transparent; inverted in dark mode) and the
+              few sizes that matter (render/plan.json), both written by the generator. */}
+          <div className="mt-6 grid min-h-0 flex-1 items-center gap-10 lg:grid-cols-[2fr_1fr]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${D}/render/plan.svg`} alt="Furniture and dimension plan: the bed at one end, the sofa, coffee table and dining table in the middle, the galley on the bathroom wall, and the bathroom at the other end."
+            <img src={`${D}/render/plan.svg`} alt="Plan: the bed at one end, a sofa with a table and two chairs, the galley on the bathroom wall, and the bathroom with shower, WC and basin at the other end."
               className="w-full object-contain lg:max-h-full dark:invert" />
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="text-muted-foreground">
-                  <tr className="border-b">
-                    <th className="py-2 pe-3 text-start font-medium">Check</th>
-                    <th className="py-2 pe-3 text-end font-medium">Value</th>
-                    <th className="py-2 text-end font-medium">Result</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {checks.map((c) => (
-                    <tr key={c.id} className="border-b last:border-0">
-                      <td className="py-1.5 pe-3">{c.rule.replace(/ \(mm\)$/, "")}</td>
-                      <td className="text-muted-foreground py-1.5 pe-3 text-end whitespace-nowrap tabular-nums">
-                        {c.detail ? `${c.detail.replace(/ [<>]= .*/, "")} mm` : "clear"}
-                      </td>
-                      <td className="py-1.5 text-end">{c.result}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="text-sm">
+            <dl className="divide-y">
+              {[
+                ["Inside", plan.inside],
+                ["Floor", plan.floor],
+                ["Ceiling", plan.height],
+                ["Bed", plan.bed],
+                ["Galley", plan.galley],
+                ["Shower", plan.shower],
+              ].map(([k, v]) => (
+                <div key={k} className="flex justify-between gap-4 py-2.5">
+                  <dt className="text-muted-foreground">{k}</dt>
+                  <dd className="tabular-nums">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="text-muted-foreground border-t pt-3">
+              {plan.passed === plan.checks ? `All ${plan.checks} layout checks pass.` : `${plan.passed} of ${plan.checks} layout checks pass.`}
+            </p>
             </div>
           </div>
         </div>
