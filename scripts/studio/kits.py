@@ -1,10 +1,12 @@
-"""The eleven kits (K1-K11) of one studio, built from the layout. One call = one unit; the
-three studios use the same kit (parts are sized to the smallest surveyed unit)."""
+"""The eleven kits (K1-K11) of one studio, built from Layout B (D-020). One call = one unit;
+the three studios use the same kit (parts are sized to the smallest surveyed unit)."""
 from __future__ import annotations
+
+from dataclasses import replace
 
 import params as P
 from joinery import LEG, T12, T18, carcass
-from layout import Layout
+from layout import AISLE_MIN, GALLEY_D, WORKTOP_D, Layout
 from model import Box, Bought, KeepOut, Kit, Op, Part, Step
 
 STEEL_T = 3.0
@@ -14,6 +16,48 @@ def split(a: float, b: float, maxw: float = 1220.0) -> list[tuple[float, float]]
     n = max(1, int(-(-(b - a) // maxw)))
     w = (b - a) / n
     return [(a + i * w, a + (i + 1) * w) for i in range(n)]
+
+
+def turn(k: Kit, X: float) -> None:
+    """Turn a kit drawn along the back wall onto the partition: local (x, y) -> world (X - y, x).
+
+    The galley is built with the same carcass code as a back-wall run (x along the run, y the
+    depth from the wall), then turned so its backs sit on the partition face at x = X.
+    Face holes move with the panel; a panel whose thickness ran along y swaps faces A and B.
+    """
+    def tbox(b: Box) -> Box:
+        return Box(X - b.y1, b.x0, b.z0, X - b.y0, b.x1, b.z1)
+
+    def tpt(p: list[float]) -> list[float]:
+        return [X - p[1], p[0], p[2]]
+
+    for part in k.parts:
+        old, new = part.box, tbox(part.box)
+        a, b = part.axes
+        flip = part.taxis == 1
+        part.box = new
+        a2, b2 = part.axes
+        ops = []
+        for op in part.ops:
+            if op.face not in ("A", "B"):
+                ops.append(op)  # edge holes are symmetric along the edge
+                continue
+            p0 = list(old.lo)
+            p0[a] += op.u
+            p0[b] += op.v
+            p1 = list(p0)
+            p1[a] += op.w
+            p1[b] += op.h
+            t0, t1 = tpt(p0), tpt(p1)
+            face = {"A": "B", "B": "A"}[op.face] if flip else op.face
+            ops.append(replace(op, face=face, u=min(t0[a2], t1[a2]) - new.lo[a2], v=min(t0[b2], t1[b2]) - new.lo[b2],
+                               w=abs(t1[a2] - t0[a2]), h=abs(t1[b2] - t0[b2])))
+        part.ops = ops
+        ex, ey, ez = part.explode
+        part.explode = (-ey, ex, ez)
+    for item in k.bought:
+        if item.box is not None:
+            item.box = tbox(item.box)
 
 
 # ------------------------------------------------------------------------------- shell
@@ -207,60 +251,63 @@ def k2_bath(lo: Layout) -> Kit:
 
 # ------------------------------------------------------------------------------- K3 kitchen
 def k3_kitchen(lo: Layout) -> Kit:
+    """The galley on the bathroom partition: fridge bay, hob base and sink base from the back wall,
+    an overhead cabinet holding the 80 L heater, and a hood under it. Drawn as a back-wall run
+    (x along the galley, y from the partition), then turned into place."""
     k = Kit("K3", "Kitchen", "carpentry", "workshop")
-    D = 600.0
+    D = GALLEY_D
     hb = 900 - 38 - LEG  # carcass height under a 38 mm worktop
     f0, f1 = lo.fridge
-    # fridge bay: two sides + a front rail carrying the worktop, open front and bottom
-    k.add(Part("K3-01", "Fridge bay side L", "K3", "PLY18", Box(f0, 12, LEG, f0 + T18, D, LEG + hb), step="S11",
-               edges="L1", explode=(-150, 0, 0)))
-    k.add(Part("K3-02", "Fridge bay top rail", "K3", "PLY18", Box(f0 + T18, D - 100, LEG + hb - T18, f1, D,
+    run = lo.sink[1]
+    # fridge bay: one side + rails carrying the worktop, open front and bottom; the back wall closes it
+    k.add(Part("K3-01", "Fridge bay side", "K3", "PLY18", Box(f1 - T18, 12, LEG, f1, D, LEG + hb), step="S11",
+               edges="L1", explode=(150, 0, 0)))
+    k.add(Part("K3-02", "Fridge bay top rail", "K3", "PLY18", Box(f0, D - 100, LEG + hb - T18, f1 - T18, D,
                                                                  LEG + hb), step="S11", edges="L1"))
-    k.add(Part("K3-03", "Fridge bay back rail", "K3", "PLY18", Box(f0 + T18, 12, LEG + hb - T18, f1, 112,
+    k.add(Part("K3-03", "Fridge bay back rail", "K3", "PLY18", Box(f0, 12, LEG + hb - T18, f1 - T18, 112,
                                                                   LEG + hb), step="S11"))
     carcass(k, "K3-H", "Hob base", *lo.hob, 0, D, LEG, hb, step="S11", drawers=2)
-    sink = carcass(k, "K3-S", "Sink base", *lo.sink, 0, D, LEG, hb, step="S11", doors=2)
+    sink = carcass(k, "K3-S", "Sink base", *lo.sink, 0, D, LEG, hb, step="S11", doors=1)
     back = next(p for p in sink if p.name.endswith("back"))
-    back.ops.append(Op("cutout", "A", 150, 150, w=(lo.sink[1] - lo.sink[0]) - 300, h=250, joint="service"))
-    carcass(k, "K3-T", "Tall unit", *lo.tall, 0, D, LEG, 2200 - LEG, step="S12", doors=2, shelves=2, top="top")
-    # worktop over fridge, hob and sink, with sink and hob cut-outs
-    wt = Part("K3-WT", "Worktop 38 mm", "K3", "WTOP38", Box(f0, 0, LEG + hb, lo.sink[1], 620, 900), step="S13",
+    back.ops.append(Op("cutout", "A", 100, 150, w=(lo.sink[1] - lo.sink[0]) - 200, h=250, joint="service"))
+    oz = 1800.0
+    carcass(k, "K3-T", "Overhead cabinet", 0, run, 0, 500, oz, 500, step="S12", doors=2, top="top", legs=False)
+    # worktop over the whole run, with sink and hob cut-outs
+    wt = Part("K3-WT", "Worktop 38 mm", "K3", "WTOP38", Box(0, 0, LEG + hb, run, WORKTOP_D, 900), step="S13",
               edges="L1", explode=(0, 0, 300))
     wt.ops += [
-        Op("cutout", "B", (lo.sink[0] - f0) + 40, 70, w=520, h=440, joint="sink"),
-        Op("cutout", "B", (lo.hob[0] - f0) + 80, 50, w=270, h=490, joint="hob"),
+        Op("cutout", "B", lo.sink[0] + 50, 70, w=400, h=380, joint="sink"),
+        Op("cutout", "B", lo.hob[0] + 56, 50, w=270, h=490, joint="hob"),
     ]
     k.add(wt)
-    for i, (a, b) in enumerate(((f0, f1), lo.sink)):
-        carcass(k, f"K3-W{i + 1}", f"Wall unit {i + 1}", a, b, 0, 320, 1450, 700, step="S14", doors=1,
-                shelves=1, top="top", legs=False)
-    k.add(Part("K3-HS", "Shelf over the hob (hood mount)", "K3", "PLY18", Box(lo.hob[0], 0, 1450, lo.hob[1], 320,
-                                                                            1468), step="S14", edges="L1"))
-    k.add(Part("K3-PL", "Plinth", "K3", "PLY18", Box(f0, 560, 0, lo.tall[1], 578, LEG - 2), step="S13", edges="L1"))
+    k.add(Part("K3-HS", "Hood shelf", "K3", "PLY18", Box(lo.hob[0], 0, 1650, lo.hob[1], 320, 1668), step="S14",
+               edges="L1"))
+    k.add(Part("K3-PL", "Plinth", "K3", "PLY18", Box(lo.hob[0], 560, 0, run, 578, LEG - 2), step="S13", edges="L1"))
     k.buy(Bought("K3-HOB", "Two-zone induction hob, 300 mm domino, about 3.5 kW", "K3", "appliances", "electrical",
-                 1, "each", "hob", Box(lo.hob[0] + 80, 50, 900, lo.hob[0] + 368, 570, 960), step="S13",
+                 1, "each", "hob", Box(lo.hob[0] + 56, 50, 900, lo.hob[0] + 344, 570, 960), step="S13",
                  color="black"))
-    k.buy(Bought("K3-SINK", "Inset stainless sink 580 x 480, single bowl", "K3", "sanitaryware", "plumbing", 1,
-                 "each", "sink", Box(lo.sink[0] + 10, 50, 720, lo.sink[1] - 10, 530, 905), step="S13",
+    k.buy(Bought("K3-SINK", "Inset stainless sink 430 x 400, single bowl", "K3", "sanitaryware", "plumbing", 1,
+                 "each", "sink", Box(lo.sink[0] + 35, 50, 720, lo.sink[1] - 35, 470, 905), step="S13",
                  color="stainless"))
     k.buy(Bought("K3-TAP", "Kitchen mixer tap", "K3", "sanitaryware", "plumbing", 1, "each", "tap", step="S13"))
     k.buy(Bought("K3-FRIDGE", "Under-counter fridge about 90 L (A-class)", "K3", "appliances", "electrical", 1,
-                 "each", "fridge", Box(f0 + 30, 40, 0, f1 - 10, 590, 850), step="S13", color="white"))
+                 "each", "fridge", Box(f0 + 10, 40, 0, f1 - 30, 590, 850), step="S13", color="white"))
     k.buy(Bought("K3-HOOD", "Recirculating hood 300-450 mm, charcoal filter", "K3", "appliances", "electrical", 1,
-                 "each", "hood", Box(lo.hob[0] + 20, 20, 1340, lo.hob[1] - 20, 320, 1450), step="S14",
+                 "each", "hood", Box(lo.hob[0] + 20, 20, 1560, lo.hob[1] - 20, 320, 1650), step="S14",
                  color="stainless"))
     k.buy(Bought("K3-FILTER", "Under-sink drinking-water filter + faucet", "K3", "plumbing", "plumbing", 1, "each",
                  "filter", step="S13"))
-    k.keepouts.append(KeepOut("KO-KITCHEN", Box(lo.fridge[0], 640, 0, lo.tall[1], 1500, 1800),
-                              "Kitchen aisle 860 (worktop to the dining zone)", "K3"))
+    turn(k, lo.part_x0)
+    k.keepouts.append(KeepOut("KO-KITCHEN", Box(lo.part_x0 - WORKTOP_D - AISLE_MIN, 0, 0, lo.part_x0 - WORKTOP_D, run,
+                                                1800), f"Galley aisle {AISLE_MIN:.0f} (worktop to the sofa)", "K3"))
     k.steps += [
-        Step("S11", "K3", "Assemble the fridge bay, hob base and sink base on their legs",
+        Step("S11", "K3", "Assemble the fridge bay, hob base and sink base on their legs along the partition",
              [p.id for p in k.parts if p.step == "S11"], {}, 2),
-        Step("S12", "K3", "Assemble the tall unit, fix it to blocking, hang the heater bracket inside",
-             [p.id for p in k.parts if p.step == "S12"], {}, 2, "Tip the tall unit up: two people."),
+        Step("S12", "K3", "Assemble the overhead cabinet; hang it and the heater cradle on the steel rail",
+             [p.id for p in k.parts if p.step == "S12"], {}, 2, "Lift the cabinet up: two people."),
         Step("S13", "K3", "Scribe and fix the worktop; drop in the sink and hob; plinth",
              [p.id for p in k.parts if p.step == "S13"], {"F": 12}, 2),
-        Step("S14", "K3", "Hang the wall units and the hood shelf on the steel rail",
+        Step("S14", "K3", "Fix the hood shelf under the overhead cabinet and hang the hood",
              [p.id for p in k.parts if p.step == "S14"], {"F": 8}, 2),
     ]
     return k
@@ -285,16 +332,17 @@ def k4_bed(lo: Layout) -> Kit:
     part("Rail, head", Box(T18, Y0, 0, X1 - T18, Y0 + T18, ZT - T18), list(bolts), ex=(0, -200, 0))
     part("Rail, foot", Box(T18, Y1 - T18, 0, X1 - T18, Y1, ZT - T18), list(bolts), "L1", ex=(0, 200, 0))
     part("Spine (drawer back)", Box(922, Y0 + T18, 0, 940, Y1 - T18, ZT - T18), ex=(0, 0, 150))
-    for y in (650.0, 1400.0):
-        part(f"Drawer divider at y {y:.0f}", Box(940, y - 9, 0, X1 - T18, y + 9, ZT - T18 - 80), ex=(0, 0, 150))
+    part("Drawer divider", Box(940, 1400 - 9, 0, X1 - T18, 1400 + 9, ZT - T18 - 80), ex=(0, 0, 150))
     for i, (a, b) in enumerate(split(T18, X1 - T18, 820)):
-        part(f"Deck panel {i + 1} (ventilated)", Box(a, Y0, ZT - T18, b, Y1, ZT),
+        part(f"Deck panel {i + 1} (ventilated, lifts on struts)", Box(a, Y0, ZT - T18, b, Y1, ZT),
              [Op("drill", "B", 80 + 160 * j, 100 + 200 * r, 30, T18, joint="vent")
               for j in range(int((b - a - 100) // 160)) for r in range(int((Y1 - Y0 - 150) // 200))],
              ex=(0, 0, 300))
-    part("Suitcase flap (lift-up, gas strut)", Box(X1 - T18, Y0 + T18, 60, X1, 650 - 9, ZT - T18 - 80), [], "L2S2",
+    # the sofa stands against the bed's back half, so only the front half has a drawer;
+    # the back half is reached by lifting the deck
+    part("Side panel by the sofa", Box(X1 - T18, Y0 + T18, 60, X1, 1400 - 9, ZT - T18 - 80), [], "L2S2",
          ex=(300, 0, 0))
-    for i, (ya, yb) in enumerate(((650.0 + 9, 1400.0 - 9), (1400.0 + 9, Y1 - T18))):
+    for i, (ya, yb) in enumerate(((1400.0 + 9, Y1 - T18),)):
         part(f"Drawer {i + 1} front", Box(X1 - T18, ya, 62, X1, yb, ZT - T18 - 82), [], "L2S2", ex=(500, 0, 0))
         x0 = 960.0
         for nm, b in (("side 1", Box(x0, ya + 10, 70, X1 - T18, ya + 22, 300)), ("side 2", Box(x0, yb - 22, 70, X1 - T18, yb - 10, 300)),
@@ -310,31 +358,47 @@ def k4_bed(lo: Layout) -> Kit:
     k.buy(Bought("K4-MATT", "Mattress up to 1,600 x 2,000 (local size, e.g. 5 x 6 ft), 200 mm", "K4", "bedding",
                  "furnishing", 1, "each", "mattress", Box(20, Y0 + 10, ZT, X1 - 20, Y1 - 10, ZT + 200), step="S15",
                  color="fabric"))
-    k.buy(Bought("K4-CASTOR", "Castors 50 mm for the drawers", "K4", "hardware", "carpentry", 8, "each", "castor"))
-    k.buy(Bought("K4-STRUT", "Gas strut 100 N + flap hinges", "K4", "hardware", "carpentry", 1, "set", "strut"))
-    k.keepouts.append(KeepOut("KO-DRAWERS", Box(X1, 650, 0, X1 + 700, Y1 - T18, 450), "Drawer pull-out 700",
+    k.buy(Bought("K4-CASTOR", "Castors 50 mm for the drawer", "K4", "hardware", "carpentry", 4, "each", "castor"))
+    k.buy(Bought("K4-STRUT", "Gas struts + lift-up hinges for the deck panels", "K4", "hardware", "carpentry", 2,
+                 "set", "strut"))
+    k.keepouts.append(KeepOut("KO-DRAWERS", Box(X1, 1400, 0, X1 + 700, Y1 - T18, 450), "Drawer pull-out 700",
                               "K4"))
     k.steps.append(Step("S15", "K4", "Bolt the bed frame, drop in the deck panels, slide in the drawers",
                         [p.id for p in k.parts], {"C": 20, "K": 8}, 2))
     return k
 
 
-# ------------------------------------------------------------------------------- K5 wardrobe
-def k5_wardrobe(lo: Layout) -> Kit:
-    k = Kit("K5", "Wardrobe", "carpentry", "workshop")
-    a, b = lo.wardrobe
-    carcass(k, "K5", "Wardrobe", a, b, 0, 600, LEG, 2200 - LEG, step="S16", doors=1, shelves=1, top="top")
-    k.buy(Bought("K5-RAIL", "Hanging rail + supports", "K5", "hardware", "carpentry", 1, "set", "rail",
-                 Box(a + 18, 280, 1700, b - 18, 300, 1720), step="S16", color="stainless"))
-    k.keepouts.append(KeepOut("KO-WARD", Box(a, 618, 0, b, 618 + (b - a), 2000), "Wardrobe door swing", "K5"))
-    k.steps.append(Step("S16", "K5", "Assemble the wardrobe, fix to blocking, hang the door",
-                        [p.id for p in k.parts], {}, 2, "Tip up: two people."))
+# ------------------------------------------------------------------------------- K5 storage wall
+def k5_storage(lo: Layout) -> Kit:
+    """Open shelf towers either side of the bed head, standing on the headboard shelf; a picture
+    niche between them. Replaces the wardrobe (D-020): hooks and a luggage rack take the clothes."""
+    k = Kit("K5", "Storage wall", "carpentry", "workshop")
+    z0, top = 1100.0, 2200.0
+    for side, (a, b) in (("L", (0.0, 400.0)), ("R", (lo.bed_x1 - 400, lo.bed_x1))):
+        carcass(k, f"K5-{side}", f"Shelf tower {side}", a, b, 0, 150, z0, top - z0, step="S16", shelves=3,
+                top="top", legs=False, back=False)
+    k.buy(Bought("K5-HOOKS", "Coat hooks, hanging rail by the door and a folding luggage rack", "K5", "hardware",
+                 "carpentry", 1, "set", "rail", step="S16"))
+    k.steps.append(Step("S16", "K5", "Stand the two shelf towers on the headboard shelf and fix them to the back wall",
+                        [p.id for p in k.parts], {"F": 8}, 2))
     return k
 
 
 # ------------------------------------------------------------------------------- K6 living
 def k6_living(lo: Layout) -> Kit:
-    k = Kit("K6", "Living: table and stools", "carpentry", "workshop")
+    k = Kit("K6", "Living: sofa, tables and stools", "carpentry", "workshop")
+    sx0, sx1 = lo.sofa
+    k.buy(Bought("K6-SOFA", f"Compact two-seat sofa about {sx1 - sx0:.0f} x 850, washable covers", "K6", "furnishing",
+                 "furnishing", 1, "each", "sofa", Box(sx0, 0, 0, sx1, 850, 800), step="S17", layer="furniture",
+                 color="fabric"))
+    # coffee table in front of the sofa: a 600 x 400 top on two cross-halving legs
+    cx0, cy0 = sx0 + 300, 950.0
+    k.add(Part("K6-10", "Coffee table top 600 x 400", "K6", "PLY18", Box(cx0, cy0, 382, cx0 + 600, cy0 + 400, 400),
+               step="S17", edges="L2S2", explode=(0, 0, 200)))
+    k.add(Part("K6-11", "Coffee table leg A (cross-halving slot)", "K6", "PLY18",
+               Box(cx0 + 50, cy0 + 191, 0, cx0 + 550, cy0 + 209, 382), step="S17", edges="L2S2"))
+    k.add(Part("K6-12", "Coffee table leg B (cross-halving slot)", "K6", "PLY18",
+               Box(cx0 + 291, cy0 + 50, 0, cx0 + 309, cy0 + 350, 382), step="S17", edges="L2S2"))
     xs = lo.bed_x1 + 700 + 20  # past the bed-drawer pull-out
     xe = lo.part_x0 - (lo.bdoor[1] - lo.bdoor[0]) + 40 - 5  # short of the bathroom door sweep
     tw = min(600.0, xe - xs - 2 * 320 - 40)
@@ -358,7 +422,8 @@ def k6_living(lo: Layout) -> Kit:
                  "set", "curtain", step="S17"))
     k.buy(Bought("K6-MESH", "Insect screens: slider (sliding), W1, vents", "K6", "glazing", "glazier", 1, "set",
                  "mesh", step="S05"))
-    k.steps.append(Step("S17", "K6", "Slot together the table and stools", [p.id for p in k.parts], {}, 1))
+    k.steps.append(Step("S17", "K6", "Place the sofa; slot together the coffee table, dining table and stools",
+                        [p.id for p in k.parts], {}, 1))
     return k
 
 
@@ -373,11 +438,11 @@ def k7_trims(lo: Layout) -> Kit:
     for i, x in enumerate((lo.o1[0] - 12, lo.o1[1])):
         k.add(Part(f"K7-{5 + i:02d}", "Slider jamb reveal", "K7", "PLY12",
                    Box(x, lo.W - 40, 0, x + 12, lo.W, lo.o1_head), step="S18", edges="L1"))
-    for i, (a, b) in enumerate(split(lo.sink[1], lo.part_x0, 2400)):
-        k.add(Part(f"K7-{7 + i:02d}", "Ceiling scribe strip (back)", "K7", "PLY12", Box(a, 320, lo.H - 40, b, 332, lo.H),
-                   step="S18"))
-    k.add(Part("K7-20", "Scribe strip 40 (per-unit fillers, cut on site)", "K7", "PLY12",
-               Box(lo.tall[1], 0, 0, lo.part_x0, 12, 2200), step="S18"))
+    X, run = lo.part_x0, lo.sink[1]
+    k.add(Part("K7-07", "Ceiling scribe strip over the overhead cabinet", "K7", "PLY12",
+               Box(X - 530, 0, 2300, X - 518, run, lo.H), step="S18"))
+    k.add(Part("K7-20", "Galley end panel (scribed to the floor on site)", "K7", "PLY12",
+               Box(X - GALLEY_D, run, 0, X, run + 12, 900 - 38), step="S18"))
     k.steps.append(Step("S18", "K7", "Scribe and pin the trims; caulk and paint", [p.id for p in k.parts],
                         {"F": 60}, 1))
     return k
@@ -412,8 +477,8 @@ def k10_steel(lo: Layout) -> Kit:
 
 # ------------------------------------------------------------------------------- K11 roof terrace
 def k11_roof(lo: Layout) -> Kit:
-    """Roof terrace on the corner castings, two canopies, dog-leg stair at end A, chairs."""
-    k = Kit("K11", "Roof terrace, canopies and stair", "welding + carpentry", "steel workshop + site")
+    """Roof terrace on the corner castings, open guardrail, canopy over the front deck, dog-leg stair, chairs."""
+    k = Kit("K11", "Roof terrace, deck canopy and stair", "welding + carpentry", "steel workshop + site")
     e = P.LINING_WALL.value
     xa, xb = -e - 80, lo.L + e + 80
     ya, yb = -e - 43, lo.W + e + 43
@@ -439,19 +504,26 @@ def k11_roof(lo: Layout) -> Kit:
                "S21", ex=(0, 0, 700))
         y += 146
     deck_top = dz + 25
-    # guardrail 1,100 high, posts at about 1.5 m
+    # open guardrail 1,100 high: steel posts at 1.5 m or less, hardwood top rail, stainless cables
+    # at 90 mm (gaps under 100); no canopy over the roof (D-020)
     gz = deck_top + 1100
-    for (x0, y0, x1, y1) in ((xa, ya, xb, ya + 40), (xa, yb - 40, xb, yb), (xa, ya, xa + 40, yb), (xb - 40, ya, xb, yb)):
-        member("Guardrail top rail SHS 40x40x3", Box(x0, y0, gz - 40, x1, y1, gz), step="S22", ex=(0, 0, 900))
-        member("Guardrail mesh panel (gaps under 100 mm)", Box(x0, y0, deck_top + 100, x1, y1, gz - 40), "MESH",
-               "S22", ex=(0, 0, 900))
-    # upper canopy: 4 posts on the castings, rafters, polycarbonate, slope 5 deg to the back
-    ch = deck_top + 2400
-    for (px, py) in ((xa, ya), (xa, yb - 80), (xb - 80, ya), (xb - 80, yb - 80)):
-        member("Canopy post SHS 80x80x4", Box(px, py, deck_top, px + 80, py + 80, ch + (220 if py > 0 else 0)),
-               step="S23", ex=(0, 0, 1100))
-    member("Upper canopy polycarbonate 10 mm tinted multiwall (5 deg)", Box(xa - 300, ya - 300, ch, xb + 300, yb + 300,
-                                                                           ch + 230), "POLY", "S23", ex=(0, 0, 1300))
+    for side, (x0, y0, x1, y1) in enumerate(((xa, ya, xb, ya + 50), (xa, yb - 50, xb, yb), (xa, ya, xa + 50, yb),
+                                             (xb - 50, ya, xb, yb))):
+        along = 0 if side < 2 else 1
+        length = (x1 - x0) if along == 0 else (y1 - y0)
+        n_posts = int(-(-length // 1500)) + 1
+        for j in range(n_posts):
+            if side >= 2 and j in (0, n_posts - 1):
+                continue  # corners already have a post from the long sides
+            t = min(j * length / (n_posts - 1), length - 50)
+            px, py = (x0 + t, y0) if along == 0 else (x0, y0 + t)
+            member("Guardrail post SHS 50x50x3", Box(px, py, deck_top, px + 50, py + 50, gz - 40), step="S22",
+                   ex=(0, 0, 900))
+        member("Guardrail top rail, hardwood 140 x 40", Box(x0, y0, gz - 40, x1, y1, gz), "TIMBER", "S23",
+               ex=(0, 0, 1000))
+        member("Guardrail cable infill, 4 mm stainless at 90 mm (10 runs)", Box(x0, y0 + 22, deck_top + 100, x1, y0 + 28,
+                                                                                gz - 60) if along == 0 else
+               Box(x0 + 22, y0, deck_top + 100, x0 + 28, y1, gz - 60), "CABLE", "S23", ex=(0, 0, 900))
     # lower veranda canopy over the front deck, on its own posts (never on the slider head)
     dk = P.DECK_HEIGHT.value
     vz = top - 300
@@ -485,22 +557,22 @@ def k11_roof(lo: Layout) -> Kit:
                "TIMBER", "S26", ex=(0, 0, 1500))
     member("Side table 500 x 500", Box(1950, 500, deck_top, 2350, 900, deck_top + 450), "TIMBER", "S26",
            ex=(0, 0, 1500))
-    k.buy(Bought("K11-GUTTER", "Gutters + downpipes to the rainwater tank (both canopies)", "K11", "roofing",
-                 "welding", 2, "set", "gutter", step="S23"))
+    k.buy(Bought("K11-GUTTER", "Gutter + downpipe to the rainwater tank (deck canopy)", "K11", "roofing",
+                 "welding", 1, "set", "gutter", step="S24"))
     k.buy(Bought("K11-BOND", "Bonding: 16 mm2 green-yellow from the frame to the earth bar", "K11", "electrical",
                  "electrical", 1, "set", "bonding", step="S27"))
     for st, t in (("S20", "Lift and bolt the deck beams onto the corner castings; joists"),
                   ("S21", "Screw down the deck boards (5 mm gaps)"),
-                  ("S22", "Bolt on the guardrail panels"),
-                  ("S23", "Stand the canopy posts; rafters; polycarbonate; gutter"),
-                  ("S24", "Veranda posts, ledger and polycarbonate over the front deck"),
+                  ("S22", "Bolt the guardrail posts to the deck beams"),
+                  ("S23", "Fix the hardwood top rail; thread and tension the stainless cables"),
+                  ("S24", "Veranda posts, ledger, polycarbonate and gutter over the front deck"),
                   ("S25", "Set the stair footings; bolt the two flights and the landing"),
                   ("S26", "Place the chairs and the side table"),
                   ("S27", "Bond the steelwork to earth; engineer's inspection before guest use")):
-        k.steps.append(Step(st, "K11", t, [p.id for p in k.parts if p.step == st], {}, 3 if st in ("S20", "S23") else 2))
+        k.steps.append(Step(st, "K11", t, [p.id for p in k.parts if p.step == st], {}, 3 if st in ("S20", "S24") else 2))
     return k
 
 
 def all_kits(lo: Layout) -> list[Kit]:
-    return [shell(lo), k1_lining(lo), k2_bath(lo), k3_kitchen(lo), k4_bed(lo), k5_wardrobe(lo), k6_living(lo),
+    return [shell(lo), k1_lining(lo), k2_bath(lo), k3_kitchen(lo), k4_bed(lo), k5_storage(lo), k6_living(lo),
             k7_trims(lo), k10_steel(lo), k11_roof(lo)]

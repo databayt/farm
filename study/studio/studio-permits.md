@@ -7,7 +7,7 @@ Status: the founder reports that the containers are already approved; the refere
 | Item | What we know | Action |
 |---|---|---|
 | Building approval | Founder reports approved (2026-10-26) | File the reference and category with the study |
-| Roof terrace, stair, canopies | May count as a change to the approved structure | Ask the sector One Stop Centre (KUBAKA [V STU-13]) before fabricating the roof kit (R29) |
+| Roof terrace, stair, deck canopy | May count as a change to the approved structure | Ask the sector One Stop Centre (KUBAKA [V STU-13]) before fabricating the roof kit (R29) |
 | Size rules | The superseded 2012 rules asked a dwelling of 30 m2, a room dimension of 2.5 m and 2.4 m ceilings over half a habitable room; a 20 ft studio meets none of them [V STU-11]. The 2019 Code could not be read. Building categories: 2015 Order [V STU-12] | Context for the approval file, not a new question |
 | Guest accommodation | RDB requires an operating licence for accommodation; online application, fee RWF 80,000 (2017 figure), site inspection [V STU-35, STU-P09] | Apply before the first paying guest |
 | Electrical installation | RURA-licensed electrician, class A for homes [V STU-15] | Certificate before power-on |

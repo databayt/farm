@@ -33,7 +33,7 @@ Method [E]: payback = 53.0M / (3 x rate x 365 x occupancy x 0.65).
 | 1 | - | Survey all three; pads and levelling; septic site and percolation test |
 | 2-3 | Quotes; board order (one batch) | Approval amendment question (roof); REG capacity |
 | 4-6 | Cut, edge, drill three kits; dry-fit unit 1 | Septic, tank, booster, site board and feeders; W1 conversions |
-| 6-7 | Steel: roof frames, canopies, stairs | Unit 1: services first fix, insulation, lining |
+| 6-7 | Steel: roof frames, deck canopies, stairs | Unit 1: services first fix, insulation, lining |
 | 8-9 | - | Unit 1 fit-out; units 2 and 3 first fix and lining |
 | 10-11 | - | Units 2 and 3 fit-out; roof kits on all three |
 | 12 | - | Tests, certificate, engineer's roof inspection, septic inspection, handover |

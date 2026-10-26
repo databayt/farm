@@ -2,14 +2,14 @@ run,system,dn,length_m,fall,note
 D1,soil,110,2.8,1:39,"WC to IC1, 1:40"
 D2,waste,50,1.4,1:34,Shower (90 mm tray waste) joins the soil run
 D3,waste,40,0.5,1:12,Basin joins the soil run
-D4,waste,50,3.3,1:35,Kitchen sink to the grease trap (separate soak pit)
+D4,waste,50,2.8,1:29,Kitchen sink to the grease trap (separate soak pit)
 V1,vent,75,6,,Open vent up end B to 900 above the guardrail
 W1,cold,25,3.1,,"Cold main in: stop valve, filter, check meter"
-W2,cold,20,1.4,,Cold feed to the heater
-W3,cold,20,0.9,,Cold to sink
+W2,cold,20,1.6,,Cold feed to the heater
+W3,cold,20,1.2,,Cold to sink
 W4,cold,20,3,,Cold to WC cistern
 W5,cold,20,1.1,,Cold to basin
-H1,hot,20,1.7,,Hot (60 C) from the heater to the mixing valve
-H2,hot,20,0.6,,"Hot to sink (direct 60 C, labelled)"
+H1,hot,20,1.8,,Hot (60 C) from the heater to the mixing valve
+H2,hot,20,1.2,,"Hot to sink (direct 60 C, labelled)"
 T1,tempered,20,1.7,,TMV 41-44 C to the shower valve
 T2,tempered,20,2.2,,Tempered to basin

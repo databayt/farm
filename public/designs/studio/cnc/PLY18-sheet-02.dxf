@@ -505,7 +505,7 @@ $SPLINESEGS
   9
 $HANDSEED
   5
-AB
+61
   9
 $SURFTAB1
  70
@@ -1463,7 +1463,7 @@ ACAD
   0
 APPID
   5
-A8
+5E
 330
 3
 100
@@ -1477,7 +1477,7 @@ HATCHBACKGROUNDCOLOR
   0
 APPID
   5
-A9
+5F
 330
 3
 100
@@ -1853,7 +1853,7 @@ AcDbText
  40
 25.0
   1
-K4-10
+K4-09
  72
 1
  11
@@ -2607,17 +2607,17 @@ AcDbPolyline
  20
 816.0
  10
-460.0
+692.0
  20
 816.0
  10
-460.0
+692.0
  20
-1136.0
+1168.0
  10
 10.0
  20
-1136.0
+1168.0
   0
 TEXT
   5
@@ -2631,21 +2631,21 @@ LABEL
 100
 AcDbText
  10
-235.0
+351.0
  20
-976.0
+992.0
  30
 0.0
  40
 25.0
   1
-K3-HS
+K4-07
  72
 1
  11
-235.0
+351.0
  21
-976.0
+992.0
  31
 0.0
 100
@@ -2735,21 +2735,21 @@ AcDbPolyline
  70
 1
  10
-464.0
+696.0
  20
 816.0
  10
-1164.0
+1078.0
  20
 816.0
  10
-1164.0
+1078.0
  20
-1124.0
+1116.0
  10
-464.0
+696.0
  20
-1124.0
+1116.0
   0
 TEXT
   5
@@ -2763,21 +2763,21 @@ LABEL
 100
 AcDbText
  10
-814.0
+887.0
  20
-970.0
+966.0
  30
 0.0
  40
 25.0
   1
-K3-W1-01
+K6-12
  72
 1
  11
-814.0
+887.0
  21
-970.0
+966.0
  31
 0.0
 100
@@ -2785,7 +2785,7 @@ AcDbText
  73
 2
   0
-CIRCLE
+LWPOLYLINE
   5
 5C
 330
@@ -2793,19 +2793,31 @@ CIRCLE
 100
 AcDbEntity
   8
-DRILL_D7_Z18
+CUT
 100
-AcDbCircle
+AcDbPolyline
+ 90
+4
+ 70
+1
  10
-473.0
+1082.0
  20
-853.0
- 30
-0.0
- 40
-3.5
+816.0
+ 10
+2305.0
+ 20
+816.0
+ 10
+2305.0
+ 20
+1108.0
+ 10
+1082.0
+ 20
+1108.0
   0
-CIRCLE
+TEXT
   5
 5D
 330
@@ -2813,1449 +2825,11 @@ CIRCLE
 100
 AcDbEntity
   8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-473.0
- 20
-970.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-5E
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-473.0
- 20
-1087.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-5F
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D8_Z12
-100
-AcDbCircle
- 10
-473.0
- 20
-893.0
- 30
-0.0
- 40
-4.0
-  0
-CIRCLE
-  5
-60
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D8_Z12
-100
-AcDbCircle
- 10
-473.0
- 20
-1047.0
- 30
-0.0
- 40
-4.0
-  0
-CIRCLE
-  5
-61
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-1155.0
- 20
-853.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-62
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-1155.0
- 20
-970.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-63
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-1155.0
- 20
-1087.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-64
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D8_Z12
-100
-AcDbCircle
- 10
-1155.0
- 20
-893.0
- 30
-0.0
- 40
-4.0
-  0
-CIRCLE
-  5
-65
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D8_Z12
-100
-AcDbCircle
- 10
-1155.0
- 20
-1047.0
- 30
-0.0
- 40
-4.0
-  0
-CIRCLE
-  5
-66
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-624.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-67
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-624.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-68
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-656.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-69
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-656.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-6A
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-688.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-6B
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-688.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-6C
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-720.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-6D
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-720.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-6E
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-752.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-6F
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-752.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-70
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-784.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-71
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-784.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-72
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-816.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-73
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-816.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-74
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-848.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-75
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-848.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-76
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-880.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-77
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-880.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-78
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-912.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-79
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-912.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-7A
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-944.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-7B
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-944.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-7C
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-976.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-7D
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-976.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-LWPOLYLINE
-  5
-7E
-330
-17
-100
-AcDbEntity
-  8
-CUT
-100
-AcDbPolyline
- 90
-4
- 70
-1
- 10
-1168.0
- 20
-816.0
- 10
-1868.0
- 20
-816.0
- 10
-1868.0
- 20
-1124.0
- 10
-1168.0
- 20
-1124.0
-  0
-TEXT
-  5
-7F
-330
-17
-100
-AcDbEntity
-  8
 LABEL
 100
 AcDbText
  10
-1518.0
- 20
-970.0
- 30
-0.0
- 40
-25.0
-  1
-K3-W1-02
- 72
-1
- 11
-1518.0
- 21
-970.0
- 31
-0.0
-100
-AcDbText
- 73
-2
-  0
-CIRCLE
-  5
-80
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-1177.0
- 20
-853.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-81
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-1177.0
- 20
-970.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-82
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-1177.0
- 20
-1087.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-83
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D8_Z12
-100
-AcDbCircle
- 10
-1177.0
- 20
-893.0
- 30
-0.0
- 40
-4.0
-  0
-CIRCLE
-  5
-84
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D8_Z12
-100
-AcDbCircle
- 10
-1177.0
- 20
-1047.0
- 30
-0.0
- 40
-4.0
-  0
-CIRCLE
-  5
-85
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-1859.0
- 20
-853.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-86
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-1859.0
- 20
-970.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-87
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D7_Z18
-100
-AcDbCircle
- 10
-1859.0
- 20
-1087.0
- 30
-0.0
- 40
-3.5
-  0
-CIRCLE
-  5
-88
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D8_Z12
-100
-AcDbCircle
- 10
-1859.0
- 20
-893.0
- 30
-0.0
- 40
-4.0
-  0
-CIRCLE
-  5
-89
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D8_Z12
-100
-AcDbCircle
- 10
-1859.0
- 20
-1047.0
- 30
-0.0
- 40
-4.0
-  0
-CIRCLE
-  5
-8A
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1328.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-8B
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1328.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-8C
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1360.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-8D
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1360.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-8E
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1392.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-8F
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1392.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-90
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1424.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-91
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1424.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-92
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1456.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-93
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1456.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-94
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1488.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-95
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1488.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-96
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1520.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-97
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1520.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-98
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1552.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-99
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1552.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-9A
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1584.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-9B
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1584.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-9C
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1616.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-9D
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1616.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-9E
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1648.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-9F
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1648.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-A0
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1680.0
- 20
-853.0
- 30
-0.0
- 40
-2.5
-  0
-CIRCLE
-  5
-A1
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D5_Z12
-100
-AcDbCircle
- 10
-1680.0
- 20
-1087.0
- 30
-0.0
- 40
-2.5
-  0
-LWPOLYLINE
-  5
-A2
-330
-17
-100
-AcDbEntity
-  8
-CUT
-100
-AcDbPolyline
- 90
-4
- 70
-1
- 10
-1872.0
- 20
-816.0
- 10
-2345.0
- 20
-816.0
- 10
-2345.0
- 20
-1108.0
- 10
-1872.0
- 20
-1108.0
-  0
-TEXT
-  5
-A3
-330
-17
-100
-AcDbEntity
-  8
-LABEL
-100
-AcDbText
- 10
-2108.5
+1693.5
  20
 962.0
  30
@@ -4263,11 +2837,11 @@ AcDbText
  40
 25.0
   1
-K4-11
+K4-10
  72
 1
  11
-2108.5
+1693.5
  21
 962.0
  31
@@ -4276,112 +2850,6 @@ K4-11
 AcDbText
  73
 2
-  0
-LWPOLYLINE
-  5
-A4
-330
-17
-100
-AcDbEntity
-  8
-CUT
-100
-AcDbPolyline
- 90
-4
- 70
-1
- 10
-10.0
- 20
-1140.0
- 10
-2030.0
- 20
-1140.0
- 10
-2030.0
- 20
-1200.0
- 10
-10.0
- 20
-1200.0
-  0
-TEXT
-  5
-A5
-330
-17
-100
-AcDbEntity
-  8
-LABEL
-100
-AcDbText
- 10
-1020.0
- 20
-1170.0
- 30
-0.0
- 40
-15.0
-  1
-K4-03
- 72
-1
- 11
-1020.0
- 21
-1170.0
- 31
-0.0
-100
-AcDbText
- 73
-2
-  0
-CIRCLE
-  5
-A6
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D10_Z18
-100
-AcDbCircle
- 10
-50.0
- 20
-1220.0
- 30
-0.0
- 40
-5.0
-  0
-CIRCLE
-  5
-A7
-330
-17
-100
-AcDbEntity
-  8
-DRILL_D10_Z18
-100
-AcDbCircle
- 10
-50.0
- 20
-1470.0
- 30
-0.0
- 40
-5.0
   0
 ENDSEC
   0
@@ -5373,7 +3841,7 @@ CREATED_BY_EZDXF
   3
 WRITTEN_BY_EZDXF
 350
-AA
+60
   0
 DICTIONARYVAR
   5
@@ -5389,7 +3857,7 @@ DictionaryVariables
   0
 DICTIONARYVAR
   5
-AA
+60
 330
 2D
 100

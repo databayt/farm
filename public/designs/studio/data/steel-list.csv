@@ -28,41 +28,50 @@ K11-26,Deck board 140 x 25 hardwood (treated),TIMBER,6058,0.02,S21
 K11-27,Deck board 140 x 25 hardwood (treated),TIMBER,6058,0.02,S21
 K11-28,Deck board 140 x 25 hardwood (treated),TIMBER,6058,0.02,S21
 K11-29,Deck board 140 x 25 hardwood (treated),TIMBER,6058,0.01,S21
-K11-30,Guardrail top rail SHS 40x40x3,STEEL,6058,20.6,S22
-K11-31,Guardrail mesh panel (gaps under 100 mm),MESH,6058,0.23,S22
-K11-32,Guardrail top rail SHS 40x40x3,STEEL,6058,20.6,S22
-K11-33,Guardrail mesh panel (gaps under 100 mm),MESH,6058,0.23,S22
-K11-34,Guardrail top rail SHS 40x40x3,STEEL,2438,8.3,S22
-K11-35,Guardrail mesh panel (gaps under 100 mm),MESH,2438,0.09,S22
-K11-36,Guardrail top rail SHS 40x40x3,STEEL,2438,8.3,S22
-K11-37,Guardrail mesh panel (gaps under 100 mm),MESH,2438,0.09,S22
-K11-38,Canopy post SHS 80x80x4,STEEL,2400,22.1,S23
-K11-39,Canopy post SHS 80x80x4,STEEL,2620,24.1,S23
-K11-40,Canopy post SHS 80x80x4,STEEL,2400,22.1,S23
-K11-41,Canopy post SHS 80x80x4,STEEL,2620,24.1,S23
-K11-42,Upper canopy polycarbonate 10 mm tinted multiwall (5 deg),POLY,6658,4.65,S23
-K11-43,Veranda post SHS 60x60x3 on the deck frame,STEEL,2021,10.5,S24
-K11-44,Veranda post SHS 60x60x3 on the deck frame,STEEL,2021,10.5,S24
-K11-45,Veranda post SHS 60x60x3 on the deck frame,STEEL,2021,10.5,S24
-K11-46,Veranda ledger on its own posts,STEEL,6058,31.5,S24
-K11-47,Veranda polycarbonate 10 mm tinted (falls outward),POLY,6058,1.03,S24
-K11-48,Stair tread 1 (chequer plate on angles),STEEL,850,12,S25
-K11-49,Stair tread 2 (chequer plate on angles),STEEL,850,12,S25
-K11-50,Stair tread 3 (chequer plate on angles),STEEL,850,12,S25
-K11-51,Stair tread 4 (chequer plate on angles),STEEL,850,12,S25
-K11-52,Stair tread 5 (chequer plate on angles),STEEL,850,12,S25
-K11-53,Stair tread 6 (chequer plate on angles),STEEL,850,12,S25
-K11-54,Stair tread 7 (chequer plate on angles),STEEL,850,12,S25
-K11-55,Stair tread 8 (chequer plate on angles),STEEL,850,12,S25
-K11-56,Stair tread 9 (chequer plate on angles),STEEL,850,12,S25
-K11-57,Stair tread 10 (chequer plate on angles),STEEL,850,12,S25
-K11-58,Stair tread 11 (chequer plate on angles),STEEL,850,12,S25
-K11-59,Stair tread 12 (chequer plate on angles),STEEL,850,12,S25
-K11-60,Stair tread 13 (chequer plate on angles),STEEL,850,12,S25
-K11-61,Stair tread 14 (chequer plate on angles),STEEL,850,12,S25
-K11-62,Stair tread 15 (chequer plate on angles),STEEL,850,12,S25
-K11-63,"Stair landing 1,750 x 850",STEEL,1800,60,S25
-K11-64,Stair stringers and handrails (set),STAIRFRAME,3486,10.98,S25
-K11-65,"Lounge chair 1 (slatted hardwood, bolted)",TIMBER,800,0.39,S26
-K11-66,"Lounge chair 2 (slatted hardwood, bolted)",TIMBER,800,0.39,S26
-K11-67,Side table 500 x 500,TIMBER,450,0.07,S26
+K11-30,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-31,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-32,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-33,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-34,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-35,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-36,"Guardrail top rail, hardwood 140 x 40",TIMBER,6058,0.01,S23
+K11-37,"Guardrail cable infill, 4 mm stainless at 90 mm (10 runs)",CABLE,6058,0.03,S23
+K11-38,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-39,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-40,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-41,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-42,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-43,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-44,"Guardrail top rail, hardwood 140 x 40",TIMBER,6058,0.01,S23
+K11-45,"Guardrail cable infill, 4 mm stainless at 90 mm (10 runs)",CABLE,6058,0.03,S23
+K11-46,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-47,"Guardrail top rail, hardwood 140 x 40",TIMBER,2438,0.01,S23
+K11-48,"Guardrail cable infill, 4 mm stainless at 90 mm (10 runs)",CABLE,2438,0.01,S23
+K11-49,Guardrail post SHS 50x50x3,STEEL,1060,6.4,S22
+K11-50,"Guardrail top rail, hardwood 140 x 40",TIMBER,2438,0.01,S23
+K11-51,"Guardrail cable infill, 4 mm stainless at 90 mm (10 runs)",CABLE,2438,0.01,S23
+K11-52,Veranda post SHS 60x60x3 on the deck frame,STEEL,2021,10.5,S24
+K11-53,Veranda post SHS 60x60x3 on the deck frame,STEEL,2021,10.5,S24
+K11-54,Veranda post SHS 60x60x3 on the deck frame,STEEL,2021,10.5,S24
+K11-55,Veranda ledger on its own posts,STEEL,6058,31.5,S24
+K11-56,Veranda polycarbonate 10 mm tinted (falls outward),POLY,6058,1.03,S24
+K11-57,Stair tread 1 (chequer plate on angles),STEEL,850,12,S25
+K11-58,Stair tread 2 (chequer plate on angles),STEEL,850,12,S25
+K11-59,Stair tread 3 (chequer plate on angles),STEEL,850,12,S25
+K11-60,Stair tread 4 (chequer plate on angles),STEEL,850,12,S25
+K11-61,Stair tread 5 (chequer plate on angles),STEEL,850,12,S25
+K11-62,Stair tread 6 (chequer plate on angles),STEEL,850,12,S25
+K11-63,Stair tread 7 (chequer plate on angles),STEEL,850,12,S25
+K11-64,Stair tread 8 (chequer plate on angles),STEEL,850,12,S25
+K11-65,Stair tread 9 (chequer plate on angles),STEEL,850,12,S25
+K11-66,Stair tread 10 (chequer plate on angles),STEEL,850,12,S25
+K11-67,Stair tread 11 (chequer plate on angles),STEEL,850,12,S25
+K11-68,Stair tread 12 (chequer plate on angles),STEEL,850,12,S25
+K11-69,Stair tread 13 (chequer plate on angles),STEEL,850,12,S25
+K11-70,Stair tread 14 (chequer plate on angles),STEEL,850,12,S25
+K11-71,Stair tread 15 (chequer plate on angles),STEEL,850,12,S25
+K11-72,"Stair landing 1,750 x 850",STEEL,1800,60,S25
+K11-73,Stair stringers and handrails (set),STAIRFRAME,3486,10.98,S25
+K11-74,"Lounge chair 1 (slatted hardwood, bolted)",TIMBER,800,0.39,S26
+K11-75,"Lounge chair 2 (slatted hardwood, bolted)",TIMBER,800,0.39,S26
+K11-76,Side table 500 x 500,TIMBER,450,0.07,S26

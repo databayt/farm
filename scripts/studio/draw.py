@@ -10,7 +10,7 @@ from model import Box
 
 FILL = {
     "PLY18": "#ead9b5", "PLY12": "#f2e6c9", "MPLY18": "#cdb68c", "WTOP38": "#b98b5c", "STEEL": "#6e6e6e",
-    "TIMBER": "#a9774a", "POLY": "#d9b45a", "MESH": "#bdbdbd", "STAIRFRAME": "#5a5a5a",
+    "TIMBER": "#a9774a", "POLY": "#d9b45a", "MESH": "#bdbdbd", "CABLE": "#9aa0a6", "STAIRFRAME": "#5a5a5a",
     "white": "#fbfbfb", "glass": "#d6ecf7", "stainless": "#c9cdd1", "black": "#2a2a2a", "tile": "#e3e8ea",
     "floor": "#dccdb1", "eps": "#fff1a6", "timber": "#c9a06f", "fabric": "#ebe5f2", "electric": "#ffd23f",
     "door": "#e0d3ba", "steel": "#9c4436", "base": "#5d5d5d", "": "#eeeeee",
@@ -265,7 +265,7 @@ def iso_draw(sh: Sheet, items: list[tuple[Box, str, str, str]], cx: float, cy: f
         base = {"new": "#ffffff", "old": "#e6e6e6", "ghost": "#f4f4f4"}.get(style, fill)
         stroke = {"new": "#000", "old": "#8a8a8a", "ghost": "#c8c8c8"}.get(style, "#222")
         sw = {"new": 0.42, "old": 0.18, "ghost": 0.12}.get(style, 0.2)
-        op = 0.35 if fill == FILL["glass"] or fill == FILL["POLY"] else 1.0
+        op = 0.35 if fill in (FILL["glass"], FILL["POLY"]) else 0.3 if fill == FILL["CABLE"] else 1.0
         top = [P_(b.x0, b.y0, b.z1), P_(b.x1, b.y0, b.z1), P_(b.x1, b.y1, b.z1), P_(b.x0, b.y1, b.z1)]
         front = [P_(b.x0, b.y1, b.z0), P_(b.x1, b.y1, b.z0), P_(b.x1, b.y1, b.z1), P_(b.x0, b.y1, b.z1)]
         side = [P_(b.x1, b.y0, b.z0), P_(b.x1, b.y1, b.z0), P_(b.x1, b.y1, b.z1), P_(b.x1, b.y0, b.z1)]

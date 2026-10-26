@@ -60,6 +60,8 @@ PRICES: dict[str, tuple[float, str, str, str]] = {
     "timber_m3": (900_000, "A", "AS-21", "treated hardwood decking and slats per m3"),
     "poly_m2": (28_000, "A", "AS-21", "tinted multiwall polycarbonate per m2 (supplier not found)"),
     "mesh_m2": (15_000, "A", "AS-21", "welded mesh infill per m2"),
+    "cable_m": (3_000, "A", "AS-21", "4 mm stainless wire rope + tensioners, per m"),
+    "sofa": (450_000, "A", "AS-21", "compact two-seat sofa, washable covers"),
     "stairframe": (450_000, "A", "AS-21", "stringers, handrails, footings"),
 }
 
@@ -70,7 +72,7 @@ LABOUR: list[tuple[str, float, str]] = [
     ("Electrician (RURA class A), install + certificate", 250_000, "A"),
     ("Plumber, install + tests", 200_000, "A"),
     ("Tiler: wet walls and floor", 150_000, "A"),
-    ("Welder: W1, roof frame, canopies, stair (per unit)", 600_000, "A"),
+    ("Welder: W1, roof frame, deck canopy, stair (per unit)", 600_000, "A"),
     ("Transport Kigali to site (share of 2 truck trips)", 120_000, "A"),
 ]
 SHARED: list[tuple[str, float, str]] = [  # site works shared by the three studios

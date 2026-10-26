@@ -22,12 +22,12 @@ const D = "/designs/studio"
 const rwf = (n: number) => `RWF ${(n / 1e6).toFixed(1)}M`
 
 const FEATURES = [
-  { title: "Sleep", text: "Queen bed up to 1.6 × 2.0 m across the quiet end, with drawers, a headboard shelf, reading lights and USB-C." },
-  { title: "Cook", text: "A 2.17 m kitchen: under-counter fridge, two-zone induction hob, sink, drinking-water filter. No gas indoors." },
+  { title: "Sleep", text: "Queen bed up to 1.6 × 2.0 m across the quiet end, with open shelves either side of the headboard, reading lights and USB-C." },
+  { title: "Cook", text: "A galley on the bathroom wall: under-counter fridge, two-zone induction hob, sink, drinking-water filter. No gas indoors." },
   { title: "Wash", text: "A 1.2 m walk-in shower, WC and basin. Hot water from an 80 L heater through a thermostatic mixer." },
-  { title: "Live", text: "Table and stools by the 3 m sliding glass wall that opens onto the deck. Wall fan, split-AC ready." },
-  { title: "Roof", text: "A roof terrace with lounge chairs under a tinted transparent canopy, and a second canopy over the deck." },
-  { title: "Stay cool", text: "Ventilated double roof, EPS insulation sealed to the steel, insect mesh on every opening." },
+  { title: "Live", text: "A two-seat sofa and coffee table, and a table for two by the 3 m sliding glass wall that opens onto the deck." },
+  { title: "Roof", text: "An open roof terrace with lounge chairs behind a timber-topped rail, up a steel stair; a canopy shades the deck." },
+  { title: "Stay cool", text: "The roof deck shades the steel, EPS insulation is sealed to it, a wall fan moves the air, and the AC is ready." },
 ]
 
 const STEPS = [
@@ -42,7 +42,7 @@ const STEPS = [
 const PLANS = [
   ["a-201", "Interior elevations: back wall and front wall"],
   ["a-202", "End elevations and cross-section"],
-  ["s-101", "Roof terrace, canopies and stair"],
+  ["s-101", "Roof terrace, deck canopy and stair"],
   ["a-401", "Wall, roof and floor build-up"],
   ["e-101", "Electrical layout"],
   ["p-101", "Plumbing: supply and drainage"],
@@ -251,7 +251,7 @@ export default function StudioPage() {
             {[
               ["13.1 m²", "net floor"],
               ["11 kits", `${sheets} sheets of board`],
-              ["56 sheets", "drawings, generated"],
+              [`${readCsv("drawings.csv").length} sheets`, "drawings, generated"],
               [rwf(totals.unit_with_contingency), "the studio, placeholder prices"],
             ].map(([v, l]) => (
               <div key={l} className="bg-background p-5">

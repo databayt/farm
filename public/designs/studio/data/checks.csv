@@ -3,27 +3,26 @@ KO-WC,WC front clearance 600,pass,
 KO-SHOWER,Shower entry 600,pass,
 KO-BASIN,Standing space at the basin,pass,
 KO-BDOOR,"Bathroom door swing (opens outward, hinge at y 1,500)",pass,
-KO-KITCHEN,Kitchen aisle 860 (worktop to the dining zone),pass,
+KO-KITCHEN,Galley aisle 800 (worktop to the sofa),pass,
 KO-DRAWERS,Drawer pull-out 700,pass,
-KO-WARD,Wardrobe door swing,pass,
 R-TRAY,Shower tray length (mm),pass,1200 >= 1000
 R-WC-SIDE,WC centreline to the end wall (mm),pass,708 >= 400
 R-WC-SIDE2,WC centreline to the partition (mm),pass,610 >= 400
 R-WC-FRONT,Clear space in front of the WC (mm),pass,702 >= 600
-R-AISLE,Kitchen aisle to the glass (mm),pass,1632 >= 900
-R-WARD,Wardrobe width (mm),pass,600 >= 450
+R-AISLE,"Galley aisle, worktop to the sofa (mm)",pass,980 >= 800
+R-GALLEY,Galley clear of the bathroom door (mm),pass,50 >= 30
 R-BED,Room beside the bed foot (mm),pass,82 >= 50
 R-HEIGHT,Clear height (mm),pass,2323 >= 2250
 R-PART,Partition clear of the old door (mm),pass,510 >= 150
 E-C1,"Lighting (incl. bathroom IP65, deck, roof, stair): Ib <= In <= Iz; drop <= 3.0%",pass,"Ib 0.5 A, In 6 A, Iz 16.4 A, drop 0.06%"
-E-C2,"Sockets: bedside USB, living, deck: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 8.0 A, In 16 A, Iz 22.6 A, drop 0.51%"
-E-C3,Kitchen sockets and fridge: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 13.5 A, In 16 A, Iz 22.6 A, drop 0.64%"
-E-C4,Induction hob: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 15.2 A, In 20 A, Iz 30.1 A, drop 0.37%"
-E-C5,80 L water heater: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 8.7 A, In 16 A, Iz 22.6 A, drop 0.15%"
+E-C2,"Sockets: bedside USB, living, deck: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 8.0 A, In 16 A, Iz 22.6 A, drop 0.50%"
+E-C3,Kitchen sockets and fridge: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 13.5 A, In 16 A, Iz 22.6 A, drop 0.45%"
+E-C4,Induction hob: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 15.2 A, In 20 A, Iz 30.1 A, drop 0.33%"
+E-C5,80 L water heater: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 8.7 A, In 16 A, Iz 22.6 A, drop 0.27%"
 E-C6,Extract fan and wall fan: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 0.3 A, In 6 A, Iz 16.4 A, drop 0.02%"
-E-C7,AC provision: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 12.0 A, In 16 A, Iz 22.6 A, drop 0.54%"
+E-C7,AC provision: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 12.0 A, In 16 A, Iz 22.6 A, drop 0.36%"
 E-MD,Diversified maximum demand within the 40 A main switch,pass,32.9 A
 P-D1,DN110 soil fall at least 1:40,pass,steepest-needed 1:39
 P-D2,DN50 waste fall at least 1:40,pass,steepest-needed 1:34
 P-D3,DN40 waste fall at least 1:40,pass,steepest-needed 1:12
-P-D4,DN50 waste fall at least 1:40,pass,steepest-needed 1:35
+P-D4,DN50 waste fall at least 1:40,pass,steepest-needed 1:29

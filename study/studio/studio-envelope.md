@@ -6,7 +6,7 @@ A steel box in the sun is the main comfort problem. Kigali's relative humidity r
 
 ## Shade first
 
-The roof terrace deck sits about 150 mm above the container roof on its own beams, and a tinted polycarbonate canopy sits above that. Together they form a ventilated double roof, the single strongest heat measure: a double metal roof with insulation cut heat transfer by about 77% in small test boxes [V STU-44]. The lower canopy over the front deck shades the 3 m glass wall. See [roof terrace](studio-roof.md).
+The roof terrace deck sits about 150 mm above the container roof on its own beams, so the deck boards shade the steel and air moves through the gap: a ventilated double roof, the single strongest heat measure (a double metal roof with insulation cut heat transfer by about 77% in small test boxes [V STU-44]). Layout B drops the canopy over the terrace (D-020), so the deck is the only shade on the roof. The canopy over the front deck shades the 3 m glass wall. See [roof terrace](studio-roof.md).
 
 ## Walls and ceiling
 

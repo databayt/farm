@@ -1,6 +1,6 @@
 # Studio design
 
-Status: Layout A, chosen by the founder on 2026-10-26 (D-015). The fixture arrangement was refined so it survives the photo tolerance.
+Status: Layout B, chosen by the founder on 2026-10-26 from two reference images (D-020). It replaces Layout A (D-015) and keeps its bathroom, which survives the photo tolerance.
 
 ## Brief
 
@@ -14,7 +14,9 @@ Status: Layout A, chosen by the founder on 2026-10-26 (D-015). The fixture arran
 
 ![A-102 Layout options](../../public/designs/studio/drawings/a-102.svg)
 
-Layout A puts the bathroom at the narrow-door end and turns that door into a frosted louvre window (W1). The kitchen sits on the back wall against the bathroom partition, so the sink, the heater, the shower, the basin and the WC share one wet core within about 1.5 m and one drain exit. The bed goes across the quiet far end. Guests enter through the sliding glass from the deck, which is the real living room.
+Layout B reads like a small apartment in three zones, after the founder's reference plan: a bedroom with a storage wall, a living room with a sofa, and a galley with the bathroom behind it. The bathroom stays at the narrow-door end, and that door becomes a frosted louvre window (W1), as in Layout A. The galley runs 1.45 m along the bathroom partition, from the back wall to the bathroom door: an under-counter fridge, a two-zone induction hob and a sink, with an overhead cabinet that holds the 80 L heater lying on a steel cradle and a hood beneath it. The sink, the heater, the shower, the basin and the WC still share one wet core and one drain exit. The bed goes across the quiet far end, with open shelf towers either side of the headboard and a picture niche between them. A compact two-seat sofa stands on the back wall with a coffee table in front of it, and a table for two with stools stands by the glass. Guests enter through the sliding glass from the deck.
+
+The reference room is 2.9 m deep; the container is 2.25 m inside, so three things changed to fit: the dining table seats two, not four; the wardrobe gives way to the shelf towers, coat hooks and a luggage rack; and the bed keeps one drawer at the front, because the sofa stands against its back half (lift the deck to reach that storage).
 
 A first version faced the WC along the container. The generator showed it failed if the glazing ended more than about 70 mm later than the photo suggests. The final arrangement faces the WC across the width, on the infill below the old door, and passes across the whole plus or minus 150 mm band. Similar layouts are common in 20 ft precedents: a bath, kitchen and bed in a row [V STU-46], a full-width bathroom [V STU-47], a bed across the end in container hotels [V STU-49] and a raised bed facing large glass [V STU-48].
 
@@ -24,7 +26,7 @@ A first version faced the WC along the container. The generator showed it failed
 
 [Table: Clearance and layout checks](../../public/designs/studio/data/checks.csv)
 
-The partition's living face sits 30 mm past the end of the glazing, on the strip of solid steel before the old door. If the survey moves the glazing, the partition moves with it, and the wardrobe (450-750 mm) takes up the difference. The build fails, rather than drawing something unbuildable, if any keep-out zone is blocked: the WC's 600 mm front zone, the shower entry, the door and drawer sweeps, the kitchen aisle.
+The partition's living face sits 30 mm past the end of the glazing, on the strip of solid steel before the old door. If the survey moves the glazing, the partition and the galley move with it, and the galley aisle takes up the difference: about 980 mm from the worktop to the sofa at the photo estimate, 830 mm if the glazing ends 150 mm earlier. The build fails, rather than drawing something unbuildable, if any keep-out zone is blocked: the WC's 600 mm front zone, the shower entry, the door and drawer sweeps, and an 800 mm galley aisle.
 
 ## Elevations and sections
 

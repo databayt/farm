@@ -93,11 +93,14 @@ def bom(m, layouts) -> tuple[list[list], dict]:
     roof_timber = sum(p.box.size[0] * p.box.size[1] * p.box.size[2] / 1e9 * (0.35 if "chair" in p.name.lower() or "table" in p.name.lower() else 1)
                       for p in all_parts(m) if p.material == "TIMBER")
     roof_poly = sum(p.box.size[0] * p.box.size[1] / 1e6 for p in all_parts(m) if p.material == "POLY")
-    roof_mesh = sum(max(p.box.size[0], p.box.size[1]) * p.box.size[2] / 1e6 for p in all_parts(m) if p.material == "MESH")
+    roof_cable = sum(max(p.box.size[0], p.box.size[1]) / 1000 * 10 for p in all_parts(m) if p.material == "CABLE")
     add("K11", "roof kit", "Fabricated steel: beams, joists, posts, rails, treads (painted)", roof_steel, "kg", "steel_kg", "welding")
-    add("K11", "roof kit", "Treated hardwood: deck boards, chairs, side table", roof_timber, "m3", "timber_m3", "carpentry")
-    add("K11", "roof kit", "Tinted multiwall polycarbonate 10 mm (both canopies)", roof_poly * 1.1, "m2", "poly_m2", "welding")
-    add("K11", "roof kit", "Welded mesh guardrail infill", roof_mesh, "m2", "mesh_m2", "welding")
+    add("K11", "roof kit", "Treated hardwood: deck boards, top rail, chairs, side table", roof_timber, "m3", "timber_m3",
+        "carpentry")
+    add("K11", "roof kit", "Tinted multiwall polycarbonate 10 mm (front deck canopy)", roof_poly * 1.1, "m2", "poly_m2",
+        "welding")
+    add("K11", "roof kit", "Guardrail cable infill: 4 mm stainless, 10 runs, with tensioners", roof_cable, "m", "cable_m",
+        "welding")
     add("K11", "roof kit", "Stair stringers, handrails and footings", 1, "set", "stairframe", "welding")
     for k in m["kits"]:
         for b in k.bought:

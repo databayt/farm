@@ -1,6 +1,6 @@
 # Container studios
 
-Status: PRELIMINARY, rev A, 2026-10-26. Openings are photo estimates until the [site survey](studio-site.md) is filled in. Decisions: D-014, D-015, D-016 in the [decision log](../execution/decision-log.md).
+Status: PRELIMINARY, rev A, 2026-10-26. Openings are photo estimates until the [site survey](studio-site.md) is filled in. Decisions: D-014, D-016, D-020 (Layout B, which replaced D-015) in the [decision log](../execution/decision-log.md).
 
 Three standard 20 ft shipping containers already stand on the site, each on a raised steel deck, with identical openings. This section turns all three into identical farm-stay guest studios: a queen bed, a shower, a WC and basin, a small kitchen with an induction hob, and a roof terrace under a transparent shade. The interior is built the IKEA way: flat panels cut and drilled in a Kigali workshop, numbered, packed one kit per studio, and assembled on site with one small hardware family and wordless step drawings.
 
@@ -13,12 +13,12 @@ Everything on these pages comes from one parametric model (`scripts/studio/`). T
 | Item | Specification |
 |---|---|
 | Interior | About 5,798 x 2,252 x 2,323 mm net (13.1 m2) after insulation and lining [E, AS-13, AS-15] |
-| Bed | Queen platform up to 1,600 x 2,000, laid across end A, two drawers, headboard with reading lights and USB-C |
-| Kitchen | 2.17 m run: under-counter fridge, two-zone induction hob, sink, tall unit holding the 80 L water heater |
+| Bed | Queen platform up to 1,600 x 2,000, laid across end A, a drawer and lift-up storage, headboard with reading lights and USB-C, open shelf towers either side |
+| Kitchen | 1.45 m galley on the bathroom wall: under-counter fridge, two-zone induction hob, sink; an overhead cabinet holds the 80 L water heater |
 | Bathroom | 1,318 x 2,252: 1,200 x 900 walk-in shower, WC on the old-door infill, basin, mirror cabinet |
-| Living | Table and two stools by the 3 m sliding glass wall, wardrobe, wall fan, split-AC provision |
+| Living | Compact two-seat sofa and coffee table, a table for two by the 3 m sliding glass wall, coat hooks and a luggage rack, wall fan, split-AC provision |
 | Envelope | EPS between battens, 12 mm ply linings, sealed floor with SPC, insect mesh everywhere |
-| Outside | Roof terrace with chairs on the corner castings, tinted polycarbonate over the roof and the front deck, straight steel stair with a landing |
+| Outside | Roof terrace with chairs on the corner castings behind an open guardrail (steel posts, hardwood top rail, stainless cables), tinted polycarbonate over the front deck, straight steel stair with a landing |
 | Services | REG grid, own unit board with SPD and 30 mA RCD, about 33 A demand; WASAC/borehole/rain via a shared tank and booster; shared septic tank |
 
 ## How to read the package
@@ -34,7 +34,7 @@ Everything on these pages comes from one parametric model (`scripts/studio/`). T
 ## Downloads
 
 - Print: [A3 drawing set (PDF)](../../public/designs/studio/pdf/studio-drawing-set-A3.pdf), [A4 assembly manual (PDF)](../../public/designs/studio/pdf/studio-assembly-manual-A4.pdf), [1:1 drilling templates (PDF)](../../public/designs/studio/pdf/studio-drilling-templates-1to1.pdf)
-- Drawing index: [drawings.csv](../../public/designs/studio/data/drawings.csv) (56 sheets, SVG, open in any browser)
+- Drawing index: [drawings.csv](../../public/designs/studio/data/drawings.csv) (every sheet, SVG, open in any browser)
 - 3D model: [studio.glb](../../public/designs/studio/model/studio.glb) and [parts.json](../../public/designs/studio/model/parts.json)
 - Workshop: [cut-list.csv](../../public/designs/studio/data/cut-list.csv), [steel-list.csv](../../public/designs/studio/data/steel-list.csv), CNC files in `public/designs/studio/cnc/` (one DXF per sheet)
 - Money: [bom.xlsx](../../public/designs/studio/data/bom.xlsx), [bom.csv](../../public/designs/studio/data/bom.csv)
@@ -49,7 +49,7 @@ About RWF 15.8M per studio and RWF 53M for all three with the shared septic, wat
 ## What must happen before money is committed
 
 - Fill the [survey sheet](studio-site.md) for all three containers and rebuild the set (the drawings lose the PRELIMINARY stamp only then).
-- File the approval reference the founder reports, and ask whether the roof terrace and canopies need an amendment (R29).
+- File the approval reference the founder reports, and ask whether the roof terrace, stair and deck canopy need an amendment (R29).
 - Find a septic site 50 m from the borehole and the lake, and run a percolation test (D-016, R27).
 - Get three quotes for every BOM line, starting with boards, sanitaryware and the steelwork.
 - A structural engineer checks the opening frame and signs the roof terrace before guests use it (R26).

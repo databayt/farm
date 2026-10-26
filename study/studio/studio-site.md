@@ -16,7 +16,7 @@ Status: the existing condition below is read from the founder's photo of 2026-10
 
 ## Why the survey comes first
 
-The photo estimates carry about plus or minus 150 mm. The model absorbs that band (the wardrobe is the slack module, and the tests run the glazing end at -150, 0 and +150 mm), but panels are cut once. Nothing is cut until all three units are measured and the set is rebuilt; the drawings carry a PRELIMINARY stamp until then.
+The photo estimates carry about plus or minus 150 mm. The model absorbs that band (the galley aisle is the slack, and the tests run the glazing end at -150, 0 and +150 mm), but panels are cut once. Nothing is cut until all three units are measured and the set is rebuilt; the drawings carry a PRELIMINARY stamp until then.
 
 Two checks matter beyond dimensions:
 

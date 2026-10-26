@@ -6,8 +6,8 @@ from draw import (FILL, SYS, Sheet, iso, iso_draw, ortho, sym_box, sym_breaker, 
                   sym_switch)
 from model import Box
 
-KIT_NAMES = {"K1": "Insulation and lining", "K2": "Bathroom", "K3": "Kitchen", "K4": "Bed", "K5": "Wardrobe",
-             "K6": "Table and stools", "K7": "Trims", "K8": "Electrical", "K9": "Plumbing",
+KIT_NAMES = {"K1": "Insulation and lining", "K2": "Bathroom", "K3": "Kitchen", "K4": "Bed", "K5": "Storage wall",
+             "K6": "Sofa, tables and stools", "K7": "Trims", "K8": "Electrical", "K9": "Plumbing",
              "K10": "Steel and glazing", "K11": "Roof terrace"}
 
 
@@ -37,16 +37,17 @@ def a001_cover(m, index: list[tuple[str, str]]) -> Sheet:
     s.text(20, 32, "Container studios: three identical farm-stay guest units", 7, weight="bold")
     s.text(20, 41, "IKEA-style flat-pack fit-out of standard 20 ft containers · materials and fabrication in Kigali", 3.4)
     y = s.note(20, 54, [
-        f"Net interior {lo.L:.0f} x {lo.W:.0f} x {lo.H:.0f} mm ({lo.L * lo.W / 1e6:.1f} m2) · Layout A (D-015)",
-        f"Bed up to 1,600 x 2,000 · kitchen {sum((600, 450, 600, 520))} mm run with induction and 80 L heater",
+        f"Net interior {lo.L:.0f} x {lo.W:.0f} x {lo.H:.0f} mm ({lo.L * lo.W / 1e6:.1f} m2) · Layout B (D-020)",
+        f"Bed up to 1,600 x 2,000 with a storage wall · sofa, coffee table, dining for two",
+        f"Galley {lo.sink[1]:.0f} mm on the bathroom wall: fridge, induction, sink; 80 L heater overhead",
         f"Bathroom {lo.L - lo.bath_x0:.0f} x {lo.W:.0f} mm · shower tray {lo.tray[1] - lo.tray[0]:.0f} x 900",
         f"Max demand about {m['md']['total_A']:.0f} A per unit (heater/hob priority relay) · feeder {m['feeder']['size_mm2']:.0f} mm2",
         f"Shared septic {m['site']['septic_m3']:.1f} m3, 2 chambers 2:1 · storage tank {m['site']['tank_m3']:.1f} m3",
-        "Roof terrace on the corner castings · tinted polycarbonate canopies over the roof and front deck",
+        "Roof terrace on the corner castings, open guardrail · tinted polycarbonate canopy over the front deck",
         "",
         f"Status: {P.STATUS}. Opening positions are photo estimates (+/-150 mm, AS-14).",
         "Nothing is cut until study/studio/survey.csv is complete and the set is re-issued.",
-        "Structural items (roof terrace, canopies, stair) need an engineer's sign-off before guest use.",
+        "Structural items (roof terrace, deck canopy, stair) need an engineer's sign-off before guest use.",
         "Electrical ratings are design intent until a RURA class A electrician designs and certifies.",
     ], 3.0)
     rows = [[n, t] for n, t in index]
@@ -104,23 +105,23 @@ def a102_options(m) -> Sheet:
         s.text(ox, oy + W / sc + 6, verdict, 2.4, fill="#1b6e2a" if ok else "#b3261e", weight="bold")
 
     bath, kit, bed, liv = "#cfe3f0", "#efe0bf", "#e7dcef", "#ffffff"
-    mini(20, 35, "A (chosen): bath at the narrow-door end",
+    mini(20, 35, "B (chosen, D-020): galley on the bathroom wall",
+         [(0, 0, lo.bed_x1, 2170, "bed", bed), (lo.sofa[0], 0, lo.sofa[1], 850, "sofa", liv),
+          (lo.galley_x0, 0, lo.part_x0, lo.sink[1], "galley", kit), (lo.bath_x0, 0, lo.L, W, "bath", bath)],
+         "PASS: a real living room; one wet core; robust to +/-150 mm", True)
+    mini(150, 35, "A (D-015, replaced): kitchen on the back wall",
          [(0, 0, 1640, 2170, "bed", bed), (1640, 0, 4410, 600, "wardrobe + kitchen", kit),
           (lo.bath_x0, 0, lo.L, W, "bath", bath)],
-         "PASS: robust to +/-150 mm; one wet core; door becomes a window", True)
-    mini(150, 35, "B: mirror (bath at end A)",
-         [(0, 0, 1310, W, "bath", bath), (1380, 0, 3550, 600, "kitchen + wardrobe", kit),
-          (lo.L - 1640, 0, lo.L, 2170, "bed", bed)],
-         "Works, but the bathroom has no window and the bed sits by the steps", False)
+         "Passes the rules, but the living room is only a table by the glass", False)
     mini(280, 35, "C: keep the narrow door as an entrance",
          [(0, 0, 1640, 2170, "bed", bed), (1640, 0, 3900, 600, "kitchen", kit),
           (4220, 0, lo.L, 1180, "bath 1.18 deep", bath), (4220, 1180, lo.L, W, "entry hall", liv)],
          "FAIL: WC side 364 < 400, front 500 < 600; 550 mm door", False)
     s.note(20, 120, [
         "Options checked by the generator against the same rules (scripts/studio/validate.py):",
-        "WC centreline at least 400 from walls and 600 clear in front; shower tray at least 1,000 x 900; kitchen aisle at",
-        "least 900 to the glass; door and drawer sweeps clear of solids; partition on the solid strip after the glazing.",
-        "Layout A with the WC facing across the width passes at the photo estimate and at -150 / +150 mm (tests).",
+        "WC centreline at least 400 from walls and 600 clear in front; shower tray at least 1,000 x 900; galley aisle at",
+        "least 800 to the sofa; door and drawer sweeps clear of solids; partition on the solid strip after the glazing.",
+        "Layout B keeps A's bathroom (WC facing across the width) and passes at the estimate and at -150 / +150 mm.",
         "A first version with the WC facing along the container failed if the glazing ended more than about 70 mm later.",
         "Precedents: Cleveland 20 ft (STU-46), Falcon (STU-47), Pod-Tainer (STU-48), container hotels (STU-49, STU-50).",
     ], 2.6)
@@ -138,9 +139,8 @@ def a103_plan(m) -> Sheet:
     ortho(s, "plan", tri(it), ox, oy, sc, labels=False)
     X = lambda x: ox + x / sc  # noqa: E731
     Y = lambda y: oy + y / sc  # noqa: E731
-    for x0, x1, lab in ((0, lo.bed_x1, "bed"), (*lo.wardrobe, "ward."), (*lo.fridge, "fridge"), (*lo.hob, "hob"),
-                        (*lo.sink, "sink"), (*lo.tall, "tall"), (lo.part_x0, lo.part_x0 + lo.part_t, ""),
-                        (lo.bath_x0, lo.L, "bathroom")):
+    for x0, x1, lab in ((0, lo.bed_x1, "bed"), (*lo.sofa, "sofa"), (lo.galley_x0, lo.part_x0, "galley"),
+                        (lo.part_x0, lo.part_x0 + lo.part_t, ""), (lo.bath_x0, lo.L, "bathroom")):
         s.dim(X(x0), Y(0) - 4, X(x1), Y(0) - 4, f"{x1 - x0:.0f}", 4)
         if lab:
             s.text(X((x0 + x1) / 2), Y(0) - 13, lab, 1.9, "middle")
@@ -149,9 +149,11 @@ def a103_plan(m) -> Sheet:
     s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:.0f}", -4)
     # door swings
     s.arc(X(lo.part_x0), Y(lo.bdoor[0]), 700 / sc, 90, 180)
-    s.arc(X(lo.wardrobe[1]), Y(618), (lo.wardrobe[1] - lo.wardrobe[0]) / sc, 90, 180)
-    for (lx, ly, t) in ((800, 1100, "BED 1,600 x 2,000"), ((lo.fridge[0] + lo.tall[1]) / 2, 300, "KITCHEN 900 high"),
-                        ((lo.bath_x0 + lo.L) / 2, 1200, "BATH"), (3000, 1450, "living / dining")):
+    for y0, y1, lab in (lo.fridge + ("fridge",), lo.hob + ("hob",), lo.sink + ("sink",)):
+        s.dim(X(lo.galley_x0) - 4, Y(y0), X(lo.galley_x0) - 4, Y(y1), f"{y1 - y0:.0f} {lab}", 3)
+    for (lx, ly, t) in ((800, 1100, "BED 1,600 x 2,000"), ((lo.galley_x0 + lo.part_x0) / 2, 1650, "GALLEY 900"),
+                        ((lo.bath_x0 + lo.L) / 2, 1200, "BATH"), (sum(lo.sofa) / 2, 450, "SOFA"),
+                        (2700, 1250, "living / dining")):
         s.text(X(lx), Y(ly), t, 2.3, "middle", "bold")
     rows = [[r["id"], r["rule"][:58], r["result"], r["detail"][:34]] for r in m["checks"] if not r["id"].startswith(("E-", "P-"))]
     s.table(40, 160, [("Check", 22), ("Rule", 110), ("Result", 16), ("Value", 70)], rows, 1.8, 3.3)
@@ -175,7 +177,7 @@ def a201_elev(m) -> Sheet:
     s.rect(30, oy, lo.L / sc, lo.H / sc, "#fafafa", "#111", 0.4)
     ortho(s, "front", [(b, fl, n) for (b, fl, n, i, *_x) in sl if i == "K0-SLIDER"], 30 + lo.L / sc, oy + lo.H / sc, sc)
     ortho(s, "front", front, 30 + lo.L / sc, oy + lo.H / sc, sc, labels=True)
-    for z, t in ((900, "worktop 900"), (450, "bed deck 450"), (2200, "tall units 2,200")):
+    for z, t in ((900, "worktop 900"), (450, "bed deck 450"), (1800, "overhead cabinet 1,800")):
         s.line(30 + lo.L / sc + 3, 36 + (lo.H - z) / sc, 30 + lo.L / sc + 8, 36 + (lo.H - z) / sc, "#555", 0.2)
         s.text(30 + lo.L / sc + 9, 36 + (lo.H - z) / sc + 0.8, t, 2)
     return s
@@ -187,7 +189,8 @@ def a202_ends(m) -> Sheet:
     it = items(m, layers=["furniture", "fixtures", "envelope"])
     clean = [(b, fl, n, i) for (b, fl, n, i, k, layer) in it if not i.startswith(("K1-BAT", "K1-EPS")) and k != "K0"]
     views = [("endA", "END A (bed) looking at x = 0", [t for t in clean if t[0].x0 < 1700]),
-             ("endA", "SECTION AT THE KITCHEN looking to end A", [t for t in clean if t[0].x0 < 3300 and t[0].x1 > 2240]),
+             ("endB", "GALLEY looking at the bathroom wall", [t for t in clean if t[0].x0 >= lo.galley_x0 - 40
+                                                          and t[0].x1 <= lo.part_x0 + 20]),
              ("endB", "END B (bathroom) looking at x = L", [t for t in clean if t[0].x1 > lo.bath_x0])]
     for j, (v, title, sel) in enumerate(views):
         ox = 30 + j * 125
@@ -246,19 +249,20 @@ def a401_details(m) -> Sheet:
 
 # ------------------------------------------------------------------------------- roof
 def s101_roof(m) -> Sheet:
-    lo, s = m["lo"], Sheet("S-101", "Roof terrace, canopies and stair: plan and elevation", "1:50")
+    lo, s = m["lo"], Sheet("S-101", "Roof terrace, deck canopy and stair: plan and elevation", "1:50")
     sc = 50
     rf = [(b, fl, n) for (b, fl, n, i, k, layer) in items(m, kits=["K11"], layers=["roof"], exclude_layers=())]
     shell = [(b, fl, n) for (b, fl, n, i, *_x) in items(m, kits=["K0"], layers=["shell"], exclude_layers=())]
-    s.text(30, 30, "PLAN (canopies omitted)", 3, weight="bold")
+    s.text(30, 30, "PLAN (deck canopy omitted)", 3, weight="bold")
     ortho(s, "plan", shell + [t for t in rf if "polycarbonate" not in t[2]], 30 + 2400 / sc, 40 + 600 / sc, sc, sw=0.12)
     s.text(30, 135, "FRONT ELEVATION", 3, weight="bold")
     ortho(s, "front", shell + rf, 30 + (lo.L + 2400) / sc, 140 + 5800 / sc, sc, sw=0.12)
     rows = [["Deck beams", "RHS 150x100x5, 2 no., bear on the 4 corner castings only"],
             ["Joists", "RHS 80x40x3 at 600"], ["Deck", "hardwood boards 140 x 25, 5 mm gaps"],
-            ["Guardrail", "1,100 high, mesh infill, gaps under 100"],
-            ["Upper canopy", "tinted multiwall polycarbonate 10 mm, 5 deg, gutter"],
-            ["Veranda canopy", "own posts + ledger over the front deck"],
+            ["Guardrail", "1,100 high, SHS posts at 1.5 m, hardwood top rail"],
+            ["Infill", "4 mm stainless cables at 90 mm (gaps under 100)"],
+            ["Roof", "open to the sky: no canopy over the terrace (D-020)"],
+            ["Veranda canopy", "polycarbonate on own posts + ledger over the front deck"],
             ["Stair", "dog-leg, 16 risers about 175, goings 250, 850 wide, handrails"],
             ["Loads [A]", "3.0 kN/m2 live, 0.74 kN/m rail, wind uplift: engineer to sign"]]
     s.table(230, 30, [("Element", 34), ("Specification", 140)], rows, 1.9, 3.6)
@@ -380,7 +384,7 @@ def e202_circuits(m) -> Sheet:
     ox, oy = 230, 40
     s.text(ox, 30, "EARTHING AND BONDING (TT)", 3, weight="bold")
     sym_box(s, ox + 20, oy + 5, "Unit board MET", 26, 6)
-    for i, (lab, x) in enumerate((("container body", 0), ("front deck + stair", 35), ("roof frame + canopies", 70),
+    for i, (lab, x) in enumerate((("container body", 0), ("front deck + stair", 35), ("roof frame + deck canopy", 70),
                                   ("water pipe entry", 105))):
         s.line(ox + 20, oy + 8, ox + x + 10, oy + 25)
         sym_box(s, ox + x + 10, oy + 29, lab, 30, 6)
@@ -464,7 +468,7 @@ def p301_site(m) -> Sheet:
 
     blk(25, 40, 40, 14, "WASAC main", "air gap at the tank (D-016)")
     blk(25, 65, 40, 14, "Borehole pump", "private source")
-    blk(25, 90, 40, 14, "Rainwater", "canopy gutters, first flush")
+    blk(25, 90, 40, 14, "Rainwater", "deck canopy gutter, first flush")
     blk(95, 60, 44, 22, f"Storage tank {st['tank_m3']:.1f} m3", f"{st['daily_L']:.0f} L/day, 4 days")
     for y in (47, 72, 97):
         arrow(65, y, 95, 71)

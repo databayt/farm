@@ -22,7 +22,7 @@ Hand the workshop, per batch of three kits:
 | 5 Drill faces | Templates or jig: confirmat, dowel, shelf rows, hinge cups | Test-assemble one carcass per batch |
 | 6 Drill edges | Bushed jig: 5 mm pilots and 8 mm dowels in panel edges | Pins line up across the joint |
 | 7 Finish | PU varnish on linings and exposed ply; seal every marine-ply edge and hole in the bathroom kit | Dry, dust-free |
-| 8 Dry-fit | Assemble unit 1's kitchen, wardrobe and bed in the workshop | Doors and drawers run; adjust before packing |
+| 8 Dry-fit | Assemble unit 1's galley, storage wall and bed in the workshop | Doors and drawers run; adjust before packing |
 | 9 Pack | One bundle per kit per studio, each at most about 25 kg, labelled `Studio n / Kit / bundle x of y` with a parts list | Count against the cut list |
 
 ## Batch of three
@@ -31,4 +31,4 @@ All three studios are cut in one batch: one board order, one set-up per operatio
 
 ## Steel workshop
 
-The roof frame, canopies, stair and the W1 infill follow the [roof terrace](studio-roof.md) drawings and the steel list. Bolted connections, holes drilled before painting, every member stamped with its id. A trial assembly of one roof frame on the ground, before painting, is worth the day it takes.
+The roof frame, guardrail, deck canopy, stair and the W1 infill follow the [roof terrace](studio-roof.md) drawings and the steel list. Bolted connections, holes drilled before painting, every member stamped with its id. A trial assembly of one roof frame on the ground, before painting, is worth the day it takes.

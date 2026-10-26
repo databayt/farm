@@ -27,7 +27,7 @@ Status: desk research of 2026-10-26. A listed supplier is not confirmed stock, a
 |---|---|---|
 | Cutting, edge banding, drilling, labelling (K1-K7) | A Gisozi carpentry workshop with a panel saw and edge bander | Hand over the cutting diagrams, the cut list, the T-01 templates and the kit sheets; one dry-fit of unit 1 in the workshop |
 | CNC (optional) | WSH Makerspace has a CNC mill and lasers (members) [V STU-28]; FabLab Rwanda [V STU-29] | A full-sheet router was not found; the DXFs are ready if one is |
-| Steel: W1 infill, roof frame, canopies, stair (K10, K11) | A Kigali steel workshop; RwandaYP lists several (Kigali Steel and Aluminium Works, Nansteel, Prometal, Kicom) [V STU-59] | Bolt-together members, pre-drilled and numbered like the woodwork; galvanise or prime and paint |
+| Steel: W1 infill, roof frame, guardrail, deck canopy, stair (K10, K11) | A Kigali steel workshop; RwandaYP lists several (Kigali Steel and Aluminium Works, Nansteel, Prometal, Kicom) [V STU-59] | Bolt-together members, pre-drilled and numbered like the woodwork; galvanise or prime and paint |
 | Turnkey alternative | Rwanda Container Builds lists converted houses at RWF 24-42M [V STU-27] | A benchmark for the quotes, not the plan |
 
 ## Transport

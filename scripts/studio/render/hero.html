@@ -71,7 +71,7 @@ const COLORS = {
   PLY18: "#e2c9a0", PLY12: "#ece6da", MPLY18: "#dcc09a", WTOP38: "#c49566", base: "#26282b",
   white: "#f6f6f4", glass: "#9fc4e8", stainless: "#bfc4c9", black: "#2a2c30", tile: "#f1f2f2", fabric: "#f4f4f4",
   door: "#f0ece4", timber: "#8a5a34", TIMBER: "#8a5a34", electric: "#f6d34a", STEEL: "#3c3f44", POLY: "#b9c9cf",
-  MESH: "#3c3f44", STAIRFRAME: "#3c3f44", steel: "#7a2c25",
+  MESH: "#3c3f44", CABLE: "#c9cdd2", STAIRFRAME: "#3c3f44", steel: "#7a2c25",
 }
 const gltf = await new GLTFLoader().loadAsync("/public/designs/studio/model/studio.glb")
 const root = gltf.scene
@@ -108,10 +108,11 @@ function style(o, mode) {
   } else if (id === "K0-FLOOR") {
     m = new THREE.MeshStandardMaterial({ color: "#222427", roughness: 0.8 })
   } else {
-    const clear = key === "glass" || key === "POLY"
+    const clear = key === "glass" || key === "POLY" || key === "CABLE"
     m = new THREE.MeshStandardMaterial({
       color: COLORS[key] ?? "#dddddd", roughness: clear ? 0.06 : key === "stainless" ? 0.3 : 0.75,
-      metalness: key === "stainless" ? 0.5 : 0, transparent: clear, opacity: key === "POLY" ? 0.5 : clear ? 0.42 : 1,
+      metalness: key === "stainless" ? 0.5 : 0, transparent: clear,
+      opacity: key === "POLY" ? 0.5 : key === "CABLE" ? 0.3 : clear ? 0.42 : 1,
     })
   }
   if (id === "K4-MATT") m.color.set("#f7f7f5")
@@ -210,7 +211,7 @@ function cutaway() {
     const n = o.userData.pname
     o.visible = !(
       /^K0-(ROOF|FRONT|SLIDER)/.test(o.name) || /^K1-(BAT|EPS)/.test(o.name) || /^(Ceiling|Front)/.test(n) ||
-      /^K2-CB-FRONT|^K2-STUD|^K(7|8|10|11)-/.test(o.name) || o.name === "K9-HEATER-BOX"
+      /^K2-CB-FRONT|^K2-STUD|^K(7|8|10|11)-/.test(o.name) || o.name === "K9-HEATER-BOX" || o.name === "K6-SOFA"
     )
     style(o, "in")
     if (o.visible) outline(o, scene)
@@ -219,10 +220,17 @@ function cutaway() {
   box(scene, 0.62, 0.13, 0.38, 0.45, 0.72, 0.42, "#ffffff")
   box(scene, 0.62, 0.13, 0.38, 1.17, 0.72, 0.42, "#ffffff")
   box(scene, 1.62, 0.03, 0.62, 0.82, 0.665, 1.72, "#7c838c")
-  box(scene, 1.25, 0.01, 0.95, 3.0, 0.006, 1.92, "#ddd6ca", 1)
-  plant(scene, 3.72, 0, 2.02)
-  plant(scene, 3.25, 0.9, 0.22, 0.5)
-  plant(scene, 1.1, 1.1, 0.07, 0.45)
+  // Layout B props: the sofa (a bought item, drawn as a box in the model), cushions, rug, plants
+  const sx = 1.66, sw = 1.15
+  box(scene, sw, 0.42, 0.85, sx + sw / 2, 0.21, 0.425, "#d8d0c2")
+  box(scene, sw, 0.42, 0.2, sx + sw / 2, 0.62, 0.1, "#d8d0c2")
+  for (const x of [sx + 0.06, sx + sw - 0.06]) box(scene, 0.12, 0.62, 0.85, x, 0.31, 0.425, "#cfc6b6")
+  box(scene, 0.4, 0.34, 0.12, sx + 0.35, 0.6, 0.27, "#7d9a5b")
+  box(scene, 0.4, 0.34, 0.12, sx + sw - 0.35, 0.6, 0.27, "#7d9a5b")
+  box(scene, 1.5, 0.01, 1.05, 2.26, 0.006, 1.2, "#ddd6ca", 1)
+  plant(scene, 3.0, 0, 0.3)
+  plant(scene, 4.12, 0.9, 0.25, 0.5)
+  plant(scene, 0.82, 1.1, 0.07, 0.45)
   lights(scene, new THREE.Vector3(1.5, 12, 4.5), new THREE.Vector3(2.9, 0, 1.1))
   const cam = new THREE.PerspectiveCamera(30, W / H, 0.1, 100)
   cam.position.set(-2.4, 7.4, 8.6)

@@ -20,15 +20,15 @@ The drawings are wordless, IKEA-style: new parts in white with a heavy line, fin
 
 ![AS-11 Kitchen base units](../../public/designs/studio/drawings/as-11.svg)
 
-![AS-12 Tall unit](../../public/designs/studio/drawings/as-12.svg)
+![AS-12 Overhead cabinet and heater](../../public/designs/studio/drawings/as-12.svg)
 
 ![AS-14 Wall units](../../public/designs/studio/drawings/as-14.svg)
 
 ![AS-15 Bed](../../public/designs/studio/drawings/as-15.svg)
 
-![AS-16 Wardrobe](../../public/designs/studio/drawings/as-16.svg)
+![AS-16 Storage wall](../../public/designs/studio/drawings/as-16.svg)
 
-![AS-17 Table and stools](../../public/designs/studio/drawings/as-17.svg)
+![AS-17 Sofa, tables and stools](../../public/designs/studio/drawings/as-17.svg)
 
 ![AS-20 Roof deck beams](../../public/designs/studio/drawings/as-20.svg)
 

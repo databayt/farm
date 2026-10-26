@@ -16,7 +16,7 @@ Status: design intent; septic siting and soakage depend on the site plan and a p
 ## Inside each studio
 
 - Supply in PPR PN20, 20 and 25 mm (Pro Water makes PP-R in Kigali [V STU-23]).
-- An 80 L electric storage heater in the kitchen's tall unit, out of the bathroom zones, with a temperature-and-pressure relief valve piped outside. Water is stored at 60 C; a thermostatic mixing valve sends 41-44 C to the shower and basin (guest scald safety); the kitchen sink gets direct hot water, labelled. Two back-to-back showers at 6-7 L/min need about 48-64 L of hot water, which is why the heater is 80 L, not 50 L (D-015) [E, AS-18].
+- An 80 L electric storage heater lying in the galley's overhead cabinet on a steel cradle fixed to the back wall, out of the bathroom zones, with a temperature-and-pressure relief valve piped outside. Water is stored at 60 C; a thermostatic mixing valve sends 41-44 C to the shower and basin (guest scald safety); the kitchen sink gets direct hot water, labelled. Two back-to-back showers at 6-7 L/min need about 48-64 L of hot water, which is why the heater is 80 L, not 50 L (D-015) [E, AS-18].
 
 ![P-101 Plumbing layout plan](../../public/designs/studio/drawings/p-101.svg)
 

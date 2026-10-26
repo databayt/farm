@@ -28,7 +28,7 @@ for n, quad in _faces:
     CUBE_NRM += [n] * 4
     CUBE_IDX += [b, b + 1, b + 2, b, b + 2, b + 3]
 
-TRANSLUCENT = {"glass": 0.3, "POLY": 0.45, "eps": 0.55, "steel": 0.22, "MESH": 0.5}
+TRANSLUCENT = {"glass": 0.3, "POLY": 0.45, "eps": 0.55, "steel": 0.22, "MESH": 0.5, "CABLE": 0.25}
 
 
 def rgba(key: str) -> list[float]:

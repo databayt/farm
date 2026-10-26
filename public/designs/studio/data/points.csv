@@ -1,12 +1,12 @@
 point,kind,circuit,description,x_mm,y_mm,z_mm,watts
-DB,db,,Unit board on the partition,4410,875,1625,0
+DB,db,,Unit board on the back wall by the galley,3510,0,1625,0
 L1,light,C1,"Ceiling light, bed",800,1126,2323,12
 L2,light,C1,"Ceiling light, living",2300,1126,2323,12
-L3,light,C1,"Ceiling light, kitchen",3500,1126,2323,12
+L3,light,C1,"Ceiling light, galley",3610,1126,2323,12
 L4,light,C1,Bathroom light IP65,5139,1126,2323,12
 L5,light,C1,Reading light 1,300,140,1050,4
 L6,light,C1,Reading light 2,1340,140,1050,4
-L7,light,C1,Under-cabinet LED strip,3065,320,1440,10
+L7,light,C1,Under-cabinet LED strip,4110,725,1790,10
 L8,light,C1,Deck light IP65,2900,2312,2350,10
 L9,light,C1,Roof terrace lights IP65 (x2),1500,1126,2723,20
 L10,light,C1,Stair light IP65,-900,3152,1500,8
@@ -16,14 +16,14 @@ S3,switch,C1,Bathroom light + fan (outside),4410,2350,1100,0
 S4,switch,C1,"Roof and stair lights (IP65, stair foot)",-400,2852,1100,0
 P1,usb,C2,Bedside socket + USB-C 1,260,132,600,200
 P2,usb,C2,Bedside socket + USB-C 2,1380,132,600,200
-P3,socket,C2,Socket by the bed (desk ledge),1520,0,300,500
+P3,socket,C2,Socket by the sofa,1760,0,300,500
 P4,socket,C2,"Socket, living (front strip)",1180,2252,300,500
 P5,socket,C2,Deck socket IP66,2600,2312,400,300
-P6,socket,C3,Worktop socket 1 (double),2780,0,1100,2000
-P7,socket,C3,Worktop socket 2 (double),3590,0,1100,1000
-P8,socket,C3,Fridge socket,2540,0,250,100
-P9,outlet,C4,Hob connection unit,3065,0,600,3500
-P10,outlet,C5,Heater DP switch + timer,4150,0,2150,2000
+P6,socket,C3,Worktop socket 1 (double),4410,275,1100,2000
+P7,socket,C3,"Worktop socket 2 (double, back wall)",4110,0,1100,1000
+P8,socket,C3,Fridge socket,4410,275,250,100
+P9,outlet,C4,Hob connection unit,4410,750,600,3500
+P10,outlet,C5,Heater DP switch + timer,4410,1390,1700,2000
 F1,fan,C6,Bathroom extract 100 mm (in W1 panel),5450,2252,1950,20
 F2,fan,C6,Wall fan,1800,0,2100,50
 P11,outlet,C7,AC provision: isolator,900,0,2150,1000

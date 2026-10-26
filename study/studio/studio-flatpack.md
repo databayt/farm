@@ -21,7 +21,7 @@ No full-sheet CNC router job shop was found in Kigali (searched 2026-10-26): the
 | Boards | 18 mm for all furniture and partitions; 12 mm ply for linings and carcass backs; 18 mm marine ply in the bathroom | Two thicknesses keep the cutting list short; marine ply resists splashes |
 | Grid | System 32: 5 mm holes on a 32 mm pitch, 37 mm from the front edge [V STU-42] | Hinges, runners and shelf pins all land on the same rows |
 | Fixed joints | Confirmat 7 x 50 plus two 8 mm dowels per joint | Strong, forgiving, one stepped drill |
-| Joints that come apart | M6 connector bolt with a 10 mm barrel nut (bed, wardrobe) | Re-assembly without wear; a cam (Minifix 15) is the alternative [V STU-43] |
+| Joints that come apart | M6 connector bolt with a 10 mm barrel nut (bed, storage wall) | Re-assembly without wear; a cam (Minifix 15) is the alternative [V STU-43] |
 | Doors | 35 mm soft-close cup hinges on the 37 mm row | Standard; adjustable after install |
 | Drawers | 45 mm ball-bearing runners; bed drawers on castors | Fewer precise parts under the bed |
 | Edges | 2 mm ABS on visible edges, 0.8 mm on hidden ones | Durable for guest use |

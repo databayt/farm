@@ -16,9 +16,9 @@ One studio is eleven kits. K1 to K7 are flat-pack woodwork from the carpentry wo
 
 ![J-104 Kit K4: bed](../../public/designs/studio/drawings/j-104.svg)
 
-![J-105 Kit K5: wardrobe](../../public/designs/studio/drawings/j-105.svg)
+![J-105 Kit K5: storage wall](../../public/designs/studio/drawings/j-105.svg)
 
-![J-106 Kit K6: table and stools](../../public/designs/studio/drawings/j-106.svg)
+![J-106 Kit K6: sofa, tables and stools](../../public/designs/studio/drawings/j-106.svg)
 
 ![J-107 Kit K7: trims](../../public/designs/studio/drawings/j-107.svg)
 
@@ -28,7 +28,7 @@ One studio is eleven kits. K1 to K7 are flat-pack woodwork from the carpentry wo
 
 ## Cutting diagrams
 
-One studio takes 11 sheets of 18 mm board, 16 of 12 mm ply, 3 of 18 mm marine ply and one worktop blank [E, generated]. The diagrams are drawn in cutting order: rip along the red lines first, then crosscut.
+One studio takes 8 sheets of 18 mm board, 14 of 12 mm ply, 3 of 18 mm marine ply and one worktop blank [E, generated]. The diagrams are drawn in cutting order: rip along the red lines first, then crosscut.
 
 [Table: Sheets and yield](../../public/designs/studio/data/nesting.csv)
 
@@ -46,6 +46,5 @@ One studio takes 11 sheets of 18 mm board, 16 of 12 mm ply, 3 of 18 mm marine pl
 
 ![C-107 Cutting diagrams](../../public/designs/studio/drawings/c-107.svg)
 
-![C-108 Cutting diagrams](../../public/designs/studio/drawings/c-108.svg)
 
 The full cut list, with edge banding and machining counts per part, is on the [cut list page](../../public/designs/studio/data/cut-list.csv).
