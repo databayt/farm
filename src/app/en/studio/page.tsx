@@ -13,9 +13,9 @@ import totals from "../../../../public/designs/studio/data/totals.json"
 // Every number here comes from the generated package; the docs hold the evidence.
 
 export const metadata: Metadata = {
-  title: "Container studios · Farm",
+  title: "The studio · Farm",
   description:
-    "Three identical farm-stay guest studios in 20 ft containers near Kigali, built IKEA-style from flat-pack parts made in Kigali.",
+    "A farm-stay guest studio in a 20 ft container near Kigali, built IKEA-style from flat-pack parts made in Kigali.",
 }
 
 const D = "/designs/studio"
@@ -31,10 +31,10 @@ const FEATURES = [
 ]
 
 const STEPS = [
-  { n: "1", title: "Measure", text: "Survey all three containers; the model regenerates every drawing from the real numbers." },
+  { n: "1", title: "Measure", text: "Survey the container; the model regenerates every drawing from the real numbers." },
   { n: "2", title: "Cut in Kigali", text: "A Gisozi workshop rips and crosscuts sheets on a panel saw, following the cutting diagrams." },
   { n: "3", title: "Drill and number", text: "Holes on the 32 mm grid from 1:1 templates; every part labelled, like K3-H-07." },
-  { n: "4", title: "Pack flat", text: "One kit per studio, bundles under 25 kg, hardware in bags A to L." },
+  { n: "4", title: "Pack flat", text: "Every kit packed flat, bundles under 25 kg, hardware in bags A to L." },
   { n: "5", title: "Assemble", text: "Two people, one tool set, 27 wordless steps, from insulation to the roof terrace." },
 ]
 
@@ -236,8 +236,8 @@ export default function StudioPage() {
           <p className="text-muted-foreground text-sm font-medium">2D</p>
           <h2 className="mt-1 text-3xl font-semibold tracking-tight text-balance">Everything a guest needs in 13 m²</h2>
           <p className="text-muted-foreground mt-2 max-w-3xl text-lg text-balance">
-            Three 20 ft containers become identical farm-stay studios: bed, kitchen, shower and a roof terrace. One
-            set of drawings serves all three.
+            A 20 ft container becomes a farm-stay studio for two: bed, kitchen, shower and a roof terrace, all in
+            one set of drawings.
           </p>
           <a href={`${D}/drawings/a-103.svg`} target="_blank" rel="noreferrer"
             className="mt-6 block min-h-0 flex-1 overflow-hidden rounded-lg border bg-white p-2">
@@ -249,10 +249,10 @@ export default function StudioPage() {
         <div className="px-4 pb-6 md:px-10">
           <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
             {[
-              ["13.1 m²", "net floor per studio"],
-              ["11 kits", `${sheets} sheets per studio`],
+              ["13.1 m²", "net floor"],
+              ["11 kits", `${sheets} sheets of board`],
               ["56 sheets", "drawings, generated"],
-              [rwf(totals.unit_with_contingency), "per studio, placeholder prices"],
+              [rwf(totals.unit_with_contingency), "the studio, placeholder prices"],
             ].map(([v, l]) => (
               <div key={l} className="bg-background p-5">
                 <div className="text-2xl font-semibold tracking-tight">{v}</div>
@@ -287,12 +287,12 @@ export default function StudioPage() {
           title="Container studio, Layout A" />
       </section>
 
-      {/* The building blocks: one studio is eleven kits. */}
+      {/* The building blocks: the studio is eleven kits. */}
       <section id="blocks" className="mt-16 scroll-mt-20">
         <p className="text-muted-foreground text-sm font-medium">Building blocks</p>
-        <h2 className="mt-1 text-3xl font-semibold tracking-tight">Eleven kits make one studio</h2>
+        <h2 className="mt-1 text-3xl font-semibold tracking-tight">Eleven kits make the studio</h2>
         <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-          Each kit is packed flat, labelled and handed to one trade. The same eleven kits are made three times.
+          Each kit is packed flat, labelled and handed to one trade.
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {kits.map((k) => (
@@ -380,13 +380,13 @@ export default function StudioPage() {
           <p className="text-muted-foreground text-sm font-medium">Electrical · 1 of 4</p>
           <h2 className="mt-1 text-3xl font-semibold tracking-tight">The power, from the grid to the studio</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            The REG grid feeds a site board, which feeds a board in each studio: a 40 A main switch, surge
+            The REG grid feeds a site board, which feeds the studio&rsquo;s own board: a 40 A main switch, surge
             protection and a 30 mA RCD over every circuit. The hob and the water heater never run together, which
-            keeps one studio near {Math.round(Number(demand.total_A))} A.
+            keeps the studio near {Math.round(Number(demand.total_A))} A.
           </p>
           <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
             {[
-              [`${demand.total_A} A`, "maximum demand per studio"],
+              [`${demand.total_A} A`, "maximum demand"],
               [`${circuits.length} circuits`, "on one unit board"],
               [`${demand.feeder_mm2} mm²`, "feeder from the site board"],
               [`${demand.feeder_drop_pct} %`, "voltage drop on the feeder"],
@@ -478,10 +478,10 @@ export default function StudioPage() {
           <p className="text-muted-foreground text-sm font-medium">Electrical · 4 of 4</p>
           <h2 className="mt-1 text-3xl font-semibold tracking-tight">Bill of materials</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            Everything the electrician buys for one studio: about RWF {frw(bomTotal)}. Prices are placeholders until
+            Everything the electrician buys for the studio: about RWF {frw(bomTotal)}. Prices are placeholders until
             three quotes come in for each line.
           </p>
-          <BomTable groups={bom} total={bomTotal} label="Electrical, one studio" />
+          <BomTable groups={bom} total={bomTotal} label="Electrical, the studio" />
           <p className="text-muted-foreground mt-3 text-sm">
             Full list for every trade: <a href={`${D}/data/bom.xlsx`} download className="underline underline-offset-4">bom.xlsx</a>
             {" · "}<a href={`${D}/data/circuits.csv`} download className="underline underline-offset-4">circuits.csv</a>
@@ -496,8 +496,8 @@ export default function StudioPage() {
           <p className="text-muted-foreground text-sm font-medium">Plumbing · 1 of 4</p>
           <h2 className="mt-1 text-3xl font-semibold tracking-tight">Water in, water out</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            WASAC water, the borehole and rain from the canopies fill one shared tank, and a pump sends it to the three
-            studios. Toilets and showers drain to a new shared septic tank; kitchen sinks drain to their own grease
+            WASAC water, the borehole and rain from the canopies fill the farm&rsquo;s tank, and a pump sends it to the
+            studio. Toilets and showers drain to the farm&rsquo;s new septic tank; kitchen sinks drain to their own grease
             trap.
           </p>
           <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
@@ -520,7 +520,7 @@ export default function StudioPage() {
       <section id="pipes" className="scroll-mt-20 border-t py-16">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
           <p className="text-muted-foreground text-sm font-medium">Plumbing · 2 of 4</p>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight">{pipes.length} pipe runs in each studio</h2>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">{pipes.length} pipe runs in the studio</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
             The sink, heater, shower, basin and WC sit within about 1.5 m of each other, so the pipes stay short. Drains
             hang under the raised floor, so the bathroom has no step.
@@ -570,11 +570,11 @@ export default function StudioPage() {
           <p className="text-muted-foreground text-sm font-medium">Plumbing · 4 of 4</p>
           <h2 className="mt-1 text-3xl font-semibold tracking-tight">Bill of materials</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            Everything the plumber buys for one studio: about RWF {frw(plumbingTotal)}. Prices are placeholders until
+            Everything the plumber buys for the studio: about RWF {frw(plumbingTotal)}. Prices are placeholders until
             three quotes come in for each line.
           </p>
-          <BomTable groups={plumbing} total={plumbingTotal} label="Plumbing, one studio" />
-          <h3 className="mt-10 text-xl font-semibold tracking-tight">Shared by all three studios</h3>
+          <BomTable groups={plumbing} total={plumbingTotal} label="Plumbing, the studio" />
+          <h3 className="mt-10 text-xl font-semibold tracking-tight">Shared with the farm</h3>
           <div className="mt-4 overflow-x-auto rounded-xl border">
             <table className="w-full text-sm">
               <tbody>
@@ -605,7 +605,7 @@ export default function StudioPage() {
 
       <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
       <section className="mt-16">
-        <h2 className="text-2xl font-semibold tracking-tight">What each studio has</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">What the studio has</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <div key={f.title} className="rounded-xl border p-5">
@@ -652,10 +652,10 @@ export default function StudioPage() {
         <div className="rounded-xl border p-6">
           <h2 className="text-xl font-semibold tracking-tight">Status</h2>
           <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-            Preliminary. Openings are scaled from a photo, so nothing is cut until all three containers are
-            measured. Prices are placeholders until three quotes per line: about {rwf(totals.three_units_total)} for
-            all three studios with the shared septic, water and power works. A structural engineer signs the roof
-            terrace before guests use it.
+            Preliminary. Openings are scaled from a photo, so nothing is cut until the container is measured.
+            Prices are placeholders until three quotes per line: about {rwf(totals.unit_with_contingency)} for the
+            studio, before the farm&rsquo;s shared septic, water and power works. A structural engineer signs the
+            roof terrace before guests use it.
           </p>
           <Button asChild variant="outline" className="mt-4">
             <Link href="/docs/studio-site">See the survey sheet</Link>
