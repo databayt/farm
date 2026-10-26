@@ -149,8 +149,8 @@ def k1_lining(lo: Layout) -> Kit:
                  round(lo.part_x0 * lo.W / 1e6 * 1.08, 1), "m2", "spc", Box(0, 0, -5, lo.part_x0, lo.W, 0),
                  step="S05", layer="envelope", color="floor"))
     k.buy(Bought("K1-RUST", "Rust converter + zinc primer for steel", "K1", "finishes", "painting", 4, "L", "primer"))
-    k.buy(Bought("K1-VARN", "Vapour-retarding PU varnish for linings", "K1", "finishes", "painting", 10, "L",
-                 "varnish"))
+    k.buy(Bought("K1-VARN", "Vapour-retarding primer + off-white paint for the linings", "K1", "finishes", "painting",
+                 10, "L", "varnish"))
     return k
 
 
@@ -457,6 +457,8 @@ def k7_trims(lo: Layout) -> Kit:
                Box(X - 530, 0, 2300, X - 518, run, lo.H), step="S18"))
     k.add(Part("K7-20", "Galley end panel (scribed to the floor on site)", "K7", "PLY12",
                Box(X - GALLEY_D, run, 0, X, run + 12, 900 - 38), step="S18"))
+    k.buy(Bought("K7-STAIN", "Joinery finish: natural mahogany-tone stain + satin PU varnish (all furniture)", "K7",
+                 "finishes", "painting", 6, "L", "stain", step="S18"))
     k.steps.append(Step("S18", "K7", "Scribe and pin the trims; caulk and paint", [p.id for p in k.parts],
                         {"F": 60}, 1))
     return k

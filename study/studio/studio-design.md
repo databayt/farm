@@ -48,10 +48,10 @@ The 3D drawing and the realistic image on the studio page are rendered from the 
 
 | Surface | Finish | Why |
 |---|---|---|
-| Walls and ceiling (living) | 12 mm ply, light PU varnish (vapour-retarding) | Warm, durable, repairable; seals the insulation from room air |
+| Walls and ceiling (living) | 12 mm ply, vapour-retarding primer and off-white paint | Light and calm; the primer seals the insulation from room air; repaintable |
 | Floor (living) | Epoxy seal over the treated container floor, then 5 mm SPC | The original floor is insecticide-treated; never sand it [V STU-07] |
 | Bathroom walls | Cement board, liquid membrane, ceramic tiles | Fully waterproof; easy to clean between guests |
 | Bathroom floor | Safety vinyl coved 100 mm up the walls, low-profile tray | No joints at the floor; the tray keeps IP zone 1 small [V STU-38] |
-| Furniture | 18 mm ply or MR melamine board, ABS edges; marine ply in the bathroom | Whatever Kigali stocks; both are drawn |
+| Furniture | 18 mm ply (or MR board) with a natural mahogany-tone stain under a satin PU varnish, ABS edges; marine ply in the bathroom | Warm wood against off-white walls; ply takes stain evenly and is sold in Kigali |
 | Worktop | 38 mm laminate or hardwood | Field check (AS-24) |
 | Outside | Existing paint kept; steelwork for the roof painted to match | Founder did not ask for a repaint |
