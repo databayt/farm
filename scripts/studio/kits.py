@@ -145,7 +145,7 @@ def k1_lining(lo: Layout) -> Kit:
                  "pufoam"))
     k.buy(Bought("K1-EPOXY", "Primer + 100%-solids epoxy floor seal", "K1", "finishes", "painting", 14, "m2",
                  "epoxy"))
-    k.buy(Bought("K1-SPC", "SPC flooring 5 mm + underlay (living area)", "K1", "finishes", "carpentry",
+    k.buy(Bought("K1-SPC", "SPC flooring 5 mm, smoked-oak decor, + underlay (living area)", "K1", "finishes", "carpentry",
                  round(lo.part_x0 * lo.W / 1e6 * 1.08, 1), "m2", "spc", Box(0, 0, -5, lo.part_x0, lo.W, 0),
                  step="S05", layer="envelope", color="floor"))
     k.buy(Bought("K1-RUST", "Rust converter + zinc primer for steel", "K1", "finishes", "painting", 4, "L", "primer"))
@@ -407,8 +407,8 @@ def k5_bedside(lo: Layout) -> Kit:
 def k6_living(lo: Layout) -> Kit:
     k = Kit("K6", "Seating: sofa, table and chairs", "carpentry", "workshop")
     sx0, sx1 = lo.sofa
-    k.buy(Bought("K6-SOFA", f"Low two-seat sofa about {sx1 - sx0:.0f} x {SOFA_D:.0f}, {SOFA_H:.0f} high, washable "
-                 "covers", "K6", "furnishing", "furnishing", 1, "each", "sofa", Box(sx0, 0, 0, sx1, SOFA_D, SOFA_H),
+    k.buy(Bought("K6-SOFA", f"Low two-seat sofa about {sx1 - sx0:.0f} x {SOFA_D:.0f}, {SOFA_H:.0f} high, soft dark grey "
+                 "washable covers", "K6", "furnishing", "furnishing", 1, "each", "sofa", Box(sx0, 0, 0, sx1, SOFA_D, SOFA_H),
                  step="S17", layer="furniture",
                  color="fabric"))
     # seating room: a table in front of the sofa and two chairs facing it from the glass side,
@@ -457,7 +457,7 @@ def k7_trims(lo: Layout) -> Kit:
                Box(X - 530, 0, 2300, X - 518, run, lo.H), step="S18"))
     k.add(Part("K7-20", "Galley end panel (scribed to the floor on site)", "K7", "PLY12",
                Box(X - GALLEY_D, run, 0, X, run + 12, 900 - 38), step="S18"))
-    k.buy(Bought("K7-STAIN", "Joinery finish: natural mahogany-tone stain + satin PU varnish (all furniture)", "K7",
+    k.buy(Bought("K7-STAIN", "Joinery finish: natural oak-tone stain + satin PU varnish (all furniture)", "K7",
                  "finishes", "painting", 6, "L", "stain", step="S18"))
     k.steps.append(Step("S18", "K7", "Scribe and pin the trims; caulk and paint", [p.id for p in k.parts],
                         {"F": 60}, 1))

@@ -72,9 +72,9 @@ function tex(draw, w = 512, h = 512) {
 let seed = 7
 const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
 const T = LINE ? {} : {
-  // light grey knit, after the FRIDHULT Knisa cover
+  // soft dark grey knit
   fabric: tex((g, w, h) => {
-    g.fillStyle = "#b9bab8"; g.fillRect(0, 0, w, h)
+    g.fillStyle = "#7b7d80"; g.fillRect(0, 0, w, h)
     for (let i = 0; i < 9000; i++) {
       g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.10)" : "rgba(60,60,60,0.10)"
       g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1)
@@ -108,22 +108,22 @@ const T = LINE ? {} : {
       g.stroke()
     }
   }),
-  // natural mahogany: warm red-brown with long, slightly wavy grain and fine pores
-  mahogany: tex((g, w, h) => {
-    g.fillStyle = "#663222"; g.fillRect(0, 0, w, h)
-    for (let i = 0; i < 140; i++) {
-      const y = rnd() * h, dark = rnd() > 0.45
-      g.strokeStyle = dark ? `rgba(52,20,11,${0.15 + rnd() * 0.25})` : `rgba(150,84,58,${0.08 + rnd() * 0.12})`
-      g.lineWidth = 0.6 + rnd() * 2.4
+  // natural oak: light honey with soft, slightly wavy grain and fine pores
+  oak: tex((g, w, h) => {
+    g.fillStyle = "#c8a170"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 150; i++) {
+      const y = rnd() * h, dark = rnd() > 0.4
+      g.strokeStyle = dark ? `rgba(120,82,44,${0.1 + rnd() * 0.2})` : `rgba(226,196,150,${0.1 + rnd() * 0.16})`
+      g.lineWidth = 0.6 + rnd() * 2.2
       g.beginPath(); g.moveTo(0, y)
-      g.bezierCurveTo(w * 0.33, y + (rnd() - 0.5) * 14, w * 0.66, y + (rnd() - 0.5) * 14, w, y + (rnd() - 0.5) * 6)
+      g.bezierCurveTo(w * 0.33, y + (rnd() - 0.5) * 16, w * 0.66, y + (rnd() - 0.5) * 16, w, y + (rnd() - 0.5) * 6)
       g.stroke()
     }
-    for (let i = 0; i < 2600; i++) { g.fillStyle = "rgba(40,14,6,0.18)"; g.fillRect(rnd() * w, rnd() * h, 2 + rnd() * 3, 1) }
+    for (let i = 0; i < 2200; i++) { g.fillStyle = "rgba(100,66,34,0.14)"; g.fillRect(rnd() * w, rnd() * h, 2 + rnd() * 3, 1) }
   }, 1024, 512),
   // SPC floor planks
   planks: tex((g, w, h) => {
-    const tones = ["#c39a6b", "#b98f61", "#c8a274", "#b48a5c", "#bf966a"]
+    const tones = ["#7a5b40", "#6f5139", "#836345", "#694c35", "#76573c"] // smoked oak
     const rows = 10, rh = h / rows
     for (let r = 0; r < rows; r++) {
       let x = -((r * 173) % 400)
@@ -154,7 +154,7 @@ function mat(name) {
     const std = (o) => new THREE.MeshStandardMaterial(o)
     x = {
       wall: () => std({ color: "#f0ece3", roughness: 0.88 }), // off-white painted linings
-      mahogany: () => std({ map: T.mahogany, roughness: 0.42 }), // natural mahogany-tone joinery
+      oak: () => std({ map: T.oak, roughness: 0.5 }), // natural oak-tone joinery
       white: () => std({ color: "#f3f2ee", roughness: 0.55 }),
       ply: () => std({ map: T.ply, roughness: 0.6 }),
       worktop: () => std({ color: "#c4996a", roughness: 0.45 }),
@@ -285,12 +285,12 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
 // ------------------------------------------------------------ bed (MALM look), bedside table, reading lamps
 {
   const x1 = m(S.bed_x1), z0 = m(S.bed_y0), z1 = m(S.bed_y1)
-  box(0, 0, 0, x1, 1.0, z0, "mahogany", 0.008) // tall headboard, straight on the back wall
-  box(0, 0, z0, x1, 0.45, z1, "mahogany", 0.01) // high frame, tight to end A
+  box(0, 0, 0, x1, 1.0, z0, "oak", 0.008) // tall headboard, straight on the back wall
+  box(0, 0, z0, x1, 0.45, z1, "oak", 0.01) // high frame, tight to end A
   // two storage boxes in the room side, each front with a finger-pull slot
   for (const [da, db] of S.drawers) {
     const a = m(da) + 0.003, b = m(db) - 0.003
-    box(x1, 0.062, a, x1 + 0.006, 0.35, b, "mahogany", 0.004)
+    box(x1, 0.062, a, x1 + 0.006, 0.35, b, "oak", 0.004)
     box(x1 + 0.004, 0.296, (a + b) / 2 - 0.09, x1 + 0.0068, 0.322, (a + b) / 2 + 0.09, LINE ? "white" : "black", 0.004)
   }
   box(0.025, 0.45, z0 + 0.02, x1 - 0.025, 0.65, 0.66, "linen", 0.05) // mattress, seen at the head
@@ -300,9 +300,9 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
   // bedside table (LACK look): thick top, thick legs, a lower shelf
   const [bx0_, , bz0_, bx1_, bh, bz1_] = L3(S.bedside)
   const lg = 0.036
-  box(bx0_, bh - 0.035, bz0_, bx1_, bh, bz1_, "mahogany", 0.006)
-  for (const lx of [bx0_, bx1_ - lg]) for (const lz of [bz0_, bz1_ - lg]) box(lx, 0, lz, lx + lg, bh - 0.035, lz + lg, "mahogany", 0.003)
-  box(bx0_ + lg, 0.18, bz0_ + lg, bx1_ - lg, 0.198, bz1_ - lg, "mahogany", 0.003)
+  box(bx0_, bh - 0.035, bz0_, bx1_, bh, bz1_, "oak", 0.006)
+  for (const lx of [bx0_, bx1_ - lg]) for (const lz of [bz0_, bz1_ - lg]) box(lx, 0, lz, lx + lg, bh - 0.035, lz + lg, "oak", 0.003)
+  box(bx0_ + lg, 0.18, bz0_ + lg, bx1_ - lg, 0.198, bz1_ - lg, "oak", 0.003)
   // reading lamp on it: round base, thin stem, linen drum shade
   const [lx0, ly0, lz0, lx1, ly1, lz1] = L3(S.lamp)
   const lcx = (lx0 + lx1) / 2, lcz = (lz0 + lz1) / 2
@@ -330,7 +330,7 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
 {
   const [sx0, , sz0, sx1, sh, sz1] = L3(S.sofa)
   const arm = 0.09, legH = 0.06
-  for (const lx of [sx0 + 0.06, sx1 - 0.06]) for (const lz of [sz0 + 0.06, sz1 - 0.06]) cyl(lx, legH / 2, lz, 0.018, legH, "mahogany", "y", 20, 0.022)
+  for (const lx of [sx0 + 0.06, sx1 - 0.06]) for (const lz of [sz0 + 0.06, sz1 - 0.06]) cyl(lx, legH / 2, lz, 0.018, legH, "oak", "y", 20, 0.022)
   box(sx0, legH, sz0, sx1, 0.3, sz1, "fabric", 0.035) // base
   box(sx0, legH, sz0, sx0 + arm, 0.56, sz1, "fabric", 0.04) // arms
   box(sx1 - arm, legH, sz0, sx1, 0.56, sz1, "fabric", 0.04)
@@ -349,22 +349,22 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
 
   const [tx0, , tz0, tx1, th, tz1] = L3(S.table)
   const leg = 0.028, top = 0.04 // slim legs under a solid top
-  box(tx0, th - top, tz0, tx1, th, tz1, "mahogany", 0.006)
+  box(tx0, th - top, tz0, tx1, th, tz1, "oak", 0.006)
   for (const lx of [tx0 + 0.02, tx1 - 0.02 - leg]) for (const lz of [tz0 + 0.02, tz1 - 0.02 - leg]) {
-    box(lx, 0, lz, lx + leg, th - top, lz + leg, "mahogany", 0.003)
+    box(lx, 0, lz, lx + leg, th - top, lz + leg, "oak", 0.003)
   }
 
   for (const c of S.chairs) {
     const [cx0, , cz0, cx1, ch, cz1] = L3(c)
     const seatY = 0.42
-    box(cx0 + 0.01, seatY - 0.03, cz0 + 0.01, cx1 - 0.01, seatY, cz1 - 0.04, "mahogany", 0.012) // seat
+    box(cx0 + 0.01, seatY - 0.03, cz0 + 0.01, cx1 - 0.01, seatY, cz1 - 0.04, "oak", 0.012) // seat
     for (const lx of [cx0 + 0.035, cx1 - 0.035]) for (const lz of [cz0 + 0.04, cz1 - 0.06]) {
-      cyl(lx, (seatY - 0.03) / 2, lz, 0.016, seatY - 0.03, "mahogany", "y", 20, 0.012) // tapered legs
+      cyl(lx, (seatY - 0.03) / 2, lz, 0.016, seatY - 0.03, "oak", "y", 20, 0.012) // tapered legs
     }
-    for (const lx of [cx0 + 0.035, cx1 - 0.035]) cyl(lx, seatY + (ch - seatY) / 2, cz1 - 0.05, 0.012, ch - seatY, "mahogany")
+    for (const lx of [cx0 + 0.035, cx1 - 0.035]) cyl(lx, seatY + (ch - seatY) / 2, cz1 - 0.05, 0.012, ch - seatY, "oak")
     // curved back rail: a slice of a cylinder, bowing toward the table
     // (the arc's apex sits on the rear posts, its ends curve forward around the sitter)
-    const rail = add(new THREE.CylinderGeometry(0.42, 0.42, 0.11, 40, 1, true, -0.5, 1.0), "mahogany")
+    const rail = add(new THREE.CylinderGeometry(0.42, 0.42, 0.11, 40, 1, true, -0.5, 1.0), "oak")
     rail.material = rail.material.clone(); rail.material.side = THREE.DoubleSide
     rail.position.set((cx0 + cx1) / 2, ch - 0.08, cz1 - 0.05 - 0.42)
   }
@@ -375,14 +375,14 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
   const gx = m(S.galley_x0), wt = 0.62, run = m(S.sink[1])
   const fr0 = m(S.fridge[0]), fr1 = m(S.fridge[1]), hb0 = m(S.hob[0]), hb1 = m(S.hob[1]), sk0 = m(S.sink[0])
   box(gx + 0.04, 0, 0, px0, 0.1, run, "black") // plinth, set back
-  box(gx, 0.1, 0, px0, 0.862, sk0, "mahogany") // carcasses
-  box(gx, 0.1, sk0, px0, 0.7, run, "mahogany") // the sink base stops under the bowl
-  box(gx, 0, run, px0, 0.862, run + 0.012, "mahogany") // galley end panel (K7)
+  box(gx, 0.1, 0, px0, 0.862, sk0, "oak") // carcasses
+  box(gx, 0.1, sk0, px0, 0.7, run, "oak") // the sink base stops under the bowl
+  box(gx, 0, run, px0, 0.862, run + 0.012, "oak") // galley end panel (K7)
   // fronts with shadow gaps: fridge door (white), two hob drawers, the sink door; bar handles
   const front = (z0, z1, y0, y1, name) => box(gx - 0.019, y0, z0 + 0.002, gx - 0.001, y1, z1 - 0.002, name, 0.004)
   front(fr0, fr1, 0.1, 0.858, "white")
-  front(hb0, hb1, 0.1, 0.476, "mahogany"); front(hb0, hb1, 0.482, 0.858, "mahogany")
-  front(sk0, run, 0.1, 0.858, "mahogany")
+  front(hb0, hb1, 0.1, 0.476, "oak"); front(hb0, hb1, 0.482, 0.858, "oak")
+  front(sk0, run, 0.1, 0.858, "oak")
   const bar = (y, z0, z1) => cyl(gx - 0.035, y, (z0 + z1) / 2, 0.006, Math.min(0.16, z1 - z0 - 0.08), "steel", "z", 16)
   bar(0.8, fr0, fr1); bar(0.43, hb0, hb1); bar(0.82, hb0, hb1); bar(0.8, sk0, run)
   // induction hob: black glass with two rings
@@ -413,11 +413,11 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
   add(new THREE.TubeGeometry(curve, 40, 0.011, 16, false), "steel")
   // overhead cabinet with two doors, and the hood under it
   const [ox0, oy0, oz0, ox1, oy1, oz1] = L3(S.overhead)
-  box(ox0 + 0.02, oy0, oz0, ox1, oy1, oz1, "mahogany")
+  box(ox0 + 0.02, oy0, oz0, ox1, oy1, oz1, "oak")
   const half = (oz1 - oz0) / 2
   for (let i = 0; i < 2; i++) {
     const z0 = oz0 + i * half
-    box(ox0, oy0 + 0.002, z0 + 0.002, ox0 + 0.02, oy1 - 0.002, z0 + half - 0.002, "mahogany", 0.004)
+    box(ox0, oy0 + 0.002, z0 + 0.002, ox0 + 0.02, oy1 - 0.002, z0 + half - 0.002, "oak", 0.004)
     cyl(ox0 - 0.015, oy0 + 0.06, z0 + half / 2, 0.006, 0.16, "steel", "z", 16)
   }
   const [hdx0, hdy0, hdz0, hdx1, hdy1, hdz1] = L3(S.hood)
