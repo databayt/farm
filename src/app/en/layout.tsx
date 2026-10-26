@@ -1,10 +1,14 @@
+import { ScrollHeader } from "@/components/scroll-header"
 import { SiteHeader } from "@/components/site-header"
 
-// /en/* (the container-studio showcase) keeps the study header that used to live in the root layout.
+// /en/* (the container-studio showcase) keeps the study header, but the full-screen hero owns the
+// first screen: the header only slides in when the reader scrolls up.
 export default function EnLayout({ children }: LayoutProps<"/en">) {
   return (
     <>
-      <SiteHeader />
+      <ScrollHeader>
+        <SiteHeader />
+      </ScrollHeader>
       {children}
     </>
   )

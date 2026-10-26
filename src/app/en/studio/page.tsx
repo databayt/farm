@@ -212,7 +212,7 @@ export default function StudioPage() {
     <main className="w-full flex-1">
       {/* First screen: a photoreal concept render of the finished studio (D-018), made in Nano Banana from the
           site footage and studio-exterior.jpg, the model render from studio.glb that the docs keep using. */}
-      <section className="relative h-[calc(100svh-var(--header-height))] min-h-[520px] w-full overflow-hidden bg-[#a9c8df]">
+      <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#a9c8df]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={`${D}/render/studio-hero.jpg`} width={2400} height={1340} fetchPriority="high"
           alt="A finished container studio at golden hour: a sliding glass wall open onto a timber deck with red railings, a kitchenette and bed inside, a steel stair to lounge chairs on the roof, and eucalyptus behind."
@@ -230,36 +230,45 @@ export default function StudioPage() {
         </div>
       </section>
 
-      <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
-      {/* 2D: the furniture plan, then the sheets behind it. */}
-      <section id="plans" className="mt-14 scroll-mt-20">
-        <p className="text-muted-foreground text-sm font-medium">2D</p>
-        <h2 className="mt-1 text-3xl font-semibold tracking-tight text-balance">Everything a guest needs in 13 m²</h2>
-        <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-          Three 20 ft containers already on the farm become identical farm-stay studios: bed, kitchen,
-          shower and a roof terrace. One set of drawings serves all three.
-        </p>
-        <Figure src={`${D}/drawings/a-103.svg`} caption="A-103 · Furniture and dimension plan" />
-        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
-          {[
-            ["13.1 m²", "net floor per studio"],
-            ["11 kits", `${sheets} sheets per studio`],
-            ["56 sheets", "drawings, generated"],
-            [rwf(totals.unit_with_contingency), "per studio, placeholder prices"],
-          ].map(([v, l]) => (
-            <div key={l} className="bg-background p-5">
-              <div className="text-2xl font-semibold tracking-tight">{v}</div>
-              <div className="text-muted-foreground mt-1 text-sm">{l}</div>
-            </div>
-          ))}
+      {/* 2D, full screen: the furniture plan fills the first screen, the sheets behind it follow. */}
+      <section id="plans">
+        <div className="flex h-svh min-h-[560px] flex-col px-4 pt-10 pb-6 md:px-10">
+          <p className="text-muted-foreground text-sm font-medium">2D</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight text-balance">Everything a guest needs in 13 m²</h2>
+          <p className="text-muted-foreground mt-2 max-w-3xl text-lg text-balance">
+            Three 20 ft containers become identical farm-stay studios: bed, kitchen, shower and a roof terrace. One
+            set of drawings serves all three.
+          </p>
+          <a href={`${D}/drawings/a-103.svg`} target="_blank" rel="noreferrer"
+            className="mt-6 block min-h-0 flex-1 overflow-hidden rounded-lg border bg-white p-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={`${D}/drawings/a-103.svg`} alt="A-103 · Furniture and dimension plan" className="size-full object-contain" />
+          </a>
+          <p className="text-muted-foreground mt-2 text-sm">A-103 · Furniture and dimension plan · tap to open full size</p>
         </div>
-        <div className="mt-4 grid gap-x-6 md:grid-cols-2">
-          {PLANS.map(([id, title]) => (
-            <Figure key={id} src={`${D}/drawings/${id}.svg`} caption={`${id.toUpperCase()} · ${title}`} />
-          ))}
+        <div className="px-4 pb-6 md:px-10">
+          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
+            {[
+              ["13.1 m²", "net floor per studio"],
+              ["11 kits", `${sheets} sheets per studio`],
+              ["56 sheets", "drawings, generated"],
+              [rwf(totals.unit_with_contingency), "per studio, placeholder prices"],
+            ].map(([v, l]) => (
+              <div key={l} className="bg-background p-5">
+                <div className="text-2xl font-semibold tracking-tight">{v}</div>
+                <div className="text-muted-foreground mt-1 text-sm">{l}</div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 grid gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+            {PLANS.map(([id, title]) => (
+              <Figure key={id} src={`${D}/drawings/${id}.svg`} caption={`${id.toUpperCase()} · ${title}`} />
+            ))}
+          </div>
         </div>
       </section>
 
+      <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
       {/* 3D: the furnished cutaway, then the live model. */}
       <section id="model" className="mt-16 scroll-mt-20">
         <p className="text-muted-foreground text-sm font-medium">3D</p>
