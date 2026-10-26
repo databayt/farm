@@ -63,14 +63,52 @@ const MATERIAL: Record<string, string> = {
 type Kit = { id: string; name: string; trade: string; where: string; bought: number }
 type Piece = { name: string; qty: number; size: string; material: string }
 
-// kits.csv is written by the studio generator; one quoted field holds a comma.
-function readKits(): Kit[] {
-  const csv = readFileSync(join(process.cwd(), "public/designs/studio/data/kits.csv"), "utf8")
-  return csv.trim().split("\n").slice(1).map((line) => {
-    const f = line.match(/("[^"]*"|[^,]+)(?=,|$)/g)!.map((s) => s.replace(/^"|"$/g, ""))
-    return { id: f[0], name: f[1], trade: f[2], where: f[3], bought: Number(f[5]) }
-  })
+// The generator's CSVs: plain commas, quotes only around fields that hold one.
+function readCsv(file: string): Record<string, string>[] {
+  const [head, ...lines] = readFileSync(join(process.cwd(), "public/designs/studio/data", file), "utf8").trim().split("\n")
+  const cells = (line: string) => [...line.matchAll(/("[^"]*"|[^,]*)(,|$)/g)].slice(0, -1).map((m) => m[1].replace(/^"|"$/g, ""))
+  const keys = cells(head)
+  return lines.map((l) => Object.fromEntries(cells(l).map((v, i) => [keys[i], v])))
 }
+
+function readKits(): Kit[] {
+  return readCsv("kits.csv").map((r) => ({ id: r.kit, name: r.name, trade: r.trade, where: r.made_where, bought: Number(r.bought_lines) }))
+}
+
+const POINT_GROUP: Record<string, string> = {
+  db: "Board and protection", light: "Lights", switch: "Switches", usb: "Sockets and outlets",
+  socket: "Sockets and outlets", outlet: "Sockets and outlets", fan: "Fans",
+}
+const BOM_GROUPS = ["Board and protection", "Earthing and bonding", "Cable and conduit", "Lights", "Switches",
+  "Sockets and outlets", "Fans", "Alarms", "Appliances", "Labour"]
+
+type BomLine = { item: string; qty: number; unit: string; price: number; total: number; label: string }
+
+// Every electrical line of the BOM, sorted into the groups an electrician buys by.
+function electricalBom(points: Record<string, string>[]) {
+  const kindOf = new Map(points.map((p) => [p.description, p.kind]))
+  const groups = new Map<string, BomLine[]>(BOM_GROUPS.map((g) => [g, []]))
+  for (const r of readCsv("bom.csv")) {
+    const electrician = r.category === "labour" && r.item.startsWith("Electrician")
+    if (r.trade !== "electrical" && !electrician) continue
+    const kind = kindOf.get(r.item)
+    const group = electrician ? "Labour"
+      : r.category === "appliances" ? "Appliances"
+      : r.category === "safety" ? "Alarms"
+      : /earth|bonding/i.test(r.item) ? "Earthing and bonding"
+      : /cable|conduit/i.test(r.item) ? "Cable and conduit"
+      : kind ? POINT_GROUP[kind]
+      : /light|LED/i.test(r.item) ? "Lights"
+      : "Board and protection"
+    groups.get(group)!.push({
+      item: r.item.replace(/^Cable ([\d.]+) mm2 T\+E\/singles in conduit, /, "Cable $1 mm², "),
+      qty: Number(r.qty_per_unit), unit: r.unit, price: Number(r.unit_price_rwf), total: Number(r.total_per_unit_rwf), label: r.label,
+    })
+  }
+  return [...groups].filter(([, l]) => l.length).map(([name, lines]) => ({ name, lines, total: lines.reduce((n, l) => n + l.total, 0) }))
+}
+
+const frw = (n: number) => n.toLocaleString("en-US")
 
 const mm = (n: number) => n.toLocaleString("en-US")
 
@@ -94,6 +132,11 @@ function piecesOf(kit: string): Piece[] {
 export default function StudioPage() {
   const sheets = Object.values(totals.sheets as Record<string, number>).reduce((a, b) => a + b, 0)
   const kits = readKits()
+  const circuits = readCsv("circuits.csv")
+  const demand = Object.fromEntries(readCsv("demand.csv").map((r) => [r.item, r.amps]))
+  const points = readCsv("points.csv")
+  const bom = electricalBom(points)
+  const bomTotal = bom.reduce((n, g) => n + g.total, 0)
   const pieces = Object.fromEntries(kits.map((k) => [k.id, piecesOf(k.id)]))
   return (
     <main className="w-full flex-1">
@@ -250,6 +293,158 @@ export default function StudioPage() {
         </div>
       </section>
 
+      </div>
+
+      {/* Electrical: four full-width sections, from the supply down to every item bought. */}
+      <section id="electrical" className="mt-16 scroll-mt-20 border-t bg-muted/40 py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+          <p className="text-muted-foreground text-sm font-medium">Electrical · 1 of 4</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">The power, from the grid to the studio</h2>
+          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+            The REG grid feeds a site board, which feeds a board in each studio: a 40 A main switch, surge
+            protection and a 30 mA RCD over every circuit. The hob and the water heater never run together, which
+            keeps one studio near {Math.round(Number(demand.total_A))} A.
+          </p>
+          <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
+            {[
+              [`${demand.total_A} A`, "maximum demand per studio"],
+              [`${circuits.length} circuits`, "on one unit board"],
+              [`${demand.feeder_mm2} mm²`, "feeder from the site board"],
+              [`${demand.feeder_drop_pct} %`, "voltage drop on the feeder"],
+            ].map(([v, l]) => (
+              <div key={l} className="bg-background p-5">
+                <div className="text-2xl font-semibold tracking-tight">{v}</div>
+                <div className="text-muted-foreground mt-1 text-sm">{l}</div>
+              </div>
+            ))}
+          </div>
+          <Figure src={`${D}/drawings/e-201.svg`} caption="E-201 · Single-line diagram: site and unit board" />
+        </div>
+      </section>
+
+      <section id="circuits" className="scroll-mt-20 border-t py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+          <p className="text-muted-foreground text-sm font-medium">Electrical · 2 of 4</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">Eight circuits</h2>
+          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+            Each circuit is checked by the model: its current fits the breaker, the breaker fits the cable, and the
+            voltage drop stays under 3 % for lights and 5 % for the rest.
+          </p>
+          <div className="mt-6 overflow-x-auto rounded-xl border">
+            <table className="w-full text-sm">
+              <thead className="text-muted-foreground bg-muted/40">
+                <tr>
+                  {["Circuit", "Serves", "Breaker", "Cable", "Design current", "Run", "Voltage drop", "Points"].map((h) => (
+                    <th key={h} className="px-3 py-2 text-start font-medium whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {circuits.map((c) => (
+                  <tr key={c.circuit} className="border-t">
+                    <td className="px-3 py-2 font-medium">{c.circuit}</td>
+                    <td className="px-3 py-2">{c.serves}</td>
+                    <td className="px-3 py-2 tabular-nums">{c.device}</td>
+                    <td className="px-3 py-2 whitespace-nowrap tabular-nums">{c.cable_mm2} mm²</td>
+                    <td className="px-3 py-2 tabular-nums">{c.design_A ? `${c.design_A} A` : "–"}</td>
+                    <td className="px-3 py-2 tabular-nums">{c.run_m ? `${c.run_m} m` : "–"}</td>
+                    <td className="px-3 py-2 tabular-nums">{c.drop_pct ? `${c.drop_pct} %` : "–"}</td>
+                    <td className="text-muted-foreground px-3 py-2">{c.points || "spare"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Figure src={`${D}/drawings/e-202.svg`} caption="E-202 · Circuit schedule, earthing and bonding" />
+        </div>
+      </section>
+
+      <section id="points" className="scroll-mt-20 border-t bg-muted/40 py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+          <p className="text-muted-foreground text-sm font-medium">Electrical · 3 of 4</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">Every light, switch and socket</h2>
+          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+            {points.length} points on the plan. The bathroom has IP65 lights and no sockets, and its fan is switched
+            from outside the door.
+          </p>
+          <Figure src={`${D}/drawings/e-101.svg`} caption="E-101 · Electrical layout plan" />
+          <div className="overflow-x-auto rounded-xl border bg-background">
+            <table className="w-full text-sm">
+              <thead className="text-muted-foreground bg-muted/40">
+                <tr>
+                  {["Point", "What", "Type", "Circuit", "Height", "Load"].map((h) => (
+                    <th key={h} className="px-3 py-2 text-start font-medium whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {points.map((p) => (
+                  <tr key={p.point} className="border-t">
+                    <td className="px-3 py-2 font-medium">{p.point}</td>
+                    <td className="px-3 py-2">{p.description}</td>
+                    <td className="text-muted-foreground px-3 py-2">{p.kind === "usb" ? "socket + USB-C" : p.kind === "db" ? "board" : p.kind}</td>
+                    <td className="px-3 py-2">{p.circuit || "–"}</td>
+                    <td className="px-3 py-2 whitespace-nowrap tabular-nums">{mm(Number(p.z_mm))} mm</td>
+                    <td className="px-3 py-2 whitespace-nowrap tabular-nums">{Number(p.watts) ? `${mm(Number(p.watts))} W` : "–"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="bom" className="scroll-mt-20 border-t py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+          <p className="text-muted-foreground text-sm font-medium">Electrical · 4 of 4</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">Bill of materials</h2>
+          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+            Everything the electrician buys for one studio: about RWF {frw(bomTotal)}. Prices are placeholders until
+            three quotes come in for each line.
+          </p>
+          <div className="mt-6 overflow-x-auto rounded-xl border">
+            <table className="w-full text-sm">
+              <thead className="text-muted-foreground bg-muted/40">
+                <tr>
+                  <th className="px-3 py-2 text-start font-medium">Item</th>
+                  <th className="px-3 py-2 text-end font-medium">Qty</th>
+                  <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Unit price (RWF)</th>
+                  <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Total (RWF)</th>
+                </tr>
+              </thead>
+              {bom.map((g) => (
+                <tbody key={g.name}>
+                  <tr className="border-t bg-muted/20">
+                    <th colSpan={3} className="px-3 py-2 text-start font-semibold">{g.name}</th>
+                    <td className="px-3 py-2 text-end font-semibold tabular-nums">{frw(g.total)}</td>
+                  </tr>
+                  {g.lines.map((l, i) => (
+                    <tr key={`${l.item}-${i}`} className="border-t">
+                      <td className="px-3 py-2 ps-6">{l.item}</td>
+                      <td className="px-3 py-2 text-end whitespace-nowrap tabular-nums">{l.qty} {l.unit === "each" ? "" : l.unit}</td>
+                      <td className="text-muted-foreground px-3 py-2 text-end tabular-nums">{frw(l.price)}</td>
+                      <td className="px-3 py-2 text-end tabular-nums">{frw(l.total)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              ))}
+              <tfoot>
+                <tr className="border-t-2">
+                  <th colSpan={3} className="px-3 py-3 text-start font-semibold">Electrical, one studio</th>
+                  <td className="px-3 py-3 text-end font-semibold tabular-nums">{frw(bomTotal)}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <p className="text-muted-foreground mt-3 text-sm">
+            Full list for every trade: <a href={`${D}/data/bom.xlsx`} download className="underline underline-offset-4">bom.xlsx</a>
+            {" · "}<a href={`${D}/data/circuits.csv`} download className="underline underline-offset-4">circuits.csv</a>
+            {" · "}<a href={`${D}/data/points.csv`} download className="underline underline-offset-4">points.csv</a>
+          </p>
+        </div>
+      </section>
+
+      <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
       <section className="mt-16">
         <h2 className="text-2xl font-semibold tracking-tight">What each studio has</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
