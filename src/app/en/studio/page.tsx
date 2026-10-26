@@ -318,19 +318,24 @@ export default function StudioPage() {
       </section>
 
       {/* Floor, pinned while it builds up in fast motion, seen from above: the empty container, then flat
-          wood sheets screwed down, then the planks. Renders: scripts/studio/render/floor.html. */}
+          wood sheets screwed down, then the planks, then the bathroom's vinyl and tray. Renders: scripts/studio/render/floor.html. */}
       <section id="floor">
-        <FloorLayers base={`${D}/render/floor-base.webp`} sheets={`${D}/render/floor-sheets.webp`}
-          screws={`${D}/render/floor-screws.webp`} planks={`${D}/render/floor-planks.webp`} pieces={floorPieces}
+        <FloorLayers pieces={floorPieces}
+          src={{
+            base: `${D}/render/floor-base.webp`, sheets: `${D}/render/floor-sheets.webp`, screws: `${D}/render/floor-screws.webp`,
+            planks: `${D}/render/floor-planks.webp`, vinyl: `${D}/render/floor-vinyl.webp`, tray: `${D}/render/floor-tray.webp`,
+          }}
           alts={[
             "The container's base from straight above: worn plywood panels with rows of screws, in a red steel frame with a corner casting at each corner.",
             "Flat wood sheets laid over the whole floor and screwed down.",
-            "Oak planks laid over the living area; the bathroom end stays on the sheets.",
+            "Oak planks laid over the living area.",
+            "The bathroom end in grey safety vinyl, with a white shower tray against the back wall.",
           ]}
           stages={[
             { title: "The empty container", text: "28 mm treated hardwood ply in 1.16 × 2.4 m panels, screwed to steel cross-members every 300 mm, inside the base frame and its four corner castings." },
             { title: "Layer 1 · Flat wood", text: "2.44 × 1.22 m sheets laid wall to wall, joints staggered, and screwed down every 300 mm." },
-            { title: "Layer 2 · Planks", text: "Oak planks laid row by row from the back wall over the living area, joints staggered. The bathroom end gets vinyl later." },
+            { title: "Layer 2 · Planks", text: "Oak planks laid row by row from the back wall over the living area, joints staggered." },
+            { title: "The bathroom side", text: "Safety vinyl in one sheet with no joints, coved 100 mm up the walls, then the 1,000 × 900 low shower tray set on it." },
           ]} />
       </section>
 

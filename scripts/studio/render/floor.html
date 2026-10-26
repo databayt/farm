@@ -8,6 +8,8 @@
     ?layer=sheets  layer 1: flat wood sheets, wall to wall              -> render/floor-sheets.webp
     ?layer=screws  the screws that fix the sheets down                  -> render/floor-screws.webp
     ?layer=planks  layer 2: oak planks over the living area             -> render/floor-planks.webp
+    ?layer=vinyl   the bathroom end: safety vinyl in one sheet (S08)     -> render/floor-vinyl.webp
+    ?layer=tray    the shower tray set on the vinyl (S09)                -> render/floor-tray.webp
 
   Every layer is the full scene lit as one, cut down to its own meshes by a mask pass, so they stack
   exactly. window.PIECES lists each sheet and plank as a rectangle in fractions of the picture, in the
@@ -61,7 +63,8 @@ const X0 = -e, X1 = L + e, Z0 = -e, Z1 = W + e // the floor between the steel
 const OX = (6.058 - (X1 - X0)) / 2, OZ = (2.438 - (Z1 - Z0)) / 2 // ISO 20 ft outside: 6,058 x 2,438
 const BX0 = X0 - OX, BX1 = X1 + OX, BZ0 = Z0 - OZ, BZ1 = Z1 + OZ
 const RAIL = 0.158, CAST = [0.178, 0.162] // casting plan: along x, along z
-const SHEET_T = 0.012, PLANK_T = 0.005
+const SHEET_T = 0.012, PLANK_T = 0.005, VINYL_T = 0.002
+const TRAY = S.tray.map(m) // [x0, y0, z0, x1, y1, z1] in layout axes
 
 // ------------------------------------------------------------ textures
 let seed = 7
@@ -200,19 +203,34 @@ const planks = tex((g, w, h) => {
   }
 })
 
+// safety vinyl: light grey with the fine flecks and grip of a wet-room sheet
+const vinyl = tex((g, w, h) => {
+  g.fillStyle = "#cfd1d0"; g.fillRect(0, 0, w, h)
+  for (let i = 0; i < 26000; i++) {
+    const v = rnd()
+    g.fillStyle = v > 0.66 ? "rgba(255,255,255,0.35)" : v > 0.33 ? "rgba(90,95,98,0.3)" : "rgba(150,155,160,0.35)"
+    g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
+  }
+}, 1024, 1024)
+vinyl.wrapS = vinyl.wrapT = THREE.RepeatWrapping
+
 const std = (o) => new THREE.MeshStandardMaterial(o)
 const MAT = {
   ply: std({ map: ply, roughness: 0.82 }),
   sheet: std({ map: sheetTex, roughness: 0.7 }),
   floor: std({ map: planks, color: "#d1c8c1", roughness: 0.55 }), // room.html's floor material
   screw: std({ color: "#3a3a3c", roughness: 0.4, metalness: 0.8 }),
+  vinyl: std({ map: vinyl, roughness: 0.75 }),
+  tray: new THREE.MeshPhysicalMaterial({ color: "#f7f7f5", roughness: 0.2, clearcoat: 0.6, clearcoatRoughness: 0.15 }),
+  dish: new THREE.MeshPhysicalMaterial({ color: "#e4e5e3", roughness: 0.3, clearcoat: 0.4 }), // the dished floor inside the rim
+  drain: std({ color: "#8f9397", roughness: 0.3, metalness: 0.9 }),
   steel: std({ color: "#8e3f33", roughness: 0.55, metalness: 0.3 }), // the studio's red box (the roof's #9c4436)
   cast: std({ color: "#5f2a22", roughness: 0.75, metalness: 0.35 }),
   hole: std({ color: "#151210", roughness: 1 }),
 }
 
 // ------------------------------------------------------------ geometry
-const meshes = [], layers = { base: [], sheets: [], screws: [], planks: [] }
+const meshes = [], layers = { base: [], sheets: [], screws: [], planks: [], vinyl: [], tray: [] }
 function add(mesh, layer) { scene.add(mesh); meshes.push(mesh); layers[layer].push(mesh); return mesh }
 // a box between two corners; `span` [x0, z0, sx, sz] maps a texture once across it, seen from above
 function box(x0, y0, z0, x1, y1, z1, name, layer = "base", span) {
@@ -265,7 +283,19 @@ for (const s of SHEETS) {
 // layer 2: the planks over the living area, to the partition line
 box(X0, SHEET_T + 0.0015, Z0, px0, SHEET_T + 0.0015 + PLANK_T, Z1, "floor", "planks", [X0, Z0, ...FLOOR])
 
-const show = { base: ["base"], sheets: ["base", "sheets"], screws: ["base", "sheets", "screws"], planks: ["base", "sheets", "screws", "planks"] }[LAYER]
+// the bathroom end: one vinyl sheet from the partition line to end B, then the low tray on it, its rim a
+// shade proud of the dished floor, the waste in the middle
+const VTOP = SHEET_T + 0.0015 + VINYL_T
+box(px0, SHEET_T + 0.0015, Z0, X1, VTOP, Z1, "vinyl", "vinyl", [px0, Z0, 1.2, 1.2])
+const [tx0, tz0, , tx1, tz1, th] = TRAY
+box(tx0, VTOP, tz0, tx1, VTOP + th, tz1, "tray", "tray")
+box(tx0 + 0.05, VTOP + th, tz0 + 0.05, tx1 - 0.05, VTOP + th + 0.001, tz1 - 0.05, "dish", "tray").castShadow = false
+const waste = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.002, 32), MAT.drain)
+waste.position.set((tx0 + tx1) / 2, VTOP + th + 0.0015, (tz0 + tz1) / 2)
+add(waste, "tray")
+
+const ORDER = ["base", "sheets", "screws", "planks", "vinyl", "tray"]
+const show = ORDER.slice(0, ORDER.indexOf(LAYER) + 1)
 for (const [k, list] of Object.entries(layers)) for (const o of list) o.visible = show.includes(k)
 
 // ------------------------------------------------------------ camera: straight down, end A on the left
@@ -328,6 +358,8 @@ window.PIECES = {
     .filter((p) => p.x1 - p.x0 > 0.01 && p.z1 - p.z0 > 0.01)
     .sort((a, b) => a.r - b.r || a.x0 - b.x0)
     .map((p) => rect(p.x0, p.z0, p.x1, p.z1)),
+  vinyl: rect(px0, Z0, X1, Z1),
+  tray: rect(tx0, tz0, tx1, tz1),
 }
 document.body.dataset.ready = "1"
 </script>
