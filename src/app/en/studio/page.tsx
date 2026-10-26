@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
 import { StudioViewer } from "@/components/docs/studio-viewer"
+import { FloorLayers } from "@/components/docs/floor-layers"
 import model from "../../../../public/designs/studio/model/parts.json"
 import totals from "../../../../public/designs/studio/data/totals.json"
 
@@ -228,7 +229,7 @@ export default function StudioPage() {
               Studio in nature, with forest vibes
             </h1>
             <Button asChild className="mt-6">
-              <Link href="/#enquire">Book</Link>
+              <Link href="/#enquire">Book it now</Link>
             </Button>
           </div>
         </div>
@@ -273,6 +274,22 @@ export default function StudioPage() {
           <StudioViewer src={`${D}/model/studio.glb`} parts={`${D}/model/parts.json`} poster={`${D}/model/studio-poster.svg`}
             title="Container studio, Layout B" />
         </div>
+      </section>
+
+      {/* Floor, pinned while it builds up: the empty container, then each layer of the living floor
+          (sheets.py "FLOOR (living)"), one screen of scroll per stage. Renders: scripts/studio/render/floor.html. */}
+      <section id="floor">
+        <FloorLayers stages={[
+          { src: `${D}/render/floor-0.jpg`, title: "The empty container",
+            alt: "The empty container from above the open front: corrugated steel walls and the original 28 mm plywood floor with rows of screws.",
+            text: "The box as it arrives: 28 mm treated plywood on steel cross-members. Never sanded." },
+          { src: `${D}/render/floor-1.jpg`, title: "Layer 1 · Epoxy seal",
+            alt: "The same container with the plywood floor sealed in a grey satin epoxy coat.",
+            text: "Primer and a 100%-solids epoxy coat seal the treated ply wall to wall." },
+          { src: `${D}/render/floor-2.jpg`, title: "Layer 2 · Underlay + SPC oak",
+            alt: "The same container with natural oak SPC planks over the living area; the bathroom end still shows the grey epoxy.",
+            text: "A thin underlay and 5 mm SPC in natural oak over the living area. The bathroom end gets coved vinyl later." },
+        ]} />
       </section>
 
       {/* The numbers and the drawing set behind the 2D and 3D. */}
