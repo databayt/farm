@@ -128,3 +128,100 @@
     @apply font-sans;
   }
 }
+/* Digital Farm homepage (src/components/home). Colours from study/brand/brand.md §10 and the
+   containers' own paint. Utilities like bg-chalk exist everywhere, but the shadcn tokens are
+   only overridden under [data-theme="farm"], so /docs keeps its neutral look. */
+@theme {
+  --color-chalk: #f7f5ef;
+  --color-soil: #2b2a26;
+  --color-leaf: #3f6b3a;
+  --color-lake: #2e6f8e;
+  --color-clay: #b5683a;
+  --color-saffron: #d9a21b;
+  --color-oxide: #7e2f26;
+  --color-teal: #3e8a86;
+}
+
+@theme inline {
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
+}
+
+[data-theme="farm"] {
+  --background: var(--color-chalk);
+  --foreground: var(--color-soil);
+  --card: #fbfaf6;
+  --card-foreground: var(--color-soil);
+  --popover: #fbfaf6;
+  --popover-foreground: var(--color-soil);
+  --primary: var(--color-leaf);
+  --primary-foreground: var(--color-chalk);
+  --secondary: #ece8de;
+  --secondary-foreground: var(--color-soil);
+  --muted: #ece8de;
+  --muted-foreground: #5c5a53;
+  --accent: #ece8de;
+  --accent-foreground: var(--color-soil);
+  --border: #dcd6c8;
+  --input: #dcd6c8;
+  --ring: var(--color-lake);
+}
+
+/* The fixed header must never cover a focused element or an anchor target (WCAG 2.4.11).
+   A literal: --header-height lives on <body>, so <html> can't read it. */
+html:has([data-theme="farm"]) {
+  scroll-padding-top: 3.5rem;
+}
+
+#farm-menu::backdrop {
+  background: rgb(43 42 38 / 0.45);
+}
+
+@keyframes farm-rise {
+  from {
+    opacity: 0;
+    translate: 0 1.75rem;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes farm-settle {
+  from {
+    scale: 1.08;
+  }
+  to {
+    scale: 1;
+  }
+}
+
+/* Plain rules, not Tailwind arbitrary properties: Lightning CSS drops an animation-timeline
+   written before the animation shorthand, so the shorthand always comes first. */
+@media (prefers-reduced-motion: no-preference) {
+  html:has([data-theme="farm"]) {
+    scroll-behavior: smooth;
+  }
+  [data-theme="farm"] .farm-intro {
+    animation: farm-rise 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  [data-theme="farm"] .farm-intro-2 {
+    animation: farm-rise 1.1s 0.15s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  [data-theme="farm"] .farm-intro-3 {
+    animation: farm-rise 1.1s 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  [data-theme="farm"] .farm-settle {
+    animation: farm-settle 14s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-theme="farm"] .farm-reveal {
+      animation: farm-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 28%;
+    }
+  }
+}
