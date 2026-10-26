@@ -8,7 +8,6 @@ import { Figure } from "@/components/docs/figure"
 import { BuildUp } from "@/components/docs/build-up"
 import { ItemRail } from "@/components/docs/item-rail"
 import { bedStock } from "@/lib/bed-stock"
-import model from "../../../../public/designs/studio/model/parts.json"
 import totals from "../../../../public/designs/studio/data/totals.json"
 import floorPieces from "../../../../public/designs/studio/render/floor-pieces.json"
 import wallPieces from "../../../../public/designs/studio/render/wall-pieces.json"
@@ -128,41 +127,12 @@ const STEPS = [
   { n: "5", title: "Assemble", text: "Two people, one tool set, 27 wordless steps, from insulation to the roof terrace." },
 ]
 
-// 2D: the plan first, then the sheets that explain it.
-const PLANS = [
-  ["a-201", "Interior elevations: back wall and front wall"],
-  ["a-202", "End elevations and cross-section"],
-  ["s-101", "Roof terrace, deck canopy and stair"],
-  ["a-401", "Wall, roof and floor build-up"],
-  ["e-101", "Electrical layout"],
-  ["p-101", "Plumbing: supply and drainage"],
-]
-
-// The sheet that shows each kit best: the exploded joinery drawings, or the services and build-up sheets.
-const KIT_SHEET: Record<string, string> = {
-  K1: "j-101", K2: "j-102", K3: "j-103", K4: "j-104", K5: "j-105", K6: "j-106",
-  K7: "j-107", K8: "e-101", K9: "p-201", K10: "a-401", K11: "j-108",
-}
-
-const MATERIAL: Record<string, string> = {
-  PLY12: "12 mm ply", PLY18: "18 mm board", MPLY18: "18 mm marine ply", WTOP38: "38 mm worktop",
-  STEEL: "steel", TIMBER: "hardwood", POLY: "polycarbonate", MESH: "steel mesh", STAIRFRAME: "steel",
-  white: "fitting", electric: "electrical", eps: "EPS foam", tile: "tiled board", base: "steel",
-}
-
-type Kit = { id: string; name: string; trade: string; where: string; bought: number }
-type Piece = { name: string; qty: number; size: string; material: string }
-
 // The generator's CSVs: plain commas, quotes only around fields that hold one.
 function readCsv(file: string): Record<string, string>[] {
   const [head, ...lines] = readFileSync(join(process.cwd(), "public/designs/studio/data", file), "utf8").trim().split("\n")
   const cells = (line: string) => [...line.matchAll(/("[^"]*"|[^,]*)(,|$)/g)].slice(0, -1).map((m) => m[1].replace(/^"|"$/g, ""))
   const keys = cells(head)
   return lines.map((l) => Object.fromEntries(cells(l).map((v, i) => [keys[i], v])))
-}
-
-function readKits(): Kit[] {
-  return readCsv("kits.csv").map((r) => ({ id: r.kit, name: r.name, trade: r.trade, where: r.made_where, bought: Number(r.bought_lines) }))
 }
 
 const POINT_GROUP: Record<string, string> = {
@@ -267,26 +237,7 @@ function BomTable({ groups, total, label }: { groups: BomGroup[]; total: number;
 
 const mm = (n: number) => n.toLocaleString("en-US")
 
-// Collapse numbered copies ("Stair tread 5", "Joist RHS 80x40x3") into one row with a count.
-function piecesOf(kit: string): Piece[] {
-  const rows = new Map<string, Piece>()
-  for (const p of model.parts.filter((p) => p.kit === kit)) {
-    const name = p.name.replace(/\s*\([^)]*\)/g, "").replace(/ \d{1,2}$/, "").trim()
-    const size = [...p.size].sort((a, b) => b - a).map(mm).join(" × ")
-    const row = rows.get(name)
-    if (row) {
-      row.qty += 1
-      if (row.size !== size) row.size = "varies"
-    } else {
-      rows.set(name, { name, qty: 1, size, material: MATERIAL[p.material] ?? p.material })
-    }
-  }
-  return [...rows.values()]
-}
-
 export default function StudioPage() {
-  const sheets = Object.values(totals.sheets as Record<string, number>).reduce((a, b) => a + b, 0)
-  const kits = readKits()
   const circuits = readCsv("circuits.csv")
   const demand = Object.fromEntries(readCsv("demand.csv").map((r) => [r.item, r.amps]))
   const points = readCsv("points.csv")
@@ -297,7 +248,6 @@ export default function StudioPage() {
   const shared = readCsv("shared-works.csv").filter((w) => !/site board|REG/i.test(w.item))
   const plumbing = plumbingBom()
   const plumbingTotal = plumbing.reduce((n, g) => n + g.total, 0)
-  const pieces = Object.fromEntries(kits.map((k) => [k.id, piecesOf(k.id)]))
   return (
     <main className="w-full flex-1">
       {/* First screen: a photoreal concept render of the finished studio (D-018), made in Gemini (2026-10-27):
@@ -429,118 +379,6 @@ export default function StudioPage() {
           </div>
         </section>
       ))}
-
-      {/* The numbers and the drawing set behind the 2D and 3D. */}
-      <section id="sheets">
-        <div className="px-4 pb-6 md:px-10">
-          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
-            {[
-              ["13.1 m²", "net floor"],
-              ["11 kits", `${sheets} sheets of board`],
-              [`${readCsv("drawings.csv").length} sheets`, "drawings, generated"],
-              [rwf(totals.unit_with_contingency), "the studio, placeholder prices"],
-            ].map(([v, l]) => (
-              <div key={l} className="bg-background p-5">
-                <div className="text-2xl font-semibold tracking-tight">{v}</div>
-                <div className="text-muted-foreground mt-1 text-sm">{l}</div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 grid gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-            {PLANS.map(([id, title]) => (
-              <Figure key={id} src={`${D}/drawings/${id}.svg`} caption={`${id.toUpperCase()} · ${title}`} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
-      {/* The building blocks: the studio is eleven kits. */}
-      <section id="blocks" className="mt-16 scroll-mt-20">
-        <p className="text-muted-foreground text-sm font-medium">Building blocks</p>
-        <h2 className="mt-1 text-3xl font-semibold tracking-tight">Eleven kits make the studio</h2>
-        <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-          Each kit is packed flat, labelled and handed to one trade.
-        </p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {kits.map((k) => (
-            <a key={k.id} href={`#${k.id.toLowerCase()}`} className="group overflow-hidden rounded-xl border transition-colors hover:border-foreground/30">
-              <div className="aspect-[4/3] overflow-hidden border-b bg-white p-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`${D}/drawings/${KIT_SHEET[k.id]}.svg`} alt={`${k.id} ${k.name}`} loading="lazy"
-                  className="size-full object-contain" />
-              </div>
-              <div className="p-4">
-                <div className="text-muted-foreground text-xs font-medium">{k.id}</div>
-                <h3 className="mt-1 font-medium">{k.name}</h3>
-                <p className="text-muted-foreground mt-1 text-sm">
-                  {pieces[k.id].reduce((n, p) => n + p.qty, 0)} pieces · {k.trade} · {k.where}
-                </p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      {/* Each block broken into its pieces, straight from the model's part list. */}
-      <section id="pieces" className="mt-16 scroll-mt-20">
-        <p className="text-muted-foreground text-sm font-medium">Pieces</p>
-        <h2 className="mt-1 text-3xl font-semibold tracking-tight">Every kit, piece by piece</h2>
-        <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-          Open a kit to see what is in the box. Sizes are in millimetres, largest first.
-        </p>
-        <div className="mt-6 divide-y rounded-xl border">
-          {kits.map((k) => (
-            <details key={k.id} id={k.id.toLowerCase()} className="group scroll-mt-20">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-4 hover:bg-muted/50">
-                <span>
-                  <span className="text-muted-foreground me-2 text-sm">{k.id}</span>
-                  <span className="font-medium">{k.name}</span>
-                </span>
-                <span className="text-muted-foreground shrink-0 text-sm">
-                  {pieces[k.id].reduce((n, p) => n + p.qty, 0)} pieces
-                  <span className="ms-2 inline-block transition-transform group-open:rotate-90">›</span>
-                </span>
-              </summary>
-              <div className="grid gap-6 px-4 pb-6 md:grid-cols-[1fr_1.2fr]">
-                <div className="md:sticky md:top-16 md:self-start">
-                  <Figure src={`${D}/drawings/${KIT_SHEET[k.id]}.svg`} caption={`${KIT_SHEET[k.id].toUpperCase()} · ${k.name}`} />
-                </div>
-                <div className="my-6 overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead className="text-muted-foreground text-start">
-                      <tr className="border-b">
-                        <th className="py-2 pe-3 text-start font-medium">Piece</th>
-                        <th className="py-2 pe-3 text-end font-medium">Qty</th>
-                        <th className="py-2 pe-3 text-start font-medium">Size</th>
-                        <th className="hidden py-2 text-start font-medium sm:table-cell">Material</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {pieces[k.id].map((p) => (
-                        <tr key={p.name} className="border-b last:border-0">
-                          <td className="py-2 pe-3">{p.name}</td>
-                          <td className="py-2 pe-3 text-end tabular-nums">{p.qty}</td>
-                          <td className="text-muted-foreground py-2 pe-3 whitespace-nowrap tabular-nums">{p.size}</td>
-                          <td className="text-muted-foreground hidden py-2 whitespace-nowrap sm:table-cell">{p.material}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  {k.bought > 0 ? (
-                    <p className="text-muted-foreground mt-3 text-sm">
-                      Plus {k.bought} bought lines (fixings, fittings, cable, pipe) in the{" "}
-                      <a href={`${D}/data/bom.csv`} download className="underline underline-offset-4">bill of materials</a>.
-                    </p>
-                  ) : null}
-                </div>
-              </div>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      </div>
 
       {/* Electrical: four full-width sections, from the supply down to every item bought. */}
       <section id="electrical" className="mt-16 scroll-mt-20 border-t bg-muted/40 py-16">
