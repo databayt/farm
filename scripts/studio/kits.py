@@ -325,6 +325,7 @@ def k3_kitchen(lo: Layout) -> Kit:
 
 
 # ------------------------------------------------------------------------------- K4 bed
+SLAT_W, SLAT_GAP = 90.0, 10.0  # deck slat width and the target gap between slats
 def k4_bed(lo: Layout) -> Kit:
     """MALM-style bed straight on the back wall and end A: a tall headboard panel, high sides, a
     fixed ventilated deck, and two storage boxes on castors that pull out on the room side."""
@@ -337,21 +338,30 @@ def k4_bed(lo: Layout) -> Kit:
         n += 1
         return k.add(Part(f"K4-{n:02d}", name, "K4", mat, box, step="S15", edges=edges, ops=ops or [], explode=ex))
 
-    bolts = [Op("drill", "A", 40, 80, 10, 18, joint="bolt"), Op("drill", "A", 40, ZT - 120, 10, 18, joint="bolt")]
+    def bolts(h: float) -> list[Op]:  # two bolts up a rail's end, or one on its centreline when it is low
+        vs = [80.0, h - 120] if h >= 300 else [h / 2]
+        return [Op("drill", "A", 40, v, 10, 18, joint="bolt") for v in vs]
+
     part("Headboard (full height, on the back wall)", Box(0, 0, 0, X1, Y0, 1000),
          [Op("cutout", "B", 200, 750, w=68, h=68, joint="usb")], "L1", ex=(0, -150, 0))
-    part("Rail, end-A side", Box(0, Y0, 0, T18, Y1, ZT - T18), list(bolts), ex=(-200, 0, 0))
-    part("Rail, room side (top)", Box(X1 - T18, Y0, ZT - T18 - 80, X1, Y1, ZT - T18), list(bolts), "L1",
+    part("Rail, end-A side", Box(0, Y0, 0, T18, Y1, ZT - T18), bolts(ZT - T18), ex=(-200, 0, 0))
+    part("Rail, room side (top)", Box(X1 - T18, Y0, ZT - T18 - 80, X1, Y1, ZT - T18), bolts(80), "L1",
          ex=(250, 0, 0))
-    part("Rail, room side (plinth)", Box(X1 - T18, Y0, 0, X1, Y1, 60), list(bolts), "L1", ex=(250, 0, 0))
-    part("Rail, head", Box(T18, Y0, 0, X1 - T18, Y0 + T18, ZT - T18), list(bolts), ex=(0, -200, 0))
-    part("Rail, foot", Box(T18, Y1 - T18, 0, X1 - T18, Y1, ZT - T18), list(bolts), "L1", ex=(0, 200, 0))
+    part("Rail, room side (plinth)", Box(X1 - T18, Y0, 0, X1, Y1, 60), bolts(60), "L1", ex=(250, 0, 0))
+    part("Rail, head", Box(T18, Y0, 0, X1 - T18, Y0 + T18, ZT - T18), bolts(ZT - T18), ex=(0, -200, 0))
+    part("Rail, foot", Box(T18, Y1 - T18, 0, X1 - T18, Y1, ZT - T18), bolts(ZT - T18), "L1", ex=(0, 200, 0))
     part("Spine", Box(922, Y0 + T18, 0, 940, Y1 - T18, ZT - T18), ex=(0, 0, 150))
-    for i, (a, b) in enumerate(split(T18, X1 - T18, 820)):
-        part(f"Deck panel {i + 1} (ventilated)", Box(a, Y0, ZT - T18, b, Y1, ZT),
-             [Op("drill", "B", 80 + 160 * j, 100 + 200 * r, 30, T18, joint="vent")
-              for j in range(int((b - a - 100) // 160)) for r in range(int((Y1 - Y0 - 150) // 200))],
-             ex=(0, 0, 300))
+    # the deck: wooden slats laid across the bed, side rail to side rail over the spine, with a fine
+    # even gap between them for air (the founder's call, replacing two drilled panels)
+    # each slat rests on a ledger inside each side rail and on the spine, two screws at each
+    part("Slat ledger, end-A side", Box(T18, Y0 + T18, ZT - T18 - 60, 2 * T18, Y1 - T18, ZT - T18), ex=(-120, 0, 0))
+    part("Slat ledger, room side", Box(X1 - 2 * T18, Y0 + T18, ZT - T18 - 60, X1 - T18, Y1 - T18, ZT - T18),
+         ex=(120, 0, 0))
+    n_slats = int((Y1 - Y0 + SLAT_GAP) // (SLAT_W + SLAT_GAP))
+    gap = (Y1 - Y0 - n_slats * SLAT_W) / (n_slats - 1)
+    for i in range(n_slats):
+        y = Y0 + i * (SLAT_W + gap)
+        part(f"Deck slat {i + 1}", Box(T18, y, ZT - T18, X1 - T18, y + SLAT_W, ZT), edges="L2", ex=(0, 0, 300))
     (da0, _), (_, db1) = lo.drawers
     part("Side panel, head end", Box(X1 - T18, Y0 + T18, 60, X1, da0, ZT - T18 - 80), [], "L2S2", ex=(300, 0, 0))
     part("Drawer divider", Box(940, lo.drawers[0][1], 0, X1 - T18, lo.drawers[1][0], ZT - T18 - 80),
@@ -369,8 +379,8 @@ def k4_bed(lo: Layout) -> Kit:
                  "furnishing", 1, "each", "mattress", Box(20, Y0 + 28, ZT, X1 - 20, Y1 - 10, ZT + 200), step="S15",
                  color="fabric"))
     k.keepouts.append(KeepOut("KO-DRAWERS", Box(X1, da0, 0, X1 + 620, db1, 450), "Storage boxes pull out 600", "K4"))
-    k.steps.append(Step("S15", "K4", "Fix the headboard to the back wall; bolt the frame; drop in the deck; slide in "
-                        "the storage boxes", [p.id for p in k.parts], {"C": 20, "K": 8}, 2))
+    k.steps.append(Step("S15", "K4", "Fix the headboard to the back wall; bolt the frame; screw down the slats; slide in "
+                        "the storage boxes", [p.id for p in k.parts], {"C": 20, "K": 8, "F": 6 * n_slats + 20}, 2))
     return k
 
 

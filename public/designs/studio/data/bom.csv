@@ -1,15 +1,15 @@
 kit,category,trade,item,qty_per_unit,unit,unit_price_rwf,label,source,total_per_unit_rwf,note
 K1-K7,boards,carpentry,MPLY18 sheet 2440x1220x18,3,sheet,60000,A,AS-21,180000,18 mm marine / WBP plywood (STU-31 lists film-faced)
 K1-K7,boards,carpentry,PLY12 sheet 2440x1220x12,15,sheet,35000,A,AS-21,525000,12 mm plywood
-K1-K7,boards,carpentry,PLY18 sheet 2440x1220x18,9,sheet,45000,A,AS-21,405000,"18 mm plywood or MR melamine board, 2440 x 1220"
+K1-K7,boards,carpentry,PLY18 sheet 2440x1220x18,8,sheet,45000,A,AS-21,360000,"18 mm plywood or MR melamine board, 2440 x 1220"
 K1-K7,boards,carpentry,WTOP38 sheet 3050x650x38,1,sheet,90000,A,AS-21,90000,38 mm worktop blank 3000 x 620
-K1-K7,boards,carpentry,"ABS edge band (2 mm visible, 0.8 mm hidden)",90.2,m,600,A,AS-21,54120,"ABS edge band, per metre"
+K1-K7,boards,carpentry,"ABS edge band (2 mm visible, 0.8 mm hidden)",160.7,m,600,A,AS-21,96420,"ABS edge band, per metre"
 K2-K7,hardware,carpentry,Bag A: Confirmat screw 7 x 50,37.8,each,60,A,AS-21,2268,
 K2-K7,hardware,carpentry,Bag B: Wood dowel 8 x 35,25.2,each,20,A,AS-21,504,
-K2-K7,hardware,carpentry,Bag C: Connector bolt M6 x 60 + barrel nut 10 mm,31.5,each,600,A,AS-21,18900,
+K2-K7,hardware,carpentry,Bag C: Connector bolt M6 x 60 + barrel nut 10 mm,29.4,each,600,A,AS-21,17640,
 K2-K7,hardware,carpentry,Bag D: Cup hinge 35 mm soft-close + plate,10.5,each,2500,A,AS-21,26250,
 K2-K7,hardware,carpentry,Bag E: Shelf pin 5 mm,12.6,each,30,A,AS-21,378,
-K2-K7,hardware,carpentry,Bag F: Wood screw 4 x 30,298.2,each,15,A,AS-21,4473,
+K2-K7,hardware,carpentry,Bag F: Wood screw 4 x 30,445.2,each,15,A,AS-21,6678,
 K2-K7,hardware,carpentry,Bag G: Ball-bearing runner 450 mm (pair),2.1,each,9000,A,AS-21,18900,per pair
 K2-K7,hardware,carpentry,Bag J: Handle 128 mm centres,7.35,each,2000,A,AS-21,14700,
 K2-K7,hardware,carpentry,Bag K: Castor 50 mm,8.4,each,1500,A,AS-21,12600,

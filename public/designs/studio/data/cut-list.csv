@@ -65,25 +65,45 @@ K3-T-07,K3,Overhead cabinet door 2,PLY18,797,496,18,L2S2,2.59,2,0,S12
 K3-WT,K3,Worktop 38 mm,WTOP38,1600,620,38,L1,1.6,2,0,S13
 K4-01,K4,"Headboard (full height, on the back wall)",PLY18,1640,1000,18,L1,1.64,1,0,S15
 K4-02,K4,"Rail, end-A side",PLY18,2020,432,18,,0,2,0,S15
-K4-03,K4,"Rail, room side (top)",PLY18,2020,80,18,L1,2.02,2,0,S15
-K4-04,K4,"Rail, room side (plinth)",PLY18,2020,60,18,L1,2.02,2,0,S15
+K4-03,K4,"Rail, room side (top)",PLY18,2020,80,18,L1,2.02,1,0,S15
+K4-04,K4,"Rail, room side (plinth)",PLY18,2020,60,18,L1,2.02,1,0,S15
 K4-05,K4,"Rail, head",PLY18,1604,432,18,,0,2,0,S15
 K4-06,K4,"Rail, foot",PLY18,1604,432,18,L1,1.6,2,0,S15
 K4-07,K4,Spine,PLY18,1984,432,18,,0,0,0,S15
-K4-08,K4,Deck panel 1 (ventilated),PLY18,2020,802,18,,0,36,0,S15
-K4-09,K4,Deck panel 2 (ventilated),PLY18,2020,802,18,,0,36,0,S15
-K4-10,K4,"Side panel, head end",PLY18,754,292,18,L2S2,2.09,0,0,S15
-K4-11,K4,Drawer divider,PLY18,682,352,18,,0,0,0,S15
-K4-12,K4,Storage box 1 front,PLY18,602,288,18,L2S2,1.78,0,0,S15
-K4-13,K4,Storage box 1 side 1,PLY12,600,230,12,,0,0,0,S15
-K4-14,K4,Storage box 1 side 2,PLY12,600,230,12,,0,0,0,S15
-K4-15,K4,Storage box 1 back,PLY12,562,230,12,,0,0,0,S15
-K4-16,K4,Storage box 1 bottom,PLY12,588,562,12,,0,0,0,S15
-K4-17,K4,Storage box 2 front,PLY18,602,288,18,L2S2,1.78,0,0,S15
-K4-18,K4,Storage box 2 side 1,PLY12,600,230,12,,0,0,0,S15
-K4-19,K4,Storage box 2 side 2,PLY12,600,230,12,,0,0,0,S15
-K4-20,K4,Storage box 2 back,PLY12,562,230,12,,0,0,0,S15
-K4-21,K4,Storage box 2 bottom,PLY12,588,562,12,,0,0,0,S15
+K4-08,K4,"Slat ledger, end-A side",PLY18,1984,60,18,,0,0,0,S15
+K4-09,K4,"Slat ledger, room side",PLY18,1984,60,18,,0,0,0,S15
+K4-10,K4,Deck slat 1,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-11,K4,Deck slat 2,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-12,K4,Deck slat 3,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-13,K4,Deck slat 4,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-14,K4,Deck slat 5,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-15,K4,Deck slat 6,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-16,K4,Deck slat 7,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-17,K4,Deck slat 8,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-18,K4,Deck slat 9,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-19,K4,Deck slat 10,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-20,K4,Deck slat 11,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-21,K4,Deck slat 12,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-22,K4,Deck slat 13,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-23,K4,Deck slat 14,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-24,K4,Deck slat 15,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-25,K4,Deck slat 16,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-26,K4,Deck slat 17,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-27,K4,Deck slat 18,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-28,K4,Deck slat 19,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-29,K4,Deck slat 20,PLY18,1604,90,18,L2,3.21,0,0,S15
+K4-30,K4,"Side panel, head end",PLY18,754,292,18,L2S2,2.09,0,0,S15
+K4-31,K4,Drawer divider,PLY18,682,352,18,,0,0,0,S15
+K4-32,K4,Storage box 1 front,PLY18,602,288,18,L2S2,1.78,0,0,S15
+K4-33,K4,Storage box 1 side 1,PLY12,600,230,12,,0,0,0,S15
+K4-34,K4,Storage box 1 side 2,PLY12,600,230,12,,0,0,0,S15
+K4-35,K4,Storage box 1 back,PLY12,562,230,12,,0,0,0,S15
+K4-36,K4,Storage box 1 bottom,PLY12,588,562,12,,0,0,0,S15
+K4-37,K4,Storage box 2 front,PLY18,602,288,18,L2S2,1.78,0,0,S15
+K4-38,K4,Storage box 2 side 1,PLY12,600,230,12,,0,0,0,S15
+K4-39,K4,Storage box 2 side 2,PLY12,600,230,12,,0,0,0,S15
+K4-40,K4,Storage box 2 back,PLY12,562,230,12,,0,0,0,S15
+K4-41,K4,Storage box 2 bottom,PLY12,588,562,12,,0,0,0,S15
 K5-01,K5,Table top,PLY18,340,340,18,L2S2,1.36,0,0,S16
 K5-02,K5,Leg strip (two make a 36 x 36 leg),PLY18,532,36,18,L1,0.53,0,0,S16
 K5-03,K5,Leg strip (two make a 36 x 36 leg),PLY18,532,36,18,L1,0.53,0,0,S16

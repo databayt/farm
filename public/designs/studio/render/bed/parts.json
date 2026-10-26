@@ -1,0 +1,1967 @@
+{
+ "kit": "K4",
+ "name": "Bed",
+ "kerf": 4,
+ "trim": 10,
+ "parts": [
+  {
+   "id": "K4-01",
+   "name": "Headboard (full height, on the back wall)",
+   "type": "Headboard (full height, on the back wall)",
+   "material": "PLY18",
+   "size": [
+    1640,
+    1000,
+    18
+   ],
+   "box": [
+    0,
+    0,
+    0,
+    1640,
+    18,
+    1000
+   ],
+   "taxis": 1,
+   "axes": [
+    0,
+    2
+   ],
+   "explode": [
+    0,
+    -150,
+    0
+   ],
+   "edges": "one long edge",
+   "edgeM": 1.64,
+   "holes": [],
+   "cutouts": [
+    {
+     "at": [
+      200,
+      18,
+      750
+     ],
+     "w": 68,
+     "h": 68,
+     "joint": "usb"
+    }
+   ],
+   "sheet": {
+    "material": "PLY18",
+    "index": 1,
+    "of": 5,
+    "x": 10,
+    "y": 10,
+    "l": 1640,
+    "w": 1000
+   }
+  },
+  {
+   "id": "K4-02",
+   "name": "Rail, end-A side",
+   "type": "Rail, end-A side",
+   "material": "PLY18",
+   "size": [
+    2020,
+    432,
+    18
+   ],
+   "box": [
+    0,
+    18,
+    0,
+    18.0,
+    2038,
+    432.0
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    -200,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [
+    {
+     "at": [
+      0,
+      58,
+      80.0
+     ],
+     "dia": 10,
+     "joint": "bolt"
+    },
+    {
+     "at": [
+      0,
+      58,
+      312.0
+     ],
+     "dia": 10,
+     "joint": "bolt"
+    }
+   ],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 2,
+    "of": 5,
+    "x": 10,
+    "y": 10,
+    "l": 2020,
+    "w": 432.0
+   }
+  },
+  {
+   "id": "K4-03",
+   "name": "Rail, room side (top)",
+   "type": "Rail, room side (top)",
+   "material": "PLY18",
+   "size": [
+    2020,
+    80,
+    18
+   ],
+   "box": [
+    1622.0,
+    18,
+    352.0,
+    1640,
+    2038,
+    432.0
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    250,
+    0,
+    0
+   ],
+   "edges": "one long edge",
+   "edgeM": 2.02,
+   "holes": [
+    {
+     "at": [
+      1622.0,
+      58,
+      392.0
+     ],
+     "dia": 10,
+     "joint": "bolt"
+    }
+   ],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 5,
+    "of": 5,
+    "x": 10,
+    "y": 291.9999999999999,
+    "l": 2020,
+    "w": 80.0
+   }
+  },
+  {
+   "id": "K4-04",
+   "name": "Rail, room side (plinth)",
+   "type": "Rail, room side (plinth)",
+   "material": "PLY18",
+   "size": [
+    2020,
+    60,
+    18
+   ],
+   "box": [
+    1622.0,
+    18,
+    0,
+    1640,
+    2038,
+    60
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    250,
+    0,
+    0
+   ],
+   "edges": "one long edge",
+   "edgeM": 2.02,
+   "holes": [
+    {
+     "at": [
+      1622.0,
+      58,
+      30.0
+     ],
+     "dia": 10,
+     "joint": "bolt"
+    }
+   ],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 1138.0,
+    "l": 2020,
+    "w": 60
+   }
+  },
+  {
+   "id": "K4-05",
+   "name": "Rail, head",
+   "type": "Rail, head",
+   "material": "PLY18",
+   "size": [
+    1604,
+    432,
+    18
+   ],
+   "box": [
+    18.0,
+    18,
+    0,
+    1622.0,
+    36.0,
+    432.0
+   ],
+   "taxis": 1,
+   "axes": [
+    0,
+    2
+   ],
+   "explode": [
+    0,
+    -200,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [
+    {
+     "at": [
+      58.0,
+      18,
+      80.0
+     ],
+     "dia": 10,
+     "joint": "bolt"
+    },
+    {
+     "at": [
+      58.0,
+      18,
+      312.0
+     ],
+     "dia": 10,
+     "joint": "bolt"
+    }
+   ],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 3,
+    "of": 5,
+    "x": 10,
+    "y": 10,
+    "l": 1604.0,
+    "w": 432.0
+   }
+  },
+  {
+   "id": "K4-06",
+   "name": "Rail, foot",
+   "type": "Rail, foot",
+   "material": "PLY18",
+   "size": [
+    1604,
+    432,
+    18
+   ],
+   "box": [
+    18.0,
+    2020.0,
+    0,
+    1622.0,
+    2038,
+    432.0
+   ],
+   "taxis": 1,
+   "axes": [
+    0,
+    2
+   ],
+   "explode": [
+    0,
+    200,
+    0
+   ],
+   "edges": "one long edge",
+   "edgeM": 1.6,
+   "holes": [
+    {
+     "at": [
+      58.0,
+      2020.0,
+      80.0
+     ],
+     "dia": 10,
+     "joint": "bolt"
+    },
+    {
+     "at": [
+      58.0,
+      2020.0,
+      312.0
+     ],
+     "dia": 10,
+     "joint": "bolt"
+    }
+   ],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 3,
+    "of": 5,
+    "x": 10,
+    "y": 446.0,
+    "l": 1604.0,
+    "w": 432.0
+   }
+  },
+  {
+   "id": "K4-07",
+   "name": "Spine",
+   "type": "Spine",
+   "material": "PLY18",
+   "size": [
+    1984,
+    432,
+    18
+   ],
+   "box": [
+    922,
+    36.0,
+    0,
+    940,
+    2020.0,
+    432.0
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    0,
+    0,
+    150
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 2,
+    "of": 5,
+    "x": 10,
+    "y": 446.0,
+    "l": 1984.0,
+    "w": 432.0
+   }
+  },
+  {
+   "id": "K4-08",
+   "name": "Slat ledger, end-A side",
+   "type": "Slat ledger, end-A side",
+   "material": "PLY18",
+   "size": [
+    1984,
+    60,
+    18
+   ],
+   "box": [
+    18.0,
+    36.0,
+    372.0,
+    36.0,
+    2020.0,
+    432.0
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    -120,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 5,
+    "of": 5,
+    "x": 10,
+    "y": 375.9999999999999,
+    "l": 1984.0,
+    "w": 60.0
+   }
+  },
+  {
+   "id": "K4-09",
+   "name": "Slat ledger, room side",
+   "type": "Slat ledger, room side",
+   "material": "PLY18",
+   "size": [
+    1984,
+    60,
+    18
+   ],
+   "box": [
+    1604.0,
+    36.0,
+    372.0,
+    1622.0,
+    2020.0,
+    432.0
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    120,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 5,
+    "of": 5,
+    "x": 10,
+    "y": 439.9999999999999,
+    "l": 1984.0,
+    "w": 60.0
+   }
+  },
+  {
+   "id": "K4-10",
+   "name": "Deck slat 1",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    18.0,
+    432.0,
+    1622.0,
+    108.0,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 1,
+    "of": 5,
+    "x": 10,
+    "y": 1014,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-11",
+   "name": "Deck slat 2",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    119.57894736842105,
+    432.0,
+    1622.0,
+    209.57894736842104,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 5,
+    "of": 5,
+    "x": 10,
+    "y": 10,
+    "l": 1604.0,
+    "w": 89.99999999999999
+   }
+  },
+  {
+   "id": "K4-12",
+   "name": "Deck slat 3",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    221.1578947368421,
+    432.0,
+    1622.0,
+    311.1578947368421,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 5,
+    "of": 5,
+    "x": 10,
+    "y": 103.99999999999999,
+    "l": 1604.0,
+    "w": 89.99999999999997
+   }
+  },
+  {
+   "id": "K4-13",
+   "name": "Deck slat 4",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    322.7368421052632,
+    432.0,
+    1622.0,
+    412.7368421052632,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 1,
+    "of": 5,
+    "x": 10,
+    "y": 1108.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-14",
+   "name": "Deck slat 5",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    424.3157894736842,
+    432.0,
+    1622.0,
+    514.3157894736842,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 5,
+    "of": 5,
+    "x": 10,
+    "y": 197.99999999999994,
+    "l": 1604.0,
+    "w": 89.99999999999994
+   }
+  },
+  {
+   "id": "K4-15",
+   "name": "Deck slat 6",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    525.8947368421052,
+    432.0,
+    1622.0,
+    615.8947368421052,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 3,
+    "of": 5,
+    "x": 10,
+    "y": 882.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-16",
+   "name": "Deck slat 7",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    627.4736842105264,
+    432.0,
+    1622.0,
+    717.4736842105264,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 3,
+    "of": 5,
+    "x": 10,
+    "y": 976.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-17",
+   "name": "Deck slat 8",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    729.0526315789474,
+    432.0,
+    1622.0,
+    819.0526315789474,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 3,
+    "of": 5,
+    "x": 10,
+    "y": 1070.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-18",
+   "name": "Deck slat 9",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    830.6315789473684,
+    432.0,
+    1622.0,
+    920.6315789473684,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 10,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-19",
+   "name": "Deck slat 10",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    932.2105263157895,
+    432.0,
+    1622.0,
+    1022.2105263157895,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 104.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-20",
+   "name": "Deck slat 11",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    1033.7894736842104,
+    432.0,
+    1622.0,
+    1123.7894736842104,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 198.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-21",
+   "name": "Deck slat 12",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    1135.3684210526317,
+    432.0,
+    1622.0,
+    1225.3684210526317,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 292.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-22",
+   "name": "Deck slat 13",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    1236.9473684210527,
+    432.0,
+    1622.0,
+    1326.9473684210527,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 386.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-23",
+   "name": "Deck slat 14",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    1338.5263157894738,
+    432.0,
+    1622.0,
+    1428.5263157894738,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 480.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-24",
+   "name": "Deck slat 15",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    1440.1052631578948,
+    432.0,
+    1622.0,
+    1530.1052631578948,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 574.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-25",
+   "name": "Deck slat 16",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    1541.6842105263158,
+    432.0,
+    1622.0,
+    1631.6842105263158,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 668.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-26",
+   "name": "Deck slat 17",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    1643.2631578947369,
+    432.0,
+    1622.0,
+    1733.2631578947369,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 762.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-27",
+   "name": "Deck slat 18",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    1744.842105263158,
+    432.0,
+    1622.0,
+    1834.842105263158,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 856.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-28",
+   "name": "Deck slat 19",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    1846.421052631579,
+    432.0,
+    1622.0,
+    1936.421052631579,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 950.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-29",
+   "name": "Deck slat 20",
+   "type": "Deck slat",
+   "material": "PLY18",
+   "size": [
+    1604,
+    90,
+    18
+   ],
+   "box": [
+    18.0,
+    1948.0,
+    432.0,
+    1622.0,
+    2038.0,
+    450.0
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    0,
+    0,
+    300
+   ],
+   "edges": "both long edges",
+   "edgeM": 3.21,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 4,
+    "of": 5,
+    "x": 10,
+    "y": 1044.0,
+    "l": 1604.0,
+    "w": 90.0
+   }
+  },
+  {
+   "id": "K4-30",
+   "name": "Side panel, head end",
+   "type": "Side panel, head end",
+   "material": "PLY18",
+   "size": [
+    754,
+    292,
+    18
+   ],
+   "box": [
+    1622.0,
+    36.0,
+    60,
+    1640,
+    790,
+    352.0
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    300,
+    0,
+    0
+   ],
+   "edges": "all four edges",
+   "edgeM": 2.09,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 2,
+    "of": 5,
+    "x": 10,
+    "y": 882.0,
+    "l": 754.0,
+    "w": 292.0
+   }
+  },
+  {
+   "id": "K4-31",
+   "name": "Drawer divider",
+   "type": "Drawer divider",
+   "material": "PLY18",
+   "size": [
+    682,
+    352,
+    18
+   ],
+   "box": [
+    940,
+    1396.0,
+    0,
+    1622.0,
+    1414.0,
+    352.0
+   ],
+   "taxis": 1,
+   "axes": [
+    0,
+    2
+   ],
+   "explode": [
+    0,
+    0,
+    150
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 1,
+    "of": 5,
+    "x": 1654,
+    "y": 10,
+    "l": 682.0,
+    "w": 352.0
+   }
+  },
+  {
+   "id": "K4-32",
+   "name": "Storage box 1 front",
+   "type": "Storage box front",
+   "material": "PLY18",
+   "size": [
+    602,
+    288,
+    18
+   ],
+   "box": [
+    1622.0,
+    792,
+    62,
+    1640,
+    1394.0,
+    350.0
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    500,
+    0,
+    0
+   ],
+   "edges": "all four edges",
+   "edgeM": 1.78,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 2,
+    "of": 5,
+    "x": 768.0,
+    "y": 882.0,
+    "l": 602.0,
+    "w": 288.0
+   }
+  },
+  {
+   "id": "K4-33",
+   "name": "Storage box 1 side 1",
+   "type": "Storage box side",
+   "material": "PLY12",
+   "size": [
+    600,
+    230,
+    12
+   ],
+   "box": [
+    1022.0,
+    800,
+    70,
+    1622.0,
+    812,
+    300
+   ],
+   "taxis": 1,
+   "axes": [
+    0,
+    2
+   ],
+   "explode": [
+    500,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY12",
+    "index": 1,
+    "of": 1,
+    "x": 1194.0,
+    "y": 10,
+    "l": 600.0,
+    "w": 230
+   }
+  },
+  {
+   "id": "K4-34",
+   "name": "Storage box 1 side 2",
+   "type": "Storage box side",
+   "material": "PLY12",
+   "size": [
+    600,
+    230,
+    12
+   ],
+   "box": [
+    1022.0,
+    1374.0,
+    70,
+    1622.0,
+    1386.0,
+    300
+   ],
+   "taxis": 1,
+   "axes": [
+    0,
+    2
+   ],
+   "explode": [
+    500,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY12",
+    "index": 1,
+    "of": 1,
+    "x": 1798.0,
+    "y": 10,
+    "l": 600.0,
+    "w": 230
+   }
+  },
+  {
+   "id": "K4-35",
+   "name": "Storage box 1 back",
+   "type": "Storage box back",
+   "material": "PLY12",
+   "size": [
+    562,
+    230,
+    12
+   ],
+   "box": [
+    1022.0,
+    812,
+    70,
+    1034.0,
+    1374.0,
+    300
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    500,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY12",
+    "index": 1,
+    "of": 1,
+    "x": 1218.0,
+    "y": 576.0,
+    "l": 562.0,
+    "w": 230
+   }
+  },
+  {
+   "id": "K4-36",
+   "name": "Storage box 1 bottom",
+   "type": "Storage box bottom",
+   "material": "PLY12",
+   "size": [
+    588,
+    562,
+    12
+   ],
+   "box": [
+    1034.0,
+    812,
+    70,
+    1622.0,
+    1374.0,
+    82
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    500,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY12",
+    "index": 1,
+    "of": 1,
+    "x": 10,
+    "y": 10,
+    "l": 588.0,
+    "w": 562.0
+   }
+  },
+  {
+   "id": "K4-37",
+   "name": "Storage box 2 front",
+   "type": "Storage box front",
+   "material": "PLY18",
+   "size": [
+    602,
+    288,
+    18
+   ],
+   "box": [
+    1622.0,
+    1416.0,
+    62,
+    1640,
+    2018,
+    350.0
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    500,
+    0,
+    0
+   ],
+   "edges": "all four edges",
+   "edgeM": 1.78,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY18",
+    "index": 2,
+    "of": 5,
+    "x": 1374.0,
+    "y": 882.0,
+    "l": 602.0,
+    "w": 288.0
+   }
+  },
+  {
+   "id": "K4-38",
+   "name": "Storage box 2 side 1",
+   "type": "Storage box side",
+   "material": "PLY12",
+   "size": [
+    600,
+    230,
+    12
+   ],
+   "box": [
+    1022.0,
+    1424.0,
+    70,
+    1622.0,
+    1436.0,
+    300
+   ],
+   "taxis": 1,
+   "axes": [
+    0,
+    2
+   ],
+   "explode": [
+    500,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY12",
+    "index": 1,
+    "of": 1,
+    "x": 10,
+    "y": 576.0,
+    "l": 600.0,
+    "w": 230
+   }
+  },
+  {
+   "id": "K4-39",
+   "name": "Storage box 2 side 2",
+   "type": "Storage box side",
+   "material": "PLY12",
+   "size": [
+    600,
+    230,
+    12
+   ],
+   "box": [
+    1022.0,
+    1998,
+    70,
+    1622.0,
+    2010,
+    300
+   ],
+   "taxis": 1,
+   "axes": [
+    0,
+    2
+   ],
+   "explode": [
+    500,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY12",
+    "index": 1,
+    "of": 1,
+    "x": 614.0,
+    "y": 576.0,
+    "l": 600.0,
+    "w": 230
+   }
+  },
+  {
+   "id": "K4-40",
+   "name": "Storage box 2 back",
+   "type": "Storage box back",
+   "material": "PLY12",
+   "size": [
+    562,
+    230,
+    12
+   ],
+   "box": [
+    1022.0,
+    1436.0,
+    70,
+    1034.0,
+    1998,
+    300
+   ],
+   "taxis": 0,
+   "axes": [
+    1,
+    2
+   ],
+   "explode": [
+    500,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY12",
+    "index": 1,
+    "of": 1,
+    "x": 1784.0,
+    "y": 576.0,
+    "l": 562.0,
+    "w": 230
+   }
+  },
+  {
+   "id": "K4-41",
+   "name": "Storage box 2 bottom",
+   "type": "Storage box bottom",
+   "material": "PLY12",
+   "size": [
+    588,
+    562,
+    12
+   ],
+   "box": [
+    1034.0,
+    1436.0,
+    70,
+    1622.0,
+    1998,
+    82
+   ],
+   "taxis": 2,
+   "axes": [
+    0,
+    1
+   ],
+   "explode": [
+    500,
+    0,
+    0
+   ],
+   "edges": "none",
+   "edgeM": 0.0,
+   "holes": [],
+   "cutouts": [],
+   "sheet": {
+    "material": "PLY12",
+    "index": 1,
+    "of": 1,
+    "x": 602.0,
+    "y": 10,
+    "l": 588.0,
+    "w": 562.0
+   }
+  }
+ ],
+ "sheets": [
+  {
+   "material": "PLY12",
+   "index": 1,
+   "size": [
+    2440,
+    1220,
+    12
+   ],
+   "file": "sheet-PLY12-1.svg",
+   "parts": [
+    "K4-36",
+    "K4-41",
+    "K4-33",
+    "K4-34",
+    "K4-38",
+    "K4-39",
+    "K4-35",
+    "K4-40"
+   ],
+   "utilisation": 49.4
+  },
+  {
+   "material": "PLY18",
+   "index": 1,
+   "size": [
+    2440,
+    1220,
+    18
+   ],
+   "file": "sheet-PLY18-1.svg",
+   "parts": [
+    "K4-01",
+    "K4-31",
+    "K4-10",
+    "K4-13"
+   ],
+   "utilisation": 72.9
+  },
+  {
+   "material": "PLY18",
+   "index": 2,
+   "size": [
+    2440,
+    1220,
+    18
+   ],
+   "file": "sheet-PLY18-2.svg",
+   "parts": [
+    "K4-02",
+    "K4-07",
+    "K4-30",
+    "K4-32",
+    "K4-37"
+   ],
+   "utilisation": 77.2
+  },
+  {
+   "material": "PLY18",
+   "index": 3,
+   "size": [
+    2440,
+    1220,
+    18
+   ],
+   "file": "sheet-PLY18-3.svg",
+   "parts": [
+    "K4-05",
+    "K4-06",
+    "K4-15",
+    "K4-16",
+    "K4-17"
+   ],
+   "utilisation": 61.1
+  },
+  {
+   "material": "PLY18",
+   "index": 4,
+   "size": [
+    2440,
+    1220,
+    18
+   ],
+   "file": "sheet-PLY18-4.svg",
+   "parts": [
+    "K4-18",
+    "K4-19",
+    "K4-20",
+    "K4-21",
+    "K4-22",
+    "K4-23",
+    "K4-24",
+    "K4-25",
+    "K4-26",
+    "K4-27",
+    "K4-28",
+    "K4-29",
+    "K4-04"
+   ],
+   "utilisation": 62.3
+  },
+  {
+   "material": "PLY18",
+   "index": 5,
+   "size": [
+    2440,
+    1220,
+    18
+   ],
+   "file": "sheet-PLY18-5.svg",
+   "parts": [
+    "K4-11",
+    "K4-12",
+    "K4-14",
+    "K4-03",
+    "K4-08",
+    "K4-09"
+   ],
+   "utilisation": 28.0
+  }
+ ],
+ "hardware": [
+  {
+   "bag": "C",
+   "item": "Connector bolt M6 x 60 + barrel nut 10 mm",
+   "qty": 20,
+   "use": "joins every rail to its neighbour",
+   "price": 600
+  },
+  {
+   "bag": "K",
+   "item": "Castor 50 mm",
+   "qty": 8,
+   "use": "four under each storage box",
+   "price": 1500
+  },
+  {
+   "bag": "F",
+   "item": "Wood screw 4 x 30",
+   "qty": 140,
+   "use": "two at each slat end and two over the spine; the ledgers to the rails",
+   "price": 15
+  }
+ ],
+ "prices": {
+  "PLY18": 45000,
+  "PLY12": 35000,
+  "edgeband": 600
+ }
+}

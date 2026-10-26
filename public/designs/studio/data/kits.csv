@@ -2,7 +2,7 @@ kit,name,trade,made_where,parts,bought_lines
 K1,Insulation and lining,carpentry,site,15,27
 K2,Bathroom shell and fixtures,carpentry + tiling + plumbing,workshop + site,13,25
 K3,Kitchen,carpentry,workshop,36,8
-K4,Bed,carpentry,workshop,21,1
+K4,Bed,carpentry,workshop,41,1
 K5,Bedside table and lamp,carpentry,workshop,10,2
 K6,"Seating: sofa, table and chairs",carpentry,workshop,11,3
 K7,Trims and scribes,carpentry,workshop,7,1

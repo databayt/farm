@@ -10,7 +10,10 @@
   screenshot #out once body[data-ready] is set.
 
     &item=<id>  one bedroom piece on its own, three-quarter view, 1200 x 900 (ITEMS below)
-                -> render/bedroom/<id>-line.png and <id>-real.jpg, for the Bedroom section The furniture follows the photos in ~/farm/ikea
+                -> render/bedroom/<id>.webp, for the Bedroom section
+    &bed=<K4-nn | exploded>  one bed piece, or the whole bed pulled apart, from render/bed/parts.json
+                (scripts/studio/render/bed_parts.py) -> render/bed/<id>.webp, for the Bed section
+  A piece on its own renders on a transparent ground (real mode): save the data URL in #out as is. The furniture follows the photos in ~/farm/ikea
   for look (FRIDHULT sofa, MALM bed with storage boxes, LACK tables, a vessel basin on a black
   console, a wall-hung WC, a frameless shower screen); sizes come from the design. Pillows, duvet,
   cushions, towels, books, plants and the kettle are render-only props. Textures are drawn
@@ -45,13 +48,17 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 const Q = new URLSearchParams(location.search)
 const MODE = Q.get("mode") === "real" ? "real" : "line"
 const LINE = MODE === "line"
-const ITEM = Q.get("item")
+const BED = Q.get("bed")
+const ITEM = Q.get("item") ?? (BED ? "bedparts" : null)
+const BEDP = BED || ITEM === "bed" ? await (await fetch(`/public/designs/studio/render/bed/parts.json?${Date.now()}`)).json() : null
 const [FW, FH] = ITEM ? [1200, 900] : [2400, 1100]
 Object.assign(document.getElementById("out").style, { width: `${FW}px`, height: `${FH}px` })
 const S = await (await fetch(`/public/designs/studio/render/scene.json?${Date.now()}`)).json()
 const m = (v) => v / 1000 // layout mm -> metres; three: x = x, y = height (layout z), z = depth (layout y)
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true })
+const CLEAR = !!ITEM && !LINE // a piece on its own: transparent ground, only its shadow shows
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: CLEAR })
+if (CLEAR) renderer.setClearColor(0xffffff, 0)
 renderer.setPixelRatio(1)
 renderer.setSize(FW, FH)
 renderer.outputColorSpace = THREE.SRGBColorSpace
@@ -63,7 +70,7 @@ if (!LINE) {
 }
 const scene = new THREE.Scene()
 // white page ground; in real mode tone mapping would dim plain white to grey, so it starts brighter
-scene.background = LINE ? new THREE.Color("#ffffff") : new THREE.Color(12, 12, 12)
+scene.background = LINE ? new THREE.Color("#ffffff") : CLEAR ? null : new THREE.Color(12, 12, 12)
 
 // ------------------------------------------------------------ procedural textures (real mode)
 function tex(draw, w = 512, h = 512) {
@@ -465,24 +472,8 @@ if (!ITEM) {
 // ------------------------------------------------------------ the Bedroom section: each piece on its own
 // sizes from the layout where it has them (bed, boxes, bedside, lamp); bedding at standard queen sizes
 const ITEMS = {
-  // the frame without its bedding: headboard, side and foot rails, the slat base, the two box fronts
-  bed() {
-    const x1 = m(S.bed_x1), z0 = m(S.bed_y0), z1 = m(S.bed_y1), t = 0.022
-    box(0, 0, 0, x1, 1.0, z0, "pine", 0.008)
-    box(0, 0, z0, t, 0.45, z1, "pine", 0.006)
-    box(x1 - t, 0, z0, x1, 0.45, z1, "pine", 0.006)
-    box(t, 0, z1 - t, x1 - t, 0.45, z1, "pine", 0.006)
-    // the deck as kit K4 cuts it: two 18 mm panels on the spine, drilled with 30 mm vent holes
-    for (const [a, b] of [[t, x1 / 2 - 0.001], [x1 / 2 + 0.001, x1 - t]]) {
-      box(a, 0.432, z0, b, 0.45, z1 - t, "pine", 0.003)
-      for (let u = a + 0.08; u < b - 0.05; u += 0.16) for (let v = z0 + 0.1; v < z1 - 0.1; v += 0.2) {
-        const hole = add(new THREE.CircleGeometry(0.015, 24), LINE ? "white" : "black")
-        hole.rotation.x = -Math.PI / 2; hole.position.set(u, 0.4505, v)
-        if (LINE) hole.userData.edgesFrom = new THREE.CircleGeometry(0.015, 24)
-      }
-    }
-    for (const [da, db] of S.drawers) drawerFront(x1, m(da) + 0.003, m(db) - 0.003)
-  },
+  // the frame without its bedding, every piece where kit K4 puts it
+  bed() { bedParts("all") },
   // one storage box pulled out: an open tray on four castors behind its front
   box() {
     const [da, db] = S.drawers[0], len = m(db) - m(da) - 0.006, dep = 0.6
@@ -525,6 +516,49 @@ const ITEMS = {
   bedside() { bedsideTable(L3(S.bedside)) },
   lamp() { tableLamp(L3(S.lamp)) },
   walllamp() { wallLamp(0.3) },
+  bedparts() { bedParts(BED) },
+}
+// the bed as kit K4 cuts it (render/bed/parts.json): "all" assembled, "exploded" pulled apart along each
+// piece's explode vector, or one piece by id. 18 mm board in the furniture finish, 12 mm box ply plain;
+// holes and cut-outs on both faces
+function bedParts(sel) {
+    const all = sel === "all" || sel === "exploded"
+    for (const p of BEDP.parts) {
+      if (!all && p.id !== sel) continue
+      const d = sel === "exploded" ? p.explode : [0, 0, 0]
+      const b = p.box.map((v, i) => v + d[i % 3])
+      const [x0, y0, z0, x1, y1, z1] = L3(b)
+      box(x0, y0, z0, x1, y1, z1, p.material === "PLY12" ? "ply" : "pine", 0.0015)
+      // layout axis (x, y depth, z height) -> three axis (x, z, y), and the faces along the thickness
+      const T = [0, 2, 1][p.taxis], faces = [b[p.taxis] - 0.4, b[p.taxis + 3] + 0.4]
+      const place = (o, at) => {
+        for (const f of faces) {
+          const q = [...at]; q[p.taxis] = f
+          o.position.set(m(q[0]), m(q[2]), m(q[1]))
+          if (T === 0) o.rotation.y = Math.PI / 2
+          if (T === 1) o.rotation.x = -Math.PI / 2
+          if (f !== faces[1]) { const c = o.clone(); scene.add(c); meshes.push(c) }
+        }
+      }
+      for (const h of p.holes) {
+        const g = new THREE.CircleGeometry(m(h.dia / 2), 24)
+        const o = add(g, LINE ? "white" : "black")
+        o.material = o.material.clone(); o.material.side = THREE.DoubleSide
+        if (LINE) o.userData.edgesFrom = g
+        place(o, h.at.map((v, i) => v + d[i]))
+      }
+      for (const c of p.cutouts) {
+        const at = c.at.map((v, i) => v + d[i]), dims = [0, 0, 0]
+        dims[p.axes[0]] = c.w; dims[p.axes[1]] = c.h
+        const mid = at.map((v, i) => v + dims[i] / 2)
+        const sz = [m(dims[0]), m(dims[2]), m(dims[1])].map((v) => v || 1e-3)
+        const g = new THREE.PlaneGeometry(...sz.filter((_, i) => i !== T))
+        const o = add(g, LINE ? "white" : "black")
+        o.material = o.material.clone(); o.material.side = THREE.DoubleSide
+        if (LINE) o.userData.edgesFrom = g
+        place(o, mid)
+      }
+    }
 }
 if (ITEM) ITEMS[ITEM]()
 
