@@ -457,7 +457,7 @@ def k7_trims(lo: Layout) -> Kit:
                Box(X - 530, 0, 2300, X - 518, run, lo.H), step="S18"))
     k.add(Part("K7-20", "Galley end panel (scribed to the floor on site)", "K7", "PLY12",
                Box(X - GALLEY_D, run, 0, X, run + 12, 900 - 38), step="S18"))
-    k.buy(Bought("K7-STAIN", "Joinery finish: clear matte PU varnish over golden pine, knots kept (all furniture)", "K7",
+    k.buy(Bought("K7-STAIN", "Joinery finish: honey-tone stain + clear matte PU varnish over pine (all furniture)", "K7",
                  "finishes", "painting", 6, "L", "stain", step="S18"))
     k.steps.append(Step("S18", "K7", "Scribe and pin the trims; caulk and paint", [p.id for p in k.parts],
                         {"F": 60}, 1))
