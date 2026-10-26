@@ -1,0 +1,139 @@
+kit,category,trade,item,qty_per_unit,unit,unit_price_rwf,label,source,total_per_unit_rwf,note
+K1-K7,boards,carpentry,MPLY18 sheet 2440x1220x18,3,sheet,60000,A,AS-21,180000,18 mm marine / WBP plywood (STU-31 lists film-faced)
+K1-K7,boards,carpentry,PLY12 sheet 2440x1220x12,16,sheet,35000,A,AS-21,560000,12 mm plywood
+K1-K7,boards,carpentry,PLY18 sheet 2440x1220x18,11,sheet,45000,A,AS-21,495000,"18 mm plywood or MR melamine board, 2440 x 1220"
+K1-K7,boards,carpentry,WTOP38 sheet 3050x650x38,1,sheet,90000,A,AS-21,90000,38 mm worktop blank 3000 x 620
+K1-K7,boards,carpentry,"ABS edge band (2 mm visible, 0.8 mm hidden)",115.4,m,600,A,AS-21,69240,"ABS edge band, per metre"
+K2-K7,hardware,carpentry,Bag A: Confirmat screw 7 x 50,75.6,each,60,A,AS-21,4536,
+K2-K7,hardware,carpentry,Bag B: Wood dowel 8 x 35,50.4,each,20,A,AS-21,1008,
+K2-K7,hardware,carpentry,Bag C: Connector bolt M6 x 60 + barrel nut 10 mm,31.5,each,600,A,AS-21,18900,
+K2-K7,hardware,carpentry,Bag D: Cup hinge 35 mm soft-close + plate,18.9,each,2500,A,AS-21,47250,
+K2-K7,hardware,carpentry,Bag E: Shelf pin 5 mm,29.4,each,30,A,AS-21,882,
+K2-K7,hardware,carpentry,Bag F: Wood screw 4 x 30,281.4,each,15,A,AS-21,4221,
+K2-K7,hardware,carpentry,Bag G: Ball-bearing runner 450 mm (pair),2.1,each,9000,A,AS-21,18900,per pair
+K2-K7,hardware,carpentry,Bag J: Handle 128 mm centres,11.55,each,2000,A,AS-21,23100,
+K2-K7,hardware,carpentry,Bag K: Castor 50 mm,8.4,each,1500,A,AS-21,12600,
+K2-K7,hardware,carpentry,Bag L: Self-drilling screw 4.8 x 38 (battens to steel),126,each,50,A,AS-21,6300,
+K11,roof kit,welding,"Fabricated steel: beams, joists, posts, rails, treads (painted)",790.06,kg,2600,A,AS-21,2054149,"fabricated, painted steel per kg"
+K11,roof kit,carpentry,"Treated hardwood: deck boards, chairs, side table",0.65,m3,900000,A,AS-21,587606,treated hardwood decking and slats per m3
+K11,roof kit,welding,Tinted multiwall polycarbonate 10 mm (both canopies),33.58,m2,28000,A,AS-21,940189,tinted multiwall polycarbonate per m2 (supplier not found)
+K11,roof kit,welding,Welded mesh guardrail infill,16.31,m2,15000,A,AS-21,244685,welded mesh infill per m2
+K11,roof kit,welding,"Stair stringers, handrails and footings",1,set,450000,A,AS-21,450000,"stringers, handrails, footings"
+K1,insulation,carpentry,"EPS insulation, back",13.47,m2,9000,A,AS-21,121230,"EPS 40 mm per m2 (STU-19 lists sizes, no prices)"
+K1,insulation,carpentry,"EPS insulation, front-A",3.21,m2,9000,A,AS-21,28890,"EPS 40 mm per m2 (STU-19 lists sizes, no prices)"
+K1,insulation,carpentry,"EPS insulation, ceiling",13.06,m2,9000,A,AS-21,117540,"EPS 40 mm per m2 (STU-19 lists sizes, no prices)"
+K1,insulation,carpentry,"EPS insulation, end-A",5.23,m2,9000,A,AS-21,47070,"EPS 40 mm per m2 (STU-19 lists sizes, no prices)"
+K1,insulation,carpentry,PU foam adhesive and gap filler (750 ml),12,each,7000,A,AS-21,84000,
+K1,finishes,painting,Primer + 100%-solids epoxy floor seal,14,m2,12000,A,AS-21,168000,per m2
+K1,finishes,carpentry,SPC flooring 5 mm + underlay (living area),10.7,m2,18000,A,AS-21,192600,per m2
+K1,finishes,painting,Rust converter + zinc primer for steel,4,L,8000,A,AS-21,32000,per L
+K1,finishes,painting,Vapour-retarding PU varnish for linings,10,L,9000,A,AS-21,90000,per L
+K2,doors,carpentry,"Door leaf 700 x 2,000, moisture-resistant, lever + privacy lock",1,each,90000,A,AS-21,90000,
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, back wall",3.06,m2,14000,A,AS-21,42840,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, back wall",3.37,m2,16000,A,AS-21,53920,per m2 incl. adhesive and grout
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, end wall B (independent stud wall inside the cargo doors)",5.23,m2,14000,A,AS-21,73220,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, end wall B (independent stud wall inside the cargo doors)",5.75,m2,16000,A,AS-21,92000,per m2 incl. adhesive and grout
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, front wall (around W1)",3.06,m2,14000,A,AS-21,42840,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, front wall (around W1)",3.37,m2,16000,A,AS-21,53920,per m2 incl. adhesive and grout
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, partition, bath face",5.23,m2,14000,A,AS-21,73220,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, partition, bath face",5.75,m2,16000,A,AS-21,92000,per m2 incl. adhesive and grout
+K2,finishes,tiling,"Safety vinyl sheet, coved 100 mm up the walls",3.7,m2,15000,A,AS-21,55500,per m2
+K2,sanitaryware,plumbing,"Shower tray 1200 x 900, low profile, 90 mm waste",1,each,120000,A,AS-21,120000,
+K2,sanitaryware,plumbing,"Fixed glass shower screen 700 x 2,000, 8 mm toughened",1,each,180000,A,AS-21,180000,
+K2,sanitaryware,plumbing,"Close-coupled WC, floor outlet, dual flush",1,each,150000,A,AS-21,150000,
+K2,sanitaryware,plumbing,Wall basin 400 x 300 + mixer + bottle trap,1,each,90000,A,AS-21,90000,
+K2,glazing,carpentry,Mirror 4 mm bonded to the cabinet door,1,each,25000,A,AS-21,25000,
+K2,accessories,carpentry,"Towel rail, robe hook, toilet-roll holder, shower shelf",1,set,40000,A,AS-21,40000,
+K3,hardware,carpentry,Hob base adjustable legs,4,each,1500,A,AS-21,6000,
+K3,hardware,carpentry,Sink base adjustable legs,4,each,1500,A,AS-21,6000,
+K3,hardware,carpentry,Tall unit adjustable legs,4,each,1500,A,AS-21,6000,
+K3,appliances,electrical,"Two-zone induction hob, 300 mm domino, about 3.5 kW",1,each,250000,A,AS-21,250000,2-zone induction domino
+K3,sanitaryware,plumbing,"Inset stainless sink 580 x 480, single bowl",1,each,70000,A,AS-21,70000,
+K3,sanitaryware,plumbing,Kitchen mixer tap,1,each,45000,A,AS-21,45000,
+K3,appliances,electrical,Under-counter fridge about 90 L (A-class),1,each,265000,V,STU-P03,265000,"90 L mini fridge, Kanis 2026-10-26"
+K3,appliances,electrical,"Recirculating hood 300-450 mm, charcoal filter",1,each,90000,A,AS-21,90000,
+K3,plumbing,plumbing,Under-sink drinking-water filter + faucet,1,each,80000,A,AS-21,80000,
+K4,bedding,furnishing,"Mattress up to 1,600 x 2,000 (local size, e.g. 5 x 6 ft), 200 mm",1,each,180000,A,AS-21,180000,"local foam, size to field-check (STU-51)"
+K4,hardware,carpentry,Castors 50 mm for the drawers,8,each,1500,A,AS-21,12000,
+K4,hardware,carpentry,Gas strut 100 N + flap hinges,1,set,12000,A,AS-21,12000,
+K5,hardware,carpentry,Wardrobe adjustable legs,4,each,1500,A,AS-21,6000,
+K5,hardware,carpentry,Hanging rail + supports,1,set,8000,A,AS-21,8000,
+K6,furnishing,furnishing,Blackout curtain + track for the 3 m slider,1,set,60000,A,AS-21,60000,
+K6,glazing,glazier,"Insect screens: slider (sliding), W1, vents",1,set,90000,A,AS-21,90000,
+K8,electrical,electrical,Unit board on the partition,1,each,45000,A,AS-21,45000,"enclosure, 12 ways"
+K8,electrical,electrical,"Ceiling light, bed",1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,"Ceiling light, living",1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,"Ceiling light, kitchen",1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,Bathroom light IP65,1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,Reading light 1,1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,Reading light 2,1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,Under-cabinet LED strip,1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,Deck light IP65,1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,Roof terrace lights IP65 (x2),1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,Stair light IP65,1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,Entry: living + kitchen + deck,1,each,3500,A,AS-21,3500,
+K8,electrical,electrical,Bed: ceiling light (2-way),1,each,3500,A,AS-21,3500,
+K8,electrical,electrical,Bathroom light + fan (outside),1,each,3500,A,AS-21,3500,
+K8,electrical,electrical,"Roof and stair lights (IP65, stair foot)",1,each,3500,A,AS-21,3500,
+K8,electrical,electrical,Bedside socket + USB-C 1,1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,Bedside socket + USB-C 2,1,each,15000,A,AS-21,15000,
+K8,electrical,electrical,Socket by the bed (desk ledge),1,each,5000,A,AS-21,5000,
+K8,electrical,electrical,"Socket, living (front strip)",1,each,5000,A,AS-21,5000,
+K8,electrical,electrical,Deck socket IP66,1,each,5000,A,AS-21,5000,
+K8,electrical,electrical,Worktop socket 1 (double),1,each,5000,A,AS-21,5000,
+K8,electrical,electrical,Worktop socket 2 (double),1,each,5000,A,AS-21,5000,
+K8,electrical,electrical,Fridge socket,1,each,5000,A,AS-21,5000,
+K8,electrical,electrical,Hob connection unit,1,each,9000,A,AS-21,9000,
+K8,electrical,electrical,Heater DP switch + timer,1,each,9000,A,AS-21,9000,
+K8,electrical,electrical,Bathroom extract 100 mm (in W1 panel),1,each,35000,A,AS-21,35000,
+K8,electrical,electrical,Wall fan,1,each,35000,A,AS-21,35000,
+K8,electrical,electrical,AC provision: isolator,1,each,9000,A,AS-21,9000,
+K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Lighting (incl. bathroom IP65, deck, roof, stair)",89,m,500,A,AS-21,44500,per m
+K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, Sockets: bedside USB, living, deck",29,m,750,A,AS-21,21750,per m
+K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, Kitchen sockets and fridge",16,m,750,A,AS-21,12000,per m
+K8,electrical,electrical,"Cable 4.0 mm2 T+E/singles in conduit, Induction hob",8,m,1200,A,AS-21,9600,per m
+K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, 80 L water heater",6,m,750,A,AS-21,4500,per m
+K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Extract fan and wall fan",11,m,500,A,AS-21,5500,per m
+K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, AC provision",8,m,750,A,AS-21,6000,per m
+K8,electrical,electrical,PVC conduit 20 mm + boxes,60,m,600,A,AS-21,36000,per m
+K8,electrical,electrical,Surge protection device type 2,1,each,60000,A,AS-21,60000,
+K8,electrical,electrical,RCD 40 A 30 mA type A (or RCBOs),1,each,45000,A,AS-21,45000,
+K8,electrical,electrical,"MCBs (B6 x2, B16 x5, B20 x1)",8,each,6000,A,AS-21,48000,
+K8,electrical,electrical,Main switch 40 A DP + check meter (DIN kWh),1,set,40000,A,AS-21,40000,
+K8,electrical,electrical,Earth rod 1.5 m copper-bonded + clamp + inspection pit,1,each,35000,A,AS-21,35000,
+K8,safety,electrical,Smoke alarm (10-year) + heat alarm (kitchen),2,each,20000,A,AS-21,40000,
+K8,safety,furnishing,Fire extinguisher 2 kg ABC + fire blanket,1,set,55000,A,AS-21,55000,
+K9,plumbing,plumbing,PPR PN20 pipe DN20,8.4,m,2000,A,AS-21,16800,per m
+K9,plumbing,plumbing,PPR PN20 pipe DN25,4.6,m,2800,A,AS-21,12880,per m
+K9,plumbing,plumbing,PPR PN20 pipe (hot) DN20,3.7,m,2000,A,AS-21,7400,per m
+K9,plumbing,plumbing,uPVC soil pipe DN110,4.2,m,7000,A,AS-21,29400,per m
+K9,plumbing,plumbing,PPR PN20 pipe (tempered) DN20,5.5,m,2000,A,AS-21,11000,per m
+K9,plumbing,plumbing,uPVC vent pipe DN75,7.9,m,4500,A,AS-21,35550,per m
+K9,plumbing,plumbing,uPVC waste pipe DN40,1.5,m,2500,A,AS-21,3750,per m
+K9,plumbing,plumbing,uPVC waste pipe DN50,6.3,m,3000,A,AS-21,18900,per m
+K9,plumbing,plumbing,Pipe fittings and clips (allowance),1,set,120000,A,AS-21,120000,
+K9,plumbing,plumbing,Thermostatic mixing valve (TMV) 41-44 C,1,each,60000,A,AS-21,60000,
+K9,plumbing,plumbing,Thermostatic shower valve + 6-7 L/min head + rail,1,set,90000,A,AS-21,90000,
+K9,plumbing,plumbing,"Electric storage water heater 80 L, 2 kW, with T&P valve",1,each,300000,A,AS-21,300000,"80 L not found; 50 L listed at RWF 144,000-252,000 (STU-P01, STU-P02)"
+K9,plumbing,plumbing,Angle valves with filters,5,each,6000,A,AS-21,30000,
+K9,plumbing,plumbing,Air admittance valve 110 mm (spare) + rodding eyes,1,set,30000,A,AS-21,30000,
+K9,plumbing,plumbing,Stop valve + Y-filter + check water meter,1,set,45000,A,AS-21,45000,
+K10,steel,welding,"W1 infill: 2 mm steel + 40 mm EPS, welded into the old door frame (0-1,150)",1,each,180000,A,AS-21,180000,incl. welding
+K10,glazing,glazier,W1 obscure louvre window 520 x 890 + insect mesh + fan panel,1,each,120000,A,AS-21,120000,
+K10,steel,welding,"Seal and lock the end-B cargo doors (weld tabs, sealant)",1,each,60000,A,AS-21,60000,
+K10,steel,masonry,Level the corner castings: concrete pads or steel shims (rock corner),4,each,25000,A,AS-21,100000,
+K10,steel,welding,Steel hanging rail for wall units + heater bracket,1,set,40000,A,AS-21,40000,
+K10,hardware,glazier,Keyed lock + secondary bolt for the slider,1,set,45000,A,AS-21,45000,
+K10,glazing,glazier,"Louvred trickle-vent strip with mesh (10,000 mm2)",1,each,30000,A,AS-21,30000,
+K10,steel,welding,"AC wall sleeve 75 mm (provision, back wall, one hole)",1,each,15000,A,AS-21,15000,
+K11,roofing,welding,Gutters + downpipes to the rainwater tank (both canopies),2,set,90000,A,AS-21,180000,
+K11,electrical,electrical,Bonding: 16 mm2 green-yellow from the frame to the earth bar,1,set,25000,A,AS-21,25000,
+K1,timber,carpentry,"Battens 38 x 50 treated, 2.4 m",19.8,each,2500,A,AS-21,49500,"38 x 50 treated, 2.4 m"
+K2,timber,carpentry,"Studs 40 x 40 treated, 2.4 m",5.5,each,3000,A,AS-21,16500,"40 x 40, 2.4 m"
+labour,labour,,"Carpentry workshop: cutting, edging, drilling, labelling (per unit kit)",1,lot,450000,A,AS-21,450000,
+labour,labour,,Site carpentry and assembly: 2 people x 8 days,1,lot,320000,A,AS-21,320000,
+labour,labour,,"Electrician (RURA class A), install + certificate",1,lot,250000,A,AS-21,250000,
+labour,labour,,"Plumber, install + tests",1,lot,200000,A,AS-21,200000,
+labour,labour,,Tiler: wet walls and floor,1,lot,150000,A,AS-21,150000,
+labour,labour,,"Welder: W1, roof frame, canopies, stair (per unit)",1,lot,600000,A,AS-21,600000,
+labour,labour,,Transport Kigali to site (share of 2 truck trips),1,lot,120000,A,AS-21,120000,

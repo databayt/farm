@@ -1,0 +1,57 @@
+number,title,file
+A-001,Cover and drawing index,a-001.svg
+A-101,Existing condition (photo-scaled),a-101.svg
+A-102,Layout options considered,a-102.svg
+A-103,Furniture and dimension plan,a-103.svg
+A-201,Interior elevations: back wall and front wall,a-201.svg
+A-202,End elevations and cross-section,a-202.svg
+A-401,Build-up details,a-401.svg
+S-101,"Roof terrace, canopies and stair: plan and elevation",s-101.svg
+E-101,Electrical layout plan,e-101.svg
+E-201,Single-line diagram: site and unit board,e-201.svg
+E-202,"Circuit schedule, earthing and bonding",e-202.svg
+P-101,Plumbing layout plan (supply and drainage),p-101.svg
+P-201,Pipework isometric (unit),p-201.svg
+P-301,Site water and sanitation schematic,p-301.svg
+J-101,Kit K1: Insulation and lining (exploded),j-101.svg
+J-102,Kit K2: Bathroom (exploded),j-102.svg
+J-103,Kit K3: Kitchen (exploded),j-103.svg
+J-104,Kit K4: Bed (exploded),j-104.svg
+J-105,Kit K5: Wardrobe (exploded),j-105.svg
+J-106,Kit K6: Table and stools (exploded),j-106.svg
+J-107,Kit K7: Trims (exploded),j-107.svg
+J-108,Kit K11: Roof terrace (exploded),j-108.svg
+C-101,"Cutting diagrams (panel saw: rip strips, then crosscut)",c-101.svg
+C-102,"Cutting diagrams (panel saw: rip strips, then crosscut)",c-102.svg
+C-103,"Cutting diagrams (panel saw: rip strips, then crosscut)",c-103.svg
+C-104,"Cutting diagrams (panel saw: rip strips, then crosscut)",c-104.svg
+C-105,"Cutting diagrams (panel saw: rip strips, then crosscut)",c-105.svg
+C-106,"Cutting diagrams (panel saw: rip strips, then crosscut)",c-106.svg
+C-107,"Cutting diagrams (panel saw: rip strips, then crosscut)",c-107.svg
+C-108,"Cutting diagrams (panel saw: rip strips, then crosscut)",c-108.svg
+AS-01,"Survey, level the supports, convert the old door to W1, seal end",as-01.svg
+AS-02,"Seal the floor, prime the steel, foam-fill the corrugation valle",as-02.svg
+AS-03,Fix battens and fit EPS between them; foam-seal every joint,as-03.svg
+AS-04,Fix the numbered lining panels (cut-outs already in place),as-04.svg
+AS-06,Stand the partition frame and fix the living-face skins,as-06.svg
+AS-07,Fit the door frame and hang the bathroom door,as-07.svg
+AS-08,"Cement board, membrane and tiles on the wet walls; coved vinyl f",as-08.svg
+AS-09,"Set the shower tray, ledge and fixed screen",as-09.svg
+AS-10,"Hang the WC, basin and mirror cabinet",as-10.svg
+AS-11,"Assemble the fridge bay, hob base and sink base on their legs",as-11.svg
+AS-12,"Assemble the tall unit, fix it to blocking, hang the heater brac",as-12.svg
+AS-13,Scribe and fix the worktop; drop in the sink and hob; plinth,as-13.svg
+AS-14,Hang the wall units and the hood shelf on the steel rail,as-14.svg
+AS-15,"Bolt the bed frame, drop in the deck panels, slide in the drawer",as-15.svg
+AS-16,"Assemble the wardrobe, fix to blocking, hang the door",as-16.svg
+AS-17,Slot together the table and stools,as-17.svg
+AS-18,Scribe and pin the trims; caulk and paint,as-18.svg
+AS-20,Lift and bolt the deck beams onto the corner castings; joists,as-20.svg
+AS-21,Screw down the deck boards (5 mm gaps),as-21.svg
+AS-22,Bolt on the guardrail panels,as-22.svg
+AS-23,Stand the canopy posts; rafters; polycarbonate; gutter,as-23.svg
+AS-24,"Veranda posts, ledger and polycarbonate over the front deck",as-24.svg
+AS-25,Set the stair footings; bolt the two flights and the landing,as-25.svg
+AS-26,Place the chairs and the side table,as-26.svg
+AS-27,Bond the steelwork to earth; engineer's inspection before guest ,as-27.svg
+T-01,"1:1 drilling templates: carcass side, hinge, shelf row",t-01.svg

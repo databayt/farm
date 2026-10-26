@@ -12,7 +12,8 @@
     "lint": "eslint",
     "postinstall": "node scripts/sync-docs.mjs && fumadocs-mdx",
     "build:cf": "node scripts/sync-docs.mjs && CF_STATIC=1 next build",
-    "deploy:cf": "pnpm build:cf && wrangler deploy"
+    "deploy:cf": "pnpm build:cf && wrangler deploy",
+    "studio:build": "uv run --with-requirements scripts/studio/requirements.txt python scripts/studio/build.py"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
