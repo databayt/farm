@@ -151,7 +151,7 @@ def a103_plan(m) -> Sheet:
     s.arc(X(lo.bdoor[0]), Y(lo.bath_y1), (lo.bdoor[1] - lo.bdoor[0]) / sc, 270, 360)  # door swings into the bathroom
     for y0, y1, lab in (lo.fridge + ("fridge",), lo.hob + ("hob",), lo.sink + ("sink",)):
         s.dim(X(lo.galley_x0) - 4, Y(y0), X(lo.galley_x0) - 4, Y(y1), f"{y1 - y0:.0f} {lab}", 3)
-    for (lx, ly, t) in ((800, 1100, "BED 1,600 x 2,000"), ((lo.galley_x0 + lo.part_x0) / 2, 1650, "GALLEY 900"),
+    for (lx, ly, t) in ((800, 1100, "BED 1,600 x 2,000"), ((lo.galley_x0 + lo.part_x0) / 2, lo.sink[1] + 200, "GALLEY 900"),
                         ((lo.bath_x0 + lo.L) / 2, 1200, "BATH"), (sum(lo.sofa) / 2, 450, "SOFA"),
                         (2700, 1250, "living / dining")):
         s.text(X(lx), Y(ly), t, 2.3, "middle", "bold")
@@ -200,14 +200,15 @@ def plan_bw(m) -> str:
     for c in (1, 2):
         seat = by_id[f"K6-{4 * c:02d}"]
         box(seat.x0, seat.y0, seat.x1, seat.y1)
-    # galley: worktop, sink, two hob rings
+    # galley: worktop, sink, the wide hob with its two zones side by side
     X0 = lo.part_x0 - 620
     box(X0, 0, lo.part_x0, lo.sink[1])
     sk = by_id["K3-SINK"]
     box(sk.x0, sk.y0, sk.x1, sk.y1)
-    hx = lo.part_x0 - 310
-    for hy in (lo.hob[0] + 110, lo.hob[1] - 110):
-        s.circle(X(hx), Y(hy), 90 / sc, "none", ink, sw)
+    hob = by_id["K3-HOB"]
+    box(hob.x0, hob.y0, hob.x1, hob.y1)
+    for hy in ((hob.y0 + hob.y1) / 2 - 148, (hob.y0 + hob.y1) / 2 + 148):
+        s.circle(X((hob.x0 + hob.x1) / 2), Y(hy), 90 / sc, "none", ink, sw)
     # partition to the cross wall; the cross wall with its sliding-door opening; the door leaf
     cy0, cy1 = lo.bath_y1, lo.bath_y1 + lo.cross_t
     box(lo.part_x0, 0, lo.bath_x0, cy1, ink, 0.1)

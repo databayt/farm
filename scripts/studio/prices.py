@@ -30,10 +30,10 @@ PRICES: dict[str, tuple[float, str, str, str]] = {
     # fixtures and appliances
     "doorleaf": (90_000, "A", "AS-21", ""), "tray": (120_000, "A", "AS-21", ""), "screen": (180_000, "A", "AS-21", ""),
     "wc": (150_000, "A", "AS-21", ""), "basin": (90_000, "A", "AS-21", ""), "mirror": (25_000, "A", "AS-21", ""),
-    "bathacc": (40_000, "A", "AS-21", ""), "hob": (250_000, "A", "AS-21", "2-zone induction domino"),
+    "bathacc": (40_000, "A", "AS-21", ""), "hob": (250_000, "A", "AS-21", "2-zone induction, zones side by side, 590 x 350"),
     "sink": (70_000, "A", "AS-21", ""), "tap": (45_000, "A", "AS-21", ""),
     "fridge": (265_000, "V", "STU-P03", "90 L mini fridge, Kanis 2026-10-26"),
-    "hood": (90_000, "A", "AS-21", ""), "filter": (80_000, "A", "AS-21", ""),
+    "hood": (90_000, "A", "AS-21", "slim 600 mm, black"), "filter": (80_000, "A", "AS-21", ""),
     "mattress": (180_000, "A", "AS-21", "local foam, size to field-check (STU-51)"), "curtain": (60_000, "A", "AS-21", ""),
     "mesh": (90_000, "A", "AS-21", ""),
     "heater80": (300_000, "A", "AS-21", "80 L not found; 50 L listed at RWF 144,000-252,000 (STU-P01, STU-P02)"),

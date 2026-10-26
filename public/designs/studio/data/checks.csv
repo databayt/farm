@@ -12,7 +12,8 @@ R-WC-FRONT,Clear space in front of the WC (mm),pass,600 >= 600
 R-BDOOR,Bathroom door clear opening (mm),pass,600 >= 600
 R-AISLE,"Walkway, worktop to the sofa end (mm)",pass,658 >= 650
 R-BEDSIDE,Sofa clear of the bedside table (mm),pass,20 >= 20
-R-GALLEY,Galley clear of the bathroom wall end (mm),pass,250 >= 30
+R-GALLEY,Galley clear of the bathroom wall end (mm),pass,100 >= 30
+R-PASS,Walk past the galley end to the wash lobby (mm),pass,652 >= 600
 R-BED,Room beside the bed foot (mm),pass,214 >= 50
 R-HEIGHT,Clear height (mm),pass,2323 >= 2250
 R-PART,Partition clear of the old door (mm),pass,342 >= 150
@@ -20,7 +21,7 @@ E-C1,"Lighting (incl. bathroom IP65, deck, roof, stair): Ib <= In <= Iz; drop <=
 E-C2,"Sockets: bedside USB, living, deck: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 8.0 A, In 16 A, Iz 22.6 A, drop 0.51%"
 E-C3,Kitchen sockets and fridge: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 13.5 A, In 16 A, Iz 22.6 A, drop 0.45%"
 E-C4,Induction hob: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 15.2 A, In 20 A, Iz 30.1 A, drop 0.33%"
-E-C5,80 L water heater: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 8.7 A, In 16 A, Iz 22.6 A, drop 0.27%"
+E-C5,80 L water heater: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 8.7 A, In 16 A, Iz 22.6 A, drop 0.28%"
 E-C6,Extract fan and wall fan: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 0.3 A, In 6 A, Iz 16.4 A, drop 0.01%"
 E-C7,AC provision: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 12.0 A, In 16 A, Iz 22.6 A, drop 0.38%"
 E-MD,Diversified maximum demand within the 40 A main switch,pass,32.9 A

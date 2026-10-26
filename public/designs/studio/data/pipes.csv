@@ -6,10 +6,10 @@ D4,waste,50,2.6,1:27,Kitchen sink to the grease trap (separate soak pit)
 V1,vent,75,6,,Open vent up end B to 900 above the guardrail
 W1,cold,25,2.9,,"Cold main in: stop valve, filter, check meter"
 W2,cold,20,1.6,,Cold feed to the heater
-W3,cold,20,1.2,,Cold to sink
+W3,cold,20,1.3,,Cold to sink
 W4,cold,20,2.4,,Cold to the concealed WC cistern
 W5,cold,20,1.9,,Cold to basin
 H1,hot,20,1.8,,Hot (60 C) from the heater to the mixing valve
-H2,hot,20,1.2,,"Hot to sink (direct 60 C, labelled)"
+H2,hot,20,1.4,,"Hot to sink (direct 60 C, labelled)"
 T1,tempered,20,1.5,,TMV 41-44 C to the shower valve
 T2,tempered,20,2.8,,Tempered to basin

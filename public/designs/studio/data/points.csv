@@ -5,7 +5,7 @@ L2,light,C1,"Ceiling light, living",2300,1126,2323,12
 L3,light,C1,"Ceiling light, galley",3778,1126,2323,12
 L4,light,C1,Bathroom light IP65,5223,850,2323,12
 L5,light,C1,Wall reading light over the bed (wall side),300,0,1150,4
-L7,light,C1,Under-cabinet LED strip,4278,725,1790,10
+L7,light,C1,Under-cabinet LED strip,4278,800,1790,10
 L8,light,C1,Deck light IP65,2900,2312,2350,10
 L9,light,C1,Roof terrace lights IP65 (x2),1500,1126,2723,20
 L10,light,C1,Stair light IP65,-900,3152,1500,8
@@ -21,8 +21,8 @@ P5,socket,C2,Deck socket IP66,2600,2312,400,300
 P6,socket,C3,Worktop socket 1 (double),4578,275,1100,2000
 P7,socket,C3,"Worktop socket 2 (double, back wall)",4278,0,1100,1000
 P8,socket,C3,Fridge socket,4578,275,250,100
-P9,outlet,C4,Hob connection unit,4578,750,600,3500
-P10,outlet,C5,Heater DP switch + timer,4578,1390,1700,2000
+P9,outlet,C4,Hob connection unit,4578,850,600,3500
+P10,outlet,C5,Heater DP switch + timer,4578,1540,1700,2000
 F1,fan,C6,Bathroom extract 100 mm (one 110 mm hole in the back wall),4898,0,2100,20
 F2,fan,C6,Wall fan,1800,0,2100,50
 P11,outlet,C7,AC provision: isolator,900,0,2150,1000

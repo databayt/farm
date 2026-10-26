@@ -287,25 +287,25 @@ def k3_kitchen(lo: Layout) -> Kit:
     wt = Part("K3-WT", "Worktop 38 mm", "K3", "WTOP38", Box(0, 0, LEG + hb, run, WORKTOP_D, 900), step="S13",
               edges="L1", explode=(0, 0, 300))
     wt.ops += [
-        Op("cutout", "B", lo.sink[0] + 50, 70, w=400, h=380, joint="sink"),
-        Op("cutout", "B", lo.hob[0] + 56, 50, w=270, h=490, joint="hob"),
+        Op("cutout", "B", lo.sink[0] + 50, 70, w=(lo.sink[1] - lo.sink[0]) - 100, h=380, joint="sink"),
+        Op("cutout", "B", lo.hob[0] + 20, 185, w=560, h=320, joint="hob"),
     ]
     k.add(wt)
-    k.add(Part("K3-HS", "Hood shelf", "K3", "PLY18", Box(lo.hob[0], 0, 1650, lo.hob[1], 320, 1668), step="S14",
+    k.add(Part("K3-HS", "Hood shelf", "K3", "PLY18", Box(lo.hob[0], 0, 1650, lo.hob[1], 480, 1668), step="S14",
                edges="L1"))
     k.add(Part("K3-PL", "Plinth", "K3", "PLY18", Box(lo.hob[0], 560, 0, run, 578, LEG - 2), step="S13", edges="L1"))
-    k.buy(Bought("K3-HOB", "Two-zone induction hob, 300 mm domino, about 3.5 kW", "K3", "appliances", "electrical",
-                 1, "each", "hob", Box(lo.hob[0] + 56, 50, 900, lo.hob[0] + 344, 570, 960), step="S13",
-                 color="black"))
-    k.buy(Bought("K3-SINK", "Inset stainless sink 430 x 400, single bowl", "K3", "sanitaryware", "plumbing", 1,
+    # a wide black-glass hob after the founder's photo: two zones side by side, knobs at the front left
+    k.buy(Bought("K3-HOB", "Two-zone induction hob, zones side by side, black glass 590 x 350, front knobs, about 3.5 kW",
+                 "K3", "appliances", "electrical", 1, "each", "hob",
+                 Box(lo.hob[0] + 5, 170, 900, lo.hob[1] - 5, 520, 960), step="S13", color="black"))
+    k.buy(Bought("K3-SINK", "Inset stainless sink about 380 x 420, single bowl", "K3", "sanitaryware", "plumbing", 1,
                  "each", "sink", Box(lo.sink[0] + 35, 50, 720, lo.sink[1] - 35, 470, 905), step="S13",
                  color="stainless"))
     k.buy(Bought("K3-TAP", "Kitchen mixer tap", "K3", "sanitaryware", "plumbing", 1, "each", "tap", step="S13"))
     k.buy(Bought("K3-FRIDGE", "Under-counter fridge about 90 L (A-class)", "K3", "appliances", "electrical", 1,
                  "each", "fridge", Box(f0 + 10, 40, 0, f1 - 30, 590, 850), step="S13", color="white"))
-    k.buy(Bought("K3-HOOD", "Recirculating hood 300-450 mm, charcoal filter", "K3", "appliances", "electrical", 1,
-                 "each", "hood", Box(lo.hob[0] + 20, 20, 1560, lo.hob[1] - 20, 320, 1650), step="S14",
-                 color="stainless"))
+    k.buy(Bought("K3-HOOD", "Slim recirculating hood 600 mm, black, charcoal filter", "K3", "appliances", "electrical",
+                 1, "each", "hood", Box(lo.hob[0], 0, 1550, lo.hob[1], 480, 1650), step="S14", color="black"))
     k.buy(Bought("K3-FILTER", "Under-sink drinking-water filter + faucet", "K3", "plumbing", "plumbing", 1, "each",
                  "filter", step="S13"))
     turn(k, lo.part_x0)

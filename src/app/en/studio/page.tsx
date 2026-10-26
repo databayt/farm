@@ -258,14 +258,14 @@ export default function StudioPage() {
           <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`${D}/render/front-line.png`} width={2400} height={1100}
-              alt="Line drawing of the studio seen from the front with the front wall off: the bed against the wall with two storage boxes, a bedside table with a reading lamp, the sofa with a low table and two chairs, the galley with hob, sink and overhead cabinet, and the bathroom with the shower, a wall-hung WC and the basin on its console outside the door."
+              alt="Line drawing of the studio seen from the front with the front wall off: the bed against the wall with two storage boxes, a bedside table with a reading lamp, the sofa with a low table and two chairs, the galley with a wide two-zone hob under a slim hood, a sink and an overhead cabinet, and the bathroom with the shower, a wall-hung WC and the basin on its console outside the door."
               className="w-full object-contain lg:max-h-full dark:invert" />
           </div>
         </div>
         <figure className="px-4 pb-10 md:px-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`${D}/render/front-real.jpg`} width={2400} height={1100} loading="lazy"
-            alt="The same view rendered with materials and daylight: a white bed with storage boxes and a lit bedside lamp, a light grey sofa with yellow and blue cushions, a white table and plywood chairs, the plywood galley, and a white marble bathroom with a glass shower screen, a wall-hung WC and a basin on a black metal console."
+            alt="The same view rendered with materials and daylight: pine furniture in a medium-oak finish on a natural oak floor, a white bed with storage boxes and a lit bedside lamp, a grey sofa with yellow and blue cushions, a table and two chairs, the galley with a black-glass hob under a black hood, and a white marble bathroom with a glass shower screen, a wall-hung WC and a basin on a black metal console."
             className="h-auto w-full" />
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
         </figure>

@@ -148,30 +148,40 @@ const T = LINE ? {} : {
         g.beginPath(); g.moveTo(X - w / 2, Y); g.bezierCurveTo(X - w / 6, Y + a, X + w / 6, Y + b, X + w / 2, Y); g.stroke()
       })
     }
-    // a few faint knots: soft brown ovals with no dark core, spike or specks, so nothing reads as a hole
-    // (the founder asked twice for fewer holes)
-    for (let k = 0; k < 6; k++) {
-      const x = rnd() * w, y = rnd() * h, r = 2 + rnd() * 2.5
-      wrap(x, y, r * 4 + 2, r * 2.4 + 2, (X, Y) => {
-        g.save(); g.translate(X, Y); g.scale(1, 0.6)
-        const knot = g.createRadialGradient(0, 0, 0, 0, 0, r * 4)
-        knot.addColorStop(0, "rgba(128,76,32,0.4)"); knot.addColorStop(0.35, "rgba(140,86,38,0.2)"); knot.addColorStop(1, "rgba(140,86,38,0)")
-        g.fillStyle = knot; g.beginPath(); g.arc(0, 0, r * 4, 0, Math.PI * 2); g.fill()
+    // a very few light knots of mixed size and shape, fewer than real pine has (the founder's call): a pin
+    // knot, an oval drawn out along the grain, a larger knot with growth rings; mid-brown, never a dark hole
+    for (let k = 0; k < 4; k++) {
+      const x = rnd() * w, y = rnd() * h, kind = k % 3
+      const rx = kind === 0 ? 2 + rnd() * 1.5 : kind === 1 ? 5 + rnd() * 4 : 8 + rnd() * 4
+      const ry = rx * (kind === 0 ? 0.8 + rnd() * 0.2 : 0.35 + rnd() * 0.2), a = (rnd() - 0.5) * 0.3
+      wrap(x, y, rx * 3 + 2, ry * 3 + rx + 2, (X, Y) => {
+        g.save(); g.translate(X, Y); g.rotate(a); g.scale(1, ry / rx)
+        const halo = g.createRadialGradient(0, 0, rx * 0.6, 0, 0, rx * 2.8)
+        halo.addColorStop(0, "rgba(140,86,38,0.28)"); halo.addColorStop(1, "rgba(140,86,38,0)")
+        g.fillStyle = halo; g.beginPath(); g.arc(0, 0, rx * 2.8, 0, Math.PI * 2); g.fill()
+        const core = g.createRadialGradient(0, 0, 0, 0, 0, rx)
+        core.addColorStop(0, "rgba(150,94,42,0.5)"); core.addColorStop(0.75, "rgba(112,66,28,0.62)"); core.addColorStop(1, "rgba(112,66,28,0.15)")
+        g.fillStyle = core; g.beginPath(); g.arc(0, 0, rx, 0, Math.PI * 2); g.fill()
         g.restore()
+        for (let i = 1; i <= (kind === 2 ? 2 : 0); i++) { // growth rings round the larger knot
+          g.strokeStyle = `rgba(118,70,30,${0.22 - i * 0.06})`; g.lineWidth = 0.9
+          g.beginPath(); g.ellipse(X, Y, rx * (1 + i * 0.5), ry * (1 + i * 0.7), a, 0, Math.PI * 2); g.stroke()
+        }
       })
     }
   }, 1024, 512),
   // natural oak planks after the founder's floor reference (~/farm/ikea/images.jpeg): warm honey-tan boards
-  // of varied tone and random length, fine joints, long grain with arches; no knots (the founder's call)
+  // of varied tone, fine joints, long grain with arches; no knots (the founder's call). The texture covers
+  // FLOOR (4.8 x 2.4 m) once: boards about 133 mm wide and 0.9-1.8 m long, a bit smaller as the founder asked
   planks: tex((g, w, h) => {
     const tones = ["#b98b5b", "#c39663", "#a97c4f", "#bd9264", "#ae8255", "#c79b6a", "#b38556"]
-    const rows = 14, rh = h / rows
+    const rows = 18, rh = h / rows
     for (let r = 0; r < rows; r++) {
-      let x = -((r * 211) % 700)
+      let x = -((r * 157) % 520)
       while (x < w) {
-        const len = 520 + Math.floor(rnd() * 520), y0 = r * rh
+        const len = 384 + Math.floor(rnd() * 384), y0 = r * rh
         g.fillStyle = tones[Math.floor(rnd() * tones.length)]; g.fillRect(x, y0, len, rh)
-        for (let i = 0; i < 9; i++) { // long grain
+        for (let i = 0; i < 7; i++) { // long grain
           const y = y0 + rnd() * rh
           g.strokeStyle = `rgba(110,72,38,${0.08 + rnd() * 0.14})`; g.lineWidth = 0.7 + rnd() * 1.4
           g.beginPath(); g.moveTo(x, y)
@@ -223,6 +233,7 @@ function mat(name) {
       ceramic: () => new THREE.MeshPhysicalMaterial({ color: "#fbfbfa", roughness: 0.12, clearcoat: 0.7, clearcoatRoughness: 0.1 }),
       black: () => std({ color: "#1f2023", roughness: 0.45, metalness: 0.5 }),
       hob: () => std({ color: "#0f1012", roughness: 0.12, metalness: 0.2 }),
+      hoodblack: () => std({ color: "#1b1c1f", roughness: 0.4, metalness: 0.3 }), // painted steel hood
       steel: () => std({ color: "#c7cacd", roughness: 0.28, metalness: 0.9 }),
       glass: () => new THREE.MeshPhysicalMaterial({ color: "#e4f1f3", roughness: 0.04, transparent: true, opacity: 0.16, depthWrite: false }),
       mirror: () => std({ color: "#d9e0e3", roughness: 0.03, metalness: 1 }),
@@ -244,27 +255,30 @@ function mat(name) {
 
 // ------------------------------------------------------------ geometry helpers (metres)
 const meshes = []
-// wood at true scale: each face projects the board texture from its own plane, grain along the piece's
-// longest side (on an end face, along the longer edge), each piece cut from a different part of the board
+// boards at true scale: each face projects the texture from its own plane, along the piece's longest side
+// (on an end face, along the longer edge). Pine pieces are each cut from a different part of the board;
+// the floor takes its plank texture once, centred, so no seam falls on it and no plank is stretched
 const BOARD = [1.2, 0.6] // metres one pine tile covers along and across the grain
-function woodUV(geo) {
+const FLOOR = [4.8, 2.4] // metres the plank texture covers: the whole living floor
+function boardUV(geo, tile, cut = true) {
   geo.computeBoundingBox()
   const size = geo.boundingBox.getSize(new THREE.Vector3()).toArray()
   const long = size.indexOf(Math.max(...size))
   const pos = geo.attributes.position, nrm = geo.attributes.normal, uv = geo.attributes.uv
-  const du = (meshes.length * 0.618034) % 1, dv = (meshes.length * 0.414214) % 1
+  const du = cut ? (meshes.length * 0.618034) % 1 : 0.5, dv = cut ? (meshes.length * 0.414214) % 1 : 0.5
   for (let i = 0; i < pos.count; i++) {
     const n = [Math.abs(nrm.getX(i)), Math.abs(nrm.getY(i)), Math.abs(nrm.getZ(i))]
     const plane = [0, 1, 2].filter((a) => a !== n.indexOf(Math.max(...n)))
     const ua = plane.includes(long) ? long : size[plane[0]] >= size[plane[1]] ? plane[0] : plane[1]
     const va = plane.find((a) => a !== ua)
     const p = [pos.getX(i), pos.getY(i), pos.getZ(i)]
-    uv.setXY(i, du + p[ua] / BOARD[0], dv + p[va] / BOARD[1])
+    uv.setXY(i, du + p[ua] / tile[0], dv + p[va] / tile[1])
   }
   uv.needsUpdate = true
 }
 function add(geo, name, opts = {}) {
-  if (!LINE && name === "pine") woodUV(geo)
+  if (!LINE && name === "pine") boardUV(geo, BOARD)
+  if (!LINE && name === "floor") boardUV(geo, FLOOR, false)
   const mesh = new THREE.Mesh(geo, mat(name))
   mesh.castShadow = !LINE && name !== "glass" && name !== "floor" && name !== "vinyl" && !opts.noShadow
   mesh.receiveShadow = !LINE
@@ -458,12 +472,19 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
   front(sk0, run, 0.1, 0.858, "pine")
   const bar = (y, z0, z1) => cyl(gx - 0.035, y, (z0 + z1) / 2, 0.006, Math.min(0.16, z1 - z0 - 0.08), "steel", "z", 16)
   bar(0.8, fr0, fr1); bar(0.43, hb0, hb1); bar(0.82, hb0, hb1); bar(0.8, sk0, run)
-  // induction hob: black glass with two rings
+  // wide induction hob after the founder's photo: black glass, two zones side by side, two chrome knobs at
+  // the front left
   const [hx0, , hz0, hx1, , hz1] = L3(S.hob_box)
   box(hx0, 0.9, hz0, hx1, 0.906, hz1, "hob", 0.004)
-  for (const k of [0.32, 0.68]) {
-    const ring = add(new THREE.RingGeometry(0.075, 0.085, 48), LINE ? "white" : "steel")
-    ring.rotation.x = -Math.PI / 2; ring.position.set((hx0 + hx1) / 2, 0.9065, hz0 + (hz1 - hz0) * k)
+  for (const k of [0.25, 0.75]) {
+    for (const [r0, r1] of [[0.088, 0.095], [0.04, 0.044]]) {
+      const ring = add(new THREE.RingGeometry(r0, r1, 64), LINE ? "white" : "steel")
+      ring.rotation.x = -Math.PI / 2; ring.position.set((hx0 + hx1) / 2 + 0.02, 0.9065, hz0 + (hz1 - hz0) * k)
+    }
+  }
+  for (const kz of [hz0 + 0.05, hz0 + 0.105]) {
+    cyl(hx0 + 0.035, 0.912, kz, 0.017, 0.012, "black", "y", 32)
+    cyl(hx0 + 0.035, 0.924, kz, 0.013, 0.012, "steel", "y", 32)
   }
   // worktop in four pieces around the sink cut-out, so the bowl's depth shows
   const [sx0, , sz0, sx1, , sz1] = L3(S.sink_box)
@@ -493,8 +514,14 @@ cutWall(d1, 0, cy0, L, cut, cy1, "marble")
     box(ox0, oy0 + 0.002, z0 + 0.002, ox0 + 0.02, oy1 - 0.002, z0 + half - 0.002, "pine", 0.004)
     cyl(ox0 - 0.015, oy0 + 0.06, z0 + half / 2, 0.006, 0.16, "steel", "z", 16)
   }
+  // slim black hood after the founder's photo, on its shelf (K3-HS), a row of small buttons on its front
   const [hdx0, hdy0, hdz0, hdx1, hdy1, hdz1] = L3(S.hood)
-  box(hdx0, hdy0, hdz0, hdx1, hdy1, hdz1, "steel", 0.01)
+  box(hdx0, hdy0, hdz0, hdx1, hdy1, hdz1, "hoodblack", 0.008)
+  box(hdx0, hdy1, hdz0, hdx1, hdy1 + 0.018, hdz1, "pine", 0.003)
+  if (!LINE) for (let i = 0; i < 4; i++) {
+    const bz = (hdz0 + hdz1) / 2 + 0.04 + i * 0.026
+    box(hdx0 - 0.003, hdy0 + 0.045, bz, hdx0 + 0.001, hdy0 + 0.055, bz + 0.012, "white", 0.002)
+  }
   // on the worktop: a kettle and a small plant
   cyl(px0 - 0.22, 0.9 + 0.09, fr0 + 0.25, 0.075, 0.18, "white", "y", 32, 0.06)
   const handle = add(new THREE.TorusGeometry(0.055, 0.012, 12, 32, Math.PI), "white")

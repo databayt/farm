@@ -1,9 +1,9 @@
 kit,category,trade,item,qty_per_unit,unit,unit_price_rwf,label,source,total_per_unit_rwf,note
 K1-K7,boards,carpentry,MPLY18 sheet 2440x1220x18,3,sheet,60000,A,AS-21,180000,18 mm marine / WBP plywood (STU-31 lists film-faced)
 K1-K7,boards,carpentry,PLY12 sheet 2440x1220x12,15,sheet,35000,A,AS-21,525000,12 mm plywood
-K1-K7,boards,carpentry,PLY18 sheet 2440x1220x18,8,sheet,45000,A,AS-21,360000,"18 mm plywood or MR melamine board, 2440 x 1220"
+K1-K7,boards,carpentry,PLY18 sheet 2440x1220x18,9,sheet,45000,A,AS-21,405000,"18 mm plywood or MR melamine board, 2440 x 1220"
 K1-K7,boards,carpentry,WTOP38 sheet 3050x650x38,1,sheet,90000,A,AS-21,90000,38 mm worktop blank 3000 x 620
-K1-K7,boards,carpentry,"ABS edge band (2 mm visible, 0.8 mm hidden)",88,m,600,A,AS-21,52800,"ABS edge band, per metre"
+K1-K7,boards,carpentry,"ABS edge band (2 mm visible, 0.8 mm hidden)",90.2,m,600,A,AS-21,54120,"ABS edge band, per metre"
 K2-K7,hardware,carpentry,Bag A: Confirmat screw 7 x 50,37.8,each,60,A,AS-21,2268,
 K2-K7,hardware,carpentry,Bag B: Wood dowel 8 x 35,25.2,each,20,A,AS-21,504,
 K2-K7,hardware,carpentry,Bag C: Connector bolt M6 x 60 + barrel nut 10 mm,31.5,each,600,A,AS-21,18900,
@@ -49,11 +49,11 @@ K2,glazing,carpentry,Mirror 4 mm bonded to the cabinet door,1,each,25000,A,AS-21
 K2,accessories,carpentry,"Towel rail, robe hook, toilet-roll holder, shower shelf",1,set,40000,A,AS-21,40000,
 K3,hardware,carpentry,Hob base adjustable legs,4,each,1500,A,AS-21,6000,
 K3,hardware,carpentry,Sink base adjustable legs,4,each,1500,A,AS-21,6000,
-K3,appliances,electrical,"Two-zone induction hob, 300 mm domino, about 3.5 kW",1,each,250000,A,AS-21,250000,2-zone induction domino
-K3,sanitaryware,plumbing,"Inset stainless sink 430 x 400, single bowl",1,each,70000,A,AS-21,70000,
+K3,appliances,electrical,"Two-zone induction hob, zones side by side, black glass 590 x 350, front knobs, about 3.5 kW",1,each,250000,A,AS-21,250000,"2-zone induction, zones side by side, 590 x 350"
+K3,sanitaryware,plumbing,"Inset stainless sink about 380 x 420, single bowl",1,each,70000,A,AS-21,70000,
 K3,sanitaryware,plumbing,Kitchen mixer tap,1,each,45000,A,AS-21,45000,
 K3,appliances,electrical,Under-counter fridge about 90 L (A-class),1,each,265000,V,STU-P03,265000,"90 L mini fridge, Kanis 2026-10-26"
-K3,appliances,electrical,"Recirculating hood 300-450 mm, charcoal filter",1,each,90000,A,AS-21,90000,
+K3,appliances,electrical,"Slim recirculating hood 600 mm, black, charcoal filter",1,each,90000,A,AS-21,90000,"slim 600 mm, black"
 K3,plumbing,plumbing,Under-sink drinking-water filter + faucet,1,each,80000,A,AS-21,80000,
 K4,bedding,furnishing,"Mattress up to 1,600 x 2,000 (local size, e.g. 5 x 6 ft), 200 mm",1,each,180000,A,AS-21,180000,"local foam, size to field-check (STU-51)"
 K5,furnishing,furnishing,"Table lamp, linen drum shade, LED E27 (reading lamp)",1,each,35000,A,AS-21,35000,"table lamp with linen shade, LED bulb"
@@ -104,9 +104,9 @@ K8,electrical,electrical,Main switch 40 A DP + check meter (DIN kWh),1,set,40000
 K8,electrical,electrical,Earth rod 1.5 m copper-bonded + clamp + inspection pit,1,each,35000,A,AS-21,35000,
 K8,safety,electrical,Smoke alarm (10-year) + heat alarm (kitchen),2,each,20000,A,AS-21,40000,
 K8,safety,furnishing,Fire extinguisher 2 kg ABC + fire blanket,1,set,55000,A,AS-21,55000,
-K9,plumbing,plumbing,PPR PN20 pipe DN20,9.1,m,2000,A,AS-21,18200,per m
+K9,plumbing,plumbing,PPR PN20 pipe DN20,9.3,m,2000,A,AS-21,18600,per m
 K9,plumbing,plumbing,PPR PN20 pipe DN25,4.4,m,2800,A,AS-21,12320,per m
-K9,plumbing,plumbing,PPR PN20 pipe (hot) DN20,4.5,m,2000,A,AS-21,9000,per m
+K9,plumbing,plumbing,PPR PN20 pipe (hot) DN20,4.7,m,2000,A,AS-21,9400,per m
 K9,plumbing,plumbing,uPVC soil pipe DN110,2.7,m,7000,A,AS-21,18900,per m
 K9,plumbing,plumbing,PPR PN20 pipe (tempered) DN20,6,m,2000,A,AS-21,12000,per m
 K9,plumbing,plumbing,uPVC vent pipe DN75,7.9,m,4500,A,AS-21,35550,per m
