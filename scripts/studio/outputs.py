@@ -251,7 +251,7 @@ def write_model(m, out: Path) -> None:
             nodes.append({"id": p.id, "mat": p.material, "box": (b.x0, b.y0, b.z0, b.x1, b.y1, b.z1),
                           "extras": {"kit": k.id, "layer": p.layer, "step": int(p.step[1:]) if p.step else 0,
                                      "explode": [round(p.explode[0] / 1000, 3), round(p.explode[2] / 1000, 3),
-                                                 round(-p.explode[1] / 1000, 3)]}})
+                                                 round(p.explode[1] / 1000, 3)]}})
             meta.append({"id": p.id, "name": p.name, "kit": k.id, "kitName": kitname[k.id], "layer": p.layer,
                          "material": p.material, "size": [round(p.length), round(p.width), round(p.t)],
                          "step": p.step, "stepTitle": steps.get(p.step, "")})

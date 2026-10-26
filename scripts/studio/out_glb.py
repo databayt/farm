@@ -2,7 +2,7 @@
 
 One unit cube mesh per material; every part is a node scaled and translated onto it. Node
 names are part ids; extras carry kit, layer, step and the explode vector (metres). The model's
-z-up millimetres become glTF y-up metres: (X, Y, Z) = (x, z, -y) / 1000.
+z-up millimetres become glTF y-up metres: (X, Y, Z) = (x, z, y) / 1000.
 """
 from __future__ import annotations
 
@@ -78,8 +78,8 @@ def write(path, nodes: list[dict]) -> None:
         node = {
             "name": n["id"],
             "mesh": mats.index(n["mat"]),
-            # unit cube 0..1; x->X, z->Y, -y->Z, so Z spans -y1..-y0 with a positive scale
-            "translation": [round(x0 / 1000, 4), round(z0 / 1000, 4), round(-y1 / 1000, 4)],
+            # unit cube 0..1; x->X, z->Y, y->Z (the model frame is left-handed, so +y must map to +Z)
+            "translation": [round(x0 / 1000, 4), round(z0 / 1000, 4), round(y0 / 1000, 4)],
             "scale": [round(sx / 1000, 4), round(sz / 1000, 4), round(sy / 1000, 4)],
             "extras": n["extras"],
         }

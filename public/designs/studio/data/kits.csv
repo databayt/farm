@@ -4,7 +4,7 @@ K2,Bathroom shell and fixtures,carpentry + tiling + plumbing,workshop + site,13,
 K3,Kitchen,carpentry,workshop,53,9
 K4,Bed,carpentry,workshop,24,3
 K5,Wardrobe,carpentry,workshop,7,2
-K6,"Living: table, stools, luggage bench",carpentry,workshop,9,2
+K6,Living: table and stools,carpentry,workshop,9,2
 K7,Trims and scribes,carpentry,workshop,7,0
 K8,Electrical,electrical,site,0,43
 K9,Plumbing,plumbing,site,0,15

@@ -150,7 +150,8 @@ VIEWS = {
     # name: (h(x,y,z), v(x,y,z), depth key (bigger = nearer the viewer))
     "plan": (lambda x, y, z: x, lambda x, y, z: y, lambda b: b.z1),
     "back": (lambda x, y, z: x, lambda x, y, z: -z, lambda b: b.y1),
-    "front": (lambda x, y, z: -x, lambda x, y, z: -z, lambda b: -b.y0),
+    "front": (lambda x, y, z: -x, lambda x, y, z: -z, lambda b: -b.y0),  # from inside, looking at the glass
+    "front_out": (lambda x, y, z: x, lambda x, y, z: -z, lambda b: b.y1),  # from the deck
     "endA": (lambda x, y, z: y, lambda x, y, z: -z, lambda b: b.x1),
     "endB": (lambda x, y, z: -y, lambda x, y, z: -z, lambda b: -b.x0),
 }

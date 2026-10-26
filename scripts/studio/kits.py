@@ -334,7 +334,7 @@ def k5_wardrobe(lo: Layout) -> Kit:
 
 # ------------------------------------------------------------------------------- K6 living
 def k6_living(lo: Layout) -> Kit:
-    k = Kit("K6", "Living: table, stools, luggage bench", "carpentry", "workshop")
+    k = Kit("K6", "Living: table and stools", "carpentry", "workshop")
     xs = lo.bed_x1 + 700 + 20  # past the bed-drawer pull-out
     xe = lo.part_x0 - (lo.bdoor[1] - lo.bdoor[0]) + 40 - 5  # short of the bathroom door sweep
     tw = min(600.0, xe - xs - 2 * 320 - 40)

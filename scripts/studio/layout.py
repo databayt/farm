@@ -53,8 +53,12 @@ def build(o1_shift: float = 0.0) -> Layout:
     L = P.m("int_length", P.INT_L) - 2 * P.LINING_WALL.value
     W = P.m("int_width", P.INT_W) - 2 * P.LINING_WALL.value
     H = P.m("int_height", P.INT_H) - P.LINING_CEIL.value - P.LINING_FLOOR.value
-    o1 = (P.m("o1_start", P.O1_X0), P.m("o1_end", P.O1_X1) + o1_shift)
-    o2 = (P.m("o2_start", P.O2_X0), P.m("o2_end", P.O2_X1))
+    def opening(name: str, default: P.Param) -> float:
+        # the survey measures from the steel face of end A; the layout frame starts at the lining
+        return P.MEASURED[name] - P.LINING_WALL.value if name in P.MEASURED else default.value
+
+    o1 = (opening("o1_start", P.O1_X0), opening("o1_end", P.O1_X1) + o1_shift)
+    o2 = (opening("o2_start", P.O2_X0), opening("o2_end", P.O2_X1))
 
     part_x0 = o1[1] + 30  # partition living face lands on the solid strip after the glazing
     if part_x0 + PART_T > o2[0] - 150:

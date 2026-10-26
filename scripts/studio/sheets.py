@@ -63,10 +63,10 @@ def a101_existing(m) -> Sheet:
     ortho(s, "plan", [(b, fl, n) for (b, fl, n, i, *_x) in sh if i not in ("K0-ROOF", "K0-FLOOR")], 40, 40, sc)
     s.text(40, 34, "PLAN (roof removed)", 3, weight="bold")
     oy = 175
-    ortho(s, "front", [(b, fl, n) for (b, fl, n, i, *_x) in sh if i.startswith("K0-FRONT") or i == "K0-SLIDER"],
-          40 + (lo.L + 130) / sc, oy, sc)
-    s.text(40, oy - 6, "FRONT ELEVATION (from the deck; end B on the left)", 3, weight="bold")
-    X = lambda x: 40 + (lo.L + 130 - x) / sc  # front elevation: x runs right to left  # noqa: E731
+    ortho(s, "front_out", [(b, fl, n) for (b, fl, n, i, *_x) in sh if i.startswith("K0-FRONT") or i == "K0-SLIDER"],
+          40, oy, sc, origin=(-130, -2420))
+    s.text(40, oy - 6, "FRONT ELEVATION (from the deck; end A on the left, as in the photo)", 3, weight="bold")
+    X = lambda x: 40 + (x + 130) / sc  # noqa: E731
     s.dim(X(lo.o1[0]), oy + 92, X(lo.o1[1]), oy + 92, f"slider {lo.o1[1] - lo.o1[0]:.0f} (+/-150)", 4)
     s.dim(X(lo.o2[0]), oy + 92, X(lo.o2[1]), oy + 92, f"door {lo.o2[1] - lo.o2[0]:.0f}", 4)
     s.note(260, 40, [

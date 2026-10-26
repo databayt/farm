@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 
 import params as P
 from layout import Layout
-from model import Box, Bought, Kit
+from model import Box, Bought, Kit, Step
 
 # mm2 -> (current capacity A, mV/A/m single phase) for 2-core PVC Cu in conduit, 30 C
 CABLE = {1.5: (17.5, 29.0), 2.5: (24.0, 18.0), 4.0: (32.0, 11.0), 6.0: (41.0, 7.3), 10.0: (57.0, 4.4),
@@ -163,6 +163,12 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], Kit]:
                  "alarm", step="S19"))
     k.buy(Bought("K8-FIRE", "Fire extinguisher 2 kg ABC + fire blanket", "K8", "safety", "furnishing", 1, "set",
                  "extinguisher", step="S19"))
+    k.steps += [
+        Step("S05", "K8", "Services first fix: earth rod, conduits and cables, pipes in the floor void; pressure-test "
+             "the pipes before any lining closes", [], {}, 2, "Licensed electrician and plumber on site."),
+        Step("S19", "K8", "Second fix: unit board, devices, lights, alarms; test and certify", [], {}, 1,
+             "Certificate from a RURA class A electrician before power-on."),
+    ]
     return pts, circuits, k
 
 
