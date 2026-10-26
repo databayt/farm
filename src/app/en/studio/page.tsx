@@ -218,11 +218,15 @@ export default function StudioPage() {
         <img src={`${D}/render/studio-hero.jpg`} width={2400} height={1340} fetchPriority="high"
           alt="A finished container studio at golden hour: a sliding glass wall open onto a timber deck with red railings, a kitchenette and bed inside, a steel stair to lounge chairs on the roof, and eucalyptus behind."
           className="absolute inset-0 size-full object-cover object-[50%_55%]" />
+        {/* D-018: an AI image is always labelled as a concept render. */}
+        <span className="absolute end-4 bottom-4 z-10 rounded-full bg-black/40 px-2.5 py-1 text-xs text-white/85 backdrop-blur md:end-10">
+          Concept render
+        </span>
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
           <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
-            <p className="text-sm text-white/80">Concept render</p>
+            <p className="text-sm text-white/80">Digital Farm</p>
             <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">
-              A studio on the farm, built flat-pack
+              A studio in nature, with forest vibes
             </h1>
             <Button asChild className="mt-6">
               <Link href="/#enquire">Book</Link>
