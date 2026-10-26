@@ -80,8 +80,7 @@ export function ItemRail({ items }: { items: RailItem[] }) {
         <Paddle label="Previous" disabled={active === 0 && edge.start} onClick={() => step(-1)} d="M15 18l-6-6 6-6" />
         <Paddle label="Next" disabled={active === items.length - 1 && edge.end} onClick={() => step(1)} d="M9 18l6-6-6-6" />
       </div>
-      <div className="px-4 md:px-10" aria-live="polite">
-        <h3 className="text-xl font-semibold tracking-tight">{it.title}</h3>
+      <div className="px-4 md:px-10" aria-live="polite" aria-label={it.title}>
         <dl className="mt-4 grid gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-3">
           {it.details.map((d) => (
             <div key={d.label} className="bg-background p-4">
