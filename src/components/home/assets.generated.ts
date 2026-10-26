@@ -85,17 +85,17 @@ export const IMAGES: Partial<Record<string, SiteImage>> = {
     "source": "today"
   },
   "studio-cutaway": {
-    "src": "/site/img/studio-cutaway.webp?v=a59f060d",
+    "src": "/site/img/studio-cutaway.webp?v=30779e7c",
     "width": 1600,
     "height": 1000,
-    "blurDataURL": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAADQAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JZQDDNBuThd+ovkm6b6AA/uqW241Dsd/9qheJb9xLCn7bhM0Ji/5g+Iw8SX1c1fiAHzJ14fSHCNz1v+dH/zrGviS38+XaYltn6Xj0CQMAAA==",
+    "blurDataURL": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAADwAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JZQDImBuThAPrc1mfc3gAAP7tX7/20rD1FF0VWj9YU/bcJmhMYAGuNZgGAZcVOiEYGPS1vHgTIv8hO0zmk3NoL2XB3gAJRX30EDgA",
     "source": "design"
   },
   "studio-exterior": {
-    "src": "/site/img/studio-exterior.webp?v=340d3e11",
+    "src": "/site/img/studio-exterior.webp?v=ef1d81bf",
     "width": 1600,
     "height": 1000,
-    "blurDataURL": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADwAwCdASoUAA0APu1iqU2ppaOiMAgBMB2JbACdMoADDYXUlyeL/SqIAP6abEIZLtYNmZB4xS5+b9HZBjvOu8oxIW7Skl7iGTbX6VwBm+otMKLDiHbK5K0ldb4bTnXIuthhcglUwKyrdOJrEDQQsZRiFwWxgAAA",
+    "blurDataURL": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAwBACdASoUAA0APu1iqU2ppaOiMAgBMB2JbACdMoACtd1VJ86rPZ2PgAAA/ppsQhkvSHvRuZyfzEqo3whXq22RMCp/TGKq5Gi47FLku+t0yCOhayZy5vdcGzQ0qML0dpnV1CRCm9u5DIsN4Qeiw3hBv3webI9YAAA=",
     "source": "design"
   },
   "studios": {

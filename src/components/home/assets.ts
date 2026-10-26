@@ -68,14 +68,14 @@ export const ASSETS = {
     kind: "render",
     tone: "golden",
     subject: "The two studios and the office on their decks",
-    alt: "Two red studios and the yellow office on raised decks with red railings, the studios with roof terraces under clear canopies",
+    alt: "Two red studios and the yellow office on raised decks with red railings, the studios with open roof terraces behind guardrails",
     today: "Today: two red containers and a yellow one on raised steel decks, with an unfinished timber platform and garden furniture on the lawn",
   },
   studio: {
     kind: "render",
     tone: "interior",
     subject: "Inside a studio",
-    alt: "Inside a studio: a bed across the far end, a plywood kitchenette, a small table and stools by the open glass wall",
+    alt: "Inside a studio: a bed across the far end between open shelves, a two-seat sofa, a galley on the bathroom wall and a table by the open glass wall",
     today: "Today: inside one of the 20 ft containers, lined in wood-look panels, with a bed and a bedside lamp",
   },
   office: {
@@ -114,7 +114,7 @@ export const ASSETS = {
     kind: "render",
     tone: "golden",
     subject: "The studio row, finished",
-    alt: "As planned: the red studios and the yellow office on new timber decks, with roof terraces and the clutter cleared",
+    alt: "As planned: the red studios and the yellow office on new timber decks, with open roof terraces and the clutter cleared",
   },
   "arrival-planned": {
     kind: "render",
@@ -144,13 +144,13 @@ export const ASSETS = {
     kind: "design",
     tone: "golden",
     subject: "The studio, design render",
-    alt: "Design render: the studio on its raised deck, with a roof terrace and clear canopies",
+    alt: "Design render: the studio on its raised deck under a clear canopy, with a stair up to an open roof terrace behind a guardrail",
   },
   "studio-cutaway": {
     kind: "design",
     tone: "interior",
     subject: "The studio cutaway, design render",
-    alt: "Design render: a cutaway of the studio with the bed, the plywood kitchenette, the table and the shower room",
+    alt: "Design render: a cutaway of the studio with the bed between shelf towers, a two-seat sofa, a table for two, the galley on the bathroom wall and the shower room",
   },
 } satisfies Record<string, Asset>
 
