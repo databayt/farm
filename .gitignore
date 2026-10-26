@@ -50,3 +50,4 @@ __pycache__/
 /.source/
 /content/docs/
 /.wrangler/
+/public/footage/
