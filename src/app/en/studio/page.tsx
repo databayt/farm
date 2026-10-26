@@ -50,16 +50,16 @@ export default function StudioPage() {
   const sheets = Object.values(totals.sheets as Record<string, number>).reduce((a, b) => a + b, 0)
   return (
     <main className="w-full flex-1">
-      {/* First screen: the finished studio outside, full bleed (swap studio-exterior.jpg for a photoreal render
-          when one exists; same name and size). Rendered from studio.glb by scripts/studio/render/hero.html. */}
+      {/* First screen: a photoreal concept render of the finished studio (D-018), made in Nano Banana from the
+          site footage and studio-exterior.jpg, the model render from studio.glb that the docs keep using. */}
       <section className="relative h-[calc(100svh-var(--header-height))] min-h-[520px] w-full overflow-hidden bg-[#a9c8df]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`${D}/render/studio-exterior.jpg`} width={1600} height={1000} fetchPriority="high"
-          alt="The finished studio: a container on its deck with a sliding glass wall, a transparent canopy over the deck, and a roof terrace with chairs under a second canopy."
-          className="absolute inset-0 size-full object-cover object-[50%_45%]" />
+        <img src={`${D}/render/studio-hero.jpg`} width={2400} height={1340} fetchPriority="high"
+          alt="A finished container studio at golden hour: a sliding glass wall open onto a timber deck with red railings, a kitchenette and bed inside, a steel stair to lounge chairs on the roof, and eucalyptus behind."
+          className="absolute inset-0 size-full object-cover object-[50%_55%]" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
           <div className="mx-auto w-full max-w-5xl px-4 pt-24 pb-10 md:px-6 md:pb-14">
-            <p className="text-sm text-white/80">Farm · container studios · rev A</p>
+            <p className="text-sm text-white/80">Farm · container studios · rev A · Concept render, planned</p>
             <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">
               Three guest studios, built like flat-pack furniture
             </h1>
