@@ -16,8 +16,11 @@ It holds the study that decides what to build and, later, the farm's website.
 | `study/research/` | Desk research (location, markets and institutions, crops, livestock, suppliers, buyers) and the preliminary report |
 | `study/registers/` | Sources, prices, suppliers, buyers (CSV) and the assumptions register |
 | `study/feasibility/` | Decision matrix, financial model (`.xlsx`) and its notes |
-| `study/execution/` | First 90 days, decision log |
-| `scripts/` | `build_financial_model.py` regenerates the financial model |
+| `study/design/`, `study/engineering/`, `study/operations/` | Farm design, engineering systems, operating procedures |
+| `study/studio/` | Container studios: three identical flat-pack guest studios (design package, survey sheet) |
+| `study/execution/` | First 90 days, five-year roadmap, decision log |
+| `scripts/` | `build_financial_model.py` regenerates the financial model; `studio/` generates the container-studio package (`pnpm studio:build`) |
+| `public/designs/studio/` | Generated studio drawings, 3D model, CNC files, tables and PDFs |
 | `src/` | The website (Next.js 16), built in Stage 6 |
 
 ## How to read the study

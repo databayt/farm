@@ -56,12 +56,15 @@ study/discovery    questionnaire, site inspection, soil/water testing, zoning co
 study/research     desk research by topic + the preliminary report
 study/registers    sources, prices, suppliers, buyers, assumptions
 study/feasibility  decision matrix, financial model (+ notes)
+study/studio       container studios (generated assets in public/designs/studio)
 study/execution    first 90 days, decision log
 scripts/           generators (financial model)
 ```
+
+Regenerate the container-studio package (drawings, model, CNC, BOM) with `pnpm studio:build` (add `--pdf` for a revision's PDFs); inputs are `scripts/studio/params.py` and `study/studio/survey.csv`.
 
 Regenerate the financial model with `uv run --with openpyxl python scripts/build_financial_model.py`. Edit the inputs in the script or on the workbook's Assumptions sheet, and record the change in the decision log.
 
 ## Repo workflow
 
-Work on `main` only. Make small conventional commits with explicit paths. There is no remote yet; ask before creating one.
+Work on `main` only. Make small conventional commits with explicit paths. The remote is the public repo databayt/farm (D-013).
