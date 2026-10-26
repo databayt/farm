@@ -50,34 +50,49 @@ export default function StudioPage() {
   const sheets = Object.values(totals.sheets as Record<string, number>).reduce((a, b) => a + b, 0)
   return (
     <main className="w-full flex-1">
-      <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
-      <section className="mt-6 grid items-center gap-8 md:mt-10 md:grid-cols-[1fr_1.05fr] md:gap-12">
-        {/* Two panels, as in the reference pin: the finished studio outside, then a cutaway with the roof and
-            front wall removed. Rendered from studio.glb by scripts/studio/render/hero.html. */}
-        <div className="overflow-hidden rounded-xl border md:order-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${D}/render/studio-hero.jpg`} width={1600} height={2010} fetchPriority="high"
-            alt="Top: the finished studio on its deck with a roof terrace and transparent canopies. Bottom: a cutaway with the roof and front wall removed, showing the bed, kitchen, table and bathroom."
-            className="h-auto w-full" />
+      {/* First screen: the finished studio outside, full bleed (swap studio-exterior.jpg for a photoreal render
+          when one exists; same name and size). Rendered from studio.glb by scripts/studio/render/hero.html. */}
+      <section className="relative h-[calc(100svh-var(--header-height))] min-h-[520px] w-full overflow-hidden bg-[#a9c8df]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`${D}/render/studio-exterior.jpg`} width={1600} height={1000} fetchPriority="high"
+          alt="The finished studio: a container on its deck with a sliding glass wall, a transparent canopy over the deck, and a roof terrace with chairs under a second canopy."
+          className="absolute inset-0 size-full object-cover object-[50%_45%]" />
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
+          <div className="mx-auto w-full max-w-5xl px-4 pt-24 pb-10 md:px-6 md:pb-14">
+            <p className="text-sm text-white/80">Farm · container studios · rev A</p>
+            <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">
+              Three guest studios, built like flat-pack furniture
+            </h1>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild>
+                <a href="#inside">See inside</a>
+              </Button>
+              <Button asChild variant="outline" className="border-white/60 bg-white/10 text-white hover:bg-white/20">
+                <a href="#model">Explore the 3D model</a>
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="space-y-5 md:order-1">
-          <p className="text-muted-foreground text-sm">Farm · container studios · rev A</p>
-          <h1 className="text-4xl font-semibold tracking-tight text-balance md:text-5xl">
-            Three guest studios, built like flat-pack furniture
-          </h1>
+      </section>
+
+      <div className="mx-auto w-full max-w-5xl px-4 pb-12 md:px-6 md:pb-16">
+      <section id="inside" className="mt-14 grid scroll-mt-20 items-center gap-8 md:grid-cols-[1fr_1.15fr] md:gap-12">
+        <div className="space-y-5">
+          <h2 className="text-3xl font-semibold tracking-tight text-balance">Everything a guest needs in 13 m²</h2>
           <p className="text-muted-foreground text-lg text-balance">
             Three 20 ft containers already on the farm become identical farm-stay studios: bed, kitchen,
             shower and a roof terrace. Every part is cut, drilled and numbered in Kigali, then assembled
             on site, the IKEA way.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild>
-              <a href="#model">Explore the 3D model</a>
-            </Button>
-            <Button asChild variant="outline">
-              <Link href="/docs/studio">Read the design package</Link>
-            </Button>
-          </div>
+          <Button asChild variant="outline">
+            <Link href="/docs/studio">Read the design package</Link>
+          </Button>
+        </div>
+        <div className="overflow-hidden rounded-xl border">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`${D}/render/studio-cutaway.jpg`} width={1600} height={1000} loading="lazy"
+            alt="Cutaway with the roof and front wall removed: queen bed, kitchen with induction hob and sink, table and stools, and the bathroom with a walk-in shower."
+            className="h-auto w-full" />
         </div>
       </section>
 
