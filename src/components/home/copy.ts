@@ -7,12 +7,12 @@ export const copy = {
   meta: {
     title: "Digital Farm · Gashora, Rwanda",
     description:
-      "A working farm above a lake in Gashora, an hour from Kigali, where six containers will become guest rooms, studios and a place to learn: the plan, and the site as it stands.",
+      "A working farm above a lake in Gashora, an hour from Kigali, where seven containers will become guest rooms, studios, a bar and a place to learn: the plan, and the site as it stands.",
   },
-  skip: "Skip to the walk-through",
+  skip: "Skip to the plan",
   nav: [
+    { href: "#plans", label: "Plan" },
     { href: "#way-in", label: "The way in" },
-    { href: "#compound", label: "Compound" },
     { href: "#stay", label: "Stay" },
     { href: "#learn", label: "Learn" },
     { href: "#today", label: "Today" },
@@ -31,7 +31,7 @@ export const copy = {
     // The site's name, in the header and footer; the hero itself says only the headline.
     title: "Digital Farm",
     headline: "State of comfort",
-    subline: "A stress-free environment",
+    subline: "Stress-free environment",
     walk: "Walk through",
     film: "the opening film",
   },
@@ -46,34 +46,28 @@ export const copy = {
       { id: "inner-gate", n: "04", title: "The inner gate", text: "Timber and red steel, in the colours of the decks. Past it, a quiet courtyard." },
     ] satisfies { id: AssetId; n: string; title: string; text: string }[],
   },
-  compound: {
-    eyebrow: "02 · The compound",
-    title: "One courtyard, six containers",
-    lead: "Everything sits around one lawn and a stone fire pit. Three guest rooms on the left, two studios and the farm office on the right, and behind them a room to learn.",
+  // The plan as /en/studio shows its own: 2D, then 3D (D-021). Both are drawn from compound.json.
+  plans: {
+    title: "2D",
+    label:
+      "Plan of the compound, north up. Along the top, the public road with the gate and the Digital Farm sign, then green parking and a rock road down to the inner gate. Down the west side, the bar and then the guest-room block, their doors onto the courtyard lawn and its fire pit. Along the south of the courtyard, the farm office and then two studios on raised decks. Further out toward the lake, the study room, its west end in line with the guest rooms. Then a band of trees and the lake.",
     note: "Illustrative plan: containers drawn to size, layout not surveyed.",
-    mapLabel:
-      "Illustrative plan of the compound. From the public road: the outer gate and sign, green parking, a rock road and the inner gate. Around the courtyard lawn and its fire pit: the guest-room block on the left, the row of two studios and the office on the right, and the study room behind that row. The lake lies beyond a band of trees.",
+  },
+  model: {
+    title: "3D",
+    line: "Line drawing of the compound from the air, seen from the entrance and looking toward the lake: the gate, the parking and the rock road in front; on the right, the bar and the guest-room block with their doors onto the courtyard and its fire pit; across the lawn, the office and two studios on raised decks; the study room beyond them; then trees and the lake.",
+    real: "The same view rendered with materials and sunlight: the saffron-yellow guest rooms and office, the oxide-red bar and studios on timber decks, the teal study room, a green lawn around the stone fire pit, grass parking and a stone road, eucalyptus along the shore and the lake.",
+    caption: "Rendered from the design model",
+  },
+  courtyard: {
     band: {
       planned: "From the air: the gates, the road, the courtyard and the lake beyond the trees.",
       today: "The courtyard today: the stone fire pit, tents on the lawn and the lake beyond the trees.",
     },
     film: "the compound film",
-    // x and y are the hotspot's place on the plan, in percent of its width and height.
-    items: [
-      { id: "gate", n: "1", title: "Gate and sign", tag: "Entrance", image: "gate", x: 38.2, y: 96, text: "Two fieldstone gateposts and a low wall with one sign: Digital Farm." },
-      { id: "parking", n: "2", title: "Green parking", tag: "Arrival", image: "parking", x: 27, y: 89.5, text: "Grass pavers under shade trees, just inside the gate." },
-      { id: "road", n: "3", title: "Rock road", tag: "Arrival", image: "road", x: 44, y: 78.5, text: "Hand-laid local stone, from the parking to the inner gate." },
-      { id: "inner-gate", n: "4", title: "Inner gate", tag: "Arrival", image: "inner-gate", x: 50, y: 69.5, text: "Eucalyptus slats on a red steel frame. The compound starts here." },
-      { id: "courtyard", n: "5", title: "Courtyard", tag: "Shared", image: "aerial", x: 61, y: 56.3, text: "A level lawn around the stone fire pit that is already on site. Every door opens onto it." },
-      { id: "rooms", n: "6", title: "Guest rooms", tag: "2 × 40 ft, joined", image: "rooms", x: 14.5, y: 46.9, text: "Two 40 ft containers side by side, opened up inside: three en-suite rooms on a shared veranda." },
-      { id: "studio-one", n: "7", title: "Studio one", tag: "20 ft", image: "studios", x: 41.1, y: 35.6, text: "Self-contained: a bed, a sofa, a galley kitchen and a shower room, with an open roof terrace." },
-      { id: "studio-two", n: "8", title: "Studio two", tag: "20 ft", image: "studio", x: 54.6, y: 35.6, text: "The same plan as studio one, on its own raised deck beside it." },
-      { id: "office", n: "9", title: "Farm office", tag: "20 ft", image: "office", x: 68.1, y: 35.6, text: "The yellow container: the farm's desk, its records and its first welcome." },
-      { id: "study", n: "10", title: "Study room", tag: "40 ft", image: "study", x: 52.3, y: 22.6, text: "A room for training and quiet work, with glass doors to a timber deck." },
-    ] satisfies { id: string; n: string; title: string; tag: string; image: AssetId; x: number; y: number; text: string }[],
   },
   stay: {
-    eyebrow: "03 · Stay",
+    eyebrow: "02 · Stay",
     title: "Three rooms and two studios",
     rooms: {
       title: "Three rooms in two joined containers",
@@ -99,17 +93,17 @@ export const copy = {
     },
   },
   work: {
-    eyebrow: "04 · Work and learn",
+    eyebrow: "03 · Work and learn",
     title: "Where the farm is run, and where people learn",
     office: {
       tag: "20 ft · yellow",
       title: "The farm office",
-      text: "The third 20 ft container is the farm office: where the records are kept, suppliers are met and visitors are welcomed.",
+      text: "The first 20 ft container in the row, next to the guest rooms, is the farm office: where the records are kept, suppliers are met and visitors are welcomed.",
     },
     study: {
       tag: "40 ft · teal",
       title: "The study room",
-      text: "Behind the studios, a 40 ft container becomes a room for training and quiet work: about twelve seats, a screen, and a wall of glass doors onto a timber deck.",
+      text: "Beyond the row, toward the lake, a 40 ft container becomes a room for training and quiet work: about twelve seats, a screen, and a wall of glass doors onto a timber deck.",
     },
     digital: {
       eyebrow: "Why digital",
@@ -136,7 +130,7 @@ export const copy = {
     ] satisfies { today: AssetId; planned: AssetId; title: string; ratio: string }[],
   },
   location: {
-    eyebrow: "05 · Location",
+    eyebrow: "04 · Location",
     title: "Gashora, an hour from Kigali",
     text: "The farm is in Gashora, in Bugesera District, about an hour's drive from Kigali. The compound sits back from the lake, behind a band of trees.",
     directions: "Directions are shared when a visit is arranged.",
@@ -156,7 +150,7 @@ export const copy = {
     },
   },
   open: {
-    eyebrow: "06 · In the open",
+    eyebrow: "05 · In the open",
     title: "A farm you can follow",
     text: "Every decision behind Digital Farm, from the soil to the septic system, is in an open study: research, designs, costs and the plan, with each number marked verified, estimated, assumed or unknown.",
     links: [
@@ -166,7 +160,7 @@ export const copy = {
     note: "Every picture on this page is labelled. “Today” marks a photograph of the site taken on 2026-10-25; “Concept render” marks a picture of the plan, made from those photographs.",
   },
   enquire: {
-    eyebrow: "07 · Register interest",
+    eyebrow: "06 · Register interest",
     title: "Tell us what you are looking for",
     text: "Rooms and studios open once the work is finished and inspected. Send a message with what you are looking for and when, and we will keep you posted.",
     button: "Message us on WhatsApp",

@@ -36,11 +36,11 @@ export function Hero() {
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-24 md:px-8 md:pb-28">
         <h1
           id="hero-title"
-          className="farm-intro font-display text-[clamp(3.5rem,11vw,9rem)] leading-[0.9] font-semibold tracking-[-0.04em] text-balance"
+          className="farm-intro font-mono text-[clamp(2.75rem,8.5vw,7.5rem)] leading-[0.95] font-bold tracking-[-0.05em] text-balance"
         >
           {headline}
         </h1>
-        <p className="farm-intro-2 text-chalk/90 mt-4 text-2xl font-medium tracking-tight md:text-4xl">{subline}</p>
+        <p className="farm-intro-2 text-chalk/90 mt-4 font-mono text-xl font-bold tracking-[-0.03em] md:text-4xl">{subline}</p>
         <div className="farm-intro-3 mt-8 flex flex-wrap gap-3">
           <a
             href="#way-in"
