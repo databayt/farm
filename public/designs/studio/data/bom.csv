@@ -112,14 +112,14 @@ K8,electrical,electrical,"RCBOs 30 mA type A, 1 module (B6 x2, B16 x4, B20 x1)",
 K8,electrical,electrical,"Priority relay, DIN: senses the hob (C4) and sheds C5 and C7",1,each,60000,A,AS-21,60000,"load shedding, DIN"
 K8,electrical,electrical,"Contactor 2-pole 25 A, DIN: the C5 and C7 lines",1,each,25000,A,AS-21,25000,DIN
 K8,safety,furnishing,Fire extinguisher 2 kg ABC + fire blanket,1,set,55000,A,AS-21,55000,
-K9,plumbing,plumbing,PPR PN20 pipe DN20,9.3,m,2000,A,AS-21,18600,per m
+K9,plumbing,plumbing,PPR PN20 pipe DN20,10.4,m,2000,A,AS-21,20800,per m
 K9,plumbing,plumbing,PPR PN20 pipe DN25,4.4,m,2800,A,AS-21,12320,per m
-K9,plumbing,plumbing,PPR PN20 pipe (hot) DN20,4.7,m,2000,A,AS-21,9400,per m
-K9,plumbing,plumbing,uPVC soil pipe DN110,2.7,m,7000,A,AS-21,18900,per m
-K9,plumbing,plumbing,PPR PN20 pipe (tempered) DN20,6,m,2000,A,AS-21,12000,per m
-K9,plumbing,plumbing,uPVC vent pipe DN75,7.9,m,4500,A,AS-21,35550,per m
-K9,plumbing,plumbing,uPVC waste pipe DN40,2.5,m,2500,A,AS-21,6250,per m
-K9,plumbing,plumbing,uPVC waste pipe DN50,5.5,m,3000,A,AS-21,16500,per m
+K9,plumbing,plumbing,PPR PN20 pipe (hot) DN20,7.6,m,2000,A,AS-21,15200,per m
+K9,plumbing,plumbing,uPVC soil pipe DN110,3,m,7000,A,AS-21,21000,per m
+K9,plumbing,plumbing,PPR PN20 pipe (tempered) DN20,3.8,m,2000,A,AS-21,7600,per m
+K9,plumbing,plumbing,uPVC vent pipe DN75,8.8,m,4500,A,AS-21,39600,per m
+K9,plumbing,plumbing,uPVC waste pipe DN40,3.4,m,2500,A,AS-21,8500,per m
+K9,plumbing,plumbing,uPVC waste pipe DN50,6.3,m,3000,A,AS-21,18900,per m
 K9,plumbing,plumbing,Pipe fittings and clips (allowance),1,set,120000,A,AS-21,120000,
 K9,plumbing,plumbing,Thermostatic mixing valve (TMV) 41-44 C,1,each,60000,A,AS-21,60000,
 K9,plumbing,plumbing,Thermostatic shower valve + 6-7 L/min head + rail,1,set,90000,A,AS-21,90000,

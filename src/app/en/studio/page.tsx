@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
 import { BuildUp } from "@/components/docs/build-up"
 import { ItemRail, type RailItem } from "@/components/docs/item-rail"
+import { PipeDiagram } from "@/components/docs/pipe-diagram"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
 import { WiringDiagram } from "@/components/docs/wiring-diagram"
 import { bedStock } from "@/lib/bed-stock"
 import totals from "../../../../public/designs/studio/data/totals.json"
 import electricTags from "../../../../public/designs/studio/render/electric-tags.json"
 import floorPieces from "../../../../public/designs/studio/render/floor-pieces.json"
+import plumbingTags from "../../../../public/designs/studio/render/plumbing-tags.json"
 import wallPieces from "../../../../public/designs/studio/render/wall-pieces.json"
 
 // Public showcase of the container-studio design package (study/studio, D-014..D-016).
@@ -164,6 +166,55 @@ function electricRail(points: Record<string, string>[]): RailItem[] {
   })
 }
 
+// The Plumbing rail, in the Electric rail's pattern: each fitting rendered where it stands by room.html?item=<model>
+// (the 3D view's own piece), then the pipe; sizes from fittings.csv and the BOM's lengths, costs from the BOM
+// (placeholders, AS-21), and a shop where the sourcing notes name one.
+const PIPE_SHOPS = "Pro Water Rwanda (Gatsata) or Build Mart (Kicukiro)"
+const degC = (s = "") => s.replace(/(\d) C\b/g, "$1 °C").replace(/(\d)-(\d)/g, "$1–$2")
+function plumbingRail(fittings: Record<string, string>[]): RailItem[] {
+  const bom = readCsv("bom.csv").filter((r) => r.trade === "plumbing")
+  const lines = (re: RegExp) => bom.filter((r) => re.test(r.item))
+  const cost = (re: RegExp) => `RWF ${frw(lines(re).reduce((n, r) => n + Number(r.total_per_unit_rwf), 0))} (estimate)`
+  const metres = (re: RegExp) => {
+    const by = new Map<string, number>()
+    for (const r of lines(re)) { const dn = r.item.match(/DN\d+/)![0]; by.set(dn, (by.get(dn) ?? 0) + Number(r.qty_per_unit)) }
+    return [...by].map(([dn, m]) => `${+m.toFixed(1)} m of ${dn}`).join(", ")
+  }
+  const f = Object.fromEntries(fittings.map((x) => [x.model, x]))
+  const each = (model: string) => est(Number(bom.find((r) => r.item === f[model].item)?.total_per_unit_rwf ?? 0))
+  const card = (model: string, title: string, size: string, where: string, cost: string, note?: string): RailItem => ({
+    src: `${D}/render/plumbing/${model}.webp`, alt: title, title,
+    note: note ?? `${f[model].point} · ${f[model].description}`,
+    details: [{ label: "Dimensions", value: size }, { label: "Where to buy", value: where }, { label: "Cost", value: cost }],
+  })
+  const [litres, kw] = f.heater.rating.split(", ")
+  const valves = lines(/^Angle valves/)[0]
+  return [
+    card("meter", "Stop valve, filter and meter", `DN25, in line on the main, about ${f.meter.h_mm} mm`, "Not sourced yet", each("meter")),
+    card("heater", "Water heater", `${litres} lying down, Ø ${f.heater.w_mm} × ${mm(Number(f.heater.d_mm))} mm, ${kw}`,
+      "Kanis Retail lists 50 L (RWF 144,000–252,000); ask Build Mart for 80 L", each("heater")),
+    card("tmv", "Mixing valve", `${degC(f.tmv.rating)}, behind a ${f.tmv.w_mm} mm access panel`, "Not sourced yet", each("tmv")),
+    card("kitchentap", "Kitchen mixer tap", `${f.kitchentap.rating}, two angle valves under the sink`, HARDWARE_DISTRICT, each("kitchentap")),
+    card("filter", "Drinking-water filter", `Twin canisters ${f.filter.w_mm} × ${f.filter.h_mm} mm, its own faucet by the tap`,
+      "Not sourced yet", each("filter")),
+    card("showerset", "Shower valve, rail and head", `Thermostatic bar valve, ${Number(f.showerset.h_mm) / 1000} m rail, ${degC(f.showerset.rating)} head`,
+      HARDWARE_DISTRICT, each("showerset")),
+    card("cistern", "Concealed cistern", `Frame ${f.cistern.w_mm} × ${mm(Number(f.cistern.h_mm))} × ${f.cistern.d_mm} mm, dual-flush plate`,
+      HARDWARE_DISTRICT, each("cistern")),
+    card("basintap", "Basin mixer", "A tall mixer for the vessel basin, two angle valves under the console", HARDWARE_DISTRICT,
+      `RWF ${frw(Number(bom.find((r) => r.item === f.basintap.item)?.total_per_unit_rwf ?? 0))} for the basin, its mixer and bottle trap (estimate)`),
+    card("anglevalve", `Angle valves × ${valves.qty_per_unit}`, "With a filter: two under the sink, two under the basin, one at the cistern",
+      HARDWARE_DISTRICT, `RWF ${frw(Number(valves.unit_price_rwf))} each × ${valves.qty_per_unit} (estimate)`,
+      "Each tap and the cistern can be shut off on its own, without the main."),
+    card("ppr", "PP-R supply pipe", `${metres(/^PPR/)}, PN20, welded joints`, PIPE_SHOPS, cost(/^PPR/),
+      "Cold, hot and mixed water inside the units and walls, then straight up to each outlet."),
+    card("upvc", "uPVC drain pipe", metres(/^uPVC (soil|waste)/), PIPE_SHOPS, cost(/^uPVC (soil|waste)/),
+      "Under the floor, each run falling at least 1:40 to IC1 or the grease trap."),
+    card("vent", "Vent and air admittance valve", `${metres(/^uPVC vent/)}, a spare 110 mm AAV, rodding eyes`, PIPE_SHOPS,
+      cost(/^(uPVC vent|Air admittance)/), "V1 rises up end B to 900 mm above the roof guardrail; the AAV stands in if it cannot."),
+  ]
+}
+
 const STEPS = [
   { n: "1", title: "Measure", text: "Survey the container; the model regenerates every drawing from the real numbers." },
   { n: "2", title: "Cut in Kigali", text: "A Gisozi workshop rips and crosscuts sheets on a panel saw, following the cutting diagrams." },
@@ -237,7 +288,7 @@ function plumbingBom() {
       : /^uPVC/.test(r.item) ? "Drain and vent pipe"
       : /drinking/i.test(r.item) ? "Drinking water"
       : "Valves and fittings"
-    groups.get(group)!.push(bomLine(r))
+    groups.get(group)!.push(bomLine(r, degC(r.item)))
   }
   return tally(groups)
 }
@@ -283,6 +334,14 @@ function BomTable({ groups, total, label }: { groups: BomGroup[]; total: number;
 
 const mm = (n: number) => n.toLocaleString("en-US")
 const KIND: Record<string, string> = { usb: "socket + USB-C", db: "board", inlet: "power inlet", earth: "earth rod" }
+const FIT_KIND: Record<string, string> = { wc: "WC", site: "on the site" }
+// a fitting's tag takes the colour of the warmest water it handles: hot over mixed over cold; drains and the vent
+// for the points that only take those
+const WARMTH = ["hot", "tempered", "cold", "soil", "waste", "vent"]
+function fittingColour(f: Record<string, string>, pipes: Record<string, string>[]) {
+  const runs = pipes.filter((p) => f.runs.split(" ").includes(p.run))
+  return runs.sort((a, b) => WARMTH.indexOf(a.system) - WARMTH.indexOf(b.system))[0]?.colour
+}
 
 export default function StudioPage() {
   const circuits = readCsv("circuits.csv")
@@ -291,6 +350,7 @@ export default function StudioPage() {
   const bom = electricalBom(points)
   const bomTotal = bom.reduce((n, g) => n + g.total, 0)
   const pipes = readCsv("pipes.csv")
+  const fittings = readCsv("fittings.csv")
   const water = Object.fromEntries(readCsv("site-water.csv").map((r) => [r.item, r.value]))
   const shared = readCsv("shared-works.csv").filter((w) => !/site board|REG/i.test(w.item))
   const plumbing = plumbingBom()
@@ -554,43 +614,56 @@ export default function StudioPage() {
         </div>
       </section>
 
-      {/* Plumbing: four full-width sections, from the tank down to every item bought. */}
-      <section id="plumbing" className="scroll-mt-20 border-t bg-muted/40 py-16">
-        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-          <p className="text-muted-foreground text-sm font-medium">Plumbing · 1 of 4</p>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight">Water in, water out</h2>
-          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            WASAC water, the borehole and rain from the canopies fill the farm&rsquo;s tank, and a pump sends it to the
-            studio. Toilets and showers drain to the farm&rsquo;s new septic tank; kitchen sinks drain to their own grease
-            trap.
-          </p>
-          <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
-            {[
-              [`${mm(Number(water.daily_L))} L`, `a day for ${water.persons} guests`],
-              [`${water.tank_m3} m³`, "storage tank, about 4 days"],
-              [`${water.septic_m3} m³`, `septic tank, chambers ${water.chamber1_m3} + ${water.chamber2_m3} m³`],
-              [`${water.pump_lpm} L/min`, "booster pump"],
-            ].map(([v, l]) => (
-              <div key={l} className="bg-background p-5">
-                <div className="text-2xl font-semibold tracking-tight">{v}</div>
-                <div className="text-muted-foreground mt-1 text-sm">{l}</div>
-              </div>
-            ))}
+      {/* Plumbing, in the Electric section's pattern: a plain title, then the studio's water drawn full width, from the
+          farm's supply through the stop valve to every outlet and on to the drains. Below it the installation in the 3D
+          view's camera with the galley's end panels cut away (render/plumbing-line.png: every run in its system's
+          colour, dashed where a wall or the floor hides it, every fitting tagged), the finished room
+          (render/plumbing-real.jpg), then each fitting on its own. All three come from
+          scripts/studio/render/room.html?view=plumbing, built from render/scene.json. */}
+      <section id="plumbing" className="scroll-mt-20 border-t">
+        <div className="px-4 pt-10 pb-10 md:px-10">
+          <h2 className="text-3xl font-semibold tracking-tight">Plumbing</h2>
+          <div className="mt-6 overflow-x-auto">
+            <PipeDiagram pipes={pipes} fittings={fittings} water={water} />
           </div>
-          <Figure src={`${D}/drawings/p-301.svg`} caption="P-301 · Site water and sanitation schematic" />
+        </div>
+        <div className="px-4 pb-6 md:px-10">
+          <div className="overflow-x-auto">
+            <div className="min-w-[960px]">
+              <TaggedFigure src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags}
+                alt="Line drawing of the studio from the front with the galley's end panels cut away and every pipe run: the stop valve, filter and meter on the main in the sink base, the 80 L heater lying in the overhead cabinet, cold in blue and hot in red down the partition and along the back wall to end B, the mixing valve behind a panel between the shower and the WC sending mixed water in amber to the shower and the basin, and the drains in brown dropping through the floor."
+                info={Object.fromEntries(fittings.map((f) => [f.point, { label: f.description, colour: fittingColour(f, pipes) }]))} />
+            </div>
+          </div>
+          <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
+            Supplies run inside the units and the walls, then straight up to each outlet; drains drop through the floor and
+            hang under it. A run is dashed where a wall or the floor hides it. Tags match the points table below. Outside
+            the drawing: the main comes in under end B from the farm; D1, D2 and D3 leave for the inspection chamber (IC1)
+            and the septic tank, D4 for the grease trap (GT); the vent rises up end B to its terminal (VT), 900 mm above
+            the roof guardrail.
+          </p>
+        </div>
+        <figure className="px-4 pb-10 md:px-10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`${D}/render/plumbing-real.jpg`} width={2400} height={1100} loading="lazy"
+            alt="The same view rendered as finished with the galley's end panels cut away: the white 80 L heater lying in the overhead cabinet with its pipes, and in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap under the sink; in the bathroom the shower valve and rail, the flush plate, and the basin's trap under its console."
+            className="h-auto w-full" />
+          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model, the galley&rsquo;s end cut away</figcaption>
+        </figure>
+        <div className="pb-10">
+          <ItemRail items={plumbingRail(fittings)} />
         </div>
       </section>
 
       <section id="pipes" className="scroll-mt-20 border-t py-16">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-          <p className="text-muted-foreground text-sm font-medium">Plumbing · 2 of 4</p>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight">{pipes.length} pipe runs in the studio</h2>
+          <p className="text-muted-foreground text-sm font-medium">Plumbing · Runs</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">{pipes.length} pipe runs</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            The sink, heater, shower, basin and WC sit within about 1.5 m of each other, so the pipes stay short. Drains
-            hang under the raised floor, so the bathroom has no step.
+            Each run is checked by the model: every leg runs along a wall or straight up or down, each drain falls at least
+            1:40, and the mixed water stays within 2 m of its valve.
           </p>
-          <Figure src={`${D}/drawings/p-101.svg`} caption="P-101 · Plumbing layout plan (supply and drainage)" />
-          <div className="overflow-x-auto rounded-xl border">
+          <div className="mt-6 overflow-x-auto rounded-xl border">
             <table className="w-full text-sm">
               <thead className="text-muted-foreground bg-muted/40">
                 <tr>
@@ -602,12 +675,50 @@ export default function StudioPage() {
               <tbody>
                 {pipes.map((p) => (
                   <tr key={p.run} className="border-t">
-                    <td className="px-3 py-2 font-medium">{p.run}</td>
+                    <td className="px-3 py-2 font-medium whitespace-nowrap">
+                      <span className="me-2 inline-block size-2 rounded-full" style={{ background: p.colour }} />{p.run}
+                    </td>
                     <td className="px-3 py-2">{p.system}</td>
                     <td className="px-3 py-2 whitespace-nowrap tabular-nums">DN{p.dn}</td>
                     <td className="px-3 py-2 whitespace-nowrap tabular-nums">{p.length_m} m</td>
                     <td className="px-3 py-2 tabular-nums">{p.fall || "–"}</td>
-                    <td className="text-muted-foreground px-3 py-2">{p.note}</td>
+                    <td className="text-muted-foreground px-3 py-2">{degC(p.note)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Figure src={`${D}/drawings/p-201.svg`} caption="P-201 · Pipework isometric (unit)" />
+        </div>
+      </section>
+
+      <section id="fittings" className="scroll-mt-20 border-t bg-muted/40 py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+          <p className="text-muted-foreground text-sm font-medium">Plumbing · Points</p>
+          <h2 className="mt-1 text-3xl font-semibold tracking-tight">Every valve, tap and drain</h2>
+          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
+            {fittings.length} points, from the stop valve on the main to the vent above the roof. The sink, the heater, the
+            shower, the WC and the basin sit within about 1.5 m of each other, so the pipes stay short.
+          </p>
+          <Figure src={`${D}/drawings/p-101.svg`} caption="P-101 · Plumbing layout plan (supply and drainage)" />
+          <div className="overflow-x-auto rounded-xl border bg-background">
+            <table className="w-full text-sm">
+              <thead className="text-muted-foreground bg-muted/40">
+                <tr>
+                  {["Point", "What", "Type", "Pipes", "Height", "Rating"].map((h) => (
+                    <th key={h} className="px-3 py-2 text-start font-medium whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {fittings.map((f) => (
+                  <tr key={f.point} id={`pt-${f.point}`} className="target:bg-muted scroll-mt-24 border-t">
+                    <td className="px-3 py-2 font-medium">{f.point}</td>
+                    <td className="px-3 py-2">{f.description}</td>
+                    <td className="text-muted-foreground px-3 py-2">{FIT_KIND[f.kind] ?? f.kind}</td>
+                    <td className="px-3 py-2 whitespace-nowrap">{f.runs}</td>
+                    <td className="px-3 py-2 whitespace-nowrap tabular-nums">{mm(Number(f.z_mm)).replace("-", "−")} mm</td>
+                    <td className="px-3 py-2 whitespace-nowrap">{degC(f.rating)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -616,22 +727,9 @@ export default function StudioPage() {
         </div>
       </section>
 
-      <section id="hot-water" className="scroll-mt-20 border-t bg-muted/40 py-16">
-        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-          <p className="text-muted-foreground text-sm font-medium">Plumbing · 3 of 4</p>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight">The pipework in 3D</h2>
-          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            An 80 L heater in the kitchen&rsquo;s tall unit stores water at 60 °C. A thermostatic valve sends 41&ndash;44 °C to
-            the shower and basin so no guest is scalded; the kitchen sink gets hot water direct. Every pipe is
-            pressure-tested before the walls close.
-          </p>
-          <Figure src={`${D}/drawings/p-201.svg`} caption="P-201 · Pipework isometric (unit)" />
-        </div>
-      </section>
-
       <section id="plumbing-bom" className="scroll-mt-20 border-t py-16">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-          <p className="text-muted-foreground text-sm font-medium">Plumbing · 4 of 4</p>
+          <p className="text-muted-foreground text-sm font-medium">Plumbing · Materials</p>
           <h2 className="mt-1 text-3xl font-semibold tracking-tight">Bill of materials</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
             Everything the plumber buys for the studio: about RWF {frw(plumbingTotal)}. Prices are placeholders until
@@ -639,7 +737,14 @@ export default function StudioPage() {
           </p>
           <BomTable groups={plumbing} total={plumbingTotal} label="Plumbing, the studio" />
           <h3 className="mt-10 text-xl font-semibold tracking-tight">Shared with the farm</h3>
-          <div className="mt-4 overflow-x-auto rounded-xl border">
+          <p className="text-muted-foreground mt-2 max-w-3xl text-balance">
+            WASAC water, the borehole and rain from the canopies fill the farm&rsquo;s {water.tank_m3} m³ tank, about four
+            days at {mm(Number(water.daily_L))} L a day for {water.persons} guests, and a booster pump sends{" "}
+            {water.pump_lpm} L/min to the studios. WCs, showers and basins drain to a new {water.septic_m3} m³ septic tank
+            in two chambers ({water.chamber1_m3} + {water.chamber2_m3} m³); kitchen sinks drain to their own grease trap.
+          </p>
+          <Figure src={`${D}/drawings/p-301.svg`} caption="P-301 · Site water and sanitation schematic" />
+          <div className="overflow-x-auto rounded-xl border">
             <table className="w-full text-sm">
               <tbody>
                 {shared.map((w) => (
@@ -662,6 +767,7 @@ export default function StudioPage() {
           <p className="text-muted-foreground mt-3 text-sm">
             Full list for every trade: <a href={`${D}/data/bom.xlsx`} download className="underline underline-offset-4">bom.xlsx</a>
             {" · "}<a href={`${D}/data/pipes.csv`} download className="underline underline-offset-4">pipes.csv</a>
+            {" · "}<a href={`${D}/data/fittings.csv`} download className="underline underline-offset-4">fittings.csv</a>
             {" · "}<a href={`${D}/data/site-water.csv`} download className="underline underline-offset-4">site-water.csv</a>
           </p>
         </div>

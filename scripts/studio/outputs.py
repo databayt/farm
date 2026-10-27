@@ -16,7 +16,7 @@ from joinery import HARDWARE, bag
 from nest import nest
 from out_glb import write as write_glb
 from prices import CONTINGENCY, LABOUR, PRICES, SHARED
-from services import GROUP_COLOUR, SIZE
+from services import FIT_SIZE, GROUP_COLOUR, SIZE, SYSTEM_COLOUR, SYSTEM_GROUP
 
 SECTION_KG = {"RHS 150x100x5": 18.2, "RHS 80x40x3": 5.2, "SHS 40x40x3": 3.4, "SHS 80x80x4": 9.2, "SHS 60x60x3": 5.2,
               "ledger": 5.2}
@@ -165,9 +165,13 @@ def write_tables(m, out: Path, layouts) -> dict:
            *SIZE[p.model]] for p in m["points"]])
     wcsv(d / "demand.csv", ["item", "amps"], [[k, round(v, 1)] for k, v in m["md"].items()] +
          [["inlet_A", m["inlet"]["rating_A"]], ["main_A", m["inlet"]["main_A"]], ["tails_mm2", m["inlet"]["tails_mm2"]]])
-    wcsv(d / "pipes.csv", ["run", "system", "dn", "length_m", "fall", "note"],
+    wcsv(d / "pipes.csv", ["run", "system", "dn", "length_m", "fall", "note", "colour"],
          [[r.id, r.system, r.dn, round(r.length / 1000, 1), f"1:{r.fall():.0f}" if r.system in ("soil", "waste") else "",
-           r.note] for r in m["runs"]])
+           r.note, SYSTEM_COLOUR[SYSTEM_GROUP[r.system]]] for r in m["runs"]])
+    wcsv(d / "fittings.csv", ["point", "kind", "model", "runs", "description", "item", "x_mm", "y_mm", "z_mm", "face",
+                              "rating", "w_mm", "h_mm", "d_mm"],
+         [[f.id, f.kind, f.model, f.runs, f.label, f.item, round(f.x), round(f.y), round(f.z), f.face, f.rating,
+           *FIT_SIZE[f.model]] for f in m["fittings"]])
     wcsv(d / "site-water.csv", ["item", "value"], [[k, v] for k, v in m["site"].items()])
     wcsv(d / "steps.csv", ["step", "kit", "title", "parts", "hardware", "people", "note"],
          [[s.id, s.kit, s.title, len(s.adds), " ".join(f"{k}x{v}" for k, v in s.hardware.items() if v), s.persons, s.note]

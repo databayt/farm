@@ -15,8 +15,6 @@ FILL = {
     "floor": "#dccdb1", "eps": "#fff1a6", "timber": "#c9a06f", "fabric": "#ebe5f2", "electric": "#ffd23f",
     "door": "#e0d3ba", "steel": "#9c4436", "base": "#5d5d5d", "": "#eeeeee",
 }
-SYS = {"cold": "#1f6fd1", "hot": "#d1352b", "tempered": "#e08a1e", "waste": "#6b4f2a", "soil": "#3d2b14",
-       "vent": "#7a7a7a"}
 
 
 def f(v: float) -> str:

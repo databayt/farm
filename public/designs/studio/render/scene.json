@@ -1400,6 +1400,616 @@
    "colour": "#9a9893"
   }
  ],
+ "fittings": [
+  {
+   "id": "SV",
+   "kind": "valve",
+   "model": "meter",
+   "face": "-x",
+   "runs": "W1",
+   "at": [
+    4578,
+    1540.0,
+    320
+   ],
+   "size": [
+    90,
+    260,
+    80
+   ],
+   "label": "Stop valve, Y-filter and check meter on the main, in the sink base"
+  },
+  {
+   "id": "WH",
+   "kind": "heater",
+   "model": "heater",
+   "face": "+y",
+   "runs": "W2 H1",
+   "at": [
+    4328,
+    50.0,
+    2050.0
+   ],
+   "size": [
+    440,
+    440,
+    1000
+   ],
+   "label": "80 L water heater lying in the overhead cabinet, its T&P valve piped outside"
+  },
+  {
+   "id": "TMV",
+   "kind": "valve",
+   "model": "tmv",
+   "face": "-x",
+   "runs": "H1 W6 T1 T2",
+   "at": [
+    5768,
+    1005.0,
+    410.0
+   ],
+   "size": [
+    150,
+    150,
+    60
+   ],
+   "label": "Mixing valve behind an access panel in end wall B, between the shower and the WC"
+  },
+  {
+   "id": "KT",
+   "kind": "tap",
+   "model": "kitchentap",
+   "face": "+z",
+   "runs": "W3 H2 D4",
+   "at": [
+    4528,
+    1375.0,
+    900
+   ],
+   "size": [
+    60,
+    60,
+    300
+   ],
+   "label": "Kitchen mixer tap, angle valves under the sink"
+  },
+  {
+   "id": "DF",
+   "kind": "filter",
+   "model": "filter",
+   "face": "+y",
+   "runs": "W3",
+   "at": [
+    4278,
+    1168.0,
+    350
+   ],
+   "size": [
+    240,
+    330,
+    110
+   ],
+   "label": "Drinking-water filter in the sink base, its own faucet by the tap"
+  },
+  {
+   "id": "SH",
+   "kind": "shower",
+   "model": "showerset",
+   "face": "-x",
+   "runs": "T1 D2",
+   "at": [
+    5768,
+    450.0,
+    1110
+   ],
+   "size": [
+    180,
+    1000,
+    100
+   ],
+   "label": "Thermostatic shower valve, head and rail on end wall B"
+  },
+  {
+   "id": "WC",
+   "kind": "wc",
+   "model": "cistern",
+   "face": "-x",
+   "runs": "W4 D1",
+   "at": [
+    5768,
+    1300.0,
+    1010
+   ],
+   "size": [
+    500,
+    1120,
+    80
+   ],
+   "label": "Concealed cistern in end wall B, dual-flush plate"
+  },
+  {
+   "id": "BT",
+   "kind": "tap",
+   "model": "basintap",
+   "face": "+z",
+   "runs": "W5 T2 D3",
+   "at": [
+    5768,
+    2020.0,
+    820
+   ],
+   "size": [
+    40,
+    40,
+    270
+   ],
+   "label": "Basin mixer, angle valves under the console"
+  },
+  {
+   "id": "IC1",
+   "kind": "site",
+   "model": "chamber",
+   "face": "+z",
+   "runs": "D1 D2 D3",
+   "at": [
+    6698,
+    1126.0,
+    -326.0
+   ],
+   "size": [
+    450,
+    450,
+    600
+   ],
+   "label": "Inspection chamber outside end B, on to the farm's septic tank"
+  },
+  {
+   "id": "GT",
+   "kind": "site",
+   "model": "greasetrap",
+   "face": "+z",
+   "runs": "D4",
+   "at": [
+    6698,
+    1375.0,
+    -290.0
+   ],
+   "size": [
+    0,
+    0,
+    0
+   ],
+   "label": "To the farm's grease trap and its own soak pit"
+  },
+  {
+   "id": "VT",
+   "kind": "vent",
+   "model": "vent",
+   "face": "+z",
+   "runs": "V1",
+   "at": [
+    5918,
+    200.0,
+    5300
+   ],
+   "size": [
+    75,
+    150,
+    75
+   ],
+   "label": "Vent terminal, 900 mm above the roof guardrail"
+  }
+ ],
+ "pipes": [
+  {
+   "id": "D1",
+   "system": "soil",
+   "dn": 110,
+   "path": [
+    [
+     5788,
+     1300.0,
+     230
+    ],
+    [
+     5788,
+     1300.0,
+     -260.0
+    ],
+    [
+     5698,
+     1300.0,
+     -276.0
+    ],
+    [
+     5698,
+     1126.0,
+     -300.0
+    ],
+    [
+     6698,
+     1126.0,
+     -326.0
+    ]
+   ]
+  },
+  {
+   "id": "D2",
+   "system": "waste",
+   "dn": 50,
+   "path": [
+    [
+     5268.0,
+     450.0,
+     -30
+    ],
+    [
+     5268.0,
+     450.0,
+     -220.0
+    ],
+    [
+     5638,
+     450.0,
+     -245.0
+    ],
+    [
+     5638,
+     1126.0,
+     -265.0
+    ],
+    [
+     5698,
+     1126.0,
+     -270.0
+    ]
+   ]
+  },
+  {
+   "id": "D3",
+   "system": "waste",
+   "dn": 40,
+   "path": [
+    [
+     5648.0,
+     2020.0,
+     800
+    ],
+    [
+     5648.0,
+     2020.0,
+     -215.0
+    ],
+    [
+     5578,
+     2020.0,
+     -220.0
+    ],
+    [
+     5578,
+     1126.0,
+     -252.0
+    ],
+    [
+     5698,
+     1126.0,
+     -260.0
+    ]
+   ]
+  },
+  {
+   "id": "D4",
+   "system": "waste",
+   "dn": 50,
+   "path": [
+    [
+     4318,
+     1375.0,
+     700
+    ],
+    [
+     4318,
+     1375.0,
+     -200.0
+    ],
+    [
+     6698,
+     1375.0,
+     -290.0
+    ]
+   ]
+  },
+  {
+   "id": "V1",
+   "system": "vent",
+   "dn": 75,
+   "path": [
+    [
+     5698,
+     1126.0,
+     -295.0
+    ],
+    [
+     5918,
+     1126.0,
+     -295.0
+    ],
+    [
+     5918,
+     200.0,
+     -295.0
+    ],
+    [
+     5918,
+     200.0,
+     5300
+    ]
+   ]
+  },
+  {
+   "id": "W1",
+   "system": "cold",
+   "dn": 25,
+   "path": [
+    [
+     6698,
+     1540.0,
+     -320.0
+    ],
+    [
+     4548,
+     1540.0,
+     -320.0
+    ],
+    [
+     4548,
+     1540.0,
+     450
+    ]
+   ]
+  },
+  {
+   "id": "W2",
+   "system": "cold",
+   "dn": 20,
+   "path": [
+    [
+     4548,
+     1540.0,
+     450
+    ],
+    [
+     4548,
+     1200.0,
+     450
+    ],
+    [
+     4613.0,
+     1200.0,
+     450
+    ],
+    [
+     4613.0,
+     1200.0,
+     1880.0
+    ],
+    [
+     4238,
+     1200.0,
+     1880.0
+    ],
+    [
+     4238,
+     1050.0,
+     1880.0
+    ]
+   ]
+  },
+  {
+   "id": "W3",
+   "system": "cold",
+   "dn": 20,
+   "path": [
+    [
+     4548,
+     1420.0,
+     450
+    ],
+    [
+     4548,
+     1420.0,
+     600
+    ]
+   ]
+  },
+  {
+   "id": "W4",
+   "system": "cold",
+   "dn": 20,
+   "path": [
+    [
+     4613.0,
+     1200.0,
+     450
+    ],
+    [
+     4613.0,
+     1200.0,
+     300.0
+    ],
+    [
+     4613.0,
+     -31,
+     300.0
+    ],
+    [
+     5829,
+     -31,
+     300.0
+    ],
+    [
+     5829,
+     1300.0,
+     300.0
+    ],
+    [
+     5829,
+     1300.0,
+     1000
+    ]
+   ]
+  },
+  {
+   "id": "W5",
+   "system": "cold",
+   "dn": 20,
+   "path": [
+    [
+     5829,
+     1300.0,
+     300.0
+    ],
+    [
+     5829,
+     1975.0,
+     300.0
+    ],
+    [
+     5829,
+     1975.0,
+     600
+    ]
+   ]
+  },
+  {
+   "id": "W6",
+   "system": "cold",
+   "dn": 20,
+   "path": [
+    [
+     5829,
+     1045.0,
+     300.0
+    ],
+    [
+     5829,
+     1045.0,
+     360.0
+    ]
+   ]
+  },
+  {
+   "id": "H1",
+   "system": "hot",
+   "dn": 20,
+   "path": [
+    [
+     4418,
+     1050.0,
+     1990.0
+    ],
+    [
+     4418,
+     1330.0,
+     1990.0
+    ],
+    [
+     4613.0,
+     1330.0,
+     1990.0
+    ],
+    [
+     4613.0,
+     1330.0,
+     360.0
+    ],
+    [
+     4613.0,
+     -31,
+     360.0
+    ],
+    [
+     5829,
+     -31,
+     360.0
+    ],
+    [
+     5829,
+     965.0,
+     360.0
+    ]
+   ]
+  },
+  {
+   "id": "H2",
+   "system": "hot",
+   "dn": 20,
+   "path": [
+    [
+     4613.0,
+     1330.0,
+     600
+    ],
+    [
+     4548,
+     1330.0,
+     600
+    ]
+   ]
+  },
+  {
+   "id": "T1",
+   "system": "tempered",
+   "dn": 20,
+   "path": [
+    [
+     5829,
+     1005.0,
+     460.0
+    ],
+    [
+     5829,
+     1005.0,
+     1110
+    ],
+    [
+     5829,
+     450.0,
+     1110
+    ]
+   ]
+  },
+  {
+   "id": "T2",
+   "system": "tempered",
+   "dn": 20,
+   "path": [
+    [
+     5829,
+     1005.0,
+     460.0
+    ],
+    [
+     5829,
+     2065.0,
+     460.0
+    ],
+    [
+     5829,
+     2065.0,
+     600
+    ]
+   ]
+  }
+ ],
+ "systems": {
+  "cold": "#2a78d6",
+  "hot": "#e34948",
+  "tempered": "#eda100",
+  "soil": "#8b4a12",
+  "waste": "#8b4a12",
+  "vent": "#9a9893"
+ },
  "outdoor": {
   "xa": -130,
   "xb": 5928,

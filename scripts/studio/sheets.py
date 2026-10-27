@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import params as P
-from draw import (FILL, SYS, Sheet, iso, iso_draw, ortho, project_box, sym_box, sym_breaker, sym_earth, sym_lamp, sym_socket,
+from draw import (FILL, Sheet, iso, iso_draw, ortho, project_box, sym_box, sym_breaker, sym_earth, sym_lamp, sym_socket,
                   sym_switch)
 from kits import roof_frame
 from model import Box
-from services import GROUP_COLOUR, SIZE
+from services import FIT_SIZE, GROUP_COLOUR, SIZE, SYSTEM_COLOUR, SYSTEM_GROUP
+
+SYS = {s: SYSTEM_COLOUR[g] for s, g in SYSTEM_GROUP.items()}  # each pipe system in its function's colour
 
 KIT_NAMES = {"K1": "Insulation and lining", "K2": "Bathroom", "K3": "Kitchen", "K4": "Bed", "K5": "Bedside table",
              "K6": "Sofa, table and chairs", "K7": "Trims", "K8": "Electrical", "K9": "Plumbing",
@@ -281,6 +283,13 @@ def scene_json(m) -> dict:
                    for r in m["cables"]],
         "circuits": [{"id": c.id, "name": c.name, "group": c.group, "colour": GROUP_COLOUR[c.group]}
                      for c in m["circuits"]],
+        # the plumbing (services.py): every fitting on its face, each pipe run's route, the colour of each system
+        "fittings": [{"id": f.id, "kind": f.kind, "model": f.model, "face": f.face, "runs": f.runs,
+                      "at": [round(f.x, 1), round(f.y, 1), round(f.z, 1)], "size": list(FIT_SIZE[f.model]),
+                      "label": f.label} for f in m["fittings"]],
+        "pipes": [{"id": r.id, "system": r.system, "dn": r.dn, "path": [[round(v, 1) for v in q] for q in r.path]}
+                  for r in m["runs"]],
+        "systems": {s: SYSTEM_COLOUR[g] for s, g in SYSTEM_GROUP.items()},
         "outdoor": {k: round(v, 1) for k, v in roof_frame(lo).items()},
     }
 
@@ -543,7 +552,7 @@ def p101_plan(m) -> Sheet:
         pts = [(ox + x / sc, oy + y / sc) for (x, y, z) in r.path]
         s.poly(pts, "none", SYS[r.system], 0.6 if r.dn >= 50 else 0.4, closed=False)
         s.text(pts[-1][0] + 1, pts[-1][1] - 1, f"{r.id} DN{r.dn}", 1.6, fill=SYS[r.system])
-    for i, (sysn, col) in enumerate(SYS.items()):
+    for i, (sysn, col) in enumerate(SYSTEM_COLOUR.items()):
         s.line(300, 40 + i * 5, 310, 40 + i * 5, col, 0.8)
         s.text(312, 41 + i * 5, sysn, 2.2)
     rows = [[r.id, r.system, f"DN{r.dn}", f"{r.length / 1000:.1f}", f"1:{r.fall():.0f}" if r.system in ("soil", "waste") else "-",
@@ -554,13 +563,14 @@ def p101_plan(m) -> Sheet:
 
 def p201_iso(m) -> Sheet:
     lo, s = m["lo"], Sheet("P-201", "Pipework isometric (unit)", "NTS")
-    sc = 0.045
-    cx, cy = 200, 150
     pts_all = [iso(*p) for r in m["runs"] for p in r.path]
     u0 = min(p[0] for p in pts_all)
     v0 = min(p[1] for p in pts_all)
     u1 = max(p[0] for p in pts_all)
     v1 = max(p[1] for p in pts_all)
+    # the whole pipework, the vent above the roof included, fits between the notes and the title block
+    sc = min(360 / (u1 - u0), 170 / (v1 - v0))
+    cx, cy = 200, 152
     ox, oy = cx - (u0 + u1) / 2 * sc, cy - (v0 + v1) / 2 * sc
     for r in sorted(m["runs"], key=lambda r: r.system):
         q = [(ox + iso(*p)[0] * sc, oy + iso(*p)[1] * sc) for p in r.path]

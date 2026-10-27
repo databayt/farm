@@ -17,6 +17,11 @@ Status: design intent; septic siting and soakage depend on the site plan and a p
 
 - Supply in PPR PN20, 20 and 25 mm (Pro Water makes PP-R in Kigali [V STU-23]).
 - An 80 L electric storage heater lying in the galley's overhead cabinet on a steel cradle fixed to the back wall, out of the bathroom zones, with a temperature-and-pressure relief valve piped outside. Water is stored at 60 C; a thermostatic mixing valve sends 41-44 C to the shower and basin (guest scald safety); the kitchen sink gets direct hot water, labelled. Two back-to-back showers at 6-7 L/min need about 48-64 L of hot water, which is why the heater is 80 L, not 50 L (D-015) [E, AS-18].
+- Routes (D-023), every run drawn leg by leg in `scripts/studio/services.py`:
+  - The main comes in under the floor at end B and rises into the sink base through the stop valve, Y-filter and check meter (SV), where it can be shut off without tools.
+  - From there, supplies run inside the units and the walls: up the partition to the heater, and through the partition, the back wall's lining and end wall B to the WC cistern and the basin. Cold runs 300 mm above the floor, hot 360 mm, then each goes straight up to its outlet.
+  - The mixing valve (TMV) sits in end wall B behind a tiled access panel between the shower and the WC. Both mixed-water runs are 1.2 m, under the 2 m the model allows for a mixed-water dead leg.
+- `fittings.csv` lists the 11 plumbing points; /en/studio draws every run in 3D, dashed where a wall or the floor hides it (`scripts/studio/render/room.html?view=plumbing`).
 
 ![P-101 Plumbing layout plan](../../public/designs/studio/drawings/p-101.svg)
 
@@ -24,7 +29,7 @@ Status: design intent; septic siting and soakage depend on the site plan and a p
 
 ## Drainage
 
-The containers stand about 700 mm above the ground, so every trap and branch hangs in the void under the floor, with no step in the bathroom. Pipes pass through the plywood between the 122 mm cross-members, never through them [V STU-02].
+The containers stand about 700 mm above the ground, so the shower's trap and every branch hang in the void under the floor, with no step in the bathroom; the sink and the basin have bottle traps under their bowls. Pipes pass through the plywood between the 122 mm cross-members, never through them [V STU-02].
 
 | Fixture | Pipe | Trap seal | Fall |
 |---|---|---|---|

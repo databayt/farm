@@ -1,7 +1,8 @@
-// A drawing with a tag on every point (L1, S1, P1…), each linking to its row in the points table. The tags sit in
-// a box with the picture's own aspect ratio, so they stay on their device at any width; the spots come from
-// scripts/studio/render/room.html (window.TAGS, saved as render/electric-tags.json). A tag sits just above and to
-// the right of its device, so the device stays in view; its dot is its circuit's colour.
+// A drawing with a tag on every point (L1, S1, P1…, or SV, WH, TMV…), each linking to its row in a points table.
+// The tags sit in a box with the picture's own aspect ratio, so they stay on their device at any width; the spots
+// come from scripts/studio/render/room.html (window.TAGS, saved as render/electric-tags.json and
+// render/plumbing-tags.json). A tag sits just above and to the right of its device, so the device stays in view;
+// its dot is its circuit's colour, or the colour of the water at a fitting.
 
 export type Tag = { id: string; x: number; y: number; edge: string }
 

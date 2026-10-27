@@ -1,0 +1,160 @@
+// The studio's water drawn inline (not a paper sheet), in the wiring diagram's pattern, so it runs full width and
+// follows the theme. Top row: the farm's water into the studio's stop valve, filter and meter; below, the cold, hot
+// and mixed supplies on three lines to every outlet, then the drains out to the farm's septic tank and, apart, its
+// grease trap. Every run, size and rating comes from the generator's CSVs (pipes.csv, fittings.csv,
+// site-water.csv). A line's colour is what it carries, as in the 3D drawing below it; drains are heavier, the vent
+// dashed, and every line carries its run, so colour never works alone.
+
+type Row = Record<string, string>
+
+const W = 1600
+const TOP = 56 // the supply row
+const COLD = 150 // the three supply lines
+const HOT = 262
+const MIX = 372
+const FIX = 410 // the outlets
+const DRAIN = 548 // the bathroom's drains join here
+const X = { DF: 150, KT: 330, WH: 520, TMV: 720, SH: 900, BT: 1080, WC: 1260, V: 1372, IC: 1480 }
+
+function Unit({ x, y, title, sub, dashed = false, muted = false }: {
+  x: number; y: number; title: string; sub?: string; dashed?: boolean; muted?: boolean
+}) {
+  return (
+    <g>
+      <rect x={x - 75} y={y} width={150} height={60} rx={10} strokeDasharray={dashed ? "6 6" : undefined}
+        className={muted ? "fill-muted" : "fill-background"} />
+      <text x={x} y={y + 26} textAnchor="middle" stroke="none" className="fill-foreground text-[16px] font-semibold">
+        {title}
+      </text>
+      {sub ? <text x={x} y={y + 47} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">{sub}</text> : null}
+    </g>
+  )
+}
+
+const deg = (s = "") => s.replace(/(\d) C\b/g, "$1 °C").replace(/(\d)-(\d)/g, "$1–$2")
+
+export function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fittings: Row[]; water: Record<string, string> }) {
+  const run = Object.fromEntries(pipes.map((p) => [p.run, p]))
+  const fit = Object.fromEntries(fittings.map((f) => [f.point, f]))
+  const sys = (id: string) => run[id]?.system ?? ""
+  const H = 740
+  // a run's path in its colour: heavier for a drain, dashed for the vent
+  const pipe = (id: string, d: string) => (
+    <path d={d} style={{ stroke: run[id]?.colour }} strokeLinejoin="round"
+      strokeWidth={sys(id) === "soil" || sys(id) === "waste" ? 5 : 3.5} strokeDasharray={sys(id) === "vent" ? "9 7" : undefined} />
+  )
+  // a run's id and size beside its line
+  const tag = (id: string, x: number, y: number, anchor: "start" | "middle" | "end" = "start") => (
+    <text x={x} y={y} textAnchor={anchor} stroke="none" className="fill-muted-foreground text-[13px]">
+      <tspan className="fill-foreground font-semibold">{id}</tspan> DN{run[id]?.dn}
+    </text>
+  )
+  const tee = (id: string, x: number, y: number) => (
+    <circle key={`${x} ${y}`} cx={x} cy={y} r={5} stroke="none" style={{ fill: run[id]?.colour }} />
+  )
+  const [litres, kw, hot] = (fit.WH?.rating ?? "").split(", ")
+  // the key, each entry as wide as its label
+  const key: [string, string, number, boolean?][] = [["W1", "Cold", 900], ["H1", `Hot ${deg(hot)}`, 1010],
+    ["T1", `Mixed ${deg(fit.TMV?.rating)}`, 1150], ["D1", "Drain", 1335], ["V1", "Vent", 1450, true]]
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" className="h-auto w-full min-w-[960px] stroke-foreground"
+      strokeWidth={2} strokeLinecap="round" fill="none"
+      aria-label={`Water diagram: the farm's water through the studio's stop valve, filter and meter; cold to every outlet and the ${litres} heater, hot to the sink and the mixing valve, mixed water at ${deg(fit.TMV?.rating)} to the shower and the basin; the WC, shower and basin drain to an inspection chamber and the farm's septic tank, the kitchen sink apart to its grease trap`}>
+      {/* the farm's water: the tank and the booster pump, shared by the three studios */}
+      <rect x={20} y={TOP - 34} width={140} height={68} rx={12} strokeDasharray="6 6" />
+      <text x={90} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">Farm water</text>
+      <text x={90} y={TOP + 18} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">
+        tank {water.tank_m3} m³
+      </text>
+      {pipe("W1", `M160 ${TOP} H255`)}
+      {tag("W1", 208, TOP - 12, "middle")}
+      <text x={90} y={TOP + 64} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">
+        booster {water.pump_lpm} L/min
+      </text>
+
+      {/* the studio's own valve set, in the sink base */}
+      <rect x={255} y={TOP - 34} width={150} height={68} rx={12} className="fill-muted" />
+      <text x={330} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">Stop valve</text>
+      <text x={330} y={TOP + 18} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">filter · meter</text>
+      {pipe("W1", `M405 ${TOP} H470 V${COLD}`)}
+
+      {/* key: a line's colour is what it carries */}
+      {key.map(([id, label, x, dashed]) => (
+        <g key={id} transform={`translate(${x} ${TOP})`}>
+          <line x1={0} y1={0} x2={26} y2={0} strokeWidth={sys(id) === "soil" ? 5 : 3.5} strokeDasharray={dashed ? "9 7" : undefined}
+            style={{ stroke: run[id]?.colour }} />
+          <text x={36} y={5} stroke="none" className="fill-foreground text-[15px]">{label}</text>
+        </g>
+      ))}
+
+      {/* cold, to every outlet, the heater and the mixing valve */}
+      {pipe("W1", `M${X.DF} ${FIX} V${COLD} H${X.WC} V${FIX}`)}
+      {tee("W1", 470, COLD)}
+      {[X.KT - 18, X.WH, X.TMV + 18, X.BT + 18].map((x) => tee("W1", x, COLD))}
+      {pipe("W3", `M${X.KT - 18} ${COLD} V${FIX}`)}
+      {tag("W3", X.KT - 26, 290, "end")}
+      {pipe("W2", `M${X.WH} ${COLD} V172`)}
+      {tag("W2", X.WH + 8, 167)}
+      {pipe("W6", `M${X.TMV + 18} ${COLD} V284`)}
+      {tag("W6", X.TMV + 26, 222)}
+      {pipe("W5", `M${X.BT + 18} ${COLD} V${FIX}`)}
+      {tag("W5", X.BT + 26, 290)}
+      {tag("W4", X.WC + 8, 290)}
+
+      {/* the heater, hot to the sink (H2) and the mixing valve (H1) */}
+      <Unit x={X.WH} y={172} title={`Heater ${litres}`} sub={`${kw} · ${deg(hot)}`} />
+      {pipe("H1", `M${X.WH} 232 V${HOT}`)}
+      {pipe("H2", `M${X.KT + 18} ${FIX} V${HOT} H${X.WH}`)}
+      {pipe("H1", `M${X.WH} ${HOT} H${X.TMV - 18} V284`)}
+      {tee("H1", X.WH, HOT)}
+      {tag("H2", (X.KT + X.WH) / 2 + 9, HOT - 9, "middle")}
+      {tag("H1", (X.WH + X.TMV) / 2 - 9, HOT - 9, "middle")}
+
+      {/* the mixing valve, mixed water to the shower (T1) and the basin (T2) */}
+      <Unit x={X.TMV} y={284} title="Mixing valve" sub={`TMV · ${deg(fit.TMV?.rating)}`} />
+      {pipe("T1", `M${X.TMV} 344 V${MIX} H${X.SH} V${FIX}`)}
+      {pipe("T2", `M${X.SH} ${MIX} H${X.BT - 18} V${FIX}`)}
+      {tee("T1", X.SH, MIX)}
+      {tag("T1", X.SH - 8, 397, "end")}
+      {tag("T2", X.BT - 26, 397, "end")}
+
+      {/* the outlets */}
+      <Unit x={X.DF} y={FIX} title="Drinking water" sub="DF · filter tap" />
+      <Unit x={X.KT} y={FIX} title="Kitchen sink" sub={`KT · ${fit.KT?.rating}`} />
+      <Unit x={X.SH} y={FIX} title="Shower" sub={`SH · ${deg(fit.SH?.rating)}`} />
+      <Unit x={X.BT} y={FIX} title="Basin" sub={`BT · ${fit.BT?.rating}`} />
+      <Unit x={X.WC} y={FIX} title="WC cistern" sub={`WC · ${fit.WC?.rating}`} />
+
+      {/* drains: the kitchen sink apart to the grease trap; the rest to the inspection chamber and the septic tank */}
+      {pipe("D4", `M${X.KT} 470 V600`)}
+      {tag("D4", X.KT + 10, 540)}
+      <Unit x={X.KT} y={600} title="Grease trap" sub="the farm's, own soak pit" dashed />
+      {pipe("D2", `M${X.SH} 470 V${DRAIN} H${X.IC - 75}`)}
+      {pipe("D3", `M${X.BT} 470 V${DRAIN}`)}
+      {pipe("D1", `M${X.WC} 470 V${DRAIN}`)}
+      {[X.BT, X.WC].map((x) => tee("D1", x, DRAIN))}
+      {tag("D2", X.SH - 10, 512, "end")}
+      {tag("D3", X.BT - 10, 512, "end")}
+      {tag("D1", X.WC - 10, 512, "end")}
+      <Unit x={X.IC} y={DRAIN - 28} title="IC1" sub="inspection chamber" dashed />
+      <path d={`M${X.IC} ${DRAIN + 32} V610`} strokeWidth={5} style={{ stroke: run.D1?.colour }} />
+      <Unit x={X.IC} y={610} title="Septic tank" sub={`the farm's, ${water.septic_m3} m³`} dashed />
+
+      {/* the vent off the soil run, up end B past the roof */}
+      {pipe("V1", `M${X.V} ${DRAIN} V318`)}
+      {tee("D1", X.V, DRAIN)}
+      <line x1={X.V - 12} y1={318} x2={X.V + 12} y2={318} strokeWidth={2.5} style={{ stroke: run.V1?.colour }} />
+      {tag("V1", X.V + 20, 314)}
+      <text x={X.V + 20} y={334} stroke="none" className="fill-muted-foreground text-[13px]">900 above the roof rail</text>
+
+      <text x={110} y={H - 46} stroke="none" className="fill-muted-foreground text-[14px]">
+        Supply in PP-R PN20 inside the units and walls, then straight up to each outlet · drains in uPVC under the floor,
+        falling at least 1:40 · the kitchen sink drains apart, to the grease trap
+      </text>
+      <text x={110} y={H - 22} stroke="none" className="fill-muted-foreground text-[14px]">
+        Every pipe pressure-tested at 10 bar for an hour before the walls close · design intent until a licensed plumber
+        signs it off
+      </text>
+    </svg>
+  )
+}

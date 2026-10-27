@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from layout import AISLE_MIN, PASS_MIN, WC_D
 from model import Box, Kit
-from services import STANDARD_INLET_A
+from services import STANDARD_INLET_A, TEMPERED_MAX
 
 TOUCH_OK = {  # pairs of kits whose solids may legitimately touch or interlock
     ("K6", "K6"),  # cross-halving legs
@@ -100,6 +100,23 @@ def check(kits: list[Kit], lo, circuits, md, runs) -> tuple[list[str], list[dict
                 errors.append(f"drain {r.id} fall 1:{n:.0f} is flatter than 1:{need[r.dn]}")
     if not any(r.system == "vent" for r in runs):
         errors.append("no vent on the drainage system")
+    # every leg runs along one wall or straight up or down (a drain also falls along its run), so the drawn routes
+    # can be built; and mixed water stays within 2 m of the TMV, so no long warm dead leg
+    bent = [r.id for r in runs for a, b in zip(r.path, r.path[1:])
+            if sum(abs(a[i] - b[i]) > 0.5 for i in range(3)) > 1
+            and not (r.system in ("soil", "waste") and (abs(a[0] - b[0]) > 0.5) != (abs(a[1] - b[1]) > 0.5)
+                     and b[2] < a[2])]
+    report.append({"id": "P-ROUTE", "rule": "Every pipe leg along one axis (drains with their fall)",
+                   "result": "FAIL" if bent else "pass", "detail": " ".join(sorted(set(bent)))})
+    if bent:
+        errors.append(f"pipe runs {', '.join(sorted(set(bent)))} have a diagonal leg")
+    for r in runs:
+        if r.system == "tempered":
+            ok = r.length <= TEMPERED_MAX
+            report.append({"id": f"P-{r.id}", "rule": f"Tempered leg at most {TEMPERED_MAX / 1000:.0f} m from the TMV",
+                           "result": "pass" if ok else "FAIL", "detail": f"{r.length / 1000:.2f} m"})
+            if not ok:
+                errors.append(f"tempered run {r.id} is {r.length / 1000:.2f} m from the TMV")
     # steps: every part in exactly one step
     for k in kits:
         stepped = [pid for s in k.steps for pid in s.adds]

@@ -377,45 +377,121 @@ def inlet(md_a: float) -> dict[str, float]:
 
 
 # ------------------------------------------------------------------------------- plumbing
-def plumbing(lo: Layout) -> tuple[list[PipeRun], Kit, dict[str, float]]:
-    W = lo.W
+# pipe colour by what it carries, from the dataviz reference palette: blue cold, red hot, amber tempered and brown
+# drains pass its all-pairs check, colour-blind views included (worst pair 9.6, validate_palette.js); the vent is
+# the neutral grey and is drawn dashed, drains are drawn heavier and every run is labelled, so colour never works alone
+SYSTEM_GROUP = {"cold": "cold", "hot": "hot", "tempered": "tempered", "soil": "drain", "waste": "drain", "vent": "vent"}
+SYSTEM_COLOUR = {"cold": "#2a78d6", "hot": "#e34948", "tempered": "#eda100", "drain": "#8b4a12", "vent": "#9a9893"}
+# typical fitting sizes, w x h x d in mm as SIZE, d out of the face it is fixed to (along the heater for the heater) [A]
+FIT_SIZE = {"meter": (90, 260, 80), "heater": (440, 440, 1000), "tmv": (150, 150, 60), "kitchentap": (60, 60, 300),
+            "filter": (240, 330, 110), "showerset": (180, 1000, 100), "cistern": (500, 1120, 80),
+            "basintap": (40, 40, 270), "chamber": (450, 450, 600), "greasetrap": (0, 0, 0), "vent": (75, 150, 75)}
+TEMPERED_MAX = 2000.0  # mixed water from the TMV to its outlet, at most 2 m, so no long warm dead leg
+
+
+@dataclass
+class Fitting:
+    """A plumbing point, as electrical's Point: a tap, a valve or the heater where pipe runs end."""
+    id: str
+    kind: str  # valve | heater | tap | filter | shower | wc | vent | site
+    model: str  # the piece drawn and carded (FIT_SIZE)
+    x: float
+    y: float
+    z: float
+    label: str
+    item: str = ""  # its line in the bill of materials
+    runs: str = ""  # the runs that end on it
+    rating: str = ""
+    face: str = "-x"  # as Point.face: -x on the partition or end wall B, +z standing on a worktop
+
+
+def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, float]]:
+    """Every run drawn leg by leg in the layout frame. Supplies run inside the units and the walls, cold 300 mm and
+    hot 360 mm above the floor, then straight up to their outlet; drains drop from each outlet through the floor
+    and hang in the void under it."""
+    L, W = lo.L, lo.W
+    cav = P.LINING_WALL.value - 19  # the middle of the 38 mm batten cavity behind the 12 mm ply
     vz = -260.0  # pipe zone in the void under the floor (cross-members are 122 deep)
+    zc, zh = 300.0, 360.0  # cold and hot runs in the walls
+    wz = vz - 60  # the main comes in under the drains, clear of the basin waste
+    xs = lo.part_x0 - 30  # in the sink base, along its back
+    xp = lo.part_x0 + lo.part_t / 2  # in the partition
+    yb = -cav  # in the back wall's lining
+    xb = L + cav  # in end wall B's lining, behind the 30 mm build-out in the bathroom
     tx0, tx1, ty0, ty1 = lo.tray
-    shower = ((tx0 + tx1) / 2, 450.0)
+    shower = ((tx0 + tx1) / 2, (ty0 + ty1) / 2)
     wc = (lo.wall_b + 20, lo.wc_cy)  # the wall-hung pan drains into the frame in the end wall
     basin = ((lo.basin[0] + lo.basin[1]) / 2, (lo.basin[2] + lo.basin[3]) / 2)
-    sink = (lo.part_x0 - 300, (lo.sink[0] + lo.sink[1]) / 2)
-    heater = (lo.part_x0 - 250, 500.0)  # lying in the overhead cabinet over the galley
-    ic = (lo.L + 900, W / 2)  # inspection chamber outside end B
-    mains = (lo.L + 900, 150)
+    sink = (lo.part_x0 - 260, (lo.sink[0] + lo.sink[1]) / 2)  # the bowl's waste
+    ic = (L + 900, W / 2)  # inspection chamber outside end B
+    # the 80 L heater lies along y in the overhead cabinet, its end cap toward the room: cold in low, hot out high
+    hx, hy0, hy1, hz = lo.part_x0 - 250, 50.0, 1050.0, 2050.0
+    h_in, h_out = (hx - 90, hy1, 1880.0), (hx + 90, hy1, 1990.0)
+    ym = lo.sink[1] - 60  # the main rises at the open end of the sink base, through the stop valve set
+    yk_c, yk_h = sink[1] + 45, sink[1] - 45  # the sink's angle valves on the back of the sink base
+    y_w2, y_h1 = lo.sink[0] + 50, yk_h  # the cold riser to the heater and the hot drop, in the partition
+    y_tmv = (ty1 + lo.wc_cy - 190) / 2  # the TMV in end wall B, between the shower screen and the WC pan
+    z_tmv = 410.0
+    yb_c, yb_t = basin[1] - 45, basin[1] + 45  # the basin's angle valves under its top
+    vy = 200.0  # the vent rises outside end B, clear of the back corner post
     runs = [
-        PipeRun("D1", "soil", 110, [(wc[0], wc[1], -30), (wc[0], wc[1], vz), (lo.L - 100, wc[1], vz - 16),
-                                     (lo.L - 100, ic[1], vz - 40), (ic[0], ic[1], vz - 66)], "WC to IC1, 1:40"),
+        PipeRun("D1", "soil", 110, [(wc[0], wc[1], 230), (wc[0], wc[1], vz), (L - 100, wc[1], vz - 16),
+                                     (L - 100, ic[1], vz - 40), (ic[0], ic[1], vz - 66)], "WC to IC1, 1:40"),
         PipeRun("D2", "waste", 50, [(shower[0], shower[1], -30), (shower[0], shower[1], vz + 40),
-                                     (lo.L - 160, shower[1], vz + 15), (lo.L - 160, ic[1], vz - 5),
-                                     (lo.L - 100, ic[1], vz - 10)], "Shower (90 mm tray waste) joins the soil run"),
-        PipeRun("D3", "waste", 40, [(basin[0], basin[1], -30), (basin[0], basin[1], vz + 45),
-                                     (lo.L - 220, basin[1], vz + 40), (lo.L - 220, ic[1], vz + 8),
-                                     (lo.L - 100, ic[1], vz)], "Basin (wash lobby) joins the soil run"),
-        PipeRun("D4", "waste", 50, [(sink[0], sink[1], -30), (sink[0], sink[1], vz + 60),
-                                     (lo.L + 900, sink[1], vz - 30)], "Kitchen sink to the grease trap (separate soak pit)"),
-        PipeRun("V1", "vent", 75, [(lo.L - 100, ic[1], vz - 35), (lo.L + 120, ic[1], vz - 35), (lo.L + 120, 0, 2700),
-                                    (lo.L + 120, 0, 3300 + 1100 + 900)], "Open vent up end B to 900 above the guardrail"),
-        PipeRun("W1", "cold", 25, [(mains[0], mains[1], vz), (lo.L - 60, 150, vz), (heater[0], 150, vz),
-                                    (heater[0], 150, 300)], "Cold main in: stop valve, filter, check meter"),
-        PipeRun("W2", "cold", 20, [(heater[0], 150, 300), (heater[0], 150, 1850)], "Cold feed to the heater"),
-        PipeRun("W3", "cold", 20, [(heater[0], 150, 300), (sink[0], 150, 300), (sink[0], sink[1], 650)], "Cold to sink"),
-        PipeRun("W4", "cold", 20, [(lo.L - 20, 150, vz), (lo.L - 20, 150, 1000), (lo.L - 20, wc[1], 1000)],
-                "Cold to the concealed WC cistern"),
-        PipeRun("W5", "cold", 20, [(lo.L - 60, 150, 300), (lo.L - 60, basin[1], 650)], "Cold to basin"),
-        PipeRun("H1", "hot", 20, [(heater[0], 250, 1850), (heater[0], 250, 400), (lo.bath_x0 + 40, 250, 400)],
-                "Hot (60 C) from the heater to the mixing valve"),
-        PipeRun("H2", "hot", 20, [(heater[0], 250, 400), (heater[0], sink[1], 400), (sink[0], sink[1], 650)],
+                                     (L - 160, shower[1], vz + 15), (L - 160, ic[1], vz - 5),
+                                     (L - 100, ic[1], vz - 10)], "Shower (90 mm tray waste) joins the soil run"),
+        PipeRun("D3", "waste", 40, [(basin[0], basin[1], 800), (basin[0], basin[1], vz + 45),
+                                     (L - 220, basin[1], vz + 40), (L - 220, ic[1], vz + 8),
+                                     (L - 100, ic[1], vz)], "Basin (wash lobby) joins the soil run"),
+        PipeRun("D4", "waste", 50, [(sink[0], sink[1], 700), (sink[0], sink[1], vz + 60),
+                                     (L + 900, sink[1], vz - 30)], "Kitchen sink to the grease trap (separate soak pit)"),
+        PipeRun("V1", "vent", 75, [(L - 100, ic[1], vz - 35), (L + 120, ic[1], vz - 35), (L + 120, vy, vz - 35),
+                                    (L + 120, vy, 3300 + 1100 + 900)], "Open vent up end B to 900 above the guardrail"),
+        PipeRun("W1", "cold", 25, [(L + 900, ym, wz), (xs, ym, wz), (xs, ym, 450)],
+                "Cold main in from the farm, up into the sink base: stop valve, filter, check meter"),
+        PipeRun("W2", "cold", 20, [(xs, ym, 450), (xs, y_w2, 450), (xp, y_w2, 450), (xp, y_w2, h_in[2]),
+                                    (h_in[0], y_w2, h_in[2]), h_in], "Cold up the partition to the heater"),
+        PipeRun("W3", "cold", 20, [(xs, yk_c, 450), (xs, yk_c, 600)], "Cold to the sink's angle valve"),
+        PipeRun("W4", "cold", 20, [(xp, y_w2, 450), (xp, y_w2, zc), (xp, yb, zc), (xb, yb, zc), (xb, wc[1], zc),
+                                    (xb, wc[1], 1000)], "Cold through the partition and the walls to the WC cistern"),
+        PipeRun("W5", "cold", 20, [(xb, wc[1], zc), (xb, yb_c, zc), (xb, yb_c, 600)], "Cold on to the basin"),
+        PipeRun("W6", "cold", 20, [(xb, y_tmv + 40, zc), (xb, y_tmv + 40, zh)], "Cold to the mixing valve"),
+        PipeRun("H1", "hot", 20, [h_out, (h_out[0], y_h1, h_out[2]), (xp, y_h1, h_out[2]), (xp, y_h1, zh), (xp, yb, zh),
+                                   (xb, yb, zh), (xb, y_tmv - 40, zh)], "Hot (60 C) from the heater to the mixing valve"),
+        PipeRun("H2", "hot", 20, [(xp, y_h1, 600), (xs, yk_h, 600)],
                 "Hot to sink (direct 60 C, labelled)"),
-        PipeRun("T1", "tempered", 20, [(lo.bath_x0 + 40, 250, 400), (lo.bath_x0 + 40, 250, 1100), (tx1 - 300, 20, 1100)],
-                "TMV 41-44 C to the shower valve"),
-        PipeRun("T2", "tempered", 20, [(lo.bath_x0 + 40, 250, 400), (lo.L - 60, 250, 400), (lo.L - 60, basin[1], 650)],
+        PipeRun("T1", "tempered", 20, [(xb, y_tmv, z_tmv + 50), (xb, y_tmv, 1110), (xb, shower[1], 1110)],
+                "TMV 41-44 C up to the shower valve"),
+        PipeRun("T2", "tempered", 20, [(xb, y_tmv, z_tmv + 50), (xb, yb_t, z_tmv + 50), (xb, yb_t, 600)],
                 "Tempered to basin"),
+    ]
+    fittings = [
+        Fitting("SV", "valve", "meter", lo.part_x0, ym, 320, "Stop valve, Y-filter and check meter on the main, "
+                "in the sink base", "Stop valve + Y-filter + check water meter", "W1", "DN25"),
+        Fitting("WH", "heater", "heater", hx, hy0, hz, "80 L water heater lying in the overhead cabinet, its T&P "
+                "valve piped outside", "Electric storage water heater 80 L, 2 kW, with T&P valve", "W2 H1",
+                f"{P.HEATER_L.value:.0f} L, {P.HEATER_KW.value:g} kW, 60 C", "+y"),
+        Fitting("TMV", "valve", "tmv", lo.wall_b, y_tmv, z_tmv, "Mixing valve behind an access panel in end wall B, "
+                "between the shower and the WC", "Thermostatic mixing valve (TMV) 41-44 C", "H1 W6 T1 T2", "41-44 C"),
+        Fitting("KT", "tap", "kitchentap", lo.part_x0 - 50, sink[1], 900, "Kitchen mixer tap, angle valves under "
+                "the sink", "Kitchen mixer tap", "W3 H2 D4", "6 L/min", "+z"),
+        Fitting("DF", "filter", "filter", lo.part_x0 - 300, lo.sink[0] + 18, 350, "Drinking-water filter in the "
+                "sink base, its own faucet by the tap", "Under-sink drinking-water filter + faucet", "W3",
+                "drinking water", "+y"),
+        Fitting("SH", "shower", "showerset", lo.wall_b, shower[1], 1110, "Thermostatic shower valve, head and rail "
+                "on end wall B", "Thermostatic shower valve + 6-7 L/min head + rail", "T1 D2", "6-7 L/min"),
+        Fitting("WC", "wc", "cistern", lo.wall_b, wc[1], 1010, "Concealed cistern in end wall B, dual-flush plate",
+                "Slim concealed cistern frame (80 mm) with dual-flush plate, in the end-B stud wall and its 30 mm "
+                "build-out", "W4 D1", "dual flush"),
+        Fitting("BT", "tap", "basintap", L - 30, basin[1], 820, "Basin mixer, angle valves under the console",
+                "Wall basin 400 x 300 + mixer + bottle trap (wash lobby)", "W5 T2 D3", "6 L/min", "+z"),
+        Fitting("IC1", "site", "chamber", ic[0], ic[1], vz - 66, "Inspection chamber outside end B, on to the farm's "
+                "septic tank", "Septic tank (2 chambers, about 4 m3) + inspection chambers", "D1 D2 D3", "DN110 in",
+                "+z"),
+        Fitting("GT", "site", "greasetrap", L + 900, sink[1], vz - 30, "To the farm's grease trap and its own soak pit",
+                "Grease trap + kitchen soak pit", "D4", "DN50 in", "+z"),
+        Fitting("VT", "vent", "vent", L + 120, vy, 3300 + 1100 + 900, "Vent terminal, 900 mm above the roof guardrail",
+                "uPVC vent pipe DN75", "V1", "DN75", "+z"),
     ]
     k = Kit("K9", "Plumbing", "plumbing", "site")
     by = {}
@@ -439,10 +515,10 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], Kit, dict[str, float]]:
     )):
         k.buy(Bought(f"K9-X{i + 1}", nm, "K9", "plumbing", "plumbing", q, unit, key, step="S05"))
     k.buy(Bought("K9-HEATER-BOX", "80 L horizontal heater on its steel cradle (overhead cabinet)", "K9", "plumbing",
-                 "plumbing", 0, "each", "", Box(lo.part_x0 - 470, 50, 1830, lo.part_x0 - 30, 1050, 2270), step="S12",
+                 "plumbing", 0, "each", "", Box(hx - 220, hy0, hz - 220, hx + 220, hy1, hz + 220), step="S12",
                  color="white"))
     site = site_water()
-    return runs, k, site
+    return runs, fittings, k, site
 
 
 def site_water() -> dict[str, float]:

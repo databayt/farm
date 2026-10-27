@@ -1,0 +1,12 @@
+point,kind,model,runs,description,item,x_mm,y_mm,z_mm,face,rating,w_mm,h_mm,d_mm
+SV,valve,meter,W1,"Stop valve, Y-filter and check meter on the main, in the sink base",Stop valve + Y-filter + check water meter,4578,1540,320,-x,DN25,90,260,80
+WH,heater,heater,W2 H1,"80 L water heater lying in the overhead cabinet, its T&P valve piped outside","Electric storage water heater 80 L, 2 kW, with T&P valve",4328,50,2050,+y,"80 L, 2 kW, 60 C",440,440,1000
+TMV,valve,tmv,H1 W6 T1 T2,"Mixing valve behind an access panel in end wall B, between the shower and the WC",Thermostatic mixing valve (TMV) 41-44 C,5768,1005,410,-x,41-44 C,150,150,60
+KT,tap,kitchentap,W3 H2 D4,"Kitchen mixer tap, angle valves under the sink",Kitchen mixer tap,4528,1375,900,+z,6 L/min,60,60,300
+DF,filter,filter,W3,"Drinking-water filter in the sink base, its own faucet by the tap",Under-sink drinking-water filter + faucet,4278,1168,350,+y,drinking water,240,330,110
+SH,shower,showerset,T1 D2,"Thermostatic shower valve, head and rail on end wall B",Thermostatic shower valve + 6-7 L/min head + rail,5768,450,1110,-x,6-7 L/min,180,1000,100
+WC,wc,cistern,W4 D1,"Concealed cistern in end wall B, dual-flush plate","Slim concealed cistern frame (80 mm) with dual-flush plate, in the end-B stud wall and its 30 mm build-out",5768,1300,1010,-x,dual flush,500,1120,80
+BT,tap,basintap,W5 T2 D3,"Basin mixer, angle valves under the console",Wall basin 400 x 300 + mixer + bottle trap (wash lobby),5768,2020,820,+z,6 L/min,40,40,270
+IC1,site,chamber,D1 D2 D3,"Inspection chamber outside end B, on to the farm's septic tank","Septic tank (2 chambers, about 4 m3) + inspection chambers",6698,1126,-326,+z,DN110 in,450,450,600
+GT,site,greasetrap,D4,To the farm's grease trap and its own soak pit,Grease trap + kitchen soak pit,6698,1375,-290,+z,DN50 in,0,0,0
+VT,vent,vent,V1,"Vent terminal, 900 mm above the roof guardrail",uPVC vent pipe DN75,5918,200,5300,+z,DN75,75,150,75
