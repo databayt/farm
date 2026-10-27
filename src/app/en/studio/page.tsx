@@ -6,10 +6,12 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
 import { BuildUp } from "@/components/docs/build-up"
-import { ItemRail } from "@/components/docs/item-rail"
+import { ItemRail, type RailItem } from "@/components/docs/item-rail"
+import { TaggedFigure } from "@/components/docs/tagged-figure"
 import { WiringDiagram } from "@/components/docs/wiring-diagram"
 import { bedStock } from "@/lib/bed-stock"
 import totals from "../../../../public/designs/studio/data/totals.json"
+import electricTags from "../../../../public/designs/studio/render/electric-tags.json"
 import floorPieces from "../../../../public/designs/studio/render/floor-pieces.json"
 import wallPieces from "../../../../public/designs/studio/render/wall-pieces.json"
 
@@ -120,6 +122,48 @@ function bathRail() {
   ])
 }
 
+// The Electric rail: one card per device, rendered on its own by room.html?item=<model> (the 3D view's own
+// device), its size from points.csv, its cost from the BOM (placeholders, AS-21) and the points that use it.
+// Nothing electrical is sourced yet, so no card names a shop.
+const DEVICE_CARDS: { models: string[]; title: string; src?: string }[] = [
+  { models: ["board"], title: "Unit board" }, { models: ["inlet"], title: "Power inlet" },
+  { models: ["ceiling"], title: "Ceiling light" }, { models: ["bulkhead"], title: "IP65 light" },
+  { models: ["walllamp"], title: "Wall reading lamp", src: `${D}/render/bedroom/walllamp.webp` },
+  { models: ["strip"], title: "LED strip" }, { models: ["switch"], title: "Switch" },
+  { models: ["switch65"], title: "Outdoor switch IP65" }, { models: ["usb"], title: "Socket + USB-C" },
+  { models: ["socket2", "socket"], title: "Socket" }, { models: ["socket66"], title: "Deck socket IP66" },
+  { models: ["outlet"], title: "Hob outlet" }, { models: ["timer"], title: "Heater switch + timer" },
+  { models: ["isolator"], title: "AC isolator" }, { models: ["wallfan"], title: "Wall fan" },
+  { models: ["extract"], title: "Bathroom extract fan" }, { models: ["alarm"], title: "Smoke and heat alarms" },
+  { models: ["earth"], title: "Earth rod" },
+]
+function electricRail(points: Record<string, string>[]): RailItem[] {
+  const bom = readCsv("bom.csv")
+  const price = (item: string) => Number(bom.find((r) => r.item === item)?.unit_price_rwf ?? 0)
+  const sum = (re: RegExp) => bom.filter((r) => r.kit === "K8" && re.test(r.item)).reduce((n, r) => n + Number(r.total_per_unit_rwf), 0)
+  return DEVICE_CARDS.map(({ models, title, src }) => {
+    const pts = points.filter((p) => models.includes(p.model))
+    const [w, h, d] = ["w_mm", "h_mm", "d_mm"].map((k) => Number(pts[0][k]))
+    const m = pts[0].model
+    const size = m === "ceiling" || m === "alarm" ? `Ø ${w} mm, ${d} mm deep`
+      : m === "strip" ? `${w / 1000} m long, ${h} mm wide`
+      : m === "earth" ? `${h / 1000} m rod, Ø ${w} mm, in an inspection pit`
+      : models.length > 1 ? "Double 146 × 86 mm, single 86 × 86 mm"
+      : `${w} × ${h} mm, ${d} mm deep`
+    const each = price(pts[0].description)
+    const cost = m === "board" ? `RWF ${frw(each)} the enclosure; RWF ${frw(each + sum(/^(Main breaker|Surge protection|RCBOs|Priority relay|Contactor)/))} with its breakers, surge protection and relay (estimates)`
+      : m === "inlet" ? `RWF ${frw(each)}; RWF ${frw(each + sum(/^(Matching|Cable \d+ mm2 tails)/))} with its plug and tails (estimates)`
+      : pts.every((p) => price(p.description) === each) ? `RWF ${frw(each)} each × ${pts.length} (estimate)`
+      : `RWF ${frw(pts.reduce((n, p) => n + price(p.description), 0))} for ${pts.length} (estimate)`
+    const on = [...new Set(pts.map((p) => p.circuit).filter(Boolean))]
+    return {
+      src: src ?? `${D}/render/electric/${m}.webp`, alt: title, title,
+      note: `${pts.map((p) => p.point).join(", ")}${on.length ? ` · ${on.join(", ")}` : ""} · ${pts.length === 1 ? pts[0].description : pts.map((p) => p.description).join("; ")}`,
+      details: [{ label: "Dimensions", value: size }, { label: "Where to buy", value: "Not sourced yet" }, { label: "Cost", value: cost }],
+    }
+  })
+}
+
 const STEPS = [
   { n: "1", title: "Measure", text: "Survey the container; the model regenerates every drawing from the real numbers." },
   { n: "2", title: "Cut in Kigali", text: "A Gisozi workshop rips and crosscuts sheets on a panel saw, following the cutting diagrams." },
@@ -139,6 +183,7 @@ function readCsv(file: string): Record<string, string>[] {
 const POINT_GROUP: Record<string, string> = {
   db: "Board and protection", light: "Lights", switch: "Switches", usb: "Sockets and outlets",
   socket: "Sockets and outlets", outlet: "Sockets and outlets", fan: "Fans", inlet: "Board and protection",
+  alarm: "Alarms", earth: "Earthing and bonding",
 }
 const BOM_GROUPS = ["Board and protection", "Earthing and bonding", "Cable and conduit", "Lights", "Switches",
   "Sockets and outlets", "Fans", "Alarms", "Appliances", "Labour"]
@@ -237,6 +282,7 @@ function BomTable({ groups, total, label }: { groups: BomGroup[]; total: number;
 }
 
 const mm = (n: number) => n.toLocaleString("en-US")
+const KIND: Record<string, string> = { usb: "socket + USB-C", db: "board", inlet: "power inlet", earth: "earth rod" }
 
 export default function StudioPage() {
   const circuits = readCsv("circuits.csv")
@@ -382,7 +428,10 @@ export default function StudioPage() {
       ))}
 
       {/* Electric, in the 3D section's pattern: a plain title, then the studio's wiring drawn full width from its
-          inlet to every circuit. Where the power comes from is a site decision; the studio only needs a supply in its inlet. */}
+          inlet to every circuit. Where the power comes from is a site decision; the studio only needs a supply in its inlet.
+          Below it the installation in the 3D view's camera (render/electric-line.png, every run in its circuit's
+          colour and every point tagged), the finished room (render/electric-real.jpg), then each device on its own.
+          All three come from scripts/studio/render/room.html?view=electric, built from render/scene.json. */}
       <section id="electrical" className="scroll-mt-20 border-t">
         <div className="px-4 pt-10 pb-10 md:px-10">
           <h2 className="text-3xl font-semibold tracking-tight">Electric</h2>
@@ -390,11 +439,38 @@ export default function StudioPage() {
             <WiringDiagram circuits={circuits} demand={demand} />
           </div>
         </div>
+        <div className="px-4 pb-6 md:px-10">
+          <div className="overflow-x-auto">
+            <div className="min-w-[960px]">
+              <TaggedFigure src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
+                alt="Line drawing of the studio from the front with every electrical point and conduit run: the unit board on the back wall by the galley with seven circuits leaving its top, cables along the ceiling edge and straight down to each light, switch and socket, in blue for lights, orange for sockets and green for fixed appliances."
+                info={Object.fromEntries(points.map((p) => [p.point, { label: p.description,
+                  colour: circuits.find((c) => c.circuit === p.circuit)?.colour }]))} />
+            </div>
+          </div>
+          <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
+            Every run goes up into the ceiling void, along it and straight down to its device. Tags match the points
+            table below. Outside the drawing: C6 leaves through the front wall at the bed end for{" "}
+            {points.filter((p) => p.circuit === "C6" && !electricTags.tags.some((t) => t.id === p.point)).map((p) => p.point).join(", ")}{" "}
+            on the deck, the stair and the roof. The inlet (PI) is behind the board, and the earth rod (E1) is in a pit
+            below it.
+          </p>
+        </div>
+        <figure className="px-4 pb-10 md:px-10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={`${D}/render/electric-real.jpg`} width={2400} height={1100} loading="lazy"
+            alt="The same view rendered as finished: the white unit board with smoked windows on the back wall by the galley, sockets with USB-C over the headboard, the bedside table and the sofa arm, double sockets on the galley wall, a wall fan and the red AC isolator high on the back wall, and slim ceiling lights and alarms."
+            className="h-auto w-full" />
+          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
+        </figure>
+        <div className="pb-10">
+          <ItemRail items={electricRail(points)} />
+        </div>
       </section>
 
       <section id="circuits" className="scroll-mt-20 border-t py-16">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-          <p className="text-muted-foreground text-sm font-medium">Electrical · 2 of 4</p>
+          <p className="text-muted-foreground text-sm font-medium">Electric · Circuits</p>
           <h2 className="mt-1 text-3xl font-semibold tracking-tight">Eight circuits</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
             Each circuit is checked by the model: its current fits the breaker, the breaker fits the cable, and the
@@ -431,11 +507,11 @@ export default function StudioPage() {
 
       <section id="points" className="scroll-mt-20 border-t bg-muted/40 py-16">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-          <p className="text-muted-foreground text-sm font-medium">Electrical · 3 of 4</p>
+          <p className="text-muted-foreground text-sm font-medium">Electric · Points</p>
           <h2 className="mt-1 text-3xl font-semibold tracking-tight">Every light, switch and socket</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            {points.length} points on the plan. The bathroom has IP65 lights and no sockets, and its fan is switched
-            from outside the door.
+            {points.length} points on the plan. The bathroom has an IP65 light, an IPX4 extract fan and no sockets,
+            switched from outside the door.
           </p>
           <Figure src={`${D}/drawings/e-101.svg`} caption="E-101 · Electrical layout plan" />
           <div className="overflow-x-auto rounded-xl border bg-background">
@@ -449,10 +525,10 @@ export default function StudioPage() {
               </thead>
               <tbody>
                 {points.map((p) => (
-                  <tr key={p.point} className="border-t">
+                  <tr key={p.point} id={`pt-${p.point}`} className="target:bg-muted scroll-mt-24 border-t">
                     <td className="px-3 py-2 font-medium">{p.point}</td>
                     <td className="px-3 py-2">{p.description}</td>
-                    <td className="text-muted-foreground px-3 py-2">{p.kind === "usb" ? "socket + USB-C" : p.kind === "db" ? "board" : p.kind === "inlet" ? "power inlet" : p.kind}</td>
+                    <td className="text-muted-foreground px-3 py-2">{KIND[p.kind] ?? p.kind}</td>
                     <td className="px-3 py-2">{p.circuit || "–"}</td>
                     <td className="px-3 py-2 whitespace-nowrap tabular-nums">{mm(Number(p.z_mm))} mm</td>
                     <td className="px-3 py-2 whitespace-nowrap tabular-nums">{Number(p.watts) ? `${mm(Number(p.watts))} W` : "–"}</td>
@@ -466,7 +542,7 @@ export default function StudioPage() {
 
       <section id="bom" className="scroll-mt-20 border-t py-16">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-          <p className="text-muted-foreground text-sm font-medium">Electrical · 4 of 4</p>
+          <p className="text-muted-foreground text-sm font-medium">Electric · Materials</p>
           <h2 className="mt-1 text-3xl font-semibold tracking-tight">Bill of materials</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
             Everything the electrician buys for the studio: about RWF {frw(bomTotal)}. Prices are placeholders until
