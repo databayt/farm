@@ -57,8 +57,8 @@ export const copy = {
   },
   model: {
     title: "3D",
-    line: "Line drawing of the compound seen from the front, from high beyond the gates: the gate and the sign wall, the parking and the rock road up to the inner gate; inside, six small tents and the fire pit ringed with stools on the lawn, with the bar and the guest rooms on the left; beyond the long timber table, the office and two studios on raised decks; at the back the study room, the galley and the public bathroom.",
-    real: "The same view rendered with materials and sunlight: corrugated containers in saffron yellow, oxide red and teal, timber decks with red pipe railings, white-framed sliding doors, hexagonal canvas tents (one with a green fly), the stone fire pit with its concrete cap and log stools, a long timber table, timber gates braced in an X, grass parking and a road of granite setts.",
+    line: "Line drawing of the compound seen from the front, from high beyond the gates: the gate and the sign wall lettered DIGITAL FARM, the parking and the rock road up to the inner gate; inside, six small tents and the fire pit ringed with stools on the lawn, with the bar and the guest rooms on the left; beyond the long timber table, the office and two studios on raised decks, each studio under a flat roof that reaches over its deck, with a ladder at its end up to two loungers; at the back the study room, the galley and the public bathroom.",
+    real: "The same view rendered with materials and sunlight: corrugated containers in saffron yellow, oxide red and teal, timber decks with red pipe railings, the two studios after their hero render (dark steel roofs over their decks on slim black posts, glass sliders half open, a steel ladder up to timber loungers, a bistro table and a potted plant), the sign wall's DIGITAL FARM in warm LED letters, hexagonal canvas tents (one with a green fly), the stone fire pit with its concrete cap and log stools, a long timber table, timber gates braced in an X, grass parking and a road of granite setts.",
     caption: "Rendered from the design model",
   },
   courtyard: {

@@ -13,13 +13,18 @@ type Unit = (typeof compound.units)[number]
 // bottom, guest rooms and bar on the left), then spread it sideways for a wide screen: positions move
 // apart across the drawing, every building keeps its size.
 const SIZE = 46
-const { factor: SPREAD, mid: MID } = compound.spread
-const X = (x: number) => MID + (x - MID) * SPREAD
-const P = ([x, y]: Point) => [X(x), SIZE - y]
-const B = ([x0, y0, x1, y1]: Box) => {
-  const shift = X((x0 + x1) / 2) - (x0 + x1) / 2
-  return [x0 + shift, SIZE - y1, x1 + shift, SIZE - y0]
+const spreadBy = (factor: number) => {
+  const X = (x: number) => compound.spread.mid + (x - compound.spread.mid) * factor
+  const P = ([x, y]: Point) => [X(x), SIZE - y]
+  const B = ([x0, y0, x1, y1]: Box) => {
+    const shift = X((x0 + x1) / 2) - (x0 + x1) / 2
+    return [x0 + shift, SIZE - y1, x1 + shift, SIZE - y0]
+  }
+  return { X, P, B }
 }
+const { P, B } = spreadBy(compound.spread.factor)
+// the way in (gates, sign wall, parking, rock road) keeps the places it had before the buildings spread further
+const WAY = spreadBy(compound.spread.wayIn)
 // The frame follows the spread: from past the guest rooms' labels to past the furthest building.
 const VIEW = [
   Math.min(...compound.units.map((u) => B(u.box)[0])) - 4.2,
@@ -174,15 +179,25 @@ function RowUnit({ unit, dimension }: { unit: Unit; dimension?: boolean }) {
   const deck = unit.deck ?? 1.5
   const cx = f((x0 + x1) / 2)
   const edge = f(y1 + deck)
+  // a studio as its hero (/en/studio): the rail from the middle post to the far end, the deck open toward the
+  // ladder, which climbs the near end to the roof from 1.8 m out, and a louvred window beside the slider
+  const ladder = [f(x0 - 1.8), f(y1 - 0.8), x0, f(y1 - 0.2)]
   return (
     <g>
       <rect {...at([x0, y1, x1, edge])} {...thin} />
-      <path d={`M${f(cx - 0.6)} ${edge}H${x0}V${y1}M${f(cx + 0.6)} ${edge}H${x1}V${y1}`} {...medium} />
+      <path
+        d={unit.terrace ? `M${f(x0 + 2.3)} ${edge}H${x1}V${y1}` : `M${f(cx - 0.6)} ${edge}H${x0}V${y1}M${f(cx + 0.6)} ${edge}H${x1}V${y1}`}
+        {...medium}
+      />
       <rect {...at([x0, y0, x1, y1])} {...wall} />
       {unit.terrace ? (
         <>
           <Glazing a={[f(cx - 1.5), y1]} b={[f(cx + 1.5), y1]} />
-          <rect {...at([x1, y0 + 0.15, x1 + 0.75, y1 - 0.15])} {...thin} />
+          <Glazing a={[f(x0 + 5.12), y1]} b={[f(x0 + 5.64), y1]} />
+          <path
+            d={`M${ladder[0]} ${ladder[1]}H${ladder[2]}M${ladder[0]} ${ladder[3]}H${ladder[2]}${[0.3, 0.6, 0.9, 1.2, 1.5].map((k) => `M${f(x0 - k)} ${ladder[1]}V${ladder[3]}`).join("")}`}
+            {...thin}
+          />
         </>
       ) : (
         <>
@@ -323,16 +338,16 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
   const row = compound.units.filter((u) => u.kind === "20" && u.front === "north")
   const turn = (g: { x: Point; y: number; post: number }) => {
     const [l, r] = [g.x[0], g.x[1]]
-    const shift = X((l + r) / 2) - (l + r) / 2
+    const shift = WAY.X((l + r) / 2) - (l + r) / 2
     return { x: [l + shift, r + shift], y: SIZE - g.y, post: g.post }
   }
-  const parkingShift = B(parking.box)[0] - parking.box[0]
-  const road = compound.rockRoad.curve.map(P)
+  const parkingShift = WAY.B(parking.box)[0] - parking.box[0]
+  const road = compound.rockRoad.curve.map(WAY.P)
   const roadPath = `M${road[0].join(" ")}C${road[1].join(" ")} ${road[2].join(" ")} ${road[3].join(" ")}`
-  const [px0, py0, px1, py1] = B(parking.box)
+  const [px0, py0, px1, py1] = WAY.B(parking.box)
   const [pitX, pitY] = P(courtyard.firePit)
   const [, , pitR, pitInner] = courtyard.firePit
-  const sign = B(compound.sign)
+  const sign = WAY.B(compound.sign)
   const [, cy0, cx1] = B(courtyard.box)
   return (
     <svg viewBox={`${VIEW[0]} ${VIEW[1]} ${VIEW[2] - VIEW[0]} ${VIEW[3] - VIEW[1]}`} role="img" aria-label={title} className={className}>

@@ -6,7 +6,8 @@
   the road and the trees, and it is mirrored the way the 2D is (study room at the back, guest rooms on the
   left, D-022). Details follow the 2026-10-25 footage (public/footage): corrugated walls, white-framed
   sliding doors, red pipe railings with the deck stairs at their ends, a concrete cap on the fire pit,
-  hexagonal pop-up tents. Rendered two ways:
+  hexagonal pop-up tents. The studios follow the studio's hero (/en/studio, render/studio-hero.jpg), and the
+  sign wall carries DIGITAL FARM in LED letters. Rendered two ways:
 
     ?mode=line  line drawing in the page's ink        -> public/designs/compound/render/compound-line.png
     ?mode=real  paint, timber, stone, sun and shadow  -> public/designs/compound/render/compound-real.webp
@@ -47,13 +48,17 @@ const [FW, FH] = [2400, 1260]
 const C = await (await fetch(`/src/components/home/compound.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#f7f5ef" // the farm theme's soil and chalk
 const HC = 2.591 // a container's height
-// The 2D sets the compound half as far apart again sideways for a wide screen (compound.json's spread),
-// every building at its true size; the model takes the same positions, so it reads as the 2D does.
+// The 2D sets the compound apart sideways for a wide screen (compound.json's spread), every building at its
+// true size; the model takes the same positions, so it reads as the 2D does. The way in (gates, sign wall,
+// parking, rock road) keeps its own, smaller spread, as on the 2D.
 {
-  const { factor, mid } = C.spread
-  const SX = (x) => mid + (x - mid) * factor
-  const shift = (x0, x1) => SX((x0 + x1) / 2) - (x0 + x1) / 2
-  const moveBox = (b) => { const d = shift(b[0], b[2]); return [b[0] + d, b[1], b[2] + d, b[3]] }
+  const spreadBy = (k) => {
+    const SX = (x) => C.spread.mid + (x - C.spread.mid) * k
+    const shift = (x0, x1) => SX((x0 + x1) / 2) - (x0 + x1) / 2
+    return { SX, shift, moveBox: (b) => { const d = shift(b[0], b[2]); return [b[0] + d, b[1], b[2] + d, b[3]] } }
+  }
+  const { SX, moveBox } = spreadBy(C.spread.factor)
+  const way = spreadBy(C.spread.wayIn)
   for (const u of C.units) u.box = moveBox(u.box)
   const unit = Object.fromEntries(C.units.map((u) => [u.id, u]))
   const rooms = unit.rooms.box
@@ -62,12 +67,12 @@ const HC = 2.591 // a container's height
   unit.bar.box = [rooms[2] - bw, unit.bar.box[1], rooms[2], unit.bar.box[3]]
   const sw = unit.study.box[2] - unit.study.box[0]
   unit.study.box = [rooms[0], unit.study.box[1], rooms[0] + sw, unit.study.box[3]]
-  const p = shift(C.parking.box[0], C.parking.box[2])
+  const p = way.shift(C.parking.box[0], C.parking.box[2])
   C.parking.box = [C.parking.box[0] + p, C.parking.box[1], C.parking.box[2] + p, C.parking.box[3]]
   C.parking.bays = C.parking.bays.map((x) => x + p)
-  C.sign = moveBox(C.sign)
-  for (const g of [C.gate, C.innerGate]) { const d = shift(g.x[0], g.x[1]); g.x = [g.x[0] + d, g.x[1] + d] }
-  C.rockRoad.curve = C.rockRoad.curve.map(([x, z]) => [SX(x), z])
+  C.sign = way.moveBox(C.sign)
+  for (const g of [C.gate, C.innerGate]) { const d = way.shift(g.x[0], g.x[1]); g.x = [g.x[0] + d, g.x[1] + d] }
+  C.rockRoad.curve = C.rockRoad.curve.map(([x, z]) => [way.SX(x), z])
   C.courtyard.firePit = [SX(C.courtyard.firePit[0]), ...C.courtyard.firePit.slice(1)]
   const cb = C.courtyard.box // the lawn widens with the spread
   C.courtyard.box = [SX(cb[0]), cb[1], SX(cb[2]), cb[3]]
@@ -234,10 +239,36 @@ const TILE = { corr: [0.278, 2.6], boards: [1.4, 1.4], grass: [9, 9], meadow: [1
 const MAP = { saffron: "corr", oxide: "corr", teal: "corr", timber: "boards", lawn: "grass", meadow: "meadow",
   murram: "murram", pavers: "pavers", setts: "setts", stone: "stone", water: "water" }
 
+// DIGITAL FARM for the sign's panel, sized to it: LED letters in warm white with their glow on dark steel,
+// or plain letters in the page's ink for the line drawing. Drawn mirrored, as the model is, so it reads.
+function ledTexture() {
+  const [x0, , x1] = C.sign, W = 2048, H = Math.round(W / (x1 - x0 - 0.5)), text = "DIGITAL FARM"
+  const c = document.createElement("canvas"); c.width = W; c.height = H
+  const g = c.getContext("2d")
+  g.fillStyle = LINE ? PAGE : "#1b1c1e"; g.fillRect(0, 0, W, H)
+  g.translate(W, 0); g.scale(-1, 1)
+  const font = (s) => { g.font = `700 ${s}px "Helvetica Neue", Helvetica, Arial, sans-serif`; g.letterSpacing = `${s * 0.06}px` }
+  font(100)
+  const size = (100 * W * 0.88) / g.measureText(text).width
+  font(size)
+  const m = g.measureText(text), y = H / 2 + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2
+  g.textAlign = "center"
+  if (LINE) { g.fillStyle = INK; g.fillText(text, W / 2, y) }
+  else {
+    g.shadowColor = "rgba(255, 210, 140, 0.9)"
+    for (const [blur, fill] of [[size * 0.3, "#ffd99a"], [size * 0.1, "#ffeccc"], [0, "#fff9ee"]]) {
+      g.shadowBlur = blur; g.fillStyle = fill; g.fillText(text, W / 2, y)
+    }
+  }
+  const t = new THREE.CanvasTexture(c)
+  t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8
+  return t
+}
+
 // ------------------------------------------------------------ materials
 const PAINT = { saffron: "#d9a21b", oxide: "#8a3227", teal: "#3e8a86" }
 // thin parts get crease lines but no silhouette, so railings and slats stay fine in the line drawing
-const THIN = new Set(["red", "white-frame", "steel", "black", "slat", "cable", "frame-saffron", "frame-oxide", "frame-teal"])
+const THIN = new Set(["red", "white-frame", "steel", "black", "slat", "cable", "louvre", "frame-saffron", "frame-oxide", "frame-teal"])
 const MAT = {}
 function mat(name) {
   if (MAT[name]) return MAT[name]
@@ -249,7 +280,12 @@ function mat(name) {
     return (MAT[name] = m)
   }
   let x
-  if (LINE) {
+  if (name === "led") {
+    const map = ledTexture()
+    x = LINE ? new THREE.MeshBasicMaterial({ map })
+      : new THREE.MeshStandardMaterial({ map, emissiveMap: map, emissive: "#ffffff", emissiveIntensity: 1.6, roughness: 0.45, metalness: 0.2 })
+    x.userData.outlineParameters = { visible: false }
+  } else if (LINE) {
     if (name === "glass" || name === "canopy") x = new THREE.MeshBasicMaterial({ color: PAGE, transparent: true, opacity: 0, depthWrite: false })
     else x = new THREE.MeshBasicMaterial({ color: PAGE, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
     if (THIN.has(name)) x.userData.outlineParameters = { visible: false }
@@ -276,6 +312,10 @@ function mat(name) {
       glass: () => new THREE.MeshPhysicalMaterial({ color: "#d3e3e8", roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.42, depthWrite: false }),
       canopy: () => new THREE.MeshPhysicalMaterial({ color: "#c7d3cc", roughness: 0.1, transparent: true, opacity: 0.32, depthWrite: false }),
       inside: () => std({ color: "#3b3631", roughness: 0.9 }),
+      room: () => std({ color: "#b8a993", roughness: 0.9 }), // a studio's lit room through its open slider
+      roofsheet: () => std({ color: "#4a4743", roughness: 0.6, metalness: 0.3 }), // the studios' dark steel roof
+      louvre: () => std({ color: "#dde2df", roughness: 0.2, metalness: 0.1 }), // glass blades
+      terracotta: () => std({ color: "#b0602f", roughness: 0.85 }),
       timber: () => std({ map: T.boards, color: "#ffffff", roughness: 0.75 }),
       slat: () => std({ color: "#b98250", roughness: 0.75 }),
       stone: () => std({ map: T.stone, color: "#ffffff", roughness: 0.95 }),
@@ -445,11 +485,15 @@ function gate({ x: [l, r], y, post: p }, h, lanternSide) {
   group(() => leaf(len, h), [r - 0.005, 0.03, y], 0).scale.x = -1 // the other leaf, mirrored, braced face out too
 }
 gate(C.gate, 1.8, "left")
+// the sign wall beside the gate: fieldstone under a timber cap as the pillars, and facing the approach a dark
+// steel panel with DIGITAL FARM in LED letters
 {
-  const [x0, z0, x1, z1] = C.sign
-  blk(x0, z0, x1, z1, 0, 1.0, "stone")
-  blk(x0 - 0.05, z0 - 0.05, x1 + 0.05, z1 + 0.05, 1.0, 1.08, "stone")
-  blk(x0 + 0.4, z0 - 0.03, x1 - 0.4, z0, 0.35, 0.75, "steel") // the brushed-steel name plate
+  const [x0, z0, x1, z1] = C.sign, h = 1.6
+  blk(x0, z0, x1, z1, 0, h, "stone")
+  blk(x0 - 0.06, z0 - 0.06, x1 + 0.06, z1 + 0.06, h, h + 0.12, "gatewood")
+  const [p0, p1, q0, q1] = [x0 + 0.25, x1 - 0.25, 0.35, 1.35]
+  blk(p0, z0 - 0.05, p1, z0, q0, q1, "black")
+  add(new THREE.PlaneGeometry(p1 - p0, q1 - q0), "led", { pos: [(p0 + p1) / 2, (q0 + q1) / 2, z0 - 0.052], rot: [0, Math.PI, 0], noEdges: true, noShadow: true })
 }
 
 // green parking: grass pavers, stone strips between the bays, eucalyptus wheel stops
@@ -527,22 +571,25 @@ function skipRibs(wall, a0, a1) {
   const w = walls.find((v) => v.axis === wall.axis && v.out === wall.out && Math.abs(v.at - wall.at) < 0.05 && a1 > v.a0 - 0.5 && a0 < v.a1 + 0.5)
   if (w) w.skip.push([a0 - 0.1, a1 + 0.1])
 }
+// kinds: door, barred, glazed (white frames), slider (dark frames, the near half slid open), louvre
 function opening(wall, a0, a1, b0, b1, kind) {
   skipRibs(wall, a0, a1)
-  const trim = kind === "glazed" ? "white-frame" : "red"
+  const trim = kind === "glazed" ? "white-frame" : kind === "slider" || kind === "louvre" ? "black" : "red"
   const put = (u0, u1, v0, v1, w0, w1, name) => wall.axis === "x"
     ? blk(wall.at + wall.out * w0, u0, wall.at + wall.out * w1, u1, v0, v1, name)
     : blk(u0, wall.at + wall.out * w0, u1, wall.at + wall.out * w1, v0, v1, name)
   const f = 0.06
   const fill = kind === "door" ? "door" : "glass"
-  if (kind !== "door") put(a0, a1, b0, b1, -0.005, 0.01, "inside")
-  put(a0, a1, b0, b1, 0.012, 0.03, fill)
+  if (kind !== "door") put(a0, a1, b0, b1, -0.005, 0.01, kind === "slider" ? "room" : "inside")
+  if (kind === "slider") put((a0 + a1) / 2, a1, b0, b1, 0.012, 0.03, "glass")
+  else if (kind !== "louvre") put(a0, a1, b0, b1, 0.012, 0.03, fill)
   if (kind === "door") put(a0 + 0.18, a1 - 0.18, b0 + (b1 - b0) * 0.55, b1 - 0.2, 0.03, 0.04, "glass")
   put(a0 - f, a0, b0, b1 + f, 0, 0.055, trim); put(a1, a1 + f, b0, b1 + f, 0, 0.055, trim)
   put(a0, a1, b1, b1 + f, 0, 0.055, trim)
   if (kind !== "door") put(a0, a1, b0 - f, b0, 0, 0.07, trim)
   if (kind === "barred") for (let a = a0 + 0.2; a < a1 - 0.1; a += 0.2) put(a - 0.012, a + 0.012, b0, b1, 0.035, 0.06, "red")
-  if (kind === "glazed") { // sliding panels: a mullion every 1.5 m or so
+  if (kind === "louvre") for (let b = b0 + 0.07; b < b1 - 0.03; b += 0.1) put(a0, a1, b - 0.015, b + 0.015, 0.015, 0.05, "louvre")
+  if (kind === "glazed" || kind === "slider") { // sliding panels: a mullion every 1.5 m or so
     const n = Math.max(2, Math.round((a1 - a0) / 1.5))
     for (let i = 1; i < n; i++) { const a = a0 + ((a1 - a0) * i) / n; put(a - 0.03, a + 0.03, b0, b1, 0.01, 0.05, trim) }
   }
@@ -613,28 +660,46 @@ function rowUnit(u) {
     pipe([a[0], y0 + 0.5, a[1]], [b[0], y0 + 0.5, b[1]], 0.016, "red")
   }
   const r = front + 0.03, stair = front + 1.0
-  rail([x0 + 0.03, z0], [x0 + 0.03, stair]); rail([x0 + 0.03, r], [x1 - 0.03, r]); rail([x1 - 0.03, r], [x1 - 0.03, z0])
+  // a studio's rail runs from the middle post to the far end, as its hero; the office's goes round
+  if (u.terrace) rail([x0 + 2.3, r], [x1 - 0.03, r])
+  else { rail([x0 + 0.03, z0], [x0 + 0.03, stair]); rail([x0 + 0.03, r], [x1 - 0.03, r]) }
+  rail([x1 - 0.03, r], [x1 - 0.03, z0])
   for (let k = 1; k <= 3; k++) blk(x0 - 0.28 * (4 - k), front, x0 - 0.28 * (3 - k), stair, 0, 0.2 * k, "timber")
   const wall = { axis: "z", at: z0, out: -1 }
   if (u.terrace) {
-    opening(wall, cx - 1.5, cx + 1.5, y0 + 0.16, y0 + 2.25, "glazed")
-    // the tinted clear canopy over the deck, on a slim steel edge
-    blk(x0, front, x1, z0, y0 + 2.42, y0 + 2.45, "canopy", { noShadow: true })
-    blk(x0, front, x1, front + 0.05, y0 + 2.38, y0 + 2.45, "black")
-    for (const x of [x0 + 0.05, x1 - 0.05]) blk(x - 0.025, front, x + 0.025, front + 0.05, y0 + 1.0, y0 + 2.38, "black")
-    // the open roof terrace with two loungers, no rail round it (the founder's call)
-    for (const x of [x0 + 0.9, x0 + 1.75]) {
-      blk(x - 0.32, z0 + 0.4, x + 0.32, z0 + 1.55, top, top + 0.3, "slat")
-      blk(x - 0.3, z0 + 0.45, x + 0.3, z0 + 1.5, top + 0.3, top + 0.36, "cushion")
-      group(() => blk(-0.3, 0, 0.3, 0.06, 0, 0.7, "cushion"), [x, top + 0.3, z0 + 1.5], 0).rotation.x = 0.5
+    // As the studio's hero (/en/studio): the sliding glass wall half open and a louvred window by the shower
+    // room (the studio's o1 and o2), a dark steel roof over the box and the deck on three slim posts, a steel
+    // ladder up the near end to two timber loungers and a side table (no rail round the roof, the founder's
+    // call), a bistro table, two chairs and a potted plant on the deck
+    opening(wall, cx - 1.5, cx + 1.5, y0 + 0.16, y0 + 2.25, "slider")
+    opening(wall, x0 + 5.12, x0 + 5.64, y0 + 1.31, y0 + 2.2, "louvre")
+    const roof = top + 0.1
+    blk(x0 - 0.15, front - 0.05, x1 + 0.15, z1 + 0.15, top + 0.02, roof, "roofsheet")
+    blk(x0 - 0.15, front - 0.07, x1 + 0.15, front - 0.03, top - 0.05, roof, "black") // its front edge
+    for (const x of [x0 + 0.05, x0 + 2.3, x1 - 0.05]) blk(x - 0.03, front + 0.01, x + 0.03, front + 0.07, y0, top + 0.02, "black")
+    for (const x of [x0 + 3.4, x0 + 5.0]) {
+      for (const z of [z0 + 0.45, z0 + 1.4]) blk(x - 0.3, z, x + 0.3, z + 0.06, roof, roof + 0.24, "slat")
+      blk(x - 0.3, z0 + 0.4, x + 0.3, z0 + 1.5, roof + 0.24, roof + 0.3, "slat")
+      group(() => blk(-0.3, 0, 0.3, 0.05, 0, 0.8, "slat"), [x, roof + 0.27, z0 + 1.45], 0).rotation.x = 0.55
     }
-    // a slim steel stair up the east end to the roof
-    const [s0, s1] = [x1 + 0.08, x1 + 0.72], [t0, t1] = [z0 + 0.25, z1 - 0.2]
-    for (const x of [s0, s1]) bar([x, 0, t0], [x, top, t1], 0.05, "black")
-    for (let i = 1; i <= 13; i++) {
-      const k = i / 14, z = t0 + (t1 - t0) * k, y = top * k
-      blk(s0, z - 0.09, s1, z + 0.09, y - 0.025, y, "black")
+    blk(x0 + 4.0, z0 + 0.75, x0 + 4.4, z0 + 1.15, roof, roof + 0.42, "slat")
+    // the ladder from 1.8 m out at the near end, as the studio's own stair (scene.json outdoor.sx0)
+    const [l0, l1, foot] = [z0 + 0.2, z0 + 0.8, x0 - 1.8]
+    for (const z of [l0, l1]) bar([foot, 0, z], [x0 - 0.2, roof, z], 0.05, "black") // to the roof's edge
+    for (let i = 1; i <= 14; i++) {
+      const k = i / 15, x = foot + (x0 - 0.2 - foot) * k
+      blk(x - 0.03, l0, x + 0.03, l1, roof * k - 0.025, roof * k, "black")
     }
+    const [bx, bz] = [x0 + 4.9, front + 0.75]
+    cyl(bx, bz, 0.03, y0, 0.72, "black", 8); cyl(bx, bz, 0.32, y0 + 0.72, 0.03, "black", 20)
+    for (const s of [-1, 1]) {
+      const sx = bx + s * 0.6
+      cyl(sx, bz, 0.02, y0, 0.44, "black", 6)
+      blk(sx - 0.2, bz - 0.2, sx + 0.2, bz + 0.2, y0 + 0.44, y0 + 0.47, "black")
+      blk(sx + s * 0.17, bz - 0.2, sx + s * 0.2, bz + 0.2, y0 + 0.47, y0 + 0.9, "black")
+    }
+    cyl(x1 - 0.35, front + 0.4, 0.17, y0, 0.42, "terracotta", 16, 0.23)
+    add(new THREE.IcosahedronGeometry(0.34, 1), "leaf", { pos: [x1 - 0.35, y0 + 0.72, front + 0.4] })
   } else { // the office: a glazed door, a window behind a slatted timber screen
     opening(wall, cx - 1.6, cx - 0.7, y0 + 0.16, y0 + 2.1, "door")
     opening(wall, cx - 0.2, cx + 1.4, y0 + 0.9, y0 + 2.0, "glazed")
