@@ -33,7 +33,7 @@ export const copy = {
     // Two lines, as the founder set them.
     headline: ["State of", "comfort"],
     walk: "Walk through",
-    film: "the opening film",
+    scroll: "Scroll to explore",
   },
   wayIn: {
     eyebrow: "01 · The way in",

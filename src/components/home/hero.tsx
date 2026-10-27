@@ -1,70 +1,92 @@
-import { ArrowDown } from "lucide-react"
+import { getImageProps } from "next/image"
+import { Cormorant_Garamond } from "next/font/google"
+import { ArrowDown, ArrowRight } from "lucide-react"
 
-import { AmbientVideo } from "./ambient-video"
-import { VIDEOS } from "./assets.generated"
 import { copy } from "./copy"
-import { ClipPicture } from "./render"
+import { HERO } from "./hero.generated"
+
+// The guide's headline face: a fine, high-contrast serif in capitals. Only the hero uses it.
+const display = Cormorant_Garamond({ subsets: ["latin"], weight: "500", display: "swap" })
+
+const ALT = "The lawn above the lake under tall pines and a palm, the far shore wooded in late light"
+
+// One photo per shape, as an art-directed <picture>: the upright cut on portrait screens. The LQIP
+// is the wrapper's background, and the photo shows as soon as it decodes (it is the first image).
+function HeroPicture() {
+  const { desktop, mobile } = HERO
+  const upright = getImageProps({ src: mobile.src, width: mobile.width, height: mobile.height, alt: ALT, sizes: "100vw" })
+  const { props } = getImageProps({
+    src: desktop.src,
+    width: desktop.width,
+    height: desktop.height,
+    alt: ALT,
+    sizes: "100vw",
+    loading: "eager",
+    fetchPriority: "high",
+  })
+  return (
+    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${desktop.blurDataURL}")` }}>
+      <picture>
+        <source media="(orientation: portrait)" srcSet={upright.props.srcSet} sizes="100vw" />
+        <img {...props} alt={ALT} className="farm-settle absolute inset-0 size-full object-cover" />
+      </picture>
+    </div>
+  )
+}
 
 export function Hero() {
-  const { headline, walk, film } = copy.hero
+  const { headline, walk, scroll } = copy.hero
   return (
     <section
       id="top"
       aria-labelledby="hero-title"
-      className="bg-soil text-chalk relative isolate flex h-[100svh] min-h-[600px] flex-col justify-end overflow-hidden"
+      className="bg-soil text-chalk relative isolate flex h-[100svh] min-h-[600px] flex-col justify-center overflow-hidden"
     >
-      <ClipPicture
-        clip="hero"
-        upright="hero-portrait"
-        preload
-        pendingClassName="items-end justify-start pt-28 pr-6 text-right md:pr-10"
-      />
-      <AmbientVideo
-        landscape={VIDEOS.hero?.src}
-        portrait={VIDEOS["hero-portrait"]?.src}
-        attach="load"
-        label={film}
-        controls={false}
-      />
+      <HeroPicture />
+      {/* As in the guide: a shade along the left where the words sit, and a little at the top for
+          the header. The rest of the photo stays as it is. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgb(43_42_38/0.7)_0%,rgb(43_42_38/0)_28%,rgb(43_42_38/0.1)_50%,rgb(43_42_38/0.88)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgb(20_20_16/0.45)_0%,rgb(20_20_16/0)_22%,rgb(20_20_16/0)_70%,rgb(20_20_16/0.35)_100%),linear-gradient(to_right,rgb(20_20_16/0.55)_0%,rgb(20_20_16/0.25)_45%,rgb(20_20_16/0)_70%)]"
       />
       {/* The header turns solid once this line scrolls past the top. */}
       <div id="hero-sentinel" aria-hidden className="pointer-events-none absolute inset-x-0 top-[60%] h-px" />
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 pb-24 md:px-8 md:pb-28">
+      <div className="relative mx-auto w-full max-w-7xl px-4 pt-16 md:px-8">
         <h1
           id="hero-title"
-          className="farm-intro inline-flex flex-col font-mono text-[clamp(2.5rem,7vw,6rem)] leading-[0.95] font-bold tracking-[-0.05em]"
+          className={`${display.className} farm-intro text-[clamp(3rem,8vw,7rem)] leading-[0.95] font-medium tracking-[0.01em] uppercase drop-shadow-[0_2px_24px_rgb(0_0_0/0.25)]`}
         >
-          <span className="sr-only">{headline.join(" ")}</span>
-          {/* Both lines span the widest one: each letter is a flex item, so a shorter line spreads
-              its letters out to the same width. */}
           {headline.map((line) => (
-            <span key={line} aria-hidden className="flex justify-between">
-              {Array.from(line, (char, i) => (
-                <span key={i}>{char === " " ? " " : char}</span>
-              ))}
+            <span key={line} className="block">
+              {line}
             </span>
           ))}
         </h1>
-        <div className="farm-intro-3 mt-8 flex flex-wrap gap-3">
+        <div className="farm-intro-3 mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 text-sm tracking-[0.08em] uppercase">
           <a
             href="#way-in"
-            className="bg-chalk text-soil inline-flex h-12 items-center gap-2 rounded-full px-6 text-sm font-medium transition-colors hover:bg-white"
+            className="bg-chalk/85 text-soil inline-flex h-12 items-center gap-3 px-6 font-medium backdrop-blur-sm transition-colors hover:bg-chalk"
           >
             {walk}
-            <ArrowDown className="size-4" aria-hidden />
+            <ArrowRight className="size-4" aria-hidden />
           </a>
           <a
             href="#enquire"
-            className="ring-chalk/50 hover:bg-chalk/10 inline-flex h-12 items-center rounded-full px-6 text-sm font-medium ring-1 transition-colors ring-inset"
+            className="decoration-chalk/60 hover:decoration-chalk underline underline-offset-[6px] transition-colors"
           >
             {copy.cta}
           </a>
         </div>
       </div>
+
+      <a
+        href="#plans"
+        className="farm-intro-3 absolute inset-x-0 bottom-8 mx-auto inline-flex w-fit items-center gap-2 text-xs tracking-[0.12em] uppercase opacity-90 transition-opacity hover:opacity-100"
+      >
+        {scroll}
+        <ArrowDown className="size-3.5" aria-hidden />
+      </a>
     </section>
   )
 }
