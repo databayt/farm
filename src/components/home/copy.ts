@@ -46,7 +46,7 @@ export const copy = {
       { id: "inner-gate", n: "04", title: "The inner gate", text: "Timber and red steel, in the colours of the decks. Past it, a quiet courtyard." },
     ] satisfies { id: AssetId; n: string; title: string; text: string }[],
   },
-  // The plan as /en/studio shows its own: 2D, then 3D (D-021). Both are drawn from compound.json.
+  // The plan as /en/studio shows its own: 2D, then 3D (D-022). Both are drawn from compound.json.
   plans: {
     title: "2D",
     label:

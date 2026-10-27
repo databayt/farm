@@ -1,5 +1,5 @@
 {
-  "about": "The compound as planned (D-017, corrected by the founder on 2026-10-27: D-021). Metres; x runs east, y runs south, from the north-west corner of the drawing. Containers are ISO sizes; everything else is illustrative, not surveyed. Read by the 2D plan (src/components/home/compound-plan.tsx) and the 3D model (scripts/site/render/compound.html).",
+  "about": "The compound as planned (D-017, corrected by the founder on 2026-10-27: D-022). Metres; x runs east, y runs south, from the north-west corner of the drawing. Containers are ISO sizes; everything else is illustrative, not surveyed. Read by the 2D plan (src/components/home/compound-plan.tsx) and the 3D model (scripts/site/render/compound.html).",
   "frame": [-8, 0, 56, 54],
   "publicRoad": [0.1, 1.5],
   "gate": { "x": [20, 24.4], "y": 2.3, "post": 0.6 },

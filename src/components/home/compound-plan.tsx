@@ -2,7 +2,7 @@ import compound from "./compound.json"
 
 // The compound drawn like the studio's plan (/en/studio, render/plan.svg): heavy outlines for the
 // containers, thin lines for the rest, bold capitals and dimensions in millimetres, no colour. North
-// is up, so the public road is at the top and the lake at the bottom (D-021). Every number is a
+// is up, so the public road is at the top and the lake at the bottom (D-022). Every number is a
 // metre in compound.json, which the 3D model (scripts/site/render/compound.html) is built from too.
 
 type Box = readonly number[]
