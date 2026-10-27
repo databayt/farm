@@ -57,8 +57,8 @@ export const copy = {
   },
   model: {
     title: "3D",
-    line: "Line drawing of the compound from the air, seen from the entrance and looking toward the lake: the gate, the parking and the rock road in front; on the right, the bar and the guest-room block with their doors onto the courtyard and its fire pit ringed with stools; six small tents on the lawn between them and the fire pit; across the lawn, a long timber table and the office and two studios on raised decks; the study room beyond them; then trees and the lake.",
-    real: "The same view rendered with materials and sunlight: the saffron-yellow guest rooms and office, the oxide-red bar and studios on timber decks, the teal study room, white pop-up tents and a green lawn around the stone fire pit with its log stools, a long timber table, grass parking and a stone road, eucalyptus along the shore and the lake.",
+    line: "Line drawing of the compound seen from the front, from high beyond the gates: the gate and the sign wall, the parking and the rock road up to the inner gate; inside, six small tents and the fire pit ringed with stools on the lawn, with the bar and the guest rooms on the left; beyond the long timber table, the office and two studios on raised decks; at the back the study room, the galley and the public bathroom.",
+    real: "The same view rendered with materials and sunlight: corrugated containers in saffron yellow, oxide red and teal, timber decks with red pipe railings, white-framed sliding doors, hexagonal canvas tents (one with a green fly), the stone fire pit with its concrete cap and log stools, a long timber table, grass parking and a stone road.",
     caption: "Rendered from the design model",
   },
   courtyard: {

@@ -1,9 +1,12 @@
 <!doctype html>
 <!--
-  The homepage 3D section: the compound from the air, built from src/components/home/compound.json (the
-  numbers the 2D plan draws), seen from the entrance in the north-east and looking south-west toward the
-  lake, so every front shows: the decks and glazing face north, the guest-room doors and the bar hatch
-  face east (D-022). Rendered two ways, after scripts/studio/render/room.html:
+  The homepage 3D section, in the pattern of the studio's (scripts/studio/render/room.html): the compound
+  seen from the front, from high beyond the gates through a long lens so verticals stay nearly straight, built from
+  src/components/home/compound.json (the numbers the 2D plan draws). Like the 2D it leaves out the lake,
+  the road and the trees, and it is mirrored the way the 2D is (study room at the back, guest rooms on the
+  left, D-022). Details follow the 2026-10-25 footage (public/footage): corrugated walls, white-framed
+  sliding doors, red pipe railings with the deck stairs at their ends, a concrete cap on the fire pit,
+  hexagonal pop-up tents. Rendered two ways:
 
     ?mode=line  line drawing in the page's ink        -> public/designs/compound/render/compound-line.png
     ?mode=real  paint, timber, stone, sun and shadow  -> public/designs/compound/render/compound-real.webp
@@ -58,6 +61,11 @@ if (!LINE) {
   renderer.shadowMap.type = THREE.PCFShadowMap
 }
 const scene = new THREE.Scene()
+// The 2D draws the compound mirrored from compound.json's north-up frame, so the model is mirrored the same
+// way: from the front, left in the 3D is left in the 2D.
+const root = new THREE.Group()
+root.scale.x = -1
+scene.add(root)
 
 // ------------------------------------------------------------ procedural textures (real mode)
 let seed = 11
@@ -164,6 +172,18 @@ const T = LINE ? {} : {
       g.beginPath(); g.ellipse(x, y, rx, ry, rnd() * Math.PI, 0, Math.PI * 2); g.fill()
     }
   }),
+  tent: tex((g, w, h) => {
+    const pw = w / 6
+    g.fillStyle = "#ece7da"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 6; i++) {
+      const x = i * pw
+      g.fillStyle = "#5c6164"
+      if (i === 0) { g.beginPath(); g.roundRect(x + pw * 0.22, h * 0.12, pw * 0.56, h * 0.8, [pw * 0.28, pw * 0.28, 2, 2]); g.fill() }
+      else { g.beginPath(); g.roundRect(x + pw * 0.24, h * 0.18, pw * 0.52, h * 0.42, 10); g.fill() }
+      g.fillStyle = "#c9b48f"; g.fillRect(x, 0, 5, h) // the beige trim on each seam
+    }
+    g.fillStyle = "#c9b48f"; g.fillRect(0, h - 10, w, 10)
+  }, 768, 256),
   water: tex((g, w, h) => {
     g.fillStyle = "#6b8ea3"; g.fillRect(0, 0, w, h)
     for (let i = 0; i < 260; i++) {
@@ -181,10 +201,17 @@ const MAP = { saffron: "corr", oxide: "corr", teal: "corr", timber: "boards", la
 // ------------------------------------------------------------ materials
 const PAINT = { saffron: "#d9a21b", oxide: "#8a3227", teal: "#3e8a86" }
 // thin parts get crease lines but no silhouette, so railings and slats stay fine in the line drawing
-const THIN = new Set(["red", "steel", "black", "slat", "cable", "frame-saffron", "frame-oxide", "frame-teal"])
+const THIN = new Set(["red", "white-frame", "steel", "black", "slat", "cable", "frame-saffron", "frame-oxide", "frame-teal"])
 const MAT = {}
 function mat(name) {
   if (MAT[name]) return MAT[name]
+  // a container's corrugations: the wall's own paint, but no silhouette in the line drawing
+  if (name.startsWith("rib-")) {
+    if (!LINE) return (MAT[name] = mat(name.slice(4)))
+    const m = new THREE.MeshBasicMaterial({ color: PAGE, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
+    m.userData.outlineParameters = { visible: false }
+    return (MAT[name] = m)
+  }
   let x
   if (LINE) {
     if (name === "glass" || name === "canopy") x = new THREE.MeshBasicMaterial({ color: PAGE, transparent: true, opacity: 0, depthWrite: false })
@@ -202,6 +229,11 @@ function mat(name) {
       "frame-oxide": () => std({ color: tint(PAINT.oxide, 0.86), roughness: 0.5, metalness: 0.2 }),
       "frame-teal": () => std({ color: tint(PAINT.teal, 0.86), roughness: 0.5, metalness: 0.2 }),
       red: () => std({ color: "#7e2f26", roughness: 0.45, metalness: 0.35 }), // railings, door and window frames
+      "white-frame": () => std({ color: "#f1f0eb", roughness: 0.4 }), // the sliding doors' frames, white as on site
+      concrete: () => std({ color: "#c9c5bc", roughness: 0.85 }), // the fire pit's cap
+      tent: () => std({ map: T.tent, color: "#ffffff", roughness: 0.9, side: THREE.DoubleSide }), // canvas, mesh windows
+      tentroof: () => std({ color: "#e9e4d6", roughness: 0.9 }),
+      tentgreen: () => std({ color: "#46684a", roughness: 0.85 }), // one tent has a green fly, as today
       door: () => std({ color: "#a62b22", roughness: 0.5, metalness: 0.2 }),
       glass: () => new THREE.MeshPhysicalMaterial({ color: "#d3e3e8", roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.42, depthWrite: false }),
       canopy: () => new THREE.MeshPhysicalMaterial({ color: "#c7d3cc", roughness: 0.1, transparent: true, opacity: 0.32, depthWrite: false }),
@@ -225,8 +257,7 @@ function mat(name) {
       leaf2: () => std({ color: "#6f8a52", roughness: 0.9 }),
       gum: () => std({ color: "#7a8d68", roughness: 0.9 }), // eucalyptus grey-green
       cushion: () => std({ color: "#e9e3d6", roughness: 0.95 }),
-      tent: () => std({ color: "#e7e5df", roughness: 0.9 }), // light canvas, as today's pop-up tents
-      trim: () => std({ color: "#4f6b4c", roughness: 0.85, side: THREE.DoubleSide }),
+
       white: () => std({ color: "#eeeeec", roughness: 0.3, metalness: 0.4 }),
       silver: () => std({ color: "#a9adb1", roughness: 0.3, metalness: 0.6 }),
       tyre: () => std({ color: "#1d1d1f", roughness: 0.9 }),
@@ -239,7 +270,7 @@ function mat(name) {
 
 // ------------------------------------------------------------ geometry helpers (metres)
 const meshes = []
-let PARENT = scene
+let PARENT = root
 // texture coordinates at true scale: each face takes the texture from its own plane, u along a wall
 // and v up it, or u = x and v = z on a floor
 function worldUV(geo, [tu, tv]) {
@@ -255,7 +286,8 @@ function worldUV(geo, [tu, tv]) {
   uv.needsUpdate = true
 }
 function add(geo, name, opts = {}) {
-  if (!LINE && MAP[name]) worldUV(geo, TILE[MAP[name]])
+  const tile = MAP[name.replace(/^rib-/, "")] // corrugations take their wall's texture
+  if (!LINE && tile) worldUV(geo, TILE[tile])
   const mesh = new THREE.Mesh(geo, opts.sides && !LINE ? [mat(name), mat(opts.sides)] : mat(name))
   mesh.castShadow = !LINE && !opts.noShadow && name !== "glass" && name !== "canopy"
   mesh.receiveShadow = !LINE
@@ -288,6 +320,13 @@ function bar(a, b, s, name) {
   mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), B.sub(A).normalize())
   return mesh
 }
+// a round pipe between two points (six-sided, so the line drawing still finds its edges)
+function pipe(a, b, r, name) {
+  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b)
+  const mesh = add(new THREE.CylinderGeometry(r, r, A.distanceTo(B), 6), name, { pos: A.clone().add(B).multiplyScalar(0.5).toArray() })
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.sub(A).normalize())
+  return mesh
+}
 // shapes are drawn in the ground plane: u = x, v = -z, then stood up (as room.html does)
 function extrude(shape, y0, h, name, opts = {}) {
   const geo = new THREE.ExtrudeGeometry(shape, { depth: h, curveSegments: 24, bevelEnabled: false })
@@ -309,28 +348,11 @@ function ring(x, z, r, inner, y0, h, name) {
   s.holes.push(hole)
   return extrude(s, y0, h, name)
 }
-// the shore: cubic Béziers through its points (Catmull-Rom), the curve the 2D draws, sampled and cut
-// to the model's width
-function shoreLine(points, x0, x1) {
-  const out = []
-  for (let i = 0; i < points.length - 1; i++) {
-    const [p0, p1, p2, p3] = [points[i - 1] ?? points[i], points[i], points[i + 1], points[i + 2] ?? points[i + 1]]
-    const curve = new THREE.CubicBezierCurve(new THREE.Vector2(...p1),
-      new THREE.Vector2(p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6),
-      new THREE.Vector2(p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6), new THREE.Vector2(...p2))
-    out.push(...curve.getPoints(24).slice(i ? 1 : 0))
-  }
-  const at = (x) => { // the shore's z where it crosses x
-    const k = out.findIndex((p) => p.x >= x), a = out[k - 1] ?? out[k], b = out[k]
-    return new THREE.Vector2(x, a.y + ((b.y - a.y) * (x - a.x)) / (b.x - a.x || 1))
-  }
-  return [at(x0), ...out.filter((p) => p.x > x0 && p.x < x1), at(x1)]
-}
 // build into a group, then place it
 function group(build, pos, rotY = 0) {
   const g = new THREE.Group()
   g.position.set(...pos); g.rotation.y = rotY
-  scene.add(g)
+  PARENT.add(g)
   const prev = PARENT; PARENT = g
   build()
   PARENT = prev
@@ -338,30 +360,9 @@ function group(build, pos, rotY = 0) {
 }
 
 // ------------------------------------------------------------ the site
-// The model is the plan's frame trimmed to the compound east and west, with the lake carried further
-// out than the plan shows, so the water reads over the shore trees.
-const [MX0, MX1, LAKE] = [-3, 43, 78]
-const shore = shoreLine(C.shore.line, MX0, MX1)
-{
-  // the ground as a model base, cut at the shore; the lake lower, beyond it
-  const s = new THREE.Shape()
-  const FZ0 = C.frame[1] // the model's north edge, past the public road
-  s.moveTo(MX0, -FZ0); s.lineTo(MX1, -FZ0)
-  for (const p of [...shore].reverse()) s.lineTo(p.x, -p.y)
-  s.lineTo(MX0, -FZ0)
-  extrude(s, -1.2, 1.2, "meadow", { sides: "soil" })
-  const w = new THREE.Shape()
-  w.moveTo(shore[0].x, -shore[0].y)
-  for (const p of shore.slice(1)) w.lineTo(p.x, -p.y)
-  w.lineTo(MX1, -LAKE); w.lineTo(MX0, -LAKE); w.lineTo(shore[0].x, -shore[0].y)
-  extrude(w, -1.2, 0.62, "water", { noShadow: true })
-  if (LINE) { // ripples, as the plan draws them
-    for (let z = 51.5, row = 0; z < LAKE - 1; z += 1.6, row++) {
-      for (let x = MX0 + 0.5 + (row % 3) * 1.8; x < MX1 - 2.6; x += 5.5) blk(x, z - 0.03, x + 2.4, z + 0.03, -0.58, -0.575, "steel", { noShadow: true })
-    }
-  }
-}
-blk(MX0, C.publicRoad[0], MX1, C.publicRoad[1], 0, 0.03, "murram", { noShadow: true })
+// As the 2D draws it: the compound on its ground, a model base, with no lake, road or trees (D-022).
+const [MX0, MX1, MZ0, MZ1] = [2.6, 43, -8.4, 45.6]
+slab([MX0, MZ0, MX1, MZ1], 0.01, -1.0, 1.0, "meadow", { sides: "soil" })
 
 // the outer gate: fieldstone posts, galvanised five-bar leaves open into the site; the sign wall beside it
 function post([x0, z0, x1, z1], h) {
@@ -395,23 +396,15 @@ gate(C.gate, 1.3, "bars")
   blk(x0 + 0.4, z0 - 0.03, x1 - 0.4, z0, 0.35, 0.75, "steel") // the brushed-steel name plate
 }
 
-// green parking: grass pavers, stone strips between the bays, eucalyptus wheel stops, two cars
+// green parking: grass pavers, stone strips between the bays, eucalyptus wheel stops
 {
-  const { box, bays, cars } = C.parking
+  const { box, bays } = C.parking
   slab(box, 0.4, 0, 0.04, "pavers", { noShadow: true })
-  for (const x of bays.slice(1)) blk(x - 0.05, 6, x + 0.05, box[3], 0.04, 0.07, "stone", { noShadow: true })
+  for (const x of bays.slice(1)) blk(x - 0.05, box[1] + 2, x + 0.05, box[3], 0.04, 0.07, "stone", { noShadow: true })
   for (let i = 0; i < bays.length - 1; i++) {
     const cx = (bays[i] + bays[i + 1]) / 2
     add(new THREE.CylinderGeometry(0.08, 0.08, 1.6, 12), "slat", { pos: [cx, 0.12, box[3] - 0.45], rot: [0, 0, Math.PI / 2] })
   }
-  cars.forEach(([cx, z], i) => {
-    const paint = i ? "silver" : "white"
-    rounded(cx - 0.9, z, cx + 0.9, z + 4.3, 0.3, 1.05, 0.18, paint)
-    rounded(cx - 0.8, z + 1.1, cx + 0.8, z + 3.5, 1.0, 1.58, 0.14, "carglass")
-    for (const [wx, wz] of [[-0.82, 0.85], [0.82, 0.85], [-0.82, 3.45], [0.82, 3.45]]) {
-      add(new THREE.CylinderGeometry(0.33, 0.33, 0.22, 18), "tyre", { pos: [cx + wx, 0.33, z + wz], rot: [0, 0, Math.PI / 2] })
-    }
-  })
 }
 
 // the rock road: 4 m of stone setts along the curve from the parking to the inner gate
@@ -437,14 +430,21 @@ gate(C.innerGate, 1.6, "slats")
   const { box, r, firePit: [px, pz, pr, pin], stones } = C.courtyard
   slab(box, r, 0, 0.035, "lawn", { noShadow: true })
   ring(px, pz, pr, pin, 0, 0.5, "stone")
+  ring(px, pz, pr + 0.04, pin - 0.03, 0.5, 0.08, "concrete") // the smooth cap on today's pit
   cyl(px, pz, pin, 0.02, 0.06, "ash", 32)
   for (const [x, z] of stones) slab([x - 0.3, z - 0.2, x + 0.3, z + 0.2], 0.12, 0.035, 0.03, "stone", { noShadow: true })
 }
 
 // ------------------------------------------------------------ containers
-// The steel box: walls and roof a hair inside the corner posts and rails, as on a real container.
-function container([x0, z0, x1, z1], paint, y0) {
+// The steel box: walls and roof a hair inside the corner posts and rails, as on a real container. Its long
+// walls are kept for the corrugations, added once every opening is cut (ribs: which long walls get them).
+const walls = []
+function container([x0, z0, x1, z1], paint, y0, ribs = [true, true]) {
   const y1 = y0 + HC, e = 0.02, fr = `frame-${paint}`
+  const alongX = x1 - x0 > z1 - z0
+  const sides = alongX ? [{ axis: "z", at: z0, out: -1 }, { axis: "z", at: z1, out: 1 }] : [{ axis: "x", at: x0, out: -1 }, { axis: "x", at: x1, out: 1 }]
+  const [a0, a1] = alongX ? [x0, x1] : [z0, z1]
+  sides.forEach((w, i) => ribs[i] && walls.push({ ...w, a0: a0 + 0.25, a1: a1 - 0.25, y0: y0 + 0.16, y1: y1 - 0.12, paint, skip: [] }))
   blk(x0 + e, z0 + e, x1 - e, z1 - e, y0 + 0.14, y1 - 0.1, paint)
   for (const cx of [x0, x1]) for (const cz of [z0, z1]) {
     const sx = cx === x0 ? 1 : -1, sz = cz === z0 ? 1 : -1
@@ -468,7 +468,13 @@ function cargoDoors(end, [x0, z0, x1, z1], y0) {
 }
 // an opening in a wall. wall: { axis: "x" (a wall facing east or west) | "z", at, out: +1 | -1 };
 // along the wall from a0 to a1, from height b0 to b1
+function skipRibs(wall, a0, a1) {
+  const w = walls.find((v) => v.axis === wall.axis && v.out === wall.out && Math.abs(v.at - wall.at) < 0.05 && a1 > v.a0 - 0.5 && a0 < v.a1 + 0.5)
+  if (w) w.skip.push([a0 - 0.1, a1 + 0.1])
+}
 function opening(wall, a0, a1, b0, b1, kind) {
+  skipRibs(wall, a0, a1)
+  const trim = kind === "glazed" ? "white-frame" : "red"
   const put = (u0, u1, v0, v1, w0, w1, name) => wall.axis === "x"
     ? blk(wall.at + wall.out * w0, u0, wall.at + wall.out * w1, u1, v0, v1, name)
     : blk(u0, wall.at + wall.out * w0, u1, wall.at + wall.out * w1, v0, v1, name)
@@ -477,13 +483,13 @@ function opening(wall, a0, a1, b0, b1, kind) {
   if (kind !== "door") put(a0, a1, b0, b1, -0.005, 0.01, "inside")
   put(a0, a1, b0, b1, 0.012, 0.03, fill)
   if (kind === "door") put(a0 + 0.18, a1 - 0.18, b0 + (b1 - b0) * 0.55, b1 - 0.2, 0.03, 0.04, "glass")
-  put(a0 - f, a0, b0, b1 + f, 0, 0.055, "red"); put(a1, a1 + f, b0, b1 + f, 0, 0.055, "red")
-  put(a0, a1, b1, b1 + f, 0, 0.055, "red")
-  if (kind !== "door") put(a0, a1, b0 - f, b0, 0, 0.07, "red")
+  put(a0 - f, a0, b0, b1 + f, 0, 0.055, trim); put(a1, a1 + f, b0, b1 + f, 0, 0.055, trim)
+  put(a0, a1, b1, b1 + f, 0, 0.055, trim)
+  if (kind !== "door") put(a0, a1, b0 - f, b0, 0, 0.07, trim)
   if (kind === "barred") for (let a = a0 + 0.2; a < a1 - 0.1; a += 0.2) put(a - 0.012, a + 0.012, b0, b1, 0.035, 0.06, "red")
   if (kind === "glazed") { // sliding panels: a mullion every 1.5 m or so
     const n = Math.max(2, Math.round((a1 - a0) / 1.5))
-    for (let i = 1; i < n; i++) { const a = a0 + ((a1 - a0) * i) / n; put(a - 0.03, a + 0.03, b0, b1, 0.01, 0.05, "red") }
+    for (let i = 1; i < n; i++) { const a = a0 + ((a1 - a0) * i) / n; put(a - 0.03, a + 0.03, b0, b1, 0.01, 0.05, trim) }
   }
 }
 const units = Object.fromEntries(C.units.map((u) => [u.id, u]))
@@ -495,6 +501,7 @@ const units = Object.fromEntries(C.units.map((u) => [u.id, u]))
   container(u.box, u.paint, y0)
   cargoDoors("north", u.box, y0)
   const [b0, b1] = [y0 + 1.05, y0 + 2.15]
+  skipRibs({ axis: "x", at: x1, out: 1 }, h0, h1)
   blk(x1 - 0.01, h0, x1 + 0.005, h1, b0, b1, "inside")
   blk(x1, h0 - 0.06, x1 + 0.05, h1 + 0.06, b1, b1 + 0.06, "red")
   blk(x1, h0, x1 + 0.45, h1, b0 - 0.06, b0, "timber") // the counter
@@ -511,8 +518,8 @@ const units = Object.fromEntries(C.units.map((u) => [u.id, u]))
 {
   const u = units.rooms, [x0, z0, x1, z1] = u.box, y0 = u.plinth, mid = (x0 + x1) / 2
   blk(x0 - 0.1, z0 - 0.1, x1 + 0.1, z1 + 0.1, 0, y0, "stone")
-  container([x0, z0, mid, z1], u.paint, y0)
-  container([mid, z0, x1, z1], u.paint, y0)
+  container([x0, z0, mid, z1], u.paint, y0, [true, false])
+  container([mid, z0, x1, z1], u.paint, y0, [false, true])
   cargoDoors("north", [x0, z0, mid, z1], y0); cargoDoors("north", [mid, z0, x1, z1], y0)
   const room = (z1 - z0) / u.rooms, wall = { axis: "x", at: x1, out: 1 }
   const v = u.veranda
@@ -539,20 +546,20 @@ function rowUnit(u) {
   blk(x0, front, x1, front + 0.08, y0 - 0.22, y0 - 0.1, "red")
   container(u.box, u.paint, y0)
   cargoDoors("west", u.box, y0)
-  // railings on three sides, open at the steps
+  // red pipe railings round the deck, as on site: posts, a top rail and a mid rail; the stair down at the
+  // deck's west end, at its front corner
   const rail = (a, b) => {
     const len = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(1, Math.ceil(len / 1.4))
     for (let i = 0; i <= n; i++) {
       const [x, z] = [a[0] + ((b[0] - a[0]) * i) / n, a[1] + ((b[1] - a[1]) * i) / n]
-      blk(x - 0.025, z - 0.025, x + 0.025, z + 0.025, y0, y0 + 1.0, "red")
+      cyl(x, z, 0.022, y0, 1.0, "red", 6)
     }
-    bar([a[0], y0 + 1.0, a[1]], [b[0], y0 + 1.0, b[1]], 0.05, "red")
-    bar([a[0], y0 + 0.5, a[1]], [b[0], y0 + 0.5, b[1]], 0.03, "red")
+    pipe([a[0], y0 + 1.0, a[1]], [b[0], y0 + 1.0, b[1]], 0.024, "red")
+    pipe([a[0], y0 + 0.5, a[1]], [b[0], y0 + 0.5, b[1]], 0.016, "red")
   }
-  const r = front + 0.03
-  rail([x0 + 0.03, z0], [x0 + 0.03, r]); rail([x0 + 0.03, r], [cx - 0.62, r])
-  rail([cx + 0.62, r], [x1 - 0.03, r]); rail([x1 - 0.03, r], [x1 - 0.03, z0])
-  for (let k = 1; k <= 3; k++) blk(cx - 0.6, front - 0.28 * (4 - k), cx + 0.6, front - 0.28 * (3 - k), 0, 0.2 * k, "timber")
+  const r = front + 0.03, stair = front + 1.0
+  rail([x0 + 0.03, z0], [x0 + 0.03, stair]); rail([x0 + 0.03, r], [x1 - 0.03, r]); rail([x1 - 0.03, r], [x1 - 0.03, z0])
+  for (let k = 1; k <= 3; k++) blk(x0 - 0.28 * (4 - k), front, x0 - 0.28 * (3 - k), stair, 0, 0.2 * k, "timber")
   const wall = { axis: "z", at: z0, out: -1 }
   if (u.terrace) {
     opening(wall, cx - 1.5, cx + 1.5, y0 + 0.16, y0 + 2.25, "glazed")
@@ -615,23 +622,38 @@ for (const [id, windows] of [["galley", [[3.2, 4.8], [7.4, 9.0]]], ["bath", [[0.
   for (const [a, b] of windows) opening(wall, x0 + a, x0 + b, y0 + 1.3, y0 + 2.0, "glazed")
 }
 
+// the corrugations: a rib every corrugation (278 mm) in the real render, every other one in the line drawing
+{
+  const pitch = LINE ? 0.556 : 0.278
+  for (const w of walls) {
+    for (let a = w.a0; a <= w.a1 + 1e-6; a += pitch) {
+      if (w.skip.some(([s0, s1]) => a > s0 && a < s1)) continue
+      const [r0, r1] = [w.at - w.out * 0.015, w.at + w.out * 0.03]
+      w.axis === "z" ? blk(a - 0.04, r0, a + 0.04, r1, w.y0, w.y1, `rib-${w.paint}`)
+        : blk(r0, a - 0.04, r1, a + 0.04, w.y0, w.y1, `rib-${w.paint}`)
+    }
+  }
+}
+
 // ------------------------------------------------------------ outdoors (D-022)
 // Six small pop-up tents on the camping lawn between the guest rooms and the fire pit, a long timber
 // table with benches in front of the middle studio, and log stools round the fire pit.
 {
   const O = C.outdoor, t = O.tent
-  for (const [x, z] of O.tents) {
-    const dome = add(new THREE.SphereGeometry(t, 6, 4, 0, Math.PI * 2, 0, Math.PI / 2), "tent", { pos: [x, 0.035, z], scale: [1, 1.25, 1] })
-    dome.rotation.y = Math.PI / 6
-    add(new THREE.CylinderGeometry(t + 0.01, t + 0.01, 0.14, 6, 1, true), "trim", { pos: [x, 0.105, z], rot: [0, Math.PI / 6, 0] })
-    // the door on the face toward the fire pit
+  // hexagonal pop-up tents as in the footage: walls leaning in to a low six-sided roof and a cap, a mesh
+  // window on each face and the door on the face toward the fire pit; one has a green fly
+  O.tents.forEach(([x, z], k) => {
     const toward = Math.round(Math.atan2(C.courtyard.firePit[1] - z, C.courtyard.firePit[0] - x) / (Math.PI / 3)) * (Math.PI / 3)
-    group(() => blk(t * 0.86 - 0.02, -0.3, t * 0.86 + 0.01, 0.3, 0.05, 0.6, "inside", { noShadow: true }), [x, 0, z], -toward)
-  }
+    group(() => {
+      add(new THREE.CylinderGeometry(t * 0.8, t, 1.0, 6), "tent", { pos: [0, 0.535, 0] })
+      add(new THREE.ConeGeometry(t * 0.88, 0.48, 6), k === 2 ? "tentgreen" : "tentroof", { pos: [0, 1.275, 0] })
+      add(new THREE.CylinderGeometry(0.13, 0.17, 0.1, 6), k === 2 ? "tentgreen" : "tentroof", { pos: [0, 1.52, 0] })
+    }, [x, 0, z], Math.PI / 3 - toward)
+  })
   const { x, y, length, width, bench, gap } = O.longTable
   const [a, b] = [x - length / 2, x + length / 2]
-  blk(a, y - width / 2, b, y + width / 2, 0.69, 0.74, "timber")
-  for (const lx of [a + 0.3, b - 0.3]) blk(lx - 0.05, y - width / 2 + 0.1, lx + 0.05, y + width / 2 - 0.1, 0.035, 0.69, "slat")
+  blk(a, y - width / 2, b, y + width / 2, 0.68, 0.76, "timber")
+  for (const lx of [a + 0.35, b - 0.35]) blk(lx - 0.08, y - width / 2 + 0.12, lx + 0.08, y + width / 2 - 0.12, 0.035, 0.68, "slat")
   for (const side of [-1, 1]) {
     const z0 = y + side * (width / 2 + gap), z1 = z0 + side * bench
     blk(a, z0, b, z1, 0.41, 0.45, "timber")
@@ -644,36 +666,15 @@ for (const [id, windows] of [["galley", [[3.2, 4.8], [7.4, 9.0]]], ["bath", [[0.
   }
 }
 
-// ------------------------------------------------------------ trees
-function eucalyptus(x, z) {
-  const h = 8.5 + rnd() * 3, lean = (rnd() - 0.5) * 0.4
-  cyl(x, z, 0.14, 0, h * 0.82, "bark", 10, 0.07)
-  for (const [k, r] of [[0.58, 1.05], [0.74, 1.25], [0.88, 0.95]]) {
-    const rr = r * (0.85 + rnd() * 0.3)
-    add(new THREE.SphereGeometry(rr, 18, 12), rnd() > 0.5 ? "gum" : "leaf2",
-      { pos: [x + lean * k + (rnd() - 0.5) * 0.5, h * k, z + (rnd() - 0.5) * 0.5], scale: [1, 1.55, 1] })
-  }
-}
-function shadeTree(x, z, r) {
-  cyl(x, z, 0.14, 0, 2.8, "bark", 10, 0.1)
-  add(new THREE.SphereGeometry(r, 22, 14), "leaf", { pos: [x, 3.6, z], scale: [1, 0.6, 1] })
-  add(new THREE.SphereGeometry(r * 0.6, 18, 12), "leaf2", { pos: [x + r * 0.35, 4.2, z - r * 0.2], scale: [1, 0.7, 1] })
-}
-seed = 29
-{
-  const { y, from, to, step } = C.shore.trees
-  for (let i = 0; from + i * step <= to + 1e-6; i++) {
-    const x = from + i * step, z = y + (rnd() - 0.5) * 0.8
-    if (x > MX0 + 0.8 && x < MX1 - 0.8) eucalyptus(x, z)
-  }
-}
-for (const [x, z, r] of C.shadeTrees) shadeTree(x, z, r)
-
-// ------------------------------------------------------------ camera: from the entrance side, high in the north-east
-const target = new THREE.Vector3(22, 0, 26)
-const [az, el, dist] = [THREE.MathUtils.degToRad(66), THREE.MathUtils.degToRad(40), 120]
-const camera = new THREE.PerspectiveCamera(26, FW / FH, 1, 500)
-camera.position.set(target.x + dist * Math.cos(el) * Math.cos(az), dist * Math.sin(el), target.z - dist * Math.cos(el) * Math.sin(az))
+// ------------------------------------------------------------ camera: the front view
+// As the studio's 3D is seen from its front, the compound is seen from beyond the gates, centred, from high
+// up through a long lens, so the containers' verticals stay nearly straight and the back row still shows.
+// The model is mirrored, so its middle sits at -x.
+const mid = -(MX0 + MX1) / 2
+const target = new THREE.Vector3(mid, 0, (MZ0 + MZ1) / 2 + 4)
+const [el, dist] = [THREE.MathUtils.degToRad(46), 160]
+const camera = new THREE.PerspectiveCamera(22, FW / FH, 1, 600)
+camera.position.set(mid, dist * Math.sin(el), target.z - dist * Math.cos(el))
 camera.lookAt(target)
 camera.updateMatrixWorld(); camera.updateProjectionMatrix()
 scene.updateMatrixWorld(true)
@@ -692,7 +693,8 @@ camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - 
 // ------------------------------------------------------------ render
 if (LINE) {
   // crease lines from the geometry, silhouettes from the outline effect, both in the page's ink
-  const lineMat = new LineMaterial({ color: INK, linewidth: 1.25 })
+  // both sides: the mirrored model turns the line quads round
+  const lineMat = new LineMaterial({ color: INK, linewidth: 1.25, side: THREE.DoubleSide })
   lineMat.resolution.set(FW, FH)
   lineMat.userData.outlineParameters = { visible: false }
   for (const o of meshes) {
@@ -711,7 +713,7 @@ if (LINE) {
   scene.environmentIntensity = 0.35
   scene.add(new THREE.HemisphereLight(0xeef3ff, 0x8a7a5a, 0.9))
   const sun = new THREE.DirectionalLight(0xfff0d8, 3.0)
-  sun.position.set(target.x + 60, 50, target.z - 22)
+  sun.position.set(target.x + 40, 70, MZ0 - 30) // from the front, over the left shoulder
   sun.target.position.copy(target)
   sun.castShadow = true
   sun.shadow.mapSize.set(4096, 4096)
