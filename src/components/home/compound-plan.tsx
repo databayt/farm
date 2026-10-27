@@ -9,11 +9,19 @@ type Box = readonly number[]
 type Point = readonly number[]
 type Unit = (typeof compound.units)[number]
 
-// Turn the north-up layout half a turn inside a 46 m square.
+// Turn the north-up layout half a turn inside a 46 m square, then spread it sideways for a wide
+// screen: positions move apart across the drawing, every building keeps its size.
 const SIZE = 46
-const P = ([x, y]: Point) => [SIZE - x, SIZE - y]
-const B = ([x0, y0, x1, y1]: Box) => [SIZE - x1, SIZE - y1, SIZE - x0, SIZE - y0]
-const VIEW = [3.5, 0.6, 46, 45.4]
+const SPREAD = 1.5
+const MID = 23
+const X = (x: number) => MID + (x - MID) * SPREAD
+const P = ([x, y]: Point) => [X(SIZE - x), SIZE - y]
+const B = ([x0, y0, x1, y1]: Box) => {
+  const [a, b] = [SIZE - x1, SIZE - x0]
+  const shift = X((a + b) / 2) - (a + b) / 2
+  return [a + shift, SIZE - y1, b + shift, SIZE - y0]
+}
+const VIEW = [0, 0.6, 54, 45.4]
 
 const WALL = 0.14 // a container wall at drawing scale, solid as the studio's walls
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
@@ -212,7 +220,12 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
   const { parking, courtyard } = compound
   const units = Object.fromEntries(compound.units.map((u) => [u.id, u])) as Record<string, Unit>
   const row = compound.units.filter((u) => u.kind === "20" && u.front === "north")
-  const turn = (g: { x: Point; y: number; post: number }) => ({ x: [SIZE - g.x[1], SIZE - g.x[0]], y: SIZE - g.y, post: g.post })
+  const turn = (g: { x: Point; y: number; post: number }) => {
+    const [l, r] = [SIZE - g.x[1], SIZE - g.x[0]]
+    const shift = X((l + r) / 2) - (l + r) / 2
+    return { x: [l + shift, r + shift], y: SIZE - g.y, post: g.post }
+  }
+  const parkingShift = B(parking.box)[0] - (SIZE - parking.box[2])
   const road = compound.rockRoad.curve.map(P)
   const roadPath = `M${road[0].join(" ")}C${road[1].join(" ")} ${road[2].join(" ")} ${road[3].join(" ")}`
   const [px0, py0, px1, py1] = B(parking.box)
@@ -244,7 +257,7 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       <Gate {...turn(compound.innerGate)} />
       <rect {...at([px0, py0, px1, py1])} rx={0.4} {...thin} />
       {parking.bays.slice(1).map((x) => (
-        <line key={x} x1={f(SIZE - x)} x2={f(SIZE - x)} y1={py0} y2={f(SIZE - 6)} {...thin} />
+        <line key={x} x1={f(SIZE - x + parkingShift)} x2={f(SIZE - x + parkingShift)} y1={py0} y2={f(SIZE - 6)} {...thin} />
       ))}
       <path d={roadPath} fill="none" stroke="currentColor" strokeWidth={compound.rockRoad.width} />
       <path d={roadPath} fill="none" stroke={PAGE} strokeWidth={compound.rockRoad.width - 0.16} />
