@@ -36,11 +36,16 @@ export function Hero() {
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-24 md:px-8 md:pb-28">
         <h1
           id="hero-title"
-          className="farm-intro font-mono text-[clamp(3.5rem,11vw,9rem)] leading-[0.95] font-bold tracking-[-0.05em]"
+          className="farm-intro inline-flex flex-col font-mono text-[clamp(2.5rem,7vw,6rem)] leading-[0.95] font-bold tracking-[-0.05em]"
         >
+          <span className="sr-only">{headline.join(" ")}</span>
+          {/* Both lines span the widest one: each letter is a flex item, so a shorter line spreads
+              its letters out to the same width. */}
           {headline.map((line) => (
-            <span key={line} className="block">
-              {line}
+            <span key={line} aria-hidden className="flex justify-between">
+              {Array.from(line, (char, i) => (
+                <span key={i}>{char === " " ? " " : char}</span>
+              ))}
             </span>
           ))}
         </h1>
