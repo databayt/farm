@@ -40,14 +40,7 @@
     "box": [12.4, 12.1, 41, 29.8],
     "r": 1.5,
     "firePit": [26, 24.2, 1.0, 0.6],
-    "stones": [
-      [26, 12.8],
-      [26, 14.4],
-      [26, 16.0],
-      [26, 17.6],
-      [26, 19.3],
-      [26, 20.9]
-    ]
+    "stones": []
   },
   "units": [
     {
@@ -151,14 +144,14 @@
   },
   "north": [52.6, 6.0],
   "outdoor": {
-    "about": "From the 2026-10-25 footage and the founder's choices (D-022): a small camping lawn in the courtyard's corner by the inner gate, across the fire pit from the guest rooms; a long timber table where today's unfinished platform stands in front of the middle studio; and stools round the fire pit.",
+    "about": "From the 2026-10-25 footage and the founder's choices (D-022): a small camping lawn between the fire pit and the inner gate, its west end flush with the fire pit's; a long timber table where today's unfinished platform stands in front of the middle studio; and stools round the fire pit.",
     "tents": [
-      [29.667, 20],
-      [33.667, 20.5],
-      [31.667, 16.5],
-      [35.667, 17],
-      [29.667, 13.5],
-      [33.667, 14]
+      [26.167, 20],
+      [30.167, 20.5],
+      [28.167, 16.5],
+      [32.167, 17],
+      [26.167, 13.5],
+      [30.167, 14]
     ],
     "tent": 1.25,
     "longTable": {

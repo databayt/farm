@@ -266,7 +266,7 @@ function Bath({ unit }: { unit: Unit }) {
 }
 
 // What the 2026-10-25 footage shows outside, as the founder wants it planned (D-022): six small pop-up
-// tents on a camping lawn in the courtyard's corner by the inner gate, a long timber table with benches
+// tents on a camping lawn between the fire pit and the inner gate, a long timber table with benches
 // where today's unfinished platform stands, and stools round the fire pit. Each at true size.
 const outdoor = compound.outdoor
 function Outdoor() {
@@ -283,7 +283,8 @@ function Outdoor() {
     [ty - width / 2 - gap - bench, ty - width / 2 - gap],
     [ty + width / 2 + gap, ty + width / 2 + gap + bench],
   ]
-  const low = Math.max(...tents.map(([, cy]) => cy)) + t
+  const right = Math.max(...tents.map(([cx]) => cx)) + t
+  const middle = tents.reduce((n, [, cy]) => n + cy, 0) / tents.length
   return (
     <g>
       {Array.from({ length: count }, (_, k) => (k * 2 * Math.PI) / count).map((a) => (
@@ -298,12 +299,7 @@ function Outdoor() {
           </g>
         )
       })}
-      <text
-        x={f(tents.reduce((n, [cx]) => n + cx, 0) / tents.length)}
-        y={f(low + 1.4)}
-        textAnchor="middle"
-        style={small}
-      >
+      <text x={f(right + 0.6)} y={f(middle + 0.18)} style={small}>
         CAMPING
       </text>
       {rows.map(([a, b]) => (

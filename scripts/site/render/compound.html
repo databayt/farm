@@ -383,8 +383,9 @@ function gate({ x: [l, r], y, post: p }, h, kind) {
   post([l - p, y - p / 2, l, y + p / 2], h + 0.2)
   post([r, y - p / 2, r + p, y + p / 2], h + 0.2)
   const len = (r - l) / 2 - 0.02
-  group(() => leaf(len, h, kind), [l + 0.01, 0.04, y], -Math.PI / 4)
-  group(() => leaf(len, h, kind), [r - 0.01, 0.04, y], -Math.PI * 3 / 4)
+  // closed, as the 2D draws them (the tents stand just inside the inner gate)
+  group(() => leaf(len, h, kind), [l + 0.01, 0.04, y], 0)
+  group(() => leaf(len, h, kind), [r - 0.01, 0.04, y], Math.PI)
 }
 gate(C.gate, 1.3, "bars")
 {
@@ -431,7 +432,7 @@ gate(C.gate, 1.3, "bars")
 }
 gate(C.innerGate, 1.6, "slats")
 
-// the courtyard lawn, the stone fire pit already on site, stepping stones from the inner gate
+// the courtyard lawn and the stone fire pit already on site (stepping stones, if any are listed)
 {
   const { box, r, firePit: [px, pz, pr, pin], stones } = C.courtyard
   slab(box, r, 0, 0.035, "lawn", { noShadow: true })
@@ -615,7 +616,7 @@ for (const [id, windows] of [["galley", [[3.2, 4.8], [7.4, 9.0]]], ["bath", [[0.
 }
 
 // ------------------------------------------------------------ outdoors (D-022)
-// Six small pop-up tents on the camping lawn in the courtyard's corner by the inner gate, a long timber
+// Six small pop-up tents on the camping lawn between the fire pit and the inner gate, a long timber
 // table with benches in front of the middle studio, and log stools round the fire pit.
 {
   const O = C.outdoor, t = O.tent
