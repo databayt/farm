@@ -1,0 +1,83 @@
+{
+  "about": "The compound's office (compound.json units id \"office\"): a 20 ft container painted saffron, raised 0.8 m on a red steel frame with a 1.5 m timber deck in front facing north onto the courtyard, red pipe railings and a stair at the deck's end toward the guest rooms. First in the south row of 20 ft units, the studios' sibling. Furnished as the farm's reception and work office after today's office (assets/reference/office/01-img_3188.jpg: two panel-end desks, black mesh chairs, a red barred window), in the studio's finishes: off-white linings, oak floor, Medium Oak furniture. The 2D (office-plan.tsx) and the 3D (scripts/site/render/office.html) both read this file. Plan in metres seen from the deck, as the 3D's front view: x to the right from the stair end (the cargo doors, toward the guest rooms; west), y toward the deck (north), the container's centre line at y = 0. Assumptions, not yet sourced: the front is a 3 m band of glazed sliding doors onto the deck, as on the studios (the homepage 3D still draws the office with a door and a window behind a slatted screen); linings 50 mm, inside 5.86 x 2.2 m with 2.3 m to the ceiling; every furniture size is a design choice.",
+  "container": {
+    "about": "ISO 20 ft, outside; the floor and ceiling heights are above the container's underside.",
+    "l": 6.058,
+    "w": 2.438,
+    "h": 2.591,
+    "raised": 0.8,
+    "paint": "saffron",
+    "inner": { "x0": 0.1, "x1": 5.958, "y0": -1.1, "y1": 1.1 },
+    "floor": 0.15,
+    "ceiling": 2.45
+  },
+  "glazing": {
+    "about": "Glazed sliding doors in white frames, centred on the front: four panels, two of them slid open behind the others.",
+    "x0": 1.53,
+    "x1": 4.53,
+    "panels": 4
+  },
+  "deck": {
+    "about": "Eucalyptus boards on the steel frame, the container's length and 1.5 m deep; railings round its three open sides, the stair down off its front corner at the cargo-door end.",
+    "d": 1.5,
+    "stair": { "w": 1.0, "risers": 5, "tread": 0.28 }
+  },
+  "meeting": {
+    "about": "A round timber table for four at the cargo-door end, under the wall screen.",
+    "x": 1.25,
+    "y": 0.0,
+    "r": 0.45,
+    "h": 0.74,
+    "chairs": [[0.53, 0.0], [1.97, 0.0], [1.25, -0.72], [1.25, 0.72]],
+    "chair": { "w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.82 }
+  },
+  "reception": {
+    "about": "The reception and work desk facing the glazing, a modesty panel to the door, a monitor and a desk plant; a black mesh chair behind it, as in today's office.",
+    "x0": 3.0,
+    "x1": 4.5,
+    "y0": -0.1,
+    "y1": 0.6,
+    "h": 0.75,
+    "chair": [3.75, -0.42]
+  },
+  "desk": {
+    "about": "A second work desk along the far end wall, its chair facing the wall, a monitor on it.",
+    "x0": 5.258,
+    "x1": 5.958,
+    "y0": -1.1,
+    "y1": 0.1,
+    "h": 0.75,
+    "chair": [4.95, -0.5]
+  },
+  "shelves": {
+    "about": "The filing wall along the back: closed filing cupboards to 0.75 m, open shelves above with box files and binders.",
+    "x0": 2.4,
+    "x1": 4.6,
+    "d": 0.35,
+    "h": 2.1,
+    "base": 0.75,
+    "rows": 4
+  },
+  "printer": {
+    "about": "A low cabinet in the front corner by the second desk, the printer on it.",
+    "x0": 5.408,
+    "x1": 5.958,
+    "y0": 0.45,
+    "y1": 1.1,
+    "h": 0.72
+  },
+  "screen": {
+    "about": "A wall screen on the cargo-door end showing the farm's map, over the meeting table.",
+    "y": 0.0,
+    "w": 1.2,
+    "h": 0.7,
+    "bottom": 1.15
+  },
+  "ac": { "about": "A split AC high on the back wall over the meeting table.", "x0": 0.85, "x1": 1.65, "d": 0.22, "y0": 1.98, "y1": 2.28 },
+  "fan": { "about": "A wall fan high on the far end wall, over the second desk.", "y": -0.5, "at": 1.95, "r": 0.22 },
+  "plants": {
+    "about": "A tall plant in the back corner by the meeting table, a small one on the shelves.",
+    "floor": [0.38, -0.82],
+    "shelf": [4.25, -0.93]
+  }
+}
