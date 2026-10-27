@@ -11,6 +11,9 @@
     ?mode=line  line drawing in the page's ink        -> public/designs/compound/render/compound-line.png
     ?mode=real  paint, timber, stone, sun and shadow  -> public/designs/compound/render/compound-real.webp
 
+  Add &part=camp for /en/camp's 3D: the same model, seen lower and closer, framed on the camping lawn, the
+  fire pit and the long table -> public/designs/camp/render/camp-line.png and camp-real.webp.
+
   Serve the repo root (python3 -m http.server <port>), open this page at 2400 x 1260, and once
   body[data-ready] is set save the data URL in #out: it has a transparent ground, flattened onto the
   page colour (#f7f5ef) when it is converted. Containers are ISO sizes; the rest is illustrative.
@@ -43,9 +46,11 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
 const LINE = Q.get("mode") !== "real"
+const CAMP = Q.get("part") === "camp"
+const campFrom = [] // [first, last) mesh index of each camp block, for the camp view's frame
 const [FW, FH] = [2400, 1260]
 const C = await (await fetch(`/src/components/home/compound.json?${Date.now()}`)).json()
-const INK = "#2b2a26", PAGE = "#f7f5ef" // the farm theme's soil and chalk
+const INK = "#2b2a26", PAGE = CAMP ? "#ffffff" : "#f7f5ef" // the farm theme's soil and chalk; /en/camp is white
 const HC = 2.591 // a container's height
 // The 2D sets the compound half as far apart again sideways for a wide screen (compound.json's spread),
 // every building at its true size; the model takes the same positions, so it reads as the 2D does.
@@ -404,7 +409,7 @@ const MX0 = Math.min(...C.units.map((u) => u.box[0])) - 2.5
 const MX1 = Math.max(...C.units.map((u) => u.box[2])) + 2.5
 const [MZ0, MZ1] = [-8.4, 45.6]
 // one lawn over the whole base, its top level with the old courtyard lawn: no courtyard outline, as the 2D
-slab([MX0, MZ0, MX1, MZ1], 0.01, -1.0, 1.035, "lawn", { sides: "soil" })
+const ground = slab([MX0, MZ0, MX1, MZ1], 0.01, -1.0, 1.035, "lawn", { sides: "soil" })
 
 // The gates, after the founder's reference photo: two leaves of vertical boards on a frame of stiles and
 // top, middle and bottom rails, braced in an X, with black iron strap hinges and a latch, hung closed between
@@ -482,6 +487,7 @@ gate(C.gate, 1.8, "left")
 gate(C.innerGate, 1.8, "right")
 
 // the stone fire pit already on site (stepping stones, if any are listed); the courtyard is the base's lawn
+campFrom.push(meshes.length)
 {
   const { firePit: [px, pz, pr, pin], stones } = C.courtyard
   ring(px, pz, pr, pin, 0, 0.5, "stone")
@@ -489,6 +495,7 @@ gate(C.innerGate, 1.8, "right")
   cyl(px, pz, pin, 0.02, 0.06, "ash", 32)
   for (const [x, z] of stones) slab([x - 0.3, z - 0.2, x + 0.3, z + 0.2], 0.12, 0.035, 0.03, "stone", { noShadow: true })
 }
+campFrom.push(meshes.length)
 
 // ------------------------------------------------------------ containers
 // The steel box: walls and roof a hair inside the corner posts and rails, as on a real container. Its long
@@ -683,6 +690,7 @@ for (const [id, windows] of [["galley", [[3.2, 4.8], [7.4, 9.0]]], ["bath", [[0.
 }
 
 // ------------------------------------------------------------ outdoors (D-022)
+campFrom.push(meshes.length)
 // Six small pop-up tents on the camping lawn between the guest rooms and the fire pit, a long timber
 // table with benches in front of the middle studio, and log stools round the fire pit.
 {
@@ -713,20 +721,29 @@ for (const [id, windows] of [["galley", [[3.2, 4.8], [7.4, 9.0]]], ["bath", [[0.
   }
 }
 
+campFrom.push(meshes.length)
+
 // ------------------------------------------------------------ camera: the front view
 // As the studio's 3D is seen from its front, the compound is seen from beyond the gates, centred, from high
 // up through a long lens, so the containers' verticals stay nearly straight and the back row still shows.
 // The model is mirrored, so its middle sits at -x.
-const mid = -(MX0 + MX1) / 2
-const target = new THREE.Vector3(mid, 0, (MZ0 + MZ1) / 2 + 4)
-const [el, dist] = [THREE.MathUtils.degToRad(46), 160]
+// The camp view looks from the same side, lower and closer, at the middle of the camp blocks.
+scene.updateMatrixWorld(true)
+const framed = CAMP ? campFrom.flatMap((a, i) => (i % 2 ? [] : meshes.slice(a, campFrom[i + 1]))) : meshes
+const campBox = new THREE.Box3()
+for (const o of framed) campBox.expandByObject(o)
+// the camp alone on its lawn: buildings cut by the frame's edge would only distract
+if (CAMP) for (const o of meshes) o.visible = (o === ground && !LINE) || framed.includes(o) // the line drawing floats on the page
+const mid = CAMP ? (campBox.min.x + campBox.max.x) / 2 : -(MX0 + MX1) / 2
+const target = CAMP ? new THREE.Vector3(mid, 0, (campBox.min.z + campBox.max.z) / 2) : new THREE.Vector3(mid, 0, (MZ0 + MZ1) / 2 + 4)
+const [el, dist] = CAMP ? [THREE.MathUtils.degToRad(32), 80] : [THREE.MathUtils.degToRad(46), 160]
 const camera = new THREE.PerspectiveCamera(22, FW / FH, 1, 600)
 camera.position.set(mid, dist * Math.sin(el), target.z - dist * Math.cos(el))
 camera.lookAt(target)
 camera.updateMatrixWorld(); camera.updateProjectionMatrix()
 scene.updateMatrixWorld(true)
 const bb = new THREE.Box3()
-for (const o of meshes) bb.expandByObject(o)
+for (const o of framed) bb.expandByObject(o)
 let px = [Infinity, Infinity, -Infinity, -Infinity]
 for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
   const p = new THREE.Vector3(xx, yy, zz).project(camera)
@@ -745,7 +762,7 @@ if (LINE) {
   lineMat.resolution.set(FW, FH)
   lineMat.userData.outlineParameters = { visible: false }
   for (const o of meshes) {
-    if (o.userData.noEdges) continue
+    if (o.userData.noEdges || !o.visible) continue
     const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
     const l = new LineSegments2(g, lineMat)
     l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)

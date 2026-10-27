@@ -274,13 +274,28 @@ function Bath({ unit }: { unit: Unit }) {
 // tents on a camping lawn between the guest rooms and the fire pit, ending at the pit, a long timber table with benches
 // where today's unfinished platform stands, and stools round the fire pit. Each at true size.
 const outdoor = compound.outdoor
+// the cluster keeps its shape and ends at the fire pit's west edge, whatever the spread
+const TENTS = (() => {
+  const spread = outdoor.tents.map(P)
+  const end = P(compound.courtyard.firePit)[0] - compound.courtyard.firePit[2] - (Math.max(...spread.map(([cx]) => cx)) + outdoor.tent)
+  return spread.map(([cx, cy]) => [f(cx + end), cy])
+})()
+// /en/camp draws the same plan cropped to the camping lawn, the fire pit and the long table
+const CAMP_VIEW = (() => {
+  const [pitX, pitY] = P(compound.courtyard.firePit)
+  const reach = outdoor.firePitSeats.ring + outdoor.firePitSeats.r
+  const tableY = SIZE - outdoor.longTable.y
+  const tableHalf = outdoor.longTable.width / 2 + outdoor.longTable.gap + outdoor.longTable.bench
+  const x0 = Math.min(...TENTS.map(([cx]) => cx)) - outdoor.tent - 4.2 // room for the CAMPING label
+  const y0 = Math.min(pitY - reach, tableY - tableHalf) - 1.5
+  const x1 = Math.max(pitX + reach + 3.4, X(outdoor.longTable.x) + outdoor.longTable.length / 2) + 1.5 // FIRE PIT label
+  const y1 = Math.max(...TENTS.map(([, cy]) => cy)) + outdoor.tent + 1.5
+  return [x0, y0, x1, y1]
+})()
 function Outdoor() {
   const [pitX, pitY] = P(compound.courtyard.firePit)
   const { count, ring, r } = outdoor.firePitSeats
-  // the cluster keeps its shape and ends at the fire pit's west edge, whatever the spread
-  const spread = outdoor.tents.map(P)
-  const end = pitX - compound.courtyard.firePit[2] - (Math.max(...spread.map(([cx]) => cx)) + outdoor.tent)
-  const tents = spread.map(([cx, cy]) => [f(cx + end), cy])
+  const tents = TENTS
   const t = outdoor.tent
   const hex = (cx: number, cy: number) => Array.from({ length: 6 }, (_, k) => [f(cx + t * Math.cos((k * Math.PI) / 3)), f(cy + t * Math.sin((k * Math.PI) / 3))])
   const { x, y, length, width, bench, gap } = outdoor.longTable
@@ -317,7 +332,8 @@ function Outdoor() {
   )
 }
 
-export function CompoundPlan({ title, className }: { title: string; className?: string }) {
+export function CompoundPlan({ title, className, view }: { title: string; className?: string; view?: "camp" }) {
+  const [v0, v1, v2, v3] = view === "camp" ? CAMP_VIEW : VIEW
   const { parking, courtyard } = compound
   const units = Object.fromEntries(compound.units.map((u) => [u.id, u])) as Record<string, Unit>
   const row = compound.units.filter((u) => u.kind === "20" && u.front === "north")
@@ -334,8 +350,18 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
   const [, , pitR, pitInner] = courtyard.firePit
   const sign = B(compound.sign)
   const [, cy0, cx1] = B(courtyard.box)
+  if (view === "camp") return (
+    <svg viewBox={`${f(v0)} ${f(v1)} ${f(v2 - v0)} ${f(v3 - v1)}`} role="img" aria-label={title} className={className}>
+      <circle cx={pitX} cy={pitY} r={pitR} {...medium} />
+      <circle cx={pitX} cy={pitY} r={pitInner} {...thin} />
+      <Outdoor />
+      <text x={f(pitX + outdoor.firePitSeats.ring + 0.6)} y={f(pitY + 0.18)} style={small}>
+        FIRE PIT
+      </text>
+    </svg>
+  )
   return (
-    <svg viewBox={`${VIEW[0]} ${VIEW[1]} ${VIEW[2] - VIEW[0]} ${VIEW[3] - VIEW[1]}`} role="img" aria-label={title} className={className}>
+    <svg viewBox={`${f(v0)} ${f(v1)} ${f(v2 - v0)} ${f(v3 - v1)}`} role="img" aria-label={title} className={className}>
       {/* The study room, then the row of office and two studios, the bar and the guest rooms */}
       <Study unit={units.study} west={B(units.rooms.box)[0]} />
       <Galley unit={units.galley} />
