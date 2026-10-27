@@ -266,7 +266,7 @@ function Bath({ unit }: { unit: Unit }) {
 }
 
 // What the 2026-10-25 footage shows outside, as the founder wants it planned (D-022): six small pop-up
-// tents on a camping lawn between the guest rooms and the fire pit, a long timber table with benches
+// tents on a camping lawn in the courtyard's corner by the inner gate, a long timber table with benches
 // where today's unfinished platform stands, and stools round the fire pit. Each at true size.
 const outdoor = compound.outdoor
 function Outdoor() {

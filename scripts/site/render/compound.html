@@ -615,7 +615,7 @@ for (const [id, windows] of [["galley", [[3.2, 4.8], [7.4, 9.0]]], ["bath", [[0.
 }
 
 // ------------------------------------------------------------ outdoors (D-022)
-// Six small pop-up tents on the camping lawn between the guest rooms and the fire pit, a long timber
+// Six small pop-up tents on the camping lawn in the courtyard's corner by the inner gate, a long timber
 // table with benches in front of the middle studio, and log stools round the fire pit.
 {
   const O = C.outdoor, t = O.tent
@@ -623,7 +623,9 @@ for (const [id, windows] of [["galley", [[3.2, 4.8], [7.4, 9.0]]], ["bath", [[0.
     const dome = add(new THREE.SphereGeometry(t, 6, 4, 0, Math.PI * 2, 0, Math.PI / 2), "tent", { pos: [x, 0.035, z], scale: [1, 1.25, 1] })
     dome.rotation.y = Math.PI / 6
     add(new THREE.CylinderGeometry(t + 0.01, t + 0.01, 0.14, 6, 1, true), "trim", { pos: [x, 0.105, z], rot: [0, Math.PI / 6, 0] })
-    blk(x + t * 0.86 - 0.02, z - 0.3, x + t * 0.86 + 0.01, z + 0.3, 0.05, 0.6, "inside", { noShadow: true }) // the door, toward the fire
+    // the door on the face toward the fire pit
+    const toward = Math.round(Math.atan2(C.courtyard.firePit[1] - z, C.courtyard.firePit[0] - x) / (Math.PI / 3)) * (Math.PI / 3)
+    group(() => blk(t * 0.86 - 0.02, -0.3, t * 0.86 + 0.01, 0.3, 0.05, 0.6, "inside", { noShadow: true }), [x, 0, z], -toward)
   }
   const { x, y, length, width, bench, gap } = O.longTable
   const [a, b] = [x - length / 2, x + length / 2]
