@@ -1,3 +1,5 @@
+import { BlurImg } from "@/components/atom/blur-img"
+
 import { copy } from "./copy"
 
 const R = "/designs/compound/render"
@@ -27,16 +29,16 @@ export function Model() {
         </div>
       </div>
       <figure className="px-4 pb-10 md:px-10">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`${R}/compound-real.webp`}
-          width={2400}
-          height={1260}
-          alt={real}
-          loading="lazy"
-          decoding="async"
-          className="h-auto w-full"
-        />
+        <div className="overflow-hidden">
+          <BlurImg
+            src={`${R}/compound-real.webp`}
+            width={2400}
+            height={1260}
+            alt={real}
+            loading="lazy"
+            className="h-auto w-full"
+          />
+        </div>
         <figcaption className="text-muted-foreground mt-2 text-sm">{caption}</figcaption>
       </figure>
     </section>

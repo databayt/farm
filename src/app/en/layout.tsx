@@ -1,3 +1,4 @@
+import { LoadingWrapper } from "@/components/loading"
 import { ScrollHeader } from "@/components/scroll-header"
 import { SiteHeader } from "@/components/site-header"
 
@@ -9,7 +10,7 @@ export default function EnLayout({ children }: LayoutProps<"/en">) {
       <ScrollHeader>
         <SiteHeader />
       </ScrollHeader>
-      {children}
+      <LoadingWrapper>{children}</LoadingWrapper>
     </>
   )
 }

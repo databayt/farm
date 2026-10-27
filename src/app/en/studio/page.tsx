@@ -3,6 +3,7 @@ import { join } from "node:path"
 import type { Metadata } from "next"
 import Link from "next/link"
 
+import { BlurImg } from "@/components/atom/blur-img"
 import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
 import { BuildUp } from "@/components/docs/build-up"
@@ -415,8 +416,7 @@ export default function StudioPage() {
           the lounge chairs on the roof. Shared from Gemini at 1376 px and upscaled 4x with Real-ESRGAN (x4plus).
           No "Concept render" badge on it: the founder took it off (2026-10-27), an exception to D-018's label. */}
       <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#a9c8df]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`${D}/render/studio-hero.jpg`} width={2400} height={1340} fetchPriority="high"
+        <BlurImg src={`${D}/render/studio-hero.jpg`} width={2400} height={1340} fetchPriority="high"
           alt="A yellow container studio at golden hour under a dark roof canopy: the sliding glass wall half open on a bed, a sofa and two chairs, a red-railed timber deck with a bistro table and a potted plant, a steel ladder up the side to two lounge chairs on the roof, and eucalyptus behind."
           className="absolute inset-0 size-full object-cover object-[50%_55%]" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
@@ -461,10 +461,11 @@ export default function StudioPage() {
           </div>
         </div>
         <figure className="px-4 pb-10 md:px-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${D}/render/front-real.jpg`} width={2400} height={1100} loading="lazy"
-            alt="The same view rendered with materials and daylight: pine furniture in a medium-oak finish on a natural oak floor, a white bed with storage boxes and a lit bedside lamp, a grey sofa with yellow and blue cushions, a table and two chairs, the galley with a black-glass hob under a black hood, and a white marble bathroom with a glass shower screen, a wall-hung WC and a basin on a black metal console."
-            className="h-auto w-full" />
+          <div className="overflow-hidden">
+            <BlurImg src={`${D}/render/front-real.jpg`} width={2400} height={1100} loading="lazy"
+              alt="The same view rendered with materials and daylight: pine furniture in a medium-oak finish on a natural oak floor, a white bed with storage boxes and a lit bedside lamp, a grey sofa with yellow and blue cushions, a table and two chairs, the galley with a black-glass hob under a black hood, and a white marble bathroom with a glass shower screen, a wall-hung WC and a basin on a black metal console."
+              className="h-auto w-full" />
+          </div>
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
         </figure>
       </section>
@@ -567,14 +568,57 @@ export default function StudioPage() {
           </p>
         </div>
         <figure className="px-4 pb-10 md:px-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${D}/render/electric-real.jpg`} width={2400} height={1100} loading="lazy"
-            alt="The same view rendered as finished: the white unit board with smoked windows on the back wall by the galley, sockets with USB-C over the headboard, the bedside table and the sofa arm, double sockets on the galley wall, a wall fan and the red AC isolator high on the back wall, and slim ceiling lights and alarms."
-            className="h-auto w-full" />
+          <div className="overflow-hidden">
+            <BlurImg src={`${D}/render/electric-real.jpg`} width={2400} height={1100} loading="lazy"
+              alt="The same view rendered as finished: the white unit board with smoked windows on the back wall by the galley, sockets with USB-C over the headboard, the bedside table and the sofa arm, double sockets on the galley wall, a wall fan and the red AC isolator high on the back wall, and slim ceiling lights and alarms."
+              className="h-auto w-full" />
+          </div>
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
         </figure>
         <div className="pb-10">
           <ItemRail items={electricRail(points)} />
+        </div>
+      </section>
+
+      {/* Plumbing, in the Electric section's pattern: a plain title, then the studio's water drawn full width, from the
+          farm's supply through the stop valve to every outlet and on to the drains. Below it the installation in the 3D
+          view's camera with the galley's end panels cut away (render/plumbing-line.png: every run in its system's
+          colour, dashed where a wall or the floor hides it, every fitting tagged), the finished room
+          (render/plumbing-real.jpg), then each fitting on its own. All three come from
+          scripts/studio/render/room.html?view=plumbing, built from render/scene.json. */}
+      <section id="plumbing" className="scroll-mt-20 border-t">
+        <div className="px-4 pt-10 pb-10 md:px-10">
+          <h2 className="text-3xl font-semibold tracking-tight">Plumbing</h2>
+          <div className="mt-6 overflow-x-auto">
+            <PipeDiagram pipes={pipes} fittings={fittings} water={water} />
+          </div>
+        </div>
+        <div className="px-4 pb-6 md:px-10">
+          <div className="overflow-x-auto">
+            <div className="min-w-[960px]">
+              <TaggedFigure src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags}
+                alt="Line drawing of the studio from the front with the galley's end panels cut away and every pipe run: the stop valve, filter and meter on the main in the sink base, the 80 L heater lying in the overhead cabinet, cold in blue and hot in red down the partition and along the back wall to end B, the mixing valve behind a panel between the shower and the WC sending mixed water in amber to the shower and the basin, and the drains in brown dropping through the floor."
+                info={Object.fromEntries(fittings.map((f) => [f.point, { label: f.description, colour: fittingColour(f, pipes) }]))} />
+            </div>
+          </div>
+          <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
+            Supplies run inside the units and the walls, then straight up to each outlet; drains drop through the floor and
+            hang under it. A run is dashed where a wall or the floor hides it. Tags match the points table below. Outside
+            the drawing: the main comes in under end B from the farm; D1, D2 and D3 leave for the inspection chamber (IC1)
+            and the septic tank, D4 for the grease trap (GT); the vent rises up end B to its terminal (VT), 900 mm above
+            the roof guardrail.
+          </p>
+        </div>
+        <figure className="px-4 pb-10 md:px-10">
+          <div className="overflow-hidden">
+            <BlurImg src={`${D}/render/plumbing-real.jpg`} width={2400} height={1100} loading="lazy"
+              alt="The same view rendered as finished with the galley's end panels cut away: the white 80 L heater lying in the overhead cabinet with its pipes, and in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap under the sink; in the bathroom the shower valve and rail, the flush plate, and the basin's trap under its console."
+              className="h-auto w-full" />
+          </div>
+          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model, the galley&rsquo;s end cut away</figcaption>
+        </figure>
+        <div className="pb-10">
+          <ItemRail items={plumbingRail(fittings)} />
         </div>
       </section>
 
@@ -647,47 +691,6 @@ export default function StudioPage() {
               </tbody>
             </table>
           </div>
-        </div>
-      </section>
-
-      {/* Plumbing, in the Electric section's pattern: a plain title, then the studio's water drawn full width, from the
-          farm's supply through the stop valve to every outlet and on to the drains. Below it the installation in the 3D
-          view's camera with the galley's end panels cut away (render/plumbing-line.png: every run in its system's
-          colour, dashed where a wall or the floor hides it, every fitting tagged), the finished room
-          (render/plumbing-real.jpg), then each fitting on its own. All three come from
-          scripts/studio/render/room.html?view=plumbing, built from render/scene.json. */}
-      <section id="plumbing" className="scroll-mt-20 border-t">
-        <div className="px-4 pt-10 pb-10 md:px-10">
-          <h2 className="text-3xl font-semibold tracking-tight">Plumbing</h2>
-          <div className="mt-6 overflow-x-auto">
-            <PipeDiagram pipes={pipes} fittings={fittings} water={water} />
-          </div>
-        </div>
-        <div className="px-4 pb-6 md:px-10">
-          <div className="overflow-x-auto">
-            <div className="min-w-[960px]">
-              <TaggedFigure src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags}
-                alt="Line drawing of the studio from the front with the galley's end panels cut away and every pipe run: the stop valve, filter and meter on the main in the sink base, the 80 L heater lying in the overhead cabinet, cold in blue and hot in red down the partition and along the back wall to end B, the mixing valve behind a panel between the shower and the WC sending mixed water in amber to the shower and the basin, and the drains in brown dropping through the floor."
-                info={Object.fromEntries(fittings.map((f) => [f.point, { label: f.description, colour: fittingColour(f, pipes) }]))} />
-            </div>
-          </div>
-          <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
-            Supplies run inside the units and the walls, then straight up to each outlet; drains drop through the floor and
-            hang under it. A run is dashed where a wall or the floor hides it. Tags match the points table below. Outside
-            the drawing: the main comes in under end B from the farm; D1, D2 and D3 leave for the inspection chamber (IC1)
-            and the septic tank, D4 for the grease trap (GT); the vent rises up end B to its terminal (VT), 900 mm above
-            the roof guardrail.
-          </p>
-        </div>
-        <figure className="px-4 pb-10 md:px-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${D}/render/plumbing-real.jpg`} width={2400} height={1100} loading="lazy"
-            alt="The same view rendered as finished with the galley's end panels cut away: the white 80 L heater lying in the overhead cabinet with its pipes, and in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap under the sink; in the bathroom the shower valve and rail, the flush plate, and the basin's trap under its console."
-            className="h-auto w-full" />
-          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model, the galley&rsquo;s end cut away</figcaption>
-        </figure>
-        <div className="pb-10">
-          <ItemRail items={plumbingRail(fittings)} />
         </div>
       </section>
 

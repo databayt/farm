@@ -16,7 +16,8 @@
     "studio:build": "uv run --with-requirements scripts/studio/requirements.txt python scripts/studio/build.py",
     "site:refs": "node scripts/site/refs.mjs",
     "site:assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/site/build-assets.mjs",
-    "site:hero": "node scripts/site/hero.mjs"
+    "site:hero": "node scripts/site/hero.mjs",
+    "site:blur": "node scripts/site/design-blur.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

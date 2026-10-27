@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
+import { BlurImg } from "@/components/atom/blur-img"
 import { Button } from "@/components/ui/button"
 import { StudyRoomPlan } from "@/components/study-room/study-room-plan"
 
@@ -24,8 +25,7 @@ export default function StudyRoomPage() {
           assets/today/aerial.png) with the lake through the trees on the left, where the study room will
           stand, cut to 2400 x 1340. The buildings sit right, so the words keep the open lawn bottom-left. */}
       <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#c9d3dc]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`${D}/render/study-room-hero.jpg`} width={2400} height={1340} fetchPriority="high"
+        <BlurImg src={`${D}/render/study-room-hero.jpg`} width={2400} height={1340} fetchPriority="high"
           alt="The farm's courtyard lawn today under a soft overcast sky: pop-up tents on the grass, a yellow container with red doors on the right, trees and the lake glinting behind them on the left."
           className="absolute inset-0 size-full object-cover object-[60%_50%]" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
@@ -66,10 +66,11 @@ export default function StudyRoomPage() {
           </div>
         </div>
         <figure className="px-4 pb-10 md:px-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${D}/render/study-room-real.webp`} width={2400} height={1000} loading="lazy"
-            alt="The same view rendered: a teal container with an oak plank floor and off-white walls, oak desks and chairs with oat seat pads and a few laptops, rattan pendants, a black screen on oak slats, ochre armchairs on a striped rug, shelves full of books, green plants, and a honey-coloured eucalyptus deck on the lawn."
-            className="h-auto w-full" />
+          <div className="overflow-hidden">
+            <BlurImg src={`${D}/render/study-room-real.webp`} width={2400} height={1000} loading="lazy"
+              alt="The same view rendered: a teal container with an oak plank floor and off-white walls, oak desks and chairs with oat seat pads and a few laptops, rattan pendants, a black screen on oak slats, ochre armchairs on a striped rug, shelves full of books, green plants, and a honey-coloured eucalyptus deck on the lawn."
+              className="h-auto w-full" />
+          </div>
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
         </figure>
       </section>

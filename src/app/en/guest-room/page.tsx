@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
+import { BlurImg } from "@/components/atom/blur-img"
 import { Button } from "@/components/ui/button"
 import { GuestRoomPlan } from "@/components/guest-room/guest-room-plan"
 
@@ -24,8 +25,7 @@ export default function GuestRoomPage() {
           people- and umbrella-free) to 2400 x 1340. The block sits right, so the words keep the open lawn
           bottom-left. */}
       <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#c9d3dc]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`${D}/render/guest-room-hero.jpg`} width={2400} height={1340} fetchPriority="high"
+        <BlurImg src={`${D}/render/guest-room-hero.jpg`} width={2400} height={1340} fetchPriority="high"
           alt="The guest-room block today: two saffron-yellow shipping containers joined into one long building, red-framed barred windows each beside a red door, on a green lawn with a pop-up tent to the left, trees and a cloudy sky behind."
           className="absolute inset-0 size-full object-cover object-[65%_60%]" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
@@ -65,10 +65,11 @@ export default function GuestRoomPage() {
           </div>
         </div>
         <figure className="px-4 pb-10 md:px-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${D}/render/guest-room-real.webp`} width={2400} height={1800} loading="lazy"
-            alt="The same view rendered: cream walls, an oak plank floor and Medium Oak furniture, white bedding with a mustard throw on a striped rug, the red-framed barred window, red steel posts and beam, the red door open, and timber chairs and a table with a lantern on the veranda over the lawn."
-            className="h-auto w-full" />
+          <div className="overflow-hidden">
+            <BlurImg src={`${D}/render/guest-room-real.webp`} width={2400} height={1800} loading="lazy"
+              alt="The same view rendered: cream walls, an oak plank floor and Medium Oak furniture, white bedding with a mustard throw on a striped rug, the red-framed barred window, red steel posts and beam, the red door open, and timber chairs and a table with a lantern on the veranda over the lawn."
+              className="h-auto w-full" />
+          </div>
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
         </figure>
       </section>

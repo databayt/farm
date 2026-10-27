@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
+import { BlurImg } from "@/components/atom/blur-img"
 import { Button } from "@/components/ui/button"
 import { OfficePlan } from "@/components/office/office-plan"
 
@@ -23,8 +24,7 @@ export default function OfficePage() {
           saffron container on its raised deck from the 2026-10-25 footage (public/footage/IMG_3165), cut to
           2400 x 1340. The container sits centre-right, so the words keep the lawn bottom-left. */}
       <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#c9d3dc]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`${D}/render/office-hero.jpg`} width={2400} height={1340} fetchPriority="high"
+        <BlurImg src={`${D}/render/office-hero.jpg`} width={2400} height={1340} fetchPriority="high"
           alt="A saffron shipping container raised on a red steel frame, its white-framed glazed doors open onto a timber deck with red pipe railings, on a green lawn with young trees behind under a cloudy sky."
           className="absolute inset-0 size-full object-cover object-[60%_50%]" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
@@ -64,10 +64,11 @@ export default function OfficePage() {
           </div>
         </div>
         <figure className="px-4 pb-10 md:px-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${D}/render/office-real.webp`} width={2400} height={1100} loading="lazy"
-            alt="The same view rendered: saffron corrugated steel, off-white walls and an oak floor, Medium Oak desks, shelves and meeting chairs, black mesh office chairs, coloured box files, a tall plant, on red steel posts with a eucalyptus deck and red railings over the lawn."
-            className="h-auto w-full" />
+          <div className="overflow-hidden">
+            <BlurImg src={`${D}/render/office-real.webp`} width={2400} height={1100} loading="lazy"
+              alt="The same view rendered: saffron corrugated steel, off-white walls and an oak floor, Medium Oak desks, shelves and meeting chairs, black mesh office chairs, coloured box files, a tall plant, on red steel posts with a eucalyptus deck and red railings over the lawn."
+              className="h-auto w-full" />
+          </div>
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
         </figure>
       </section>

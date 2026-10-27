@@ -4,6 +4,7 @@ import { OG_IMAGE } from "@/components/home/assets.generated"
 import { HomeContent } from "@/components/home/content"
 import { copy } from "@/components/home/copy"
 import { stillFor } from "@/components/home/render"
+import { LoadingWrapper } from "@/components/loading"
 
 // The Digital Farm homepage (src/components/home): the planned compound in Gashora, shown with
 // labelled concept renders and, until they exist, labelled frames of the footage (D-017 to D-019).
@@ -23,5 +24,9 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
-  return <HomeContent />
+  return (
+    <LoadingWrapper>
+      <HomeContent />
+    </LoadingWrapper>
+  )
 }

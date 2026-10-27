@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
+import { BlurImg } from "@/components/atom/blur-img"
 import { Button } from "@/components/ui/button"
 import { BarPlan } from "@/components/bar/bar-plan"
 
@@ -23,8 +24,7 @@ export default function BarPage() {
           For now it is the design model rendered from eye level on the lawn (scripts/site/render/bar.html
           ?mode=real&hero=1, 2400 x 1340). The bar sits right, so the words keep the open lawn bottom-left. */}
       <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#e3d6c4]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`${D}/render/bar-hero.jpg`} width={2400} height={1340} fetchPriority="high"
+        <BlurImg src={`${D}/render/bar-hero.jpg`} width={2400} height={1340} fetchPriority="high"
           alt="The bar: an oxide-red shipping container on a stone plinth, its long hatch open under a flap propped on two black struts, a timber counter with five high stools on a timber deck, shelves and a warm light inside."
           className="absolute inset-0 size-full object-cover object-[70%_60%]" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
@@ -64,10 +64,11 @@ export default function BarPage() {
           </div>
         </div>
         <figure className="px-4 pb-10 md:px-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${D}/render/bar-real.webp`} width={2400} height={1100} loading="lazy"
-            alt="The same view rendered: oxide-red corrugated steel, a warm light under the flap, Medium Oak counters and shelves lit from beneath, a steel espresso machine, crates of passion fruit, pineapple and tree tomato, oak-seated stools on a timber deck on the lawn."
-            className="h-auto w-full" />
+          <div className="overflow-hidden">
+            <BlurImg src={`${D}/render/bar-real.webp`} width={2400} height={1100} loading="lazy"
+              alt="The same view rendered: oxide-red corrugated steel, a warm light under the flap, Medium Oak counters and shelves lit from beneath, a steel espresso machine, crates of passion fruit, pineapple and tree tomato, oak-seated stools on a timber deck on the lawn."
+              className="h-auto w-full" />
+          </div>
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
         </figure>
       </section>
