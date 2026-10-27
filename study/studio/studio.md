@@ -14,7 +14,7 @@ Everything on these pages comes from one parametric model (`scripts/studio/`). T
 |---|---|
 | Interior | About 5,798 x 2,252 x 2,323 mm net (13.1 m2) after insulation and lining [E, AS-13, AS-15] |
 | Bed | Queen bed up to 1,600 x 2,000 in the MALM manner, against the back wall and end A: tall headboard with USB-C, two storage boxes on castors; a bedside table with a reading lamp, a wall reading light |
-| Kitchen | 1.6 m galley on the bathroom wall: under-counter fridge, a wide two-zone induction hob in black glass under a slim black hood, a compact sink; an overhead cabinet holds the 80 L water heater |
+| Kitchen | 1.6 m galley on the bathroom wall: under-counter fridge, a wide two-zone induction hob in black glass under a slim black hood, a compact sink; an overhead cabinet for storage; the 30 L water heater is a box above the WC |
 | Bathroom | Shower, WC and basin in one row on end wall B: a 1,000 x 900 walk-in shower and a wall-hung WC (concealed cistern, flush plate on the wall) behind a 600 mm door; the basin and mirror cabinet outside it in a wash lobby under the W1 window |
 | Seating | Low two-seat sofa, a low wide table and two chairs by the 3 m sliding glass wall, coat hooks and a luggage rack, wall fan, split-AC provision |
 | Envelope | EPS between battens, 12 mm ply linings, sealed floor with SPC, insect mesh everywhere |

@@ -192,8 +192,8 @@ function plumbingRail(fittings: Record<string, string>[]): RailItem[] {
   const valves = lines(/^Angle valves/)[0]
   return [
     card("meter", "Stop valve, filter and meter", `DN25, in line on the main, about ${f.meter.h_mm} mm`, "Not sourced yet", each("meter")),
-    card("heater", "Water heater", `${litres} lying down, Ø ${f.heater.w_mm} × ${mm(Number(f.heater.d_mm))} mm, ${kw}`,
-      "Kanis Retail lists 50 L (RWF 144,000–252,000); ask Build Mart for 80 L", each("heater")),
+    card("heater", "Water heater", `${litres} box, ${f.heater.w_mm} × ${f.heater.h_mm} × ${f.heater.d_mm} mm, ${kw}, IPX4`,
+      "Not sourced yet; Kanis Retail lists 50 L at RWF 144,000–252,000", each("heater")),
     card("tmv", "Mixing valve", `${degC(f.tmv.rating)}, behind a ${f.tmv.w_mm} mm access panel`, "Not sourced yet", each("tmv")),
     card("kitchentap", "Kitchen mixer tap", `${f.kitchentap.rating}, two angle valves under the sink`, HARDWARE_DISTRICT, each("kitchentap")),
     card("filter", "Drinking-water filter", `Twin canisters ${f.filter.w_mm} × ${f.filter.h_mm} mm, its own faucet by the tap`,
@@ -584,8 +584,9 @@ export default function StudioPage() {
 
       {/* Plumbing, in the Electric section's pattern: a plain title, then the studio's water drawn full width, from the
           farm's supply through the stop valve to every outlet and on to the drains. Below it the installation in the 3D
-          view's camera with the galley's end panels cut away (render/plumbing-line.png: every run in its system's
-          colour, dashed where a wall or the floor hides it, every fitting tagged), the finished room
+          view's camera with the sink base cut open and the bathroom's wet walls stripped to the foam
+          (render/plumbing-line.png: every run in its system's colour, dashed where a wall or the floor still hides it,
+          every fitting tagged), the finished room
           (render/plumbing-real.jpg), then each fitting on its own. All three come from
           scripts/studio/render/room.html?view=plumbing, built from render/scene.json. */}
       <section id="plumbing" className="scroll-mt-20 border-t">
@@ -599,13 +600,14 @@ export default function StudioPage() {
           <div className="overflow-x-auto">
             <div className="min-w-[960px]">
               <TaggedFigure src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags}
-                alt="Line drawing of the studio from the front with the galley's end panels cut away and every pipe run: the stop valve, filter and meter on the main in the sink base, the 80 L heater lying in the overhead cabinet, cold in blue and hot in red down the partition and along the back wall to end B, the mixing valve behind a panel between the shower and the WC sending mixed water in amber to the shower and the basin, and the drains in brown dropping through the floor."
+                alt="Line drawing of the studio from the front with the sink base cut open, the bathroom's wet walls stripped to the foam and every pipe run: the stop valve, filter and meter on the main in the sink base, cold in blue along the back wall and up end wall B, the 30 L heater box above the WC sending hot water in red down to the mixing valve and back to the sink, mixed water in amber to the shower and the basin, and the drains in brown dropping through the floor."
                 info={Object.fromEntries(fittings.map((f) => [f.point, { label: f.description, colour: fittingColour(f, pipes) }]))} />
             </div>
           </div>
           <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
             Supplies run inside the units and the walls, then straight up to each outlet; drains drop through the floor and
-            hang under it. A run is dashed where a wall or the floor hides it. Tags match the points table below. Outside
+            hang under it. The sink base and the bathroom&rsquo;s wet walls are drawn open; a run is dashed where a wall or
+            the floor still hides it. Tags match the points table below. Outside
             the drawing: the main comes in under end B from the farm; D1, D2 and D3 leave for the inspection chamber (IC1)
             and the septic tank, D4 for the grease trap (GT); the vent rises up end B to its terminal (VT), 900 mm above
             the roof guardrail.
@@ -614,10 +616,10 @@ export default function StudioPage() {
         <figure className="px-4 pb-10 md:px-10">
           <div className="overflow-hidden">
             <BlurImg src={`${D}/render/plumbing-real.jpg`} width={2400} height={1100} loading="lazy"
-              alt="The same view rendered as finished with the galley's end panels cut away: the white 80 L heater lying in the overhead cabinet with its pipes, and in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap under the sink; in the bathroom the shower valve and rail, the flush plate, and the basin's trap under its console."
+              alt="The same view rendered as finished with the sink base cut open and the bathroom's wet walls stripped to the yellow foam: in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap; in the bathroom the white 30 L heater box above the WC, the pipes along the back wall and up end wall B, the shower valve, the cistern frame behind the flush plate, and the basin's valves and trap under its console."
               className="h-auto w-full" />
           </div>
-          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model, the galley&rsquo;s end cut away</figcaption>
+          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model, the sink base and the bathroom&rsquo;s wet walls opened</figcaption>
         </figure>
         <div className="pb-10">
           <ItemRail items={plumbingRail(fittings)} />

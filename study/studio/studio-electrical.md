@@ -25,7 +25,7 @@ Status: design intent. Every rating is an assumption [A, AS-19] until a RURA-lic
   - C2: sockets at the bed, the sofa and the deck.
   - C3: kitchen sockets, the fridge and the hood. The socket above the hood also takes the Wi-Fi router.
   - C4: the induction hob.
-  - C5: the 80 L water heater.
+  - C5: the 30 L water heater, a box above the WC (D-024); its switch and timer stay outside the bathroom, on the galley side of the partition.
   - C6: the outdoor lights (deck, stair and roof), on their own circuit.
   - C7: AC provision.
   - C8: a spare way.

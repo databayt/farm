@@ -22,7 +22,7 @@ The full line list, per studio, with quantities, unit prices, labels and sources
 
 ## How to make it real: three quotes per line
 
-1. Start with the lines that move the total: steel and polycarbonate (roof kit), boards, sanitaryware, the 80 L heater, labour.
+1. Start with the lines that move the total: steel and polycarbonate (roof kit), boards, sanitaryware, the water heater, labour.
 2. Ask for three written quotes per line, same specification, same quantity for three studios.
 3. Record each quote in `study/registers/prices.csv` (price type `quote`, date, supplier) and change the label in `scripts/studio/prices.py` from A to V with the price id.
 4. Rebuild (`pnpm studio:build`); the summary and the workbook update.

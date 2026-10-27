@@ -20,7 +20,7 @@ The drawings are wordless, IKEA-style: new parts in white with a heavy line, fin
 
 ![AS-11 Kitchen base units](../../public/designs/studio/drawings/as-11.svg)
 
-![AS-12 Overhead cabinet and heater](../../public/designs/studio/drawings/as-12.svg)
+![AS-12 Overhead cabinet](../../public/designs/studio/drawings/as-12.svg)
 
 ![AS-14 Wall units](../../public/designs/studio/drawings/as-14.svg)
 
@@ -40,6 +40,6 @@ Every step has its own sheet (AS-01 to AS-27) in `public/designs/studio/drawings
 
 - Electrical: tests and certificate (S19). Plumbing: pressure test before lining (S05), drain fill tests, TMV temperature at the shower.
 - Doors, drawers and the bathroom door swing freely; the slider locks; insect mesh is tight.
-- Two consecutive hot showers (the 80 L heater test).
+- A hot shower, then time the 30 L heater taking about 40 minutes to heat up again (D-024).
 - Roof: the engineer's inspection is recorded before the terrace opens (S27).
 - Clean, photograph each studio, and keep the as-built survey values with the set.

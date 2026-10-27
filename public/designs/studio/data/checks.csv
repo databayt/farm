@@ -21,7 +21,7 @@ E-C1,Indoor lights and fans: Ib <= In <= Iz; drop <= 3.0%,pass,"Ib 0.6 A, In 6 A
 E-C2,"Sockets: bed, sofa and deck: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 8.0 A, In 16 A, Iz 18.3 A, drop 1.53%"
 E-C3,"Kitchen sockets, fridge and hood: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 14.0 A, In 16 A, Iz 18.3 A, drop 1.36%"
 E-C4,Induction hob: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 15.2 A, In 20 A, Iz 24.4 A, drop 0.32%"
-E-C5,80 L water heater: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 8.7 A, In 16 A, Iz 18.3 A, drop 0.27%"
+E-C5,30 L water heater: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 8.7 A, In 16 A, Iz 18.3 A, drop 0.27%"
 E-C6,"Outdoor lights: deck, stair and roof: Ib <= In <= Iz; drop <= 3.0%",pass,"Ib 0.2 A, In 6 A, Iz 13.6 A, drop 0.03%"
 E-C7,AC provision: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 12.0 A, In 16 A, Iz 18.3 A, drop 0.38%"
 E-MD,Diversified maximum demand within a 32 A inlet (the size any source plugs into),pass,30.0 A

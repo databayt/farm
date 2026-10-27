@@ -8,9 +8,9 @@ S06,K2,Stand the partition and cross-wall frames and fix the skins,4,Fx40,2,
 S07,K2,Fit the door frame and hang the bathroom door,3,Fx16,2,
 S08,K2,"Cement board, membrane and tiles on the wet walls; coved vinyl floor",0,,2,
 S09,K2,"Set the shower tray, ledge and fixed screen",0,,2,
-S10,K2,"Hang the WC in the bathroom, and the basin and mirror cabinet in the wash lobby",6,Fx12,1,
+S10,K2,"Hang the WC and the water heater above it, and the basin and mirror cabinet in the wash lobby",6,Fx12,1,
 S11,K3,"Assemble the fridge bay, hob base and sink base on their legs along the partition",26,,2,
-S12,K3,Assemble the overhead cabinet; hang it and the heater cradle on the steel rail,7,,2,Lift the cabinet up: two people.
+S12,K3,Assemble the overhead cabinet and hang it on the steel rail,7,,2,Lift the cabinet up: two people.
 S13,K3,Scribe and fix the worktop; drop in the sink and hob; plinth,2,Fx12,2,
 S14,K3,Fix the hood shelf under the overhead cabinet and hang the hood,1,Fx8,2,
 S15,K4,Fix the headboard to the back wall; bolt the frame; screw down the slats; slide in the storage boxes,41,Cx20 Kx8 Fx140,2,

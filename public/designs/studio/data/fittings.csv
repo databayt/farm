@@ -1,6 +1,6 @@
 point,kind,model,runs,description,item,x_mm,y_mm,z_mm,face,rating,w_mm,h_mm,d_mm
 SV,valve,meter,W1,"Stop valve, Y-filter and check meter on the main, in the sink base",Stop valve + Y-filter + check water meter,4578,1540,320,-x,DN25,90,260,80
-WH,heater,heater,W2 H1,"80 L water heater lying in the overhead cabinet, its T&P valve piped outside","Electric storage water heater 80 L, 2 kW, with T&P valve",4328,50,2050,+y,"80 L, 2 kW, 60 C",440,440,1000
+WH,heater,heater,W2 H1 H2,"30 L water heater, a box on end wall B above the WC, its T&P valve piped outside","Electric storage water heater 30 L, 2 kW, IPX4, with T&P valve",5768,1300,1975,-x,"30 L, 2 kW, 60 C",450,450,300
 TMV,valve,tmv,H1 W6 T1 T2,"Mixing valve behind an access panel in end wall B, between the shower and the WC",Thermostatic mixing valve (TMV) 41-44 C,5768,1005,410,-x,41-44 C,150,150,60
 KT,tap,kitchentap,W3 H2 D4,"Kitchen mixer tap, angle valves under the sink",Kitchen mixer tap,4528,1375,900,+z,6 L/min,60,60,300
 DF,filter,filter,W3,"Drinking-water filter in the sink base, its own faucet by the tap",Under-sink drinking-water filter + faucet,4278,1168,350,+y,drinking water,240,330,110

@@ -36,7 +36,7 @@ PRICES: dict[str, tuple[float, str, str, str]] = {
     "hood": (90_000, "A", "AS-21", "slim 600 mm, black"), "filter": (80_000, "A", "AS-21", ""),
     "mattress": (180_000, "A", "AS-21", "local foam, size to field-check (STU-51)"), "curtain": (60_000, "A", "AS-21", ""),
     "mesh": (90_000, "A", "AS-21", ""),
-    "heater80": (300_000, "A", "AS-21", "80 L not found; 50 L listed at RWF 144,000-252,000 (STU-P01, STU-P02)"),
+    "heater30": (130_000, "A", "AS-21", "30 L box not priced yet; 50 L listed at RWF 144,000-252,000 (STU-P01, STU-P02)"),
     "tmv": (60_000, "A", "AS-21", ""), "showerset": (90_000, "A", "AS-21", ""), "anglevalve": (6_000, "A", "AS-21", ""),
     "aav": (30_000, "A", "AS-21", ""), "watermeter": (45_000, "A", "AS-21", ""), "fittings": (120_000, "A", "AS-21", ""),
     "pipe_ppr20": (2_000, "A", "AS-21", "per m"), "pipe_ppr25": (2_800, "A", "AS-21", "per m"),

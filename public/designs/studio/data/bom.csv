@@ -99,7 +99,7 @@ K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Indoor lights an
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, Sockets: bed, sofa and deck",26,m,750,A,AS-21,19500,per m
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, Kitchen sockets, fridge and hood",14,m,750,A,AS-21,10500,per m
 K8,electrical,electrical,"Cable 4.0 mm2 T+E/singles in conduit, Induction hob",6,m,1200,A,AS-21,7200,per m
-K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, 80 L water heater",5,m,750,A,AS-21,3750,per m
+K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, 30 L water heater",5,m,750,A,AS-21,3750,per m
 K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Outdoor lights: deck, stair and roof",21,m,500,A,AS-21,10500,per m
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, AC provision",5,m,750,A,AS-21,3750,per m
 K8,electrical,electrical,"Cable 6 mm2 tails, inlet to main breaker, through a gland in the back wall",2,m,1800,A,AS-21,3600,per m
@@ -112,9 +112,9 @@ K8,electrical,electrical,"RCBOs 30 mA type A, 1 module (B6 x2, B16 x4, B20 x1)",
 K8,electrical,electrical,"Priority relay, DIN: senses the hob (C4) and sheds C5 and C7",1,each,60000,A,AS-21,60000,"load shedding, DIN"
 K8,electrical,electrical,"Contactor 2-pole 25 A, DIN: the C5 and C7 lines",1,each,25000,A,AS-21,25000,DIN
 K8,safety,furnishing,Fire extinguisher 2 kg ABC + fire blanket,1,set,55000,A,AS-21,55000,
-K9,plumbing,plumbing,PPR PN20 pipe DN20,10.4,m,2000,A,AS-21,20800,per m
+K9,plumbing,plumbing,PPR PN20 pipe DN20,10.2,m,2000,A,AS-21,20400,per m
 K9,plumbing,plumbing,PPR PN20 pipe DN25,4.4,m,2800,A,AS-21,12320,per m
-K9,plumbing,plumbing,PPR PN20 pipe (hot) DN20,7.6,m,2000,A,AS-21,15200,per m
+K9,plumbing,plumbing,PPR PN20 pipe (hot) DN20,8.2,m,2000,A,AS-21,16400,per m
 K9,plumbing,plumbing,uPVC soil pipe DN110,3,m,7000,A,AS-21,21000,per m
 K9,plumbing,plumbing,PPR PN20 pipe (tempered) DN20,3.8,m,2000,A,AS-21,7600,per m
 K9,plumbing,plumbing,uPVC vent pipe DN75,8.8,m,4500,A,AS-21,39600,per m
@@ -123,7 +123,7 @@ K9,plumbing,plumbing,uPVC waste pipe DN50,6.3,m,3000,A,AS-21,18900,per m
 K9,plumbing,plumbing,Pipe fittings and clips (allowance),1,set,120000,A,AS-21,120000,
 K9,plumbing,plumbing,Thermostatic mixing valve (TMV) 41-44 C,1,each,60000,A,AS-21,60000,
 K9,plumbing,plumbing,Thermostatic shower valve + 6-7 L/min head + rail,1,set,90000,A,AS-21,90000,
-K9,plumbing,plumbing,"Electric storage water heater 80 L, 2 kW, with T&P valve",1,each,300000,A,AS-21,300000,"80 L not found; 50 L listed at RWF 144,000-252,000 (STU-P01, STU-P02)"
+K9,plumbing,plumbing,"Electric storage water heater 30 L, 2 kW, IPX4, with T&P valve",1,each,130000,A,AS-21,130000,"30 L box not priced yet; 50 L listed at RWF 144,000-252,000 (STU-P01, STU-P02)"
 K9,plumbing,plumbing,Angle valves with filters,5,each,6000,A,AS-21,30000,
 K9,plumbing,plumbing,Air admittance valve 110 mm (spare) + rodding eyes,1,set,30000,A,AS-21,30000,
 K9,plumbing,plumbing,Stop valve + Y-filter + check water meter,1,set,45000,A,AS-21,45000,
@@ -131,7 +131,7 @@ K10,steel,welding,"W1 infill: 2 mm steel + 40 mm EPS, welded into the old door f
 K10,glazing,glazier,W1 obscure louvre window 520 x 890 + insect mesh (wash lobby),1,each,120000,A,AS-21,120000,
 K10,steel,welding,"Seal and lock the end-B cargo doors (weld tabs, sealant)",1,each,60000,A,AS-21,60000,
 K10,steel,masonry,Level the corner castings: concrete pads or steel shims (rock corner),4,each,25000,A,AS-21,100000,
-K10,steel,welding,Steel hanging rail for wall units + heater bracket,1,set,40000,A,AS-21,40000,
+K10,steel,welding,Steel hanging rail for the wall units,1,set,40000,A,AS-21,40000,
 K10,hardware,glazier,Keyed lock + secondary bolt for the slider,1,set,45000,A,AS-21,45000,
 K10,glazing,glazier,"Louvred trickle-vent strip with mesh (10,000 mm2)",1,each,30000,A,AS-21,30000,
 K10,steel,welding,"AC wall sleeve 75 mm (provision, back wall, one hole)",1,each,15000,A,AS-21,15000,

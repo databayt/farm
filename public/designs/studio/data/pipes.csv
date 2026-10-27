@@ -5,12 +5,12 @@ D3,waste,40,2.1,1:28,Basin (wash lobby) joins the soil run,#8b4a12
 D4,waste,50,3.3,1:26,Kitchen sink to the grease trap (separate soak pit),#8b4a12
 V1,vent,75,6.7,,Open vent up end B to 900 above the guardrail,#9a9893
 W1,cold,25,2.9,,"Cold main in from the farm, up into the sink base: stop valve, filter, check meter",#2a78d6
-W2,cold,20,2.4,,Cold up the partition to the heater,#2a78d6
+W2,cold,20,1.8,,Cold up end wall B to the heater,#2a78d6
 W3,cold,20,0.1,,Cold to the sink's angle valve,#2a78d6
-W4,cold,20,4.6,,Cold through the partition and the walls to the WC cistern,#2a78d6
+W4,cold,20,5,,Cold through the partition and the walls to the WC cistern,#2a78d6
 W5,cold,20,1,,Cold on to the basin,#2a78d6
 W6,cold,20,0.1,,Cold to the mixing valve,#2a78d6
-H1,hot,20,5.7,,Hot (60 C) from the heater to the mixing valve,#e34948
-H2,hot,20,0.1,,"Hot to sink (direct 60 C, labelled)",#e34948
+H1,hot,20,2.4,,Hot (60 C) from the heater down to the mixing valve,#e34948
+H2,hot,20,3.9,,"Hot back along the walls to the sink (direct 60 C, labelled)",#e34948
 T1,tempered,20,1.2,,TMV 41-44 C up to the shower valve,#eda100
 T2,tempered,20,1.2,,Tempered to basin,#eda100

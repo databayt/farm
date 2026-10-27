@@ -254,7 +254,7 @@ def k2_bath(lo: Layout) -> Kit:
              [p.id for p in k.parts if p.step == "S07"], {"F": 16}, 2),
         Step("S08", "K2", "Cement board, membrane and tiles on the wet walls; coved vinyl floor", [], {}, 2),
         Step("S09", "K2", "Set the shower tray, ledge and fixed screen", [], {}, 2),
-        Step("S10", "K2", "Hang the WC in the bathroom, and the basin and mirror cabinet in the wash lobby",
+        Step("S10", "K2", "Hang the WC and the water heater above it, and the basin and mirror cabinet in the wash lobby",
              [p.id for p in k.parts if p.step == "S10"], {"F": 12}, 1),
     ]
     return k
@@ -263,7 +263,7 @@ def k2_bath(lo: Layout) -> Kit:
 # ------------------------------------------------------------------------------- K3 kitchen
 def k3_kitchen(lo: Layout) -> Kit:
     """The galley on the bathroom partition: fridge bay, hob base and sink base from the back wall,
-    an overhead cabinet holding the 80 L heater, and a hood under it. Drawn as a back-wall run
+    an overhead cabinet for storage, and a hood under it. Drawn as a back-wall run
     (x along the galley, y from the partition), then turned into place."""
     k = Kit("K3", "Kitchen", "carpentry", "workshop")
     D = GALLEY_D
@@ -314,7 +314,7 @@ def k3_kitchen(lo: Layout) -> Kit:
     k.steps += [
         Step("S11", "K3", "Assemble the fridge bay, hob base and sink base on their legs along the partition",
              [p.id for p in k.parts if p.step == "S11"], {}, 2),
-        Step("S12", "K3", "Assemble the overhead cabinet; hang it and the heater cradle on the steel rail",
+        Step("S12", "K3", "Assemble the overhead cabinet and hang it on the steel rail",
              [p.id for p in k.parts if p.step == "S12"], {}, 2, "Lift the cabinet up: two people."),
         Step("S13", "K3", "Scribe and fix the worktop; drop in the sink and hob; plinth",
              [p.id for p in k.parts if p.step == "S13"], {"F": 12}, 2),
@@ -488,7 +488,7 @@ def k10_steel(lo: Layout) -> Kit:
                  1, "each", "endbdoors", step="S01"))
     k.buy(Bought("K10-PADS", "Level the corner castings: concrete pads or steel shims (rock corner)", "K10", "steel",
                  "masonry", 4, "each", "pad", step="S01"))
-    k.buy(Bought("K10-RAIL", "Steel hanging rail for wall units + heater bracket", "K10", "steel", "welding", 1,
+    k.buy(Bought("K10-RAIL", "Steel hanging rail for the wall units", "K10", "steel", "welding", 1,
                  "set", "hangrail", step="S12"))
     k.buy(Bought("K10-LOCK", "Keyed lock + secondary bolt for the slider", "K10", "hardware", "glazier", 1, "set",
                  "lock", step="S01"))
