@@ -1,0 +1,692 @@
+<!doctype html>
+<!--
+  The homepage 3D section: the compound from the air, built from src/components/home/compound.json (the
+  numbers the 2D plan draws), seen from the entrance in the north-east and looking south-west toward the
+  lake, so every front shows: the decks and glazing face north, the guest-room doors and the bar hatch
+  face east (D-021). Rendered two ways, after scripts/studio/render/room.html:
+
+    ?mode=line  line drawing in the page's ink        -> public/designs/compound/render/compound-line.png
+    ?mode=real  paint, timber, stone, sun and shadow  -> public/designs/compound/render/compound-real.webp
+
+  Serve the repo root (python3 -m http.server <port>), open this page at 2400 x 1800, and once
+  body[data-ready] is set save the data URL in #out: it has a transparent ground, flattened onto the
+  page colour (#f7f5ef) when it is converted. Containers are ISO sizes; the rest is illustrative.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+html,body{margin:0;background:#f7f5ef}
+#out{display:block;width:2400px;height:1800px}
+</style>
+<script type="importmap">
+{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<img id="out" alt="">
+<script type="module">
+import * as THREE from "three"
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js"
+import { OutlineEffect } from "three/addons/effects/OutlineEffect.js"
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js"
+import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js"
+import { LineMaterial } from "three/addons/lines/LineMaterial.js"
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js"
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
+import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+
+const Q = new URLSearchParams(location.search)
+const LINE = Q.get("mode") !== "real"
+const [FW, FH] = [2400, 1800]
+const C = await (await fetch(`/src/components/home/compound.json?${Date.now()}`)).json()
+const INK = "#2b2a26", PAGE = "#f7f5ef" // the farm theme's soil and chalk
+const HC = 2.591 // a container's height
+// plan (x east, y south) -> three: x = x, y = height, z = y
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true })
+renderer.setClearColor(0xffffff, 0)
+renderer.setPixelRatio(1)
+renderer.setSize(FW, FH)
+renderer.outputColorSpace = THREE.SRGBColorSpace
+if (!LINE) {
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.toneMappingExposure = 1.0
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFShadowMap
+}
+const scene = new THREE.Scene()
+
+// ------------------------------------------------------------ procedural textures (real mode)
+let seed = 11
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+function tex(draw, w = 512, h = 512) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h
+  seed = 11 // each texture draws its own sequence, so editing one never reshuffles another
+  draw(c.getContext("2d"), w, h)
+  const t = new THREE.CanvasTexture(c)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.wrapS = t.wrapT = THREE.RepeatWrapping
+  t.anisotropy = 8
+  return t
+}
+const speckle = (g, w, h, n, light, dark, size = 2) => {
+  for (let i = 0; i < n; i++) {
+    g.fillStyle = rnd() > 0.5 ? light : dark
+    g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * size, 1 + rnd() * size)
+  }
+}
+const T = LINE ? {} : {
+  // one corrugation of a container wall (278 mm), shaded as if lit from the front, over the paint colour
+  corr: tex((g, w, h) => {
+    for (let x = 0; x < w; x++) {
+      const p = x / w
+      const v = p < 0.3 ? 0.95 : p < 0.42 ? 0.95 - (p - 0.3) * 2.2 : p < 0.72 ? 0.69 : p < 0.84 ? 0.69 + (p - 0.72) * 1.5 : 0.87
+      g.fillStyle = `rgb(${Math.round(255 * v)},${Math.round(255 * v)},${Math.round(255 * v)})`
+      g.fillRect(x, 0, 1, h)
+    }
+    for (let i = 0; i < 40; i++) { // weathering streaks running down
+      g.fillStyle = `rgba(60,40,30,${0.02 + rnd() * 0.04})`
+      g.fillRect(rnd() * w, rnd() * h * 0.3, 1 + rnd() * 3, h * (0.3 + rnd() * 0.7))
+    }
+  }, 64, 256),
+  // eucalyptus deck boards, 140 mm wide, along u
+  boards: tex((g, w, h) => {
+    const n = 10, bh = h / n
+    for (let i = 0; i < n; i++) {
+      const k = 0.88 + rnd() * 0.2
+      g.fillStyle = `rgb(${Math.round(196 * k)},${Math.round(139 * k)},${Math.round(85 * k)})`
+      g.fillRect(0, i * bh, w, bh)
+      for (let j = 0; j < 30; j++) {
+        g.fillStyle = `rgba(110,70,35,${0.05 + rnd() * 0.08})`
+        g.fillRect(rnd() * w, i * bh + rnd() * bh, 20 + rnd() * 120, 1)
+      }
+      g.fillStyle = "rgba(60,38,20,0.55)"; g.fillRect(0, i * bh, w, 2) // the gap between boards
+    }
+  }),
+  grass: tex((g, w, h) => {
+    g.fillStyle = "#6f9a4a"; g.fillRect(0, 0, w, h)
+    speckle(g, w, h, 26000, "rgba(170,200,110,0.35)", "rgba(40,70,30,0.35)")
+    g.filter = "blur(24px)" // soft patches, too faint to show the repeat
+    for (let i = 0; i < 12; i++) {
+      g.fillStyle = rnd() > 0.5 ? "rgba(140,170,80,0.06)" : "rgba(50,80,35,0.06)"
+      g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 40 + rnd() * 90, 30 + rnd() * 70, 0, 0, Math.PI * 2); g.fill()
+    }
+    g.filter = "none"
+  }),
+  meadow: tex((g, w, h) => {
+    g.fillStyle = "#8d9a5c"; g.fillRect(0, 0, w, h)
+    speckle(g, w, h, 26000, "rgba(200,190,120,0.35)", "rgba(70,80,40,0.35)")
+    g.filter = "blur(30px)"
+    for (let i = 0; i < 16; i++) {
+      g.fillStyle = rnd() > 0.6 ? "rgba(170,110,70,0.07)" : "rgba(90,110,55,0.07)"
+      g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 40 + rnd() * 100, 30 + rnd() * 80, rnd() * 3, 0, Math.PI * 2); g.fill()
+    }
+    g.filter = "none"
+  }),
+  murram: tex((g, w, h) => {
+    g.fillStyle = "#a8683f"; g.fillRect(0, 0, w, h)
+    speckle(g, w, h, 20000, "rgba(220,170,120,0.35)", "rgba(90,45,25,0.35)")
+  }),
+  // grass pavers: a concrete grid with grass in its cells, 0.4 m a tile
+  pavers: tex((g, w, h) => {
+    g.fillStyle = "#b9b4a8"; g.fillRect(0, 0, w, h)
+    const n = 4, s = w / n
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      g.fillStyle = (i + j) % 2 ? "#6f934a" : "#789c50"
+      g.fillRect(i * s + s * 0.18, j * s + s * 0.18, s * 0.64, s * 0.64)
+    }
+    speckle(g, w, h, 6000, "rgba(255,255,255,0.2)", "rgba(0,0,0,0.15)")
+  }, 256, 256),
+  // stone setts laid in rows, joints offset, warm grey and ochre; 1.2 m a tile
+  setts: tex((g, w, h) => {
+    g.fillStyle = "#6e665a"; g.fillRect(0, 0, w, h)
+    const rows = 10, rh = h / rows
+    for (let r = 0; r < rows; r++) {
+      let x = r % 2 ? -rh / 2 : 0
+      while (x < w) {
+        const sw = rh * (0.8 + rnd() * 0.5)
+        const tone = rnd()
+        g.fillStyle = tone > 0.7 ? "#b59a72" : tone > 0.35 ? "#a39a8c" : "#8f877b"
+        g.beginPath(); g.roundRect(x + 2, r * rh + 2, sw - 4, rh - 4, 5); g.fill()
+        x += sw
+      }
+    }
+  }),
+  // fieldstone: rounded stones of mixed size and tone in darker mortar; 1 m a tile
+  stone: tex((g, w, h) => {
+    g.fillStyle = "#6c6358"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 160; i++) {
+      const x = rnd() * w, y = rnd() * h, rx = 14 + rnd() * 30, ry = 10 + rnd() * 20, tone = rnd()
+      g.fillStyle = tone > 0.66 ? "#a8957a" : tone > 0.33 ? "#9a9184" : "#857a6b"
+      g.beginPath(); g.ellipse(x, y, rx, ry, rnd() * Math.PI, 0, Math.PI * 2); g.fill()
+    }
+  }),
+  water: tex((g, w, h) => {
+    g.fillStyle = "#6b8ea3"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 260; i++) {
+      g.fillStyle = rnd() > 0.5 ? "rgba(220,235,240,0.18)" : "rgba(40,70,90,0.14)"
+      g.fillRect(rnd() * w, rnd() * h, 20 + rnd() * 90, 1 + rnd() * 2)
+    }
+  }),
+}
+// metres one tile of each texture covers [along, across]
+const TILE = { corr: [0.278, 2.6], boards: [1.4, 1.4], grass: [9, 9], meadow: [16, 16], murram: [4, 4],
+  pavers: [0.4, 0.4], setts: [1.2, 1.2], stone: [1, 1], water: [12, 12] }
+const MAP = { saffron: "corr", oxide: "corr", teal: "corr", timber: "boards", lawn: "grass", meadow: "meadow",
+  murram: "murram", pavers: "pavers", setts: "setts", stone: "stone", water: "water" }
+
+// ------------------------------------------------------------ materials
+const PAINT = { saffron: "#d9a21b", oxide: "#8a3227", teal: "#3e8a86" }
+// thin parts get crease lines but no silhouette, so railings and slats stay fine in the line drawing
+const THIN = new Set(["red", "steel", "black", "slat", "cable", "frame-saffron", "frame-oxide", "frame-teal"])
+const MAT = {}
+function mat(name) {
+  if (MAT[name]) return MAT[name]
+  let x
+  if (LINE) {
+    if (name === "glass" || name === "canopy") x = new THREE.MeshBasicMaterial({ color: PAGE, transparent: true, opacity: 0, depthWrite: false })
+    else x = new THREE.MeshBasicMaterial({ color: PAGE, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
+    if (THIN.has(name)) x.userData.outlineParameters = { visible: false }
+    if (name === "bark") x.userData.outlineParameters = { thickness: 0.0011 } // trunks stay slender
+  } else {
+    const std = (o) => new THREE.MeshStandardMaterial(o)
+    const tint = (hex, k) => new THREE.Color(hex).multiplyScalar(k)
+    x = {
+      saffron: () => std({ map: T.corr, color: PAINT.saffron, roughness: 0.55, metalness: 0.15 }),
+      oxide: () => std({ map: T.corr, color: PAINT.oxide, roughness: 0.55, metalness: 0.15 }),
+      teal: () => std({ map: T.corr, color: PAINT.teal, roughness: 0.55, metalness: 0.15 }),
+      "frame-saffron": () => std({ color: tint(PAINT.saffron, 0.86), roughness: 0.5, metalness: 0.2 }),
+      "frame-oxide": () => std({ color: tint(PAINT.oxide, 0.86), roughness: 0.5, metalness: 0.2 }),
+      "frame-teal": () => std({ color: tint(PAINT.teal, 0.86), roughness: 0.5, metalness: 0.2 }),
+      red: () => std({ color: "#7e2f26", roughness: 0.45, metalness: 0.35 }), // railings, door and window frames
+      door: () => std({ color: "#a62b22", roughness: 0.5, metalness: 0.2 }),
+      glass: () => new THREE.MeshPhysicalMaterial({ color: "#d3e3e8", roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.42, depthWrite: false }),
+      canopy: () => new THREE.MeshPhysicalMaterial({ color: "#c7d3cc", roughness: 0.1, transparent: true, opacity: 0.32, depthWrite: false }),
+      inside: () => std({ color: "#3b3631", roughness: 0.9 }),
+      timber: () => std({ map: T.boards, color: "#ffffff", roughness: 0.75 }),
+      slat: () => std({ color: "#b98250", roughness: 0.75 }),
+      stone: () => std({ map: T.stone, color: "#ffffff", roughness: 0.95 }),
+      lawn: () => std({ map: T.grass, color: "#ffffff", roughness: 1 }),
+      meadow: () => std({ map: T.meadow, color: "#ffffff", roughness: 1 }),
+      soil: () => std({ color: "#94573a", roughness: 1 }),
+      murram: () => std({ map: T.murram, color: "#ffffff", roughness: 1 }),
+      pavers: () => std({ map: T.pavers, color: "#ffffff", roughness: 0.95 }),
+      setts: () => std({ map: T.setts, color: "#ffffff", roughness: 0.9 }),
+      water: () => new THREE.MeshPhysicalMaterial({ map: T.water, color: "#ffffff", roughness: 0.14, clearcoat: 0.8, clearcoatRoughness: 0.08 }),
+      steel: () => std({ color: "#b8bdc1", roughness: 0.3, metalness: 0.85 }),
+      black: () => std({ color: "#26272b", roughness: 0.45, metalness: 0.5 }),
+      cable: () => std({ color: "#c9ccd0", roughness: 0.3, metalness: 0.9 }),
+      ash: () => std({ color: "#3a3431", roughness: 1 }),
+      bark: () => std({ color: "#c9baa3", roughness: 0.9 }),
+      leaf: () => std({ color: "#5f7c46", roughness: 0.9 }),
+      leaf2: () => std({ color: "#6f8a52", roughness: 0.9 }),
+      gum: () => std({ color: "#7a8d68", roughness: 0.9 }), // eucalyptus grey-green
+      cushion: () => std({ color: "#e9e3d6", roughness: 0.95 }),
+      white: () => std({ color: "#eeeeec", roughness: 0.3, metalness: 0.4 }),
+      silver: () => std({ color: "#a9adb1", roughness: 0.3, metalness: 0.6 }),
+      tyre: () => std({ color: "#1d1d1f", roughness: 0.9 }),
+      carglass: () => std({ color: "#2e3a42", roughness: 0.1, metalness: 0.5 }),
+    }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
+  }
+  MAT[name] = x
+  return x
+}
+
+// ------------------------------------------------------------ geometry helpers (metres)
+const meshes = []
+let PARENT = scene
+// texture coordinates at true scale: each face takes the texture from its own plane, u along a wall
+// and v up it, or u = x and v = z on a floor
+function worldUV(geo, [tu, tv]) {
+  const pos = geo.attributes.position, nrm = geo.attributes.normal, uv = geo.attributes.uv
+  if (!uv) return
+  for (let i = 0; i < pos.count; i++) {
+    const n = [Math.abs(nrm.getX(i)), Math.abs(nrm.getY(i)), Math.abs(nrm.getZ(i))]
+    const axis = n.indexOf(Math.max(...n))
+    const p = [pos.getX(i), pos.getY(i), pos.getZ(i)]
+    const [a, b] = axis === 0 ? [2, 1] : axis === 2 ? [0, 1] : [0, 2]
+    uv.setXY(i, p[a] / tu, p[b] / tv)
+  }
+  uv.needsUpdate = true
+}
+function add(geo, name, opts = {}) {
+  if (!LINE && MAP[name]) worldUV(geo, TILE[MAP[name]])
+  const mesh = new THREE.Mesh(geo, opts.sides && !LINE ? [mat(name), mat(opts.sides)] : mat(name))
+  mesh.castShadow = !LINE && !opts.noShadow && name !== "glass" && name !== "canopy"
+  mesh.receiveShadow = !LINE
+  if (opts.pos) mesh.position.set(...opts.pos)
+  if (opts.rot) mesh.rotation.set(...opts.rot)
+  if (opts.scale) mesh.scale.set(...opts.scale)
+  if (opts.noEdges) mesh.userData.noEdges = true
+  PARENT.add(mesh)
+  meshes.push(mesh)
+  return mesh
+}
+// a box over a plan rectangle, from height y0 to y1; the corners may come in any order
+function blk(xa, za, xb, zb, y0, y1, name, opts) {
+  const [x0, x1, z0, z1] = [Math.min(xa, xb), Math.max(xa, xb), Math.min(za, zb), Math.max(za, zb)]
+  const geo = new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0)
+  return add(geo, name, { pos: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2], ...opts })
+}
+function rounded(xa, za, xb, zb, y0, y1, r, name, opts) {
+  const [x0, x1, z0, z1] = [Math.min(xa, xb), Math.max(xa, xb), Math.min(za, zb), Math.max(za, zb)]
+  const geo = new RoundedBoxGeometry(x1 - x0, y1 - y0, z1 - z0, 4, r)
+  return add(geo, name, { pos: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2], ...opts })
+}
+function cyl(x, z, r, y0, h, name, seg = 20, rTop = r, opts) {
+  return add(new THREE.CylinderGeometry(rTop, r, h, seg), name, { pos: [x, y0 + h / 2, z], ...opts })
+}
+// a bar between two points [x, y, z] in its parent's frame, square in section
+function bar(a, b, s, name) {
+  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b)
+  const mesh = add(new THREE.BoxGeometry(s, s, A.distanceTo(B)), name, { pos: A.clone().add(B).multiplyScalar(0.5).toArray() })
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), B.sub(A).normalize())
+  return mesh
+}
+// shapes are drawn in the ground plane: u = x, v = -z, then stood up (as room.html does)
+function extrude(shape, y0, h, name, opts = {}) {
+  const geo = new THREE.ExtrudeGeometry(shape, { depth: h, curveSegments: 24, bevelEnabled: false })
+  return add(geo, name, { pos: [0, y0, 0], rot: [-Math.PI / 2, 0, 0], ...opts })
+}
+function rrect(path, [x0, z0, x1, z1], r) {
+  const [u0, u1, v0, v1] = [x0, x1, -z1, -z0]
+  path.moveTo(u0 + r, v0)
+  path.lineTo(u1 - r, v0); path.absarc(u1 - r, v0 + r, r, -Math.PI / 2, 0, false)
+  path.lineTo(u1, v1 - r); path.absarc(u1 - r, v1 - r, r, 0, Math.PI / 2, false)
+  path.lineTo(u0 + r, v1); path.absarc(u0 + r, v1 - r, r, Math.PI / 2, Math.PI, false)
+  path.lineTo(u0, v0 + r); path.absarc(u0 + r, v0 + r, r, Math.PI, 1.5 * Math.PI, false)
+  return path
+}
+const slab = (b, r, y0, h, name, opts) => extrude(rrect(new THREE.Shape(), b, r), y0, h, name, opts)
+function ring(x, z, r, inner, y0, h, name) {
+  const s = new THREE.Shape(); s.absarc(x, -z, r, 0, Math.PI * 2, false)
+  const hole = new THREE.Path(); hole.absarc(x, -z, inner, 0, Math.PI * 2, true)
+  s.holes.push(hole)
+  return extrude(s, y0, h, name)
+}
+// the shore: cubic Béziers through its points (Catmull-Rom), the curve the 2D draws, sampled and cut
+// to the model's width
+function shoreLine(points, x0, x1) {
+  const out = []
+  for (let i = 0; i < points.length - 1; i++) {
+    const [p0, p1, p2, p3] = [points[i - 1] ?? points[i], points[i], points[i + 1], points[i + 2] ?? points[i + 1]]
+    const curve = new THREE.CubicBezierCurve(new THREE.Vector2(...p1),
+      new THREE.Vector2(p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6),
+      new THREE.Vector2(p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6), new THREE.Vector2(...p2))
+    out.push(...curve.getPoints(24).slice(i ? 1 : 0))
+  }
+  const at = (x) => { // the shore's z where it crosses x
+    const k = out.findIndex((p) => p.x >= x), a = out[k - 1] ?? out[k], b = out[k]
+    return new THREE.Vector2(x, a.y + ((b.y - a.y) * (x - a.x)) / (b.x - a.x || 1))
+  }
+  return [at(x0), ...out.filter((p) => p.x > x0 && p.x < x1), at(x1)]
+}
+// build into a group, then place it
+function group(build, pos, rotY = 0) {
+  const g = new THREE.Group()
+  g.position.set(...pos); g.rotation.y = rotY
+  scene.add(g)
+  const prev = PARENT; PARENT = g
+  build()
+  PARENT = prev
+  return g
+}
+
+// ------------------------------------------------------------ the site
+// The model is the plan's frame trimmed to the compound east and west, with the lake carried further
+// out than the plan shows, so the water reads over the shore trees.
+const [MX0, MX1, LAKE] = [-3, 43, 78]
+const shore = shoreLine(C.shore.line, MX0, MX1)
+{
+  // the ground as a model base, cut at the shore; the lake lower, beyond it
+  const s = new THREE.Shape()
+  s.moveTo(MX0, 0); s.lineTo(MX1, 0)
+  for (const p of [...shore].reverse()) s.lineTo(p.x, -p.y)
+  s.lineTo(MX0, 0)
+  extrude(s, -1.2, 1.2, "meadow", { sides: "soil" })
+  const w = new THREE.Shape()
+  w.moveTo(shore[0].x, -shore[0].y)
+  for (const p of shore.slice(1)) w.lineTo(p.x, -p.y)
+  w.lineTo(MX1, -LAKE); w.lineTo(MX0, -LAKE); w.lineTo(shore[0].x, -shore[0].y)
+  extrude(w, -1.2, 0.62, "water", { noShadow: true })
+  if (LINE) { // ripples, as the plan draws them
+    for (let z = 51.5, row = 0; z < LAKE - 1; z += 1.6, row++) {
+      for (let x = MX0 + 0.5 + (row % 3) * 1.8; x < MX1 - 2.6; x += 5.5) blk(x, z - 0.03, x + 2.4, z + 0.03, -0.58, -0.575, "steel", { noShadow: true })
+    }
+  }
+}
+blk(MX0, C.publicRoad[0], MX1, C.publicRoad[1], 0, 0.03, "murram", { noShadow: true })
+
+// the outer gate: fieldstone posts, galvanised five-bar leaves open into the site; the sign wall beside it
+function post([x0, z0, x1, z1], h) {
+  blk(x0, z0, x1, z1, 0, h, "stone")
+  blk(x0 - 0.04, z0 - 0.04, x1 + 0.04, z1 + 0.04, h, h + 0.08, "stone")
+}
+function leaf(len, h, kind) {
+  if (kind === "bars") {
+    for (const y of [0.15, 0.42, 0.69, 0.96, 1.23].map((v) => (v * h) / 1.3)) bar([0, y, 0], [len, y, 0], 0.045, "steel")
+    for (const x of [0.04, len - 0.04]) bar([x, 0.1, 0], [x, h, 0], 0.05, "steel")
+    bar([0.08, 0.15, 0], [len - 0.1, h * 0.9, 0], 0.04, "steel")
+  } else { // eucalyptus slats on a red steel frame
+    for (const y of [0.08, h - 0.05]) bar([0, y, 0], [len, y, 0], 0.06, "red")
+    for (const x of [0.03, len - 0.03]) bar([x, 0.05, 0], [x, h, 0], 0.06, "red")
+    for (let x = 0.12; x < len - 0.08; x += 0.105) blk(x - 0.035, -0.012, x + 0.035, 0.012, 0.12, h - 0.08, "slat")
+  }
+}
+function gate({ x: [l, r], y, post: p }, h, kind) {
+  post([l - p, y - p / 2, l, y + p / 2], h + 0.2)
+  post([r, y - p / 2, r + p, y + p / 2], h + 0.2)
+  const len = (r - l) / 2 - 0.02
+  group(() => leaf(len, h, kind), [l + 0.01, 0.04, y], -Math.PI / 4)
+  group(() => leaf(len, h, kind), [r - 0.01, 0.04, y], -Math.PI * 3 / 4)
+}
+gate(C.gate, 1.3, "bars")
+{
+  const [x0, z0, x1, z1] = C.sign
+  blk(x0, z0, x1, z1, 0, 1.0, "stone")
+  blk(x0 - 0.05, z0 - 0.05, x1 + 0.05, z1 + 0.05, 1.0, 1.08, "stone")
+  blk(x0 + 0.4, z0 - 0.03, x1 - 0.4, z0, 0.35, 0.75, "steel") // the brushed-steel name plate
+}
+
+// green parking: grass pavers, stone strips between the bays, eucalyptus wheel stops, two cars
+{
+  const { box, bays, cars } = C.parking
+  slab(box, 0.4, 0, 0.04, "pavers", { noShadow: true })
+  for (const x of bays.slice(1)) blk(x - 0.05, 6, x + 0.05, box[3], 0.04, 0.07, "stone", { noShadow: true })
+  for (let i = 0; i < bays.length - 1; i++) {
+    const cx = (bays[i] + bays[i + 1]) / 2
+    add(new THREE.CylinderGeometry(0.08, 0.08, 1.6, 12), "slat", { pos: [cx, 0.12, box[3] - 0.45], rot: [0, 0, Math.PI / 2] })
+  }
+  cars.forEach(([cx, z], i) => {
+    const paint = i ? "silver" : "white"
+    rounded(cx - 0.9, z, cx + 0.9, z + 4.3, 0.3, 1.05, 0.18, paint)
+    rounded(cx - 0.8, z + 1.1, cx + 0.8, z + 3.5, 1.0, 1.58, 0.14, "carglass")
+    for (const [wx, wz] of [[-0.82, 0.85], [0.82, 0.85], [-0.82, 3.45], [0.82, 3.45]]) {
+      add(new THREE.CylinderGeometry(0.33, 0.33, 0.22, 18), "tyre", { pos: [cx + wx, 0.33, z + wz], rot: [0, 0, Math.PI / 2] })
+    }
+  })
+}
+
+// the rock road: 4 m of stone setts along the curve from the parking to the inner gate
+{
+  const [a, b, c, d] = C.rockRoad.curve.map(([x, z]) => new THREE.Vector2(x, z))
+  const curve = new THREE.CubicBezierCurve(a, b, c, d)
+  const half = C.rockRoad.width / 2
+  const pts = curve.getSpacedPoints(32)
+  const side = (k) => pts.map((p, i) => {
+    const t = curve.getTangentAt(i / 32)
+    return new THREE.Vector2(p.x - t.y * half * k, p.y + t.x * half * k)
+  })
+  const L = side(1), R = side(-1).reverse()
+  const s = new THREE.Shape(); s.moveTo(L[0].x, -L[0].y)
+  for (const p of [...L.slice(1), ...R]) s.lineTo(p.x, -p.y)
+  s.lineTo(L[0].x, -L[0].y)
+  extrude(s, 0, 0.05, "setts", { noShadow: true })
+}
+gate(C.innerGate, 1.6, "slats")
+
+// the courtyard lawn, the stone fire pit already on site, stepping stones from the inner gate
+{
+  const { box, r, firePit: [px, pz, pr, pin], stones } = C.courtyard
+  slab(box, r, 0, 0.035, "lawn", { noShadow: true })
+  ring(px, pz, pr, pin, 0, 0.5, "stone")
+  cyl(px, pz, pin, 0.02, 0.06, "ash", 32)
+  for (const [x, z] of stones) slab([x - 0.3, z - 0.2, x + 0.3, z + 0.2], 0.12, 0.035, 0.03, "stone", { noShadow: true })
+}
+
+// ------------------------------------------------------------ containers
+// The steel box: walls and roof a hair inside the corner posts and rails, as on a real container.
+function container([x0, z0, x1, z1], paint, y0) {
+  const y1 = y0 + HC, e = 0.02, fr = `frame-${paint}`
+  blk(x0 + e, z0 + e, x1 - e, z1 - e, y0 + 0.14, y1 - 0.1, paint)
+  for (const cx of [x0, x1]) for (const cz of [z0, z1]) {
+    const sx = cx === x0 ? 1 : -1, sz = cz === z0 ? 1 : -1
+    blk(cx, cz, cx + sx * 0.15, cz + sz * 0.15, y0, y1, fr)
+  }
+  for (const [y, t] of [[y0, 0.14], [y1 - 0.1, 0.1]]) {
+    blk(x0, z0, x1, z0 + 0.12, y, y + t, fr); blk(x0, z1 - 0.12, x1, z1, y, y + t, fr)
+    blk(x0, z0, x0 + 0.12, z1, y, y + t, fr); blk(x1 - 0.12, z0, x1, z1, y, y + t, fr)
+  }
+}
+// the cargo doors at one end: four locking bars down the end wall
+function cargoDoors(end, [x0, z0, x1, z1], y0) {
+  const across = end === "north" || end === "south"
+  const at = { north: z0, south: z1, west: x0, east: x1 }[end], out = end === "north" || end === "west" ? -1 : 1
+  const [a0, a1] = across ? [x0, x1] : [z0, z1]
+  for (const k of [0.2, 0.36, 0.64, 0.8]) {
+    const a = a0 + (a1 - a0) * k
+    across ? cyl(a, at + out * 0.04, 0.022, y0 + 0.2, HC - 0.4, "steel", 8)
+      : cyl(at + out * 0.04, a, 0.022, y0 + 0.2, HC - 0.4, "steel", 8)
+  }
+}
+// an opening in a wall. wall: { axis: "x" (a wall facing east or west) | "z", at, out: +1 | -1 };
+// along the wall from a0 to a1, from height b0 to b1
+function opening(wall, a0, a1, b0, b1, kind) {
+  const put = (u0, u1, v0, v1, w0, w1, name) => wall.axis === "x"
+    ? blk(wall.at + wall.out * w0, u0, wall.at + wall.out * w1, u1, v0, v1, name)
+    : blk(u0, wall.at + wall.out * w0, u1, wall.at + wall.out * w1, v0, v1, name)
+  const f = 0.06
+  const fill = kind === "door" ? "door" : "glass"
+  if (kind !== "door") put(a0, a1, b0, b1, -0.005, 0.01, "inside")
+  put(a0, a1, b0, b1, 0.012, 0.03, fill)
+  if (kind === "door") put(a0 + 0.18, a1 - 0.18, b0 + (b1 - b0) * 0.55, b1 - 0.2, 0.03, 0.04, "glass")
+  put(a0 - f, a0, b0, b1 + f, 0, 0.055, "red"); put(a1, a1 + f, b0, b1 + f, 0, 0.055, "red")
+  put(a0, a1, b1, b1 + f, 0, 0.055, "red")
+  if (kind !== "door") put(a0, a1, b0 - f, b0, 0, 0.07, "red")
+  if (kind === "barred") for (let a = a0 + 0.2; a < a1 - 0.1; a += 0.2) put(a - 0.012, a + 0.012, b0, b1, 0.035, 0.06, "red")
+  if (kind === "glazed") { // sliding panels: a mullion every 1.5 m or so
+    const n = Math.max(2, Math.round((a1 - a0) / 1.5))
+    for (let i = 1; i < n; i++) { const a = a0 + ((a1 - a0) * i) / n; put(a - 0.03, a + 0.03, b0, b1, 0.01, 0.05, "red") }
+  }
+}
+const units = Object.fromEntries(C.units.map((u) => [u.id, u]))
+
+// the bar: a 20 ft container on a stone plinth, its hatch open onto the courtyard under a propped flap
+{
+  const u = units.bar, [x0, z0, x1, z1] = u.box, y0 = u.plinth, [h0, h1] = u.hatch
+  blk(x0 - 0.1, z0 - 0.1, x1 + 0.1, z1 + 0.1, 0, y0, "stone")
+  container(u.box, u.paint, y0)
+  cargoDoors("north", u.box, y0)
+  const [b0, b1] = [y0 + 1.05, y0 + 2.15]
+  blk(x1 - 0.01, h0, x1 + 0.005, h1, b0, b1, "inside")
+  blk(x1, h0 - 0.06, x1 + 0.05, h1 + 0.06, b1, b1 + 0.06, "red")
+  blk(x1, h0, x1 + 0.45, h1, b0 - 0.06, b0, "timber") // the counter
+  group(() => blk(0, 0, 0.035, h1 - h0, -1.0, 0, u.paint), [x1, b1 + 0.03, h0], 0).rotation.z = 2.0 // the flap, propped up
+  for (const z of [h0 + 0.1, h1 - 0.1]) bar([x1, b0 + 0.1, z], [x1 + 0.84, b1 + 0.42, z], 0.025, "black")
+  for (const z of [h0 + 0.5, (h0 + h1) / 2, h1 - 0.5]) {
+    cyl(x1 + 0.95, z, 0.03, 0, 0.72, "black", 8)
+    cyl(x1 + 0.95, z, 0.17, 0.72, 0.05, "slat", 20)
+  }
+}
+
+// the guest rooms: two 40 ft containers joined on a stone plinth, three doors and barred windows onto a
+// timber veranda under a slatted shade
+{
+  const u = units.rooms, [x0, z0, x1, z1] = u.box, y0 = u.plinth, mid = (x0 + x1) / 2
+  blk(x0 - 0.1, z0 - 0.1, x1 + 0.1, z1 + 0.1, 0, y0, "stone")
+  container([x0, z0, mid, z1], u.paint, y0)
+  container([mid, z0, x1, z1], u.paint, y0)
+  cargoDoors("north", [x0, z0, mid, z1], y0); cargoDoors("north", [mid, z0, x1, z1], y0)
+  const room = (z1 - z0) / u.rooms, wall = { axis: "x", at: x1, out: 1 }
+  const v = u.veranda
+  blk(x1, z0, x1 + v, z1, 0.12, y0 + 0.12, "timber")
+  for (let k = 0; k < u.rooms; k++) {
+    const z = z0 + k * room
+    opening(wall, z + 0.5, z + 1.4, y0 + 0.16, y0 + 2.1, "door")
+    opening(wall, z + 2.2, z + 3.4, y0 + 0.95, y0 + 2.0, "barred")
+    blk(x1 + v, z + 0.4, x1 + v + 0.4, z + 1.5, 0, 0.2, "timber") // a step down from each door
+  }
+  const top = y0 + 2.25
+  for (let z = z0 + 0.1; z <= z1 - 0.05; z += (z1 - z0 - 0.2) / 4) blk(x1 + v - 0.14, z - 0.05, x1 + v - 0.04, z + 0.05, y0 + 0.12, top, "slat")
+  blk(x1 + v - 0.16, z0, x1 + v - 0.02, z1, top, top + 0.12, "slat")
+  for (let z = z0 + 0.12; z < z1 - 0.05; z += 0.26) blk(x1, z - 0.03, x1 + v, z + 0.03, top + 0.12, top + 0.17, "slat")
+}
+
+// the row along the south of the courtyard: three 20 ft containers on raised steel decks facing north
+function rowUnit(u) {
+  const [x0, z0, x1, z1] = u.box, y0 = u.raised, top = y0 + HC, cx = (x0 + x1) / 2
+  const front = z0 - u.deck
+  // the steel frame the container and its deck stand on
+  for (const x of [x0 + 0.1, cx, x1 - 0.1]) for (const z of [front + 0.1, z0 + 0.1, z1 - 0.1]) blk(x - 0.05, z - 0.05, x + 0.05, z + 0.05, 0, y0 - 0.1, "red")
+  blk(x0, front, x1, z0, y0 - 0.1, y0, "timber")
+  blk(x0, front, x1, front + 0.08, y0 - 0.22, y0 - 0.1, "red")
+  container(u.box, u.paint, y0)
+  cargoDoors("west", u.box, y0)
+  // railings on three sides, open at the steps
+  const rail = (a, b) => {
+    const len = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(1, Math.ceil(len / 1.4))
+    for (let i = 0; i <= n; i++) {
+      const [x, z] = [a[0] + ((b[0] - a[0]) * i) / n, a[1] + ((b[1] - a[1]) * i) / n]
+      blk(x - 0.025, z - 0.025, x + 0.025, z + 0.025, y0, y0 + 1.0, "red")
+    }
+    bar([a[0], y0 + 1.0, a[1]], [b[0], y0 + 1.0, b[1]], 0.05, "red")
+    bar([a[0], y0 + 0.5, a[1]], [b[0], y0 + 0.5, b[1]], 0.03, "red")
+  }
+  const r = front + 0.03
+  rail([x0 + 0.03, z0], [x0 + 0.03, r]); rail([x0 + 0.03, r], [cx - 0.62, r])
+  rail([cx + 0.62, r], [x1 - 0.03, r]); rail([x1 - 0.03, r], [x1 - 0.03, z0])
+  for (let k = 1; k <= 3; k++) blk(cx - 0.6, front - 0.28 * (4 - k), cx + 0.6, front - 0.28 * (3 - k), 0, 0.2 * k, "timber")
+  const wall = { axis: "z", at: z0, out: -1 }
+  if (u.terrace) {
+    opening(wall, cx - 1.5, cx + 1.5, y0 + 0.16, y0 + 2.25, "glazed")
+    // the tinted clear canopy over the deck, on a slim steel edge
+    blk(x0, front, x1, z0, y0 + 2.42, y0 + 2.45, "canopy", { noShadow: true })
+    blk(x0, front, x1, front + 0.05, y0 + 2.38, y0 + 2.45, "black")
+    for (const x of [x0 + 0.05, x1 - 0.05]) blk(x - 0.025, front, x + 0.025, front + 0.05, y0 + 1.0, y0 + 2.38, "black")
+    // the open roof terrace behind a post-and-rail guardrail with stainless cables, two loungers
+    const [a0, a1, b0, b1] = [x0 + 0.1, x1 - 0.1, z0 + 0.1, z1 - 0.1]
+    const gap = b1 - 0.9 // the stair lands at the south-east corner
+    const posts = [[a0, b0], [cx, b0], [a1, b0], [a0, b1], [cx, b1], [a1, b1], [a0, (b0 + b1) / 2], [a1, gap]]
+    for (const [x, z] of posts) blk(x - 0.025, z - 0.025, x + 0.025, z + 0.025, top, top + 1.05, "black")
+    for (const [p, q] of [[[a0, b0], [a1, b0]], [[a0, b1], [a1, b1]], [[a0, b0], [a0, b1]], [[a1, b0], [a1, gap]]]) {
+      bar([p[0], top + 1.07, p[1]], [q[0], top + 1.07, q[1]], 0.07, "slat")
+      for (const h of [0.35, 0.7]) bar([p[0], top + h, p[1]], [q[0], top + h, q[1]], 0.008, "cable")
+    }
+    for (const x of [x0 + 0.9, x0 + 1.75]) {
+      blk(x - 0.32, z0 + 0.4, x + 0.32, z0 + 1.55, top, top + 0.3, "slat")
+      blk(x - 0.3, z0 + 0.45, x + 0.3, z0 + 1.5, top + 0.3, top + 0.36, "cushion")
+      group(() => blk(-0.3, 0, 0.3, 0.06, 0, 0.7, "cushion"), [x, top + 0.3, z0 + 1.5], 0).rotation.x = 0.5
+    }
+    // a slim steel stair up the east end to the roof
+    const [s0, s1] = [x1 + 0.08, x1 + 0.72], [t0, t1] = [z0 + 0.25, z1 - 0.2]
+    for (const x of [s0, s1]) bar([x, 0, t0], [x, top, t1], 0.05, "black")
+    for (let i = 1; i <= 13; i++) {
+      const k = i / 14, z = t0 + (t1 - t0) * k, y = top * k
+      blk(s0, z - 0.09, s1, z + 0.09, y - 0.025, y, "black")
+    }
+  } else { // the office: a glazed door, a window behind a slatted timber screen
+    opening(wall, cx - 1.6, cx - 0.7, y0 + 0.16, y0 + 2.1, "door")
+    opening(wall, cx - 0.2, cx + 1.4, y0 + 0.9, y0 + 2.0, "glazed")
+    for (let x = cx - 0.3; x <= cx + 1.5; x += 0.12) blk(x - 0.025, z0 - 0.32, x + 0.025, z0 - 0.27, y0 + 0.6, y0 + 2.3, "slat")
+    blk(cx - 0.35, z0 - 0.33, cx + 1.55, z0 - 0.26, y0 + 2.3, y0 + 2.36, "slat")
+  }
+}
+for (const u of C.units.filter((u) => u.kind === "20" && u.front === "north")) rowUnit(u)
+
+// the study room: a 40 ft container on a stone plinth, a band of glazed doors behind timber louvres onto
+// a wide deck with a broad step
+{
+  const u = units.study, [x0, z0, x1, z1] = u.box, y0 = u.plinth
+  blk(x0 - 0.1, z0 - 0.1, x1 + 0.1, z1 + 0.1, 0, y0, "stone")
+  container(u.box, u.paint, y0)
+  cargoDoors("west", u.box, y0)
+  opening({ axis: "z", at: z0, out: -1 }, x0 + 0.6, x1 - 0.6, y0 + 0.16, y0 + 2.25, "glazed")
+  for (let x = x0 + 0.75; x < x1 - 0.6; x += 0.45) blk(x - 0.03, z0 - 0.42, x + 0.03, z0 - 0.3, y0 + 0.2, y0 + 2.4, "slat")
+  blk(x0 + 0.5, z0 - 0.44, x1 - 0.5, z0 - 0.28, y0 + 2.4, y0 + 2.5, "slat")
+  blk(x0, z0 - u.deck, x1, z0, 0.12, y0, "timber")
+  blk(x0 + 2, z0 - u.deck - 0.4, x1 - 2, z0 - u.deck, 0, 0.14, "timber")
+}
+
+// ------------------------------------------------------------ trees
+function eucalyptus(x, z) {
+  const h = 8.5 + rnd() * 3, lean = (rnd() - 0.5) * 0.4
+  cyl(x, z, 0.14, 0, h * 0.82, "bark", 10, 0.07)
+  for (const [k, r] of [[0.58, 1.05], [0.74, 1.25], [0.88, 0.95]]) {
+    const rr = r * (0.85 + rnd() * 0.3)
+    add(new THREE.SphereGeometry(rr, 18, 12), rnd() > 0.5 ? "gum" : "leaf2",
+      { pos: [x + lean * k + (rnd() - 0.5) * 0.5, h * k, z + (rnd() - 0.5) * 0.5], scale: [1, 1.55, 1] })
+  }
+}
+function shadeTree(x, z, r) {
+  cyl(x, z, 0.14, 0, 2.8, "bark", 10, 0.1)
+  add(new THREE.SphereGeometry(r, 22, 14), "leaf", { pos: [x, 3.6, z], scale: [1, 0.6, 1] })
+  add(new THREE.SphereGeometry(r * 0.6, 18, 12), "leaf2", { pos: [x + r * 0.35, 4.2, z - r * 0.2], scale: [1, 0.7, 1] })
+}
+seed = 29
+{
+  const { y, from, to, step } = C.shore.trees
+  for (let i = 0; from + i * step <= to + 1e-6; i++) {
+    const x = from + i * step, z = y + (rnd() - 0.5) * 0.8
+    if (x > MX0 + 0.8 && x < MX1 - 0.8) eucalyptus(x, z)
+  }
+}
+for (const [x, z, r] of C.shadeTrees) shadeTree(x, z, r)
+
+// ------------------------------------------------------------ camera: from the entrance side, high in the north-east
+const target = new THREE.Vector3(22, 0, 30)
+const [az, el, dist] = [THREE.MathUtils.degToRad(66), THREE.MathUtils.degToRad(40), 120]
+const camera = new THREE.PerspectiveCamera(26, FW / FH, 1, 500)
+camera.position.set(target.x + dist * Math.cos(el) * Math.cos(az), dist * Math.sin(el), target.z - dist * Math.cos(el) * Math.sin(az))
+camera.lookAt(target)
+camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+scene.updateMatrixWorld(true)
+const bb = new THREE.Box3()
+for (const o of meshes) bb.expandByObject(o)
+let px = [Infinity, Infinity, -Infinity, -Infinity]
+for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
+  const p = new THREE.Vector3(xx, yy, zz).project(camera)
+  const X = ((p.x + 1) / 2) * FW, Y = ((1 - p.y) / 2) * FH
+  px = [Math.min(px[0], X), Math.min(px[1], Y), Math.max(px[2], X), Math.max(px[3], Y)]
+}
+let w = (px[2] - px[0]) * 1.03, h = (px[3] - px[1]) * 1.05
+if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
+camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+
+// ------------------------------------------------------------ render
+if (LINE) {
+  // crease lines from the geometry, silhouettes from the outline effect, both in the page's ink
+  const lineMat = new LineMaterial({ color: INK, linewidth: 1.25 })
+  lineMat.resolution.set(FW, FH)
+  lineMat.userData.outlineParameters = { visible: false }
+  for (const o of meshes) {
+    if (o.userData.noEdges) continue
+    const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
+    const l = new LineSegments2(g, lineMat)
+    l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
+    scene.add(l)
+  }
+  const ink = new THREE.Color(INK)
+  const effect = new OutlineEffect(renderer, { defaultThickness: 0.0024, defaultColor: [ink.r, ink.g, ink.b] })
+  effect.render(scene, camera)
+} else {
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  scene.environmentIntensity = 0.35
+  scene.add(new THREE.HemisphereLight(0xeef3ff, 0x8a7a5a, 0.9))
+  const sun = new THREE.DirectionalLight(0xfff0d8, 3.0)
+  sun.position.set(target.x + 60, 50, target.z - 22)
+  sun.target.position.copy(target)
+  sun.castShadow = true
+  sun.shadow.mapSize.set(4096, 4096)
+  Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 45, bottom: -45, near: 1, far: 200 })
+  sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03; sun.shadow.radius = 3
+  scene.add(sun, sun.target)
+  const composer = new EffectComposer(renderer)
+  composer.setSize(FW, FH)
+  composer.addPass(new RenderPass(scene, camera))
+  const ao = new GTAOPass(scene, camera, FW, FH)
+  ao.output = GTAOPass.OUTPUT.Default
+  ao.blendIntensity = 0.8
+  ao.updateGtaoMaterial({ radius: 0.6, distanceExponent: 1.5, thickness: 1.5, scale: 1 })
+  composer.addPass(ao)
+  composer.addPass(new OutputPass())
+  composer.render()
+}
+document.getElementById("out").src = renderer.domElement.toDataURL("image/png")
+document.body.dataset.ready = "1"
+</script>
+</body>
+</html>
