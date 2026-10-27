@@ -25,8 +25,8 @@
     { "id": "studio-one", "label": "STUDIO", "kind": "20", "paint": "oxide", "box": [21.8, 32.004, 27.858, 34.442], "front": "north", "raised": 0.8, "deck": 1.5, "terrace": true },
     { "id": "studio-two", "label": "STUDIO", "kind": "20", "paint": "oxide", "box": [29.1, 32.004, 35.158, 34.442], "front": "north", "raised": 0.8, "deck": 1.5, "terrace": true },
     { "id": "study", "label": "STUDY ROOM", "kind": "40", "paint": "teal", "box": [5.0, 41.5, 17.192, 43.938], "front": "north", "plinth": 0.3, "deck": 2.0 },
-    { "id": "galley", "label": "GALLEY", "kind": "20-galley", "paint": "teal", "box": [20.0, 41.5, 26.058, 43.938], "front": "north", "plinth": 0.3 },
-    { "id": "bath", "label": "BATH", "kind": "10-bath", "paint": "teal", "box": [29.5, 41.5, 32.491, 43.938], "front": "north", "plinth": 0.3 }
+    { "id": "galley", "label": "GALLEY", "kind": "40-galley", "paint": "teal", "box": [19.5, 41.5, 31.692, 43.938], "front": "north", "plinth": 0.3 },
+    { "id": "bath", "label": "PUBLIC BATHROOM", "kind": "20-bath", "paint": "teal", "box": [34.5, 41.5, 40.558, 43.938], "front": "north", "plinth": 0.3 }
   ],
   "shore": {
     "trees": { "y": 46.6, "from": -6.4, "to": 54.5, "step": 2.9 },
