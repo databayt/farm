@@ -1,0 +1,539 @@
+<!doctype html>
+<!--
+  /en/study-room's 3D, in the pattern of the camp's (scripts/site/render/camp.html) and the studio's
+  (scripts/studio/render/room.html): the study room seen from the deck with its front wall off and no roof,
+  built from src/components/study-room/study-room.json (the numbers the 2D draws). The box follows the
+  compound's study room (scripts/site/render/compound.html): a teal 40 ft container on a stone plinth, a 2 m
+  deck with a broad step; the glazed doors and their louvres are left off so the room shows, and the front
+  wall is cut low at both ends. Furniture in the studio's Medium Oak, the floor in its oak planks.
+  Rendered two ways:
+
+    ?mode=line  line drawing on a transparent ground   -> public/designs/study-room/render/study-room-line.png
+    ?mode=real  materials, daylight and shadow         -> public/designs/study-room/render/study-room-real.webp
+
+  Serve the repo root on a spare port, open this page at 2400 x 1000, and once body[data-ready] is set
+  save the data URL in #out.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+html,body{margin:0;background:#fff}
+#out{display:block;width:2400px;height:1000px}
+</style>
+<script type="importmap">
+{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<img id="out" alt="">
+<script type="module">
+import * as THREE from "three"
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js"
+import { OutlineEffect } from "three/addons/effects/OutlineEffect.js"
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js"
+import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js"
+import { LineMaterial } from "three/addons/lines/LineMaterial.js"
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js"
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
+import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+
+const Q = new URLSearchParams(location.search)
+const LINE = Q.get("mode") !== "real"
+const [FW, FH] = [2400, 1000]
+const C = await (await fetch(`/src/components/study-room/study-room.json?${Date.now()}`)).json()
+const INK = "#2b2a26", PAGE = "#ffffff"
+// plan (x right, y toward the glazing) -> three: x = x, y = height, z = y; the camera stands on the deck side, at +z
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true })
+renderer.setClearColor(0xffffff, 0)
+renderer.setPixelRatio(1)
+renderer.setSize(FW, FH)
+renderer.outputColorSpace = THREE.SRGBColorSpace
+if (!LINE) {
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+}
+const scene = new THREE.Scene()
+
+// ------------------------------------------------------------ procedural textures (real mode)
+let seed = 7
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+function tex(draw, w = 512, h = 512) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h
+  seed = 7 // each texture draws its own sequence, so editing one never reshuffles another
+  draw(c.getContext("2d"), w, h)
+  const t = new THREE.CanvasTexture(c)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.wrapS = t.wrapT = THREE.RepeatWrapping
+  t.anisotropy = 8
+  return t
+}
+const T = LINE ? {} : {
+  // one corrugation of a container wall (278 mm), shaded as if lit from the front (compound.html)
+  corr: tex((g, w, h) => {
+    for (let x = 0; x < w; x++) {
+      const p = x / w
+      const v = p < 0.3 ? 0.95 : p < 0.42 ? 0.95 - (p - 0.3) * 2.2 : p < 0.72 ? 0.69 : p < 0.84 ? 0.69 + (p - 0.72) * 1.5 : 0.87
+      g.fillStyle = `rgb(${Math.round(255 * v)},${Math.round(255 * v)},${Math.round(255 * v)})`
+      g.fillRect(x, 0, 1, h)
+    }
+    for (let i = 0; i < 40; i++) {
+      g.fillStyle = `rgba(60,40,30,${0.02 + rnd() * 0.04})`
+      g.fillRect(rnd() * w, rnd() * h * 0.3, 1 + rnd() * 3, h * (0.3 + rnd() * 0.7))
+    }
+  }, 64, 256),
+  // eucalyptus deck boards (compound.html)
+  boards: tex((g, w, h) => {
+    g.fillStyle = "#c08a55"; g.fillRect(0, 0, w, h)
+    for (let j = 0; j < 90; j++) {
+      g.fillStyle = `rgba(110,70,35,${0.05 + rnd() * 0.08})`
+      g.fillRect(rnd() * w, rnd() * h, 30 + rnd() * 160, 1 + rnd())
+    }
+  }),
+  // pine under a medium-oak finish, after the studio (room.html): golden amber, soft patina, fine grain
+  pine: tex((g, w, h) => {
+    g.fillStyle = "#ae7a48"; g.fillRect(0, 0, w, h)
+    for (let s = 0; s < 5; s++) {
+      g.fillStyle = rnd() > 0.5 ? `rgba(232,186,122,${0.05 + rnd() * 0.1})` : `rgba(138,84,38,${0.04 + rnd() * 0.08})`
+      g.fillRect(0, (s * h) / 5, w, h / 5)
+    }
+    g.filter = "blur(12px)"
+    for (let i = 0; i < 60; i++) {
+      g.fillStyle = rnd() > 0.45 ? `rgba(146,88,38,${0.07 + rnd() * 0.12})` : `rgba(238,196,132,${0.07 + rnd() * 0.12})`
+      g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 50 + rnd() * 170, 8 + rnd() * 24, 0, 0, Math.PI * 2); g.fill()
+    }
+    g.filter = "none"
+    for (let i = 0; i < 2000; i++) {
+      const x = rnd() * w, y = rnd() * h, len = 20 + rnd() * 110
+      g.strokeStyle = rnd() > 0.35 ? `rgba(116,70,30,${0.04 + rnd() * 0.08})` : `rgba(244,206,148,${0.04 + rnd() * 0.07})`
+      g.lineWidth = 0.6 + rnd() * 0.7
+      g.beginPath(); g.moveTo(x, y); g.lineTo(x + len, y + (rnd() - 0.5) * 1.5); g.stroke()
+    }
+  }, 1024, 512),
+  // natural oak planks, as the studio's floor (room.html): ~133 mm boards, 0.9-1.8 m long, no knots
+  planks: tex((g, w, h) => {
+    const tones = ["#b98b5b", "#c39663", "#a97c4f", "#bd9264", "#ae8255", "#c79b6a", "#b38556"]
+    const rows = 18, rh = h / rows
+    for (let r = 0; r < rows; r++) {
+      let x = -Math.floor(rnd() * 700)
+      while (x < w) {
+        const len = 384 + Math.floor(rnd() * 384), y0 = r * rh
+        g.fillStyle = tones[Math.floor(rnd() * tones.length)]; g.fillRect(x, y0, len, rh)
+        for (let i = 0; i < 7; i++) {
+          const y = y0 + rnd() * rh
+          g.strokeStyle = `rgba(110,72,38,${0.08 + rnd() * 0.14})`; g.lineWidth = 0.7 + rnd() * 1.4
+          g.beginPath(); g.moveTo(x, y)
+          g.bezierCurveTo(x + len * 0.3, y + (rnd() - 0.5) * 6, x + len * 0.7, y + (rnd() - 0.5) * 6, x + len, y + (rnd() - 0.5) * 4)
+          g.stroke()
+        }
+        g.fillStyle = "rgba(70,44,22,0.55)"; g.fillRect(x, y0, 2, rh)
+        x += len
+      }
+      g.fillStyle = "rgba(70,44,22,0.5)"; g.fillRect(0, r * rh, w, 2)
+    }
+  }, 2048, 1024),
+  grass: tex((g, w, h) => {
+    g.fillStyle = "#6f9a4a"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 26000; i++) {
+      g.fillStyle = rnd() > 0.5 ? "rgba(170,200,110,0.35)" : "rgba(40,70,30,0.35)"
+      g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
+    }
+  }),
+  stone: tex((g, w, h) => {
+    g.fillStyle = "#9c8f7e"; g.fillRect(0, 0, w, h)
+    for (let row = 0; row < 6; row++) for (let k = 0; k < 6; k++) {
+      const x = (k + (row % 2) * 0.5) * (w / 6), y = row * (h / 6)
+      const v = 120 + rnd() * 60
+      g.fillStyle = `rgb(${v + 20},${v + 8},${v - 10})`
+      g.beginPath(); g.roundRect(x + 3, y + 3, w / 6 - 6, h / 6 - 6, 10); g.fill()
+    }
+  }),
+  rug: tex((g, w, h) => {
+    const bands = ["#b5523a", "#e6d8bd", "#2f4f5a", "#e6d8bd", "#c9973a"]
+    for (let i = 0; i < 20; i++) { g.fillStyle = bands[i % bands.length]; g.fillRect(0, (i * h) / 20, w, h / 20 + 1) }
+  }, 256, 256),
+  // the slatted panel behind the screen: dark gaps between oak slats
+  slats: tex((g, w, h) => {
+    g.fillStyle = "#3a2a1c"; g.fillRect(0, 0, w, h)
+    for (let x = 0; x < w; x += 16) { g.fillStyle = rnd() > 0.5 ? "#c08a55" : "#b47f4c"; g.fillRect(x, 0, 11, h) }
+  }, 256, 64),
+}
+// metres one tile covers [along, across]
+const TILE = { corr: [0.278, 2.6], boards: [1.4, 1.4], pine: [1.2, 0.6], planks: [4.8, 2.4], grass: [6, 6], stone: [1.2, 0.6] }
+const MAP = { teal: "corr", "rib-teal": "corr", timber: "boards", pine: "pine", floor: "planks", lawn: "grass", stone: "stone" }
+
+// ------------------------------------------------------------ materials
+const PAINT = C.container.paint
+// thin parts get crease lines but no silhouette, so slats and cords stay fine in the line drawing
+const THIN = new Set(["rib-teal", "cord", "leg", "black", "book"])
+const MAT = {}
+function mat(name) {
+  if (MAT[name]) return MAT[name]
+  let x
+  if (LINE) {
+    if (name === "glass") x = new THREE.MeshBasicMaterial({ color: PAGE, transparent: true, opacity: 0, depthWrite: false })
+    else if (name === "cut") x = new THREE.MeshBasicMaterial({ color: "#2b2a26" })
+    else x = new THREE.MeshBasicMaterial({ color: PAGE, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
+    if (THIN.has(name)) x.userData.outlineParameters = { visible: false }
+  } else {
+    const std = (o) => new THREE.MeshStandardMaterial(o)
+    x = {
+      teal: () => std({ map: T.corr, color: PAINT, roughness: 0.55, metalness: 0.15 }),
+      "rib-teal": () => std({ map: T.corr, color: PAINT, roughness: 0.55, metalness: 0.15 }),
+      frame: () => std({ color: new THREE.Color(PAINT).multiplyScalar(0.86), roughness: 0.5, metalness: 0.2 }),
+      cut: () => std({ color: "#2c2c2c", roughness: 0.9 }),
+      wall: () => std({ color: "#f0ece3", roughness: 0.88 }), // off-white painted linings, as the studio
+      floor: () => std({ map: T.planks, color: "#d1c8c1", roughness: 0.55 }),
+      pine: () => std({ map: T.pine, roughness: 0.62 }), // Medium Oak
+      leg: () => std({ map: T.pine, roughness: 0.62 }),
+      timber: () => std({ map: T.boards, roughness: 0.75 }),
+      deckframe: () => std({ color: "#7d5634", roughness: 0.8 }),
+      stone: () => std({ map: T.stone, roughness: 0.95 }),
+      lawn: () => std({ map: T.grass, roughness: 1 }),
+      seat: () => std({ color: "#d8cfbd", roughness: 0.95 }), // oat-coloured seat pads
+      fabric: () => std({ color: "#b8863a", roughness: 0.95 }), // the armchairs, a warm ochre weave
+      cushion: () => std({ color: "#e9e3d6", roughness: 0.95 }),
+      rug: () => std({ map: T.rug, roughness: 1 }),
+      slats: () => std({ map: T.slats, roughness: 0.7 }),
+      screen: () => std({ color: "#101114", roughness: 0.15, metalness: 0.4 }),
+      board: () => std({ color: "#f7f7f5", roughness: 0.25 }),
+      alu: () => std({ color: "#b9bcc0", roughness: 0.35, metalness: 0.8 }),
+      white: () => std({ color: "#f3f2ee", roughness: 0.5 }),
+      black: () => std({ color: "#26272b", roughness: 0.45, metalness: 0.5 }),
+      cord: () => std({ color: "#26272b", roughness: 0.6 }),
+      rattan: () => std({ color: "#c49a62", roughness: 0.85, side: THREE.DoubleSide }),
+      lamp: () => std({ color: "#fff3d6", roughness: 0.3, emissive: "#ffcf7a", emissiveIntensity: 1.4 }),
+      shade: () => std({ color: "#efe6d3", roughness: 0.9, emissive: "#ffd9a0", emissiveIntensity: 0.35, side: THREE.DoubleSide }),
+      pot: () => std({ color: "#d9d4cc", roughness: 0.8 }),
+      terracotta: () => std({ color: "#b8693f", roughness: 0.85 }),
+      leaf: () => std({ color: "#4f7d3a", roughness: 0.7 }),
+      leaf2: () => std({ color: "#3f6b30", roughness: 0.7 }),
+      laptop: () => std({ color: "#9ea2a7", roughness: 0.35, metalness: 0.7 }),
+      book: () => std({ color: "#888888", roughness: 0.8 }),
+      glass: () => new THREE.MeshPhysicalMaterial({ color: "#ffffff", roughness: 0.05, transparent: true, opacity: 0.35, depthWrite: false }),
+    }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
+  }
+  return (MAT[name] = x)
+}
+// books take one of a few muted spine colours each
+const SPINES = ["#7a3b2e", "#2f4f5a", "#c9973a", "#e6d8bd", "#5d6b4a", "#8a8f94", "#3c3a46", "#b5523a"]
+const bookMat = LINE ? null : SPINES.map((c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.8 }))
+
+// ------------------------------------------------------------ geometry helpers (metres)
+const meshes = []
+// texture coordinates at true scale: each face takes the texture from its own plane
+function worldUV(geo, [tu, tv], pos0) {
+  const pos = geo.attributes.position, nrm = geo.attributes.normal, uv = geo.attributes.uv
+  if (!uv) return
+  geo.computeBoundingBox()
+  const size = geo.boundingBox.getSize(new THREE.Vector3()).toArray()
+  const long = size.indexOf(Math.max(...size))
+  for (let i = 0; i < pos.count; i++) {
+    const n = [Math.abs(nrm.getX(i)), Math.abs(nrm.getY(i)), Math.abs(nrm.getZ(i))]
+    const plane = [0, 1, 2].filter((a) => a !== n.indexOf(Math.max(...n)))
+    // the grain runs along the piece's longest side; corrugations stand up the wall
+    const ua = tu < 0.5 ? (plane.includes(0) ? 0 : 2) : plane.includes(long) ? long : plane[0]
+    const va = tu < 0.5 ? 1 : plane.find((a) => a !== ua)
+    const p = [pos.getX(i) + pos0[0], pos.getY(i) + pos0[1], pos.getZ(i) + pos0[2]]
+    uv.setXY(i, p[ua] / tu, p[va] / tv)
+  }
+  uv.needsUpdate = true
+}
+function add(geo, name, opts = {}) {
+  const tile = MAP[name]
+  if (!LINE && tile) worldUV(geo, TILE[tile], opts.pos ?? [0, 0, 0])
+  const m = opts.material ?? mat(name)
+  const mesh = new THREE.Mesh(geo, m)
+  mesh.castShadow = !LINE && !["glass", "lawn", "floor"].includes(name) && !opts.noShadow
+  mesh.receiveShadow = !LINE
+  if (opts.pos) mesh.position.set(...opts.pos)
+  if (opts.rot) mesh.rotation.set(...opts.rot)
+  if (opts.scale) mesh.scale.set(...opts.scale)
+  if (opts.noEdges) mesh.userData.noEdges = true
+  ;(opts.parent ?? scene).add(mesh)
+  meshes.push(mesh)
+  return mesh
+}
+// a box over a plan rectangle (x, z), from height y0 to y1; corners in any order
+function blk(xa, za, xb, zb, y0, y1, name, opts = {}) {
+  const [x0, x1, z0, z1] = [Math.min(xa, xb), Math.max(xa, xb), Math.min(za, zb), Math.max(za, zb)]
+  const r = Math.min(opts.r ?? 0, (x1 - x0) / 2 - 1e-4, (y1 - y0) / 2 - 1e-4, (z1 - z0) / 2 - 1e-4)
+  const geo = r > 0 ? new RoundedBoxGeometry(x1 - x0, y1 - y0, z1 - z0, 4, r) : new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0)
+  return add(geo, name, { pos: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2], ...opts })
+}
+function cyl(x, z, r, y0, h, name, seg = 24, rTop = r, opts = {}) {
+  return add(new THREE.CylinderGeometry(rTop, r, h, seg), name, { pos: [x, y0 + h / 2, z], ...opts })
+}
+// a group turned about its own vertical axis: build() places parts round 0,0 with opts.parent
+function turned(x, z, a, build) {
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = a; scene.add(g)
+  build(g)
+  return g
+}
+function plant(x, z, y, height) {
+  const s = height / 0.42
+  cyl(x, z, 0.08 * s, y, 0.18 * s, "pot", 32, 0.1 * s)
+  for (let i = 0; i < 13; i++) {
+    const a = (i / 13) * Math.PI * 2
+    const leaf = add(new THREE.SphereGeometry(0.075 * s, 16, 12), i % 2 ? "leaf" : "leaf2", { noEdges: s > 2 && i % 2 === 1 })
+    leaf.scale.set(0.45, 1.6, 1)
+    leaf.position.set(x + Math.cos(a) * 0.06 * s, y + (0.27 + (i % 3) * 0.05) * s, z + Math.sin(a) * 0.06 * s)
+    leaf.rotation.set(Math.sin(a) * 0.55, a, Math.cos(a) * 0.55)
+  }
+}
+
+// ------------------------------------------------------------ the ground, the plinth and the deck
+const { container: K, room: R, deck, desks, screen, shelves, reading, plants, lights, ac } = C
+const [L, W] = [K.l / 2, K.w / 2]
+const Y0 = K.plinth, FL = Y0 + R.floor, Y1 = Y0 + K.h
+if (!LINE) add(new THREE.CircleGeometry(30, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], noShadow: true })
+blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
+{
+  const front = W + deck.d, st = deck.step
+  blk(-L, W, L, front, 0.12, Y0 - 0.03, "deckframe")
+  for (let z = W + 0.003; z < front - 0.05; z += 0.146) blk(-L, z, L, Math.min(z + 0.14, front), Y0 - 0.03, Y0, "timber")
+  blk(-L + st.inset, front, L - st.inset, front + st.d, 0, st.h, "timber")
+}
+
+// ------------------------------------------------------------ the container, cut open
+// The steel skin and the lined walls at the back and both ends, cut at the roof line (a dark cap on the cut);
+// the frame's corner posts and rails; along the front only the bottom rail and the two short wall returns
+// beside the glazing, cut low so the room shows.
+{
+  const fr = "frame", e = 0.03
+  // back wall: skin, then lining
+  blk(-L + 0.15, -W, L - 0.15, -W + e, Y0 + 0.14, Y1 - 0.1, "teal")
+  blk(R.x0, -W + e, R.x1, R.back, FL, Y0 + R.ceiling, "wall")
+  // the ends: skin, then lining
+  for (const s of [-1, 1]) {
+    const xs = s * L, xi = s < 0 ? R.x0 : R.x1
+    blk(xs, -W + 0.15, xs - s * e, W - 0.15, Y0 + 0.14, Y1 - 0.1, "teal")
+    blk(xs - s * e, -W + e, xi, W - 0.02, FL, Y0 + R.ceiling, "wall")
+    blk(xs - s * e, -W + e, xi, W - 0.02, Y0 + R.ceiling, Y0 + R.ceiling + 0.006, "cut", { noEdges: true })
+  }
+  blk(R.x0, -W + e, R.x1, R.back, Y0 + R.ceiling, Y0 + R.ceiling + 0.006, "cut", { noEdges: true })
+  // the frame: corner posts, bottom rails all round, top rails along the back and the ends
+  for (const cx of [-L, L]) for (const cz of [-W, W]) {
+    const sx = cx < 0 ? 1 : -1, sz = cz < 0 ? 1 : -1
+    blk(cx, cz, cx + sx * 0.15, cz + sz * 0.15, Y0, cz > 0 ? Y0 + 0.9 : Y1, fr)
+  }
+  blk(-L, -W, L, -W + 0.12, Y0, Y0 + 0.14, fr); blk(-L, W - 0.12, L, W, Y0, Y0 + 0.14, fr)
+  blk(-L, -W, -L + 0.12, W, Y0, Y0 + 0.14, fr); blk(L - 0.12, -W, L, W, Y0, Y0 + 0.14, fr)
+  blk(-L, -W, L, -W + 0.12, Y1 - 0.1, Y1, fr)
+  blk(-L, -W, -L + 0.12, -W + 0.6, Y1 - 0.1, Y1, fr); blk(L - 0.12, -W, L, -W + 0.6, Y1 - 0.1, Y1, fr)
+  // the short returns beside the glazing, cut at 0.9 m, corrugated outside
+  const g = C.glazing.inset
+  for (const s of [-1, 1]) {
+    const [a, b] = s < 0 ? [-L + 0.15, -L + g] : [L - g, L - 0.15]
+    blk(a, W - e, b, W, Y0 + 0.14, Y0 + 0.9, "teal")
+    blk(a, W - e, b, W, Y0 + 0.9, Y0 + 0.906, "cut", { noEdges: true })
+    for (let x = a + 0.1; x < b - 0.05; x += LINE ? 0.278 : 0.278) blk(x - 0.04, W, x + 0.04, W + 0.03, Y0 + 0.16, Y0 + 0.88, "rib-teal")
+  }
+  // the floor: oak planks over the base, out to the glazing line
+  blk(R.x0, -W + e, R.x1, W - 0.02, Y0 + 0.14, FL, "floor")
+  // the glazed doors' white sill along the front
+  blk(-L + g, W - 0.12, L - g, W - 0.02, FL, FL + 0.02, "white")
+}
+
+// ------------------------------------------------------------ the desks and chairs
+{
+  const { w, l, h, chair: ch } = desks
+  desks.x.forEach((x, row) => {
+    const [x0, x1, z0, z1] = [x - w / 2, x + w / 2, R.back, R.back + l]
+    blk(x0, z0, x1, z1, FL + h - 0.03, FL + h, "pine", { r: 0.006 })
+    for (const lx of [x0 + 0.04, x1 - 0.04]) for (const lz of [z0 + 0.05, z1 - 0.05]) blk(lx - 0.02, lz - 0.02, lx + 0.02, lz + 0.02, FL, FL + h - 0.03, "leg")
+    blk(x0 + 0.02, z0 + 0.05, x0 + 0.04, z1 - 0.05, FL + h - 0.2, FL + h - 0.03, "pine") // the modesty rail on the screen side
+    for (const [k, y] of desks.seats.entries()) {
+      // the chair faces the screen (-x), its back toward the next row
+      const cx = x1 + ch.gap + ch.d / 2, [a0, a1, b0, b1] = [cx - ch.d / 2, cx + ch.d / 2, y - ch.w / 2, y + ch.w / 2]
+      for (const lx of [a0 + 0.03, a1 - 0.03]) for (const lz of [b0 + 0.03, b1 - 0.03]) blk(lx - 0.016, lz - 0.016, lx + 0.016, lz + 0.016, FL, FL + ch.seat - 0.03, "leg")
+      blk(a0, b0, a1, b1, FL + ch.seat - 0.03, FL + ch.seat, "pine", { r: 0.008 })
+      blk(a0 + 0.03, b0 + 0.03, a1 - 0.05, b1 - 0.03, FL + ch.seat, FL + ch.seat + 0.025, "seat", { r: 0.012 })
+      for (const lz of [b0 + 0.03, b1 - 0.03]) blk(a1 - 0.046, lz - 0.016, a1 - 0.014, lz + 0.016, FL + ch.seat, FL + ch.back, "leg")
+      blk(a1 - 0.05, b0 + 0.01, a1 - 0.01, b1 - 0.01, FL + ch.back - 0.16, FL + ch.back, "pine", { r: 0.008 })
+      // on the desk: a laptop at some seats, a notebook at others
+      const dz = y, dx = x
+      if ((row + k) % 3 === 0) {
+        blk(dx - 0.12, dz - 0.16, dx + 0.12, dz + 0.16, FL + h, FL + h + 0.012, "laptop")
+        const lid = add(new THREE.BoxGeometry(0.008, 0.22, 0.32), "laptop", { pos: [dx - 0.12, FL + h + 0.11, dz] })
+        lid.rotation.z = -0.25
+      } else if ((row + k) % 3 === 1) {
+        blk(dx - 0.08, dz - 0.11, dx + 0.08, dz + 0.11, FL + h, FL + h + 0.012, "white")
+      }
+    }
+  })
+}
+
+// ------------------------------------------------------------ the screen wall (east, -x)
+{
+  const [p0, p1] = screen.panel, mz = (p0 + p1) / 2, x = R.x0
+  blk(x, p0, x + 0.03, p1, FL, Y0 + R.ceiling - 0.05, "slats")
+  blk(x + 0.03, mz - screen.w / 2, x + 0.07, mz + screen.w / 2, FL + screen.y0, FL + screen.y0 + screen.h, "screen", { r: 0.008 })
+  const c = screen.cabinet
+  blk(x + 0.03, mz - c.l / 2, x + 0.03 + c.d, mz + c.l / 2, FL + 0.1, FL + c.h, "pine", { r: 0.006 })
+  for (const z of [mz - c.l / 2 + 0.06, mz + c.l / 2 - 0.06]) blk(x + 0.08, z - 0.02, x + c.d - 0.02, z + 0.02, FL, FL + 0.1, "leg")
+  for (let k = 1; k < 4; k++) { const z = mz - c.l / 2 + (c.l * k) / 4; blk(x + 0.03 + c.d, z - 0.002, x + 0.035 + c.d, z + 0.002, FL + 0.12, FL + c.h - 0.02, "black", { noEdges: true }) }
+  plant(x + 0.2, mz + c.l / 2 - 0.2, FL + c.h, 0.32)
+  // the whiteboard on the back wall
+  const wb = screen.whiteboard
+  blk(wb.x[0], R.back, wb.x[1], R.back + 0.02, FL + wb.y0, FL + wb.y0 + wb.h, "alu")
+  blk(wb.x[0] + 0.015, R.back + 0.02, wb.x[1] - 0.015, R.back + 0.024, FL + wb.y0 + 0.015, FL + wb.y0 + wb.h - 0.015, "board", { noEdges: true })
+  blk(wb.x[0] + 0.1, R.back, wb.x[1] - 0.1, R.back + 0.06, FL + wb.y0 - 0.03, FL + wb.y0, "alu") // the pen tray
+  // the lectern: a small oak table, standing height
+  const lc = screen.lectern
+  const [a0, a1, b0, b1] = [lc.x - lc.w / 2, lc.x + lc.w / 2, lc.y - lc.d / 2, lc.y + lc.d / 2]
+  blk(a0, b0, a1, b1, FL + lc.h - 0.03, FL + lc.h, "pine", { r: 0.006 })
+  for (const lx of [a0 + 0.04, a1 - 0.04]) for (const lz of [b0 + 0.04, b1 - 0.04]) blk(lx - 0.02, lz - 0.02, lx + 0.02, lz + 0.02, FL, FL + lc.h - 0.03, "leg")
+  blk(a0 + 0.04, b0 + 0.04, a1 - 0.04, b1 - 0.04, FL + 0.3, FL + 0.32, "pine")
+}
+
+// ------------------------------------------------------------ the bookshelf wall (west, +x)
+{
+  const x1 = R.x1, x0 = x1 - shelves.d, top = Y0 + R.ceiling - 0.04
+  const bay = (R.front - R.back) / shelves.bays, t = 0.022
+  const rows = shelves.rows, rh = (top - FL - 0.08) / rows
+  for (let k = 0; k <= shelves.bays; k++) {
+    const z = R.back + k * bay
+    blk(x0, Math.max(R.back, z - t / 2), x1, Math.min(R.front, z + t / 2), FL, top, "pine")
+  }
+  for (let r = 0; r <= rows; r++) {
+    const y = FL + 0.08 + r * rh
+    blk(x0, R.back, x1 - 0.01, R.front, y - t, y, "pine")
+  }
+  blk(x0 + 0.01, R.back, x1, R.front, FL, FL + 0.08, "pine") // the plinth board
+  // books, standing in runs of varied height, a gap or a plant here and there
+  seed = 21
+  for (let k = 0; k < shelves.bays; k++) for (let r = 0; r < rows; r++) {
+    const y = FL + 0.08 + r * rh
+    let z = R.back + k * bay + t / 2 + 0.01
+    const end = R.back + (k + 1) * bay - t / 2 - 0.01
+    if ((k * 7 + r * 3) % 9 === 4) { plant(x0 + shelves.d / 2, z + 0.15, y, 0.24); z += 0.32 }
+    while (z < end - 0.03) {
+      if (rnd() < 0.07) { z += 0.06 + rnd() * 0.12; continue }
+      const bw = 0.02 + rnd() * 0.025, bh = Math.min(rh - 0.04, 0.2 + rnd() * 0.1)
+      if (z + bw > end) break
+      const d = 0.17 + rnd() * 0.07
+      add(new THREE.BoxGeometry(d, bh, bw), "book", { pos: [x1 - 0.02 - d / 2, y + bh / 2, z + bw / 2], material: LINE ? undefined : bookMat[Math.floor(rnd() * bookMat.length)] })
+      z += bw + 0.002
+    }
+  }
+}
+
+// ------------------------------------------------------------ the reading corner
+{
+  const rg = reading.rug
+  blk(rg.x[0], rg.y[0], rg.x[1], rg.y[1], FL, FL + 0.01, "rug", { noShadow: true })
+  const { w, d, seat, back } = reading.chair
+  for (const [cx, cz, a] of reading.chairs) {
+    // a positive turn swings the chair's front (+z) toward +x, as the plan draws it
+    turned(cx, cz, a, (g) => {
+      const o = { parent: g, r: 0.05 }
+      const [x0, x1, z0, z1] = [-w / 2, w / 2, -d / 2, d / 2] // its back toward -z (the back wall)
+      blk(x0 + 0.04, z0 + 0.04, x1 - 0.04, z1 - 0.04, FL + 0.08, FL + seat - 0.1, "fabric", o)
+      blk(x0 + 0.13, z0 + 0.17, x1 - 0.13, z1 - 0.03, FL + seat - 0.12, FL + seat, "cushion", o)
+      blk(x0, z0, x1, z0 + 0.18, FL + 0.08, FL + back, "fabric", o)
+      for (const s of [-1, 1]) blk(s * (w / 2 - 0.065) - 0.065, z0, s * (w / 2 - 0.065) + 0.065, z1, FL + 0.08, FL + seat + 0.2, "fabric", o)
+      for (const lx of [x0 + 0.06, x1 - 0.06]) for (const lz of [z0 + 0.06, z1 - 0.06]) cyl(lx, lz, 0.018, FL, 0.08, "leg", 12, 0.018, { parent: g })
+    })
+  }
+  const tb = reading.table
+  cyl(tb.x, tb.y, tb.r, FL + tb.h - 0.03, 0.03, "pine", 40)
+  cyl(tb.x, tb.y, 0.03, FL + 0.02, tb.h - 0.05, "leg", 12)
+  cyl(tb.x, tb.y, 0.16, FL, 0.02, "pine", 32)
+  plant(tb.x + 0.06, tb.y - 0.05, FL + tb.h, 0.2)
+  const lp = reading.lamp
+  cyl(lp.x, lp.y, 0.14, FL, 0.02, "black", 24)
+  cyl(lp.x, lp.y, 0.012, FL + 0.02, lp.h - 0.3, "black", 8)
+  add(new THREE.CylinderGeometry(0.15, 0.19, 0.28, 32, 1, true), "shade", { pos: [lp.x, FL + lp.h - 0.14, lp.y] })
+  if (!LINE) { const l = new THREE.PointLight(0xffc77a, 1.0, 3, 2); l.position.set(lp.x, FL + lp.h - 0.2, lp.y); scene.add(l) }
+}
+
+// ------------------------------------------------------------ plants, pendants, the air conditioner, the fan
+for (const [x, z, h] of plants.floor) plant(x, z, FL, h)
+for (const [x, z] of lights.pendants) {
+  const y = FL + lights.drop
+  cyl(x, z, 0.004, y + 0.17, Y0 + R.ceiling - y - 0.17, "cord", 6)
+  add(new THREE.SphereGeometry(0.19, 32, 12, 0, Math.PI * 2, 0, Math.PI / 2.4), "rattan", { pos: [x, y, z] })
+  add(new THREE.SphereGeometry(0.045, 16, 12), "lamp", { pos: [x, y + 0.02, z] })
+  if (!LINE) { const l = new THREE.PointLight(0xffd29a, 0.55, 2.6, 2); l.position.set(x, y - 0.05, z); scene.add(l) }
+}
+{
+  const y = Y0 + R.ceiling - 0.42
+  blk(ac.x - ac.w / 2, R.back, ac.x + ac.w / 2, R.back + 0.22, y, y + 0.3, "white", { r: 0.03 })
+  blk(ac.x - ac.w / 2 + 0.06, R.back + 0.2, ac.x + ac.w / 2 - 0.06, R.back + 0.225, y + 0.03, y + 0.06, "black", { noEdges: true })
+  // the wall fan over the reading corner: a round cage on a short arm
+  const fx = ac.fan.x, fy = Y0 + R.ceiling - 0.5
+  blk(fx - 0.05, R.back, fx + 0.05, R.back + 0.02, fy - 0.08, fy + 0.08, "white")
+  cyl(fx, R.back + 0.1, 0.025, fy - 0.025, 0.18, "white", 12, 0.025, { rot: [Math.PI / 2, 0, 0], pos: [fx, fy, R.back + 0.1] })
+  cyl(fx, R.back + 0.2, 0.2, fy, 0.08, "white", 32, 0.2, { rot: [Math.PI / 2, 0, 0], pos: [fx, fy, R.back + 0.22] })
+}
+
+// ------------------------------------------------------------ camera: the front view
+// centred on the room, from beyond the step and above, a long lens so the verticals stay near upright and
+// the end walls' inside faces still show
+const target = new THREE.Vector3(0, 1.0, 0.4)
+const [el, dist] = [THREE.MathUtils.degToRad(36), 13.5]
+const camera = new THREE.PerspectiveCamera(50, FW / FH, 0.5, 200)
+camera.position.set(0, target.y + dist * Math.sin(el), target.z + dist * Math.cos(el))
+camera.lookAt(target)
+camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+scene.updateMatrixWorld(true)
+const bb = new THREE.Box3()
+for (const o of meshes) if (!o.geometry.type.startsWith("Circle")) bb.expandByObject(o)
+let px = [Infinity, Infinity, -Infinity, -Infinity]
+for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
+  const p = new THREE.Vector3(xx, yy, zz).project(camera)
+  const X = ((p.x + 1) / 2) * FW, Yp = ((1 - p.y) / 2) * FH
+  px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
+}
+let w = (px[2] - px[0]) * 1.04, h = (px[3] - px[1]) * 1.08
+if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
+camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+
+// ------------------------------------------------------------ render
+if (LINE) {
+  const lineMat = new LineMaterial({ color: INK, linewidth: 1.3, side: THREE.DoubleSide })
+  lineMat.resolution.set(FW, FH)
+  lineMat.userData.outlineParameters = { visible: false }
+  for (const o of meshes) {
+    if (o.userData.noEdges || o.material === MAT.cut) continue
+    o.updateMatrixWorld()
+    const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
+    const l = new LineSegments2(g, lineMat)
+    l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
+    scene.add(l)
+  }
+  if (MAT.cut) MAT.cut.userData.outlineParameters = { visible: false }
+  const ink = new THREE.Color(INK)
+  new OutlineEffect(renderer, { defaultThickness: 0.0025, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
+} else {
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  scene.environmentIntensity = 0.45
+  scene.add(new THREE.HemisphereLight(0xeef3ff, 0x8a7a5a, 0.85))
+  const sun = new THREE.DirectionalLight(0xfff0d8, 2.6)
+  sun.position.set(-9, 11, 10) // from the front, over the left shoulder
+  sun.castShadow = true
+  sun.shadow.mapSize.set(4096, 4096)
+  Object.assign(sun.shadow.camera, { left: -8, right: 8, top: 6, bottom: -6, near: 1, far: 40 })
+  sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
+  scene.add(sun)
+  const composer = new EffectComposer(renderer)
+  composer.setSize(FW, FH)
+  composer.addPass(new RenderPass(scene, camera))
+  const ao = new GTAOPass(scene, camera, FW, FH)
+  ao.blendIntensity = 0.8
+  ao.updateGtaoMaterial({ radius: 0.25, distanceExponent: 1.5, thickness: 1, scale: 1 })
+  composer.addPass(ao)
+  composer.addPass(new OutputPass())
+  composer.render()
+}
+document.getElementById("out").src = renderer.domElement.toDataURL("image/png")
+document.body.dataset.ready = "1"
+</script>
+</body>
+</html>

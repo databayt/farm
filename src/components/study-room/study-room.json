@@ -1,0 +1,89 @@
+{
+  "about": "The study room, as /en/camp is one camp: the 40 ft teal container of the compound (src/components/home/compound.json, unit \"study\") on a 300 mm stone plinth, a band of glazed sliding doors behind timber louvres along its north side onto a 2 m deck with a broad step, the courtyard in front and the lake behind. Furnished as a quiet study, co-working room and small classroom for the Digital Farm: twelve seats at six timber desks facing a screen wall, a bookshelf wall and a reading corner at the far end. The 2D (study-room-plan.tsx) and the 3D (scripts/site/render/study-room.html) both read this file. Plan in metres: x to the right as seen from the deck (east on the left, west on the right), y toward the front (the glazing, north), the container's centre at 0,0. Sizes past the container and the compound's openings are design choices, not yet sourced; furniture colour is the studio's Medium Oak.",
+  "container": {
+    "about": "A standard 40 ft box (not a high cube), outside 12.192 x 2.438 x 2.591 m, painted teal as in the footage (IMG_3196). Cargo doors at the west end stay shut.",
+    "l": 12.192,
+    "w": 2.438,
+    "h": 2.591,
+    "plinth": 0.3,
+    "paint": "#3e8a86"
+  },
+  "room": {
+    "about": "Inside the lining (battens, insulation and 12 mm ply, painted off-white): 11.94 x 2.26 m; floor 160 mm over the container's base, oak planks as in the studio; clear height about 2.3 m.",
+    "x0": -5.97,
+    "x1": 5.97,
+    "back": -1.13,
+    "front": 1.13,
+    "floor": 0.16,
+    "ceiling": 2.46
+  },
+  "glazing": {
+    "about": "As in the compound: one glazed opening along the north wall from 0.6 m inside each end, white-framed sliding panels about 1.5 m wide, 2.09 m high; louvres 60 mm thick at 450 mm centres stand 0.3-0.42 m out in front, under a timber head.",
+    "inset": 0.6,
+    "panel": 1.5,
+    "height": 2.09,
+    "louvres": {"pitch": 0.45, "t": 0.06, "off": [0.3, 0.42]}
+  },
+  "deck": {
+    "about": "Eucalyptus boards the full length of the container, 2 m out to the north, at the plinth's height; a broad 0.4 m step along it, stopping 2 m short of each end.",
+    "d": 2.0,
+    "step": {"d": 0.4, "h": 0.14, "inset": 2.0}
+  },
+  "desks": {
+    "about": "Six timber desks in rows across the room against the back wall, 1.4 x 0.55 m, two chairs each facing the screen wall (east): twelve seats. The 0.73 m aisle runs along the glazing so every sliding door stays clear. 1.3 m from row to row; x is each desk's centre.",
+    "x": [-4.6, -3.3, -2.0, -0.7, 0.6, 1.9],
+    "w": 0.55,
+    "l": 1.4,
+    "h": 0.74,
+    "seats": [-0.78, -0.12],
+    "chair": {"w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.82, "gap": 0.08}
+  },
+  "screen": {
+    "about": "The east end wall: a 65-inch screen on a slatted oak panel, a whiteboard on the back wall beside it, a low cabinet under the screen and a small lectern table for whoever is teaching.",
+    "w": 1.45,
+    "h": 0.82,
+    "y0": 1.0,
+    "panel": [-0.95, 0.65],
+    "cabinet": {"l": 1.6, "d": 0.4, "h": 0.55},
+    "whiteboard": {"x": [-5.85, -4.95], "y0": 0.9, "h": 0.9},
+    "lectern": {"x": -5.2, "y": 0.7, "w": 0.6, "d": 0.45, "h": 0.95}
+  },
+  "shelves": {
+    "about": "The bookshelf wall: full-height open oak shelves across the west end wall, 0.32 m deep, five bays and six shelves, books and a few plants on them.",
+    "d": 0.32,
+    "bays": 5,
+    "rows": 6
+  },
+  "reading": {
+    "about": "The reading corner by the bookshelves: two upholstered armchairs angled toward the glazing, a round side table between them, a floor lamp and a woven rug. Each chair: x, y of its centre and its turn in radians.",
+    "chairs": [[3.75, -0.45, 0.35], [5.0, -0.45, -0.35]],
+    "chair": {"w": 0.78, "d": 0.8, "seat": 0.42, "back": 0.82},
+    "table": {"x": 4.38, "y": -0.55, "r": 0.24, "h": 0.5},
+    "lamp": {"x": 5.35, "y": -0.85, "h": 1.55},
+    "rug": {"x": [3.1, 5.5], "y": [-1.0, 0.6]}
+  },
+  "plants": {
+    "about": "Large floor plants in pots (x, y, height): a low one in the screen corner by the glazing, two between the desks and the reading corner, kept clear of the screen and the shelves. Small ones on the shelves are drawn in the 3D only.",
+    "floor": [[-5.72, 0.92, 0.7], [3.05, 0.85, 1.2], [2.55, -0.85, 1.1]]
+  },
+  "lights": {
+    "about": "Pendants: one dome shade over each desk row, about 1.95 m above the floor; two over the reading corner.",
+    "pendants": [
+      [-4.6, -0.45],
+      [-3.3, -0.45],
+      [-2.0, -0.45],
+      [-0.7, -0.45],
+      [0.6, -0.45],
+      [1.9, -0.45],
+      [3.75, -0.2],
+      [5.0, -0.2]
+    ],
+    "drop": 1.95
+  },
+  "ac": {
+    "about": "A wall-mounted split air conditioner high on the back wall, mid-room, its outdoor unit on the south (lake) side; a wall fan over the reading corner.",
+    "x": -0.3,
+    "w": 0.9,
+    "fan": {"x": 4.4}
+  }
+}
