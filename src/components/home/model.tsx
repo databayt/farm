@@ -18,7 +18,7 @@ export function Model() {
           <img
             src={`${R}/compound-line.png`}
             width={2400}
-            height={1800}
+            height={1260}
             alt={line}
             loading="lazy"
             decoding="async"
@@ -31,7 +31,7 @@ export function Model() {
         <img
           src={`${R}/compound-real.webp`}
           width={2400}
-          height={1800}
+          height={1260}
           alt={real}
           loading="lazy"
           decoding="async"

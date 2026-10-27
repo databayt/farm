@@ -40,7 +40,7 @@ export const ASSETS = {
     kind: "render",
     tone: "golden",
     subject: "The inner gate opening onto the courtyard",
-    alt: "An open gate of timber slats on a red steel frame, with the courtyard lawn, the fire pit and the coloured containers beyond",
+    alt: "An open timber gate of vertical boards braced in an X, between fieldstone pillars, with the courtyard lawn, the fire pit and the coloured containers beyond",
     today: "Today: tents on the lawn and the edge of the stone fire pit, with the lake behind the trees",
   },
   aerial: {

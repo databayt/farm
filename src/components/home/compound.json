@@ -144,7 +144,7 @@
   },
   "north": [52.6, 6.0],
   "outdoor": {
-    "about": "From the 2026-10-25 footage and the founder's choices (D-022): a small camping lawn between the guest rooms and the fire pit, ending at the fire pit's west edge; a long timber table where today's unfinished platform stands in front of the middle studio; and stools round the fire pit.",
+    "about": "From the 2026-10-25 footage and the founder's choices (D-022): a small camping lawn between the guest rooms and the fire pit, the cluster's east end flush with the fire pit's west edge (both drawings place it so, whatever the spread); a long timber table where today's unfinished platform stands in front of the middle studio; and stools round the fire pit.",
     "tents": [
       [18.5, 20],
       [22.5, 20.5],
@@ -169,8 +169,8 @@
     }
   },
   "spread": {
-    "about": "The 2D and the 3D set the compound half as far apart again sideways for a wide screen, every building at its true size: x' = mid + (x - mid) * factor for each centre.",
-    "factor": 1.5,
+    "about": "The 2D and the 3D set the compound twice as far apart sideways for a wide screen, every building at its true size: x' = mid + (x - mid) * factor for each centre.",
+    "factor": 2.0,
     "mid": 23
   }
 }

@@ -20,7 +20,13 @@ const B = ([x0, y0, x1, y1]: Box) => {
   const shift = X((x0 + x1) / 2) - (x0 + x1) / 2
   return [x0 + shift, SIZE - y1, x1 + shift, SIZE - y0]
 }
-const VIEW = [-8, 0.6, 51.5, 55.5]
+// The frame follows the spread: from past the guest rooms' labels to past the furthest building.
+const VIEW = [
+  Math.min(...compound.units.map((u) => B(u.box)[0])) - 4.2,
+  0.6,
+  Math.max(...compound.units.map((u) => B(u.box)[2])) + 1.5,
+  55.5,
+]
 
 const WALL = 0.14 // a container wall at drawing scale, solid as the studio's walls
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
@@ -271,7 +277,10 @@ const outdoor = compound.outdoor
 function Outdoor() {
   const [pitX, pitY] = P(compound.courtyard.firePit)
   const { count, ring, r } = outdoor.firePitSeats
-  const tents = outdoor.tents.map(P)
+  // the cluster keeps its shape and ends at the fire pit's west edge, whatever the spread
+  const spread = outdoor.tents.map(P)
+  const end = pitX - compound.courtyard.firePit[2] - (Math.max(...spread.map(([cx]) => cx)) + outdoor.tent)
+  const tents = spread.map(([cx, cy]) => [f(cx + end), cy])
   const t = outdoor.tent
   const hex = (cx: number, cy: number) => Array.from({ length: 6 }, (_, k) => [f(cx + t * Math.cos((k * Math.PI) / 3)), f(cy + t * Math.sin((k * Math.PI) / 3))])
   const { x, y, length, width, bench, gap } = outdoor.longTable

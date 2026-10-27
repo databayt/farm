@@ -11,7 +11,7 @@
     ?mode=line  line drawing in the page's ink        -> public/designs/compound/render/compound-line.png
     ?mode=real  paint, timber, stone, sun and shadow  -> public/designs/compound/render/compound-real.webp
 
-  Serve the repo root (python3 -m http.server <port>), open this page at 2400 x 1800, and once
+  Serve the repo root (python3 -m http.server <port>), open this page at 2400 x 1260, and once
   body[data-ready] is set save the data URL in #out: it has a transparent ground, flattened onto the
   page colour (#f7f5ef) when it is converted. Containers are ISO sizes; the rest is illustrative.
 -->
@@ -20,7 +20,7 @@
 <meta charset="utf-8">
 <style>
 html,body{margin:0;background:#f7f5ef}
-#out{display:block;width:2400px;height:1800px}
+#out{display:block;width:2400px;height:1260px}
 </style>
 <script type="importmap">
 {"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
@@ -43,7 +43,7 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
 const LINE = Q.get("mode") !== "real"
-const [FW, FH] = [2400, 1800]
+const [FW, FH] = [2400, 1260]
 const C = await (await fetch(`/src/components/home/compound.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#f7f5ef" // the farm theme's soil and chalk
 const HC = 2.591 // a container's height
@@ -72,6 +72,10 @@ const HC = 2.591 // a container's height
   const cb = C.courtyard.box // the lawn widens with the spread
   C.courtyard.box = [SX(cb[0]), cb[1], SX(cb[2]), cb[3]]
   C.outdoor.tents = C.outdoor.tents.map(([x, z]) => [SX(x), z])
+  // as on the 2D: the camping keeps its shape and ends at the fire pit's west edge
+  const [fx, , fr] = C.courtyard.firePit
+  const end = fx - fr - (Math.max(...C.outdoor.tents.map(([x]) => x)) + C.outdoor.tent)
+  C.outdoor.tents = C.outdoor.tents.map(([x, z]) => [x + end, z])
   C.outdoor.longTable.x = SX(C.outdoor.longTable.x)
 }
 // plan (x east, y south) -> three: x = x, y = height, z = y
@@ -175,18 +179,23 @@ const T = LINE ? {} : {
     }
     speckle(g, w, h, 6000, "rgba(255,255,255,0.2)", "rgba(0,0,0,0.15)")
   }, 256, 256),
-  // stone setts laid in rows, joints offset, warm grey and ochre; 1.2 m a tile
+  // grey granite setts laid in segmental arcs, after the founder's reference: about 100 mm setts, mixed
+  // greys with the odd warm one, sand in the joints; one tile is 1.6 m, an arc row every sett
   setts: tex((g, w, h) => {
-    g.fillStyle = "#6e665a"; g.fillRect(0, 0, w, h)
-    const rows = 10, rh = h / rows
-    for (let r = 0; r < rows; r++) {
-      let x = r % 2 ? -rh / 2 : 0
-      while (x < w) {
-        const sw = rh * (0.8 + rnd() * 0.5)
-        const tone = rnd()
-        g.fillStyle = tone > 0.7 ? "#b59a72" : tone > 0.35 ? "#a39a8c" : "#8f877b"
-        g.beginPath(); g.roundRect(x + 2, r * rh + 2, sw - 4, rh - 4, 5); g.fill()
-        x += sw
+    g.fillStyle = "#bdb5a5"; g.fillRect(0, 0, w, h)
+    const st = w / 16, R0 = w * 0.95, cx = w / 2, cy = h + R0 - h * 0.2
+    for (let r = R0 - h * 0.15; r < R0 + h * 1.25; r += st) {
+      const span = Math.asin(Math.min(1, (w / 2 + st) / r)), n = Math.ceil((2 * span * r) / st)
+      for (let i = 0; i < n; i++) {
+        const a = -Math.PI / 2 - span + ((i + 0.5) * 2 * span) / n
+        const [x, y] = [cx + r * Math.cos(a), cy + r * Math.sin(a)]
+        if (y < -st || y > h + st) continue
+        const tone = rnd(), k = 0.92 + rnd() * 0.16
+        const c = tone > 0.86 ? [150, 132, 124] : tone > 0.6 ? [140, 140, 136] : tone > 0.3 ? [162, 161, 155] : [118, 120, 118]
+        g.fillStyle = `rgb(${c.map((v) => Math.round(v * k)).join(",")})`
+        g.save(); g.translate(x, y); g.rotate(a + Math.PI / 2)
+        g.beginPath(); g.roundRect(-st / 2 + 2.5, -st / 2 + 2.5, st - 5, st - 5, 5); g.fill()
+        g.restore()
       }
     }
   }),
@@ -221,7 +230,7 @@ const T = LINE ? {} : {
 }
 // metres one tile of each texture covers [along, across]
 const TILE = { corr: [0.278, 2.6], boards: [1.4, 1.4], grass: [9, 9], meadow: [16, 16], murram: [4, 4],
-  pavers: [0.4, 0.4], setts: [1.2, 1.2], stone: [1, 1], water: [12, 12] }
+  pavers: [0.4, 0.4], setts: [1.6, 1.6], stone: [1, 1], water: [12, 12] }
 const MAP = { saffron: "corr", oxide: "corr", teal: "corr", timber: "boards", lawn: "grass", meadow: "meadow",
   murram: "murram", pavers: "pavers", setts: "setts", stone: "stone", water: "water" }
 
@@ -258,6 +267,8 @@ function mat(name) {
       red: () => std({ color: "#7e2f26", roughness: 0.45, metalness: 0.35 }), // railings, door and window frames
       "white-frame": () => std({ color: "#f1f0eb", roughness: 0.4 }), // the sliding doors' frames, white as on site
       concrete: () => std({ color: "#c9c5bc", roughness: 0.85 }), // the fire pit's cap
+      gatewood: () => std({ color: "#b48f63", roughness: 0.8 }), // weathered pine, as the reference gate
+      lamp: () => std({ color: "#f6ecd2", roughness: 0.3, emissive: "#ffe2a8", emissiveIntensity: 0.35 }),
       tent: () => std({ map: T.tent, color: "#ffffff", roughness: 0.9, side: THREE.DoubleSide }), // canvas, mesh windows
       tentroof: () => std({ color: "#e9e4d6", roughness: 0.9 }),
       tentgreen: () => std({ color: "#46684a", roughness: 0.85 }), // one tent has a green fly, as today
@@ -390,36 +401,50 @@ function group(build, pos, rotY = 0) {
 // As the 2D draws it: the compound on its ground, a model base, with no lake, road or trees (D-022).
 // the base reaches 2.5 m past the outermost buildings east and west
 const MX0 = Math.min(...C.units.map((u) => u.box[0])) - 2.5
-const MX1 = Math.max(...C.units.map((u) => u.box[2]), C.courtyard.box[2]) + 2.5
+const MX1 = Math.max(...C.units.map((u) => u.box[2])) + 2.5
 const [MZ0, MZ1] = [-8.4, 45.6]
 // one lawn over the whole base, its top level with the old courtyard lawn: no courtyard outline, as the 2D
 slab([MX0, MZ0, MX1, MZ1], 0.01, -1.0, 1.035, "lawn", { sides: "soil" })
 
-// the outer gate: fieldstone posts, galvanised five-bar leaves open into the site; the sign wall beside it
-function post([x0, z0, x1, z1], h) {
+// The gates, after the founder's reference photo: two leaves of vertical boards on a frame of stiles and
+// top, middle and bottom rails, braced in an X, with black iron strap hinges and a latch, hung closed between
+// fieldstone pillars with timber caps, a lantern on one. Both gates take the same design.
+function pillar([x0, z0, x1, z1], h, lantern) {
   blk(x0, z0, x1, z1, 0, h, "stone")
-  blk(x0 - 0.04, z0 - 0.04, x1 + 0.04, z1 + 0.04, h, h + 0.08, "stone")
-}
-function leaf(len, h, kind) {
-  if (kind === "bars") {
-    for (const y of [0.15, 0.42, 0.69, 0.96, 1.23].map((v) => (v * h) / 1.3)) bar([0, y, 0], [len, y, 0], 0.045, "steel")
-    for (const x of [0.04, len - 0.04]) bar([x, 0.1, 0], [x, h, 0], 0.05, "steel")
-    bar([0.08, 0.15, 0], [len - 0.1, h * 0.9, 0], 0.04, "steel")
-  } else { // eucalyptus slats on a red steel frame
-    for (const y of [0.08, h - 0.05]) bar([0, y, 0], [len, y, 0], 0.06, "red")
-    for (const x of [0.03, len - 0.03]) bar([x, 0.05, 0], [x, h, 0], 0.06, "red")
-    for (let x = 0.12; x < len - 0.08; x += 0.105) blk(x - 0.035, -0.012, x + 0.035, 0.012, 0.12, h - 0.08, "slat")
+  blk(x0 - 0.06, z0 - 0.06, x1 + 0.06, z1 + 0.06, h, h + 0.12, "gatewood") // the timber cap
+  if (lantern) {
+    const [cx, cz] = [(x0 + x1) / 2, (z0 + z1) / 2]
+    blk(cx - 0.08, cz - 0.08, cx + 0.08, cz + 0.08, h + 0.12, h + 0.16, "black")
+    blk(cx - 0.07, cz - 0.07, cx + 0.07, cz + 0.07, h + 0.16, h + 0.38, "lamp")
+    blk(cx - 0.1, cz - 0.1, cx + 0.1, cz + 0.1, h + 0.38, h + 0.42, "black")
   }
 }
-function gate({ x: [l, r], y, post: p }, h, kind) {
-  post([l - p, y - p / 2, l, y + p / 2], h + 0.2)
-  post([r, y - p / 2, r + p, y + p / 2], h + 0.2)
-  const len = (r - l) / 2 - 0.02
-  // closed, as the 2D draws them (the tents stand just inside the inner gate)
-  group(() => leaf(len, h, kind), [l + 0.01, 0.04, y], 0)
-  group(() => leaf(len, h, kind), [r - 0.01, 0.04, y], Math.PI)
+// a flat piece of timber in the leaf's plane (x along the leaf, y up), from a to b, w wide and t thick
+function plank([ax, ay], [bx, by], w, z0, z1, name) {
+  const len = Math.hypot(bx - ax, by - ay)
+  const mesh = add(new THREE.BoxGeometry(len, w, z1 - z0), name, { pos: [(ax + bx) / 2, (ay + by) / 2, (z0 + z1) / 2] })
+  mesh.rotation.z = Math.atan2(by - ay, bx - ax)
+  return mesh
 }
-gate(C.gate, 1.3, "bars")
+function leaf(len, h) {
+  const b = 0.14 // one board
+  for (let x = 0; x < len - 0.02; x += b) blk(x + 0.003, -0.012, Math.min(x + b, len) - 0.003, 0.012, 0.08, h, "gatewood")
+  const [z0, z1] = [-0.045, -0.012] // the frame and the brace on the boards' outer face, toward the approach
+  for (const x of [0.06, len - 0.06]) plank([x, 0.08], [x, h], 0.12, z0, z1, "gatewood")
+  for (const y of [0.16, h / 2, h - 0.07]) plank([0.12, y], [len - 0.12, y], 0.13, z0, z1, "gatewood")
+  plank([0.14, 0.22], [len - 0.14, h - 0.13], 0.11, z0, z1, "gatewood")
+  plank([0.14, h - 0.13], [len - 0.14, 0.22], 0.11, z0, z1, "gatewood")
+  for (const y of [0.16, h - 0.07]) blk(0, z0 - 0.006, 0.42, z0, y - 0.025, y + 0.025, "black") // strap hinges
+  blk(len - 0.12, z0 - 0.012, len - 0.02, z0, h / 2 - 0.05, h / 2 + 0.05, "black") // the latch
+}
+function gate({ x: [l, r], y, post: p }, h, lanternSide) {
+  pillar([l - p, y - p / 2, l, y + p / 2], h + 0.3, lanternSide === "left")
+  pillar([r, y - p / 2, r + p, y + p / 2], h + 0.3, lanternSide === "right")
+  const len = (r - l) / 2 - 0.01
+  group(() => leaf(len, h), [l + 0.005, 0.03, y], 0) // closed, as the 2D draws them
+  group(() => leaf(len, h), [r - 0.005, 0.03, y], 0).scale.x = -1 // the other leaf, mirrored, braced face out too
+}
+gate(C.gate, 1.8, "left")
 {
   const [x0, z0, x1, z1] = C.sign
   blk(x0, z0, x1, z1, 0, 1.0, "stone")
@@ -454,7 +479,7 @@ gate(C.gate, 1.3, "bars")
   s.lineTo(L[0].x, -L[0].y)
   extrude(s, 0, 0.05, "setts", { noShadow: true })
 }
-gate(C.innerGate, 1.6, "slats")
+gate(C.innerGate, 1.8, "right")
 
 // the stone fire pit already on site (stepping stones, if any are listed); the courtyard is the base's lawn
 {
@@ -597,15 +622,7 @@ function rowUnit(u) {
     blk(x0, front, x1, z0, y0 + 2.42, y0 + 2.45, "canopy", { noShadow: true })
     blk(x0, front, x1, front + 0.05, y0 + 2.38, y0 + 2.45, "black")
     for (const x of [x0 + 0.05, x1 - 0.05]) blk(x - 0.025, front, x + 0.025, front + 0.05, y0 + 1.0, y0 + 2.38, "black")
-    // the open roof terrace behind a post-and-rail guardrail with stainless cables, two loungers
-    const [a0, a1, b0, b1] = [x0 + 0.1, x1 - 0.1, z0 + 0.1, z1 - 0.1]
-    const gap = b1 - 0.9 // the stair lands at the south-east corner
-    const posts = [[a0, b0], [cx, b0], [a1, b0], [a0, b1], [cx, b1], [a1, b1], [a0, (b0 + b1) / 2], [a1, gap]]
-    for (const [x, z] of posts) blk(x - 0.025, z - 0.025, x + 0.025, z + 0.025, top, top + 1.05, "black")
-    for (const [p, q] of [[[a0, b0], [a1, b0]], [[a0, b1], [a1, b1]], [[a0, b0], [a0, b1]], [[a1, b0], [a1, gap]]]) {
-      bar([p[0], top + 1.07, p[1]], [q[0], top + 1.07, q[1]], 0.07, "slat")
-      for (const h of [0.35, 0.7]) bar([p[0], top + h, p[1]], [q[0], top + h, q[1]], 0.008, "cable")
-    }
+    // the open roof terrace with two loungers, no rail round it (the founder's call)
     for (const x of [x0 + 0.9, x0 + 1.75]) {
       blk(x - 0.32, z0 + 0.4, x + 0.32, z0 + 1.55, top, top + 0.3, "slat")
       blk(x - 0.3, z0 + 0.45, x + 0.3, z0 + 1.5, top + 0.3, top + 0.36, "cushion")

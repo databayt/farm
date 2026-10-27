@@ -19,7 +19,7 @@ The homepage shows the compound as it is planned, not as it stands. Its images a
 
 ## 2. The planned compound (every render must agree)
 
-- **Entrance.** An outer gate of galvanised five-bar tubular leaves stands between fieldstone posts. Beside it, a low fieldstone sign wall carries the words **DIGITAL FARM**. Behind the gate are a green parking lawn of grass pavers under shade trees, a **rock road** of hand-laid local stone setts (Rwandan pavé), and an **inner gate** of eucalyptus slats on an oxide-red steel frame.
+- **Entrance.** An outer gate of two timber leaves (vertical boards on a frame braced in an X, black iron strap hinges, D-022) stands between fieldstone pillars with timber caps and a lantern. Beside it, a low fieldstone sign wall carries the words **DIGITAL FARM**. Behind the gate are a green parking lawn of grass pavers under shade trees, a **rock road** of hand-laid grey granite setts laid in segmental arcs, and an **inner gate** of the same braced timber.
 - **Orientation (corrected by the founder on 2026-10-27, D-022).** North is the public road and the gates; the lake lies to the south, beyond a band of trees. Walking in from the gate you face the lake.
 - **The tenant courtyard.** A level lawn with the existing round fieldstone fire pit, laid out as an L (confirmed by the founder on 2026-10-26):
   - **The bar:** one 20 ft container in oxide red with a serving hatch and counter onto the courtyard (today's red kiosk), standing in the same line as the guest-room block, at its south end, at the corner of the L next to the office.
@@ -50,7 +50,7 @@ Use the reference photos for the place — landscape, lake, light, ground and th
 References: `assets/reference/gate/` (IMG_3159 at 0 s, IMG_3160 at 8.9 s). The homepage opens on this frame, and the hero video starts from it.
 
 ```text
-The farm's entrance at golden hour, seen at eye level from the public dirt road. New galvanised five-bar tubular gates, both leaves open, between two square fieldstone gateposts. Beside the left post, a low fieldstone sign wall (about 1 m high and 3 m long) with raised brushed-steel capital letters reading exactly DIGITAL FARM in a clean geometric sans-serif, the only text in the image. Through the gate, a green parking lawn under young shade trees, then the tops of saffron-yellow and oxide-red containers in front of tall eucalyptus with a glimpse of lake. Euphorbia hedges run away from both posts; red laterite verge; warm low sun from the right; long soft shadows. 24 mm lens, camera 1.6 m high, centred one-point perspective.
+The farm's entrance at golden hour, seen at eye level from the public dirt road. New timber gates of vertical boards on a frame braced in an X, with black iron strap hinges, both leaves open, between two square fieldstone pillars with timber caps and a lantern. Beside the left post, a low fieldstone sign wall (about 1 m high and 3 m long) with raised brushed-steel capital letters reading exactly DIGITAL FARM in a clean geometric sans-serif, the only text in the image. Through the gate, a green parking lawn under young shade trees, then the tops of saffron-yellow and oxide-red containers in front of tall eucalyptus with a glimpse of lake. Euphorbia hedges run away from both posts; red laterite verge; warm low sun from the right; long soft shadows. 24 mm lens, camera 1.6 m high, centred one-point perspective.
 ```
 
 For `gate-portrait`, add: `Composed vertically for a phone: the gate and the sign wall in the lower half, sky and trees above.`
@@ -68,7 +68,7 @@ Just inside the gate, a green parking lawn of grass-paver blocks, grass growing 
 References: `assets/reference/road/` (IMG_3195 at 2.3 s, IMG_3194 at 38.3 s).
 
 ```text
-The rock road inside the farm: 4 m wide, hand-laid local stone setts in warm grey and ochre (the Rwandan pavé style), with fieldstone edging. It curves gently between low euphorbia hedges and young trees on red laterite soil. About 60 m ahead stands the open inner gate between fieldstone pillars, with container roofs beyond. Golden hour, the sun low behind the camera's left shoulder, hedge shadows striping the stones. 35 mm lens, camera 1.5 m high, vanishing point right of centre.
+The rock road inside the farm: 4 m wide, hand-laid grey granite setts of about 100 mm laid in segmental arcs, with fieldstone edging. It curves gently between low euphorbia hedges and young trees on red laterite soil. About 60 m ahead stands the open inner gate between fieldstone pillars, with container roofs beyond. Golden hour, the sun low behind the camera's left shoulder, hedge shadows striping the stones. 35 mm lens, camera 1.5 m high, vanishing point right of centre.
 ```
 
 ### `inner-gate` · P0 · 16:9
@@ -76,7 +76,7 @@ The rock road inside the farm: 4 m wide, hand-laid local stone setts in warm gre
 References: `assets/reference/inner-gate/` (IMG_3159 at 0 s, IMG_3163 at 0 s, IMG_3171).
 
 ```text
-The inner gate standing open: two leaves of vertical eucalyptus slats on an oxide-red steel frame, between fieldstone pillars with small brass wall lanterns. Through it, the tenant courtyard: a level lawn with a round fieldstone fire pit. On the right, a long low saffron-yellow building with three oxide-red doors and a timber veranda, and beyond it, in the same line, an oxide-red bar container with its serving hatch open. Ahead across the lawn, at a right angle to it, three containers on raised oxide-red steel decks (from the right: saffron yellow, oxide red, oxide red), with the roof of a long teal container further out on the right and the lake glinting beyond the trees. Golden side light. 24 mm lens, camera 1.6 m high, symmetrical framing.
+The inner gate standing open: two timber leaves of vertical boards on a frame braced in an X, with black iron strap hinges, between fieldstone pillars with timber caps and a lantern. Through it, the tenant courtyard: a level lawn with a round fieldstone fire pit. On the right, a long low saffron-yellow building with three oxide-red doors and a timber veranda, and beyond it, in the same line, an oxide-red bar container with its serving hatch open. Ahead across the lawn, at a right angle to it, three containers on raised oxide-red steel decks (from the right: saffron yellow, oxide red, oxide red), with the roof of a long teal container further out on the right and the lake glinting beyond the trees. Golden side light. 24 mm lens, camera 1.6 m high, symmetrical framing.
 ```
 
 ### `aerial` · P0 · 16:9

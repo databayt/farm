@@ -44,8 +44,8 @@ export const copy = {
     steps: [
       { id: "gate", n: "01", title: "The gate", text: "A fieldstone wall carries the name, Digital Farm. The gate beside it is the first of two." },
       { id: "parking", n: "02", title: "Green parking", text: "Cars stay on grass, not concrete: a lawn of grass pavers under shade trees, just inside the gate." },
-      { id: "road", n: "03", title: "The rock road", text: "A road of local stone setts, laid by hand, runs from the parking to the compound." },
-      { id: "inner-gate", n: "04", title: "The inner gate", text: "Timber and red steel, in the colours of the decks. Past it, a quiet courtyard." },
+      { id: "road", n: "03", title: "The rock road", text: "A road of grey granite setts, laid by hand in arcs, runs from the parking to the compound." },
+      { id: "inner-gate", n: "04", title: "The inner gate", text: "Timber boards braced in an X, hung between fieldstone pillars. Past it, a quiet courtyard." },
     ] satisfies { id: AssetId; n: string; title: string; text: string }[],
   },
   // The plan as /en/studio shows its own: 2D, then 3D (D-022). Both are drawn from compound.json.
@@ -58,7 +58,7 @@ export const copy = {
   model: {
     title: "3D",
     line: "Line drawing of the compound seen from the front, from high beyond the gates: the gate and the sign wall, the parking and the rock road up to the inner gate; inside, six small tents and the fire pit ringed with stools on the lawn, with the bar and the guest rooms on the left; beyond the long timber table, the office and two studios on raised decks; at the back the study room, the galley and the public bathroom.",
-    real: "The same view rendered with materials and sunlight: corrugated containers in saffron yellow, oxide red and teal, timber decks with red pipe railings, white-framed sliding doors, hexagonal canvas tents (one with a green fly), the stone fire pit with its concrete cap and log stools, a long timber table, grass parking and a stone road.",
+    real: "The same view rendered with materials and sunlight: corrugated containers in saffron yellow, oxide red and teal, timber decks with red pipe railings, white-framed sliding doors, hexagonal canvas tents (one with a green fly), the stone fire pit with its concrete cap and log stools, a long timber table, timber gates braced in an X, grass parking and a road of granite setts.",
     caption: "Rendered from the design model",
   },
   courtyard: {
