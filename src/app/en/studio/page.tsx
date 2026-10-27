@@ -335,9 +335,9 @@ function BomTable({ groups, total, label }: { groups: BomGroup[]; total: number;
 const mm = (n: number) => n.toLocaleString("en-US")
 const KIND: Record<string, string> = { usb: "socket + USB-C", db: "board", inlet: "power inlet", earth: "earth rod" }
 const FIT_KIND: Record<string, string> = { wc: "WC", site: "on the site" }
-// a fitting's tag takes the colour of the warmest water it handles: hot over mixed over cold; drains and the vent
-// for the points that only take those
-const WARMTH = ["hot", "tempered", "cold", "soil", "waste", "vent"]
+// a fitting's tag takes the colour of the water it gives: mixed over hot over cold, so the mixing valve reads as
+// mixed water and the heater as hot; drains and the vent for the points that only take those
+const WARMTH = ["tempered", "hot", "cold", "soil", "waste", "vent"]
 function fittingColour(f: Record<string, string>, pipes: Record<string, string>[]) {
   const runs = pipes.filter((p) => f.runs.split(" ").includes(p.run))
   return runs.sort((a, b) => WARMTH.indexOf(a.system) - WARMTH.indexOf(b.system))[0]?.colour
