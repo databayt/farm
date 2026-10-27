@@ -18,13 +18,14 @@ const D = "/designs/camp"
 export default function CampPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a tent today (cropped from public/footage/IMG_3172, 2026-10-25) until the Nano Banana render
-          of the furnished camp replaces camp-hero.jpg: same name, no code change. */}
+      {/* First screen: the founder's Nano Banana render of the camp (2026-10-27), made from the footage's tent
+          (IMG_3172) and the 3D layout; master kept at assets/camp/hero-gemini.jpeg (2752 px), cut to 2400 x 1340.
+          The tent sits right, so the words keep the open lawn bottom-left. */}
       <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#c9d3dc]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`${D}/render/camp-hero.jpg`} width={2400} height={1350} fetchPriority="high"
-          alt="A hexagonal pop-up tent in off-white canvas with beige trim and big mesh windows on a green lawn, with trees and the lake behind."
-          className="absolute inset-0 size-full object-cover object-[50%_55%]" />
+        <img src={`${D}/render/camp-hero.jpg`} width={2400} height={1340} fetchPriority="high"
+          alt="A hexagonal pop-up tent in off-white canvas with beige trim at golden hour, its door open on a low cushioned chair, floor cushions, a striped rug, a lantern and a tea tray, on a green lawn with more tents, trees and the lake behind."
+          className="absolute inset-0 size-full object-cover object-[65%_60%]" />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
           <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
             <p className="text-sm text-white/80">Digital Farm</p>
