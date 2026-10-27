@@ -236,11 +236,12 @@ const POINT_GROUP: Record<string, string> = {
   socket: "Sockets and outlets", outlet: "Sockets and outlets", fan: "Fans", inlet: "Board and protection",
   alarm: "Alarms", earth: "Earthing and bonding",
 }
-const BOM_GROUPS = ["Board and protection", "Earthing and bonding", "Cable and conduit", "Lights", "Switches",
+const ELEC_GROUPS = ["Board and protection", "Earthing and bonding", "Cable and conduit", "Lights", "Switches",
   "Sockets and outlets", "Fans", "Alarms", "Appliances", "Labour"]
 
 type BomLine = { item: string; qty: number; unit: string; price: number; total: number; label: string }
 type BomGroup = { name: string; lines: BomLine[]; total: number }
+type BomTrade = { name: string; groups: BomGroup[]; total: number; lines: number }
 
 const bomLine = (r: Record<string, string>, item = r.item): BomLine => ({
   item, qty: Number(r.qty_per_unit), unit: r.unit, price: Number(r.unit_price_rwf), total: Number(r.total_per_unit_rwf), label: r.label,
@@ -249,15 +250,13 @@ const bomLine = (r: Record<string, string>, item = r.item): BomLine => ({
 const tally = (groups: Map<string, BomLine[]>): BomGroup[] =>
   [...groups].filter(([, l]) => l.length).map(([name, lines]) => ({ name, lines, total: lines.reduce((n, l) => n + l.total, 0) }))
 
-// Every electrical line of the BOM, sorted into the groups an electrician buys by.
-function electricalBom(points: Record<string, string>[]) {
+// The electrician's lines, sorted into the groups an electrician buys by.
+function electricalGroups(rows: Record<string, string>[], points: Record<string, string>[]) {
   const kindOf = new Map(points.map((p) => [p.description, p.kind]))
-  const groups = new Map<string, BomLine[]>(BOM_GROUPS.map((g) => [g, []]))
-  for (const r of readCsv("bom.csv")) {
-    const electrician = r.category === "labour" && r.item.startsWith("Electrician")
-    if (r.trade !== "electrical" && !electrician) continue
+  const groups = new Map<string, BomLine[]>(ELEC_GROUPS.map((g) => [g, []]))
+  for (const r of rows) {
     const kind = kindOf.get(r.item)
-    const group = electrician ? "Labour"
+    const group = r.category === "labour" ? "Labour"
       : r.category === "appliances" ? "Appliances"
       : r.category === "safety" ? "Alarms"
       : /earth|bonding/i.test(r.item) ? "Earthing and bonding"
@@ -275,13 +274,11 @@ const frw = (n: number) => n.toLocaleString("en-US")
 const PLUMB_GROUPS = ["Sanitaryware", "Hot water", "Supply pipe", "Drain and vent pipe", "Valves and fittings",
   "Drinking water", "Labour"]
 
-// Every plumbing line of the BOM, sorted the same way: what is fixed to the wall, then what runs behind it.
-function plumbingBom() {
+// The plumber's lines, sorted the same way: what is fixed to the wall, then what runs behind it.
+function plumbingGroups(rows: Record<string, string>[]) {
   const groups = new Map<string, BomLine[]>(PLUMB_GROUPS.map((g) => [g, []]))
-  for (const r of readCsv("bom.csv")) {
-    const plumber = r.category === "labour" && r.item.startsWith("Plumber")
-    if (r.trade !== "plumbing" && !plumber) continue
-    const group = plumber ? "Labour"
+  for (const r of rows) {
+    const group = r.category === "labour" ? "Labour"
       : r.category === "sanitaryware" ? "Sanitaryware"
       : /heater|thermostatic/i.test(r.item) ? "Hot water"
       : /^PPR/.test(r.item) ? "Supply pipe"
@@ -293,41 +290,96 @@ function plumbingBom() {
   return tally(groups)
 }
 
-function BomTable({ groups, total, label }: { groups: BomGroup[]; total: number; label: string }) {
+// Every other trade's lines, by what they are (the BOM's categories), its labour last.
+function categoryGroups(rows: Record<string, string>[]) {
+  const groups = new Map<string, BomLine[]>()
+  for (const r of [...rows].sort((a, b) => Number(a.category === "labour") - Number(b.category === "labour"))) {
+    const name = r.category[0].toUpperCase() + r.category.slice(1)
+    groups.set(name, [...(groups.get(name) ?? []), bomLine(r, degC(r.item))])
+  }
+  return tally(groups)
+}
+
+// The bill of materials for one studio, one place for every trade, in the order the studio goes up. Each trade
+// carries its own labour, so its total is what that trade costs; the carriage of the kits closes the list.
+const TRADES: [string, string][] = [["welding", "Steel, roof and stair"], ["carpentry", "Joinery and lining"],
+  ["electrical", "Electrical"], ["plumbing", "Plumbing"], ["tiling", "Tiling"], ["painting", "Painting"],
+  ["glazier", "Glazing"], ["masonry", "Masonry"], ["furnishing", "Furnishing"], ["transport", "Transport"]]
+const labourOf = (item: string) => /^Electrician/.test(item) ? "electrical" : /^Plumber/.test(item) ? "plumbing"
+  : /^Tiler/.test(item) ? "tiling" : /^Welder/.test(item) ? "welding" : /carpentry/i.test(item) ? "carpentry" : "transport"
+function studioBom(points: Record<string, string>[]): BomTrade[] {
+  const trades = new Map<string, Record<string, string>[]>(TRADES.map(([t]) => [t, []]))
+  for (const r of readCsv("bom.csv")) {
+    const t = r.category === "labour" ? labourOf(r.item) : r.trade
+    trades.set(t, [...(trades.get(t) ?? []), r]) // a trade the list does not know yet still gets its own row
+  }
+  const name = Object.fromEntries(TRADES)
+  return [...trades].filter(([, rows]) => rows.length).map(([t, rows]) => {
+    const groups = t === "electrical" ? electricalGroups(rows, points) : t === "plumbing" ? plumbingGroups(rows) : categoryGroups(rows)
+    return { name: name[t] ?? t[0].toUpperCase() + t.slice(1), groups, total: groups.reduce((n, g) => n + g.total, 0), lines: rows.length }
+  })
+}
+
+// A row per trade with its total, opening onto its lines; then the contingency and the studio's total, the
+// generator's own (bom-summary.csv). Native <details>, so it needs no script.
+function BomTable({ trades, contingency, total }: { trades: BomTrade[]; contingency: { label: string; rwf: number }; total: number }) {
   return (
-    <div className="mt-6 overflow-x-auto rounded-xl border">
-      <table className="w-full text-sm">
-        <thead className="text-muted-foreground bg-muted/40">
-          <tr>
-            <th className="px-3 py-2 text-start font-medium">Item</th>
-            <th className="px-3 py-2 text-end font-medium">Qty</th>
-            <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Unit price (RWF)</th>
-            <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Total (RWF)</th>
-          </tr>
-        </thead>
-        {groups.map((g) => (
-          <tbody key={g.name}>
-            <tr className="border-t bg-muted/20">
-              <th colSpan={3} className="px-3 py-2 text-start font-semibold">{g.name}</th>
-              <td className="px-3 py-2 text-end font-semibold tabular-nums">{frw(g.total)}</td>
-            </tr>
-            {g.lines.map((l, i) => (
-              <tr key={`${l.item}-${i}`} className="border-t">
-                <td className="px-3 py-2 ps-6">{l.item}</td>
-                <td className="px-3 py-2 text-end whitespace-nowrap tabular-nums">{l.qty} {l.unit === "each" ? "" : l.unit}</td>
-                <td className="text-muted-foreground px-3 py-2 text-end tabular-nums">{frw(l.price)}</td>
-                <td className="px-3 py-2 text-end tabular-nums">{frw(l.total)}</td>
-              </tr>
-            ))}
-          </tbody>
-        ))}
-        <tfoot>
-          <tr className="border-t-2">
-            <th colSpan={3} className="px-3 py-3 text-start font-semibold">{label}</th>
-            <td className="px-3 py-3 text-end font-semibold tabular-nums">{frw(total)}</td>
-          </tr>
-        </tfoot>
-      </table>
+    <div className="mt-6 overflow-hidden rounded-xl border">
+      {trades.map((t) => (
+        <details key={t.name} className="group border-b">
+          <summary className="hover:bg-muted/40 flex cursor-pointer list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+            <svg viewBox="0 0 24 24" className="text-muted-foreground size-4 shrink-0 transition-transform group-open:rotate-90 rtl:-scale-x-100"
+              fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+            <span className="font-semibold">{t.name}</span>
+            <span className="text-muted-foreground text-sm">{t.lines} {t.lines === 1 ? "line" : "lines"}</span>
+            <span className="ms-auto font-semibold tabular-nums">{frw(t.total)}</span>
+          </summary>
+          <div className="overflow-x-auto border-t">
+            <table className="w-full text-sm">
+              <thead className="text-muted-foreground bg-muted/40">
+                <tr>
+                  <th className="px-3 py-2 ps-11 text-start font-medium">Item</th>
+                  <th className="px-3 py-2 text-end font-medium">Qty</th>
+                  <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Unit price (RWF)</th>
+                  <th className="px-4 py-2 text-end font-medium whitespace-nowrap">Total (RWF)</th>
+                </tr>
+              </thead>
+              {t.groups.map((g) => (
+                <tbody key={g.name}>
+                  {t.groups.length > 1 ? (
+                    <tr className="border-t bg-muted/20">
+                      <th colSpan={3} className="px-3 py-2 ps-11 text-start font-medium">{g.name}</th>
+                      <td className="text-muted-foreground px-4 py-2 text-end tabular-nums">{frw(g.total)}</td>
+                    </tr>
+                  ) : null}
+                  {g.lines.map((l, i) => (
+                    <tr key={`${l.item}-${i}`} className="border-t">
+                      <td className="px-3 py-2 ps-11">{l.item}</td>
+                      <td className="px-3 py-2 text-end whitespace-nowrap tabular-nums">{l.qty} {l.unit === "each" ? "" : l.unit}</td>
+                      <td className="text-muted-foreground px-3 py-2 text-end tabular-nums">{frw(l.price)}</td>
+                      <td className="px-4 py-2 text-end tabular-nums">{frw(l.total)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              ))}
+            </table>
+          </div>
+        </details>
+      ))}
+      <div className="bg-muted/20 flex px-4 py-2.5 text-sm">
+        <span>Materials and labour</span>
+        <span className="ms-auto tabular-nums">{frw(trades.reduce((n, t) => n + t.total, 0))}</span>
+      </div>
+      <div className="flex border-t px-4 py-2.5 text-sm">
+        <span>{contingency.label}</span>
+        <span className="ms-auto tabular-nums">{frw(contingency.rwf)}</span>
+      </div>
+      <div className="flex border-t-2 px-4 py-3 font-semibold">
+        <span>One studio</span>
+        <span className="ms-auto tabular-nums">{frw(total)}</span>
+      </div>
     </div>
   )
 }
@@ -347,14 +399,15 @@ export default function StudioPage() {
   const circuits = readCsv("circuits.csv")
   const demand = Object.fromEntries(readCsv("demand.csv").map((r) => [r.item, r.amps]))
   const points = readCsv("points.csv")
-  const bom = electricalBom(points)
-  const bomTotal = bom.reduce((n, g) => n + g.total, 0)
   const pipes = readCsv("pipes.csv")
   const fittings = readCsv("fittings.csv")
   const water = Object.fromEntries(readCsv("site-water.csv").map((r) => [r.item, r.value]))
   const shared = readCsv("shared-works.csv").filter((w) => !/site board|REG/i.test(w.item))
-  const plumbing = plumbingBom()
-  const plumbingTotal = plumbing.reduce((n, g) => n + g.total, 0)
+  const bom = studioBom(points)
+  const summary = readCsv("bom-summary.csv")
+  const extra = summary.find((r) => r.category.startsWith("contingency"))!
+  const contingency = { label: extra.category[0].toUpperCase() + extra.category.slice(1), rwf: Number(extra.per_unit_rwf) }
+  const total = Number(summary.find((r) => r.category === "TOTAL")!.per_unit_rwf)
   return (
     <main className="w-full flex-1">
       {/* First screen: a photoreal concept render of the finished studio (D-018), made in Gemini (2026-10-27):
@@ -597,23 +650,6 @@ export default function StudioPage() {
         </div>
       </section>
 
-      <section id="bom" className="scroll-mt-20 border-t py-16">
-        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-          <p className="text-muted-foreground text-sm font-medium">Electric · Materials</p>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight">Bill of materials</h2>
-          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            Everything the electrician buys for the studio: about RWF {frw(bomTotal)}. Prices are placeholders until
-            three quotes come in for each line.
-          </p>
-          <BomTable groups={bom} total={bomTotal} label="Electrical, the studio" />
-          <p className="text-muted-foreground mt-3 text-sm">
-            Full list for every trade: <a href={`${D}/data/bom.xlsx`} download className="underline underline-offset-4">bom.xlsx</a>
-            {" · "}<a href={`${D}/data/circuits.csv`} download className="underline underline-offset-4">circuits.csv</a>
-            {" · "}<a href={`${D}/data/points.csv`} download className="underline underline-offset-4">points.csv</a>
-          </p>
-        </div>
-      </section>
-
       {/* Plumbing, in the Electric section's pattern: a plain title, then the studio's water drawn full width, from the
           farm's supply through the stop valve to every outlet and on to the drains. Below it the installation in the 3D
           view's camera with the galley's end panels cut away (render/plumbing-line.png: every run in its system's
@@ -727,15 +763,17 @@ export default function StudioPage() {
         </div>
       </section>
 
-      <section id="plumbing-bom" className="scroll-mt-20 border-t py-16">
+      {/* The bill of materials, once for the whole studio after its trades: a row per trade, from the steel to the
+          last tap, each opening onto its lines, then what the three studios share. Lines and prices come from bom.csv
+          (placeholders until quoted, AS-21). */}
+      <section id="bom" className="scroll-mt-20 border-t py-16">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-          <p className="text-muted-foreground text-sm font-medium">Plumbing · Materials</p>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight">Bill of materials</h2>
+          <h2 className="text-3xl font-semibold tracking-tight">Bill of materials</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            Everything the plumber buys for the studio: about RWF {frw(plumbingTotal)}. Prices are placeholders until
-            three quotes come in for each line.
+            Everything one studio needs, trade by trade: about {rwf(total)} with a 15 % contingency. Open a trade for
+            its lines. Prices are placeholders until three quotes come in for each line.
           </p>
-          <BomTable groups={plumbing} total={plumbingTotal} label="Plumbing, the studio" />
+          <BomTable trades={bom} contingency={contingency} total={total} />
           <h3 className="mt-10 text-xl font-semibold tracking-tight">Shared with the farm</h3>
           <p className="text-muted-foreground mt-2 max-w-3xl text-balance">
             WASAC water, the borehole and rain from the canopies fill the farm&rsquo;s {water.tank_m3} m³ tank, about four
@@ -765,10 +803,10 @@ export default function StudioPage() {
             </table>
           </div>
           <p className="text-muted-foreground mt-3 text-sm">
-            Full list for every trade: <a href={`${D}/data/bom.xlsx`} download className="underline underline-offset-4">bom.xlsx</a>
-            {" · "}<a href={`${D}/data/pipes.csv`} download className="underline underline-offset-4">pipes.csv</a>
-            {" · "}<a href={`${D}/data/fittings.csv`} download className="underline underline-offset-4">fittings.csv</a>
-            {" · "}<a href={`${D}/data/site-water.csv`} download className="underline underline-offset-4">site-water.csv</a>
+            Full list: <a href={`${D}/data/bom.xlsx`} download className="underline underline-offset-4">bom.xlsx</a>
+            {["bom.csv", "circuits.csv", "points.csv", "pipes.csv", "fittings.csv", "site-water.csv"].map((f) => (
+              <span key={f}>{" · "}<a href={`${D}/data/${f}`} download className="underline underline-offset-4">{f}</a></span>
+            ))}
           </p>
         </div>
       </section>
