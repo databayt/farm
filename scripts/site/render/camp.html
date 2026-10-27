@@ -1,0 +1,343 @@
+<!doctype html>
+<!--
+  /en/camp's 3D, in the pattern of the studio's (scripts/studio/render/room.html): one camp seen from the
+  front with its front walls off, built from src/components/camp/camp.json (the numbers the 2D draws). The
+  tent follows the 2026-10-25 footage (public/footage/IMG_3172): a hexagonal pop-up in off-white canvas with
+  beige trim, poles outside, mesh windows. Rendered two ways:
+
+    ?mode=line  line drawing on a transparent ground   -> public/designs/camp/render/camp-line.png
+    ?mode=real  materials, daylight and shadow         -> public/designs/camp/render/camp-real.webp
+
+  Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
+  save the data URL in #out.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+html,body{margin:0;background:#fff}
+#out{display:block;width:2400px;height:1100px}
+</style>
+<script type="importmap">
+{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<img id="out" alt="">
+<script type="module">
+import * as THREE from "three"
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js"
+import { OutlineEffect } from "three/addons/effects/OutlineEffect.js"
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js"
+import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js"
+import { LineMaterial } from "three/addons/lines/LineMaterial.js"
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js"
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
+import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+
+const Q = new URLSearchParams(location.search)
+const LINE = Q.get("mode") !== "real"
+const [FW, FH] = [2400, 1100]
+const C = await (await fetch(`/src/components/camp/camp.json?${Date.now()}`)).json()
+const INK = "#2b2a26", PAGE = "#ffffff"
+// plan (x right, y toward the door) -> three: x = x, y = height, z = y; the camera stands in front, at +z
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true })
+renderer.setClearColor(0xffffff, 0)
+renderer.setPixelRatio(1)
+renderer.setSize(FW, FH)
+renderer.outputColorSpace = THREE.SRGBColorSpace
+if (!LINE) {
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+}
+const scene = new THREE.Scene()
+
+// ------------------------------------------------------------ procedural textures (real mode)
+let seed = 7
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+function tex(draw, w = 512, h = 512) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h
+  seed = 7
+  draw(c.getContext("2d"), w, h)
+  const t = new THREE.CanvasTexture(c)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.wrapS = t.wrapT = THREE.RepeatWrapping
+  t.anisotropy = 8
+  return t
+}
+const T = LINE ? {} : {
+  // one wall of the tent: canvas with the beige trim at its edges and foot, a D-shaped mesh window
+  wall: tex((g, w, h) => {
+    g.fillStyle = "#ece8dc"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 50; i++) { // soft creases in the canvas
+      g.strokeStyle = `rgba(150,140,120,${0.04 + rnd() * 0.05})`; g.lineWidth = 1 + rnd() * 2
+      g.beginPath(); const x = rnd() * w, y = rnd() * h; g.moveTo(x, y); g.lineTo(x + (rnd() - 0.5) * 120, y + (rnd() - 0.5) * 60); g.stroke()
+    }
+    g.fillStyle = "#cdb894"; g.fillRect(0, 0, 22, h); g.fillRect(w - 22, 0, 22, h); g.fillRect(0, h - 40, w, 40)
+    g.fillStyle = "#6b6f70"; g.strokeStyle = "#cdb894"; g.lineWidth = 14
+    g.beginPath(); g.roundRect(w * 0.2, h * 0.16, w * 0.6, h * 0.56, [w * 0.3, w * 0.3, 8, 8]); g.fill(); g.stroke()
+  }, 512, 512),
+  canvas: tex((g, w, h) => {
+    g.fillStyle = "#ece8dc"; g.fillRect(0, 0, w, h)
+    g.fillStyle = "#cdb894"; g.fillRect(0, 0, 18, h); g.fillRect(w - 18, 0, 18, h)
+  }, 256, 256),
+  boards: tex((g, w, h) => {
+    g.fillStyle = "#c08a55"; g.fillRect(0, 0, w, h)
+    for (let j = 0; j < 90; j++) {
+      g.fillStyle = `rgba(110,70,35,${0.05 + rnd() * 0.08})`
+      g.fillRect(rnd() * w, rnd() * h, 30 + rnd() * 160, 1 + rnd())
+    }
+  }),
+  grass: tex((g, w, h) => {
+    g.fillStyle = "#6f9a4a"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 26000; i++) {
+      g.fillStyle = rnd() > 0.5 ? "rgba(170,200,110,0.35)" : "rgba(40,70,30,0.35)"
+      g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
+    }
+  }),
+  rug: tex((g, w, h) => {
+    const bands = ["#b5523a", "#e6d8bd", "#2f4f5a", "#e6d8bd", "#c9973a"]
+    for (let i = 0; i < 20; i++) { g.fillStyle = bands[i % bands.length]; g.fillRect(0, (i * h) / 20, w, h / 20 + 1) }
+  }, 256, 256),
+}
+
+// ------------------------------------------------------------ materials
+const THIN = new Set(["pole", "leg"])
+const MAT = {}
+function mat(name) {
+  if (MAT[name]) return MAT[name]
+  let x
+  if (LINE) {
+    x = new THREE.MeshBasicMaterial({ color: PAGE, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
+    if (name === "glass") x = new THREE.MeshBasicMaterial({ color: PAGE, transparent: true, opacity: 0, depthWrite: false })
+    if (THIN.has(name)) x.userData.outlineParameters = { visible: false }
+  } else {
+    const std = (o) => new THREE.MeshStandardMaterial(o)
+    x = {
+      wall: () => std({ map: T.wall, roughness: 0.9, side: THREE.DoubleSide }),
+      canvas: () => std({ map: T.canvas, roughness: 0.9, side: THREE.DoubleSide }),
+      floor: () => std({ color: "#b9ab8e", roughness: 0.95 }), // the groundsheet
+      pole: () => std({ color: "#3a3b3d", roughness: 0.4, metalness: 0.6 }),
+      timber: () => std({ map: T.boards, roughness: 0.75 }),
+      frame: () => std({ color: "#7d5634", roughness: 0.8 }),
+      wood: () => std({ color: "#b98250", roughness: 0.7 }),
+      leg: () => std({ color: "#9b6a3f", roughness: 0.7 }),
+      white: () => std({ color: "#f4f2ec", roughness: 0.95 }),
+      linen: () => std({ color: "#e9e4d8", roughness: 0.95 }),
+      throw: () => std({ color: "#c99a2e", roughness: 0.95 }),
+      rug: () => std({ map: T.rug, roughness: 1 }),
+      lawn: () => std({ map: T.grass, roughness: 1 }),
+      black: () => std({ color: "#26272b", roughness: 0.45, metalness: 0.5 }),
+      lamp: () => std({ color: "#fff3d6", roughness: 0.3, emissive: "#ffcf7a", emissiveIntensity: 1.6 }),
+      glass: () => new THREE.MeshPhysicalMaterial({ color: "#ffffff", roughness: 0.05, transparent: true, opacity: 0.35, depthWrite: false }),
+    }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
+  }
+  return (MAT[name] = x)
+}
+
+// ------------------------------------------------------------ geometry helpers (metres)
+const meshes = []
+function add(geo, name, opts = {}) {
+  const mesh = new THREE.Mesh(geo, mat(name))
+  mesh.castShadow = !LINE && name !== "glass" && name !== "lawn"
+  mesh.receiveShadow = !LINE
+  if (opts.pos) mesh.position.set(...opts.pos)
+  if (opts.rot) mesh.rotation.set(...opts.rot)
+  if (opts.noEdges) mesh.userData.noEdges = true
+  scene.add(mesh)
+  meshes.push(mesh)
+  return mesh
+}
+function blk(xa, za, xb, zb, y0, y1, name, opts) {
+  const [x0, x1, z0, z1] = [Math.min(xa, xb), Math.max(xa, xb), Math.min(za, zb), Math.max(za, zb)]
+  return add(new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0), name, { pos: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2], ...opts })
+}
+function soft(x0, z0, x1, z1, y0, y1, r, name) {
+  return add(new RoundedBoxGeometry(x1 - x0, y1 - y0, z1 - z0, 4, r), name, { pos: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2] })
+}
+function cyl(x, z, r, y0, h, name, seg = 24, rTop = r) {
+  return add(new THREE.CylinderGeometry(rTop, r, h, seg), name, { pos: [x, y0 + h / 2, z] })
+}
+function pipe(a, b, r, name) {
+  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b)
+  const mesh = add(new THREE.CylinderGeometry(r, r, A.distanceTo(B), 6), name, { pos: A.clone().add(B).multiplyScalar(0.5).toArray() })
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.sub(A).normalize())
+  return mesh
+}
+// a flat four-cornered panel (corners in order), its texture across it u along the bottom, v up
+function quad([a, b, c, d], name) {
+  const g = new THREE.BufferGeometry()
+  g.setAttribute("position", new THREE.Float32BufferAttribute([...a, ...b, ...c, ...a, ...c, ...d], 3))
+  g.setAttribute("uv", new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1], 2))
+  g.computeVertexNormals()
+  return add(g, name)
+}
+// corner k of a hexagon, flat at the back and the front: plan angle k * 60°, z toward the door
+const corner = (r, k, y, cz = 0) => [r * Math.cos((k * Math.PI) / 3), y, cz + r * Math.sin((k * Math.PI) / 3)]
+const halfWidth = (r, dz) => r - Math.abs(dz) / Math.sqrt(3) // a flat-fronted hexagon's half-width, dz from its centre
+
+// ------------------------------------------------------------ the lawn and the deck
+const { tent, deck, bed, crate, rug, porch } = C
+if (!LINE) {
+  T.grass.repeat.set(10, 10) // 6 m a tile over the 60 m lawn
+  add(new THREE.CircleGeometry(30, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], pos: [0, 0, 0] })
+}
+{
+  // the frame under the boards, then the boards across, 140 mm each with a 6 mm gap, cut square at the edge
+  const pts = Array.from({ length: 6 }, (_, k) => { const [x, , z] = corner(deck.r - 0.03, k, 0, deck.y); return new THREE.Vector2(x, -z) })
+  const g = new THREE.ExtrudeGeometry(new THREE.Shape(pts), { depth: deck.h - 0.03, bevelEnabled: false })
+  add(g, "frame", { rot: [-Math.PI / 2, 0, 0] })
+  // each board cut to the deck's outline, so its ends follow the slanted sides
+  const flat = deck.r * Math.sin(Math.PI / 3)
+  for (let z = deck.y - flat; z < deck.y + flat - 0.02; z += 0.146) {
+    const z1 = Math.min(z + 0.14, deck.y + flat)
+    const zs = [z, ...(z < deck.y && z1 > deck.y ? [deck.y] : []), z1] // the widest point, at the side corners
+    const right = zs.map((q) => new THREE.Vector2(halfWidth(deck.r, q - deck.y), -q))
+    const left = zs.slice().reverse().map((q) => new THREE.Vector2(-halfWidth(deck.r, q - deck.y), -q))
+    const g = new THREE.ExtrudeGeometry(new THREE.Shape([...right, ...left]), { depth: 0.03, bevelEnabled: false })
+    add(g, "timber", { rot: [-Math.PI / 2, 0, 0], pos: [0, deck.h - 0.03, 0] })
+  }
+}
+
+// ------------------------------------------------------------ the tent
+// Walls stand from the floor to the shoulder, hips lean in to a small six-sided top. The front three walls
+// (k = 0, 1, 2: the door wall and the two beside it) and their hips are off, so the room shows.
+const Y = deck.h
+const BACK = [3, 4, 5]
+{
+  const floor = new THREE.Shape(Array.from({ length: 6 }, (_, k) => { const [x, , z] = corner(tent.r, k, 0); return new THREE.Vector2(x, -z) }))
+  add(new THREE.ExtrudeGeometry(floor, { depth: 0.01, bevelEnabled: false }), "floor", { rot: [-Math.PI / 2, 0, 0], pos: [0, Y, 0] })
+  const sh = tent.shoulder, tp = tent.top
+  for (const k of BACK) {
+    quad([corner(tent.r, k, Y), corner(tent.r, k + 1, Y), corner(sh.r, k + 1, Y + sh.h), corner(sh.r, k, Y + sh.h)], "wall")
+    quad([corner(sh.r, k, Y + sh.h), corner(sh.r, k + 1, Y + sh.h), corner(tp.r, k + 1, Y + tp.h), corner(tp.r, k, Y + tp.h)], "canvas")
+  }
+  // the top, its back half
+  const top = new THREE.Shape([3, 4, 5, 6].map((k) => { const [x, , z] = corner(tp.r, k, 0); return new THREE.Vector2(x, -z) }))
+  add(new THREE.ExtrudeGeometry(top, { depth: 0.02, bevelEnabled: false }), "canvas", { rot: [-Math.PI / 2, 0, 0], pos: [0, Y + tp.h, 0] })
+  // the poles outside, up each back corner from the deck to the top
+  for (const k of [3, 4, 5, 6]) {
+    const o = 0.03
+    pipe(corner(tent.r + o, k, Y), corner(sh.r + o, k, Y + sh.h), 0.012, "pole")
+    pipe(corner(sh.r + o, k, Y + sh.h), corner(tp.r + o, k, Y + tp.h + 0.02), 0.012, "pole")
+  }
+  // the front three walls' foot, a strip of canvas, so the outline still reads as a tent; the door's gap open
+  const foot = (a, b) => quad([a, b, [b[0], Y + 0.12, b[2]], [a[0], Y + 0.12, a[2]]], "canvas")
+  const fz = tent.r * Math.sin(Math.PI / 3)
+  foot(corner(tent.r, 0, Y), corner(tent.r, 1, Y))
+  foot(corner(tent.r, 1, Y), [tent.door / 2, Y, fz])
+  foot([-tent.door / 2, Y, fz], corner(tent.r, 2, Y))
+  foot(corner(tent.r, 2, Y), corner(tent.r, 3, Y))
+}
+
+// ------------------------------------------------------------ inside
+{
+  const [x0, x1, z0, z1] = [-bed.w / 2, bed.w / 2, bed.y0, bed.y0 + bed.l]
+  blk(x0, z0, x1, z1, Y, Y + bed.base, "wood")
+  const m = Y + bed.base
+  soft(x0 + 0.01, z0 + 0.01, x1 - 0.01, z1 - 0.01, m, m + bed.mattress, 0.04, "white")
+  const t = m + bed.mattress
+  soft(x0 - 0.01, z0 + 0.55, x1 + 0.01, z1 + 0.01, t - 0.05, t + 0.05, 0.04, "linen") // the duvet
+  soft(x0 - 0.015, z1 - 0.42, x1 + 0.015, z1 - 0.12, t + 0.02, t + 0.07, 0.02, "throw")
+  for (const [a, b] of [[x0 + 0.08, -0.04], [0.04, x1 - 0.08]]) soft(a, z0 + 0.08, b, z0 + 0.4, t, t + 0.13, 0.05, "white") // pillows
+}
+{
+  const { x, y, w, d, h } = crate
+  blk(x - w / 2, y - d / 2, x + w / 2, y + d / 2, Y, Y + h, "wood")
+  lantern(x, y, Y + h)
+}
+blk(-rug.w / 2, rug.y - rug.d / 2, rug.w / 2, rug.y + rug.d / 2, Y, Y + 0.012, "rug")
+function lantern(x, z, y0) {
+  cyl(x, z, 0.06, y0, 0.03, "black", 6)
+  cyl(x, z, 0.045, y0 + 0.03, 0.12, "lamp", 6)
+  cyl(x, z, 0.06, y0 + 0.15, 0.03, "black", 6)
+  if (!LINE) {
+    const l = new THREE.PointLight(0xffc77a, 1.2, 3, 2)
+    l.position.set(x, y0 + 0.1, z); scene.add(l)
+  }
+}
+
+// ------------------------------------------------------------ the porch
+{
+  const { w, d, seat, back } = porch.chair
+  for (const [cx, cz] of porch.chairs) {
+    const [x0, x1, z0, z1] = [cx - w / 2, cx + w / 2, cz - d / 2, cz + d / 2] // its back toward the tent
+    blk(x0, z0 + 0.05, x1, z1, Y + seat - 0.03, Y + seat, "wood")
+    for (let i = 0; i < 3; i++) blk(x0, z0 + 0.02, x1, z0 + 0.05, Y + seat + 0.08 + i * 0.13, Y + seat + 0.18 + i * 0.13, "wood")
+    for (const x of [x0 + 0.03, x1 - 0.03]) {
+      pipe([x, Y, z1 - 0.03], [x, Y + seat, z0 + 0.1], 0.015, "leg")
+      pipe([x, Y, z0 + 0.03], [x, Y + back, z0 + 0.035], 0.015, "leg")
+    }
+  }
+  const { x, y, r, h } = porch.table
+  cyl(x, y, r, Y + h - 0.03, 0.03, "wood", 32)
+  cyl(x, y, 0.025, Y + 0.02, h - 0.05, "leg", 8)
+  cyl(x, y, 0.18, Y, 0.02, "leg", 24)
+  lantern(x, y, Y + h)
+}
+
+// ------------------------------------------------------------ camera: the front view
+const target = new THREE.Vector3(0, 0.55, deck.y - 0.2)
+const [el, dist] = [THREE.MathUtils.degToRad(32), 30]
+const camera = new THREE.PerspectiveCamera(22, FW / FH, 0.5, 200)
+camera.position.set(0, target.y + dist * Math.sin(el), target.z + dist * Math.cos(el))
+camera.lookAt(target)
+camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+scene.updateMatrixWorld(true)
+const bb = new THREE.Box3()
+for (const o of meshes) if (!o.geometry.type.startsWith("Circle")) bb.expandByObject(o)
+let px = [Infinity, Infinity, -Infinity, -Infinity]
+for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
+  const p = new THREE.Vector3(xx, yy, zz).project(camera)
+  const X = ((p.x + 1) / 2) * FW, Yp = ((1 - p.y) / 2) * FH
+  px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
+}
+let w = (px[2] - px[0]) * 1.08, h = (px[3] - px[1]) * 1.12
+if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
+camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+
+// ------------------------------------------------------------ render
+if (LINE) {
+  const lineMat = new LineMaterial({ color: INK, linewidth: 1.4 })
+  lineMat.resolution.set(FW, FH)
+  lineMat.userData.outlineParameters = { visible: false }
+  for (const o of meshes) {
+    if (o.userData.noEdges) continue
+    const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
+    const l = new LineSegments2(g, lineMat)
+    l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
+    scene.add(l)
+  }
+  const ink = new THREE.Color(INK)
+  new OutlineEffect(renderer, { defaultThickness: 0.003, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
+} else {
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  scene.environmentIntensity = 0.4
+  scene.add(new THREE.HemisphereLight(0xeef3ff, 0x8a7a5a, 0.9))
+  const sun = new THREE.DirectionalLight(0xfff0d8, 2.8)
+  sun.position.set(-8, 10, 9) // from the front, over the left shoulder
+  sun.castShadow = true
+  sun.shadow.mapSize.set(4096, 4096)
+  Object.assign(sun.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5, near: 1, far: 40 })
+  sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
+  scene.add(sun)
+  const composer = new EffectComposer(renderer)
+  composer.setSize(FW, FH)
+  composer.addPass(new RenderPass(scene, camera))
+  const ao = new GTAOPass(scene, camera, FW, FH)
+  ao.blendIntensity = 0.8
+  ao.updateGtaoMaterial({ radius: 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
+  composer.addPass(ao)
+  composer.addPass(new OutputPass())
+  composer.render()
+}
+document.getElementById("out").src = renderer.domElement.toDataURL("image/png")
+document.body.dataset.ready = "1"
+</script>
+</body>
+</html>
