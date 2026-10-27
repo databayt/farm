@@ -1,15 +1,12 @@
 import { ArrowDown } from "lucide-react"
 
 import { AmbientVideo } from "./ambient-video"
-import { IMAGES, VIDEOS } from "./assets.generated"
+import { VIDEOS } from "./assets.generated"
 import { copy } from "./copy"
-import { EDGE_LEFT, EDGE_RIGHT } from "./edges"
-import { Caption, ClipPicture, captionFor } from "./render"
+import { ClipPicture } from "./render"
 
 export function Hero() {
-  const { eyebrow, title, lead, planned, today, walk, film } = copy.hero
-  // The opening still is the hero clip's first frame, or the gate render when there is no clip.
-  const opening = (VIDEOS.hero ?? IMAGES.gate)?.source
+  const { headline, walk, film } = copy.hero
   return (
     <section
       id="top"
@@ -27,7 +24,7 @@ export function Hero() {
         portrait={VIDEOS["hero-portrait"]?.src}
         attach="load"
         label={film}
-        controlsClassName={`absolute bottom-5 z-10 ${EDGE_RIGHT}`}
+        controls={false}
       />
       <div
         aria-hidden
@@ -37,14 +34,12 @@ export function Hero() {
       <div id="hero-sentinel" aria-hidden className="pointer-events-none absolute inset-x-0 top-[60%] h-px" />
 
       <div className="relative mx-auto w-full max-w-7xl px-4 pb-24 md:px-8 md:pb-28">
-        <p className="farm-intro text-chalk/80 font-mono text-xs tracking-[0.25em] uppercase">{eyebrow}</p>
         <h1
           id="hero-title"
-          className="farm-intro font-display mt-4 text-[clamp(4.5rem,14vw,11rem)] leading-[0.82] font-normal tracking-tight"
+          className="farm-intro font-display text-[clamp(3.5rem,11vw,9rem)] leading-[0.9] font-semibold tracking-[-0.04em] text-balance"
         >
-          {title}
+          {headline}
         </h1>
-        <p className="farm-intro-2 text-chalk/90 mt-6 max-w-xl text-lg text-pretty md:text-xl">{`${lead} ${opening === "today" ? today : planned}`}</p>
         <div className="farm-intro-3 mt-8 flex flex-wrap gap-3">
           <a
             href="#way-in"
@@ -61,9 +56,6 @@ export function Hero() {
           </a>
         </div>
       </div>
-      <p className={`absolute bottom-7 ${EDGE_LEFT}`}>
-        <Caption>{captionFor(opening, Boolean(VIDEOS.hero))}</Caption>
-      </p>
     </section>
   )
 }

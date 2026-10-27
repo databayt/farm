@@ -11,12 +11,10 @@ type NavLink = { href: string; label: string }
 export function Header({
   title,
   nav,
-  cta,
   menu,
 }: {
   title: string
   nav: NavLink[]
-  cta: string
   menu: { open: string; close: string }
 }) {
   const ref = React.useRef<HTMLElement>(null)
@@ -50,12 +48,6 @@ export function Header({
             </a>
           ))}
         </nav>
-        <a
-          href="#enquire"
-          className="bg-chalk text-soil hidden h-9 items-center rounded-full px-4 text-sm font-medium transition-colors group-data-[solid]/header:bg-soil group-data-[solid]/header:text-chalk lg:inline-flex"
-        >
-          {cta}
-        </a>
         <button
           type="button"
           popoverTarget="farm-menu"
@@ -85,13 +77,6 @@ export function Header({
               {link.label}
             </a>
           ))}
-          <a
-            href="#enquire"
-            onClick={closeMenu}
-            className="bg-leaf text-chalk mt-6 inline-flex h-12 items-center justify-center rounded-full font-medium"
-          >
-            {cta}
-          </a>
         </nav>
       </div>
     </header>

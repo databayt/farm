@@ -1,7 +1,7 @@
 import { copy } from "./copy"
 import { SectionHead } from "./section-head"
 
-const serif = { fontFamily: "var(--font-instrument), Georgia, serif" }
+const display = { fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif" }
 const mono = {
   fontFamily: "var(--font-geist-mono), ui-monospace, monospace",
   fontSize: 12,
@@ -39,7 +39,7 @@ function RouteMap() {
       <path d="M612 400C640 384 682 392 688 414C694 438 660 452 630 446C602 440 590 414 612 400Z" fill="#bfd5dc" />
       <path d="M484 452C504 440 538 446 540 462C542 478 516 488 494 482C474 476 468 462 484 452Z" fill="#bfd5dc" />
       <path d="M690 338C704 330 724 334 726 346C728 358 712 364 698 360C684 356 680 344 690 338Z" fill="#bfd5dc" />
-      <text x="646" y="473" textAnchor="middle" style={{ ...serif, fontStyle: "italic", fontSize: 18, fill: "#2e6f8e" }}>
+      <text x="646" y="473" textAnchor="middle" style={{ ...display, fontSize: 18, fill: "#2e6f8e" }}>
         {map.lake}
       </text>
 
@@ -61,13 +61,13 @@ function RouteMap() {
 
       <circle cx="180" cy="120" r="26" fill="#2b2a26" fillOpacity="0.07" />
       <circle cx="180" cy="120" r="6" fill="#2b2a26" />
-      <text x="216" y="112" style={{ ...serif, fontSize: 32, fill: "#2b2a26" }}>
+      <text x="216" y="112" style={{ ...display, fontSize: 32, fill: "#2b2a26" }}>
         {map.kigali}
       </text>
 
       <circle cx="560" cy="380" r="36" fill="#d9a21b" fillOpacity="0.2" stroke="#d9a21b" strokeOpacity="0.55" />
       <circle cx="560" cy="380" r="6" fill="#7e2f26" />
-      <text x="512" y="414" textAnchor="end" style={{ ...serif, fontSize: 32, fill: "#2b2a26" }}>
+      <text x="512" y="414" textAnchor="end" style={{ ...display, fontSize: 32, fill: "#2b2a26" }}>
         {map.gashora}
       </text>
     </svg>

@@ -1,10 +1,7 @@
-import { cn } from "@/lib/utils"
-
 import { Arrival } from "./arrival"
 import { copy } from "./copy"
 import { Dusk } from "./dusk"
 import { Enquire } from "./enquire"
-import { display } from "./fonts"
 import { Footer } from "./footer"
 import { Header } from "./header"
 import { Hero } from "./hero"
@@ -23,14 +20,14 @@ export function HomeContent() {
   // The Today section waits for the "-planned" renders, and its link with it.
   const nav = copy.nav.filter((link) => link.href !== "#today" || todayPairs.length > 0)
   return (
-    <div data-theme="farm" className={cn(display.variable, "bg-background text-foreground flex flex-1 flex-col")}>
+    <div data-theme="farm" className="bg-background text-foreground flex flex-1 flex-col">
       <a
         href="#way-in"
         className="bg-chalk text-soil sr-only z-[60] rounded-full px-4 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
       >
         {copy.skip}
       </a>
-      <Header title={copy.hero.title} nav={nav} cta={copy.cta} menu={copy.menu} />
+      <Header title={copy.hero.title} nav={nav} menu={copy.menu} />
       <main>
         <Hero />
         <Arrival />

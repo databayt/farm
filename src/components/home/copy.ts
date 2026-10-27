@@ -28,12 +28,9 @@ export const copy = {
     pending: "Render pending",
   },
   hero: {
-    eyebrow: "Gashora · Bugesera · Rwanda",
+    // The site's name, in the header and footer; the hero itself says only the headline.
     title: "Digital Farm",
-    lead: "A working farm above a lake in Gashora, an hour from Kigali, where six containers will become guest rooms, studios and a place to learn.",
-    // The lead's last sentence follows the opening picture: a render, or the footage (D-019).
-    planned: "This is how it will look.",
-    today: "These photographs show the site today.",
+    headline: "State of comfort",
     walk: "Walk through",
     film: "the opening film",
   },

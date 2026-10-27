@@ -66,6 +66,7 @@ export function AmbientVideo({
   attach = "near",
   label,
   className,
+  controls = true,
   controlsClassName,
 }: {
   landscape?: string
@@ -75,6 +76,8 @@ export function AmbientVideo({
   /** Names the clip for the pause button, e.g. "the arrival film". */
   label: string
   className?: string
+  /** false: no pause button (the hero). */
+  controls?: boolean
   controlsClassName?: string
 }) {
   const ref = React.useRef<HTMLVideoElement>(null)
@@ -135,7 +138,7 @@ export function AmbientVideo({
           className,
         )}
       />
-      {allowed ? (
+      {allowed && controls ? (
         <button
           type="button"
           onClick={() => writePaused(!paused)}
