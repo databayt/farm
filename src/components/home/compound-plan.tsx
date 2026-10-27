@@ -21,11 +21,11 @@ const B = ([x0, y0, x1, y1]: Box) => {
   const shift = X((x0 + x1) / 2) - (x0 + x1) / 2
   return [x0 + shift, SIZE - y1, x1 + shift, SIZE - y0]
 }
-const VIEW = [-8, 0.6, 51.5, 52.5]
+const VIEW = [-8, 0.6, 51.5, 55.5]
 // The way in sits further down the drawing, below the guest rooms (the founder's read): the outer gate,
-// the sign and the parking move down by OUTER, the inner gate by INNER, and all of it left until the
-// parking lines up with the guest rooms; the road between them stretches to meet both.
-const [OUTER, INNER] = [6.2, 4.6]
+// the sign and the parking move straight down by OUTER, the inner gate by INNER; the road between them
+// stretches to meet both.
+const [OUTER, INNER] = [9, 6.5]
 
 const WALL = 0.14 // a container wall at drawing scale, solid as the studio's walls
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
@@ -278,7 +278,7 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
     const shift = X((l + r) / 2) - (l + r) / 2
     return { x: [l + shift + left, r + shift + left], y: SIZE - g.y, post: g.post }
   }
-  const left = B(units.rooms.box)[0] - B(parking.box)[0]
+  const left = 0 // moved only down the drawing, never sideways (the founder's read)
   const down = (b: Box, d: number) => [b[0] + left, b[1] + d, b[2] + left, b[3] + d]
   const parkingShift = B(parking.box)[0] - parking.box[0]
   const road = compound.rockRoad.curve.map(P).map(([x, y], i) => [f(x + left), f(y + (i < 2 ? OUTER : INNER))])
