@@ -53,7 +53,7 @@ export function Hero() {
 
       {/* Placed as on /en/studio: bottom left, on a band that darkens toward the foot, at the page's
           edge padding (px-4, md:px-10), not in a centred column. */}
-      <div className="relative w-full bg-gradient-to-t from-black/70 via-black/35 to-transparent px-4 pt-24 pb-10 md:px-10 md:pb-14">
+      <div className="relative w-full bg-gradient-to-t from-black/70 via-black/35 to-transparent px-4 pt-24 pb-24 md:px-10 md:pb-32">
         <h1
           id="hero-title"
           className={`${display.className} farm-intro text-[clamp(3rem,7vw,6rem)] leading-[0.95] font-medium tracking-[0.01em] uppercase drop-shadow-[0_2px_24px_rgb(0_0_0/0.25)]`}
