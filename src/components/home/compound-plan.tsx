@@ -15,7 +15,7 @@ const P = ([x, y]: Point) => [SIZE - x, SIZE - y]
 const B = ([x0, y0, x1, y1]: Box) => [SIZE - x1, SIZE - y1, SIZE - x0, SIZE - y0]
 const VIEW = [3.5, 0.6, 46, 45.4]
 
-const WALL = 0.18 // a container wall at drawing scale, solid as the studio's walls
+const WALL = 0.14 // a container wall at drawing scale, solid as the studio's walls
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
 const medium = { ...thin, strokeWidth: 1.2 } as const
 const wall = { fill: "none", stroke: "currentColor", strokeWidth: WALL, strokeLinejoin: "miter" } as const
@@ -23,12 +23,12 @@ const wall = { fill: "none", stroke: "currentColor", strokeWidth: WALL, strokeLi
 const PAGE = "var(--background)"
 const label = {
   fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif",
-  fontSize: 0.9,
+  fontSize: 0.6,
   fontWeight: 700,
   letterSpacing: "0.04em",
   fill: "currentColor",
 } as const
-const small = { ...label, fontSize: 0.7, fontWeight: 600 } as const
+const small = { ...label, fontSize: 0.5, fontWeight: 600 } as const
 
 const f = (n: number) => +n.toFixed(3)
 const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
@@ -127,7 +127,6 @@ function GuestRooms({ unit }: { unit: Unit }) {
     <g>
       <rect {...at([x0 - v, y0, x0, y1])} {...thin} />
       <rect {...at([x0, y0, x1, y1])} {...wall} />
-      <line x1={f((x0 + x1) / 2)} x2={f((x0 + x1) / 2)} y1={y0} y2={y1} {...thin} strokeDasharray="12 3 2 3" />
       {Array.from({ length: n }, (_, k) => f(y0 + k * room)).map((y, k) => (
         <g key={y}>
           {k ? <line x1={x0} x2={x1} y1={y} y2={y} stroke="currentColor" strokeWidth={WALL * 0.7} /> : null}
@@ -172,16 +171,11 @@ function RowUnit({ unit, dimension }: { unit: Unit; dimension?: boolean }) {
     <g>
       <rect {...at([x0, y1, x1, edge])} {...thin} />
       <path d={`M${f(cx - 0.6)} ${edge}H${x0}V${y1}M${f(cx + 0.6)} ${edge}H${x1}V${y1}`} {...medium} />
-      <rect {...at([cx - 0.6, edge, cx + 0.6, edge + 0.85])} {...thin} />
       <rect {...at([x0, y0, x1, y1])} {...wall} />
       {unit.terrace ? (
         <>
           <Glazing a={[f(cx - 1.5), y1]} b={[f(cx + 1.5), y1]} />
-          <rect {...at([x0 + 0.4, y0 + 0.4, x1 - 0.4, y1 - 0.4])} {...thin} strokeDasharray="6 4" />
           <rect {...at([x0 - 0.75, y0 + 0.15, x0, y1 - 0.15])} {...thin} />
-          {[0.45, 0.8, 1.15, 1.5, 1.85].map((d) => (
-            <line key={d} x1={f(x0 - 0.75)} x2={x0} y1={f(y1 - d)} y2={f(y1 - d)} {...thin} />
-          ))}
         </>
       ) : (
         <>
@@ -205,12 +199,8 @@ function Study({ unit }: { unit: Unit }) {
   return (
     <g>
       <rect {...at([x0, y1, x1, y1 + deck])} {...thin} />
-      <rect {...at([x0 + 2, y1 + deck, x1 - 2, y1 + deck + 0.4])} {...thin} />
       <rect {...at([x0, y0, x1, y1])} {...wall} />
       <Glazing a={[f(g0), y1]} b={[f(g1), y1]} />
-      {Array.from({ length: 5 }, (_, i) => f(g0 + ((i + 1) * (g1 - g0)) / 6)).map((x) => (
-        <line key={x} x1={x} x2={x} y1={f(y1 - 0.12)} y2={f(y1 + 0.12)} {...thin} />
-      ))}
       <text x={f(x0 - 0.7)} y={f((y0 + y1) / 2 + 0.32)} textAnchor="end" style={label}>
         {unit.label}
       </text>
@@ -229,7 +219,7 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
   const [pitX, pitY] = P(courtyard.firePit)
   const [, , pitR, pitInner] = courtyard.firePit
   const sign = B(compound.sign)
-  const [cx0, cy0, cx1, cy1] = B(courtyard.box)
+  const [cx0, cy0] = B(courtyard.box)
   return (
     <svg viewBox={`${VIEW[0]} ${VIEW[1]} ${VIEW[2] - VIEW[0]} ${VIEW[3] - VIEW[1]}`} role="img" aria-label={title} className={className}>
       {/* The study room, then the row of office and two studios, the bar and the guest rooms */}
@@ -240,13 +230,9 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       <Bar unit={units.bar} />
       <GuestRooms unit={units.rooms} />
 
-      {/* The courtyard lawn, the stone fire pit and the stepping stones from the inner gate */}
-      <rect {...at([cx0, cy0, cx1, cy1])} rx={courtyard.r} {...thin} />
+      {/* The courtyard: no outline, only its name and the stone fire pit */}
       <circle cx={pitX} cy={pitY} r={pitR} {...medium} />
       <circle cx={pitX} cy={pitY} r={pitInner} {...thin} />
-      {courtyard.stones.map(P).map(([x, y]) => (
-        <rect key={y} {...at([x - 0.3, y - 0.2, x + 0.3, y + 0.2])} rx={0.12} {...thin} />
-      ))}
       <text x={pitX} y={f(pitY - pitR - 0.6)} textAnchor="middle" style={small}>
         FIRE PIT
       </text>
@@ -256,9 +242,6 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
 
       {/* The inner gate, the rock road down to the parking, the outer gate and the sign wall */}
       <Gate {...turn(compound.innerGate)} />
-      <text x={f(road[1][0] - 3.4)} y={f(road[1][1] + 0.3)} textAnchor="end" style={small}>
-        ROCK ROAD
-      </text>
       <rect {...at([px0, py0, px1, py1])} rx={0.4} {...thin} />
       {parking.bays.slice(1).map((x) => (
         <line key={x} x1={f(SIZE - x)} x2={f(SIZE - x)} y1={py0} y2={f(SIZE - 6)} {...thin} />
