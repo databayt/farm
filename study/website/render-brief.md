@@ -26,6 +26,7 @@ The homepage shows the compound as it is planned, not as it stands. Its images a
   - **West side (on the right as you walk in):** the guest-room block. Two 40 ft containers are joined side by side into one long, low saffron-yellow building, about 12 × 4.9 m. It holds three en-suite rooms, each about 19 m² [E, D-017] with a bed, shower and WC but no kitchen. Each room has an oxide-red door and window onto a shared eucalyptus veranda.
   - **South side, at 90° (across the lawn as you walk in):** three 20 ft containers in a row on the existing raised oxide-red steel decks, their decks facing the courtyard. The **first, next to the guest rooms, is the farm office** in saffron yellow; the other two are **studios** in deep oxide red, built to the studio design (`/en/studio`, Layout B, D-020): a 3 m sliding glass wall onto a deck under a tinted clear canopy, a galley kitchen, a two-seat sofa, a shower and WC, and an open roof terrace behind a post-and-rail guardrail, with no canopy over it.
   - **Further out, toward the lake:** one 40 ft **study and training room** in muted teal, its west end in line with the guest-room block, with tall glazed doors along its north side onto a timber deck.
+- **Outdoors (from the 2026-10-25 footage, D-022).** A small camping lawn inside the courtyard between the guest-room veranda and the fire pit: six light-canvas pop-up dome tents (about 2.5 m across), doors toward the fire. Log stools in a ring round the fire pit. A long eucalyptus table with two benches on the lawn in front of the middle studio, where today's unfinished timber platform stands.
 - **Seven containers in all** (the bar, the joined pair, the office, two studios, the study room). Nothing is stacked, and nothing else is built. The compound sits back from the lake behind a band of trees; nothing new stands at the water's edge (the 50 m lake buffer).
 
 ## 3. Site bible and reference line
@@ -147,7 +148,7 @@ Inside the training room in the 40 ft container: about twelve people at long bir
 References: `assets/reference/dusk/` (IMG_3199 at 12.3 s, IMG_3197 at 0 s, IMG_3200 at 23.4 s).
 
 ```text
-Blue hour in the tenant courtyard. A round fieldstone fire pit burns softly at the centre of the lawn, with timber chairs around it and three guests seen from behind as dark silhouettes. Warm light comes from the windows and veranda lanterns of the yellow guest block on the right and the red studio decks across the lawn. Festoon lights hang between timber poles; the last pink light touches the high clouds; beyond lie the dark eucalyptus line and a faint glow on the lake. Calm and real. 24 mm lens, tripod, camera 1.4 m high.
+Blue hour in the tenant courtyard. A round fieldstone fire pit burns softly at the centre of the lawn, with log stools around it and three guests seen from behind as dark silhouettes. Warm light comes from the windows and veranda lanterns of the yellow guest block on the right and the red studio decks across the lawn. Festoon lights hang between timber poles; the last pink light touches the high clouds; beyond lie the dark eucalyptus line and a faint glow on the lake. Calm and real. 24 mm lens, tripod, camera 1.4 m high.
 ```
 
 ## 5. Before/after edits

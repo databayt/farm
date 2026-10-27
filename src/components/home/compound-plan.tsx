@@ -22,10 +22,6 @@ const B = ([x0, y0, x1, y1]: Box) => {
   return [x0 + shift, SIZE - y1, x1 + shift, SIZE - y0]
 }
 const VIEW = [-8, 0.6, 51.5, 55.5]
-// The way in sits further down the drawing, below the guest rooms (the founder's read): the outer gate,
-// the sign and the parking move straight down by OUTER, the inner gate by INNER; the road between them
-// stretches to meet both.
-const [OUTER, INNER] = [9, 6.5]
 
 const WALL = 0.14 // a container wall at drawing scale, solid as the studio's walls
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
@@ -269,6 +265,54 @@ function Bath({ unit }: { unit: Unit }) {
   )
 }
 
+// What the 2026-10-25 footage shows outside, as the founder wants it planned (D-022): six small pop-up
+// tents on a camping lawn between the guest rooms and the fire pit, a long timber table with benches
+// where today's unfinished platform stands, and stools round the fire pit. Each at true size.
+const outdoor = compound.outdoor
+function Outdoor() {
+  const [pitX, pitY] = P(compound.courtyard.firePit)
+  const { count, ring, r } = outdoor.firePitSeats
+  const tents = outdoor.tents.map(P)
+  const t = outdoor.tent
+  const hex = (cx: number, cy: number) => Array.from({ length: 6 }, (_, k) => [f(cx + t * Math.cos((k * Math.PI) / 3)), f(cy + t * Math.sin((k * Math.PI) / 3))])
+  const { x, y, length, width, bench, gap } = outdoor.longTable
+  const [tx] = P([x, y])
+  const ty = SIZE - y
+  const rows = [
+    [ty - width / 2, ty + width / 2],
+    [ty - width / 2 - gap - bench, ty - width / 2 - gap],
+    [ty + width / 2 + gap, ty + width / 2 + gap + bench],
+  ]
+  const low = Math.max(...tents.map(([, cy]) => cy)) + t
+  return (
+    <g>
+      {Array.from({ length: count }, (_, k) => (k * 2 * Math.PI) / count).map((a) => (
+        <circle key={a} cx={f(pitX + ring * Math.cos(a))} cy={f(pitY + ring * Math.sin(a))} r={r} {...thin} />
+      ))}
+      {tents.map(([cx, cy]) => {
+        const p = hex(cx, cy)
+        return (
+          <g key={`${cx}-${cy}`}>
+            <path d={`M${p.map((q) => q.join(" ")).join("L")}Z`} {...thin} />
+            <path d={[0, 1, 2].map((k) => `M${p[k].join(" ")}L${p[k + 3].join(" ")}`).join("")} {...thin} />
+          </g>
+        )
+      })}
+      <text
+        x={f(tents.reduce((n, [cx]) => n + cx, 0) / tents.length)}
+        y={f(low + 1.4)}
+        textAnchor="middle"
+        style={small}
+      >
+        CAMPING
+      </text>
+      {rows.map(([a, b]) => (
+        <rect key={a} {...at([tx - length / 2, a, tx + length / 2, b])} {...thin} />
+      ))}
+    </g>
+  )
+}
+
 export function CompoundPlan({ title, className }: { title: string; className?: string }) {
   const { parking, courtyard } = compound
   const units = Object.fromEntries(compound.units.map((u) => [u.id, u])) as Record<string, Unit>
@@ -276,17 +320,15 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
   const turn = (g: { x: Point; y: number; post: number }) => {
     const [l, r] = [g.x[0], g.x[1]]
     const shift = X((l + r) / 2) - (l + r) / 2
-    return { x: [l + shift + left, r + shift + left], y: SIZE - g.y, post: g.post }
+    return { x: [l + shift, r + shift], y: SIZE - g.y, post: g.post }
   }
-  const left = 0 // moved only down the drawing, never sideways (the founder's read)
-  const down = (b: Box, d: number) => [b[0] + left, b[1] + d, b[2] + left, b[3] + d]
   const parkingShift = B(parking.box)[0] - parking.box[0]
-  const road = compound.rockRoad.curve.map(P).map(([x, y], i) => [f(x + left), f(y + (i < 2 ? OUTER : INNER))])
+  const road = compound.rockRoad.curve.map(P)
   const roadPath = `M${road[0].join(" ")}C${road[1].join(" ")} ${road[2].join(" ")} ${road[3].join(" ")}`
-  const [px0, py0, px1, py1] = down(B(parking.box), OUTER)
+  const [px0, py0, px1, py1] = B(parking.box)
   const [pitX, pitY] = P(courtyard.firePit)
   const [, , pitR, pitInner] = courtyard.firePit
-  const sign = down(B(compound.sign), OUTER)
+  const sign = B(compound.sign)
   const [, cy0, cx1] = B(courtyard.box)
   return (
     <svg viewBox={`${VIEW[0]} ${VIEW[1]} ${VIEW[2] - VIEW[0]} ${VIEW[3] - VIEW[1]}`} role="img" aria-label={title} className={className}>
@@ -303,7 +345,9 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       {/* The courtyard: no outline, only its name and the stone fire pit */}
       <circle cx={pitX} cy={pitY} r={pitR} {...medium} />
       <circle cx={pitX} cy={pitY} r={pitInner} {...thin} />
-      <text x={pitX} y={f(pitY - pitR - 0.6)} textAnchor="middle" style={small}>
+      {/* stools round the fire pit, the camping lawn beside it, the long table at the middle studio */}
+      <Outdoor />
+      <text x={f(pitX + outdoor.firePitSeats.ring + 0.6)} y={f(pitY + 0.18)} style={small}>
         FIRE PIT
       </text>
       <text x={f(cx1 - 0.8)} y={f(cy0 + 1.6)} textAnchor="end" style={label}>
@@ -311,17 +355,17 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       </text>
 
       {/* The inner gate, the rock road down to the parking, the outer gate and the sign wall */}
-      <Gate {...turn(compound.innerGate)} y={SIZE - compound.innerGate.y + INNER} />
+      <Gate {...turn(compound.innerGate)} />
       <rect {...at([px0, py0, px1, py1])} rx={0.4} {...thin} />
       {parking.bays.slice(1).map((x) => (
-        <line key={x} x1={f(x + parkingShift + left)} x2={f(x + parkingShift + left)} y1={py0} y2={f(SIZE - 6 + OUTER)} {...thin} />
+        <line key={x} x1={f(x + parkingShift)} x2={f(x + parkingShift)} y1={py0} y2={f(SIZE - parking.box[1] - 2)} {...thin} />
       ))}
       <path d={roadPath} fill="none" stroke="currentColor" strokeWidth={compound.rockRoad.width} />
       <path d={roadPath} fill="none" stroke={PAGE} strokeWidth={compound.rockRoad.width - 0.16} />
       <text x={f(px1 - 0.6)} y={f(py0 + 1.4)} textAnchor="end" style={label}>
         PARKING
       </text>
-      <Gate {...turn(compound.gate)} y={SIZE - compound.gate.y + OUTER} />
+      <Gate {...turn(compound.gate)} />
       <rect {...at(sign)} fill="currentColor" />
       <text x={f(sign[0] - 0.5)} y={f(sign[3] - 0.05)} textAnchor="end" style={small}>
         DIGITAL FARM

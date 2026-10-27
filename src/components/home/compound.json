@@ -1,36 +1,178 @@
 {
   "about": "The compound as planned (D-017, corrected by the founder on 2026-10-27: D-022; bar and guest rooms swapped the same day). Metres; x runs east, y runs south, from the north-west corner of the drawing. Containers are ISO sizes; everything else is illustrative, not surveyed. Read by the 2D plan (src/components/home/compound-plan.tsx) and the 3D model (scripts/site/render/compound.html).",
-  "frame": [-8, 0, 56, 54],
-  "publicRoad": [0.1, 1.5],
-  "gate": { "x": [20, 24.4], "y": 2.3, "post": 0.6 },
-  "sign": [14.8, 2.0, 18.8, 2.6],
-  "parking": {
-    "box": [8, 4, 30, 10],
-    "bays": [8, 10.6, 13.2, 15.8, 18.4, 21],
-    "cars": [[9.3, 5.6], [14.5, 5.6]]
+  "frame": [-8, -9, 56, 54],
+  "publicRoad": [-8.9, -7.5],
+  "gate": {
+    "x": [20, 24.4],
+    "y": -6.7,
+    "post": 0.6
   },
-  "shadeTrees": [[9.3, 10.7, 2.1], [15.8, 10.7, 2.1], [32, 7.4, 2.0], [4.6, 7.2, 1.8]],
-  "rockRoad": { "width": 4, "curve": [[24, 10], [24, 13.6], [26, 14], [26, 17.6]] },
-  "innerGate": { "x": [24.3, 27.7], "y": 17.9, "post": 0.6 },
+  "sign": [14.8, -7.0, 18.8, -6.4],
+  "parking": {
+    "box": [8, -5, 30, 1],
+    "bays": [8, 10.6, 13.2, 15.8, 18.4, 21],
+    "cars": [
+      [9.3, -3.4],
+      [14.5, -3.4]
+    ]
+  },
+  "shadeTrees": [
+    [9.3, 1.7, 2.1],
+    [15.8, 1.7, 2.1],
+    [32, -1.6, 2.0],
+    [4.6, -1.8, 1.8]
+  ],
+  "rockRoad": {
+    "width": 4,
+    "curve": [
+      [24, 1],
+      [24, 4.6],
+      [26, 7.5],
+      [26, 11.1]
+    ]
+  },
+  "innerGate": {
+    "x": [24.3, 27.7],
+    "y": 11.4,
+    "post": 0.6
+  },
   "courtyard": {
-    "box": [12.4, 18.6, 41, 29.8],
+    "box": [12.4, 12.1, 41, 29.8],
     "r": 1.5,
     "firePit": [26, 24.2, 1.0, 0.6],
-    "stones": [[26, 19.3], [26, 20.5], [26, 21.7]]
+    "stones": [
+      [26, 12.8],
+      [26, 14.4],
+      [26, 16.0],
+      [26, 17.6],
+      [26, 19.3],
+      [26, 20.9]
+    ]
   },
   "units": [
-    { "id": "bar", "label": "BAR", "kind": "20", "paint": "oxide", "box": [7.442, 28.384, 9.88, 34.442], "front": "east", "plinth": 0.3, "hatch": [30.1, 32.7] },
-    { "id": "rooms", "label": "GUEST ROOMS", "kind": "40x2", "paint": "saffron", "box": [5.0, 14.692, 9.876, 26.884], "front": "east", "plinth": 0.3, "rooms": 3, "veranda": 1.5 },
-    { "id": "office", "label": "OFFICE", "kind": "20", "paint": "saffron", "box": [14.5, 32.004, 20.558, 34.442], "front": "north", "raised": 0.8, "deck": 1.5 },
-    { "id": "studio-one", "label": "STUDIO", "kind": "20", "paint": "oxide", "box": [21.8, 32.004, 27.858, 34.442], "front": "north", "raised": 0.8, "deck": 1.5, "terrace": true },
-    { "id": "studio-two", "label": "STUDIO", "kind": "20", "paint": "oxide", "box": [29.1, 32.004, 35.158, 34.442], "front": "north", "raised": 0.8, "deck": 1.5, "terrace": true },
-    { "id": "study", "label": "STUDY ROOM", "kind": "40", "paint": "teal", "box": [5.0, 41.5, 17.192, 43.938], "front": "north", "plinth": 0.3, "deck": 2.0 },
-    { "id": "galley", "label": "GALLEY", "kind": "40-galley", "paint": "teal", "box": [19.5, 41.5, 31.692, 43.938], "front": "north", "plinth": 0.3 },
-    { "id": "bath", "label": "PUBLIC BATHROOM", "kind": "20-bath", "paint": "teal", "box": [34.5, 41.5, 40.558, 43.938], "front": "north", "plinth": 0.3 }
+    {
+      "id": "bar",
+      "label": "BAR",
+      "kind": "20",
+      "paint": "oxide",
+      "box": [7.442, 28.384, 9.88, 34.442],
+      "front": "east",
+      "plinth": 0.3,
+      "hatch": [30.1, 32.7]
+    },
+    {
+      "id": "rooms",
+      "label": "GUEST ROOMS",
+      "kind": "40x2",
+      "paint": "saffron",
+      "box": [5.0, 14.692, 9.876, 26.884],
+      "front": "east",
+      "plinth": 0.3,
+      "rooms": 3,
+      "veranda": 1.5
+    },
+    {
+      "id": "office",
+      "label": "OFFICE",
+      "kind": "20",
+      "paint": "saffron",
+      "box": [14.5, 32.004, 20.558, 34.442],
+      "front": "north",
+      "raised": 0.8,
+      "deck": 1.5
+    },
+    {
+      "id": "studio-one",
+      "label": "STUDIO",
+      "kind": "20",
+      "paint": "oxide",
+      "box": [21.8, 32.004, 27.858, 34.442],
+      "front": "north",
+      "raised": 0.8,
+      "deck": 1.5,
+      "terrace": true
+    },
+    {
+      "id": "studio-two",
+      "label": "STUDIO",
+      "kind": "20",
+      "paint": "oxide",
+      "box": [29.1, 32.004, 35.158, 34.442],
+      "front": "north",
+      "raised": 0.8,
+      "deck": 1.5,
+      "terrace": true
+    },
+    {
+      "id": "study",
+      "label": "STUDY ROOM",
+      "kind": "40",
+      "paint": "teal",
+      "box": [5.0, 41.5, 17.192, 43.938],
+      "front": "north",
+      "plinth": 0.3,
+      "deck": 2.0
+    },
+    {
+      "id": "galley",
+      "label": "GALLEY",
+      "kind": "40-galley",
+      "paint": "teal",
+      "box": [19.5, 41.5, 31.692, 43.938],
+      "front": "north",
+      "plinth": 0.3
+    },
+    {
+      "id": "bath",
+      "label": "PUBLIC BATHROOM",
+      "kind": "20-bath",
+      "paint": "teal",
+      "box": [34.5, 41.5, 40.558, 43.938],
+      "front": "north",
+      "plinth": 0.3
+    }
   ],
   "shore": {
-    "trees": { "y": 46.6, "from": -6.4, "to": 54.5, "step": 2.9 },
-    "line": [[-8, 49.1], [3, 49.7], [14, 49.0], [26, 49.6], [37, 48.9], [47, 49.5], [56, 49.0]]
+    "trees": {
+      "y": 46.6,
+      "from": -6.4,
+      "to": 54.5,
+      "step": 2.9
+    },
+    "line": [
+      [-8, 49.1],
+      [3, 49.7],
+      [14, 49.0],
+      [26, 49.6],
+      [37, 48.9],
+      [47, 49.5],
+      [56, 49.0]
+    ]
   },
-  "north": [52.6, 6.0]
+  "north": [52.6, 6.0],
+  "outdoor": {
+    "about": "From the 2026-10-25 footage and the founder's choices (D-022): a small camping lawn inside the courtyard between the guest rooms and the fire pit, a long timber table where today's unfinished platform stands in front of the middle studio, and stools round the fire pit.",
+    "tents": [
+      [15, 24.5],
+      [19, 25.0],
+      [17, 21.0],
+      [21, 21.5],
+      [15, 17.5],
+      [19, 17.5]
+    ],
+    "tent": 1.25,
+    "longTable": {
+      "x": 24.829,
+      "y": 28.2,
+      "length": 4.8,
+      "width": 0.9,
+      "bench": 0.35,
+      "gap": 0.05
+    },
+    "firePitSeats": {
+      "count": 8,
+      "ring": 2.1,
+      "r": 0.2
+    }
+  }
 }
