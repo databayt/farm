@@ -6,7 +6,7 @@ import { copy } from "./copy"
 import { ClipPicture } from "./render"
 
 export function Hero() {
-  const { headline, walk, film } = copy.hero
+  const { headline, subline, walk, film } = copy.hero
   return (
     <section
       id="top"
@@ -40,6 +40,7 @@ export function Hero() {
         >
           {headline}
         </h1>
+        <p className="farm-intro-2 text-chalk/90 mt-4 text-2xl font-medium tracking-tight md:text-4xl">{subline}</p>
         <div className="farm-intro-3 mt-8 flex flex-wrap gap-3">
           <a
             href="#way-in"

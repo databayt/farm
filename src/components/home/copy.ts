@@ -31,6 +31,7 @@ export const copy = {
     // The site's name, in the header and footer; the hero itself says only the headline.
     title: "Digital Farm",
     headline: "State of comfort",
+    subline: "A stress-free environment",
     walk: "Walk through",
     film: "the opening film",
   },
