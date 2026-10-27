@@ -9,19 +9,19 @@ type Box = readonly number[]
 type Point = readonly number[]
 type Unit = (typeof compound.units)[number]
 
-// Turn the north-up layout half a turn inside a 46 m square, then spread it sideways for a wide
-// screen: positions move apart across the drawing, every building keeps its size.
+// Flip the north-up layout top to bottom inside a 46 m square (study room at the top, gates at the
+// bottom, guest rooms and bar on the left), then spread it sideways for a wide screen: positions move
+// apart across the drawing, every building keeps its size.
 const SIZE = 46
 const SPREAD = 1.5
 const MID = 23
 const X = (x: number) => MID + (x - MID) * SPREAD
-const P = ([x, y]: Point) => [X(SIZE - x), SIZE - y]
+const P = ([x, y]: Point) => [X(x), SIZE - y]
 const B = ([x0, y0, x1, y1]: Box) => {
-  const [a, b] = [SIZE - x1, SIZE - x0]
-  const shift = X((a + b) / 2) - (a + b) / 2
-  return [a + shift, SIZE - y1, b + shift, SIZE - y0]
+  const shift = X((x0 + x1) / 2) - (x0 + x1) / 2
+  return [x0 + shift, SIZE - y1, x1 + shift, SIZE - y0]
 }
-const VIEW = [0, 0.6, 54, 45.4]
+const VIEW = [-8, 0.6, 46, 45.4]
 
 const WALL = 0.14 // a container wall at drawing scale, solid as the studio's walls
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
@@ -125,7 +125,7 @@ function Dimension({ a, b, offset }: { a: Point; b: Point; offset: number }) {
   )
 }
 
-// The joined guest-room pair, its doors and windows onto the veranda on the courtyard side (left).
+// The joined guest-room pair, its doors and windows onto the veranda on the courtyard side (right).
 function GuestRooms({ unit }: { unit: Unit }) {
   const [x0, y0, x1, y1] = B(unit.box)
   const n = unit.rooms ?? 3
@@ -133,18 +133,18 @@ function GuestRooms({ unit }: { unit: Unit }) {
   const v = unit.veranda ?? 1.5
   return (
     <g>
-      <rect {...at([x0 - v, y0, x0, y1])} {...thin} />
+      <rect {...at([x1, y0, x1 + v, y1])} {...thin} />
       <rect {...at([x0, y0, x1, y1])} {...wall} />
       {Array.from({ length: n }, (_, k) => f(y0 + k * room)).map((y, k) => (
         <g key={y}>
           {k ? <line x1={x0} x2={x1} y1={y} y2={y} stroke="currentColor" strokeWidth={WALL * 0.7} /> : null}
-          <Door hinge={[x0, f(y + 0.6)]} along={[0, 1]} into={[1, 0]} width={0.9} />
-          <Glazing a={[x0, f(y + 2.2)]} b={[x0, f(y + 3.4)]} />
+          <Door hinge={[x1, f(y + 0.6)]} along={[0, 1]} into={[-1, 0]} width={0.9} />
+          <Glazing a={[x1, f(y + 2.2)]} b={[x1, f(y + 3.4)]} />
         </g>
       ))}
-      <Dimension a={[x1, y0]} b={[x1, y1]} offset={1.2} />
+      <Dimension a={[x0, y0]} b={[x0, y1]} offset={-1.2} />
       <Dimension a={[x0, y0]} b={[x1, y0]} offset={-1.2} />
-      <text x={f(x1 + 2.9)} y={f((y0 + y1) / 2)} textAnchor="middle" transform={`rotate(90 ${f(x1 + 2.9)} ${f((y0 + y1) / 2)})`} style={label}>
+      <text x={f(x0 - 2.9)} y={f((y0 + y1) / 2)} textAnchor="middle" transform={`rotate(-90 ${f(x0 - 2.9)} ${f((y0 + y1) / 2)})`} style={label}>
         {unit.label}
       </text>
     </g>
@@ -152,15 +152,17 @@ function GuestRooms({ unit }: { unit: Unit }) {
 }
 
 // The bar, in line with the guest rooms: its serving hatch and counter on the courtyard side.
-function Bar({ unit }: { unit: Unit }) {
-  const [x0, y0, x1, y1] = B(unit.box)
+function Bar({ unit, east }: { unit: Unit; east: number }) {
+  // flush with the guest rooms' courtyard side after the spread, as on the layout
+  const [a, y0, b, y1] = B(unit.box)
+  const [x0, x1] = [east - (b - a), east]
   const [h0, h1] = (unit.hatch ?? [0, 0]).map((y) => SIZE - y).sort((a, b) => a - b)
   return (
     <g>
       <rect {...at([x0, y0, x1, y1])} {...wall} />
-      <Gap a={[x0, h0]} b={[x0, h1]} />
-      <rect {...at([x0 - 0.4, h0, x0, h1])} {...thin} />
-      <text x={f(x1 + 0.7)} y={f((y0 + y1) / 2 + 0.32)} style={label}>
+      <Gap a={[x1, h0]} b={[x1, h1]} />
+      <rect {...at([x1, h0, x1 + 0.4, h1])} {...thin} />
+      <text x={f(x0 - 0.7)} y={f((y0 + y1) / 2 + 0.32)} textAnchor="end" style={label}>
         {unit.label}
       </text>
     </g>
@@ -183,12 +185,12 @@ function RowUnit({ unit, dimension }: { unit: Unit; dimension?: boolean }) {
       {unit.terrace ? (
         <>
           <Glazing a={[f(cx - 1.5), y1]} b={[f(cx + 1.5), y1]} />
-          <rect {...at([x0 - 0.75, y0 + 0.15, x0, y1 - 0.15])} {...thin} />
+          <rect {...at([x1, y0 + 0.15, x1 + 0.75, y1 - 0.15])} {...thin} />
         </>
       ) : (
         <>
-          <Door hinge={[f(cx + 1.6), y1]} along={[-1, 0]} into={[0, -1]} width={0.9} />
-          <Glazing a={[f(cx - 1.4), y1]} b={[f(cx + 0.2), y1]} />
+          <Door hinge={[f(cx - 1.6), y1]} along={[1, 0]} into={[0, -1]} width={0.9} />
+          <Glazing a={[f(cx - 0.2), y1]} b={[f(cx + 1.4), y1]} />
         </>
       )}
       <text x={cx} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
@@ -200,8 +202,10 @@ function RowUnit({ unit, dimension }: { unit: Unit; dimension?: boolean }) {
 }
 
 // The study room: one 40 ft container, a band of glazed doors onto its deck (down the drawing).
-function Study({ unit }: { unit: Unit }) {
-  const [x0, y0, x1, y1] = B(unit.box)
+function Study({ unit, west }: { unit: Unit; west: number }) {
+  // its west end stays in line with the guest rooms after the spread (D-022)
+  const [a, y0, b, y1] = B(unit.box)
+  const [x0, x1] = [west, west + (b - a)]
   const deck = unit.deck ?? 2
   const [g0, g1] = [x0 + 0.6, x1 - 0.6]
   return (
@@ -209,7 +213,7 @@ function Study({ unit }: { unit: Unit }) {
       <rect {...at([x0, y1, x1, y1 + deck])} {...thin} />
       <rect {...at([x0, y0, x1, y1])} {...wall} />
       <Glazing a={[f(g0), y1]} b={[f(g1), y1]} />
-      <text x={f(x0 - 0.7)} y={f((y0 + y1) / 2 + 0.32)} textAnchor="end" style={label}>
+      <text x={f(x1 + 0.7)} y={f((y0 + y1) / 2 + 0.32)} style={label}>
         {unit.label}
       </text>
     </g>
@@ -221,26 +225,26 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
   const units = Object.fromEntries(compound.units.map((u) => [u.id, u])) as Record<string, Unit>
   const row = compound.units.filter((u) => u.kind === "20" && u.front === "north")
   const turn = (g: { x: Point; y: number; post: number }) => {
-    const [l, r] = [SIZE - g.x[1], SIZE - g.x[0]]
+    const [l, r] = [g.x[0], g.x[1]]
     const shift = X((l + r) / 2) - (l + r) / 2
     return { x: [l + shift, r + shift], y: SIZE - g.y, post: g.post }
   }
-  const parkingShift = B(parking.box)[0] - (SIZE - parking.box[2])
+  const parkingShift = B(parking.box)[0] - parking.box[0]
   const road = compound.rockRoad.curve.map(P)
   const roadPath = `M${road[0].join(" ")}C${road[1].join(" ")} ${road[2].join(" ")} ${road[3].join(" ")}`
   const [px0, py0, px1, py1] = B(parking.box)
   const [pitX, pitY] = P(courtyard.firePit)
   const [, , pitR, pitInner] = courtyard.firePit
   const sign = B(compound.sign)
-  const [cx0, cy0] = B(courtyard.box)
+  const [, cy0, cx1] = B(courtyard.box)
   return (
     <svg viewBox={`${VIEW[0]} ${VIEW[1]} ${VIEW[2] - VIEW[0]} ${VIEW[3] - VIEW[1]}`} role="img" aria-label={title} className={className}>
       {/* The study room, then the row of office and two studios, the bar and the guest rooms */}
-      <Study unit={units.study} />
+      <Study unit={units.study} west={B(units.rooms.box)[0]} />
       {row.map((unit) => (
         <RowUnit key={unit.id} unit={unit} dimension={unit.id === "studio-two"} />
       ))}
-      <Bar unit={units.bar} />
+      <Bar unit={units.bar} east={B(units.rooms.box)[2]} />
       <GuestRooms unit={units.rooms} />
 
       {/* The courtyard: no outline, only its name and the stone fire pit */}
@@ -249,7 +253,7 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       <text x={pitX} y={f(pitY - pitR - 0.6)} textAnchor="middle" style={small}>
         FIRE PIT
       </text>
-      <text x={f(cx0 + 0.8)} y={f(cy0 + 1.6)} style={label}>
+      <text x={f(cx1 - 0.8)} y={f(cy0 + 1.6)} textAnchor="end" style={label}>
         COURTYARD
       </text>
 
@@ -257,16 +261,16 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       <Gate {...turn(compound.innerGate)} />
       <rect {...at([px0, py0, px1, py1])} rx={0.4} {...thin} />
       {parking.bays.slice(1).map((x) => (
-        <line key={x} x1={f(SIZE - x + parkingShift)} x2={f(SIZE - x + parkingShift)} y1={py0} y2={f(SIZE - 6)} {...thin} />
+        <line key={x} x1={f(x + parkingShift)} x2={f(x + parkingShift)} y1={py0} y2={f(SIZE - 6)} {...thin} />
       ))}
       <path d={roadPath} fill="none" stroke="currentColor" strokeWidth={compound.rockRoad.width} />
       <path d={roadPath} fill="none" stroke={PAGE} strokeWidth={compound.rockRoad.width - 0.16} />
-      <text x={f(px0 + 0.6)} y={f(py0 + 1.4)} style={label}>
+      <text x={f(px1 - 0.6)} y={f(py0 + 1.4)} textAnchor="end" style={label}>
         PARKING
       </text>
       <Gate {...turn(compound.gate)} />
       <rect {...at(sign)} fill="currentColor" />
-      <text x={f(sign[2] + 0.5)} y={f(sign[3] - 0.05)} style={small}>
+      <text x={f(sign[0] - 0.5)} y={f(sign[3] - 0.05)} textAnchor="end" style={small}>
         DIGITAL FARM
       </text>
     </svg>
