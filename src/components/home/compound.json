@@ -1,5 +1,5 @@
 {
-  "about": "The compound as planned (D-017, corrected by the founder on 2026-10-27: D-022). Metres; x runs east, y runs south, from the north-west corner of the drawing. Containers are ISO sizes; everything else is illustrative, not surveyed. Read by the 2D plan (src/components/home/compound-plan.tsx) and the 3D model (scripts/site/render/compound.html).",
+  "about": "The compound as planned (D-017, corrected by the founder on 2026-10-27: D-022; bar and guest rooms swapped the same day). Metres; x runs east, y runs south, from the north-west corner of the drawing. Containers are ISO sizes; everything else is illustrative, not surveyed. Read by the 2D plan (src/components/home/compound-plan.tsx) and the 3D model (scripts/site/render/compound.html).",
   "frame": [-8, 0, 56, 54],
   "publicRoad": [0.1, 1.5],
   "gate": { "x": [20, 24.4], "y": 2.3, "post": 0.6 },
@@ -19,8 +19,8 @@
     "stones": [[26, 19.3], [26, 20.5], [26, 21.7]]
   },
   "units": [
-    { "id": "bar", "label": "BAR", "kind": "20", "paint": "oxide", "box": [7.442, 14.7, 9.88, 20.758], "front": "east", "plinth": 0.3, "hatch": [16.4, 19.0] },
-    { "id": "rooms", "label": "GUEST ROOMS", "kind": "40x2", "paint": "saffron", "box": [5.0, 22.25, 9.876, 34.442], "front": "east", "plinth": 0.3, "rooms": 3, "veranda": 1.5 },
+    { "id": "bar", "label": "BAR", "kind": "20", "paint": "oxide", "box": [7.442, 28.384, 9.88, 34.442], "front": "east", "plinth": 0.3, "hatch": [30.1, 32.7] },
+    { "id": "rooms", "label": "GUEST ROOMS", "kind": "40x2", "paint": "saffron", "box": [5.0, 14.692, 9.876, 26.884], "front": "east", "plinth": 0.3, "rooms": 3, "veranda": 1.5 },
     { "id": "office", "label": "OFFICE", "kind": "20", "paint": "saffron", "box": [14.5, 32.004, 20.558, 34.442], "front": "north", "raised": 0.8, "deck": 1.5 },
     { "id": "studio-one", "label": "STUDIO", "kind": "20", "paint": "oxide", "box": [21.8, 32.004, 27.858, 34.442], "front": "north", "raised": 0.8, "deck": 1.5, "terrace": true },
     { "id": "studio-two", "label": "STUDIO", "kind": "20", "paint": "oxide", "box": [29.1, 32.004, 35.158, 34.442], "front": "north", "raised": 0.8, "deck": 1.5, "terrace": true },

@@ -1,83 +1,74 @@
 import compound from "./compound.json"
 
-// The compound drawn like the studio's plan (/en/studio, render/plan.svg): heavy outlines for the
-// containers, thin lines for the rest, bold capitals and dimensions in millimetres, no colour. North
-// is up, so the public road is at the top and the lake at the bottom (D-022). Every number is a
-// metre in compound.json, which the 3D model (scripts/site/render/compound.html) is built from too.
+// The compound drawn in the pattern of the studio's plan (/en/studio, render/plan.svg): solid black
+// container walls, thin lines for everything else, bold capitals beside each building and dimensions in
+// millimetres, no colour, no surroundings. The founder reads it turned 180° from compound.json's
+// north-up frame (D-022): the study room at the top, the gates at the bottom. Units are metres.
 
 type Box = readonly number[]
 type Point = readonly number[]
 type Unit = (typeof compound.units)[number]
 
-// Line weights in screen pixels at any size, as a plot style sets them.
-const heavy = { fill: "none", stroke: "currentColor", strokeWidth: 2.2, vectorEffect: "non-scaling-stroke" } as const
-const medium = { ...heavy, strokeWidth: 1.2 } as const
-const thin = { ...heavy, strokeWidth: 0.75 } as const
-// The page colour knocks openings out of a wall line and keeps lettering clear of the lines under it.
-const PAGE = "var(--background)"
-const knock = { stroke: PAGE, strokeWidth: 5, vectorEffect: "non-scaling-stroke" } as const
+// Turn the north-up layout half a turn inside a 46 m square.
+const SIZE = 46
+const P = ([x, y]: Point) => [SIZE - x, SIZE - y]
+const B = ([x0, y0, x1, y1]: Box) => [SIZE - x1, SIZE - y1, SIZE - x0, SIZE - y0]
+const VIEW = [3.5, 0.6, 46, 45.4]
 
+const WALL = 0.18 // a container wall at drawing scale, solid as the studio's walls
+const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
+const medium = { ...thin, strokeWidth: 1.2 } as const
+const wall = { fill: "none", stroke: "currentColor", strokeWidth: WALL, strokeLinejoin: "miter" } as const
+// The page colour knocks openings out of a wall.
+const PAGE = "var(--background)"
 const label = {
   fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif",
-  fontSize: 0.95,
+  fontSize: 0.9,
   fontWeight: 700,
-  letterSpacing: "0.06em",
+  letterSpacing: "0.04em",
   fill: "currentColor",
-  stroke: PAGE,
-  strokeWidth: 0.4,
-  paintOrder: "stroke",
 } as const
-const small = { ...label, fontSize: 0.72, fontWeight: 600 } as const
+const small = { ...label, fontSize: 0.7, fontWeight: 600 } as const
 
 const f = (n: number) => +n.toFixed(3)
 const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
-const at = ([x0, y0, x1, y1]: Box) => ({ x: x0, y: y0, width: f(x1 - x0), height: f(y1 - y0) })
+const at = ([x0, y0, x1, y1]: Box) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
 
-// A smooth line through points (Catmull-Rom as cubic Béziers), for the shore.
-function smooth(points: Point[]) {
-  let d = `M${points[0][0]} ${points[0][1]}`
-  for (let i = 0; i < points.length - 1; i++) {
-    const [p0, p1, p2, p3] = [points[i - 1] ?? points[i], points[i], points[i + 1], points[i + 2] ?? points[i + 1]]
-    d += `C${f(p1[0] + (p2[0] - p0[0]) / 6)} ${f(p1[1] + (p2[1] - p0[1]) / 6)} `
-    d += `${f(p2[0] - (p3[0] - p1[0]) / 6)} ${f(p2[1] - (p3[1] - p1[1]) / 6)} ${p2[0]} ${p2[1]}`
-  }
-  return d
+// An opening in a wall: the wall knocked out between two points.
+function Gap({ a, b }: { a: Point; b: Point }) {
+  return <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={PAGE} strokeWidth={WALL + 0.12} />
 }
 
-// A window or glazed wall: the wall line knocked out, the glazing as a thin double line.
-function Glazing({ x1, y1, x2, y2 }: { x1: number; y1: number; x2: number; y2: number }) {
-  const across = x1 === x2
+// A window or glass wall: the gap with a thin glazing line across it.
+function Glazing({ a, b }: { a: Point; b: Point }) {
   return (
     <g>
-      <line x1={x1} y1={y1} x2={x2} y2={y2} {...knock} />
-      <rect
-        {...(across ? at([x1 - 0.07, y1, x1 + 0.07, y2]) : at([x1, y1 - 0.07, x2, y1 + 0.07]))}
-        {...thin}
-      />
+      <Gap a={a} b={b} />
+      <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} {...thin} />
     </g>
   )
 }
 
-// A door: the wall knocked out and the leaf open into the room, its swing dashed.
+// A door: the gap, the leaf open into the room and its swing dashed.
 function Door({ hinge: [hx, hy], along: [ax, ay], into: [ix, iy], width: w }: {
   hinge: Point
   along: Point
   into: Point
   width: number
 }) {
-  const [ex, ey] = [f(hx + ax * w), f(hy + ay * w)]
+  const end = [f(hx + ax * w), f(hy + ay * w)]
   const [lx, ly] = [f(hx + ix * w), f(hy + iy * w)]
   const sweep = ix * ay - iy * ax > 0 ? 1 : 0
   return (
     <g>
-      <line x1={hx} y1={hy} x2={ex} y2={ey} {...knock} />
+      <Gap a={[hx, hy]} b={end} />
       <path d={`M${hx} ${hy}L${lx} ${ly}`} {...thin} />
-      <path d={`M${lx} ${ly}A${w} ${w} 0 0 ${sweep} ${ex} ${ey}`} {...thin} strokeDasharray="3 3" />
+      <path d={`M${lx} ${ly}A${w} ${w} 0 0 ${sweep} ${end[0]} ${end[1]}`} {...thin} strokeDasharray="3 3" />
     </g>
   )
 }
 
-// A two-leaf gate between posts, both leaves open into the site.
+// A two-leaf gate between posts, both leaves open into the site (up the drawing).
 function Gate({ x: [left, right], y, post }: { x: Point; y: number; post: number }) {
   const leaf = (right - left) / 2
   const reach = f(leaf * Math.SQRT1_2)
@@ -85,11 +76,11 @@ function Gate({ x: [left, right], y, post }: { x: Point; y: number; post: number
   return (
     <g>
       {[left - post, right].map((x) => (
-        <rect key={x} {...at([x, y - post / 2, x + post, y + post / 2])} {...medium} />
+        <rect key={x} {...at([x, y - post / 2, x + post, y + post / 2])} fill="currentColor" />
       ))}
-      <path d={`M${left} ${y}L${f(left + reach)} ${f(y + reach)}M${right} ${y}L${f(right - reach)} ${f(y + reach)}`} {...medium} />
+      <path d={`M${left} ${y}L${f(left + reach)} ${f(y - reach)}M${right} ${y}L${f(right - reach)} ${f(y - reach)}`} {...medium} />
       <path
-        d={`M${middle} ${y}A${leaf} ${leaf} 0 0 1 ${f(left + reach)} ${f(y + reach)}M${middle} ${y}A${leaf} ${leaf} 0 0 0 ${f(right - reach)} ${f(y + reach)}`}
+        d={`M${middle} ${y}A${leaf} ${leaf} 0 0 0 ${f(left + reach)} ${f(y - reach)}M${middle} ${y}A${leaf} ${leaf} 0 0 1 ${f(right - reach)} ${f(y - reach)}`}
         {...thin}
         strokeDasharray="3 3"
       />
@@ -97,28 +88,18 @@ function Gate({ x: [left, right], y, post }: { x: Point; y: number; post: number
   )
 }
 
-// A tree in plan: canopy and trunk mark; dashed where the canopy overhangs parking.
-function Tree({ x, y, r, dashed }: { x: number; y: number; r: number; dashed?: boolean }) {
-  return (
-    <g>
-      <circle cx={x} cy={y} r={r} {...thin} strokeDasharray={dashed ? "4 3" : undefined} />
-      <path d={`M${f(x - 0.25)} ${y}H${f(x + 0.25)}M${x} ${f(y - 0.25)}V${f(y + 0.25)}`} {...thin} />
-    </g>
-  )
-}
-
-// A dimension: extension lines, a dimension line with oblique ticks, the value set on the line.
-function Dimension({ x1, y1, x2, y2, offset }: { x1: number; y1: number; x2: number; y2: number; offset: number }) {
-  const vertical = x1 === x2
+// A dimension: extension lines, a line with oblique ticks, the value on it, as the studio plan does.
+function Dimension({ a, b, offset }: { a: Point; b: Point; offset: number }) {
+  const vertical = a[0] === b[0]
   const [dx, dy] = vertical ? [offset, 0] : [0, offset]
   const [sx, sy] = [Math.sign(dx), Math.sign(dy)]
-  const [ax, ay, bx, by] = [f(x1 + dx), f(y1 + dy), f(x2 + dx), f(y2 + dy)]
+  const [ax, ay, bx, by] = [f(a[0] + dx), f(a[1] + dy), f(b[0] + dx), f(b[1] + dy)]
   const tick = (x: number, y: number) => `M${f(x - 0.3)} ${f(y + 0.3)}L${f(x + 0.3)} ${f(y - 0.3)}`
   const [mx, my] = [f((ax + bx) / 2), f((ay + by) / 2)]
   return (
     <g>
       <path
-        d={`M${f(x1 + sx * 0.3)} ${f(y1 + sy * 0.3)}L${f(ax + sx * 0.4)} ${f(ay + sy * 0.4)}M${f(x2 + sx * 0.3)} ${f(y2 + sy * 0.3)}L${f(bx + sx * 0.4)} ${f(by + sy * 0.4)}`}
+        d={`M${f(a[0] + sx * 0.3)} ${f(a[1] + sy * 0.3)}L${f(ax + sx * 0.4)} ${f(ay + sy * 0.4)}M${f(b[0] + sx * 0.3)} ${f(b[1] + sy * 0.3)}L${f(bx + sx * 0.4)} ${f(by + sy * 0.4)}`}
         {...thin}
       />
       <path d={`M${ax} ${ay}L${bx} ${by}${tick(ax, ay)}${tick(bx, by)}`} {...thin} />
@@ -127,117 +108,110 @@ function Dimension({ x1, y1, x2, y2, offset }: { x1: number; y1: number; x2: num
         y={my}
         textAnchor="middle"
         dominantBaseline="central"
-        transform={vertical ? `rotate(-90 ${mx} ${my})` : undefined}
-        style={{ ...small, fontWeight: 500, strokeWidth: 0.6 }}
+        transform={vertical ? `rotate(90 ${mx} ${my})` : undefined}
+        style={{ ...small, fontWeight: 500, stroke: PAGE, strokeWidth: 0.6, paintOrder: "stroke" }}
       >
-        {mm(vertical ? Math.abs(y2 - y1) : Math.abs(x2 - x1))}
+        {mm(vertical ? Math.abs(b[1] - a[1]) : Math.abs(b[0] - a[0]))}
       </text>
     </g>
   )
 }
 
-// The joined guest-room pair: three rooms across its width, each with a door and a barred window
-// onto the veranda; the line where the two containers meet is kept.
+// The joined guest-room pair, its doors and windows onto the veranda on the courtyard side (left).
 function GuestRooms({ unit }: { unit: Unit }) {
-  const [x0, y0, x1, y1] = unit.box
-  const room = (y1 - y0) / (unit.rooms ?? 3)
-  const rooms = Array.from({ length: unit.rooms ?? 3 }, (_, i) => f(y0 + i * room))
-  const veranda = unit.veranda ?? 1.5
+  const [x0, y0, x1, y1] = B(unit.box)
+  const n = unit.rooms ?? 3
+  const room = (y1 - y0) / n
+  const v = unit.veranda ?? 1.5
   return (
     <g>
-      <rect {...at(unit.box)} {...heavy} />
+      <rect {...at([x0 - v, y0, x0, y1])} {...thin} />
+      <rect {...at([x0, y0, x1, y1])} {...wall} />
       <line x1={f((x0 + x1) / 2)} x2={f((x0 + x1) / 2)} y1={y0} y2={y1} {...thin} strokeDasharray="12 3 2 3" />
-      {rooms.slice(1).map((y) => (
-        <line key={y} x1={x0} x2={x1} y1={y} y2={y} {...medium} />
-      ))}
-      <rect {...at([x1, y0, x1 + veranda, y1])} {...thin} />
-      {rooms.map((y) => (
+      {Array.from({ length: n }, (_, k) => f(y0 + k * room)).map((y, k) => (
         <g key={y}>
-          <Door hinge={[x1, f(y + 0.5)]} along={[0, 1]} into={[-1, 0]} width={0.9} />
-          <Glazing x1={x1} y1={f(y + 2.2)} x2={x1} y2={f(y + 3.4)} />
-          <rect {...at([x1 + veranda, y + 0.4, x1 + veranda + 0.4, y + 1.5])} {...thin} />
+          {k ? <line x1={x0} x2={x1} y1={y} y2={y} stroke="currentColor" strokeWidth={WALL * 0.7} /> : null}
+          <Door hinge={[x0, f(y + 0.6)]} along={[0, 1]} into={[1, 0]} width={0.9} />
+          <Glazing a={[x0, f(y + 2.2)]} b={[x0, f(y + 3.4)]} />
         </g>
       ))}
-      <Dimension x1={x0} y1={y0} x2={x0} y2={y1} offset={-1.3} />
-      <Dimension x1={x0} y1={y1} x2={x1} y2={y1} offset={1.3} />
-      <text x={1.9} y={f((y0 + y1) / 2)} textAnchor="middle" transform={`rotate(-90 1.9 ${f((y0 + y1) / 2)})`} style={label}>
+      <Dimension a={[x1, y0]} b={[x1, y1]} offset={1.2} />
+      <Dimension a={[x0, y0]} b={[x1, y0]} offset={-1.2} />
+      <text x={f(x1 + 2.9)} y={f((y0 + y1) / 2)} textAnchor="middle" transform={`rotate(90 ${f(x1 + 2.9)} ${f((y0 + y1) / 2)})`} style={label}>
         {unit.label}
       </text>
     </g>
   )
 }
 
-// A 20 ft container on a raised deck facing the courtyard: the deck's railing on three sides with
-// steps down at the middle. Studios have a 3 m glass wall, a roof terrace (dashed, overhead) and a
-// stair at their east end; the office has a glazed door and a window.
-function RowUnit({ unit }: { unit: Unit }) {
-  const [x0, y0, x1, y1] = unit.box
-  const deck = unit.deck ?? 1.5
-  const cx = f((x0 + x1) / 2)
-  const front = f(y0 - deck)
+// The bar, in line with the guest rooms: its serving hatch and counter on the courtyard side.
+function Bar({ unit }: { unit: Unit }) {
+  const [x0, y0, x1, y1] = B(unit.box)
+  const [h0, h1] = (unit.hatch ?? [0, 0]).map((y) => SIZE - y).sort((a, b) => a - b)
   return (
     <g>
-      <rect {...at([x0, front, x1, y0])} {...thin} />
-      <path d={`M${f(cx - 0.6)} ${front}H${x0}V${y0}M${f(cx + 0.6)} ${front}H${x1}V${y0}`} {...medium} />
-      <rect {...at([cx - 0.6, front - 0.85, cx + 0.6, front])} {...thin} />
-      <path d={`M${f(cx - 0.6)} ${f(front - 0.28)}H${f(cx + 0.6)}M${f(cx - 0.6)} ${f(front - 0.56)}H${f(cx + 0.6)}`} {...thin} />
-      <rect {...at(unit.box)} {...heavy} />
+      <rect {...at([x0, y0, x1, y1])} {...wall} />
+      <Gap a={[x0, h0]} b={[x0, h1]} />
+      <rect {...at([x0 - 0.4, h0, x0, h1])} {...thin} />
+      <text x={f(x1 + 0.7)} y={f((y0 + y1) / 2 + 0.32)} style={label}>
+        {unit.label}
+      </text>
+    </g>
+  )
+}
+
+// A 20 ft container on a raised deck facing the courtyard (down the drawing), steps at the middle.
+// Studios have a 3 m glass wall, a dashed roof terrace overhead and a stair at their end; the office
+// a glazed door and a window.
+function RowUnit({ unit, dimension }: { unit: Unit; dimension?: boolean }) {
+  const [x0, y0, x1, y1] = B(unit.box)
+  const deck = unit.deck ?? 1.5
+  const cx = f((x0 + x1) / 2)
+  const edge = f(y1 + deck)
+  return (
+    <g>
+      <rect {...at([x0, y1, x1, edge])} {...thin} />
+      <path d={`M${f(cx - 0.6)} ${edge}H${x0}V${y1}M${f(cx + 0.6)} ${edge}H${x1}V${y1}`} {...medium} />
+      <rect {...at([cx - 0.6, edge, cx + 0.6, edge + 0.85])} {...thin} />
+      <rect {...at([x0, y0, x1, y1])} {...wall} />
       {unit.terrace ? (
         <>
-          <Glazing x1={f(cx - 1.5)} y1={y0} x2={f(cx + 1.5)} y2={y0} />
-          <rect {...at([x0 + 0.35, y0 + 0.35, x1 - 0.35, y1 - 0.35])} {...thin} strokeDasharray="6 4" />
-          <rect {...at([x1, y0 + 0.15, x1 + 0.75, y1 - 0.15])} {...thin} />
+          <Glazing a={[f(cx - 1.5), y1]} b={[f(cx + 1.5), y1]} />
+          <rect {...at([x0 + 0.4, y0 + 0.4, x1 - 0.4, y1 - 0.4])} {...thin} strokeDasharray="6 4" />
+          <rect {...at([x0 - 0.75, y0 + 0.15, x0, y1 - 0.15])} {...thin} />
           {[0.45, 0.8, 1.15, 1.5, 1.85].map((d) => (
-            <line key={d} x1={x1} x2={f(x1 + 0.75)} y1={f(y0 + d)} y2={f(y0 + d)} {...thin} />
+            <line key={d} x1={f(x0 - 0.75)} x2={x0} y1={f(y1 - d)} y2={f(y1 - d)} {...thin} />
           ))}
         </>
       ) : (
         <>
-          <Door hinge={[f(cx - 1.6), y0]} along={[1, 0]} into={[0, 1]} width={0.9} />
-          <Glazing x1={f(cx - 0.2)} y1={y0} x2={f(cx + 1.4)} y2={y0} />
+          <Door hinge={[f(cx + 1.6), y1]} along={[-1, 0]} into={[0, -1]} width={0.9} />
+          <Glazing a={[f(cx - 1.4), y1]} b={[f(cx + 0.2), y1]} />
         </>
       )}
-      <text x={cx} y={f(y1 + 1.3)} textAnchor="middle" style={label}>
+      <text x={cx} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
         {unit.label}
       </text>
+      {dimension ? <Dimension a={[x0, y0]} b={[x1, y0]} offset={-2.4} /> : null}
     </g>
   )
 }
 
-// The bar: a 20 ft container in line with the guest rooms, its serving hatch and counter on the
-// courtyard side under a flap (dashed, overhead).
-function Bar({ unit }: { unit: Unit }) {
-  const [x0, y0, x1, y1] = unit.box
-  const [h0, h1] = unit.hatch ?? [y0 + 1.5, y1 - 1.5]
-  return (
-    <g>
-      <rect {...at(unit.box)} {...heavy} />
-      <line x1={x1} y1={h0} x2={x1} y2={h1} {...knock} />
-      <rect {...at([x1, h0, x1 + 0.4, h1])} {...thin} />
-      <rect {...at([x1, h0, x1 + 0.9, h1])} {...thin} strokeDasharray="4 3" />
-      <text x={f(x0 - 0.6)} y={f((y0 + y1) / 2 + 0.33)} textAnchor="end" style={label}>
-        {unit.label}
-      </text>
-    </g>
-  )
-}
-
-// The study room: one 40 ft container, a band of glazed doors along the side that faces its deck.
+// The study room: one 40 ft container, a band of glazed doors onto its deck (down the drawing).
 function Study({ unit }: { unit: Unit }) {
-  const [x0, y0, x1, y1] = unit.box
+  const [x0, y0, x1, y1] = B(unit.box)
   const deck = unit.deck ?? 2
   const [g0, g1] = [x0 + 0.6, x1 - 0.6]
-  const panes = 6
   return (
     <g>
-      <rect {...at([x0, y0 - deck, x1, y0])} {...thin} />
-      <rect {...at([x0 + 2, y0 - deck - 0.4, x1 - 2, y0 - deck])} {...thin} />
-      <rect {...at(unit.box)} {...heavy} />
-      <Glazing x1={f(g0)} y1={y0} x2={f(g1)} y2={y0} />
-      {Array.from({ length: panes - 1 }, (_, i) => f(g0 + ((i + 1) * (g1 - g0)) / panes)).map((x) => (
-        <line key={x} x1={x} x2={x} y1={f(y0 - 0.07)} y2={f(y0 + 0.07)} {...thin} />
+      <rect {...at([x0, y1, x1, y1 + deck])} {...thin} />
+      <rect {...at([x0 + 2, y1 + deck, x1 - 2, y1 + deck + 0.4])} {...thin} />
+      <rect {...at([x0, y0, x1, y1])} {...wall} />
+      <Glazing a={[f(g0), y1]} b={[f(g1), y1]} />
+      {Array.from({ length: 5 }, (_, i) => f(g0 + ((i + 1) * (g1 - g0)) / 6)).map((x) => (
+        <line key={x} x1={x} x2={x} y1={f(y1 - 0.12)} y2={f(y1 + 0.12)} {...thin} />
       ))}
-      <text x={f(x1 + 0.7)} y={f((y0 + y1) / 2 + 0.33)} style={label}>
+      <text x={f(x0 - 0.7)} y={f((y0 + y1) / 2 + 0.32)} textAnchor="end" style={label}>
         {unit.label}
       </text>
     </g>
@@ -245,115 +219,60 @@ function Study({ unit }: { unit: Unit }) {
 }
 
 export function CompoundPlan({ title, className }: { title: string; className?: string }) {
-  const [fx0, fy0, fx1, fy1] = compound.frame
-  const { parking, courtyard, shore } = compound
-  const [pitX, pitY, pitR, pitInner] = courtyard.firePit
+  const { parking, courtyard } = compound
   const units = Object.fromEntries(compound.units.map((u) => [u.id, u])) as Record<string, Unit>
   const row = compound.units.filter((u) => u.kind === "20" && u.front === "north")
-  const studioTwo = units["studio-two"].box
-  const [cx, cy] = compound.north
-  const road = compound.rockRoad.curve
-  const roadPath = `M${road[0][0]} ${road[0][1]}C${road[1].join(" ")} ${road[2].join(" ")} ${road[3].join(" ")}`
-  const { from, to, step } = shore.trees
-  const trees = Array.from({ length: Math.floor((to - from) / step + 1e-6) + 1 }, (_, i) => f(from + i * step))
+  const turn = (g: { x: Point; y: number; post: number }) => ({ x: [SIZE - g.x[1], SIZE - g.x[0]], y: SIZE - g.y, post: g.post })
+  const road = compound.rockRoad.curve.map(P)
+  const roadPath = `M${road[0].join(" ")}C${road[1].join(" ")} ${road[2].join(" ")} ${road[3].join(" ")}`
+  const [px0, py0, px1, py1] = B(parking.box)
+  const [pitX, pitY] = P(courtyard.firePit)
+  const [, , pitR, pitInner] = courtyard.firePit
+  const sign = B(compound.sign)
+  const [cx0, cy0, cx1, cy1] = B(courtyard.box)
   return (
-    <svg
-      viewBox={`${fx0} ${fy0} ${fx1 - fx0} ${fy1 - fy0}`}
-      role="img"
-      aria-label={title}
-      className={className}
-    >
-      {/* Everything stays inside the frame, even where the box is wider than the drawing */}
-      <clipPath id="compound-frame">
-        <rect x={fx0} y={fy0} width={fx1 - fx0} height={fy1 - fy0} />
-      </clipPath>
-      <g clipPath="url(#compound-frame)">
-        {/* The public road along the top, and the outer gate and sign wall on it */}
-        <line x1={fx0} x2={fx1} y1={compound.publicRoad[0]} y2={compound.publicRoad[0]} {...thin} />
-        <line x1={fx0} x2={fx1} y1={compound.publicRoad[1]} y2={compound.publicRoad[1]} {...medium} />
-        <text x={fx0 + 0.8} y={1.1} style={small}>
-          PUBLIC ROAD
-        </text>
-        <Gate x={compound.gate.x} y={compound.gate.y} post={compound.gate.post} />
-        <rect {...at(compound.sign)} {...medium} />
-        <text x={f(compound.sign[0] - 0.5)} y={2.55} textAnchor="end" style={small}>
-          DIGITAL FARM
-        </text>
+    <svg viewBox={`${VIEW[0]} ${VIEW[1]} ${VIEW[2] - VIEW[0]} ${VIEW[3] - VIEW[1]}`} role="img" aria-label={title} className={className}>
+      {/* The study room, then the row of office and two studios, the bar and the guest rooms */}
+      <Study unit={units.study} />
+      {row.map((unit) => (
+        <RowUnit key={unit.id} unit={unit} dimension={unit.id === "studio-two"} />
+      ))}
+      <Bar unit={units.bar} />
+      <GuestRooms unit={units.rooms} />
 
-        {/* Green parking: bays, two cars and the shade trees over them */}
-        <rect {...at(parking.box)} rx={0.4} {...medium} />
-        {parking.bays.slice(1).map((x) => (
-          <line key={x} x1={x} x2={x} y1={6} y2={parking.box[3]} {...thin} />
-        ))}
-        {parking.cars.map(([x, y]) => (
-          <g key={x}>
-            <rect {...at([x - 0.9, y, x + 0.9, y + 4.3])} rx={0.5} {...thin} />
-            <path d={`M${f(x - 0.75)} ${f(y + 1.4)}H${f(x + 0.75)}M${f(x - 0.75)} ${f(y + 3.4)}H${f(x + 0.75)}`} {...thin} />
-          </g>
-        ))}
-        {compound.shadeTrees.map(([x, y, r]) => (
-          <Tree key={x} x={x} y={y} r={r} dashed />
-        ))}
-        <text x={f(parking.box[2] - 0.6)} y={f(parking.box[3] - 0.7)} textAnchor="end" style={label}>
-          PARKING
-        </text>
+      {/* The courtyard lawn, the stone fire pit and the stepping stones from the inner gate */}
+      <rect {...at([cx0, cy0, cx1, cy1])} rx={courtyard.r} {...thin} />
+      <circle cx={pitX} cy={pitY} r={pitR} {...medium} />
+      <circle cx={pitX} cy={pitY} r={pitInner} {...thin} />
+      {courtyard.stones.map(P).map(([x, y]) => (
+        <rect key={y} {...at([x - 0.3, y - 0.2, x + 0.3, y + 0.2])} rx={0.12} {...thin} />
+      ))}
+      <text x={pitX} y={f(pitY - pitR - 0.6)} textAnchor="middle" style={small}>
+        FIRE PIT
+      </text>
+      <text x={f(cx0 + 0.8)} y={f(cy0 + 1.6)} style={label}>
+        COURTYARD
+      </text>
 
-        {/* The rock road, from the parking down to the inner gate: its two edges, the middle knocked out */}
-        <path d={roadPath} fill="none" stroke="currentColor" strokeWidth={compound.rockRoad.width} />
-        <path d={roadPath} fill="none" stroke={PAGE} strokeWidth={compound.rockRoad.width - 0.16} />
-        <text x={27.6} y={13.4} style={small}>
-          ROCK ROAD
-        </text>
-        <Gate x={compound.innerGate.x} y={compound.innerGate.y} post={compound.innerGate.post} />
-        <text x={f(compound.innerGate.x[1] + compound.innerGate.post + 0.6)} y={18.15} style={small}>
-          INNER GATE
-        </text>
-
-        {/* The courtyard lawn and the stone fire pit already on site */}
-        <rect {...at(courtyard.box)} rx={courtyard.r} {...thin} />
-        {courtyard.stones.map(([x, y]) => (
-          <rect key={y} {...at([x - 0.3, y - 0.2, x + 0.3, y + 0.2])} rx={0.12} {...thin} />
-        ))}
-        <circle cx={pitX} cy={pitY} r={pitR} {...medium} />
-        <circle cx={pitX} cy={pitY} r={pitInner} {...thin} />
-        <text x={pitX} y={f(pitY + pitR + 1.05)} textAnchor="middle" style={small}>
-          FIRE PIT
-        </text>
-        <text x={f(courtyard.box[2] - 0.7)} y={f(courtyard.box[3] - 0.8)} textAnchor="end" style={label}>
-          COURTYARD
-        </text>
-
-        {/* The containers: the bar and the guest rooms down the west side, the office and two studios
-            along the south of the courtyard, the study room further out toward the lake */}
-        <Bar unit={units.bar} />
-        <GuestRooms unit={units.rooms} />
-        {row.map((unit) => (
-          <RowUnit key={unit.id} unit={unit} />
-        ))}
-        <Dimension x1={studioTwo[0]} y1={studioTwo[3]} x2={studioTwo[2]} y2={studioTwo[3]} offset={2.5} />
-        <Study unit={units.study} />
-
-        {/* The shore: a band of trees, then the lake */}
-        {trees.map((x, i) => (
-          <Tree key={x} x={x} y={shore.trees.y} r={[1.2, 1.4, 1.1][i % 3]} />
-        ))}
-        <path d={smooth(shore.line)} {...medium} />
-        {[50.7, 51.9, 53.1].map((y, n) =>
-          Array.from({ length: 13 }, (_, i) => f(fx0 - 5 + i * 5.5 + n * 2.6)).map((x) => (
-            <line key={`${y}-${x}`} x1={x} x2={f(x + 2.4)} y1={y} y2={y} {...thin} />
-          )),
-        )}
-        <text x={f(fx1 - 4)} y={52.5} textAnchor="end" style={{ ...label, fontSize: 1.1, letterSpacing: "0.3em" }}>
-          LAKE
-        </text>
-
-        {/* North */}
-        <path d={`M${cx} ${f(cy + 1.6)}V${f(cy - 1.2)}`} {...medium} />
-        <path d={`M${f(cx - 0.55)} ${f(cy - 0.6)}L${cx} ${f(cy - 1.8)}L${f(cx + 0.55)} ${f(cy - 0.6)}Z`} fill="currentColor" />
-        <text x={cx} y={f(cy - 2.4)} textAnchor="middle" style={label}>
-          N
-        </text>
-      </g>
+      {/* The inner gate, the rock road down to the parking, the outer gate and the sign wall */}
+      <Gate {...turn(compound.innerGate)} />
+      <text x={f(road[1][0] - 3.4)} y={f(road[1][1] + 0.3)} textAnchor="end" style={small}>
+        ROCK ROAD
+      </text>
+      <rect {...at([px0, py0, px1, py1])} rx={0.4} {...thin} />
+      {parking.bays.slice(1).map((x) => (
+        <line key={x} x1={f(SIZE - x)} x2={f(SIZE - x)} y1={py0} y2={f(SIZE - 6)} {...thin} />
+      ))}
+      <path d={roadPath} fill="none" stroke="currentColor" strokeWidth={compound.rockRoad.width} />
+      <path d={roadPath} fill="none" stroke={PAGE} strokeWidth={compound.rockRoad.width - 0.16} />
+      <text x={f(px0 + 0.6)} y={f(py0 + 1.4)} style={label}>
+        PARKING
+      </text>
+      <Gate {...turn(compound.gate)} />
+      <rect {...at(sign)} fill="currentColor" />
+      <text x={f(sign[2] + 0.5)} y={f(sign[3] - 0.05)} style={small}>
+        DIGITAL FARM
+      </text>
     </svg>
   )
 }

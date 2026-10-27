@@ -50,7 +50,7 @@ export const copy = {
   plans: {
     title: "2D",
     label:
-      "Plan of the compound, north up. Along the top, the public road with the gate and the Digital Farm sign, then green parking and a rock road down to the inner gate. Down the west side, the bar and then the guest-room block, their doors onto the courtyard lawn and its fire pit. Along the south of the courtyard, the farm office and then two studios on raised decks. Further out toward the lake, the study room, its west end in line with the guest rooms. Then a band of trees and the lake.",
+      "Plan of the compound, with the study room at the top and the gates at the bottom. At the top, the 40 ft study room on its deck. Below it, the row of three 20 ft containers on raised decks facing the courtyard: two studios and then the farm office. On the right, the bar and then the guest-room block in one line, their doors onto the veranda and the courtyard lawn with its fire pit. At the bottom, the inner gate, a rock road down to the green parking, and the outer gate beside the Digital Farm sign wall.",
     note: "Illustrative plan: containers drawn to size, layout not surveyed.",
   },
   model: {
