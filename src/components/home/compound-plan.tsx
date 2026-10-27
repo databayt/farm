@@ -21,10 +21,11 @@ const B = ([x0, y0, x1, y1]: Box) => {
   const shift = X((x0 + x1) / 2) - (x0 + x1) / 2
   return [x0 + shift, SIZE - y1, x1 + shift, SIZE - y0]
 }
-const VIEW = [-8, 0.6, 51.5, 49]
-// The way in sits a little further from the courtyard on the drawing: the outer gate, the sign and
-// the parking by OUTER, the inner gate by INNER; the road between them stretches to meet both.
-const [OUTER, INNER] = [3.2, 1.2]
+const VIEW = [-8, 0.6, 51.5, 52.5]
+// The way in sits further down the drawing, below the guest rooms (the founder's read): the outer gate,
+// the sign and the parking move down by OUTER, the inner gate by INNER, and all of it left until the
+// parking lines up with the guest rooms; the road between them stretches to meet both.
+const [OUTER, INNER] = [6.2, 4.6]
 
 const WALL = 0.14 // a container wall at drawing scale, solid as the studio's walls
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
@@ -275,11 +276,12 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
   const turn = (g: { x: Point; y: number; post: number }) => {
     const [l, r] = [g.x[0], g.x[1]]
     const shift = X((l + r) / 2) - (l + r) / 2
-    return { x: [l + shift, r + shift], y: SIZE - g.y, post: g.post }
+    return { x: [l + shift + left, r + shift + left], y: SIZE - g.y, post: g.post }
   }
-  const down = (b: Box, d: number) => [b[0], b[1] + d, b[2], b[3] + d]
+  const left = B(units.rooms.box)[0] - B(parking.box)[0]
+  const down = (b: Box, d: number) => [b[0] + left, b[1] + d, b[2] + left, b[3] + d]
   const parkingShift = B(parking.box)[0] - parking.box[0]
-  const road = compound.rockRoad.curve.map(P).map(([x, y], i) => [x, f(y + (i < 2 ? OUTER : INNER))])
+  const road = compound.rockRoad.curve.map(P).map(([x, y], i) => [f(x + left), f(y + (i < 2 ? OUTER : INNER))])
   const roadPath = `M${road[0].join(" ")}C${road[1].join(" ")} ${road[2].join(" ")} ${road[3].join(" ")}`
   const [px0, py0, px1, py1] = down(B(parking.box), OUTER)
   const [pitX, pitY] = P(courtyard.firePit)
@@ -312,7 +314,7 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       <Gate {...turn(compound.innerGate)} y={SIZE - compound.innerGate.y + INNER} />
       <rect {...at([px0, py0, px1, py1])} rx={0.4} {...thin} />
       {parking.bays.slice(1).map((x) => (
-        <line key={x} x1={f(x + parkingShift)} x2={f(x + parkingShift)} y1={py0} y2={f(SIZE - 6 + OUTER)} {...thin} />
+        <line key={x} x1={f(x + parkingShift + left)} x2={f(x + parkingShift + left)} y1={py0} y2={f(SIZE - 6 + OUTER)} {...thin} />
       ))}
       <path d={roadPath} fill="none" stroke="currentColor" strokeWidth={compound.rockRoad.width} />
       <path d={roadPath} fill="none" stroke={PAGE} strokeWidth={compound.rockRoad.width - 0.16} />
