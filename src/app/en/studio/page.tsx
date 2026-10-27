@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
 import { BuildUp } from "@/components/docs/build-up"
 import { ItemRail } from "@/components/docs/item-rail"
+import { WiringDiagram } from "@/components/docs/wiring-diagram"
 import { bedStock } from "@/lib/bed-stock"
 import totals from "../../../../public/designs/studio/data/totals.json"
 import floorPieces from "../../../../public/designs/studio/render/floor-pieces.json"
@@ -380,33 +381,14 @@ export default function StudioPage() {
         </section>
       ))}
 
-      {/* Electrical: four full-width sections for one studio, from its inlet down to every item bought.
-          Where the power comes from is a site decision; the studio only needs something to plug into its inlet. */}
-      <section id="electrical" className="mt-16 scroll-mt-20 border-t bg-muted/40 py-16">
-        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
-          <p className="text-muted-foreground text-sm font-medium">Electrical · 1 of 4</p>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight">One studio, one plug-in point</h2>
-          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            The studio is wired as a closed unit. A weatherproof {demand.inlet_A} A inlet on the outside of the back wall
-            takes any 230 V supply: the grid, a site board, a generator or a solar inverter. Behind it, the
-            studio&rsquo;s own board: a 40 A main switch with a kWh meter, surge protection and a 30 mA RCD over every
-            circuit. The hob and the water heater never run together, which keeps the studio near{" "}
-            {Math.round(Number(demand.total_A))} A.
-          </p>
-          <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border md:grid-cols-4">
-            {[
-              [`${demand.total_A} A`, "maximum demand"],
-              [`${demand.inlet_A} A`, "inlet, IP67, 230 V"],
-              [`${circuits.length} circuits`, "on one unit board"],
-              [`${demand.tails_mm2} mm²`, "tails from the inlet to the board"],
-            ].map(([v, l]) => (
-              <div key={l} className="bg-background p-5">
-                <div className="text-2xl font-semibold tracking-tight">{v}</div>
-                <div className="text-muted-foreground mt-1 text-sm">{l}</div>
-              </div>
-            ))}
+      {/* Electric, in the 3D section's pattern: a plain title, then the studio's wiring drawn full width from its
+          inlet to every circuit. Where the power comes from is a site decision; the studio only needs a supply in its inlet. */}
+      <section id="electrical" className="scroll-mt-20 border-t">
+        <div className="px-4 pt-10 pb-10 md:px-10">
+          <h2 className="text-3xl font-semibold tracking-tight">Electric</h2>
+          <div className="mt-6 overflow-x-auto">
+            <WiringDiagram circuits={circuits} demand={demand} />
           </div>
-          <Figure src={`${D}/drawings/e-201.svg`} caption="E-201 · Single-line diagram: inlet and unit board" />
         </div>
       </section>
 
