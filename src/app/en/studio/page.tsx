@@ -299,16 +299,13 @@ export default function StudioPage() {
     <main className="w-full flex-1">
       {/* First screen: a photoreal concept render of the finished studio (D-018), made in Gemini (2026-10-27):
           the yellow container on its red deck in the eucalyptus, the slider half open on the bed, a steel ladder up to
-          the lounge chairs on the roof. Shared from Gemini at 1376 px and upscaled 4x with Real-ESRGAN (x4plus). */}
+          the lounge chairs on the roof. Shared from Gemini at 1376 px and upscaled 4x with Real-ESRGAN (x4plus).
+          No "Concept render" badge on it: the founder took it off (2026-10-27), an exception to D-018's label. */}
       <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#a9c8df]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={`${D}/render/studio-hero.jpg`} width={2400} height={1340} fetchPriority="high"
           alt="A yellow container studio at golden hour under a dark roof canopy: the sliding glass wall half open on a bed, a sofa and two chairs, a red-railed timber deck with a bistro table and a potted plant, a steel ladder up the side to two lounge chairs on the roof, and eucalyptus behind."
           className="absolute inset-0 size-full object-cover object-[50%_55%]" />
-        {/* D-018: an AI image is always labelled as a concept render. */}
-        <span className="absolute end-4 bottom-4 z-10 rounded-full bg-black/40 px-2.5 py-1 text-xs text-white/85 backdrop-blur md:end-10">
-          Concept render
-        </span>
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
           <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
             <p className="text-sm text-white/80">Digital Farm</p>
