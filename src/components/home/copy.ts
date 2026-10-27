@@ -32,7 +32,9 @@ export const copy = {
     title: "Digital Farm",
     // Two lines, as the founder set them.
     headline: ["State of", "comfort"],
-    walk: "Walk through",
+    walk: "Explore the farm",
+    watch: "Watch film",
+    book: "Book a stay",
     scroll: "Scroll to explore",
   },
   wayIn: {

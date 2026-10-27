@@ -35,7 +35,7 @@ function HeroPicture() {
 }
 
 export function Hero() {
-  const { headline, walk, scroll } = copy.hero
+  const { headline, walk, watch, scroll } = copy.hero
   return (
     <section
       id="top"
@@ -64,17 +64,17 @@ export function Hero() {
             </span>
           ))}
         </h1>
-        <div className="farm-intro-3 mt-6 flex flex-wrap items-center gap-x-8 gap-y-4 text-sm tracking-[0.08em] uppercase">
+        <div className="farm-intro-3 mt-8 flex flex-wrap items-center gap-x-10 gap-y-5 text-[15px] tracking-[0.02em] uppercase">
           <a
             href="#way-in"
-            className="text-soil inline-flex h-12 items-center gap-4 bg-[rgb(214_207_190/0.92)] px-6 backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]"
+            className="text-soil inline-flex h-14 items-center gap-5 bg-[rgb(214_207_190/0.92)] px-7 backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]"
           >
             {walk}
-            <MoveRight className="size-5" strokeWidth={1.5} aria-hidden />
+            <MoveRight className="size-6" strokeWidth={1.5} aria-hidden />
           </a>
-          <a href="#enquire" className="group inline-flex items-center gap-2.5">
-            <span className="decoration-chalk/70 group-hover:decoration-chalk underline underline-offset-[6px]">
-              {copy.cta}
+          <a href="#film" className="group inline-flex items-center gap-3">
+            <span className="decoration-chalk/70 group-hover:decoration-chalk underline decoration-1 underline-offset-[7px]">
+              {watch}
             </span>
             <Play className="size-3.5" strokeWidth={1.5} aria-hidden />
           </a>

@@ -30,7 +30,7 @@ export function HomeContent() {
       >
         {copy.skip}
       </a>
-      <Header title={copy.hero.title} nav={nav} menu={copy.menu} cta={{ href: "#enquire", label: copy.cta }} />
+      <Header title={copy.hero.title} nav={nav} menu={copy.menu} cta={{ href: "#enquire", label: copy.hero.book }} />
       <main>
         <Hero />
         <Plans />

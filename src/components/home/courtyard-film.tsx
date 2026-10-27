@@ -10,7 +10,7 @@ export function CourtyardFilm() {
   const { band, film } = copy.courtyard
   const shown = (VIDEOS.orbit ?? IMAGES.aerial)?.source
   return (
-    <div className="bg-soil text-chalk relative isolate h-[80svh] min-h-[480px] overflow-hidden">
+    <div id="film" className="bg-soil text-chalk relative isolate scroll-mt-14 h-[80svh] min-h-[480px] overflow-hidden">
       <ClipPicture clip="orbit" upright="orbit-portrait" />
       <AmbientVideo
         landscape={VIDEOS.orbit?.src}

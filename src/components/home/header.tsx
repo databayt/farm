@@ -54,7 +54,7 @@ export function Header({
         </nav>
         <a
           href={cta.href}
-          className="hidden h-10 items-center justify-self-end border border-current px-5 text-[13px] tracking-[0.08em] uppercase transition-colors hover:bg-chalk/10 group-data-[solid]/header:hover:bg-soil/5 lg:inline-flex"
+          className="hidden h-11 items-center justify-self-end border border-current/80 px-6 text-sm tracking-[0.04em] uppercase transition-colors hover:bg-chalk/10 group-data-[solid]/header:hover:bg-soil/5 lg:inline-flex"
         >
           {cta.label}
         </a>
