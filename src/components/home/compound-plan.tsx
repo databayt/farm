@@ -213,7 +213,39 @@ function Study({ unit, west }: { unit: Unit; west: number }) {
       <rect {...at([x0, y1, x1, y1 + deck])} {...thin} />
       <rect {...at([x0, y0, x1, y1])} {...wall} />
       <Glazing a={[f(g0), y1]} b={[f(g1), y1]} />
-      <text x={f(x1 + 0.7)} y={f((y0 + y1) / 2 + 0.32)} style={label}>
+      <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
+        {unit.label}
+      </text>
+    </g>
+  )
+}
+
+// Beside the study room, two buildings of their own: a 20 ft galley (a worktop along the back wall, a
+// sink) and a 10 ft bathroom (shower and WC), each with a door on the courtyard side.
+function Galley({ unit }: { unit: Unit }) {
+  const [x0, y0, x1, y1] = B(unit.box)
+  return (
+    <g>
+      <rect {...at([x0, y0, x1, y1])} {...wall} />
+      <rect {...at([x0 + 0.1, y0 + 0.1, x1 - 0.1, y0 + 0.7])} {...thin} />
+      <circle cx={f(x0 + 2.2)} cy={f(y0 + 0.4)} r={0.2} {...thin} />
+      <Door hinge={[f(x0 + 0.8), y1]} along={[1, 0]} into={[0, -1]} width={0.9} />
+      <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
+        {unit.label}
+      </text>
+    </g>
+  )
+}
+
+function Bath({ unit }: { unit: Unit }) {
+  const [x0, y0, x1, y1] = B(unit.box)
+  return (
+    <g>
+      <rect {...at([x0, y0, x1, y1])} {...wall} />
+      <rect {...at([x0 + 0.1, y0 + 0.1, x0 + 1.0, y0 + 1.0])} {...thin} />
+      <rect {...at([x1 - 0.65, y0 + 0.1, x1 - 0.15, y0 + 0.75])} rx={0.2} {...thin} />
+      <Door hinge={[f(x1 - 0.5), y1]} along={[-1, 0]} into={[0, -1]} width={0.8} />
+      <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
         {unit.label}
       </text>
     </g>
@@ -241,6 +273,8 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
     <svg viewBox={`${VIEW[0]} ${VIEW[1]} ${VIEW[2] - VIEW[0]} ${VIEW[3] - VIEW[1]}`} role="img" aria-label={title} className={className}>
       {/* The study room, then the row of office and two studios, the bar and the guest rooms */}
       <Study unit={units.study} west={B(units.rooms.box)[0]} />
+      <Galley unit={units.galley} />
+      <Bath unit={units.bath} />
       {row.map((unit) => (
         <RowUnit key={unit.id} unit={unit} dimension={unit.id === "studio-two"} />
       ))}
