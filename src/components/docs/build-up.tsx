@@ -4,114 +4,203 @@
 // is one screen tall per stage and stays pinned; reaching a stage runs its build like a time-lapse, and
 // scrolling back takes it apart, last build first. Each build lays groups of pieces one after another:
 // "drop" pieces fall from above (large, high and shadowed, then landing), "fix" pieces (screws) pop in
-// after the matching drop lands, an "unroll" piece rolls out from its top edge behind a roll, and "wipe"
-// pieces are painted on one after another, each from its top edge down like a roller pass. Every
-// piece is cropped from its layer's transparent render (scripts/studio/render/floor.html, wall.html, which
-// also write the piece rectangles), so the pieces meet exactly. Styles are written straight to the pieces
-// each frame; React re-renders only when the stage changes.
+// after the matching drop lands, an "unroll" piece rolls out from its top edge behind a roll, "wipe"
+// pieces are painted on one after another, each from its top edge down like a roller pass, and "spray"
+// pieces fill from the bottom up behind a lumpy front, like foam sprayed on in passes. Every piece is
+// cropped from its layer's transparent render (scripts/studio/render/floor.html, wall.html, which also
+// write the piece rectangles), so the pieces meet exactly.
+// The pieces are painted on one canvas over the base picture, from pictures decoded once, and only while
+// something moves, so the browser has nothing to lay out, re-paint or re-decode per piece. One clock
+// (performance.now) times every frame: the frame's own timestamp can lag it, and a step back in time once
+// blinked pieces still to come into view.
 import { useEffect, useRef, useState } from "react"
 
 import { cx } from "@/lib/cx"
 
 type Rect = number[] // [x, y, w, h] as fractions of the picture
-export type Group = { src: string; rects: Rect[]; kind: "drop" | "fix" | "unroll" | "wipe"; from: number; to: number; rise?: number }
+export type Group = { src: string; rects: Rect[]; kind: "drop" | "fix" | "unroll" | "wipe" | "spray"; from: number; to: number; rise?: number }
 export type Build = { secs: number; label: string; groups: Group[] }
 type Stage = { title: string; text: string }
+type Pic = ImageBitmap | HTMLImageElement
 
 const DUR = 0.15 // of a build's clock, each piece's own motion
+const MAX = 2400 // the renders' width: a canvas any wider gains nothing
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
 const out = (t: number) => 1 - (1 - t) ** 3
-
-// one piece: a window onto its layer's picture
-function Piece({ src, r }: { src: string; r: Rect }) {
-  const [x, y, w, h] = r
-  return (
-    <div data-piece className="absolute overflow-hidden" style={{ left: `${x * 100}%`, top: `${y * 100}%`, width: `${w * 100}%`, height: `${h * 100}%`, opacity: 0 }}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt="" loading="lazy" className="absolute max-w-none"
-        style={{ width: `${100 / w}%`, height: `${100 / h}%`, left: `${(-x / w) * 100}%`, top: `${(-y / h) * 100}%` }} />
-    </div>
-  )
-}
+const hash = (a: number, b: number) => { const v = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return v - Math.floor(v) }
+const dims = (p: Pic) => (p instanceof HTMLImageElement ? [p.naturalWidth, p.naturalHeight] : [p.width, p.height])
+// a decoded picture at the canvas's size (a phone keeps a fraction of the pixels), or as it came
+const fit = (img: HTMLImageElement, w: number, h: number): Promise<Pic> =>
+  w > 0 && img.naturalWidth > w && typeof createImageBitmap === "function"
+    ? createImageBitmap(img, { resizeWidth: w, resizeHeight: h, resizeQuality: "high" }).catch(() => img)
+    : Promise.resolve(img)
 
 export function BuildUp({ title, base, baseAlt, aspect, builds, stages }: {
   title: string; base: string; baseAlt: string; aspect: number; builds: Build[]; stages: Stage[]
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const groupRefs = useRef<(HTMLDivElement | null)[][]>([])
-  const rollRefs = useRef<(HTMLDivElement | null)[][]>([])
+  const canvas = useRef<HTMLCanvasElement>(null)
   const [active, setActive] = useState(0)
   const n = stages.length
 
   useEffect(() => {
+    const box = ref.current, cv = canvas.current, ctx = cv?.getContext("2d")
+    if (!box || !cv || !ctx) return
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const pieces = builds.map((b, i) => b.groups.map((_, j) =>
-      Array.from(groupRefs.current[i]?.[j]?.querySelectorAll<HTMLElement>("[data-piece]") ?? [])))
+    const srcs = [...new Set(builds.flatMap((b) => b.groups.map((g) => g.src)))]
+    const imgs = new Map<string, HTMLImageElement>(), pics = new Map<string, Pic>()
     const c = builds.map(() => 0) // each build's clock, 0 (not started) to 1 (done)
-    let stage = 0, last = performance.now(), frame = 0
+    let stage = 0, last = 0, frame = 0, W = 0, H = 0, px = 1, made = 0, seen = false, gone = false
 
-    const drop = (el: HTMLElement, t: number, rise: number) => {
-      const e = out(t)
-      el.style.opacity = String(clamp(t * 3))
-      el.style.transform = t >= 1 ? "" : `translateY(${(e - 1) * rise}px) scale(${1 + 0.18 * (1 - e)})`
-      el.style.boxShadow = t > 0 && t < 1 ? `0 ${14 * (1 - e)}px ${22 * (1 - e)}px rgba(0,0,0,${0.3 * (1 - e)})` : ""
-      el.style.zIndex = t > 0 && t < 1 ? "1" : ""
+    // a piece's rectangle on the canvas, its edges on whole pixels so neighbours meet without a seam, and
+    // the same rectangle of its picture
+    const place = (r: Rect, p: Pic) => {
+      const [pw, ph] = dims(p), x0 = Math.round(r[0] * W), y0 = Math.round(r[1] * H)
+      const w = Math.round((r[0] + r[2]) * W) - x0, h = Math.round((r[1] + r[3]) * H) - y0
+      return { x0, y0, w, h, sx: (x0 / W) * pw, sy: (y0 / H) * ph, sw: (w / W) * pw, sh: (h / H) * ph }
     }
-    const draw = () => builds.forEach((b, i) => b.groups.forEach((g, j) => {
-      const els = pieces[i][j], span = g.to - g.from
-      els.forEach((el, k) => {
-        const s = g.from + (k / Math.max(1, els.length)) * span
-        if (g.kind === "drop") drop(el, clamp((c[i] - s) / DUR), g.rise ?? 40)
-        else if (g.kind === "fix") { // after the matching drop lands
-          const u = clamp((c[i] - s - DUR) / 0.06)
-          el.style.opacity = String(u); el.style.transform = u >= 1 ? "" : `scale(${1.03 - 0.03 * u})`
-        } else if (g.kind === "wipe") { // a roller pass, top to bottom
-          const v = out(clamp((c[i] - s) / DUR))
-          el.style.opacity = v > 0 ? "1" : "0"
-          el.style.clipPath = `inset(0 0 ${(1 - v) * 100}% 0)`
-        } else { // unroll down from the top edge, the roll riding the front
-          const v = out(clamp((c[i] - g.from) / span)), [, ry, , rh] = g.rects[k]
-          el.style.opacity = c[i] > g.from ? "1" : "0"
-          el.style.clipPath = `inset(0 0 ${(1 - v) * 100}% 0)`
-          const roll = rollRefs.current[i]?.[j]
-          if (roll) { roll.style.opacity = c[i] > g.from && v < 1 ? "1" : "0"; roll.style.top = `${(ry + rh * v) * 100}%` }
-        }
-      })
-    }))
-    const tick = (now: number) => {
+    const shade = (a = 0, blur = 0, y = 0) => {
+      ctx.shadowColor = `rgba(0,0,0,${a})`; ctx.shadowBlur = blur * px; ctx.shadowOffsetY = y * px
+    }
+    // the sheet still on its roll, riding the unrolled edge: a grey cylinder across it
+    const roll = (x: number, y: number, w: number) => {
+      const r = H * 0.015, g = ctx.createLinearGradient(0, y - r, 0, y + r)
+      g.addColorStop(0, "#f1f2f1"); g.addColorStop(0.55, "#c3c5c4"); g.addColorStop(1, "#9a9d9c")
+      ctx.fillStyle = g
+      shade(0.18, 6, 3)
+      ctx.beginPath(); ctx.arc(x + r, y, r, Math.PI / 2, -Math.PI / 2); ctx.arc(x + w - r, y, r, -Math.PI / 2, Math.PI / 2); ctx.fill()
+      shade()
+    }
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H)
+      const air: (() => void)[] = [] // pieces still falling, drawn over the ones laid
+      builds.forEach((b, i) => b.groups.forEach((g) => {
+        const p = pics.get(g.src), span = g.to - g.from
+        if (!p || c[i] <= 0) return
+        g.rects.forEach((r, k) => {
+          const s = g.from + (k / g.rects.length) * span, { x0, y0, w, h, sx, sy, sw, sh } = place(r, p)
+          const lay = (v = 1) => { if (v > 0) ctx.drawImage(p, sx, sy, sw, sh * v, x0, y0, w, h * v) } // its top v
+          if (g.kind === "drop") {
+            const t = clamp((c[i] - s) / DUR)
+            if (t >= 1) lay()
+            else if (t > 0) air.push(() => {
+              const e = out(t), z = 1 + 0.18 * (1 - e)
+              ctx.globalAlpha = clamp(t * 3)
+              shade(0.3 * (1 - e), 22 * (1 - e), 14 * (1 - e))
+              ctx.drawImage(p, sx, sy, sw, sh, x0 + (w * (1 - z)) / 2, y0 + (h * (1 - z)) / 2 + (e - 1) * (g.rise ?? 40) * px, w * z, h * z)
+              ctx.globalAlpha = 1
+              shade()
+            })
+          } else if (g.kind === "fix") { // after the matching drop lands
+            const u = clamp((c[i] - s - DUR) / 0.06), z = 1.03 - 0.03 * u
+            if (u >= 1) lay()
+            else if (u > 0) {
+              ctx.globalAlpha = u
+              ctx.drawImage(p, sx, sy, sw, sh, x0 + (w * (1 - z)) / 2, y0 + (h * (1 - z)) / 2, w * z, h * z)
+              ctx.globalAlpha = 1
+            }
+          } else if (g.kind === "wipe") lay(out(clamp((c[i] - s) / DUR))) // a roller pass, top to bottom
+          else if (g.kind === "spray") { // rising from the bottom behind a lumpy front, the same lumps every frame
+            const q = clamp((c[i] - s) / DUR)
+            if (q >= 1) lay()
+            else if (q > 0) {
+              const a = Math.min(w / 4, H * 0.02), m = Math.max(2, Math.round(w / (3 * a)))
+              const y = y0 + h - (h + a) * out(q) // the front's troughs; its crests stand up to a above them
+              ctx.save()
+              ctx.beginPath(); ctx.moveTo(x0, y0 + h); ctx.lineTo(x0, y)
+              for (let j = 0; j < m; j++) ctx.quadraticCurveTo(x0 + (w * (j + 0.5)) / m, y - a * (1 + hash(k, j)), x0 + (w * (j + 1)) / m, y)
+              ctx.lineTo(x0 + w, y0 + h); ctx.closePath(); ctx.clip()
+              lay()
+              ctx.restore()
+            }
+          } else if (c[i] > g.from) { // unroll down from the top edge, the roll riding the front
+            const v = out(clamp((c[i] - g.from) / span))
+            lay(v)
+            if (v < 1) roll(x0, y0 + h * v, w)
+          }
+        })
+      }))
+      air.forEach((f) => f())
+    }
+
+    const tick = () => {
       frame = 0
-      const dt = Math.min(0.1, (now - last) / 1000)
+      const now = performance.now(), dt = Math.min(0.1, Math.max(0, (now - last) / 1000))
       last = now
-      // a build runs once its stage is reached and the one before is done; it comes off only after the next
+      // a build runs once its stage is reached, the one before is done and its pictures are in; it comes off
+      // only after the next. Off screen, or for a reader who asked for less motion, it is just done or undone
       let moving = false
       for (let i = 0; i < c.length; i++) {
-        const on = (stage > i && (i === 0 || c[i - 1] >= 1)) || (i < c.length - 1 && c[i + 1] > 0)
-        const secs = builds[i].secs
-        const next = still ? (on ? 1 : 0) : on ? Math.min(1, c[i] + dt / secs) : Math.max(0, c[i] - (2 * dt) / secs)
-        if (next !== c[i]) moving = true
+        const on = (stage > i && (i === 0 || c[i - 1] >= 1) && builds[i].groups.every((g) => pics.has(g.src))) || (i < c.length - 1 && c[i + 1] > 0)
+        const step = still || !seen ? 1 : dt / builds[i].secs
+        const next = on ? Math.min(1, c[i] + step) : Math.max(0, c[i] - 2 * step)
+        // on until it is where it is going: a frame with no time in it (two at one timestamp) moves nothing
+        if (next !== c[i] || (on ? next < 1 : next > 0)) moving = true
         c[i] = next
       }
       draw()
       if (moving) frame = requestAnimationFrame(tick)
     }
+    const kick = () => { if (!frame) { last = performance.now(); frame = requestAnimationFrame(tick) } }
+
     const onScroll = () => {
-      const el = ref.current
-      if (!el) return
-      const r = el.getBoundingClientRect()
+      const r = box.getBoundingClientRect()
       const p = -r.top / Math.max(1, r.height - window.innerHeight)
+      seen = r.top < window.innerHeight && r.bottom > 0 // now, not when the observer next reports: a jump in runs the build
       let next = 0
       for (let k = 1; k < n; k++) if (p > (k - 0.64) / (n - 1)) next = k
-      if (next !== stage) { stage = next; setActive(next) }
-      if (!frame) { last = performance.now(); frame = requestAnimationFrame(tick) }
+      if (next !== stage) { stage = next; setActive(next); kick() }
     }
-    draw()
+    // the canvas at the screen's resolution, up to the renders' own; pictures made for a smaller one are remade
+    const size = () => {
+      const { width, height } = cv.getBoundingClientRect()
+      if (!width) return
+      px = Math.min(window.devicePixelRatio || 1, MAX / width)
+      const w = Math.round(width * px), h = Math.round(height * px)
+      if (w === W && h === H) return
+      W = cv.width = w; H = cv.height = h
+      if (made && W > made) {
+        const at = (made = W)
+        imgs.forEach((img, s) => fit(img, W, H).then((p) => {
+          if (gone || made !== at) return
+          const old = pics.get(s)
+          pics.set(s, p)
+          if (old && old !== p && "close" in old) old.close()
+          draw()
+        }))
+      }
+      draw()
+    }
+    const load = () => {
+      made = W
+      srcs.forEach((s) => {
+        const img = new Image()
+        img.src = s
+        img.decode().then(() => fit(img, W, H)).then((p) => {
+          if (gone) return
+          imgs.set(s, img); pics.set(s, p)
+          kick()
+        }, () => {})
+      })
+    }
+
+    // the pictures come in a screen before the section; the clocks only run while it is on screen
+    const near = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { near.disconnect(); load() } }, { rootMargin: "100% 0px" })
+    const view = new IntersectionObserver((es) => { seen = es[es.length - 1].isIntersecting; kick() })
+    const ro = new ResizeObserver(size)
+    near.observe(box); view.observe(box); ro.observe(cv)
+    size()
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     window.addEventListener("resize", onScroll)
     return () => {
+      gone = true
       cancelAnimationFrame(frame)
+      near.disconnect(); view.disconnect(); ro.disconnect()
       window.removeEventListener("scroll", onScroll)
       window.removeEventListener("resize", onScroll)
+      pics.forEach((p) => { if ("close" in p) p.close() })
     }
   }, [builds, n])
 
@@ -123,21 +212,7 @@ export function BuildUp({ title, base, baseAlt, aspect, builds, stages }: {
           <div className="relative" style={{ aspectRatio: aspect, width: `min(100%, calc((100svh - 260px) * ${aspect}))` }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={base} alt={baseAlt} loading="lazy" className="absolute inset-0 size-full" />
-            {builds.map((b, i) => (
-              <div key={i} role="img" aria-label={b.label}>
-                {b.groups.map((g, j) => (
-                  <div key={j} ref={(el) => { (groupRefs.current[i] ??= [])[j] = el }}>
-                    {g.rects.map((r, k) => <Piece key={k} src={g.src} r={r} />)}
-                    {g.kind === "unroll" && (
-                      // the sheet still on its roll: a grey cylinder across it, riding the unrolled edge
-                      <div ref={(el) => { (rollRefs.current[i] ??= [])[j] = el }} aria-hidden
-                        className="absolute h-[3%] -translate-y-1/2 rounded-full opacity-0 shadow-md"
-                        style={{ left: `${g.rects[0][0] * 100}%`, width: `${g.rects[0][2] * 100}%`, background: "linear-gradient(#f1f2f1, #c3c5c4 55%, #9a9d9c)" }} />
-                    )}
-                  </div>
-                ))}
-              </div>
-            ))}
+            <canvas ref={canvas} role="img" aria-label={builds.map((b) => b.label).join(" ")} className="absolute inset-0 size-full" />
           </div>
         </div>
         <div className={cx("grid gap-4", { 3: "md:grid-cols-3", 4: "md:grid-cols-4", 5: "md:grid-cols-5" }[n])}>
