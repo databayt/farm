@@ -1,0 +1,76 @@
+{
+  "about": "One guest room, as /en/camp is one camp: a third of the compound's guest-room block (src/components/home/compound.json, unit \"rooms\": two 40 ft containers joined side by side, 12.192 x 4.876 m, three rooms, front east onto a 1.5 m timber veranda under a slatted shade). Each room is 4.064 m along the block and 4.876 m deep. As in the 2026-10-25 footage (assets/reference/rooms, rooms-planned, room): on the front, a barred red-framed window left of a red door with a barred glass panel; a second barred window in the back wall; cream walls; red steel posts where the two containers were joined, across the middle of the room. No en-suite shows in the footage, so there is none: guests use the compound's public bathroom. The floor is bare plywood today; it is drawn in the studio's oak planks, and the furniture in the studio's Medium Oak. The 2D (guest-room-plan.tsx) and the 3D (scripts/site/render/guest-room.html) both read this file. Plan in metres: x to the right along the block, y toward the front (the door), the room's centre at 0,0. Furniture sizes and places are design choices, not yet sourced.",
+  "block": {
+    "about": "The room's share of the block, outside the steel: 12.192 / 3 long, two container widths deep. The stone plinth lifts it 0.3 m; the floor sits on the container's 0.14 m bottom rail.",
+    "w": 4.064,
+    "d": 4.876,
+    "plinth": 0.3,
+    "rail": 0.14,
+    "height": 2.591
+  },
+  "room": {
+    "about": "Inside the linings: partitions to the neighbouring rooms left and right, the containers' long walls front and back. Ceiling height after the cove seen in the footage.",
+    "w": 3.94,
+    "d": 4.7,
+    "h": 2.35,
+    "wall": 0.06
+  },
+  "joint": {
+    "about": "Where the two containers were joined, the middle wall is gone; two red steel posts stand against the partitions and a beam runs overhead, as in the footage.",
+    "y": 0,
+    "post": 0.1
+  },
+  "door": {
+    "about": "Red steel door with a barred glass panel in its upper half, hinged on the right, opening in against the right wall.",
+    "x0": 0.55,
+    "x1": 1.45,
+    "h": 2.0
+  },
+  "window": {
+    "about": "Red-framed, barred, opening outward: one on the front left of the door, one in the back wall over the bed.",
+    "front": { "x0": -1.45, "x1": -0.25, "sill": 0.8, "head": 1.85 },
+    "back": { "x0": -0.55, "x1": 0.55, "sill": 1.2, "head": 1.85 }
+  },
+  "veranda": {
+    "about": "Timber boards the length of the block, 1.5 m deep, a step down in front of each door, a slatted shade overhead on posts along its edge (shown dashed in the 2D, left off the 3D so the room shows). Under the window, two slatted chairs and a small round table, as on the camp's porch.",
+    "d": 1.5,
+    "step": { "x0": 0.4, "x1": 1.6, "d": 0.4 },
+    "chairs": [[-1.4, 3.15], [-0.3, 3.15]],
+    "chair": { "w": 0.5, "d": 0.55, "seat": 0.4, "back": 0.85 },
+    "table": { "x": -0.85, "y": 3.3, "r": 0.24, "h": 0.5 }
+  },
+  "bed": {
+    "about": "A 160 x 200 cm double, headboard against the back wall under its window, white bedding, two pillows, a mustard throw at the foot.",
+    "w": 1.6,
+    "l": 2.0,
+    "frame": 0.3,
+    "mattress": 0.22,
+    "headboard": 1.05
+  },
+  "bedsides": {
+    "about": "A bedside table each side with a linen-shade lamp.",
+    "w": 0.45,
+    "d": 0.4,
+    "h": 0.5,
+    "gap": 0.05
+  },
+  "bench": { "about": "Luggage bench across the foot of the bed.", "w": 1.2, "d": 0.4, "h": 0.45, "gap": 0.1 },
+  "wardrobe": {
+    "about": "Two-door wardrobe on the left wall, between the joint post and the desk.",
+    "x0": -1.97,
+    "y0": 0.15,
+    "d": 0.58,
+    "w": 1.0,
+    "h": 1.95
+  },
+  "desk": {
+    "about": "A small desk under the front window with a chair facing the window.",
+    "x0": -1.4,
+    "x1": -0.3,
+    "d": 0.5,
+    "h": 0.75,
+    "chair": { "w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.85, "y": 1.55 }
+  },
+  "hooks": { "about": "A rail of coat hooks on the right wall, clear of the door's swing.", "y0": 0.25, "y1": 1.15, "h": 1.65 },
+  "rug": { "about": "Woven rug under the lower two thirds of the bed.", "w": 2.4, "d": 1.8, "y": -0.6 }
+}
