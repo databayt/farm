@@ -2,98 +2,96 @@ import camp from "./camp.json"
 
 // One camp drawn in the pattern of the compound plan (src/components/home/compound-plan.tsx): thin lines,
 // no colour, bold capitals and dimensions in millimetres. The door faces down the page, toward the viewer of
-// the 3D's front view. Units are metres, the tent's centre at 0,0, y toward the door.
+// the 3D's front view, and the room is furnished as the hero shows it. Units are metres, the tent's centre at
+// 0,0, y toward the door.
 
-const { tent, deck, bed, crate, rug, porch } = camp
+const { tent, rug, floorChair: chair, throw: wrap, futon, pillow, cushions, tray, lantern } = camp
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
-const medium = { ...thin, strokeWidth: 1.6 } as const
-const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
+const medium = { ...thin, strokeWidth: 1.8 } as const
+const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.5 } as const
 const dashed = { ...thin, strokeDasharray: "4 3" } as const
 const label = {
   fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif",
-  fontSize: 0.13,
+  fontSize: 0.1,
   fontWeight: 700,
   letterSpacing: "0.04em",
   fill: "currentColor",
 } as const
-const small = { ...label, fontSize: 0.1, fontWeight: 600 } as const
+const small = { ...label, fontSize: 0.075, fontWeight: 600 } as const
 
 const f = (n: number) => +n.toFixed(3)
 const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
-// a six-sided outline, flat at the back and the front (the door's side), round a centre
-const hex = (r: number, cy = 0) =>
-  Array.from({ length: 6 }, (_, k) => [f(r * Math.cos((k * Math.PI) / 3)), f(cy + r * Math.sin((k * Math.PI) / 3))])
+// a six-sided outline, flat at the back and the front (the door's side), round the centre
+const hex = (r: number) => Array.from({ length: 6 }, (_, k) => [f(r * Math.cos((k * Math.PI) / 3)), f(r * Math.sin((k * Math.PI) / 3))])
 const path = (p: number[][]) => `M${p.map((q) => q.join(" ")).join("L")}Z`
-const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
+const box = (cx: number, cy: number, w: number, d: number) => ({ x: f(cx - w / 2), y: f(cy - d / 2), width: f(w), height: f(d) })
 
-function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.06
+function Dimension({ a, b, at, vertical }: { a: number; b: number; at: number; vertical?: boolean }) {
+  const t = 0.05
+  const [x1, y1, x2, y2] = vertical ? [at, a, at, b] : [a, at, b, at]
   return (
     <g>
-      <line x1={x0} x2={x1} y1={y} y2={y} {...thin} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f((x0 + x1) / 2)} y={f(y - 0.07)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
+      <line x1={x1} y1={y1} x2={x2} y2={y2} {...thin} />
+      {[[x1, y1], [x2, y2]].map(([x, y]) => <line key={`${x}${y}`} x1={f(x - t)} x2={f(x + t)} y1={f(y + t)} y2={f(y - t)} {...thin} />)}
+      {vertical ? (
+        <text transform={`translate(${f(at - 0.07)} ${f((a + b) / 2)}) rotate(-90)`} textAnchor="middle" style={small}>{mm(b - a)}</text>
+      ) : (
+        <text x={f((a + b) / 2)} y={f(at - 0.06)} textAnchor="middle" style={small}>{mm(b - a)}</text>
+      )}
     </g>
   )
 }
 
 export function CampPlan({ title, className }: { title: string; className?: string }) {
-  const outer = hex(tent.r)
-  const front = tent.r * Math.sin(Math.PI / 3) // the flat front wall's line
-  const door = tent.door / 2
-  const deckY = deck.y + deck.r * Math.sin(Math.PI / 3)
-  const by1 = bed.y0 + bed.l
-  // the deck's boards run across, 140 mm a board, clipped to its outline
-  const boards = Array.from({ length: Math.ceil((2 * deck.r) / 0.14) }, (_, k) => f(deck.y - deck.r + k * 0.14))
+  const p = hex(tent.r)
+  const front = f(tent.r * Math.sin(Math.PI / 3))
+  const stripes = Array.from({ length: 13 }, (_, k) => f(rug.x - rug.w / 2 + ((k + 1) * rug.w) / 14))
+  const fy = (futon.y0 + futon.y1) / 2
   return (
-    <svg viewBox="-3.3 -2.35 6.6 5.75" role="img" aria-label={title} className={className}>
-      <defs>
-        <clipPath id="camp-deck"><path d={path(hex(deck.r, deck.y))} /></clipPath>
-      </defs>
+    <svg viewBox="-2.05 -1.75 4.1 3.3" role="img" aria-label={title} className={className}>
+      {/* The tent: five walls drawn solid, the door side open (rolled up), the shoulder and the small top
+          dashed overhead, the poles' feet at each corner */}
+      <path d={`M${p[1].join(" ")}L${p[0].join(" ")}L${p[5].join(" ")}L${p[4].join(" ")}L${p[3].join(" ")}L${p[2].join(" ")}`} {...medium} />
+      <line x1={p[2][0]} y1={front} x2={p[1][0]} y2={front} {...dashed} />
+      <path d={path(hex(tent.shoulder.r))} {...faint} strokeDasharray="4 3" />
+      <path d={path(hex(tent.top.r))} {...faint} strokeDasharray="4 3" />
+      {p.map(([x, y]) => <circle key={`${x}${y}`} cx={f(x * 1.04)} cy={f(y * 1.04)} r={0.03} {...thin} />)}
 
-      {/* The deck, its boards, and the tent on it: the canvas at the floor, the door open in the front wall,
-          the shoulder and the small top dashed overhead */}
-      <path d={path(hex(deck.r, deck.y))} {...medium} />
-      <g clipPath="url(#camp-deck)">
-        {boards.map((y) => <line key={y} x1={-deck.r} x2={deck.r} y1={y} y2={y} {...faint} />)}
-      </g>
-      <path d={path(outer)} fill="var(--background)" stroke="none" />
-      <path d={`M${-door} ${f(front)}L${outer[2].join(" ")}L${outer[3].join(" ")}L${outer[4].join(" ")}L${outer[5].join(" ")}L${outer[0].join(" ")}L${outer[1].join(" ")}L${door} ${f(front)}`} {...medium} />
-      <line x1={-door} x2={door} y1={f(front)} y2={f(front)} {...dashed} />
-      <path d={path(hex(tent.shoulder.r))} {...dashed} />
-      <path d={path(hex(tent.top.r))} {...dashed} />
+      {/* The rug, its stripes across */}
+      <rect {...box(rug.x, rug.y, rug.w, rug.d)} {...thin} />
+      {stripes.map((x) => <line key={x} x1={x} x2={x} y1={f(rug.y - rug.d / 2)} y2={f(rug.y + rug.d / 2)} {...faint} />)}
 
-      {/* Inside: the bed against the back wall with its pillows and throw, the crate with a lantern, the rug */}
-      <rect {...rect(-bed.w / 2, bed.y0, bed.w / 2, by1)} {...thin} />
-      {[-1, 1].map((s) => (
-        <rect key={s} {...rect(s < 0 ? -bed.w / 2 + 0.08 : 0.04, bed.y0 + 0.08, s < 0 ? -0.04 : bed.w / 2 - 0.08, bed.y0 + 0.4)} rx={0.05} {...thin} />
+      {/* Left: the floor chair facing the door, the folded throw by the door */}
+      <rect {...box(chair.x, chair.y, chair.w, chair.d)} rx={0.04} {...thin} fill="var(--background)" />
+      <rect {...box(chair.x, chair.y - chair.d / 2 + 0.06, chair.w, 0.12)} rx={0.03} {...thin} />
+      <rect {...box(wrap.x, wrap.y, wrap.w, wrap.d)} {...thin} fill="var(--background)" />
+      {Array.from({ length: 9 }, (_, k) => f(wrap.x - wrap.w / 2 + 0.03 + (k * (wrap.w - 0.06)) / 8)).map((x) => (
+        <line key={x} x1={x} x2={x} y1={f(wrap.y + wrap.d / 2)} y2={f(wrap.y + wrap.d / 2 + 0.05)} {...thin} />
       ))}
-      <line x1={-bed.w / 2} x2={bed.w / 2} y1={f(bed.y0 + 0.55)} y2={f(bed.y0 + 0.55)} {...thin} />
-      <rect {...rect(-bed.w / 2, by1 - 0.42, bed.w / 2, by1 - 0.12)} {...faint} />
-      <rect {...rect(crate.x - crate.w / 2, crate.y - crate.d / 2, crate.x + crate.w / 2, crate.y + crate.d / 2)} {...thin} />
-      <circle cx={crate.x} cy={crate.y} r={0.07} {...thin} />
-      <rect {...rect(-rug.w / 2, rug.y - rug.d / 2, rug.w / 2, rug.y + rug.d / 2)} {...thin} />
-      <rect {...rect(-rug.w / 2 + 0.05, rug.y - rug.d / 2 + 0.05, rug.w / 2 - 0.05, rug.y + rug.d / 2 - 0.05)} {...faint} />
 
-      {/* The porch: two folding chairs either side of a small round table with a lantern */}
-      {porch.chairs.map(([cx, cy]) => {
-        const { w, d } = porch.chair
-        return (
-          <g key={cx}>
-            <rect {...rect(cx - w / 2, cy - d / 2, cx + w / 2, cy + d / 2)} {...thin} />
-            <line x1={f(cx - w / 2)} x2={f(cx + w / 2)} y1={f(cy - d / 2 + 0.07)} y2={f(cy - d / 2 + 0.07)} {...thin} />
-          </g>
-        )
-      })}
-      <circle cx={porch.table.x} cy={porch.table.y} r={porch.table.r} {...thin} />
-      <circle cx={porch.table.x} cy={porch.table.y} r={0.06} {...thin} />
+      {/* Right: the futon with its tufts and the cushion standing at its back, the stacked cushions in front */}
+      <rect {...box(futon.x, fy, futon.w, futon.y1 - futon.y0)} rx={0.05} {...thin} fill="var(--background)" />
+      {[0.25, 0.5, 0.75].flatMap((u) => [0.3, 0.7].map((v) => [f(futon.y0 + u * (futon.y1 - futon.y0)), f(futon.x - futon.w / 2 + v * futon.w)])).map(([y, x]) => (
+        <circle key={`${x}${y}`} cx={x} cy={y} r={0.012} {...thin} />
+      ))}
+      <rect {...box(futon.x, futon.y0 + 0.1, pillow.w, pillow.t)} rx={0.04} {...thin} />
+      <rect {...box(cushions.x, cushions.y, cushions.w, cushions.d)} rx={0.05} {...thin} fill="var(--background)" />
+      <rect {...box(cushions.x, cushions.y, cushions.w - 0.08, cushions.d - 0.08)} rx={0.04} {...faint} />
 
-      <text x={0} y={f(by1 - 0.28)} textAnchor="middle" style={small}>BED</text>
-      <text x={f(tent.r + 0.12)} y={-0.15} style={label}>TENT</text>
-      <text x={f(deck.r * 0.55 + 0.12)} y={f(deckY - 0.25)} style={label}>DECK</text>
-      <text x={0} y={f(porch.table.y + porch.table.r + 0.24)} textAnchor="middle" style={small}>PORCH</text>
-      <Dimension x0={-tent.r} x1={tent.r} y={-1.85} />
-      <Dimension x0={-deck.r} x1={deck.r} y={3.05} />
+      {/* On the rug the tea board, a teapot and two cups; the lantern at the back */}
+      <rect {...box(tray.x, tray.y, tray.w, tray.d)} rx={0.02} {...thin} fill="var(--background)" />
+      <circle cx={f(tray.x + 0.1)} cy={tray.y} r={0.07} {...thin} />
+      {[-0.13, -0.03].map((dx) => <circle key={dx} cx={f(tray.x + dx)} cy={f(tray.y + 0.03)} r={0.035} {...thin} />)}
+      <circle cx={lantern.x} cy={lantern.y} r={0.07} {...thin} />
+      <circle cx={lantern.x} cy={lantern.y} r={0.035} {...thin} />
+
+      <text x={chair.x} y={f(chair.y + 0.1)} textAnchor="middle" style={small}>FLOOR CHAIR</text>
+      <text x={futon.x} y={f(fy + 0.03)} textAnchor="middle" style={small}>FUTON</text>
+      <text x={f(rug.x - 0.2)} y={f(rug.y + 0.06)} textAnchor="middle" style={small}>RUG</text>
+      <text x={0} y={f(front + 0.17)} textAnchor="middle" style={label}>DOOR</text>
+      <text x={f(tent.r + 0.12)} y={0.03} style={label}>TENT</text>
+      <Dimension a={-tent.r} b={tent.r} at={-1.45} />
+      <Dimension a={-front} b={front} at={-1.75} vertical />
     </svg>
   )
 }

@@ -1,32 +1,17 @@
 {
-  "about": "One camp, as /en/studio is one studio: the hexagonal pop-up tent from the 2026-10-25 footage (public/footage/IMG_3172) pitched on a low timber deck, furnished for two. The 2D (camp-plan.tsx) and the 3D (scripts/site/render/camp.html) both read this file; the hero is the Nano Banana render of the same camp. Plan in metres: x to the right, y toward the front (the door), the tent's centre at 0,0. Sizes past the tent are design choices, not yet sourced.",
+  "about": "One camp, as /en/studio is one studio, after the hero: the founder's Nano Banana render (assets/camp/hero-gemini.jpeg, 2026-10-27), itself made from the footage's tent (public/footage/IMG_3172). A hexagonal pop-up pitched straight on the grass, its door rolled up, furnished as a floor lounge for two. The 2D (camp-plan.tsx) and the 3D (scripts/site/render/camp.html) both read this file. Plan in metres: x to the right, y toward the door, the tent's centre at 0,0. Furniture sizes are read off the render, not sourced.",
   "tent": {
-    "about": "Hexagonal pop-up, flat sides front and back, door on the front side. 2.8 m across the corners (a 5-8 person model; today's tents look about 2.5 m), walls standing to the shoulder, hips up to a small six-sided top.",
+    "about": "Hexagonal pop-up, flat sides front and back, the door the whole front side, rolled up to a strap at the top. 2.8 m across the corners (today's tents look about 2.5 m), walls standing to the shoulder, hips up to a small six-sided top, poles outside each corner.",
     "r": 1.4,
     "shoulder": { "r": 1.2, "h": 1.15 },
-    "top": { "r": 0.38, "h": 1.62 },
-    "door": 0.9
+    "top": { "r": 0.38, "h": 1.62 }
   },
-  "deck": {
-    "about": "Eucalyptus boards on bearers, a hexagon in line with the tent, set forward so a porch opens in front of the door.",
-    "r": 2.4,
-    "y": 0.55,
-    "h": 0.15
-  },
-  "bed": {
-    "about": "A small double mattress on a low slatted base against the back wall, white bedding, two pillows, a mustard throw at the foot.",
-    "w": 1.2,
-    "l": 1.9,
-    "y0": -1.12,
-    "base": 0.12,
-    "mattress": 0.18
-  },
-  "crate": { "about": "Bedside: a timber crate with a lantern.", "x": 0.78, "y": -0.6, "w": 0.34, "d": 0.3, "h": 0.32 },
-  "rug": { "about": "Woven rug inside the door.", "w": 1.0, "d": 0.4, "y": 1.0 },
-  "porch": {
-    "about": "On the deck in front of the door: two folding timber chairs either side of a small round table with a lantern.",
-    "chairs": [[-0.85, 1.85], [0.85, 1.85]],
-    "chair": { "w": 0.5, "d": 0.55, "seat": 0.4, "back": 0.85 },
-    "table": { "x": 0, "y": 1.95, "r": 0.28, "h": 0.5 }
-  }
+  "rug": { "about": "Striped flat-weave in rust, orange, teal and cream, in the middle of the floor.", "x": -0.05, "y": 0.3, "w": 1.3, "d": 0.85 },
+  "floorChair": { "about": "A legless floor chair in tan linen, back to the back-left wall, facing the door.", "x": -0.68, "y": -0.32, "w": 0.55, "d": 0.55, "seat": 0.12, "back": 0.5 },
+  "throw": { "about": "A folded wool throw with a fringe, on the floor inside the door, left.", "x": -0.56, "y": 0.78, "w": 0.55, "d": 0.32, "h": 0.07 },
+  "futon": { "about": "A white quilted floor mattress along the right wall, a patterned cushion standing at its back end.", "x": 0.6, "y0": -0.78, "y1": 0.32, "w": 0.6, "h": 0.1 },
+  "pillow": { "about": "Patterned cushion, cream with a brown geometric band.", "w": 0.45, "t": 0.14, "h": 0.42 },
+  "cushions": { "about": "Two square quilted floor cushions stacked, front right.", "x": 0.5, "y": 0.72, "w": 0.55, "d": 0.48, "h": 0.09, "count": 2 },
+  "tray": { "about": "A timber tea board on the rug: a clay teapot and two cups.", "x": 0.0, "y": 0.42, "w": 0.46, "d": 0.26, "h": 0.03 },
+  "lantern": { "about": "A brass hurricane lantern on the floor at the back, lit.", "x": -0.12, "y": -0.62, "h": 0.3 }
 }

@@ -1,9 +1,10 @@
 <!doctype html>
 <!--
   /en/camp's 3D, in the pattern of the studio's (scripts/studio/render/room.html): one camp seen from the
-  front with its front walls off, built from src/components/camp/camp.json (the numbers the 2D draws). The
-  tent follows the 2026-10-25 footage (public/footage/IMG_3172): a hexagonal pop-up in off-white canvas with
-  beige trim, poles outside, mesh windows. Rendered two ways:
+  front with its front walls off, built from src/components/camp/camp.json (the numbers the 2D draws). It
+  follows the hero (assets/camp/hero-gemini.jpeg): the footage's hexagonal pop-up in off-white canvas with
+  beige trim, poles outside and mesh windows, pitched on the grass and furnished as a floor lounge, in
+  golden-hour light. Rendered two ways:
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/camp/render/camp-line.png
     ?mode=real  materials, daylight and shadow         -> public/designs/camp/render/camp-real.webp
@@ -85,13 +86,6 @@ const T = LINE ? {} : {
     g.fillStyle = "#ece8dc"; g.fillRect(0, 0, w, h)
     g.fillStyle = "#cdb894"; g.fillRect(0, 0, 18, h); g.fillRect(w - 18, 0, 18, h)
   }, 256, 256),
-  boards: tex((g, w, h) => {
-    g.fillStyle = "#c08a55"; g.fillRect(0, 0, w, h)
-    for (let j = 0; j < 90; j++) {
-      g.fillStyle = `rgba(110,70,35,${0.05 + rnd() * 0.08})`
-      g.fillRect(rnd() * w, rnd() * h, 30 + rnd() * 160, 1 + rnd())
-    }
-  }),
   grass: tex((g, w, h) => {
     g.fillStyle = "#6f9a4a"; g.fillRect(0, 0, w, h)
     for (let i = 0; i < 26000; i++) {
@@ -99,9 +93,21 @@ const T = LINE ? {} : {
       g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
     }
   }),
+  // the flat-weave's stripes run toward the door, as in the hero
   rug: tex((g, w, h) => {
-    const bands = ["#b5523a", "#e6d8bd", "#2f4f5a", "#e6d8bd", "#c9973a"]
-    for (let i = 0; i < 20; i++) { g.fillStyle = bands[i % bands.length]; g.fillRect(0, (i * h) / 20, w, h / 20 + 1) }
+    const bands = ["#b5523a", "#e8dcc2", "#d9822b", "#2f5a62", "#e8dcc2", "#8a3a2a", "#c9973a", "#e8dcc2", "#3f6f72"]
+    for (let i = 0; i < 28; i++) { g.fillStyle = bands[i % bands.length]; g.fillRect((i * w) / 28, 0, w / 28 + 1, h) }
+    for (let i = 0; i < 4000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"; g.fillRect(rnd() * w, rnd() * h, 2, 1) }
+  }, 256, 256),
+  // the cushion at the futon's head: cream with a brown zigzag band, as in the hero
+  pillow: tex((g, w, h) => {
+    g.fillStyle = "#e6dccb"; g.fillRect(0, 0, w, h)
+    g.strokeStyle = "#6e5640"; g.lineWidth = 6
+    for (const y of [0.3, 0.5, 0.7]) {
+      g.beginPath()
+      for (let x = 0; x <= w; x += 16) g.lineTo(x, h * y + ((x / 16) % 2 ? 10 : -10))
+      g.stroke()
+    }
   }, 256, 256),
 }
 
@@ -122,13 +128,13 @@ function mat(name) {
       canvas: () => std({ map: T.canvas, roughness: 0.9, side: THREE.DoubleSide }),
       floor: () => std({ color: "#b9ab8e", roughness: 0.95 }), // the groundsheet
       pole: () => std({ color: "#3a3b3d", roughness: 0.4, metalness: 0.6 }),
-      timber: () => std({ map: T.boards, roughness: 0.75 }),
-      frame: () => std({ color: "#7d5634", roughness: 0.8 }),
-      wood: () => std({ color: "#b98250", roughness: 0.7 }),
-      leg: () => std({ color: "#9b6a3f", roughness: 0.7 }),
-      white: () => std({ color: "#f4f2ec", roughness: 0.95 }),
-      linen: () => std({ color: "#e9e4d8", roughness: 0.95 }),
-      throw: () => std({ color: "#c99a2e", roughness: 0.95 }),
+      wood: () => std({ color: "#8a5a34", roughness: 0.65 }), // the tea board
+      tan: () => std({ color: "#b08a5a", roughness: 0.95 }), // the floor chair's linen
+      white: () => std({ color: "#f2efe6", roughness: 0.95 }),
+      wool: () => std({ color: "#cfc6b6", roughness: 1 }), // the throw
+      pillow: () => std({ map: T.pillow, roughness: 0.95 }),
+      clay: () => std({ color: "#a8653d", roughness: 0.6 }), // teapot and cups
+      brass: () => std({ color: "#9c7a3c", roughness: 0.35, metalness: 0.8 }),
       rug: () => std({ map: T.rug, roughness: 1 }),
       lawn: () => std({ map: T.grass, roughness: 1 }),
       black: () => std({ color: "#26272b", roughness: 0.45, metalness: 0.5 }),
@@ -180,109 +186,90 @@ function quad([a, b, c, d], name) {
 const corner = (r, k, y, cz = 0) => [r * Math.cos((k * Math.PI) / 3), y, cz + r * Math.sin((k * Math.PI) / 3)]
 const halfWidth = (r, dz) => r - Math.abs(dz) / Math.sqrt(3) // a flat-fronted hexagon's half-width, dz from its centre
 
-// ------------------------------------------------------------ the lawn and the deck
-const { tent, deck, bed, crate, rug, porch } = C
+// ------------------------------------------------------------ the lawn
+const { tent, rug, floorChair: chair, throw: wrap, futon, pillow, cushions, tray, lantern: lamp } = C
 if (!LINE) {
   T.grass.repeat.set(10, 10) // 6 m a tile over the 60 m lawn
   add(new THREE.CircleGeometry(30, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], pos: [0, 0, 0] })
 }
-{
-  // the frame under the boards, then the boards across, 140 mm each with a 6 mm gap, cut square at the edge
-  const pts = Array.from({ length: 6 }, (_, k) => { const [x, , z] = corner(deck.r - 0.03, k, 0, deck.y); return new THREE.Vector2(x, -z) })
-  const g = new THREE.ExtrudeGeometry(new THREE.Shape(pts), { depth: deck.h - 0.03, bevelEnabled: false })
-  add(g, "frame", { rot: [-Math.PI / 2, 0, 0] })
-  // each board cut to the deck's outline, so its ends follow the slanted sides
-  const flat = deck.r * Math.sin(Math.PI / 3)
-  for (let z = deck.y - flat; z < deck.y + flat - 0.02; z += 0.146) {
-    const z1 = Math.min(z + 0.14, deck.y + flat)
-    const zs = [z, ...(z < deck.y && z1 > deck.y ? [deck.y] : []), z1] // the widest point, at the side corners
-    const right = zs.map((q) => new THREE.Vector2(halfWidth(deck.r, q - deck.y), -q))
-    const left = zs.slice().reverse().map((q) => new THREE.Vector2(-halfWidth(deck.r, q - deck.y), -q))
-    const g = new THREE.ExtrudeGeometry(new THREE.Shape([...right, ...left]), { depth: 0.03, bevelEnabled: false })
-    add(g, "timber", { rot: [-Math.PI / 2, 0, 0], pos: [0, deck.h - 0.03, 0] })
-  }
-}
 
 // ------------------------------------------------------------ the tent
-// Walls stand from the floor to the shoulder, hips lean in to a small six-sided top. The front three walls
-// (k = 0, 1, 2: the door wall and the two beside it) and their hips are off, so the room shows.
-const Y = deck.h
+// Pitched on the grass. Walls stand from the floor to the shoulder, hips lean in to a small six-sided top.
+// The front three walls (k = 0, 1, 2: the door wall and the two beside it) and their hips are off, so the
+// room shows; their foot stays, the tent's bathtub floor.
+const Y = 0.01 // the groundsheet
 const BACK = [3, 4, 5]
 {
   const floor = new THREE.Shape(Array.from({ length: 6 }, (_, k) => { const [x, , z] = corner(tent.r, k, 0); return new THREE.Vector2(x, -z) }))
-  add(new THREE.ExtrudeGeometry(floor, { depth: 0.01, bevelEnabled: false }), "floor", { rot: [-Math.PI / 2, 0, 0], pos: [0, Y, 0] })
+  add(new THREE.ExtrudeGeometry(floor, { depth: Y, bevelEnabled: false }), "floor", { rot: [-Math.PI / 2, 0, 0] })
   const sh = tent.shoulder, tp = tent.top
   for (const k of BACK) {
-    quad([corner(tent.r, k, Y), corner(tent.r, k + 1, Y), corner(sh.r, k + 1, Y + sh.h), corner(sh.r, k, Y + sh.h)], "wall")
-    quad([corner(sh.r, k, Y + sh.h), corner(sh.r, k + 1, Y + sh.h), corner(tp.r, k + 1, Y + tp.h), corner(tp.r, k, Y + tp.h)], "canvas")
+    quad([corner(tent.r, k, 0), corner(tent.r, k + 1, 0), corner(sh.r, k + 1, sh.h), corner(sh.r, k, sh.h)], "wall")
+    quad([corner(sh.r, k, sh.h), corner(sh.r, k + 1, sh.h), corner(tp.r, k + 1, tp.h), corner(tp.r, k, tp.h)], "canvas")
   }
   // the top, its back half
   const top = new THREE.Shape([3, 4, 5, 6].map((k) => { const [x, , z] = corner(tp.r, k, 0); return new THREE.Vector2(x, -z) }))
-  add(new THREE.ExtrudeGeometry(top, { depth: 0.02, bevelEnabled: false }), "canvas", { rot: [-Math.PI / 2, 0, 0], pos: [0, Y + tp.h, 0] })
-  // the poles outside, up each back corner from the deck to the top
+  add(new THREE.ExtrudeGeometry(top, { depth: 0.02, bevelEnabled: false }), "canvas", { rot: [-Math.PI / 2, 0, 0], pos: [0, tp.h, 0] })
+  // the poles outside, up each back corner from the grass to the top
   for (const k of [3, 4, 5, 6]) {
     const o = 0.03
-    pipe(corner(tent.r + o, k, Y), corner(sh.r + o, k, Y + sh.h), 0.012, "pole")
-    pipe(corner(sh.r + o, k, Y + sh.h), corner(tp.r + o, k, Y + tp.h + 0.02), 0.012, "pole")
+    pipe(corner(tent.r + o + 0.08, k, 0), corner(sh.r + o, k, sh.h), 0.012, "pole")
+    pipe(corner(sh.r + o, k, sh.h), corner(tp.r + o, k, tp.h + 0.02), 0.012, "pole")
   }
-  // the front three walls' foot, a strip of canvas, so the outline still reads as a tent; the door's gap open
-  const foot = (a, b) => quad([a, b, [b[0], Y + 0.12, b[2]], [a[0], Y + 0.12, a[2]]], "canvas")
-  const fz = tent.r * Math.sin(Math.PI / 3)
-  foot(corner(tent.r, 0, Y), corner(tent.r, 1, Y))
-  foot(corner(tent.r, 1, Y), [tent.door / 2, Y, fz])
-  foot([-tent.door / 2, Y, fz], corner(tent.r, 2, Y))
-  foot(corner(tent.r, 2, Y), corner(tent.r, 3, Y))
+  for (const k of [0, 1, 2]) quad([corner(tent.r, k, 0), corner(tent.r, k + 1, 0), corner(tent.r, k + 1, 0.12), corner(tent.r, k, 0.12)], "canvas")
 }
 
-// ------------------------------------------------------------ inside
+// ------------------------------------------------------------ inside, as the hero has it
+blk(rug.x - rug.w / 2, rug.y - rug.d / 2, rug.x + rug.w / 2, rug.y + rug.d / 2, Y, Y + 0.01, "rug")
+const R = Y + 0.01 // the rug's top
 {
-  const [x0, x1, z0, z1] = [-bed.w / 2, bed.w / 2, bed.y0, bed.y0 + bed.l]
-  blk(x0, z0, x1, z1, Y, Y + bed.base, "wood")
-  const m = Y + bed.base
-  soft(x0 + 0.01, z0 + 0.01, x1 - 0.01, z1 - 0.01, m, m + bed.mattress, 0.04, "white")
-  const t = m + bed.mattress
-  soft(x0 - 0.01, z0 + 0.55, x1 + 0.01, z1 + 0.01, t - 0.05, t + 0.05, 0.04, "linen") // the duvet
-  soft(x0 - 0.015, z1 - 0.42, x1 + 0.015, z1 - 0.12, t + 0.02, t + 0.07, 0.02, "throw")
-  for (const [a, b] of [[x0 + 0.08, -0.04], [0.04, x1 - 0.08]]) soft(a, z0 + 0.08, b, z0 + 0.4, t, t + 0.13, 0.05, "white") // pillows
+  // the floor chair: a cushioned seat on the floor and a back leaning a little, both in tan linen
+  const { x, y, w, d, seat, back } = chair
+  soft(x - w / 2, y - d / 2 + 0.06, x + w / 2, y + d / 2, Y, Y + seat, 0.035, "tan")
+  const lean = 0.22
+  const b = add(new RoundedBoxGeometry(w, back, 0.1, 4, 0.035), "tan", {
+    pos: [x, Y + 0.05 + (back / 2) * Math.cos(lean), y - d / 2 + 0.06 - (back / 2) * Math.sin(lean)],
+  })
+  b.rotation.x = -lean
+}
+soft(wrap.x - wrap.w / 2, wrap.y - wrap.d / 2, wrap.x + wrap.w / 2, wrap.y + wrap.d / 2, Y, Y + wrap.h, 0.025, "wool")
+{
+  // the futon along the right wall, the patterned cushion standing at its head, two cushions stacked in front
+  const { x, y0, y1, w, h } = futon
+  soft(x - w / 2, y0, x + w / 2, y1, Y, Y + h, 0.04, "white")
+  const p = add(new RoundedBoxGeometry(pillow.w, pillow.h, pillow.t, 4, 0.05), "pillow", {
+    pos: [x, Y + h + pillow.h / 2 - 0.02, y0 + 0.1],
+  })
+  p.rotation.x = -0.18
+  const c = cushions
+  for (let i = 0; i < c.count; i++) soft(c.x - c.w / 2, c.y - c.d / 2, c.x + c.w / 2, c.y + c.d / 2, Y + i * c.h, Y + (i + 1) * c.h - 0.005, 0.035, "white")
 }
 {
-  const { x, y, w, d, h } = crate
-  blk(x - w / 2, y - d / 2, x + w / 2, y + d / 2, Y, Y + h, "wood")
-  lantern(x, y, Y + h)
+  // the tea board on the rug: a round clay teapot with a spout and a lid, two cups
+  const { x, y, w, d, h } = tray
+  blk(x - w / 2, y - d / 2, x + w / 2, y + d / 2, R, R + h, "wood")
+  const t = add(new THREE.SphereGeometry(0.065, 20, 12), "clay", { pos: [x + 0.1, R + h + 0.055, y] })
+  t.scale.y = 0.85
+  cyl(x + 0.1, y, 0.025, R + h + 0.1, 0.025, "clay", 12)
+  pipe([x + 0.15, R + h + 0.05, y], [x + 0.2, R + h + 0.09, y], 0.008, "clay")
+  for (const dx of [-0.13, -0.03]) cyl(x + dx, y + 0.03, 0.03, R + h, 0.045, "clay", 16, 0.034)
 }
-blk(-rug.w / 2, rug.y - rug.d / 2, rug.w / 2, rug.y + rug.d / 2, Y, Y + 0.012, "rug")
-function lantern(x, z, y0) {
-  cyl(x, z, 0.06, y0, 0.03, "black", 6)
-  cyl(x, z, 0.045, y0 + 0.03, 0.12, "lamp", 6)
-  cyl(x, z, 0.06, y0 + 0.15, 0.03, "black", 6)
+{
+  // the hurricane lantern on the floor: a brass foot and cap round a lit glass
+  const { x, y, h } = lamp
+  cyl(x, y, 0.07, Y, 0.04, "brass", 16)
+  cyl(x, y, 0.05, Y + 0.04, h * 0.5, "lamp", 16, 0.045)
+  cyl(x, y, 0.06, Y + 0.04 + h * 0.5, 0.05, "brass", 16, 0.035)
+  add(new THREE.TorusGeometry(0.05, 0.005, 6, 16), "brass", { pos: [x, Y + h, y] })
   if (!LINE) {
-    const l = new THREE.PointLight(0xffc77a, 1.2, 3, 2)
-    l.position.set(x, y0 + 0.1, z); scene.add(l)
+    const l = new THREE.PointLight(0xffb866, 2.2, 3.5, 2)
+    l.position.set(x, Y + 0.18, y); scene.add(l)
   }
-}
-
-// ------------------------------------------------------------ the porch
-{
-  const { w, d, seat, back } = porch.chair
-  for (const [cx, cz] of porch.chairs) {
-    const [x0, x1, z0, z1] = [cx - w / 2, cx + w / 2, cz - d / 2, cz + d / 2] // its back toward the tent
-    blk(x0, z0 + 0.05, x1, z1, Y + seat - 0.03, Y + seat, "wood")
-    for (let i = 0; i < 3; i++) blk(x0, z0 + 0.02, x1, z0 + 0.05, Y + seat + 0.08 + i * 0.13, Y + seat + 0.18 + i * 0.13, "wood")
-    for (const x of [x0 + 0.03, x1 - 0.03]) {
-      pipe([x, Y, z1 - 0.03], [x, Y + seat, z0 + 0.1], 0.015, "leg")
-      pipe([x, Y, z0 + 0.03], [x, Y + back, z0 + 0.035], 0.015, "leg")
-    }
-  }
-  const { x, y, r, h } = porch.table
-  cyl(x, y, r, Y + h - 0.03, 0.03, "wood", 32)
-  cyl(x, y, 0.025, Y + 0.02, h - 0.05, "leg", 8)
-  cyl(x, y, 0.18, Y, 0.02, "leg", 24)
-  lantern(x, y, Y + h)
 }
 
 // ------------------------------------------------------------ camera: the front view
-const target = new THREE.Vector3(0, 0.55, deck.y - 0.2)
-const [el, dist] = [THREE.MathUtils.degToRad(32), 30]
+const target = new THREE.Vector3(0, 0.5, 0)
+const [el, dist] = [THREE.MathUtils.degToRad(30), 24]
 const camera = new THREE.PerspectiveCamera(22, FW / FH, 0.5, 200)
 camera.position.set(0, target.y + dist * Math.sin(el), target.z + dist * Math.cos(el))
 camera.lookAt(target)
@@ -318,9 +305,9 @@ if (LINE) {
   const pmrem = new THREE.PMREMGenerator(renderer)
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
   scene.environmentIntensity = 0.4
-  scene.add(new THREE.HemisphereLight(0xeef3ff, 0x8a7a5a, 0.9))
-  const sun = new THREE.DirectionalLight(0xfff0d8, 2.8)
-  sun.position.set(-8, 10, 9) // from the front, over the left shoulder
+  scene.add(new THREE.HemisphereLight(0xf3ead8, 0x7a6a48, 0.8))
+  const sun = new THREE.DirectionalLight(0xffd6a0, 3.0)
+  sun.position.set(-10, 6, 8) // golden hour, low from the front left, as the hero
   sun.castShadow = true
   sun.shadow.mapSize.set(4096, 4096)
   Object.assign(sun.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5, near: 1, far: 40 })

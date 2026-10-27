@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button"
 import { CampPlan } from "@/components/camp/camp-plan"
 
 // One camp, as /en/studio is one studio: a full-screen hero, then the 2D and the 3D. Both drawings read
-// src/components/camp/camp.json: the hexagonal pop-up tent from the footage on a low timber deck, a bed for
-// two inside, two chairs and a table on the porch. The hero is the Nano Banana render of the same camp.
+// src/components/camp/camp.json, after the hero (the Nano Banana render): the footage's hexagonal pop-up on the
+// grass, its door rolled up, furnished as a floor lounge.
 
 export const metadata: Metadata = {
   title: "The camp · Farm",
@@ -44,7 +44,7 @@ export default function CampPage() {
         <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
           <h2 className="text-3xl font-semibold tracking-tight">2D</h2>
           <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
-            <CampPlan title="Plan: a hexagonal tent 2.8 m across on a hexagonal deck 4.8 m across; inside, a bed against the back wall with a crate and lantern beside it and a rug inside the door; on the porch, two chairs either side of a small round table."
+            <CampPlan title="Plan: a hexagonal tent 2.8 m across, its door rolled up; inside, a floor chair and a folded throw on the left, a futon with a cushion and two stacked cushions on the right, a striped rug in the middle with a tea board, and a lantern at the back."
               className="h-auto w-full lg:h-full lg:w-auto" />
           </div>
         </div>
@@ -58,14 +58,14 @@ export default function CampPage() {
           <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`${D}/render/camp-line.png`} width={2400} height={1100}
-              alt="Line drawing of the camp from the front with the front walls off: the tent on its hexagonal deck, the bed with two pillows against the back wall, a crate with a lantern, a rug inside the door, and two chairs and a round table on the porch."
+              alt="Line drawing of the camp from the front with the front walls off: the floor chair, the futon with its cushion, the stacked cushions, the throw, the tea board on the rug and the lantern at the back."
               className="w-full object-contain lg:max-h-full dark:invert" />
           </div>
         </div>
         <figure className="px-4 pb-10 md:px-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`${D}/render/camp-real.webp`} width={2400} height={1100} loading="lazy"
-            alt="The same view rendered: off-white canvas with beige trim and mesh windows, white bedding with a mustard throw, a lit lantern on a timber crate, a striped rug, and timber chairs and a table with a lantern on a eucalyptus deck on the lawn."
+            alt="The same view rendered in golden-hour light on the lawn: off-white canvas with beige trim and mesh windows, a tan floor chair, a white futon with a patterned cushion, a striped rug with a clay teapot and cups on a tea board, and a lit lantern."
             className="h-auto w-full" />
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
         </figure>
