@@ -1,6 +1,6 @@
 import { getImageProps } from "next/image"
 import { Cormorant_Garamond } from "next/font/google"
-import { ArrowDown, ArrowRight } from "lucide-react"
+import { ArrowDown, MoveRight, Play } from "lucide-react"
 
 import { copy } from "./copy"
 import { HERO } from "./hero.generated"
@@ -66,16 +66,16 @@ export function Hero() {
         <div className="farm-intro-3 mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 text-sm tracking-[0.08em] uppercase">
           <a
             href="#way-in"
-            className="bg-chalk/85 text-soil inline-flex h-12 items-center gap-3 px-6 font-medium backdrop-blur-sm transition-colors hover:bg-chalk"
+            className="text-soil inline-flex h-12 items-center gap-4 bg-[rgb(214_207_190/0.92)] px-6 backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]"
           >
             {walk}
-            <ArrowRight className="size-4" aria-hidden />
+            <MoveRight className="size-5" strokeWidth={1.5} aria-hidden />
           </a>
-          <a
-            href="#enquire"
-            className="decoration-chalk/60 hover:decoration-chalk underline underline-offset-[6px] transition-colors"
-          >
-            {copy.cta}
+          <a href="#enquire" className="group inline-flex items-center gap-2.5">
+            <span className="decoration-chalk/70 group-hover:decoration-chalk underline underline-offset-[6px]">
+              {copy.cta}
+            </span>
+            <Play className="size-3.5" strokeWidth={1.5} aria-hidden />
           </a>
         </div>
       </div>

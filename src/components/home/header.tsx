@@ -12,10 +12,12 @@ export function Header({
   title,
   nav,
   menu,
+  cta,
 }: {
   title: string
   nav: NavLink[]
   menu: { open: string; close: string }
+  cta: NavLink
 }) {
   const ref = React.useRef<HTMLElement>(null)
 
@@ -37,17 +39,25 @@ export function Header({
       ref={ref}
       className="group/header text-chalk fixed inset-x-0 top-0 z-50 h-(--header-height) transition-[background-color,color,box-shadow] duration-300 data-[solid]:bg-chalk/90 data-[solid]:text-soil data-[solid]:shadow-[0_1px_0_var(--border)] data-[solid]:backdrop-blur-md"
     >
-      <div className="mx-auto flex h-full max-w-7xl items-center gap-8 px-4 md:px-8">
+      {/* As in the founder's guide: wordmark left, the sections centred in capitals, one outlined
+          button right. Below lg the sections and the button fold into the menu. */}
+      <div className="mx-auto flex h-full max-w-7xl items-center gap-8 px-4 md:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">
         <a href="#top" className="font-display text-2xl leading-none">
           {title}
         </a>
-        <nav aria-label="Sections" className="ml-auto hidden items-center gap-6 text-sm lg:flex">
+        <nav aria-label="Sections" className="hidden items-center gap-8 text-[13px] tracking-[0.08em] uppercase lg:flex">
           {nav.map((link) => (
-            <a key={link.href} href={link.href} className="opacity-80 transition-opacity hover:opacity-100">
+            <a key={link.href} href={link.href} className="opacity-85 transition-opacity hover:opacity-100">
               {link.label}
             </a>
           ))}
         </nav>
+        <a
+          href={cta.href}
+          className="hidden h-10 items-center justify-self-end border border-current px-5 text-[13px] tracking-[0.08em] uppercase transition-colors hover:bg-chalk/10 group-data-[solid]/header:hover:bg-soil/5 lg:inline-flex"
+        >
+          {cta.label}
+        </a>
         <button
           type="button"
           popoverTarget="farm-menu"
@@ -77,6 +87,13 @@ export function Header({
               {link.label}
             </a>
           ))}
+          <a
+            href={cta.href}
+            onClick={closeMenu}
+            className="mt-6 inline-flex h-12 items-center justify-center border border-current text-sm tracking-[0.08em] uppercase"
+          >
+            {cta.label}
+          </a>
         </nav>
       </div>
     </header>
