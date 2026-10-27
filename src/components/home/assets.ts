@@ -47,7 +47,7 @@ export const ASSETS = {
     kind: "render",
     tone: "aerial",
     subject: "The whole compound from the air",
-    alt: "The compound from the air: gate, parking, road, the courtyard with its fire pit, the yellow guest block, the red studios and yellow office, the teal study room and the lake beyond",
+    alt: "The compound from the air: the gate and parking, the stone road to the inner gate, the red bar and the yellow guest block down one side of the courtyard and its fire pit, the yellow office and two red studios across it, the teal study room toward the lake, and the lake beyond the trees",
     today: "Today: the stone fire pit on the courtyard lawn, with tents, a striped umbrella and the yellow joined containers",
   },
   rooms: {
@@ -67,8 +67,8 @@ export const ASSETS = {
   studios: {
     kind: "render",
     tone: "golden",
-    subject: "The two studios and the office on their decks",
-    alt: "Two red studios and the yellow office on raised decks with red railings, the studios with open roof terraces behind guardrails",
+    subject: "The office and the two studios on their decks",
+    alt: "The yellow office and two red studios on raised decks with red railings, the studios with open roof terraces behind guardrails",
     today: "Today: two red containers and a yellow one on raised steel decks, with an unfinished timber platform and garden furniture on the lawn",
   },
   studio: {
