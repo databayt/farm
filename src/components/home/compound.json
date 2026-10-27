@@ -167,5 +167,10 @@
       "ring": 2.1,
       "r": 0.2
     }
+  },
+  "spread": {
+    "about": "The 2D and the 3D set the compound half as far apart again sideways for a wide screen, every building at its true size: x' = mid + (x - mid) * factor for each centre.",
+    "factor": 1.5,
+    "mid": 23
   }
 }

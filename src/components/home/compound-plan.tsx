@@ -13,8 +13,7 @@ type Unit = (typeof compound.units)[number]
 // bottom, guest rooms and bar on the left), then spread it sideways for a wide screen: positions move
 // apart across the drawing, every building keeps its size.
 const SIZE = 46
-const SPREAD = 1.5
-const MID = 23
+const { factor: SPREAD, mid: MID } = compound.spread
 const X = (x: number) => MID + (x - MID) * SPREAD
 const P = ([x, y]: Point) => [X(x), SIZE - y]
 const B = ([x0, y0, x1, y1]: Box) => {

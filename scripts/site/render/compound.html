@@ -47,6 +47,33 @@ const [FW, FH] = [2400, 1800]
 const C = await (await fetch(`/src/components/home/compound.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#f7f5ef" // the farm theme's soil and chalk
 const HC = 2.591 // a container's height
+// The 2D sets the compound half as far apart again sideways for a wide screen (compound.json's spread),
+// every building at its true size; the model takes the same positions, so it reads as the 2D does.
+{
+  const { factor, mid } = C.spread
+  const SX = (x) => mid + (x - mid) * factor
+  const shift = (x0, x1) => SX((x0 + x1) / 2) - (x0 + x1) / 2
+  const moveBox = (b) => { const d = shift(b[0], b[2]); return [b[0] + d, b[1], b[2] + d, b[3]] }
+  for (const u of C.units) u.box = moveBox(u.box)
+  const unit = Object.fromEntries(C.units.map((u) => [u.id, u]))
+  const rooms = unit.rooms.box
+  // as on the 2D: the bar flush with the guest rooms' courtyard side, the study room's end with their far side
+  const bw = unit.bar.box[2] - unit.bar.box[0]
+  unit.bar.box = [rooms[2] - bw, unit.bar.box[1], rooms[2], unit.bar.box[3]]
+  const sw = unit.study.box[2] - unit.study.box[0]
+  unit.study.box = [rooms[0], unit.study.box[1], rooms[0] + sw, unit.study.box[3]]
+  const p = shift(C.parking.box[0], C.parking.box[2])
+  C.parking.box = [C.parking.box[0] + p, C.parking.box[1], C.parking.box[2] + p, C.parking.box[3]]
+  C.parking.bays = C.parking.bays.map((x) => x + p)
+  C.sign = moveBox(C.sign)
+  for (const g of [C.gate, C.innerGate]) { const d = shift(g.x[0], g.x[1]); g.x = [g.x[0] + d, g.x[1] + d] }
+  C.rockRoad.curve = C.rockRoad.curve.map(([x, z]) => [SX(x), z])
+  C.courtyard.firePit = [SX(C.courtyard.firePit[0]), ...C.courtyard.firePit.slice(1)]
+  const cb = C.courtyard.box // the lawn widens with the spread
+  C.courtyard.box = [SX(cb[0]), cb[1], SX(cb[2]), cb[3]]
+  C.outdoor.tents = C.outdoor.tents.map(([x, z]) => [SX(x), z])
+  C.outdoor.longTable.x = SX(C.outdoor.longTable.x)
+}
 // plan (x east, y south) -> three: x = x, y = height, z = y
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true })
@@ -361,8 +388,12 @@ function group(build, pos, rotY = 0) {
 
 // ------------------------------------------------------------ the site
 // As the 2D draws it: the compound on its ground, a model base, with no lake, road or trees (D-022).
-const [MX0, MX1, MZ0, MZ1] = [2.6, 43, -8.4, 45.6]
-slab([MX0, MZ0, MX1, MZ1], 0.01, -1.0, 1.0, "meadow", { sides: "soil" })
+// the base reaches 2.5 m past the outermost buildings east and west
+const MX0 = Math.min(...C.units.map((u) => u.box[0])) - 2.5
+const MX1 = Math.max(...C.units.map((u) => u.box[2]), C.courtyard.box[2]) + 2.5
+const [MZ0, MZ1] = [-8.4, 45.6]
+// one lawn over the whole base, its top level with the old courtyard lawn: no courtyard outline, as the 2D
+slab([MX0, MZ0, MX1, MZ1], 0.01, -1.0, 1.035, "lawn", { sides: "soil" })
 
 // the outer gate: fieldstone posts, galvanised five-bar leaves open into the site; the sign wall beside it
 function post([x0, z0, x1, z1], h) {
@@ -425,10 +456,9 @@ gate(C.gate, 1.3, "bars")
 }
 gate(C.innerGate, 1.6, "slats")
 
-// the courtyard lawn and the stone fire pit already on site (stepping stones, if any are listed)
+// the stone fire pit already on site (stepping stones, if any are listed); the courtyard is the base's lawn
 {
-  const { box, r, firePit: [px, pz, pr, pin], stones } = C.courtyard
-  slab(box, r, 0, 0.035, "lawn", { noShadow: true })
+  const { firePit: [px, pz, pr, pin], stones } = C.courtyard
   ring(px, pz, pr, pin, 0, 0.5, "stone")
   ring(px, pz, pr + 0.04, pin - 0.03, 0.5, 0.08, "concrete") // the smooth cap on today's pit
   cyl(px, pz, pin, 0.02, 0.06, "ash", 32)
