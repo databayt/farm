@@ -37,7 +37,7 @@ export function Header({
   return (
     <header
       ref={ref}
-      className="group/header text-chalk fixed inset-x-0 top-0 z-50 h-(--header-height) transition-[background-color,color,box-shadow] duration-300 data-[solid]:bg-chalk/90 data-[solid]:text-soil data-[solid]:shadow-[0_1px_0_var(--border)] data-[solid]:backdrop-blur-md"
+      className="group/header text-chalk fixed inset-x-0 top-0 z-50 h-(--header-height) transition-[background-color,color] duration-300 data-[solid]:bg-chalk/90 data-[solid]:text-soil data-[solid]:backdrop-blur-md"
     >
       {/* As in the founder's guide: wordmark left, the sections centred in capitals, one outlined
           button right. Below lg the sections and the button fold into the menu. */}
@@ -54,7 +54,7 @@ export function Header({
         </nav>
         <a
           href={cta.href}
-          className="hidden h-11 items-center justify-self-end border border-current/80 px-6 text-sm tracking-[0.04em] uppercase transition-colors hover:bg-chalk/10 group-data-[solid]/header:hover:bg-soil/5 lg:inline-flex"
+          className="hidden h-11 items-center justify-self-end px-6 text-sm tracking-[0.04em] uppercase transition-colors hover:bg-chalk/10 group-data-[solid]/header:hover:bg-soil/5 lg:inline-flex"
         >
           {cta.label}
         </a>
@@ -90,7 +90,7 @@ export function Header({
           <a
             href={cta.href}
             onClick={closeMenu}
-            className="mt-6 inline-flex h-12 items-center justify-center border border-current text-sm tracking-[0.08em] uppercase"
+            className="mt-6 inline-flex h-12 items-center justify-center text-sm tracking-[0.08em] uppercase"
           >
             {cta.label}
           </a>
