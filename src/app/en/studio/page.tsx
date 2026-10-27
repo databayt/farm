@@ -33,7 +33,7 @@ const FEATURES = [
   { title: "Wash", text: "Shower, WC and basin in one row: a wall-hung WC and the shower behind a door, the basin outside it." },
   { title: "Sit", text: "A seating room: a two-seat sofa, a low wide table and two chairs, by the 3 m sliding glass wall onto the deck." },
   { title: "Roof", text: "An open roof terrace with lounge chairs behind a timber-topped rail, up a steel stair; a canopy shades the deck." },
-  { title: "Stay cool", text: "The roof deck shades the steel, EPS insulation is sealed to it, a wall fan moves the air, and the AC is ready." },
+  { title: "Stay cool", text: "The roof deck shades the steel, foam is sprayed onto it inside, a wall fan moves the air, and the AC is ready." },
 ]
 
 // The Bed rail: each piece rendered on its own by scripts/studio/render/room.html?item=<id>, with what it
@@ -388,11 +388,11 @@ export default function StudioPage() {
           its lining put up in fast motion and painted off-white. Renders: scripts/studio/render/wall.html. */}
       <section id="wall">
         <BuildUp title="Wall" base={`${D}/render/wall-base.webp`} aspect={wallPieces.aspect}
-          baseAlt="The container's back wall seen from inside: red corrugated steel, scuffed, with rust low down and lashing rings, framed by the rails, corner posts and corner castings."
+          baseAlt="The container's back wall seen from inside: red corrugated steel, scuffed, with rust low down and lashing rings, framed by a channel rail below, a square tube above and pressed corner posts, their paint chipped to bare steel, and the corner castings."
           builds={[
-            { secs: 2.4, label: "Battens up the wall with white insulation boards between them.", groups: [
+            { secs: 2.8, label: "Battens up the wall, then foam sprayed onto the steel between them.", groups: [
               { src: `${D}/render/wall-battens.webp`, rects: wallPieces.battens, kind: "drop", from: 0, to: 0.35 },
-              { src: `${D}/render/wall-eps.webp`, rects: wallPieces.eps, kind: "drop", from: 0.45, to: 0.85 },
+              { src: `${D}/render/wall-foam.webp`, rects: wallPieces.foam, kind: "spray", from: 0.45, to: 0.85 },
             ] },
             { secs: 2, label: "Four numbered plywood lining panels screwed to the battens.", groups: [
               { src: `${D}/render/wall-panels.webp`, rects: wallPieces.panels, kind: "drop", from: 0, to: 0.7, rise: 60 },
@@ -408,7 +408,7 @@ export default function StudioPage() {
           ]}
           stages={[
             { title: "The empty container", text: "1.6 mm corrugated steel, 36 mm deep at 278 mm pitch, between the rails, corner posts and castings. Rust treated and primed first." },
-            { title: "Layer 1 · Battens + insulation", text: "38 × 50 treated battens at 600 mm centres, EPS fitted between them and every joint foam-sealed." },
+            { title: "Layer 1 · Battens + insulation", text: "38 × 50 treated battens at 600 mm centres, then foam sprayed onto the steel between them, filling the corrugations without a joint." },
             { title: "Layer 2 · Lining panels", text: "12 mm plywood panels, numbered and cut in the workshop, screwed to each batten every 300 mm." },
             { title: "Layer 3 · Paint", text: "Joints and screw heads filled, a vapour-retarding primer, then off-white paint in a satin sheen, rolled on." },
             { title: "The bathroom side", text: "12 mm cement board and a waterproof membrane, then 300 × 600 tiles laid from the floor up." },

@@ -6,7 +6,7 @@
 
     ?layer=base     the bare wall as it arrives, in its frame              -> render/wall-base.webp
     ?layer=battens  layer 1: 38 x 50 battens at 600 centres (S03)          -> render/wall-battens.webp
-    ?layer=eps      ... and EPS between them, foam-sealed (S03)            -> render/wall-eps.webp
+    ?layer=foam     ... and foam sprayed onto the steel between them (S03)  -> render/wall-foam.webp
     ?layer=panels   layer 2: the numbered 12 mm ply lining panels (S04)    -> render/wall-panels.webp
     ?layer=screws   the screws into the battens                            -> render/wall-screws.webp
     ?layer=paint    layer 3: primer + off-white satin paint, rolled on      -> render/wall-paint.webp
@@ -19,8 +19,9 @@
 
   The wall follows the generator (kits.py K1, sheets.py "WALL (steel to room)") and the CIMC 20 ft spec
   [STU-02]: 1.6 mm side wall, 36 mm-deep corrugation at 278 mm pitch; battens at 600 centres up to the
-  bathroom; ply panels split evenly to the partition line, no wider than 1,220. The frame round it: the
-  bottom and top side rails, the corner posts and the four corner castings, each with its side hole.
+  bathroom; ply panels split evenly to the partition line, no wider than 1,220. The frame round it, in the
+  box's painted steel, chipped to bare metal at the edges: the bottom side rail (a channel), the top side
+  rail (a square tube), the pressed corner posts and the four corner castings, each with its side hole.
 
   Serve the repo root (python3 -m http.server <port>), open this page at 2400 x 1070, wait for
   body[data-ready] (attached) and save window.OUT (a PNG data URL with alpha).
@@ -37,6 +38,7 @@
 <script type="module">
 import * as THREE from "three"
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js"
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js"
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
 import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
@@ -65,6 +67,7 @@ const STEEL = -e // the inner face of the corrugation's ribs; battens and ply bu
 const DEPTH = 0.036, PITCH = 0.278, BAT = [0.05, 0.038], PLY = 0.012
 const TOP = H + 0.05 // the roof's underside over the lining
 const POST = 0.113, RAIL = 0.158, TRAIL = 0.06, CAST = [0.178, 0.118] // frame members, as seen face on
+const FOAM = STEEL + BAT[1] - 0.017 // the sprayed foam's mean face, short of the battens' so they stand proud
 
 // ------------------------------------------------------------ textures
 let seed = 7
@@ -118,15 +121,59 @@ const battenTex = tex((g, w, h) => {
   }
   g.fillStyle = "rgba(90,120,70,0.10)"; g.fillRect(0, 0, w, h) // the green cast of the treatment
 }, 256, 1024)
-// EPS: white beads
-const epsTex = tex((g, w, h) => {
-  g.fillStyle = "#f4f4f1"; g.fillRect(0, 0, w, h)
-  for (let i = 0; i < 30000; i++) {
-    g.fillStyle = `rgba(0,0,0,${0.02 + rnd() * 0.05})`
-    g.beginPath(); g.arc(rnd() * w, rnd() * h, 1 + rnd() * 2.2, 0, 7); g.fill()
+// spray foam: closed-cell, cream-yellow, a skin that went off in passes, each pass a shade apart
+const foamTex = tex((g, w, h) => {
+  g.fillStyle = "#e6c96c"; g.fillRect(0, 0, w, h)
+  for (let i = 0; i < 400; i++) { // the passes' blotches, drawn round the edges too so the tiles meet
+    const x = rnd() * w, y = rnd() * h, r = 20 + rnd() * 70
+    const c = rnd() > 0.5 ? "246,226,160" : "200,165,85", o = 0.18 + rnd() * 0.22
+    for (const dx of [-w, 0, w]) for (const dy of [-h, 0, h]) {
+      const gr = g.createRadialGradient(x + dx, y + dy, 0, x + dx, y + dy, r)
+      gr.addColorStop(0, `rgba(${c},${o})`); gr.addColorStop(1, `rgba(${c},0)`)
+      g.fillStyle = gr; g.fillRect(x + dx - r, y + dy - r, 2 * r, 2 * r)
+    }
+  }
+  for (let i = 0; i < 20000; i++) { // the skin's pores
+    g.fillStyle = `rgba(120,95,40,${0.03 + rnd() * 0.06})`
+    g.beginPath(); g.arc(rnd() * w, rnd() * h, 0.6 + rnd() * 1.4, 0, 7); g.fill()
   }
 }, 1024, 1024)
-epsTex.wrapS = epsTex.wrapT = THREE.RepeatWrapping
+foamTex.wrapS = foamTex.wrapT = THREE.RepeatWrapping
+foamTex.repeat.set(1.2, 1.2)
+// the frame's paint: the box's red, worn, chipped through to grey steel and orange rust, scratched along its
+// run. The same chips mark the metalness map, so bare steel shines where the paint has gone
+const CHIPS = []
+for (let i = 0; i < 240; i++) CHIPS.push([rnd(), rnd(), 3 + rnd() * (rnd() > 0.85 ? 26 : 10), rnd(), rnd() > 0.5])
+const chip = (g, w, h, [x, y, r, k], fill) => {
+  g.fillStyle = fill; g.beginPath()
+  for (let a = 0; a < 7; a++) { // a ragged flake
+    const t = (a / 7) * Math.PI * 2, q = r * (0.5 + ((k * 97 + a * 0.37) % 1) * 0.8)
+    a ? g.lineTo(x * w + Math.cos(t) * q * 1.6, y * h + Math.sin(t) * q) : g.moveTo(x * w + Math.cos(t) * q * 1.6, y * h + Math.sin(t) * q)
+  }
+  g.fill()
+}
+const frameTex = tex((g, w, h) => {
+  g.fillStyle = "#86392e"; g.fillRect(0, 0, w, h)
+  for (let i = 0; i < 20000; i++) {
+    g.fillStyle = rnd() > 0.5 ? "rgba(255,230,220,0.025)" : "rgba(30,10,5,0.035)"
+    g.fillRect(rnd() * w, rnd() * h, 2 + rnd() * 6, 1 + rnd() * 3)
+  }
+  for (let i = 0; i < 90; i++) { // scratches along the member
+    const x = rnd() * w, y = rnd() * h
+    g.strokeStyle = `rgba(${rnd() > 0.4 ? "170,160,150" : "50,25,20"},${0.12 + rnd() * 0.2})`; g.lineWidth = 0.8 + rnd() * 1.6
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x + (rnd() - 0.5) * 160, y + (rnd() - 0.5) * 12); g.stroke()
+  }
+  for (const c of CHIPS) {
+    chip(g, w, h, [c[0], c[1], c[2] * 1.5, c[3]], c[4] ? "rgba(140,62,22,0.9)" : "rgba(118,48,30,0.9)") // a rust halo
+    chip(g, w, h, c, c[4] ? "#5a5754" : "#8a4019") // bare steel, or rust bloomed on it
+  }
+}, 2048, 2048)
+const frameMetal = tex((g, w, h) => {
+  g.fillStyle = "#1a1a1a"; g.fillRect(0, 0, w, h) // paint: barely metallic
+  for (const c of CHIPS) if (c[4]) chip(g, w, h, c, "#c8c8c8")
+}, 2048, 2048)
+frameMetal.colorSpace = THREE.NoColorSpace
+for (const t of [frameTex, frameMetal]) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(0.4, 0.4) }
 // the lining: 12 mm ply under a light PU varnish, split evenly to the partition line, no wider than 1,220,
 // each panel pencilled with its number
 const PANELS = []
@@ -198,12 +245,12 @@ const paintTex = tex((g, w, h) => {
 const std = (o) => new THREE.MeshStandardMaterial(o)
 const MAT = {
   steel: std({ map: steelTex, roughness: 0.6, metalness: 0.25 }),
-  frame: std({ color: "#7e372d", roughness: 0.6, metalness: 0.3 }),
-  cast: std({ color: "#5f2a22", roughness: 0.75, metalness: 0.35 }),
+  frame: std({ map: frameTex, metalnessMap: frameMetal, metalness: 1, roughness: 0.42, envMapIntensity: 1.4 }),
+  cast: std({ map: frameTex, metalnessMap: frameMetal, metalness: 1, color: "#9a8f8c", roughness: 0.55 }),
   hole: std({ color: "#151210", roughness: 1 }),
   ring: std({ color: "#3c3e40", roughness: 0.5, metalness: 0.8 }),
   batten: std({ map: battenTex, roughness: 0.8 }),
-  eps: std({ map: epsTex, roughness: 0.95 }),
+  foam: std({ map: foamTex, roughness: 0.85 }),
   panel: std({ map: panelTex, roughness: 0.6 }),
   screw: std({ color: "#3a3a3c", roughness: 0.4, metalness: 0.8 }),
   paint: std({ map: paintTex, roughness: 0.32 }), // satin: a soft sheen, short of gloss
@@ -212,7 +259,7 @@ const MAT = {
 }
 
 // ------------------------------------------------------------ geometry
-const meshes = [], layers = { base: [], battens: [], eps: [], panels: [], screws: [], paint: [], cement: [], tiles: [] }
+const meshes = [], layers = { base: [], battens: [], foam: [], panels: [], screws: [], paint: [], cement: [], tiles: [] }
 function add(mesh, layer) { scene.add(mesh); meshes.push(mesh); layers[layer].push(mesh); return mesh }
 // a box between two corners; `a` (an area) maps its texture once across the wall face
 function box(x0, y0, z0, x1, y1, z1, name, layer = "base", a) {
@@ -237,14 +284,42 @@ for (let x = X0 + PITCH / 4; x + PITCH / 2 <= X1; x += PITCH) {
   box(x - 0.015, 0, STEEL - DEPTH, x, TOP, STEEL - DEPTH / 2, "steel", "base", WALL) // the sloped flanks, stepped
   box(x + PITCH / 2 - 0.03, 0, STEEL - DEPTH, x + PITCH / 2 - 0.015, TOP, STEEL - DEPTH / 2, "steel", "base", WALL)
 }
-// the frame round it: bottom rail under the floor line, top rail over the roof line, corner posts, castings
-box(X0 - POST, -RAIL, STEEL - 0.06, X1 + POST, 0, STEEL + 0.002, "frame")
-box(X0 - POST, TOP, STEEL - 0.06, X1 + POST, TOP + TRAIL, STEEL + 0.002, "frame")
-for (const [xa, xb] of [[X0 - POST, X0], [X1, X1 + POST]]) box(xa, -RAIL, STEEL - 0.06, xb, TOP + TRAIL, STEEL + 0.004, "frame")
+// the frame round it, as pressed and rolled steel sections with rounded edges that catch the light: each a
+// profile across the member, [depth out of the wall from STEEL, across], run along it
+const B = 0.004 // the edges' radius
+function member(profile, a0, a1, along, mat = "frame") {
+  const shape = new THREE.Shape(profile.map(([z, v]) => new THREE.Vector2(-z, v))) // shape (-z, across)
+  const geo = new THREE.ExtrudeGeometry(shape, { depth: a1 - a0 - 2 * B, bevelEnabled: true, bevelThickness: B, bevelSize: B, bevelSegments: 3, curveSegments: 6 })
+  const mesh = new THREE.Mesh(geo, MAT[mat])
+  if (along === "x") { mesh.rotation.y = Math.PI / 2; mesh.position.set(a0 + B, 0, STEEL) } // (u, v, w) -> (w, v, -u)
+  else { // up a post, across is x: (u, v, w) -> (v, -w, -u), run down from the top
+    geo.rotateZ(-Math.PI / 2); geo.rotateX(Math.PI / 2)
+    mesh.position.set(0, a1 - B, STEEL)
+  }
+  mesh.castShadow = true; mesh.receiveShadow = true
+  return add(mesh, "base")
+}
+const rrect = (z0, v0, z1, v1, r) => { // a rounded rectangle's outline, for the tube
+  const pts = []
+  for (const [cz, cv, a] of [[z1 - r, v0 + r, -90], [z1 - r, v1 - r, 0], [z0 + r, v1 - r, 90], [z0 + r, v0 + r, 180]])
+    for (let k = 0; k <= 4; k++) { const t = ((a + k * 22.5) * Math.PI) / 180; pts.push([cz + r * Math.cos(t), cv + r * Math.sin(t)]) }
+  return pts
+}
+// bottom side rail: a channel under the floor line, its web set back between two flanges
+member([[-0.06, -RAIL], [0.006, -RAIL], [0.006, -RAIL + 0.016], [-0.028, -RAIL + 0.022], [-0.028, -0.022], [0.006, -0.016], [0.006, 0], [-0.06, 0]],
+  X0 - POST, X1 + POST, "x")
+// top side rail: a 60 x 60 square tube over the roof line
+member(rrect(-0.058, TOP, 0.002, TOP + TRAIL, 0.012), X0 - POST, X1 + POST, "x")
+// corner posts: pressed sections, a face flange at the end and a recessed step towards the wall
+const post = (o, s) => [[-0.06, o], [0.004, o], [0.004, o + s * 0.048], [-0.026, o + s * 0.068], [-0.026, o + s * POST], [-0.06, o + s * POST]]
+member(post(X0 - POST, 1), -RAIL, TOP + TRAIL, "y")
+member(post(X1 + POST, -1).reverse(), -RAIL, TOP + TRAIL, "y")
+const castGeo = (w, h, d) => new RoundedBoxGeometry(w, h, d, 3, 0.006)
 const oval = new THREE.CylinderGeometry(0.025, 0.025, 0.003, 32)
 for (const [xa, xb] of [[X0 - POST - 0.04, X0 - POST - 0.04 + CAST[0]], [X1 + POST + 0.04 - CAST[0], X1 + POST + 0.04]]) {
   for (const [ya, yb] of [[-RAIL - 0.01, -RAIL - 0.01 + CAST[1] + 0.03], [TOP + TRAIL - CAST[1] + 0.01, TOP + TRAIL + 0.01]]) {
-    box(xa, ya, STEEL - 0.06, xb, yb, STEEL + 0.01, "cast")
+    const c = add(new THREE.Mesh(castGeo(xb - xa, yb - ya, 0.07), MAT.cast), "base")
+    c.position.set((xa + xb) / 2, (ya + yb) / 2, STEEL - 0.025); c.castShadow = c.receiveShadow = true
     const hole = new THREE.Mesh(oval, MAT.hole)
     hole.rotation.x = Math.PI / 2; hole.scale.set(1.56, 1, 1) // 78 x 51 mm side hole
     hole.position.set((xa + xb) / 2, (ya + yb) / 2, STEEL + 0.0115)
@@ -258,15 +333,38 @@ for (let x = X0 + 0.5; x < X1 - 0.3; x += 1.0) for (const y of [0.06, TOP - 0.07
   add(ring, "base")
 }
 
-// layer 1: battens up to the bathroom, then EPS between them and on to end B
+// layer 1: battens up to the bathroom, then foam sprayed onto the steel between them and on to end B. It
+// fills the corrugations behind; what shows is its face, lumped where the passes overlapped
 for (const x of BATTENS) box(x, 0, STEEL, x + BAT[0], H, STEEL + BAT[1], "batten", "battens", area([x, 0, x + BAT[0], H], 256, 1024))
-const EPS = []
+const BAYS = []
 {
   const cuts = [X0, ...BATTENS.flatMap((x) => [x, x + BAT[0]]), X1]
-  for (let i = 0; i < cuts.length; i += 2) if (cuts[i + 1] - cuts[i] > 0.005) EPS.push([cuts[i], cuts[i + 1]])
+  for (let i = 0; i < cuts.length; i += 2) if (cuts[i + 1] - cuts[i] > 0.005) BAYS.push([cuts[i], cuts[i + 1]])
 }
-const epsArea = { r: [X0, 0, X0 + 1.2, 1.2] }
-for (const [a, b] of EPS) box(a, 0, STEEL + 0.002, b, H, STEEL + BAT[1] - 0.003, "eps", "eps", epsArea)
+const vn = (x, y) => { // smooth value noise, one per metre-ish cell
+  const h = (i, j) => { const v = Math.sin(i * 127.1 + j * 311.7) * 43758.5453; return v - Math.floor(v) }
+  const i = Math.floor(x), j = Math.floor(y), u = x - i, v = y - j, su = u * u * (3 - 2 * u), sv = v * v * (3 - 2 * v)
+  return (h(i, j) * (1 - su) + h(i + 1, j) * su) * (1 - sv) + (h(i, j + 1) * (1 - su) + h(i + 1, j + 1) * su) * sv
+}
+// big lumps where a pass dwelt, a ridge along each pass's lap (about every 180 mm up), and the skin's pebbling
+const lump = (x, y) => 0.018 * (vn(x * 6, y * 5) - 0.5) + 0.0035 * vn(x * 3, y * 2) * Math.sin(y * 33 + 9 * vn(x * 5, y * 4)) ** 6
+  + 0.009 * (vn(x * 16 + 5, y * 14) - 0.5) + 0.0025 * (vn(x * 60, y * 60 + 3) - 0.5)
+for (const [a, b] of BAYS) {
+  const geo = new THREE.PlaneGeometry(b - a, H, Math.max(8, Math.round((b - a) / 0.008)), Math.round(H / 0.008))
+  const pos = geo.attributes.position, uv = geo.attributes.uv
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i) + (a + b) / 2, y = pos.getY(i) + H / 2
+    const edge = Math.min(x - a, b - x) // it creeps a little up each batten's side
+    pos.setZ(i, lump(x, y) + 0.004 * Math.exp(-edge / 0.012))
+    uv.setXY(i, x / 1.2, y / 1.2)
+  }
+  geo.computeVertexNormals()
+  const mesh = new THREE.Mesh(geo, MAT.foam)
+  mesh.position.set((a + b) / 2, H / 2, FOAM)
+  mesh.castShadow = true; mesh.receiveShadow = true
+  add(mesh, "foam")
+  box(a, 0, STEEL - DEPTH, b, H, FOAM - 0.008, "foam", "foam") // the body behind it, filling the corrugations
+}
 
 // layer 2: the lining panels on the battens, screws into each batten every 300 mm
 const LZ = STEEL + BAT[1]
@@ -295,7 +393,7 @@ const STRIPS = [] // the roller's passes, about 300 mm wide, from end A
 box(px0, 0, LZ, X1, H, LZ + PLY, "cement", "cement", BATH)
 box(px0, 0, LZ + PLY, X1, H, LZ + PLY + 0.01, "tile", "tiles", BATH)
 
-const ORDER = ["base", "battens", "eps", "panels", "screws", "paint", "cement", "tiles"]
+const ORDER = ["base", "battens", "foam", "panels", "screws", "paint", "cement", "tiles"]
 const show = ORDER.slice(0, ORDER.indexOf(LAYER) + 1)
 for (const [k, list] of Object.entries(layers)) for (const o of list) o.visible = show.includes(k)
 
@@ -353,7 +451,7 @@ const rect = (x0, y0, x1, y1) => [fx(x0), fy(y1), fx(x1) - fx(x0), fy(y0) - fy(y
 window.PIECES = {
   aspect: FW / FH,
   battens: BATTENS.map((x) => rect(x, 0, x + BAT[0], H)),
-  eps: EPS.map(([a, b]) => rect(a, 0, b, H)),
+  foam: BAYS.map(([a, b]) => rect(a, 0, b, H)),
   panels: PANELS.map(([a, y0, b, y1]) => rect(a, y0, b, y1)),
   paint: STRIPS.map(([a, b]) => rect(a, 0, b, H)),
   cement: [rect(px0, 0, X1, H)],
