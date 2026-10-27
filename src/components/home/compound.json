@@ -144,14 +144,14 @@
   },
   "north": [52.6, 6.0],
   "outdoor": {
-    "about": "From the 2026-10-25 footage and the founder's choices (D-022): a small camping lawn between the fire pit and the inner gate, its west end flush with the fire pit's; a long timber table where today's unfinished platform stands in front of the middle studio; and stools round the fire pit.",
+    "about": "From the 2026-10-25 footage and the founder's choices (D-022): a small camping lawn between the guest rooms and the fire pit, ending at the fire pit's west edge; a long timber table where today's unfinished platform stands in front of the middle studio; and stools round the fire pit.",
     "tents": [
-      [26.167, 20],
-      [30.167, 20.5],
-      [28.167, 16.5],
-      [32.167, 17],
-      [26.167, 13.5],
-      [30.167, 14]
+      [18.5, 20],
+      [22.5, 20.5],
+      [20.5, 16.5],
+      [24.5, 17],
+      [18.5, 13.5],
+      [22.5, 14]
     ],
     "tent": 1.25,
     "longTable": {

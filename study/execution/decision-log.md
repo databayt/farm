@@ -86,3 +86,5 @@ Update 2026-10-27 (D-022): the plan was compared with the site footage of 2026-1
 Update 2026-10-27 (D-022): the founder moved the camping lawn to the courtyard's corner by the inner gate, across the fire pit from the guest rooms (right and down on the homepage 2D).
 
 Update 2026-10-27 (D-022): the camping lawn moves to sit between the fire pit and the inner gate, its west end flush with the fire pit's west edge (the founder's choice, knowing the tents then stand on the walk from the inner gate to the fire). Both gates are drawn closed.
+
+Update 2026-10-27 (D-022): correction: the founder meant the camping lawn to run from the fire pit toward the guest rooms, ending at the fire pit. It now sits between the guest rooms and the fire pit, its east end flush with the fire pit's west edge, set a little toward the inner gate; the walk from the inner gate to the fire is clear again.
