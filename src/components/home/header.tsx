@@ -41,7 +41,7 @@ export function Header({
     >
       {/* As in the founder's guide: wordmark left, the sections centred in capitals, one outlined
           button right. Below lg the sections and the button fold into the menu. */}
-      <div className="mx-auto flex h-full max-w-7xl items-center gap-8 px-4 md:px-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+      <div className="flex h-full w-full items-center gap-8 px-4 md:px-10 lg:grid lg:grid-cols-[1fr_auto_1fr]">
         <a href="#top" className="font-display text-2xl leading-none">
           {title}
         </a>

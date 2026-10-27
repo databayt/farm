@@ -40,22 +40,23 @@ export function Hero() {
     <section
       id="top"
       aria-labelledby="hero-title"
-      className="bg-soil text-chalk relative isolate flex h-[100svh] min-h-[600px] flex-col justify-center overflow-hidden"
+      className="bg-soil text-chalk relative isolate flex h-[100svh] min-h-[600px] flex-col justify-end overflow-hidden"
     >
       <HeroPicture />
-      {/* As in the guide: a shade along the left where the words sit, and a little at the top for
-          the header. The rest of the photo stays as it is. */}
+      {/* A little shade at the top for the header; the words get theirs from the band below. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgb(20_20_16/0.45)_0%,rgb(20_20_16/0)_22%,rgb(20_20_16/0)_70%,rgb(20_20_16/0.35)_100%),linear-gradient(to_right,rgb(20_20_16/0.55)_0%,rgb(20_20_16/0.25)_45%,rgb(20_20_16/0)_70%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/45 to-transparent"
       />
       {/* The header turns solid once this line scrolls past the top. */}
       <div id="hero-sentinel" aria-hidden className="pointer-events-none absolute inset-x-0 top-[60%] h-px" />
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 pt-16 md:px-8">
+      {/* Placed as on /en/studio: bottom left, on a band that darkens toward the foot, at the page's
+          edge padding (px-4, md:px-10), not in a centred column. */}
+      <div className="relative w-full bg-gradient-to-t from-black/70 via-black/35 to-transparent px-4 pt-24 pb-10 md:px-10 md:pb-14">
         <h1
           id="hero-title"
-          className={`${display.className} farm-intro text-[clamp(3rem,8vw,7rem)] leading-[0.95] font-medium tracking-[0.01em] uppercase drop-shadow-[0_2px_24px_rgb(0_0_0/0.25)]`}
+          className={`${display.className} farm-intro text-[clamp(3rem,7vw,6rem)] leading-[0.95] font-medium tracking-[0.01em] uppercase drop-shadow-[0_2px_24px_rgb(0_0_0/0.25)]`}
         >
           {headline.map((line) => (
             <span key={line} className="block">
@@ -63,7 +64,7 @@ export function Hero() {
             </span>
           ))}
         </h1>
-        <div className="farm-intro-3 mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 text-sm tracking-[0.08em] uppercase">
+        <div className="farm-intro-3 mt-6 flex flex-wrap items-center gap-x-8 gap-y-4 text-sm tracking-[0.08em] uppercase">
           <a
             href="#way-in"
             className="text-soil inline-flex h-12 items-center gap-4 bg-[rgb(214_207_190/0.92)] px-6 backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]"
@@ -82,7 +83,7 @@ export function Hero() {
 
       <a
         href="#plans"
-        className="farm-intro-3 absolute inset-x-0 bottom-8 mx-auto inline-flex w-fit items-center gap-2 text-xs tracking-[0.12em] uppercase opacity-90 transition-opacity hover:opacity-100"
+        className="farm-intro-3 absolute inset-x-0 bottom-8 mx-auto hidden w-fit items-center gap-2 text-xs tracking-[0.12em] uppercase opacity-90 transition-opacity hover:opacity-100 lg:inline-flex"
       >
         {scroll}
         <ArrowDown className="size-3.5" aria-hidden />
