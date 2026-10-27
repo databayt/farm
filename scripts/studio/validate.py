@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from layout import AISLE_MIN, PASS_MIN, WC_D
 from model import Box, Kit
+from services import STANDARD_INLET_A
 
 TOUCH_OK = {  # pairs of kits whose solids may legitimately touch or interlock
     ("K6", "K6"),  # cross-halving legs
@@ -76,16 +77,17 @@ def check(kits: list[Kit], lo, circuits, md, runs) -> tuple[list[str], list[dict
             continue
         ok1 = c.Ib <= c.In <= c.Iz
         vd = c.vdrop_pct()
-        lim = 3.0 if c.id == "C1" else 5.0
+        lim = 3.0 if c.group == "lights" else 5.0
         report.append({"id": f"E-{c.id}", "rule": f"{c.name}: Ib <= In <= Iz; drop <= {lim}%",
                        "result": "pass" if ok1 and vd <= lim else "FAIL",
                        "detail": f"Ib {c.Ib:.1f} A, In {c.In:.0f} A, Iz {c.Iz:.1f} A, drop {vd:.2f}%"})
         if not ok1 or vd > lim:
             errors.append(f"circuit {c.id} fails Ib/In/Iz or voltage drop")
-    report.append({"id": "E-MD", "rule": "Diversified maximum demand within the 40 A main switch",
-                   "result": "pass" if md["total_A"] <= 40 else "FAIL", "detail": f"{md['total_A']:.1f} A"})
-    if md["total_A"] > 40:
-        errors.append("maximum demand exceeds 40 A")
+    report.append({"id": "E-MD", "rule": f"Diversified maximum demand within a {STANDARD_INLET_A:.0f} A inlet "
+                   "(the size any source plugs into)",
+                   "result": "pass" if md["total_A"] <= STANDARD_INLET_A else "FAIL", "detail": f"{md['total_A']:.1f} A"})
+    if md["total_A"] > STANDARD_INLET_A:
+        errors.append(f"maximum demand exceeds the {STANDARD_INLET_A:.0f} A inlet")
     # drainage falls
     need = {110: 40, 75: 40, 50: 40, 40: 40}
     for r in runs:

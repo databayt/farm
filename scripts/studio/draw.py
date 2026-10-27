@@ -310,7 +310,7 @@ def sym_breaker(sh: Sheet, x: float, y: float, label: str, rcd: bool = False) ->
     sh.line(x - 1, y + 3.4, x + 1, y + 2.6)
     if rcd:
         sh.add(f'<ellipse cx="{f(x + 1.1)}" cy="{f(y + 5.5)}" rx="2.6" ry="1.2" fill="none" stroke="#111" stroke-width="0.25"/>')
-    sh.text(x + 3, y + 6.5, label, 2.0)
+    sh.text(x + (5 if rcd else 3), y + 6.5, label, 2.0)  # clear of the RCD ring
 
 
 def sym_earth(sh: Sheet, x: float, y: float) -> None:

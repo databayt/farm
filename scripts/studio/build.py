@@ -28,14 +28,14 @@ from validate import check  # noqa: E402
 def model(o1_shift: float = 0.0):
     lo = build_layout(o1_shift)
     kits = all_kits(lo)
-    pts, circuits, k8 = electrical(lo)
+    pts, circuits, cables, k8 = electrical(lo)
     runs, k9, site = plumbing(lo)
     kits.insert(8, k8)
     kits.insert(9, k9)
-    md = max_demand(circuits)
+    md = max_demand(circuits, pts)
     sup = inlet(md["total_A"])
-    return {"lo": lo, "kits": kits, "points": pts, "circuits": circuits, "runs": runs, "site": site, "md": md,
-            "inlet": sup}
+    return {"lo": lo, "kits": kits, "points": pts, "circuits": circuits, "cables": cables, "runs": runs,
+            "site": site, "md": md, "inlet": sup}
 
 
 def write_all(m: dict, out: Path, pdf: bool) -> list[str]:

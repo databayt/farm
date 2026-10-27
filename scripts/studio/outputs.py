@@ -16,6 +16,7 @@ from joinery import HARDWARE, bag
 from nest import nest
 from out_glb import write as write_glb
 from prices import CONTINGENCY, LABOUR, PRICES, SHARED
+from services import GROUP_COLOUR, SIZE
 
 SECTION_KG = {"RHS 150x100x5": 18.2, "RHS 80x40x3": 5.2, "SHS 40x40x3": 3.4, "SHS 80x80x4": 9.2, "SHS 60x60x3": 5.2,
               "ledger": 5.2}
@@ -153,13 +154,17 @@ def write_tables(m, out: Path, layouts) -> dict:
     hw = [[code, HARDWARE[code][0]] for code in sorted(HARDWARE)]
     wcsv(d / "hardware.csv", ["bag", "item"], hw)
     wcsv(d / "checks.csv", ["id", "rule", "result", "detail"], [[r["id"], r["rule"], r["result"], r["detail"]] for r in m["checks"]])
-    wcsv(d / "circuits.csv", ["circuit", "serves", "device", "cable_mm2", "design_A", "derated_Iz_A", "run_m", "drop_pct", "points"],
+    wcsv(d / "circuits.csv", ["circuit", "serves", "device", "cable_mm2", "design_A", "derated_Iz_A", "run_m", "drop_pct",
+                              "points", "group", "colour", "relay"],
          [[c.id, c.name, c.breaker, c.cable, round(c.Ib, 1) if c.loads else "", round(c.Iz, 1),
-           c.length_m if c.loads else "", round(c.vdrop_pct(), 2) if c.loads else "", " ".join(c.loads)] for c in m["circuits"]])
-    wcsv(d / "points.csv", ["point", "kind", "circuit", "description", "x_mm", "y_mm", "z_mm", "watts"],
-         [[p.id, p.kind, p.circuit, p.label, round(p.x), round(p.y), round(p.z), round(p.watts)] for p in m["points"]])
+           c.length_m if c.loads else "", round(c.vdrop_pct(), 2) if c.loads else "", " ".join(c.loads), c.group,
+           GROUP_COLOUR[c.group], "pauses while the hob runs" if c.relay else ""] for c in m["circuits"]])
+    wcsv(d / "points.csv", ["point", "kind", "circuit", "description", "x_mm", "y_mm", "z_mm", "watts", "face", "model",
+                            "w_mm", "h_mm", "d_mm"],
+         [[p.id, p.kind, p.circuit, p.label, round(p.x), round(p.y), round(p.z), round(p.watts), p.face, p.model,
+           *SIZE[p.model]] for p in m["points"]])
     wcsv(d / "demand.csv", ["item", "amps"], [[k, round(v, 1)] for k, v in m["md"].items()] +
-         [["inlet_A", m["inlet"]["rating_A"]], ["tails_mm2", m["inlet"]["tails_mm2"]]])
+         [["inlet_A", m["inlet"]["rating_A"]], ["main_A", m["inlet"]["main_A"]], ["tails_mm2", m["inlet"]["tails_mm2"]]])
     wcsv(d / "pipes.csv", ["run", "system", "dn", "length_m", "fall", "note"],
          [[r.id, r.system, r.dn, round(r.length / 1000, 1), f"1:{r.fall():.0f}" if r.system in ("soil", "waste") else "",
            r.note] for r in m["runs"]])

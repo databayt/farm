@@ -2,7 +2,10 @@
 
 Design intent only: ratings are [A] until a RURA class A electrician designs and certifies the
 installation (RS 565-1:2011, STU-14). Cable data are typical IEC 60364-5-52 values for PVC
-copper in conduit (method B); confirm against the cable actually bought.
+copper; confirm against the cable actually bought.
+
+The studio plugs in (D-021): one 32 A inlet takes any 230 V source, and the studio's own board protects
+everything behind it with one RCBO per circuit.
 """
 from __future__ import annotations
 
@@ -10,25 +13,67 @@ import math
 from dataclasses import dataclass, field
 
 import params as P
+from kits import roof_frame
 from layout import Layout
 from model import Box, Bought, Kit, Step
 
-# mm2 -> (current capacity A, mV/A/m single phase) for 2-core PVC Cu in conduit, 30 C
+# mm2 -> (current capacity A, mV/A/m single phase) for 2-core PVC Cu in conduit on a wall (method B1), 30 C
 CABLE = {1.5: (17.5, 29.0), 2.5: (24.0, 18.0), 4.0: (32.0, 11.0), 6.0: (41.0, 7.3), 10.0: (57.0, 4.4),
          16.0: (76.0, 2.8)}
+# mm2 -> current capacity A in conduit inside a thermally insulating wall (method A1), 30 C: the final circuits
+# run in the EPS-filled batten cavity of the lining (AS-15). IEC 60364-5-52 table B.52.2.
+CABLE_A1 = {1.5: 14.5, 2.5: 19.5, 4.0: 26.0, 6.0: 34.0, 10.0: 46.0, 16.0: 61.0}
 AMBIENT_FACTOR = 0.94  # 35 C ambient inside a warm steel box [A]
+STANDARD_INLET_A = 32.0  # the IEC 60309 size generators, inverters and site boards plug into
+VOID = 30.0  # conduit zone in the ceiling lining, above the finished ceiling (60 mm lining, AS-15)
+# circuit colour by what it feeds: the first three slots of the dataviz reference palette, which stay apart for
+# every pair and under colour-blindness; the spare way is grey
+GROUP_COLOUR = {"lights": "#2a78d6", "sockets": "#eb6834", "fixed": "#1baf7a", "spare": "#9a9893"}
+# typical device sizes, w x h x d in mm, d out of the face it is fixed to [A]: the GLB box, the 3D render and
+# the item card on /en/studio. A ceiling device's w x h is its footprint.
+SIZE = {"board": (300, 400, 110), "inlet": (90, 120, 100), "ceiling": (220, 220, 50), "bulkhead": (200, 120, 80),
+        "walllamp": (120, 160, 240), "strip": (1200, 20, 12), "switch": (86, 86, 12), "switch65": (90, 90, 55),
+        "usb": (86, 86, 40), "socket": (86, 86, 40), "socket2": (146, 86, 40), "socket66": (95, 110, 80),
+        "outlet": (86, 86, 20), "timer": (146, 86, 40), "isolator": (90, 110, 65), "wallfan": (360, 360, 230),
+        "extract": (160, 160, 40), "alarm": (110, 110, 45), "earth": (16, 1500, 16)}
+PRICE_KEY = {"board": "db", "inlet": "inlet", "ceiling": "luminaire", "bulkhead": "bulkhead",
+             "walllamp": "luminaire", "strip": "luminaire", "switch": "switch", "switch65": "switch65",
+             "usb": "usbsocket", "socket": "socket", "socket2": "socket2", "socket66": "socket66", "outlet": "fcu",
+             "timer": "dptimer", "isolator": "isolator", "wallfan": "fan", "extract": "fan", "alarm": "alarm",
+             "earth": "earthrod"}
 
 
 @dataclass
 class Point:
     id: str
-    kind: str  # light | switch | socket | usb | outlet | fan | db | inlet
+    kind: str  # light | switch | socket | usb | outlet | fan | db | inlet | alarm | earth
     x: float
     y: float
     z: float
     label: str
     circuit: str = ""
     watts: float = 0.0
+    face: str = "+y"  # the way the device faces: +y on the back wall, -y the front wall, -x the partition, -z down
+    model: str = ""  # the device drawn and carded (SIZE); the kind when it is the plain one
+
+    def __post_init__(self) -> None:
+        self.model = self.model or self.kind
+
+
+def device_box(p: Point) -> Box:
+    """The device as a box on its face: out of the wall by its depth, or hanging below a ceiling or rail."""
+    w, h, d = SIZE[p.model]
+    axis, out = p.face[1], 1 if p.face[0] == "+" else -1
+    if p.model == "earth":  # the rod goes down into the ground from its pit
+        return Box(p.x - w / 2, p.y - d / 2, p.z - h, p.x + w / 2, p.y + d / 2, p.z)
+    if axis == "z":
+        a, b = (h, w) if p.model == "strip" else (w, h)  # the strip runs along y under the galley cabinet
+        z0, z1 = (p.z - d, p.z) if out < 0 else (p.z, p.z + d)
+        return Box(p.x - a / 2, p.y - b / 2, z0, p.x + a / 2, p.y + b / 2, z1)
+    n0, n1 = (0, d) if out > 0 else (-d, 0)
+    if axis == "y":
+        return Box(p.x - w / 2, p.y + n0, p.z - h / 2, p.x + w / 2, p.y + n1, p.z + h / 2)
+    return Box(p.x + n0, p.y - w / 2, p.z - h / 2, p.x + n1, p.y + w / 2, p.z + h / 2)
 
 
 @dataclass
@@ -37,6 +82,8 @@ class Circuit:
     name: str
     breaker: str  # e.g. B16
     cable: float  # mm2
+    group: str = "spare"  # lights | sockets | fixed | spare
+    relay: bool = False  # shed by the priority relay while the hob runs
     loads: list[str] = field(default_factory=list)
     design_w: float = 0.0
     length_m: float = 0.0
@@ -51,7 +98,8 @@ class Circuit:
 
     @property
     def Iz(self) -> float:
-        return CABLE[self.cable][0] * AMBIENT_FACTOR
+        # in conduit inside the insulated lining, derated for the warm box
+        return CABLE_A1[self.cable] * AMBIENT_FACTOR
 
     def vdrop_pct(self) -> float:
         # design current at the far end (conservative)
@@ -81,98 +129,216 @@ class PipeRun:
         return worst
 
 
-def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], Kit]:
-    db = Point("DB", "db", lo.galley_x0 - 300, 0, 1625, "Unit board on the back wall by the galley")
+@dataclass
+class CableRun:
+    """One circuit's conduit route, as plumbing's PipeRun: a polyline in the layout frame (mm)."""
+    circuit: str
+    path: list[tuple[float, float, float]]
+    outdoor: bool = False
+
+    @property
+    def length(self) -> float:
+        return sum(math.dist(a, b) for a, b in zip(self.path, self.path[1:]))
+
+
+class _Walk:
+    """A route drawn leg by leg, keeping the cable distance at each point it reaches."""
+
+    def __init__(self, start: tuple[float, float, float], d0: float = 0.0) -> None:
+        self.path, self.d = [start], d0
+
+    def to(self, *qs: tuple[float, float, float]) -> float:
+        for q in qs:
+            if math.dist(q, self.path[-1]) > 0.5:
+                self.d += math.dist(self.path[-1], q)
+                self.path.append(q)
+        return self.d
+
+
+def _hop(w: _Walk, b: tuple[float, float, float], top: float) -> float:
+    """Up into the ceiling void, along x then y (so back-wall and partition runs keep to the wall's top edge),
+    then a vertical drop to the device: the safe zones of the E-101 note."""
+    a = w.path[-1]
+    return w.to((a[0], a[1], top), (b[0], a[1], top), (b[0], b[1], top), b)
+
+
+def conduit_length(runs: list[CableRun]) -> float:
+    """The union of the runs' straight legs (mm), so a leg shared by several circuits is one conduit."""
+    lines: dict[tuple, list[tuple[float, float]]] = {}
+    total = 0.0
+    for r in runs:
+        for a, b in zip(r.path, r.path[1:]):
+            moving = [i for i in range(3) if abs(a[i] - b[i]) > 0.5]
+            if len(moving) != 1:
+                total += math.dist(a, b)
+                continue
+            i = moving[0]
+            key = (i,) + tuple(round(a[j]) for j in range(3) if j != i)
+            lines.setdefault(key, []).append((min(a[i], b[i]), max(a[i], b[i])))
+    for spans in lines.values():
+        spans.sort()
+        s0, s1 = spans[0]
+        for t0, t1 in spans[1:]:
+            if t0 > s1:
+                total, s0, s1 = total + s1 - s0, t0, t1
+            else:
+                s1 = max(s1, t1)
+        total += s1 - s0
+    return total
+
+
+def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], list[CableRun], Kit]:
+    f = roof_frame(lo)
+    e = P.LINING_WALL.value
     W, H = lo.W, lo.H
+    top = H + VOID
+    out_y = W + e + 50  # the outside face of the front wall
+    zr = f["vz"] - 120  # outdoor runs keep just under the veranda canopy
+    ledger = f["yb"] + 50  # the veranda ledger along the front wall
+    entry = lo.o1[1]  # the solid strip between the slider and W1 starts here, by the galley
+    stringer = f["yb"] + f["fw"] - 920  # the stair's central stringer, between its two flights
+    db = Point("DB", "db", lo.galley_x0 - 300, 0, 1625, "Unit board, 24 modules (2 x 12), by the galley",
+               face="+y", model="board")
+    hob_y, fridge_y = (lo.hob[0] + lo.hob[1]) / 2, (lo.fridge[0] + lo.fridge[1]) / 2
     pts = [
         db,
-        Point("L1", "light", 800, W / 2, H, "Ceiling light, bed", "C1", 12),
-        Point("L2", "light", 2300, W / 2, H, "Ceiling light, living", "C1", 12),
-        Point("L3", "light", lo.galley_x0 - 200, W / 2, H, "Ceiling light, galley", "C1", 12),
-        Point("L4", "light", (lo.bath_x0 + lo.L) / 2, lo.bath_y1 / 2, H, "Bathroom light IP65", "C1", 12),
-        Point("L5", "light", 300, 0, 1150, "Wall reading light over the bed (wall side)", "C1", 4),
+        Point("L1", "light", 800, W / 2, H, "Ceiling light, bed", "C1", 12, "-z", "ceiling"),
+        Point("L2", "light", 2300, W / 2, H, "Ceiling light, living", "C1", 12, "-z", "ceiling"),
+        Point("L3", "light", lo.galley_x0 - 200, W / 2, H, "Ceiling light, galley", "C1", 12, "-z", "ceiling"),
+        Point("L4", "light", (lo.bath_x0 + lo.L) / 2, lo.bath_y1 / 2, H, "Bathroom light IP65", "C1", 12, "-z",
+              "bulkhead"),
+        Point("L5", "light", 300, 0, 1150, "Wall reading light over the bed (wall side)", "C1", 4, "+y", "walllamp"),
         Point("L7", "light", lo.part_x0 - 300, (lo.fridge[0] + lo.sink[1]) / 2, 1790, "Under-cabinet LED strip", "C1",
-              10),
-        Point("L8", "light", 2900, W + 60, 2350, "Deck light IP65", "C1", 10),
-        Point("L9", "light", 1500, W / 2, H + 400, "Roof terrace lights IP65 (x2)", "C1", 20),
-        Point("L10", "light", -900, W + 900, 1500, "Stair light IP65", "C1", 8),
-        Point("S1", "switch", lo.o1[1] - 150, W - 40, 1100, "Entry: living + kitchen + deck", "C1"),
+              10, "-z", "strip"),
+        # entry switches on the solid strip just past the slider: on the glass they had nothing to hold them
+        Point("S1", "switch", entry + 100, W, 1100, "Entry: bed (2-way), living and galley lights", "C1", face="-y"),
         Point("S2", "switch", lo.bedside[0] + 170, 0, 1000, "Bed: ceiling light (2-way), over the bedside table",
               "C1"),
-        Point("S3", "switch", lo.bdoor[1] + 120, lo.bath_y1 + lo.cross_t, 1100, "Bathroom light + fan (outside)", "C1"),
-        Point("S4", "switch", -400, W + 600, 1100, "Roof and stair lights (IP65, stair foot)", "C1"),
+        Point("S3", "switch", lo.bdoor[1] + 120, lo.bath_y1 + lo.cross_t, 1100, "Bathroom light + fan (outside)",
+              "C1"),
+        Point("F1", "fan", lo.L - 900, 0, 2100, "Bathroom extract 100 mm, IPX4 for zone 1, with run-on", "C1", 20,
+              model="extract"),
+        Point("F2", "fan", 1800, 0, 2050, "Wall fan 300 mm", "C1", 50, model="wallfan"),
         Point("P1", "usb", 300, lo.bed_y0, 750, "Socket + USB-C in the headboard (wall side)", "C2", 200),
         Point("P2", "usb", lo.bedside[0] + 170, 0, 650, "Bedside socket + USB-C (reading lamp)", "C2", 200),
-        Point("P3", "socket", lo.sofa[0] + 100, 0, 300, "Socket by the sofa", "C2", 500),
-        Point("P4", "socket", lo.o1[0] - 200, W, 300, "Socket, living (front strip)", "C2", 500),
-        Point("P5", "socket", 2600, W + 60, 400, "Deck socket IP66", "C2", 300),
-        Point("P6", "socket", lo.part_x0, (lo.fridge[0] + lo.fridge[1]) / 2, 1100, "Worktop socket 1 (double)", "C3",
-              2000),
-        Point("P7", "socket", lo.galley_x0 + 300, 0, 1100, "Worktop socket 2 (double, back wall)", "C3", 1000),
-        Point("P8", "socket", lo.part_x0, (lo.fridge[0] + lo.fridge[1]) / 2, 250, "Fridge socket", "C3", 100),
-        Point("P9", "outlet", lo.part_x0, (lo.hob[0] + lo.hob[1]) / 2, 600, "Hob connection unit", "C4",
-              P.HOB_KW.value * 1000),
+        Point("P3", "usb", lo.sofa[1] - 150, 0, 850, "Socket + USB-C over the sofa arm, for the sofa and the table",
+              "C2", 500),
+        Point("P5", "socket", entry + 300, out_y, 400, "Deck socket IP66, outside by the slider", "C2", 300,
+              model="socket66"),
+        Point("P6", "socket", lo.part_x0, fridge_y, 1100, "Worktop double socket 1", "C3", 2000, "-x", "socket2"),
+        Point("P7", "socket", lo.galley_x0 + 300, 0, 1100, "Worktop double socket 2 (back wall)", "C3", 1000,
+              model="socket2"),
+        Point("P8", "socket", lo.part_x0, fridge_y, 250, "Fridge socket", "C3", 100, "-x"),
+        Point("P12", "socket", lo.part_x0, hob_y, 1720, "Double socket above the hood: hood + Wi-Fi router", "C3",
+              120, "-x", "socket2"),
+        Point("P9", "outlet", lo.part_x0, hob_y, 600, "Hob outlet plate, isolated at its RCBO on the board", "C4",
+              P.HOB_KW.value * 1000, "-x"),
         Point("P10", "outlet", lo.part_x0, lo.sink[1] - 60, 1700, "Heater DP switch + timer", "C5",
-              P.HEATER_KW.value * 1000),
-        Point("F1", "fan", lo.L - 900, 0, 2100, "Bathroom extract 100 mm (one 110 mm hole in the back wall)", "C6", 20),
-        Point("F2", "fan", 1800, 0, 2100, "Wall fan", "C6", 50),
-        Point("P11", "outlet", 900, 0, 2150, "AC provision: isolator", "C7", 1000),
+              P.HEATER_KW.value * 1000, "-x", "timer"),
+        Point("L8", "light", 2900, ledger, zr, "Deck light IP65, under the veranda canopy", "C6", 10, "-z",
+              "bulkhead"),
+        Point("S5", "switch", entry + 195, W, 1100, "Deck light, beside the entry switch", "C6", face="-y"),
+        Point("S4", "switch", -200, stringer, 1100, "Stair and roof lights (2-way), IP65 at the stair foot", "C6",
+              face="+x", model="switch65"),
+        Point("L10", "light", -900, stringer, 1500, "Stair light IP65", "C6", 8, model="bulkhead"),
+        Point("S6", "switch", f["xa"] + 25, f["yb"] - 150, f["deck_top"] + 1000,
+              "Stair and roof lights (2-way), IP65 at the stair head", "C6", face="-x", model="switch65"),
+        Point("L9", "light", 1500, f["yb"] - 60, f["deck_top"] + 1000,
+              "Roof terrace lights IP65 (x2), under the front top rail", "C6", 20, "-z", "bulkhead"),
+        Point("P11", "outlet", 900, 0, 2150, "AC provision: isolator", "C7", 1000, model="isolator"),
+        Point("AL1", "alarm", 1550, W / 2, H, "Smoke alarm, 10-year battery", face="-z"),
+        Point("AL2", "alarm", lo.galley_x0 - 550, W * 0.75, H, "Heat alarm, kitchen, 10-year battery", face="-z"),
+        Point("E1", "earth", db.x, -(e + 400), -P.DECK_HEIGHT.value,
+              "Earth rod 1.5 m copper-bonded in an inspection pit, behind the board", face="+z"),
     ]
     circuits = [
-        Circuit("C1", "Lighting (incl. bathroom IP65, deck, roof, stair)", "B6", 1.5),
-        Circuit("C2", "Sockets: bedside USB, living, deck", "B16", 2.5),
-        Circuit("C3", "Kitchen sockets and fridge", "B16", 2.5),
-        Circuit("C4", "Induction hob", "B20", 4.0),
-        Circuit("C5", "80 L water heater", "B16", 2.5),
-        Circuit("C6", "Extract fan and wall fan", "B6", 1.5),
-        Circuit("C7", "AC provision", "B16", 2.5),
+        Circuit("C1", "Indoor lights and fans", "B6", 1.5, "lights"),
+        Circuit("C2", "Sockets: bed, sofa and deck", "B16", 2.5, "sockets"),
+        Circuit("C3", "Kitchen sockets, fridge and hood", "B16", 2.5, "sockets"),
+        Circuit("C4", "Induction hob", "B20", 4.0, "fixed"),
+        Circuit("C5", "80 L water heater", "B16", 2.5, "fixed", relay=True),
+        Circuit("C6", "Outdoor lights: deck, stair and roof", "B6", 1.5, "lights"),
+        Circuit("C7", "AC provision", "B16", 2.5, "fixed", relay=True),
     ]
     byid = {c.id: c for c in circuits}
     for p in pts:
         if p.circuit:
-            c = byid[p.circuit]
-            c.loads.append(p.id)
-            c.design_w += p.watts
-            run = (abs(p.x - db.x) + abs(p.y - db.y) + abs(H - db.z) + abs(H - p.z)) / 1000 * 1.1
-            c.length_m = max(c.length_m, round(run, 1))
+            byid[p.circuit].loads.append(p.id)
+            byid[p.circuit].design_w += p.watts
+    # routes: each circuit leaves the top of the board side by side, then loops box to box, nearest first
+    runs: list[CableRun] = []
+    for i, c in enumerate(circuits):
+        reach: dict[str, float] = {}
+        w = _Walk((db.x + (i - (len(circuits) - 1) / 2) * 30, db.y, db.z + SIZE["board"][1] / 2))
+        if c.id == "C6":
+            # out through one gland high in the solid front strip at end A, under the canopy line
+            _hop(w, (300.0, W, zr), top)
+            runs.append(CableRun(c.id, w.path))
+            o = (300.0, out_y, zr)
+            deck = _Walk(w.path[-1], w.d)
+            reach["L8"] = deck.to(o, (300.0, ledger, zr), (2900.0, ledger, zr))
+            stair = _Walk(o, w.d + math.dist(w.path[-1], o))
+            reach["S4"] = stair.to((-200.0, out_y, zr), (-200.0, stringer, zr), (-200.0, stringer, 1100.0))
+            reach["L10"] = stair.to((-200.0, stringer, 1500.0), (-900.0, stringer, 1500.0))
+            head = f["deck_top"] + 1000
+            reach["S6"] = stair.to((-900.0, stringer, head), (f["xa"] + 25, stringer, head),
+                                   (f["xa"] + 25, f["yb"] - 150, head))
+            reach["L9"] = stair.to((f["xa"] + 25, f["yb"] - 60, head), (1500.0, f["yb"] - 60, head))
+            runs += [CableRun(c.id, deck.path, outdoor=True), CableRun(c.id, stair.path, outdoor=True)]
+        else:
+            left = [p for p in pts if p.circuit == c.id]
+            while left:
+                here = w.path[-1]
+                nxt = min(left, key=lambda p: abs(p.x - here[0]) + abs(p.y - here[1]) + abs(top - p.z))
+                left.remove(nxt)
+                if nxt.y > W:  # outside the front wall: drop inside the lining, then through the wall at its height
+                    _hop(w, (nxt.x, W, nxt.z), top)
+                    reach[nxt.id] = w.to((nxt.x, nxt.y, nxt.z))
+                else:
+                    reach[nxt.id] = _hop(w, (nxt.x, nxt.y, nxt.z), top)
+            runs.append(CableRun(c.id, w.path))
+        c.length_m = round(max(reach.values()) / 1000 * 1.1, 1)
     for c in circuits:  # socket circuits are checked at their breaker rating
         if c.id in ("C2", "C3", "C7"):
             c.design_w = max(c.design_w, c.In * P.SUPPLY_V.value * (0.5 if c.id == "C2" else 0.75))
     circuits.append(Circuit("C8", "Spare", "B16", 2.5))
     # the studio plugs in: a weatherproof inlet outside the back wall, straight behind the board
-    sup = inlet(max_demand(circuits)["total_A"])
-    pin = Point("PI", "inlet", db.x, -80, db.z - 400,
-                f"Power inlet {sup['rating_A']:.0f} A IP67 (IEC 60309 blue, 2P+E), outside behind the board")
-    pts.insert(1, pin)
+    sup = inlet(max_demand(circuits, pts)["total_A"])
+    pts.insert(1, Point("PI", "inlet", db.x, -(e + 10), db.z - 400,
+                        f"Power inlet {sup['rating_A']:.0f} A IP67 (IEC 60309 blue, 2P+E), outside behind the board",
+                        face="-y"))
     k = Kit("K8", "Electrical", "electrical", "site")
     for p in pts:
-        k.buy(Bought(f"K8-{p.id}", p.label, "K8", "electrical", "electrical", 1, "each",
-                     {"light": "luminaire", "switch": "switch", "socket": "socket", "usb": "usbsocket",
-                      "outlet": "fcu", "fan": "fan", "db": "db", "inlet": "inlet"}[p.kind],
-                     Box(p.x - 40, p.y - 20, p.z - 40, p.x + 40, p.y + 20, p.z + 40), step="S19",
+        k.buy(Bought(f"K8-{p.id}", p.label, "K8", "safety" if p.kind == "alarm" else "electrical", "electrical", 1,
+                     "each", PRICE_KEY[p.model], device_box(p), step="S05" if p.kind == "earth" else "S19",
                      layer="electrical", color="electric"))
-    for c in circuits[:-1]:
-        k.buy(Bought(f"K8-CBL-{c.id}", f"Cable {c.cable} mm2 T+E/singles in conduit, {c.name}", "K8", "electrical",
-                     "electrical", round(c.length_m * (len(c.loads) or 1) * 0.6 + 5, 0), "m", f"cable{c.cable}",
-                     step="S05"))
-    k.buy(Bought("K8-TAILS", f"Cable {sup['tails_mm2']:g} mm2 tails, inlet to main switch, through a gland in the back "
-                 "wall", "K8", "electrical", "electrical", 2, "m", f"cable{sup['tails_mm2']}", step="S05"))
+    for c in circuits:
+        if c.loads:
+            m = sum(r.length for r in runs if r.circuit == c.id) / 1000 * 1.1 + 1  # slack, and a metre in the board
+            k.buy(Bought(f"K8-CBL-{c.id}", f"Cable {c.cable} mm2 T+E/singles in conduit, {c.name}", "K8",
+                         "electrical", "electrical", math.ceil(m), "m", f"cable{c.cable}", step="S05"))
+    k.buy(Bought("K8-TAILS", f"Cable {sup['tails_mm2']:g} mm2 tails, inlet to main breaker, through a gland in the "
+                 "back wall", "K8", "electrical", "electrical", 2, "m", f"cable{sup['tails_mm2']}", step="S05"))
     k.buy(Bought("K8-PLUG", f"Matching {sup['rating_A']:.0f} A plug (IEC 60309 blue), for whatever supply cable",
                  "K8", "electrical", "electrical", 1, "each", "plug", step="S19"))
-    k.buy(Bought("K8-CONDUIT", "PVC conduit 20 mm + boxes", "K8", "electrical", "electrical", 60, "m", "conduit",
+    k.buy(Bought("K8-CONDUIT", "PVC conduit 20 mm + boxes, in the lining", "K8", "electrical", "electrical",
+                 math.ceil(conduit_length([r for r in runs if not r.outdoor]) / 1000 * 1.1), "m", "conduit",
                  step="S05"))
+    k.buy(Bought("K8-CONDUIT-OUT", "UV-stable conduit 20 mm + IP66 glands, outdoor runs", "K8", "electrical",
+                 "electrical", math.ceil(conduit_length([r for r in runs if r.outdoor]) / 1000 * 1.1), "m",
+                 "conduit_out", step="S19"))
+    k.buy(Bought("K8-MAIN", f"Main breaker {sup['main_A']:.0f} A DP (C curve) + DIN kWh check meter", "K8",
+                 "electrical", "electrical", 1, "set", "mainsw", step="S19"))
     k.buy(Bought("K8-SPD", "Surge protection device type 2", "K8", "electrical", "electrical", 1, "each", "spd",
                  step="S19"))
-    k.buy(Bought("K8-RCD", "RCD 40 A 30 mA type A (or RCBOs)", "K8", "electrical", "electrical", 1, "each", "rcd",
-                 step="S19"))
-    k.buy(Bought("K8-MCB", "MCBs (B6 x2, B16 x5, B20 x1)", "K8", "electrical", "electrical", 8, "each", "mcb",
-                 step="S19"))
-    k.buy(Bought("K8-ISO", "Main switch 40 A DP + check meter (DIN kWh)", "K8", "electrical", "electrical", 1, "set",
-                 "mainsw", step="S19"))
-    k.buy(Bought("K8-ROD", "Earth rod 1.5 m copper-bonded + clamp + inspection pit", "K8", "electrical", "electrical",
-                 1, "each", "earthrod", step="S05"))
-    k.buy(Bought("K8-ALARM", "Smoke alarm (10-year) + heat alarm (kitchen)", "K8", "safety", "electrical", 2, "each",
-                 "alarm", step="S19"))
+    ways = {b: sum(1 for c in circuits if c.loads and c.breaker == b) for b in ("B6", "B16", "B20")}
+    k.buy(Bought("K8-RCBO", "RCBOs 30 mA type A, 1 module (" + ", ".join(f"{b} x{q}" for b, q in ways.items() if q)
+                 + ")", "K8", "electrical", "electrical", sum(ways.values()), "each", "rcbo", step="S19"))
+    shed = " and ".join(c.id for c in circuits if c.relay)
+    k.buy(Bought("K8-RELAY", f"Priority relay, DIN: senses the hob (C4) and sheds {shed}", "K8", "electrical",
+                 "electrical", 1, "each", "relay", step="S19"))
+    k.buy(Bought("K8-CONTACTOR", f"Contactor 2-pole 25 A, DIN: the {shed} lines", "K8", "electrical", "electrical",
+                 1, "each", "contactor", step="S19"))
     k.buy(Bought("K8-FIRE", "Fire extinguisher 2 kg ABC + fire blanket", "K8", "safety", "furnishing", 1, "set",
                  "extinguisher", step="S19"))
     k.steps += [
@@ -181,32 +347,33 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], Kit]:
         Step("S19", "K8", "Second fix: unit board, devices, lights, alarms; test and certify", [], {}, 1,
              "Certificate from a RURA class A electrician before power-on."),
     ]
-    return pts, circuits, k
+    return pts, circuits, runs, k
 
 
-def max_demand(circuits: list[Circuit]) -> dict[str, float]:
+def max_demand(circuits: list[Circuit], pts: list[Point]) -> dict[str, float]:
     """Diversified maximum demand (IET OSG-style allowances, [A])."""
     by = {c.id: c for c in circuits}
     v = P.SUPPLY_V.value
-    light = by["C1"].design_w / v * 0.66
+    light = sum(p.watts for p in pts if p.kind == "light") / v * 0.66
+    fans = sum(p.watts for p in pts if p.kind == "fan") / v
     sockets = 10 + 0.4 * by["C2"].In  # kettle on C3 plus 40 % of the other socket circuit
     hob_a = by["C4"].design_w / v
     hob = min(hob_a, 10 + 0.3 * max(0.0, hob_a - 10))
     heater = by["C5"].design_w / v
-    fans = by["C6"].design_w / v
     ac = 1000 / v
-    # priority relay: the heater pauses while the hob is on, so only the larger of the two counts
-    total = light + sockets + max(hob, heater) + fans + ac
-    return {"lighting": light, "sockets": sockets, "hob": hob, "heater": heater, "fans": fans, "ac": ac,
+    # priority relay: the heater and the AC pause while the hob is on, so only the larger side counts
+    total = light + fans + sockets + max(hob, heater + ac)
+    return {"lighting": light, "fans": fans, "sockets": sockets, "hob": hob, "heater": heater, "ac": ac,
             "total_A": total}
 
 
 def inlet(md_a: float) -> dict[str, float]:
-    """The studio's one connection to any supply: the smallest IEC 60309 inlet above the maximum demand, and tails
-    to the 40 A main switch sized to carry it. Whatever feeds the inlet protects its cable at 40 A or less."""
+    """The studio's one connection to any supply: the smallest IEC 60309 inlet above the maximum demand, a main
+    breaker of the same rating that protects the inlet and its tails whatever feeds them, and tails sized to it
+    (method B: short, through the gland). Whatever feeds the inlet protects its own cable at that rating or less."""
     rating = next(r for r in (16.0, 32.0, 63.0, 125.0) if r >= md_a)
-    tails = next(s for s in (6.0, 10.0, 16.0) if CABLE[s][0] * AMBIENT_FACTOR >= 40)
-    return {"rating_A": rating, "tails_mm2": tails}
+    tails = next(s for s in (2.5, 4.0, 6.0, 10.0, 16.0) if CABLE[s][0] * AMBIENT_FACTOR >= rating)
+    return {"rating_A": rating, "main_A": rating, "tails_mm2": tails}
 
 
 # ------------------------------------------------------------------------------- plumbing

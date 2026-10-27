@@ -502,13 +502,23 @@ def k10_steel(lo: Layout) -> Kit:
 
 
 # ------------------------------------------------------------------------------- K11 roof terrace
+def roof_frame(lo: Layout) -> dict[str, float]:
+    """K11's set-out, shared with the outdoor electrical points (services.py): the deck beam lines, the roof
+    deck, the veranda canopy over the front deck and the dog-leg stair at end A."""
+    e = P.LINING_WALL.value
+    top = -P.LINING_FLOOR.value - 170 + P.EXT_H.value  # container top
+    deck_top = top + 150 + 25  # beams, then the boards
+    risers = round(deck_top / 175)
+    return {"xa": -e - 80, "xb": lo.L + e + 80, "ya": -e - 43, "yb": lo.W + e + 43, "top": top,
+            "deck_top": deck_top, "gz": deck_top + 1100, "vz": top - 300, "fw": P.FRONT_DECK_WIDTH.value,
+            "sx0": -e - 80 - 1800, "risers": risers, "r": deck_top / risers}
+
+
 def k11_roof(lo: Layout) -> Kit:
     """Roof terrace on the corner castings, open guardrail, canopy over the front deck, dog-leg stair, chairs."""
     k = Kit("K11", "Roof terrace, deck canopy and stair", "welding + carpentry", "steel workshop + site")
-    e = P.LINING_WALL.value
-    xa, xb = -e - 80, lo.L + e + 80
-    ya, yb = -e - 43, lo.W + e + 43
-    top = -P.LINING_FLOOR.value - 170 + P.EXT_H.value  # container top
+    fr = roof_frame(lo)
+    xa, xb, ya, yb, top = fr["xa"], fr["xb"], fr["ya"], fr["yb"], fr["top"]
     n = 0
 
     def member(name: str, box: Box, mat: str = "STEEL", step: str = "S20", ex=(0, 0, 0)) -> Part:
@@ -532,7 +542,7 @@ def k11_roof(lo: Layout) -> Kit:
     deck_top = dz + 25
     # open guardrail 1,100 high: steel posts at 1.5 m or less, hardwood top rail, stainless cables
     # at 90 mm (gaps under 100); no canopy over the roof (D-020)
-    gz = deck_top + 1100
+    gz = fr["gz"]
     for side, (x0, y0, x1, y1) in enumerate(((xa, ya, xb, ya + 50), (xa, yb - 50, xb, yb), (xa, ya, xa + 50, yb),
                                              (xb - 50, ya, xb, yb))):
         along = 0 if side < 2 else 1
@@ -552,8 +562,7 @@ def k11_roof(lo: Layout) -> Kit:
                Box(x0 + 22, y0, deck_top + 100, x0 + 28, y1, gz - 60), "CABLE", "S23", ex=(0, 0, 900))
     # lower veranda canopy over the front deck, on its own posts (never on the slider head)
     dk = P.DECK_HEIGHT.value
-    vz = top - 300
-    fw = P.FRONT_DECK_WIDTH.value
+    vz, fw = fr["vz"], fr["fw"]
     for px in (xa, (xa + xb) / 2 - 40, xb - 80):
         member("Veranda post SHS 60x60x3 on the deck frame", Box(px, yb + fw - 60, -dk - 0 + dk - 10, px + 60, yb + fw,
                                                                vz - 100), step="S24", ex=(0, 300, 0))
@@ -565,7 +574,7 @@ def k11_roof(lo: Layout) -> Kit:
     risers = round(rise / 175)
     r = rise / risers
     half = risers // 2
-    sx0 = xa - 1800
+    sx0 = fr["sx0"]
     for f, (yy0, rng) in enumerate(((yb + fw - 900, range(half)), (yb + fw - 1800, range(half, risers)))):
         for i in rng:
             j = i if f == 0 else i - half

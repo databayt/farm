@@ -4,7 +4,9 @@ from __future__ import annotations
 import params as P
 from draw import (FILL, SYS, Sheet, iso, iso_draw, ortho, project_box, sym_box, sym_breaker, sym_earth, sym_lamp, sym_socket,
                   sym_switch)
+from kits import roof_frame
 from model import Box
+from services import GROUP_COLOUR, SIZE
 
 KIT_NAMES = {"K1": "Insulation and lining", "K2": "Bathroom", "K3": "Kitchen", "K4": "Bed", "K5": "Bedside table",
              "K6": "Sofa, table and chairs", "K7": "Trims", "K8": "Electrical", "K9": "Plumbing",
@@ -41,7 +43,7 @@ def a001_cover(m, index: list[tuple[str, str]]) -> Sheet:
         f"MALM-style bed up to 1,600 x 2,000 with two storage boxes, bedside table and lamp · sofa, low table, two chairs",
         f"Galley {lo.sink[1]:.0f} mm on the bathroom wall: fridge, induction, sink; 80 L heater overhead",
         f"Bathroom {lo.L - lo.bath_x0:.0f} x {lo.W:.0f} mm · shower tray {lo.tray[1] - lo.tray[0]:.0f} x 900",
-        f"Max demand about {m['md']['total_A']:.0f} A per unit (heater/hob priority relay) · {m['inlet']['rating_A']:.0f} A inlet",
+        f"Max demand about {m['md']['total_A']:.0f} A per unit (heater + AC shed while the hob runs) · {m['inlet']['rating_A']:.0f} A inlet",
         f"Shared septic {m['site']['septic_m3']:.1f} m3, 2 chambers 2:1 · storage tank {m['site']['tank_m3']:.1f} m3",
         "Roof terrace on the corner castings, open guardrail · tinted polycarbonate canopy over the front deck",
         "",
@@ -270,6 +272,16 @@ def scene_json(m) -> dict:
         "wall_b": lo.wall_b,
         "tray": box(by_id["K2-TRAY"]), "screen": box(by_id["K2-SCREEN"]), "wc": box(by_id["K2-WC"]),
         "basin": box(by_id["K2-BASIN"]), "mirror": union(lambda i, n: n.startswith("Mirror cabinet")),
+        # the electrical installation (services.py): every point on its face, each circuit's conduit route, the
+        # circuit colours, and the outdoor set-out (veranda canopy, stair, roof deck) the outdoor points hang from
+        "points": [{"id": p.id, "kind": p.kind, "model": p.model, "circuit": p.circuit, "face": p.face,
+                    "at": [round(p.x, 1), round(p.y, 1), round(p.z, 1)], "size": list(SIZE[p.model]),
+                    "label": p.label} for p in m["points"]],
+        "cables": [{"circuit": r.circuit, "outdoor": r.outdoor, "path": [[round(v, 1) for v in q] for q in r.path]}
+                   for r in m["cables"]],
+        "circuits": [{"id": c.id, "name": c.name, "group": c.group, "colour": GROUP_COLOUR[c.group]}
+                     for c in m["circuits"]],
+        "outdoor": {k: round(v, 1) for k, v in roof_frame(lo).items()},
     }
 
 
@@ -393,7 +405,7 @@ def s101_roof(m) -> Sheet:
 # ------------------------------------------------------------------------------- electrical
 def e101_layout(m) -> Sheet:
     lo, s = m["lo"], Sheet("E-101", "Electrical layout plan", "1:25")
-    sc, ox, oy = 25, 40, 45
+    sc, ox, oy = 25, 70, 45  # room on the left for the stair points beyond end A
     it = [t for t in items(m, layers=["furniture", "fixtures"]) if t[0].z0 < lo.H - 200]
     ortho(s, "plan", [(b, "#f3f3f3", n) for (b, fl, n, *_x) in it], ox, oy, sc, sw=0.1)
     s.rect(ox, oy, lo.L / sc, lo.W / sc, "none", "#111", 0.5)
@@ -408,17 +420,28 @@ def e101_layout(m) -> Sheet:
         elif p.kind == "fan":
             s.circle(x, y, 1.6, "#fff")
             s.text(x, y + 0.8, "F", 1.8, "middle")
+        elif p.kind == "alarm":
+            s.circle(x, y, 1.6, "#fff")
+            s.text(x, y + 0.8, "A", 1.8, "middle")
+        elif p.kind == "earth":
+            sym_earth(s, x, y - 1)
         else:
             sym_box(s, x, y, "DB", 5, 3)
         s.text(x + 2, y - 1.8, f"{p.id}/{p.circuit}" if p.circuit else p.id, 1.6)
     rows = [[p.id, p.circuit, p.label[:46], f"{p.z:.0f}"] for p in m["points"]]
-    s.table(250, 150, [("Pt", 10), ("Cct", 10), ("Description", 88), ("z", 12)], rows[:24], 1.6, 3.0)
+    cols = [("Pt", 10), ("Cct", 10), ("Description", 88), ("z", 12)]
+    half = -(-len(rows) // 2)
+    s.table(150, 150, cols, rows[:half], 1.6, 3.0)
+    s.table(280, 150, cols, rows[half:], 1.6, 3.0)
     s.note(40, 150, [
-        "Mounting heights z above the finished floor (mm). Sockets in the bathroom: none.",
-        "Bathroom light IP65; extract fan through the back wall; switches outside the bathroom.",
-        "Cables run in 20 mm conduit inside the batten cavity, in vertical drops and in",
-        "horizontal zones at 300 and 1,100; grommets at every steel penetration.",
-        "Outdoor points (deck, roof, stair) IP65/66 on the bonded steelwork.",
+        "Mounting heights z above the finished floor (mm).",
+        "Bathroom: light IP65, extract IPX4 (zone 1), no sockets,",
+        "switches outside the door.",
+        "Cables in 20 mm conduit in the lining: up into the ceiling",
+        "void, along it, then vertical drops to each device;",
+        "grommets at every steel penetration.",
+        "C6 (deck, stair, roof lights) runs outside in UV-stable",
+        "conduit; outdoor points IP65/66 on the bonded steelwork.",
     ], 2.3)
     return s
 
@@ -434,30 +457,38 @@ def e201_sld(m) -> Sheet:
     s.text(x0 + 20, 61, "IEC 60309 blue, 2P+E, outside the back wall", 2.4)
     s.line(x0, 64, x0, 76)
     s.text(x0 + 3, 71, f"{sup['tails_mm2']:.0f} mm2 tails through a gland", 2.4)
-    sym_breaker(s, x0, 76, "Main switch 40 A DP + kWh meter")
-    s.line(x0, 87, x0, 98)
-    s.line(x0, 92, x0 + 110, 92)
-    sym_box(s, x0 + 118, 92, "SPD type 2", 16, 6)
-    s.line(x0 + 126, 92, x0 + 134, 92)
-    sym_earth(s, x0 + 134, 92)
-    sym_breaker(s, x0, 98, "RCD 40 A 30 mA type A", rcd=True)
-    s.line(x0, 109, x0, 118)
-    # the board: one breaker per circuit off the RCD
+    sym_breaker(s, x0, 76, f"Main breaker {sup['main_A']:.0f} A DP (C) + kWh meter")
+    s.line(x0, 87, x0, 106)
+    s.line(x0, 96, x0 + 110, 96)
+    sym_box(s, x0 + 118, 96, "SPD type 2", 16, 6)
+    s.line(x0 + 126, 96, x0 + 134, 96)
+    sym_earth(s, x0 + 134, 96)
+    # the board: one RCBO per circuit (30 mA type A), so a fault trips only its own circuit
     n = len(m["circuits"])
-    s.line(x0, 118, x0 + (n - 1) * dx, 118)
+    s.line(x0, 106, x0 + (n - 1) * dx, 106)
     for i, c in enumerate(m["circuits"]):
         x = x0 + i * dx
-        s.line(x, 118, x, 124)
-        sym_breaker(s, x, 124, c.breaker)
-        s.line(x, 135, x, 142)
+        s.line(x, 106, x, 112)
+        sym_breaker(s, x, 112, f"{c.breaker} RCBO" if c.loads else c.breaker, rcd=bool(c.loads))
+        s.line(x, 123, x, 142)
         s.text(x, 148, c.id, 3.2, "middle", "bold")
         s.text(x, 153, f"{c.cable:g} mm2", 2.4, "middle")
-        for j, word in enumerate(c.name.split(":")[0].split(" ")[:4]):
+        for j, word in enumerate(c.name.split(":")[0].split(" ")[:5]):
             s.text(x, 158 + j * 3.2, word, 2.2, "middle")
+    # the priority relay senses the hob and sheds the heater and the AC through one contactor
+    by = {c.id: x0 + i * dx for i, c in enumerate(m["circuits"])}
+    shed = [c.id for c in m["circuits"] if c.relay]
+    s.line(by["C4"], 134, by[shed[-1]], 134, dash="1.2 0.8")
+    for cid in shed:
+        s.rect(by[cid] - 3, 131, 6, 6, "#fff")
+        s.text(by[cid], 135.6, "K", 2.2, "middle")
+    s.text(by["C4"] + 2, 132, "relay", 2.0)
     s.note(30, 186, [
-        f"The studio plugs in: whatever feeds the inlet protects its cable at 40 A or less and carries {m['md']['total_A']:.0f} A.",
-        "C4 hob and C5 heater share a priority relay: the heater pauses while the hob runs.",
-        f"Diversified maximum demand about {m['md']['total_A']:.0f} A (AS-19). RCD type A on all circuits (or RCBOs).",
+        f"The studio plugs in: any 230 V source protected at {sup['rating_A']:.0f} A or less; the {sup['main_A']:.0f} A main "
+        "breaker protects the inlet and tails whatever feeds them.",
+        f"Priority relay on C4: while the hob runs, contactor K sheds {' and '.join(shed)} (heater and AC).",
+        f"Diversified maximum demand about {m['md']['total_A']:.0f} A (AS-19), within the {sup['rating_A']:.0f} A inlet. "
+        "One RCBO 30 mA type A per circuit.",
         "TT earthing: the studio's own earth rod at the board; never rely on the supply's earth (STU-37).",
         "Ratings are design intent: a RURA class A electrician designs and certifies (STU-15), to RS 565-1:2011 (STU-14).",
     ], 2.8)

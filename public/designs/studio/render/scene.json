@@ -172,5 +172,1246 @@
   5786,
   2220.0,
   1900
- ]
+ ],
+ "points": [
+  {
+   "id": "DB",
+   "kind": "db",
+   "model": "board",
+   "circuit": "",
+   "face": "+y",
+   "at": [
+    3678,
+    0,
+    1625
+   ],
+   "size": [
+    300,
+    400,
+    110
+   ],
+   "label": "Unit board, 24 modules (2 x 12), by the galley"
+  },
+  {
+   "id": "PI",
+   "kind": "inlet",
+   "model": "inlet",
+   "circuit": "",
+   "face": "-y",
+   "at": [
+    3678,
+    -60,
+    1225
+   ],
+   "size": [
+    90,
+    120,
+    100
+   ],
+   "label": "Power inlet 32 A IP67 (IEC 60309 blue, 2P+E), outside behind the board"
+  },
+  {
+   "id": "L1",
+   "kind": "light",
+   "model": "ceiling",
+   "circuit": "C1",
+   "face": "-z",
+   "at": [
+    800,
+    1126.0,
+    2323
+   ],
+   "size": [
+    220,
+    220,
+    50
+   ],
+   "label": "Ceiling light, bed"
+  },
+  {
+   "id": "L2",
+   "kind": "light",
+   "model": "ceiling",
+   "circuit": "C1",
+   "face": "-z",
+   "at": [
+    2300,
+    1126.0,
+    2323
+   ],
+   "size": [
+    220,
+    220,
+    50
+   ],
+   "label": "Ceiling light, living"
+  },
+  {
+   "id": "L3",
+   "kind": "light",
+   "model": "ceiling",
+   "circuit": "C1",
+   "face": "-z",
+   "at": [
+    3778,
+    1126.0,
+    2323
+   ],
+   "size": [
+    220,
+    220,
+    50
+   ],
+   "label": "Ceiling light, galley"
+  },
+  {
+   "id": "L4",
+   "kind": "light",
+   "model": "bulkhead",
+   "circuit": "C1",
+   "face": "-z",
+   "at": [
+    5223.0,
+    850.0,
+    2323
+   ],
+   "size": [
+    200,
+    120,
+    80
+   ],
+   "label": "Bathroom light IP65"
+  },
+  {
+   "id": "L5",
+   "kind": "light",
+   "model": "walllamp",
+   "circuit": "C1",
+   "face": "+y",
+   "at": [
+    300,
+    0,
+    1150
+   ],
+   "size": [
+    120,
+    160,
+    240
+   ],
+   "label": "Wall reading light over the bed (wall side)"
+  },
+  {
+   "id": "L7",
+   "kind": "light",
+   "model": "strip",
+   "circuit": "C1",
+   "face": "-z",
+   "at": [
+    4278,
+    800.0,
+    1790
+   ],
+   "size": [
+    1200,
+    20,
+    12
+   ],
+   "label": "Under-cabinet LED strip"
+  },
+  {
+   "id": "S1",
+   "kind": "switch",
+   "model": "switch",
+   "circuit": "C1",
+   "face": "-y",
+   "at": [
+    4480.0,
+    2252,
+    1100
+   ],
+   "size": [
+    86,
+    86,
+    12
+   ],
+   "label": "Entry: bed (2-way), living and galley lights"
+  },
+  {
+   "id": "S2",
+   "kind": "switch",
+   "model": "switch",
+   "circuit": "C1",
+   "face": "+y",
+   "at": [
+    1810,
+    0,
+    1000
+   ],
+   "size": [
+    86,
+    86,
+    12
+   ],
+   "label": "Bed: ceiling light (2-way), over the bedside table"
+  },
+  {
+   "id": "S3",
+   "kind": "switch",
+   "model": "switch",
+   "circuit": "C1",
+   "face": "+y",
+   "at": [
+    5368,
+    1770.0,
+    1100
+   ],
+   "size": [
+    86,
+    86,
+    12
+   ],
+   "label": "Bathroom light + fan (outside)"
+  },
+  {
+   "id": "F1",
+   "kind": "fan",
+   "model": "extract",
+   "circuit": "C1",
+   "face": "+y",
+   "at": [
+    4898,
+    0,
+    2100
+   ],
+   "size": [
+    160,
+    160,
+    40
+   ],
+   "label": "Bathroom extract 100 mm, IPX4 for zone 1, with run-on"
+  },
+  {
+   "id": "F2",
+   "kind": "fan",
+   "model": "wallfan",
+   "circuit": "C1",
+   "face": "+y",
+   "at": [
+    1800,
+    0,
+    2050
+   ],
+   "size": [
+    360,
+    360,
+    230
+   ],
+   "label": "Wall fan 300 mm"
+  },
+  {
+   "id": "P1",
+   "kind": "usb",
+   "model": "usb",
+   "circuit": "C2",
+   "face": "+y",
+   "at": [
+    300,
+    18,
+    750
+   ],
+   "size": [
+    86,
+    86,
+    40
+   ],
+   "label": "Socket + USB-C in the headboard (wall side)"
+  },
+  {
+   "id": "P2",
+   "kind": "usb",
+   "model": "usb",
+   "circuit": "C2",
+   "face": "+y",
+   "at": [
+    1810,
+    0,
+    650
+   ],
+   "size": [
+    86,
+    86,
+    40
+   ],
+   "label": "Bedside socket + USB-C (reading lamp)"
+  },
+  {
+   "id": "P3",
+   "kind": "usb",
+   "model": "usb",
+   "circuit": "C2",
+   "face": "+y",
+   "at": [
+    3150,
+    0,
+    850
+   ],
+   "size": [
+    86,
+    86,
+    40
+   ],
+   "label": "Socket + USB-C over the sofa arm, for the sofa and the table"
+  },
+  {
+   "id": "P5",
+   "kind": "socket",
+   "model": "socket66",
+   "circuit": "C2",
+   "face": "+y",
+   "at": [
+    4680.0,
+    2352,
+    400
+   ],
+   "size": [
+    95,
+    110,
+    80
+   ],
+   "label": "Deck socket IP66, outside by the slider"
+  },
+  {
+   "id": "P6",
+   "kind": "socket",
+   "model": "socket2",
+   "circuit": "C3",
+   "face": "-x",
+   "at": [
+    4578,
+    275.0,
+    1100
+   ],
+   "size": [
+    146,
+    86,
+    40
+   ],
+   "label": "Worktop double socket 1"
+  },
+  {
+   "id": "P7",
+   "kind": "socket",
+   "model": "socket2",
+   "circuit": "C3",
+   "face": "+y",
+   "at": [
+    4278,
+    0,
+    1100
+   ],
+   "size": [
+    146,
+    86,
+    40
+   ],
+   "label": "Worktop double socket 2 (back wall)"
+  },
+  {
+   "id": "P8",
+   "kind": "socket",
+   "model": "socket",
+   "circuit": "C3",
+   "face": "-x",
+   "at": [
+    4578,
+    275.0,
+    250
+   ],
+   "size": [
+    86,
+    86,
+    40
+   ],
+   "label": "Fridge socket"
+  },
+  {
+   "id": "P12",
+   "kind": "socket",
+   "model": "socket2",
+   "circuit": "C3",
+   "face": "-x",
+   "at": [
+    4578,
+    850.0,
+    1720
+   ],
+   "size": [
+    146,
+    86,
+    40
+   ],
+   "label": "Double socket above the hood: hood + Wi-Fi router"
+  },
+  {
+   "id": "P9",
+   "kind": "outlet",
+   "model": "outlet",
+   "circuit": "C4",
+   "face": "-x",
+   "at": [
+    4578,
+    850.0,
+    600
+   ],
+   "size": [
+    86,
+    86,
+    20
+   ],
+   "label": "Hob outlet plate, isolated at its RCBO on the board"
+  },
+  {
+   "id": "P10",
+   "kind": "outlet",
+   "model": "timer",
+   "circuit": "C5",
+   "face": "-x",
+   "at": [
+    4578,
+    1540.0,
+    1700
+   ],
+   "size": [
+    146,
+    86,
+    40
+   ],
+   "label": "Heater DP switch + timer"
+  },
+  {
+   "id": "L8",
+   "kind": "light",
+   "model": "bulkhead",
+   "circuit": "C6",
+   "face": "-z",
+   "at": [
+    2900,
+    2395,
+    1991
+   ],
+   "size": [
+    200,
+    120,
+    80
+   ],
+   "label": "Deck light IP65, under the veranda canopy"
+  },
+  {
+   "id": "S5",
+   "kind": "switch",
+   "model": "switch",
+   "circuit": "C6",
+   "face": "-y",
+   "at": [
+    4575.0,
+    2252,
+    1100
+   ],
+   "size": [
+    86,
+    86,
+    12
+   ],
+   "label": "Deck light, beside the entry switch"
+  },
+  {
+   "id": "S4",
+   "kind": "switch",
+   "model": "switch65",
+   "circuit": "C6",
+   "face": "+x",
+   "at": [
+    -200,
+    2925,
+    1100
+   ],
+   "size": [
+    90,
+    90,
+    55
+   ],
+   "label": "Stair and roof lights (2-way), IP65 at the stair foot"
+  },
+  {
+   "id": "L10",
+   "kind": "light",
+   "model": "bulkhead",
+   "circuit": "C6",
+   "face": "+y",
+   "at": [
+    -900,
+    2925,
+    1500
+   ],
+   "size": [
+    200,
+    120,
+    80
+   ],
+   "label": "Stair light IP65"
+  },
+  {
+   "id": "S6",
+   "kind": "switch",
+   "model": "switch65",
+   "circuit": "C6",
+   "face": "-x",
+   "at": [
+    -105,
+    2195,
+    3586
+   ],
+   "size": [
+    90,
+    90,
+    55
+   ],
+   "label": "Stair and roof lights (2-way), IP65 at the stair head"
+  },
+  {
+   "id": "L9",
+   "kind": "light",
+   "model": "bulkhead",
+   "circuit": "C6",
+   "face": "-z",
+   "at": [
+    1500,
+    2285,
+    3586
+   ],
+   "size": [
+    200,
+    120,
+    80
+   ],
+   "label": "Roof terrace lights IP65 (x2), under the front top rail"
+  },
+  {
+   "id": "P11",
+   "kind": "outlet",
+   "model": "isolator",
+   "circuit": "C7",
+   "face": "+y",
+   "at": [
+    900,
+    0,
+    2150
+   ],
+   "size": [
+    90,
+    110,
+    65
+   ],
+   "label": "AC provision: isolator"
+  },
+  {
+   "id": "AL1",
+   "kind": "alarm",
+   "model": "alarm",
+   "circuit": "",
+   "face": "-z",
+   "at": [
+    1550,
+    1126.0,
+    2323
+   ],
+   "size": [
+    110,
+    110,
+    45
+   ],
+   "label": "Smoke alarm, 10-year battery"
+  },
+  {
+   "id": "AL2",
+   "kind": "alarm",
+   "model": "alarm",
+   "circuit": "",
+   "face": "-z",
+   "at": [
+    3428,
+    1689.0,
+    2323
+   ],
+   "size": [
+    110,
+    110,
+    45
+   ],
+   "label": "Heat alarm, kitchen, 10-year battery"
+  },
+  {
+   "id": "E1",
+   "kind": "earth",
+   "model": "earth",
+   "circuit": "",
+   "face": "+z",
+   "at": [
+    3678,
+    -450,
+    -700
+   ],
+   "size": [
+    16,
+    1500,
+    16
+   ],
+   "label": "Earth rod 1.5 m copper-bonded in an inspection pit, behind the board"
+  }
+ ],
+ "cables": [
+  {
+   "circuit": "C1",
+   "outdoor": false,
+   "path": [
+    [
+     3588.0,
+     0,
+     1825.0
+    ],
+    [
+     3588.0,
+     0,
+     2353.0
+    ],
+    [
+     3778,
+     0,
+     2353.0
+    ],
+    [
+     3778,
+     1126.0,
+     2353.0
+    ],
+    [
+     3778,
+     1126.0,
+     2323
+    ],
+    [
+     3778,
+     1126.0,
+     2353.0
+    ],
+    [
+     4278,
+     1126.0,
+     2353.0
+    ],
+    [
+     4278,
+     800.0,
+     2353.0
+    ],
+    [
+     4278,
+     800.0,
+     1790
+    ],
+    [
+     4278,
+     800.0,
+     2353.0
+    ],
+    [
+     5223.0,
+     800.0,
+     2353.0
+    ],
+    [
+     5223.0,
+     850.0,
+     2353.0
+    ],
+    [
+     5223.0,
+     850.0,
+     2323
+    ],
+    [
+     5223.0,
+     850.0,
+     2353.0
+    ],
+    [
+     4898,
+     850.0,
+     2353.0
+    ],
+    [
+     4898,
+     0,
+     2353.0
+    ],
+    [
+     4898,
+     0,
+     2100
+    ],
+    [
+     4898,
+     0,
+     2353.0
+    ],
+    [
+     1800,
+     0,
+     2353.0
+    ],
+    [
+     1800,
+     0,
+     2050
+    ],
+    [
+     1800,
+     0,
+     2353.0
+    ],
+    [
+     1810,
+     0,
+     2353.0
+    ],
+    [
+     1810,
+     0,
+     1000
+    ],
+    [
+     1810,
+     0,
+     2353.0
+    ],
+    [
+     2300,
+     0,
+     2353.0
+    ],
+    [
+     2300,
+     1126.0,
+     2353.0
+    ],
+    [
+     2300,
+     1126.0,
+     2323
+    ],
+    [
+     2300,
+     1126.0,
+     2353.0
+    ],
+    [
+     800,
+     1126.0,
+     2353.0
+    ],
+    [
+     800,
+     1126.0,
+     2323
+    ],
+    [
+     800,
+     1126.0,
+     2353.0
+    ],
+    [
+     300,
+     1126.0,
+     2353.0
+    ],
+    [
+     300,
+     0,
+     2353.0
+    ],
+    [
+     300,
+     0,
+     1150
+    ],
+    [
+     300,
+     0,
+     2353.0
+    ],
+    [
+     4480.0,
+     0,
+     2353.0
+    ],
+    [
+     4480.0,
+     2252,
+     2353.0
+    ],
+    [
+     4480.0,
+     2252,
+     1100
+    ],
+    [
+     4480.0,
+     2252,
+     2353.0
+    ],
+    [
+     5368,
+     2252,
+     2353.0
+    ],
+    [
+     5368,
+     1770.0,
+     2353.0
+    ],
+    [
+     5368,
+     1770.0,
+     1100
+    ]
+   ]
+  },
+  {
+   "circuit": "C2",
+   "outdoor": false,
+   "path": [
+    [
+     3618.0,
+     0,
+     1825.0
+    ],
+    [
+     3618.0,
+     0,
+     2353.0
+    ],
+    [
+     3150,
+     0,
+     2353.0
+    ],
+    [
+     3150,
+     0,
+     850
+    ],
+    [
+     3150,
+     0,
+     2353.0
+    ],
+    [
+     1810,
+     0,
+     2353.0
+    ],
+    [
+     1810,
+     0,
+     650
+    ],
+    [
+     1810,
+     0,
+     2353.0
+    ],
+    [
+     300,
+     0,
+     2353.0
+    ],
+    [
+     300,
+     18,
+     2353.0
+    ],
+    [
+     300,
+     18,
+     750
+    ],
+    [
+     300,
+     18,
+     2353.0
+    ],
+    [
+     4680.0,
+     18,
+     2353.0
+    ],
+    [
+     4680.0,
+     2252,
+     2353.0
+    ],
+    [
+     4680.0,
+     2252,
+     400
+    ],
+    [
+     4680.0,
+     2352,
+     400
+    ]
+   ]
+  },
+  {
+   "circuit": "C3",
+   "outdoor": false,
+   "path": [
+    [
+     3648.0,
+     0,
+     1825.0
+    ],
+    [
+     3648.0,
+     0,
+     2353.0
+    ],
+    [
+     4278,
+     0,
+     2353.0
+    ],
+    [
+     4278,
+     0,
+     1100
+    ],
+    [
+     4278,
+     0,
+     2353.0
+    ],
+    [
+     4578,
+     0,
+     2353.0
+    ],
+    [
+     4578,
+     850.0,
+     2353.0
+    ],
+    [
+     4578,
+     850.0,
+     1720
+    ],
+    [
+     4578,
+     850.0,
+     2353.0
+    ],
+    [
+     4578,
+     275.0,
+     2353.0
+    ],
+    [
+     4578,
+     275.0,
+     1100
+    ],
+    [
+     4578,
+     275.0,
+     2353.0
+    ],
+    [
+     4578,
+     275.0,
+     250
+    ]
+   ]
+  },
+  {
+   "circuit": "C4",
+   "outdoor": false,
+   "path": [
+    [
+     3678.0,
+     0,
+     1825.0
+    ],
+    [
+     3678.0,
+     0,
+     2353.0
+    ],
+    [
+     4578,
+     0,
+     2353.0
+    ],
+    [
+     4578,
+     850.0,
+     2353.0
+    ],
+    [
+     4578,
+     850.0,
+     600
+    ]
+   ]
+  },
+  {
+   "circuit": "C5",
+   "outdoor": false,
+   "path": [
+    [
+     3708.0,
+     0,
+     1825.0
+    ],
+    [
+     3708.0,
+     0,
+     2353.0
+    ],
+    [
+     4578,
+     0,
+     2353.0
+    ],
+    [
+     4578,
+     1540.0,
+     2353.0
+    ],
+    [
+     4578,
+     1540.0,
+     1700
+    ]
+   ]
+  },
+  {
+   "circuit": "C6",
+   "outdoor": false,
+   "path": [
+    [
+     3738.0,
+     0,
+     1825.0
+    ],
+    [
+     3738.0,
+     0,
+     2353.0
+    ],
+    [
+     300.0,
+     0,
+     2353.0
+    ],
+    [
+     300.0,
+     2252,
+     2353.0
+    ],
+    [
+     300.0,
+     2252,
+     1991
+    ]
+   ]
+  },
+  {
+   "circuit": "C6",
+   "outdoor": true,
+   "path": [
+    [
+     300.0,
+     2252,
+     1991
+    ],
+    [
+     300.0,
+     2352,
+     1991
+    ],
+    [
+     300.0,
+     2395,
+     1991
+    ],
+    [
+     2900.0,
+     2395,
+     1991
+    ]
+   ]
+  },
+  {
+   "circuit": "C6",
+   "outdoor": true,
+   "path": [
+    [
+     300.0,
+     2352,
+     1991
+    ],
+    [
+     -200.0,
+     2352,
+     1991
+    ],
+    [
+     -200.0,
+     2925,
+     1991
+    ],
+    [
+     -200.0,
+     2925,
+     1100.0
+    ],
+    [
+     -200.0,
+     2925,
+     1500.0
+    ],
+    [
+     -900.0,
+     2925,
+     1500.0
+    ],
+    [
+     -900.0,
+     2925,
+     3586
+    ],
+    [
+     -105,
+     2925,
+     3586
+    ],
+    [
+     -105,
+     2195,
+     3586
+    ],
+    [
+     -105,
+     2285,
+     3586
+    ],
+    [
+     1500.0,
+     2285,
+     3586
+    ]
+   ]
+  },
+  {
+   "circuit": "C7",
+   "outdoor": false,
+   "path": [
+    [
+     3768.0,
+     0,
+     1825.0
+    ],
+    [
+     3768.0,
+     0,
+     2353.0
+    ],
+    [
+     900,
+     0,
+     2353.0
+    ],
+    [
+     900,
+     0,
+     2150
+    ]
+   ]
+  }
+ ],
+ "circuits": [
+  {
+   "id": "C1",
+   "name": "Indoor lights and fans",
+   "group": "lights",
+   "colour": "#2a78d6"
+  },
+  {
+   "id": "C2",
+   "name": "Sockets: bed, sofa and deck",
+   "group": "sockets",
+   "colour": "#eb6834"
+  },
+  {
+   "id": "C3",
+   "name": "Kitchen sockets, fridge and hood",
+   "group": "sockets",
+   "colour": "#eb6834"
+  },
+  {
+   "id": "C4",
+   "name": "Induction hob",
+   "group": "fixed",
+   "colour": "#1baf7a"
+  },
+  {
+   "id": "C5",
+   "name": "80 L water heater",
+   "group": "fixed",
+   "colour": "#1baf7a"
+  },
+  {
+   "id": "C6",
+   "name": "Outdoor lights: deck, stair and roof",
+   "group": "lights",
+   "colour": "#2a78d6"
+  },
+  {
+   "id": "C7",
+   "name": "AC provision",
+   "group": "fixed",
+   "colour": "#1baf7a"
+  },
+  {
+   "id": "C8",
+   "name": "Spare",
+   "group": "spare",
+   "colour": "#9a9893"
+  }
+ ],
+ "outdoor": {
+  "xa": -130,
+  "xb": 5928,
+  "ya": -93,
+  "yb": 2345,
+  "top": 2411,
+  "deck_top": 2586,
+  "gz": 3686,
+  "vz": 2111,
+  "fw": 1500,
+  "sx0": -1930,
+  "risers": 15,
+  "r": 172.4
+ }
 }

@@ -1,10 +1,11 @@
 item,amps
 lighting,0.3
+fans,0.3
 sockets,16.4
 hob,11.6
 heater,8.7
-fans,0.3
 ac,4.3
-total_A,32.9
-inlet_A,63
-tails_mm2,10
+total_A,30
+inlet_A,32
+main_A,32
+tails_mm2,6

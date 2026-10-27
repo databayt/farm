@@ -1,29 +1,34 @@
-point,kind,circuit,description,x_mm,y_mm,z_mm,watts
-DB,db,,Unit board on the back wall by the galley,3678,0,1625,0
-PI,inlet,,"Power inlet 63 A IP67 (IEC 60309 blue, 2P+E), outside behind the board",3678,-80,1225,0
-L1,light,C1,"Ceiling light, bed",800,1126,2323,12
-L2,light,C1,"Ceiling light, living",2300,1126,2323,12
-L3,light,C1,"Ceiling light, galley",3778,1126,2323,12
-L4,light,C1,Bathroom light IP65,5223,850,2323,12
-L5,light,C1,Wall reading light over the bed (wall side),300,0,1150,4
-L7,light,C1,Under-cabinet LED strip,4278,800,1790,10
-L8,light,C1,Deck light IP65,2900,2312,2350,10
-L9,light,C1,Roof terrace lights IP65 (x2),1500,1126,2723,20
-L10,light,C1,Stair light IP65,-900,3152,1500,8
-S1,switch,C1,Entry: living + kitchen + deck,4230,2212,1100,0
-S2,switch,C1,"Bed: ceiling light (2-way), over the bedside table",1810,0,1000,0
-S3,switch,C1,Bathroom light + fan (outside),5368,1770,1100,0
-S4,switch,C1,"Roof and stair lights (IP65, stair foot)",-400,2852,1100,0
-P1,usb,C2,Socket + USB-C in the headboard (wall side),300,18,750,200
-P2,usb,C2,Bedside socket + USB-C (reading lamp),1810,0,650,200
-P3,socket,C2,Socket by the sofa,2100,0,300,500
-P4,socket,C2,"Socket, living (front strip)",1180,2252,300,500
-P5,socket,C2,Deck socket IP66,2600,2312,400,300
-P6,socket,C3,Worktop socket 1 (double),4578,275,1100,2000
-P7,socket,C3,"Worktop socket 2 (double, back wall)",4278,0,1100,1000
-P8,socket,C3,Fridge socket,4578,275,250,100
-P9,outlet,C4,Hob connection unit,4578,850,600,3500
-P10,outlet,C5,Heater DP switch + timer,4578,1540,1700,2000
-F1,fan,C6,Bathroom extract 100 mm (one 110 mm hole in the back wall),4898,0,2100,20
-F2,fan,C6,Wall fan,1800,0,2100,50
-P11,outlet,C7,AC provision: isolator,900,0,2150,1000
+point,kind,circuit,description,x_mm,y_mm,z_mm,watts,face,model,w_mm,h_mm,d_mm
+DB,db,,"Unit board, 24 modules (2 x 12), by the galley",3678,0,1625,0,+y,board,300,400,110
+PI,inlet,,"Power inlet 32 A IP67 (IEC 60309 blue, 2P+E), outside behind the board",3678,-60,1225,0,-y,inlet,90,120,100
+L1,light,C1,"Ceiling light, bed",800,1126,2323,12,-z,ceiling,220,220,50
+L2,light,C1,"Ceiling light, living",2300,1126,2323,12,-z,ceiling,220,220,50
+L3,light,C1,"Ceiling light, galley",3778,1126,2323,12,-z,ceiling,220,220,50
+L4,light,C1,Bathroom light IP65,5223,850,2323,12,-z,bulkhead,200,120,80
+L5,light,C1,Wall reading light over the bed (wall side),300,0,1150,4,+y,walllamp,120,160,240
+L7,light,C1,Under-cabinet LED strip,4278,800,1790,10,-z,strip,1200,20,12
+S1,switch,C1,"Entry: bed (2-way), living and galley lights",4480,2252,1100,0,-y,switch,86,86,12
+S2,switch,C1,"Bed: ceiling light (2-way), over the bedside table",1810,0,1000,0,+y,switch,86,86,12
+S3,switch,C1,Bathroom light + fan (outside),5368,1770,1100,0,+y,switch,86,86,12
+F1,fan,C1,"Bathroom extract 100 mm, IPX4 for zone 1, with run-on",4898,0,2100,20,+y,extract,160,160,40
+F2,fan,C1,Wall fan 300 mm,1800,0,2050,50,+y,wallfan,360,360,230
+P1,usb,C2,Socket + USB-C in the headboard (wall side),300,18,750,200,+y,usb,86,86,40
+P2,usb,C2,Bedside socket + USB-C (reading lamp),1810,0,650,200,+y,usb,86,86,40
+P3,usb,C2,"Socket + USB-C over the sofa arm, for the sofa and the table",3150,0,850,500,+y,usb,86,86,40
+P5,socket,C2,"Deck socket IP66, outside by the slider",4680,2352,400,300,+y,socket66,95,110,80
+P6,socket,C3,Worktop double socket 1,4578,275,1100,2000,-x,socket2,146,86,40
+P7,socket,C3,Worktop double socket 2 (back wall),4278,0,1100,1000,+y,socket2,146,86,40
+P8,socket,C3,Fridge socket,4578,275,250,100,-x,socket,86,86,40
+P12,socket,C3,Double socket above the hood: hood + Wi-Fi router,4578,850,1720,120,-x,socket2,146,86,40
+P9,outlet,C4,"Hob outlet plate, isolated at its RCBO on the board",4578,850,600,3500,-x,outlet,86,86,20
+P10,outlet,C5,Heater DP switch + timer,4578,1540,1700,2000,-x,timer,146,86,40
+L8,light,C6,"Deck light IP65, under the veranda canopy",2900,2395,1991,10,-z,bulkhead,200,120,80
+S5,switch,C6,"Deck light, beside the entry switch",4575,2252,1100,0,-y,switch,86,86,12
+S4,switch,C6,"Stair and roof lights (2-way), IP65 at the stair foot",-200,2925,1100,0,+x,switch65,90,90,55
+L10,light,C6,Stair light IP65,-900,2925,1500,8,+y,bulkhead,200,120,80
+S6,switch,C6,"Stair and roof lights (2-way), IP65 at the stair head",-105,2195,3586,0,-x,switch65,90,90,55
+L9,light,C6,"Roof terrace lights IP65 (x2), under the front top rail",1500,2285,3586,20,-z,bulkhead,200,120,80
+P11,outlet,C7,AC provision: isolator,900,0,2150,1000,+y,isolator,90,110,65
+AL1,alarm,,"Smoke alarm, 10-year battery",1550,1126,2323,0,-z,alarm,110,110,45
+AL2,alarm,,"Heat alarm, kitchen, 10-year battery",3428,1689,2323,0,-z,alarm,110,110,45
+E1,earth,,"Earth rod 1.5 m copper-bonded in an inspection pit, behind the board",3678,-450,-700,0,+z,earth,16,1500,16
