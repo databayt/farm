@@ -20,11 +20,13 @@ The homepage shows the compound as it is planned, not as it stands. Its images a
 ## 2. The planned compound (every render must agree)
 
 - **Entrance.** An outer gate of galvanised five-bar tubular leaves stands between fieldstone posts. Beside it, a low fieldstone sign wall carries the words **DIGITAL FARM**. Behind the gate are a green parking lawn of grass pavers under shade trees, a **rock road** of hand-laid local stone setts (Rwandan pavé), and an **inner gate** of eucalyptus slats on an oxide-red steel frame.
+- **Orientation (corrected by the founder on 2026-10-27, D-022).** North is the public road and the gates; the lake lies to the south, beyond a band of trees. Walking in from the gate you face the lake.
 - **The tenant courtyard.** A level lawn with the existing round fieldstone fire pit, laid out as an L (confirmed by the founder on 2026-10-26):
-  - **Left:** the guest-room block. Two 40 ft containers are joined side by side into one long, low saffron-yellow building, about 12 × 4.9 m. It holds three en-suite rooms, each about 19 m² [E, D-017] with a bed, shower and WC but no kitchen. Each room has an oxide-red door and window onto a shared eucalyptus veranda.
-  - **Right, at 90°:** three 20 ft containers in a row on the existing raised oxide-red steel decks. Two are **studios** in deep oxide red, built to the studio design (`/en/studio`, Layout B, D-020): a 3 m sliding glass wall onto a deck under a tinted clear canopy, a galley kitchen, a two-seat sofa, a shower and WC, and an open roof terrace behind a post-and-rail guardrail, with no canopy over it. The third is the **farm office** in saffron yellow.
-  - **Behind the right row:** one 40 ft **study and training room** in muted teal, with tall glazed doors along one long side onto a timber deck.
-- **Six containers in all.** Nothing is stacked, and nothing else is built. The compound sits back from the lake behind a band of trees; nothing new stands at the water's edge (the 50 m lake buffer).
+  - **The bar:** one 20 ft container in oxide red with a serving hatch and counter onto the courtyard (today's red kiosk), standing in the same line as the guest-room block, at its north end, nearest the inner gate.
+  - **West side (on the right as you walk in):** the guest-room block. Two 40 ft containers are joined side by side into one long, low saffron-yellow building, about 12 × 4.9 m. It holds three en-suite rooms, each about 19 m² [E, D-017] with a bed, shower and WC but no kitchen. Each room has an oxide-red door and window onto a shared eucalyptus veranda.
+  - **South side, at 90° (across the lawn as you walk in):** three 20 ft containers in a row on the existing raised oxide-red steel decks, their decks facing the courtyard. The **first, next to the guest rooms, is the farm office** in saffron yellow; the other two are **studios** in deep oxide red, built to the studio design (`/en/studio`, Layout B, D-020): a 3 m sliding glass wall onto a deck under a tinted clear canopy, a galley kitchen, a two-seat sofa, a shower and WC, and an open roof terrace behind a post-and-rail guardrail, with no canopy over it.
+  - **Further out, toward the lake:** one 40 ft **study and training room** in muted teal, its west end in line with the guest-room block, with tall glazed doors along its north side onto a timber deck.
+- **Seven containers in all** (the bar, the joined pair, the office, two studios, the study room). Nothing is stacked, and nothing else is built. The compound sits back from the lake behind a band of trees; nothing new stands at the water's edge (the 50 m lake buffer).
 
 ## 3. Site bible and reference line
 
@@ -73,7 +75,7 @@ The rock road inside the farm: 4 m wide, hand-laid local stone setts in warm gre
 References: `assets/reference/inner-gate/` (IMG_3159 at 0 s, IMG_3163 at 0 s, IMG_3171).
 
 ```text
-The inner gate standing open: two leaves of vertical eucalyptus slats on an oxide-red steel frame, between fieldstone pillars with small brass wall lanterns. Through it, the tenant courtyard: a level lawn with a round fieldstone fire pit. On the left, a long low saffron-yellow building with three oxide-red doors and a timber veranda. On the right, at a right angle to it, three containers on raised oxide-red steel decks (oxide red, oxide red, saffron yellow), with the roof of a long teal container behind them. Golden side light. 24 mm lens, camera 1.6 m high, symmetrical framing.
+The inner gate standing open: two leaves of vertical eucalyptus slats on an oxide-red steel frame, between fieldstone pillars with small brass wall lanterns. Through it, the tenant courtyard: a level lawn with a round fieldstone fire pit. On the right, an oxide-red bar container with its serving hatch open, and beyond it a long low saffron-yellow building with three oxide-red doors and a timber veranda. Ahead across the lawn, at a right angle to it, three containers on raised oxide-red steel decks (from the right: saffron yellow, oxide red, oxide red), with the roof of a long teal container further out on the right and the lake glinting beyond the trees. Golden side light. 24 mm lens, camera 1.6 m high, symmetrical framing.
 ```
 
 ### `aerial` · P0 · 16:9
@@ -81,7 +83,7 @@ The inner gate standing open: two leaves of vertical eucalyptus slats on an oxid
 References: `assets/reference/aerial/` (IMG_3191 at 0 s and 5.6 s, IMG_3164, the studio exterior render).
 
 ```text
-Drone photograph at golden hour, 35 degrees down from about 60 m, the layout clearly readable. Foreground: the outer gate and its fieldstone sign wall (letters too small to read), a green grass-paver parking area with shade trees, and a curving cobbled road to an inner gate. Middle: a rectangular lawn courtyard with a round fieldstone fire pit. On its left side, one long low saffron-yellow building made of two 40 ft containers joined side by side (12 by 4.9 m), with three oxide-red doors onto a timber veranda. On its right side, at a right angle, forming an L: three 20 ft containers in a row on raised oxide-red steel decks, two oxide-red studios with open roof terraces behind guardrails and a saffron-yellow office at the end. Directly behind that row, one muted-teal 40 ft container with a glazed long side and a timber deck. Stepping-stone paths, young trees and euphorbia hedges; red laterite at the edges; beyond the compound, a band of tall eucalyptus and the calm lake catching the light. Nothing else built.
+Drone photograph at golden hour, 35 degrees down from about 60 m, the layout clearly readable. Foreground: the outer gate and its fieldstone sign wall (letters too small to read), a green grass-paver parking area with shade trees, and a curving cobbled road to an inner gate. Middle: a rectangular lawn courtyard with a round fieldstone fire pit. On its right side, an oxide-red bar container with a serving hatch, then in the same line one long low saffron-yellow building made of two 40 ft containers joined side by side (12 by 4.9 m), with three oxide-red doors onto a timber veranda. Across the far side of the lawn, at a right angle, forming an L: three 20 ft containers in a row on raised oxide-red steel decks, a saffron-yellow office first next to the yellow building, then two oxide-red studios with open roof terraces behind guardrails. Further out toward the lake, on the right, one muted-teal 40 ft container with a glazed long side and a timber deck, its end in line with the yellow building. Stepping-stone paths, young trees and euphorbia hedges; red laterite at the edges; beyond the compound, a band of tall eucalyptus and the calm lake catching the light. Nothing else built.
 ```
 
 ### `rooms` · P0 · 16:9
@@ -105,7 +107,7 @@ Interior of one en-suite guest room inside the joined containers, about 4 m wide
 References: `assets/reference/studios/` (IMG_3164, IMG_3163 at 0 s, IMG_3196 at 29.3 s, the studio exterior render).
 
 ```text
-Eye level across the courtyard lawn to a row of three 20 ft containers, each on its own raised oxide-red steel deck about 0.8 m above the grass, with oxide-red tubular railings and new eucalyptus deck boards. Left and middle: the two studios, repainted deep oxide red, each with a 3 m sliding glass wall onto its deck, a tinted clear canopy over the deck, a small table and two chairs; on each roof an open terrace with two lounge chairs behind a post-and-rail guardrail (slim steel posts, a hardwood top rail, stainless cables), open to the sky with no canopy, reached by a slim black steel stair with a landing at the end. Right: the farm office, repainted saffron yellow, with a glazed door and a slatted timber sun screen. Behind the row, the roof of a long teal container. Golden hour; the stone fire pit at the edge of the frame. 24 mm lens, camera 1.6 m high.
+Eye level across the courtyard lawn to a row of three 20 ft containers, each on its own raised oxide-red steel deck about 0.8 m above the grass, with oxide-red tubular railings and new eucalyptus deck boards. Left and middle: the two studios, repainted deep oxide red, each with a 3 m sliding glass wall onto its deck, a tinted clear canopy over the deck, a small table and two chairs; on each roof an open terrace with two lounge chairs behind a post-and-rail guardrail (slim steel posts, a hardwood top rail, stainless cables), open to the sky with no canopy, reached by a slim black steel stair with a landing at the end. Right: the farm office, repainted saffron yellow, with a glazed door and a slatted timber sun screen. Behind the row, toward the lake on the right, the long teal study room; eucalyptus and the lake beyond. Golden hour; the stone fire pit at the edge of the frame. 24 mm lens, camera 1.6 m high.
 ```
 
 ### `studio` · P0 · 16:9
@@ -129,7 +131,7 @@ Interior of the farm office inside the saffron-yellow 20 ft container. Two birch
 References: `assets/reference/study/` (IMG_3195 at 0 s for the 40 ft form, IMG_3196 at 5.9 s for today's teal).
 
 ```text
-The study and training room: one 40 ft container (12 m long) repainted muted teal with oxide-red trims, on a fieldstone plinth behind the studio row. Its long side opens in a band of tall glazed doors shaded by vertical eucalyptus louvres, onto a 2 m deep timber deck with broad steps and a few stacking chairs. A green rainwater tank at one end, young trees and lawn around it, and the corner of a red studio deck in the left foreground. Golden hour. 24 mm lens, camera 1.6 m high, three-quarter view.
+The study and training room: one 40 ft container (12 m long) repainted muted teal with oxide-red trims, on a fieldstone plinth beyond the studio row, toward the lake, its end in line with the yellow guest-room block. Its long side opens in a band of tall glazed doors shaded by vertical eucalyptus louvres, onto a 2 m deep timber deck with broad steps and a few stacking chairs. A green rainwater tank at one end, young trees and lawn around it, and the corner of the yellow office deck in the foreground. Golden hour. 24 mm lens, camera 1.6 m high, three-quarter view.
 ```
 
 ### `classroom` · P1 · 16:9
@@ -145,7 +147,7 @@ Inside the training room in the 40 ft container: about twelve people at long bir
 References: `assets/reference/dusk/` (IMG_3199 at 12.3 s, IMG_3197 at 0 s, IMG_3200 at 23.4 s).
 
 ```text
-Blue hour in the tenant courtyard. A round fieldstone fire pit burns softly at the centre of the lawn, with timber chairs around it and three guests seen from behind as dark silhouettes. Warm light comes from the windows and veranda lanterns of the yellow guest block on the left and the red studio decks on the right. Festoon lights hang between timber poles; the last pink light touches the high clouds; beyond lie the dark eucalyptus line and a faint glow on the lake. Calm and real. 24 mm lens, tripod, camera 1.4 m high.
+Blue hour in the tenant courtyard. A round fieldstone fire pit burns softly at the centre of the lawn, with timber chairs around it and three guests seen from behind as dark silhouettes. Warm light comes from the windows and veranda lanterns of the yellow guest block on the right and the red studio decks across the lawn. Festoon lights hang between timber poles; the last pink light touches the high clouds; beyond lie the dark eucalyptus line and a faint glow on the lake. Calm and real. 24 mm lens, tripod, camera 1.4 m high.
 ```
 
 ## 5. Before/after edits
@@ -216,7 +218,7 @@ A slow lateral dolly toward the open glass wall, revealing the deck and the lawn
 ## 7. QA before dropping a file in
 
 1. The sign reads exactly **DIGITAL FARM**: two words, with no extra or missing letters.
-2. The containers match §2: six in all (the joined yellow pair, two red studios, the yellow office, the teal 40 ft), none stacked or extra, colours right, eucalyptus decks.
+2. The containers match §2: seven in all (the red bar, the joined yellow pair, the yellow office, two red studios, the teal 40 ft), none stacked or extra, colours right, eucalyptus decks.
 3. The land looks like Bugesera: low hills, red soil, eucalyptus and the lake. No mountains, palms on a beach or safari props.
 4. There's no other legible text, no logo and no watermark.
 5. People are few and small, faces aren't recognisable, and there are no children.
