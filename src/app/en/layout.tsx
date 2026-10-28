@@ -1,15 +1,12 @@
 import { LoadingWrapper } from "@/components/loading"
-import { ScrollHeader } from "@/components/scroll-header"
 import { SiteHeader } from "@/components/site-header"
 
-// /en/* (the container-studio showcase) keeps the study header, but the full-screen hero owns the
-// first screen: the header only slides in when the reader scrolls up.
+// /en/* (the farm's pages) share the site header. Every page opens on a full-screen hero, so the header sits on
+// the picture until the reader scrolls (components/site-header.tsx, overlay).
 export default function EnLayout({ children }: LayoutProps<"/en">) {
   return (
     <>
-      <ScrollHeader>
-        <SiteHeader />
-      </ScrollHeader>
+      <SiteHeader overlay />
       <LoadingWrapper>{children}</LoadingWrapper>
     </>
   )

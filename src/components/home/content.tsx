@@ -15,7 +15,7 @@ export function HomeContent() {
       >
         {copy.skip}
       </a>
-      <Header title={copy.hero.title} nav={copy.nav} menu={copy.menu} />
+      <Header title={copy.hero.title} menu={copy.menu} />
       <main>
         <Hero />
         <Plans />

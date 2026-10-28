@@ -10,7 +10,6 @@ export const copy = {
       "A working farm above a lake in Gashora, an hour from Kigali, where seven containers will become guest rooms, studios, a bar and a place to learn: the plan, and the site as it stands.",
   },
   skip: "Skip to the plan",
-  nav: [{ href: "#plans", label: "Plan" }],
   menu: { open: "Open the menu", close: "Close the menu" },
   cta: "Register interest",
   captions: {

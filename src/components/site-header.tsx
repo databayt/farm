@@ -1,16 +1,60 @@
+"use client"
+
+import * as React from "react"
 import Link from "next/link"
 
-// The study's header, for /docs, /en and the 404 page. The homepage draws its own
-// (components/home/header.tsx), so this left the root layout.
-export function SiteHeader() {
+import { cn } from "@/lib/utils"
+import { DOCS, SiteMenu } from "@/components/site-menu"
+
+// The header on every page but the homepage (components/home/header.tsx draws its own): the farm's name, the
+// docs and the site menu. On a page that opens on a full-screen hero (overlay), it sits on the picture in white,
+// steps out of the way while the reader scrolls down and comes back, solid, as soon as they scroll up.
+export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
+  const ref = React.useRef<HTMLElement>(null)
+
+  React.useEffect(() => {
+    const header = ref.current
+    if (!overlay || !header) return
+    let last = window.scrollY
+    let frame = 0
+    const update = () => {
+      const y = window.scrollY
+      const onHero = y < window.innerHeight - header.offsetHeight
+      header.toggleAttribute("data-over", onHero)
+      if (Math.abs(y - last) < 4) return
+      header.toggleAttribute("data-away", !onHero && y > last)
+      last = y
+    }
+    const onScroll = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      cancelAnimationFrame(frame)
+    }
+  }, [overlay])
+
   return (
-    <header className="bg-background/90 sticky top-0 z-40 flex print:hidden h-(--header-height) items-center gap-4 border-b px-4 backdrop-blur lg:px-6">
-      <Link href="/docs" className="text-sm font-semibold">
-        Farm docs
-      </Link>
-      <Link href="/" className="text-muted-foreground hover:text-foreground ml-auto text-sm">
+    <header
+      ref={ref}
+      data-over={overlay ? "" : undefined}
+      className={cn(
+        "bg-background/90 top-0 z-40 flex h-(--header-height) items-center gap-2 border-b px-4 backdrop-blur print:hidden lg:px-6",
+        overlay
+          ? "fixed inset-x-0 transition-[translate,background-color,color,border-color] duration-300 data-[away]:not-focus-within:-translate-y-full data-[over]:border-transparent data-[over]:bg-transparent data-[over]:bg-origin-border data-[over]:bg-gradient-to-b data-[over]:from-black/35 data-[over]:to-transparent data-[over]:text-white data-[over]:backdrop-blur-none"
+          : "sticky",
+      )}
+    >
+      <Link href="/" className="me-auto text-sm font-semibold">
         Digital Farm
       </Link>
+      <Link href={DOCS.href} className="px-2 text-sm font-medium transition-opacity hover:opacity-70">
+        {DOCS.label}
+      </Link>
+      <SiteMenu title="Digital Farm" className="-me-2" />
     </header>
   )
 }

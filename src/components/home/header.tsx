@@ -1,24 +1,14 @@
 "use client"
 
 import * as React from "react"
-import { Menu, X } from "lucide-react"
+import Link from "next/link"
 
-type NavLink = { href: string; label: string }
+import { DOCS, SiteMenu } from "@/components/site-menu"
 
 // Fixed over the hero: light text on the film while it fills the screen, a solid bar once the
-// hero has mostly scrolled away (#hero-sentinel). The phone menu is a native popover, so the
-// homepage loads no dialog library.
-export function Header({
-  title,
-  nav,
-  menu,
-  cta,
-}: {
-  title: string
-  nav: NavLink[]
-  menu: { open: string; close: string }
-  cta?: NavLink
-}) {
+// hero has mostly scrolled away (#hero-sentinel). The wordmark left; the docs and the site menu
+// right, the same menu as on every other page (components/site-menu.tsx).
+export function Header({ title, menu }: { title: string; menu: { open: string; close: string } }) {
   const ref = React.useRef<HTMLElement>(null)
 
   React.useEffect(() => {
@@ -32,69 +22,22 @@ export function Header({
     return () => observer.disconnect()
   }, [])
 
-  const closeMenu = () => document.getElementById("farm-menu")?.hidePopover()
-
   return (
     <header
       ref={ref}
       className="group/header text-chalk fixed inset-x-0 top-0 z-50 h-(--header-height) transition-[background-color,color] duration-300 data-[solid]:bg-chalk/90 data-[solid]:text-soil data-[solid]:backdrop-blur-md"
     >
-      {/* As in the founder's guide: wordmark left, the sections centred in capitals, one outlined
-          button right. Below lg the sections and the button fold into the menu. */}
-      <div className="flex h-full w-full items-center gap-8 px-4 md:px-10 lg:grid lg:grid-cols-[1fr_auto_1fr]">
-        <a href="#top" className="font-display text-2xl leading-none">
+      <div className="flex h-full w-full items-center gap-2 px-4 md:px-10">
+        <a href="#top" className="font-display me-auto text-2xl leading-none">
           {title}
         </a>
-        <nav aria-label="Sections" className="hidden items-center gap-8 text-[13px] tracking-[0.08em] uppercase lg:flex">
-          {nav.map((link) => (
-            <a key={link.href} href={link.href} className="opacity-85 transition-opacity hover:opacity-100">
-              {link.label}
-            </a>
-          ))}
-        </nav>
-        {cta && <a
-          href={cta.href}
-          className="hidden h-11 items-center justify-self-end px-6 text-sm tracking-[0.04em] uppercase transition-colors hover:bg-chalk/10 group-data-[solid]/header:hover:bg-soil/5 lg:inline-flex"
+        <Link
+          href={DOCS.href}
+          className="px-2 text-[13px] tracking-[0.08em] uppercase opacity-85 transition-opacity hover:opacity-100"
         >
-          {cta.label}
-        </a>}
-        <button
-          type="button"
-          popoverTarget="farm-menu"
-          aria-label={menu.open}
-          className="ml-auto inline-grid size-10 place-items-center rounded-full lg:hidden"
-        >
-          <Menu className="size-5" aria-hidden />
-        </button>
-      </div>
-
-      <div id="farm-menu" popover="auto" className="bg-chalk text-soil inset-x-0 top-0 m-0 h-auto w-full max-w-none border-0 p-0 shadow-xl">
-        <div className="flex h-(--header-height) items-center justify-between px-4">
-          <span className="font-display text-2xl leading-none">{title}</span>
-          <button
-            type="button"
-            popoverTarget="farm-menu"
-            popoverTargetAction="hide"
-            aria-label={menu.close}
-            className="inline-grid size-10 place-items-center rounded-full"
-          >
-            <X className="size-5" aria-hidden />
-          </button>
-        </div>
-        <nav aria-label="Sections" className="flex flex-col px-4 pb-6">
-          {nav.map((link) => (
-            <a key={link.href} href={link.href} onClick={closeMenu} className="font-display border-b py-3 text-3xl">
-              {link.label}
-            </a>
-          ))}
-          {cta && <a
-            href={cta.href}
-            onClick={closeMenu}
-            className="mt-6 inline-flex h-12 items-center justify-center text-sm tracking-[0.08em] uppercase"
-          >
-            {cta.label}
-          </a>}
-        </nav>
+          {DOCS.label}
+        </Link>
+        <SiteMenu title={title} menu={menu} className="-me-2" />
       </div>
     </header>
   )

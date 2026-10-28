@@ -172,9 +172,6 @@ html:has([data-theme="farm"]) {
   scroll-padding-top: 3.5rem;
 }
 
-#farm-menu::backdrop {
-  background: rgb(43 42 38 / 0.45);
-}
 
 @keyframes farm-rise {
   from {
