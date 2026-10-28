@@ -34,7 +34,6 @@ const distSeg = ([px, py], [ax, ay], [bx, by]) => {
   return Math.hypot(px - (ax + t * dx), py - (ay + t * dy))
 }
 const zone = (id) => site.zones.find((z) => z.id === id)
-const feature = (id) => site.features.find((f) => f.id === id)
 const B = site.boundary
 const nearBoundary = (p, d) => B.some((a, i) => distSeg(p, a, B[(i + 1) % B.length]) < d)
 const onPath = (p, extra) => site.paths.some((pa) => pa.points.slice(1).some((b, i) => distSeg(p, pa.points[i], b) < pa.width / 2 + extra))
