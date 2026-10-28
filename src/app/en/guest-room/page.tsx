@@ -21,7 +21,7 @@ export default function GuestRoomPage() {
   return (
     <main className="w-full flex-1">
       {/* First screen: a STAND-IN until the Nano Banana remaster (handoff in ~/Desktop/guest-room-nano-banana).
-          It is the guest-room block as it stands today, cut from the 2026-10-25 footage (public/footage/IMG_3171,
+          It is the guest-room block as it stands today, cut from the 2026-10-25 footage (assets/library/footage/2026-10-25/IMG_3171,
           people- and umbrella-free) to 2400 x 1340. The block sits right, so the words keep the open lawn
           bottom-left. */}
       <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#c9d3dc]">

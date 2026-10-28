@@ -21,7 +21,7 @@ export default function OfficePage() {
   return (
     <main className="w-full flex-1">
       {/* First screen: a STAND-IN until the Nano Banana remaster (brief: ~/Desktop/office-nano-banana). Today's
-          saffron container on its raised deck from the 2026-10-25 footage (public/footage/IMG_3165), cut to
+          saffron container on its raised deck from the 2026-10-25 footage (assets/library/footage/2026-10-25/IMG_3165), cut to
           2400 x 1340. The container sits centre-right, so the words keep the lawn bottom-left. */}
       <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#c9d3dc]">
         <BlurImg src={`${D}/render/office-hero.jpg`} width={2400} height={1340} fetchPriority="high"

@@ -1,1 +1,5 @@
 footage/
+*.mov
+*.MOV
+*.heic
+*.HEIC

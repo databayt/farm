@@ -7,7 +7,7 @@ The homepage shows the compound as it is planned, not as it stands. Its images a
 ## 1. How to render
 
 1. **Pick a tool.** For stills: ChatGPT images, the Gemini app (Nano Banana), Midjourney or Higgsfield. For video: Veo 3.1 (the Gemini app or Flow), Kling, Runway or Sora. Use a plan that does not stamp a visible watermark.
-2. **Attach the references.** Each render has a folder of frames at `assets/reference/<id>/`, made by `pnpm site:refs` from `public/footage` with all metadata (GPS) stripped. `assets/reference/contact-sheet.jpg` shows them all at once. On another machine, copy `assets/reference/` across; it isn't in git.
+2. **Attach the references.** Each render has a folder of frames at `assets/reference/<id>/`, made by `pnpm site:refs` from `assets/library/footage/2026-10-25` with all metadata (GPS) stripped. `assets/reference/contact-sheet.jpg` shows them all at once. On another machine, copy `assets/reference/` across; it isn't in git.
 3. **Paste the prompt,** then the site bible (§3), then the reference line (§3).
 4. **Keep the best of a few tries.** Check it against the QA list (§7).
 5. **Save it as `assets/renders/<id>.png`** for a still or `assets/renders/<id>.mp4` for a video, using the exact id below.

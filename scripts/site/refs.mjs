@@ -3,7 +3,7 @@
 //
 //   pnpm site:refs
 //
-// public/footage holds the phone originals (gitignored, never deployed). The MOVs are 10-bit HLG
+// assets/library/footage/2026-10-25 holds the phone originals (gitignored, never deployed). The MOVs are 10-bit HLG
 // HDR stored rotated, so frames are tone-mapped to BT.709 and turned upright on the GPU
 // (VideoToolbox): a plain decode washes the red soil out to tan. HEIC photos go through sips,
 // because sharp cannot decode them. sharp then re-encodes everything without metadata (no GPS).
@@ -21,7 +21,7 @@ import { fileURLToPath } from "node:url"
 import sharp from "sharp"
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..")
-const FOOTAGE = join(ROOT, "public", "footage")
+const FOOTAGE = join(ROOT, "assets", "library", "footage", "2026-10-25")
 const OUT = join(ROOT, "assets")
 // The studio design renders (scripts/studio/render, from studio.glb): the finished exterior and a cutaway.
 const STUDIO_EXTERIOR = join(ROOT, "public", "designs", "studio", "render", "studio-exterior.jpg")
