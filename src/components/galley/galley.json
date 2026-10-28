@@ -1,0 +1,117 @@
+{
+  "about": "The compound's galley (compound.json units id \"galley\"): a 40 ft container painted teal on a 300 mm stone plinth, beside the study room with the public bathroom east of it, its front north toward the courtyard with two doors and two windows, as the homepage model draws it (scripts/site/render/compound.html). It is the staff kitchen for the bar and the meals (D-028; guests cook in their own kitchen by the camp): breakfast from 07:00 to 09:00 and dinner, from the beds and the hens, for a full house of 22 guests and the team, about 25.5 people a day (D-031), worked by the cook and a helper (guide/operations.md). The founder asked for a long worktop with two sinks (D-022); the rest is a design choice. The 2D (galley-plan.tsx) and the 3D (scripts/site/render/galley.html) both read this file. Plan in metres seen from the courtyard, as the homepage 3D shows it: x to the right from the west end (the study room's side), y toward the front (north), the container's centre line at y = 0. Assumptions, not yet sourced: the work runs from west to east, from the staff door and the stores past the prep bench and the cooking line to the pass and the service door; the worktop runs under the windows, so both sinks get daylight and the tall units and the hood take the solid back wall (the homepage 2D still draws it along the back wall); linings 50 mm, inside 11.99 x 2.2 m with 2.3 m to the ceiling; every fitting and its size is a design choice until the cook and a kitchen fitter check it.",
+  "container": {
+    "about": "ISO 40 ft, outside, not a high cube; the floor and ceiling heights are above the container's underside. No cargo doors are drawn, as on the homepage model; if the box has them, they stay shut behind the lining [A]. Inside: white wipe-clean panels on the walls, a grey non-slip resin floor, stainless steel fittings, a design choice.",
+    "l": 12.192,
+    "w": 2.438,
+    "h": 2.591,
+    "plinth": 0.3,
+    "paint": "teal",
+    "inner": { "x0": 0.1, "x1": 12.092, "y0": -1.1, "y1": 1.1 },
+    "floor": 0.15,
+    "ceiling": 2.45
+  },
+  "front": {
+    "about": "As the homepage model: two red steel doors with a glazed upper panel, 0.9 m wide and 1.2 m in from each end, opening in, hinged on the side nearer the end (compound-plan.tsx); two white-framed windows of two panes, 1.6 m wide, sill 1.3 m and head 2.0 m above the container's underside, so 1.15 m above the floor and clear of the worktop. The west door is the staff door: the cook and the helper, the morning harvest off the garden walk and the deliveries come in there, and the scraps go out to the hens and the compost (guide/operations.md); the east door is the service door, where meals go out and plates come back. Which door the garden walk reaches waits for the site plan; both are a design choice. Two stone steps at each door, since the floor stands 450 mm above the ground [A]. Heights in metres above the container's underside.",
+    "doors": [[1.2, 2.1], [10.092, 10.992]],
+    "door": [0.16, 2.1],
+    "windows": [[3.2, 4.8], [7.4, 9.0]],
+    "window": [1.3, 2.0],
+    "steps": { "d": 0.3, "over": 0.2 }
+  },
+  "worktop": {
+    "about": "The founder's long worktop (D-022): stainless steel, 7.8 m from the staff door to the service door, 600 mm deep and 900 mm high, on legs with an undershelf 180 mm off the floor, a 200 mm upstand on the wall under the windows [A]. Its two sinks sit under the windows, each a deep single bowl with a mixer tap: the prep sink at the west window, where the harvest is washed, and the wash-up sink at the east window, for pots and plates, with a pre-rinse spray over it. From west to east: the harvest bench by the staff door, the prep sink, the prep bench across from the cooking line, the wash-up sink, the dish drop by the service door. Both sinks drain through the kitchen's grease trap (guide/operations.md). No dishwasher is drawn: plates are washed by hand at the wash-up sink, and an undercounter machine fits under the dish drop if the cook wants one [A].",
+    "x0": 2.2,
+    "x1": 10.0,
+    "d": 0.6,
+    "h": 0.9,
+    "t": 0.04,
+    "upstand": 0.2,
+    "shelf": 0.18,
+    "sinks": [
+      { "id": "prep", "x": 4.0, "w": 0.6, "d": 0.45, "depth": 0.3 },
+      { "id": "wash", "x": 8.2, "w": 0.7, "d": 0.45, "depth": 0.35 }
+    ]
+  },
+  "basin": {
+    "about": "A hand-wash basin for hands only, in the corner beside the staff door, so everyone washes on the way in: stainless, on a pedestal, with a hands-free tap, soap and paper towels on the end wall beside it [A].",
+    "x0": 0.12,
+    "x1": 0.57,
+    "d": 0.35,
+    "h": 0.85
+  },
+  "hooks": { "about": "Apron hooks on the west end wall, between the freezer and the basin [A].", "y0": -0.2, "y1": 0.35, "h": 1.6 },
+  "cold": {
+    "about": "Cold storage across from the staff door, where the harvest, the eggs and the deliveries come in: an upright freezer and a two-door upright fridge, stainless, 800 mm deep and 2 m high [A]. The cold bench adds an undercounter fridge by the pass.",
+    "d": 0.8,
+    "h": 2.0,
+    "units": [
+      { "id": "freezer", "x0": 0.1, "x1": 0.85, "doors": 1 },
+      { "id": "fridge", "x0": 0.85, "x1": 2.2, "doors": 2 }
+    ]
+  },
+  "dry": {
+    "about": "The dry store beside the fridge: stainless shelving 2.1 m long and 500 mm deep, five shelves from 200 mm off the floor (sacks of rice, flour and beans) to 1.8 m (tubs, oil, jars and tins above) [A]; the stock is counted every week (guide/operations.md).",
+    "x0": 2.3,
+    "x1": 4.4,
+    "d": 0.5,
+    "shelves": [0.2, 0.6, 1.0, 1.4, 1.8]
+  },
+  "line": {
+    "about": "The cooking line on the back wall, across from the prep bench: a six-ring range over an oven (1.2 m), a griddle (0.7 m) and a fryer (0.5 m), 700 mm deep and 900 mm high, with a steel splashback up to the hood [A]. Gas or electric is still open: the power guide's 25 kWh a day for the galley assume electric cooking, about 8 on gas (guide/trades/power.md), so the line is drawn for either. The aisle in front of it is 900 mm, the galley's narrowest: one person cooks while the other passes behind [A].",
+    "d": 0.7,
+    "h": 0.9,
+    "units": [
+      { "id": "range", "x0": 4.7, "x1": 5.9 },
+      { "id": "griddle", "x0": 5.9, "x1": 6.6 },
+      { "id": "fryer", "x0": 6.6, "x1": 7.1 }
+    ]
+  },
+  "hood": {
+    "about": "A stainless canopy hood over the line, 150 mm past it at each end and 1 m deep, its lower edge 2 m off the floor; the standard box leaves 2.3 m to the ceiling, so the canopy is only 300 mm deep [A]. Its duct rises through the roof to a fan on a curb; the windows and the doors let the air back in [A].",
+    "x0": 4.55,
+    "x1": 7.25,
+    "d": 1.0,
+    "y0": 2.0,
+    "duct": 0.3,
+    "fan": { "r": 0.3, "h": 0.42, "curb": 0.2 }
+  },
+  "bench": {
+    "about": "A cold bench beside the line: an undercounter fridge with two doors under a stainless top, for breakfast's eggs, milk and fruit and the bar's food [A].",
+    "x0": 7.35,
+    "x1": 8.75,
+    "d": 0.6,
+    "h": 0.9
+  },
+  "pass": {
+    "about": "The pass across from the service door: a heated cupboard that keeps the plates warm under a heated top, and a gantry 1.5 m up with heat lamps under its shelf, where dinner is plated and carried out [A].",
+    "x0": 8.85,
+    "x1": 10.65,
+    "d": 0.6,
+    "h": 0.9,
+    "gantry": 1.5,
+    "shelf": 0.32
+  },
+  "cleaning": {
+    "about": "A tall cupboard for mops, buckets and the cleaning products, apart from the food [A].",
+    "x0": 10.75,
+    "x1": 11.55,
+    "d": 0.6,
+    "h": 2.0
+  },
+  "bins": {
+    "about": "Two pedal bins on the east end wall by the dish drop, one for scraps and one for waste, 50 mm off the wall; the scraps go to the hens and the compost (guide/operations.md). y is each bin's centre.",
+    "w": 0.45,
+    "d": 0.45,
+    "h": 0.75,
+    "off": 0.05,
+    "y": [-0.83, -0.33]
+  },
+  "plates": {
+    "about": "A low stainless cupboard in the corner by the service door for clean plates, bowls and cutlery, a landing for trays on top [A].",
+    "x0": 11.15,
+    "y0": 0.5,
+    "h": 0.9
+  },
+  "fire": { "about": "A fire blanket and an extinguisher for cooking-oil fires on the east end wall, by the service door [A].", "y": 0.22 }
+}
