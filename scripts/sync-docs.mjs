@@ -16,7 +16,8 @@
 // guide (public/guides/*.pdf), which stays plain text until scripts/print-docs.mjs has made it.
 //
 // guide/ holds the maintained execution guides. In them:
-//   {{studio.l}}  a value from public/designs/studio/data/dims.json (the studio generator); unknown keys fail
+//   {{studio.l}}  a value from public/designs/studio/data/dims.json (the studio generator), {{site.*}} from
+//                 public/designs/site/site-dims.json (scripts/site/master-plan.mjs); unknown keys fail
 //   X.rw.md       beside X.md becomes <slug>-rw, the Kinyarwanda twin: rendered, linked, kept out of the
 //                 sidebar, and checked against the English for the same sections, steps, numbers and links
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
@@ -37,6 +38,7 @@ const PAGES = [
   { slug: "plumber", src: "guide/trades/plumber.md" },
   "---The farm---",
   { slug: "farm", src: "guide/farm.md" },
+  { slug: "master-plan", src: "guide/master-plan.md" },
   "---Studio package---",
   { slug: "studio", src: "study/studio/studio.md" },
   { slug: "studio-site", src: "study/studio/studio-site.md" },
@@ -149,7 +151,10 @@ const entries = [...listed, ...twins]
 const slugByPath = new Map(entries.map((p) => [p.src ?? p.csv, p.slug]))
 
 // {{ns.key}} values: the studio generator's measurements, read only when a page uses one.
-const TOKEN_FILES = { studio: join(PUBLIC, "designs", "studio", "data", "dims.json") }
+const TOKEN_FILES = {
+  studio: join(PUBLIC, "designs", "studio", "data", "dims.json"),
+  site: join(PUBLIC, "designs", "site", "site-dims.json"), // scripts/site/master-plan.mjs
+}
 const tokenCache = {}
 function tokens(line, src) {
   return line.replace(/\{\{([a-z]+)\.([a-z0-9_]+)\}\}/g, (match, ns, key) => {

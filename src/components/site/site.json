@@ -1,0 +1,119 @@
+{
+  "_": "Provisional master plan in true metres (D-027). The boundary is the founder's sketch (IMG_3258) scaled to 5 ha [E]: replace it with the land-title parcel plan (UPI) or a survey. x runs right and y down from the sketch's top-left; north is not fixed yet, so the drawing keeps the sketch's orientation. compound.json keeps the buildings (its x is stretched for display); here the compound is one footprint.",
+  "area_ha": 5.0,
+  "boundary": [[0, 22], [22, 0], [277, 0], [277, 255], [130, 255], [130, 90], [0, 106]],
+  "zones": [
+    {
+      "id": "compound",
+      "label": "Compound",
+      "note": "containers, courtyard, camp, fire pit (compound.json)",
+      "rect": [150, 10, 214, 73]
+    },
+    {
+      "id": "veg",
+      "label": "Vegetables",
+      "note": "beds 1.2 m wide, paths 0.5 m, drip lines",
+      "rect": [76, 12, 124, 84]
+    },
+    {
+      "id": "yard",
+      "label": "Compost, tanks, tools",
+      "note": "between the beds and the animals",
+      "rect": [64, 12, 74, 84]
+    },
+    {
+      "id": "paddock",
+      "label": "Livestock paddock",
+      "note": "fenced; shade trees at the corners",
+      "rect": [12, 30, 60, 96]
+    },
+    {
+      "id": "houses",
+      "label": "Poultry + goat houses",
+      "note": "siting after the 200 m lake check",
+      "rect": [12, 12, 60, 28]
+    },
+    {
+      "id": "woodland",
+      "label": "Woodland and walks",
+      "note": "the forest: trees on an even, loose grid; a clearing for events",
+      "rect": [134, 86, 273, 251]
+    },
+    {
+      "id": "lawn",
+      "label": "Lawn",
+      "note": "volleyball, guest kitchen",
+      "rect": [216, 10, 273, 84]
+    }
+  ],
+  "features": [
+    {
+      "id": "volleyball",
+      "label": "Volleyball 18 × 9 (24 × 15 with free zone)",
+      "rect": [230, 16, 254, 31]
+    },
+    {
+      "id": "guest-kitchen",
+      "label": "Guest kitchen + BBQ",
+      "rect": [220, 52, 230, 60]
+    },
+    {
+      "id": "clearing",
+      "label": "Event clearing",
+      "circle": [205, 170, 18]
+    },
+    {
+      "id": "tank",
+      "label": "Tank + pump",
+      "circle": [138, 30, 3]
+    },
+    {
+      "id": "septic",
+      "label": "Septic + soakaway (≥ 50 m from the borehole)",
+      "rect": [190, 92, 202, 100]
+    },
+    {
+      "id": "solar",
+      "label": "Solar array (option)",
+      "rect": [220, 66, 244, 76]
+    }
+  ],
+  "paths": [
+    {
+      "id": "arrival",
+      "label": "Arrival road (gate position to confirm)",
+      "width": 4,
+      "points": [[200, 255], [196, 210], [184, 150], [182, 73]]
+    },
+    {
+      "id": "kitchen-walk",
+      "label": "Garden walk to the galley",
+      "width": 2,
+      "points": [[124, 50], [150, 50]]
+    },
+    {
+      "id": "loop",
+      "label": "Woodland loop",
+      "width": 2,
+      "points": [[182, 110], [150, 140], [160, 200], [205, 235], [250, 200], [255, 130], [215, 105], [182, 110]]
+    }
+  ],
+  "trees": {
+    "seed": 20261028,
+    "woodland": {
+      "spacing": 12,
+      "jitter": 0.28,
+      "canopy": 9
+    },
+    "compound_edge": {
+      "spacing": 14,
+      "canopy": 8
+    },
+    "field": [[14, 94], [58, 94], [14, 32], [70, 88], [126, 86], [62, 8]],
+    "boundary": {
+      "spacing": 8,
+      "inset": 2
+    },
+    "clear": 4
+  }
+}
