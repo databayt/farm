@@ -24,7 +24,7 @@ HARDWARE = {
     "H": ("Adjustable leg 100-150 mm", "leg"),
     "J": ("Handle 128 mm centres", "handle"),
     "K": ("Castor 50 mm", "castor"),
-    "L": ("Self-drilling screw 4.8 x 38 (battens to steel)", "sds"),
+    "L": ("Winged self-drilling screw 5.5 x 50 (38 mm battens to the steel)", "sds"),
 }
 
 

@@ -1,10 +1,10 @@
 point,kind,circuit,description,x_mm,y_mm,z_mm,watts,face,model,w_mm,h_mm,d_mm
 DB,db,,"Unit board, 24 modules (2 x 12), by the galley",3678,0,1625,0,+y,board,300,400,110
 PI,inlet,,"Power inlet 32 A IP67 (IEC 60309 blue, 2P+E), outside behind the board",3678,-60,1225,0,-y,inlet,90,120,100
-L1,light,C1,"Ceiling light, bed",800,1126,2323,12,-z,ceiling,220,220,50
-L2,light,C1,"Ceiling light, living",2300,1126,2323,12,-z,ceiling,220,220,50
-L3,light,C1,"Ceiling light, galley",3778,1126,2323,12,-z,ceiling,220,220,50
-L4,light,C1,Bathroom light IP65,5223,850,2323,12,-z,bulkhead,200,120,80
+L1,light,C1,"Ceiling light, bed",800,1126,2316,12,-z,ceiling,220,220,50
+L2,light,C1,"Ceiling light, living",2300,1126,2316,12,-z,ceiling,220,220,50
+L3,light,C1,"Ceiling light, galley",3778,1126,2316,12,-z,ceiling,220,220,50
+L4,light,C1,Bathroom light IP65,5223,850,2316,12,-z,bulkhead,200,120,80
 L5,light,C1,Wall reading light over the bed (wall side),300,0,1150,4,+y,walllamp,120,160,240
 L7,light,C1,Under-cabinet LED strip,4278,800,1790,10,-z,strip,1200,20,12
 S1,switch,C1,"Entry: bed (2-way), living and galley lights",4480,2252,1100,0,-y,switch,86,86,12
@@ -22,13 +22,13 @@ P8,socket,C3,Fridge socket,4578,275,250,100,-x,socket,86,86,40
 P12,socket,C3,Double socket above the hood: hood + Wi-Fi router,4578,850,1720,120,-x,socket2,146,86,40
 P9,outlet,C4,"Hob outlet plate, isolated at its RCBO on the board",4578,850,600,3500,-x,outlet,86,86,20
 P10,outlet,C5,Heater DP switch + timer,4578,1540,1700,2000,-x,timer,146,86,40
-L8,light,C6,"Deck light IP65, under the veranda canopy",2900,2395,1991,10,-z,bulkhead,200,120,80
+L8,light,C6,"Deck light IP65, under the veranda canopy",2900,2395,1984,10,-z,bulkhead,200,120,80
 S5,switch,C6,"Deck light, beside the entry switch",4575,2252,1100,0,-y,switch,86,86,12
 S4,switch,C6,"Stair and roof lights (2-way), IP65 at the stair foot",-200,2925,1100,0,+x,switch65,90,90,55
 L10,light,C6,Stair light IP65,-900,2925,1500,8,+y,bulkhead,200,120,80
-S6,switch,C6,"Stair and roof lights (2-way), IP65 at the stair head",-105,2195,3586,0,-x,switch65,90,90,55
-L9,light,C6,"Roof terrace lights IP65 (x2), under the front top rail",1500,2285,3586,20,-z,bulkhead,200,120,80
+S6,switch,C6,"Stair and roof lights (2-way), IP65 at the stair head",-105,2195,3579,0,-x,switch65,90,90,55
+L9,light,C6,"Roof terrace lights IP65 (x2), under the front top rail",1500,2285,3579,20,-z,bulkhead,200,120,80
 P11,outlet,C7,AC provision: isolator,900,0,2150,1000,+y,isolator,90,110,65
-AL1,alarm,,"Smoke alarm, 10-year battery",1550,1126,2323,0,-z,alarm,110,110,45
-AL2,alarm,,"Heat alarm, kitchen, 10-year battery",3428,1689,2323,0,-z,alarm,110,110,45
+AL1,alarm,,"Smoke alarm, 10-year battery",1550,1126,2316,0,-z,alarm,110,110,45
+AL2,alarm,,"Heat alarm, kitchen, 10-year battery",3428,1689,2316,0,-z,alarm,110,110,45
 E1,earth,,"Earth rod 1.5 m copper-bonded in an inspection pit, behind the board",3678,-450,-700,0,+z,earth,16,1500,16

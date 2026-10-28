@@ -38,7 +38,7 @@ def tri(it):
 # ------------------------------------------------------------------------------- A sheets
 def a001_cover(m, index: list[tuple[str, str]]) -> Sheet:
     lo, s = m["lo"], Sheet("A-001", "Cover and drawing index")
-    s.text(20, 32, "Container studios: three identical farm-stay guest units", 7, weight="bold")
+    s.text(20, 32, f"Container studios: {P.UNITS} identical farm-stay guest units", 7, weight="bold")
     s.text(20, 41, "IKEA-style flat-pack fit-out of standard 20 ft containers · materials and fabrication in Kigali", 3.4)
     y = s.note(20, 54, [
         f"Net interior {lo.L:.0f} x {lo.W:.0f} x {lo.H:.0f} mm ({lo.L * lo.W / 1e6:.1f} m2) · Layout B (D-020)",
@@ -298,13 +298,13 @@ def a201_elev(m) -> Sheet:
     lo, s = m["lo"], Sheet("A-201", "Interior elevations: back wall and front wall", "1:30")
     sc = 30
     it = items(m, layers=["furniture", "fixtures", "envelope"])
-    back = [(b, fl, n) for (b, fl, n, i, k, layer) in it if b.y0 < 700 and b.z0 < lo.H - 5 and not i.startswith("K1-BAT")
-            and not i.startswith("K1-EPS") and k != "K0"]
+    back = [(b, fl, n) for (b, fl, n, i, k, layer) in it if b.y0 < 700 and b.z0 < lo.H - 5 and not i.startswith(("K1-BAT", "K1-F"))
+            and not i.startswith("K1-INS") and k != "K0"]
     s.text(30, 30, "BACK WALL (looking at y = 0)", 3, weight="bold")
     s.rect(30, 36, lo.L / sc, lo.H / sc, "#fafafa", "#111", 0.4)
     ortho(s, "back", back, 30, 36 + lo.H / sc, sc, labels=True)
     front = [(b, fl, n) for (b, fl, n, i, k, layer) in it if b.y1 > lo.W - 700 and b.z0 < lo.H - 5
-             and not i.startswith(("K1-BAT", "K1-EPS")) and k != "K0"]
+             and not i.startswith(("K1-BAT", "K1-INS", "K1-F")) and k != "K0"]
     sl = items(m, kits=["K0"], layers=["shell"], exclude_layers=())
     oy = 160
     s.text(30, oy - 6, "FRONT WALL (looking at the glass from inside; end B on the left)", 3, weight="bold")
@@ -321,7 +321,7 @@ def a202_ends(m) -> Sheet:
     lo, s = m["lo"], Sheet("A-202", "End elevations and cross-section", "1:25")
     sc = 25
     it = items(m, layers=["furniture", "fixtures", "envelope"])
-    clean = [(b, fl, n, i) for (b, fl, n, i, k, layer) in it if not i.startswith(("K1-BAT", "K1-EPS")) and k != "K0"]
+    clean = [(b, fl, n, i) for (b, fl, n, i, k, layer) in it if not i.startswith(("K1-BAT", "K1-INS", "K1-F")) and k != "K0"]
     views = [("endA", "END A (bed) looking at x = 0", [t for t in clean if t[0].x0 < 1700]),
              ("endB", "GALLEY looking at the bathroom wall", [t for t in clean if t[0].x0 >= lo.galley_x0 - 40
                                                           and t[0].x1 <= lo.part_x0 + 20]),
@@ -357,26 +357,26 @@ def a401_details(m) -> Sheet:
             x += w
         s.dim(ox, oy - 2, x, oy - 2, f"{sum(t for t, _, _ in lay):.0f}", 2)
 
-    layers(30, 40, "WALL (steel to room)", [(1.6 * 4, "#9c4436", "steel 1.6 (x4 drawn)"), (36, FILL["eps"], "EPS strips in valleys"),
-                                           (38, FILL["timber"], "batten 38 + EPS 38"), (12, FILL["PLY12"], "ply 12, PU varnish")])
-    layers(160, 40, "CEILING (roof to room)", [(2 * 4, "#9c4436", "roof 2.0 (x4)"), (20, FILL["eps"], "EPS in corrugation"),
-                                              (38, FILL["timber"], "batten + EPS 38"), (12, FILL["PLY12"], "ply 12")])
-    layers(290, 40, "BATHROOM WET WALL", [(38, FILL["timber"], "stud 38 / EPS"), (12, "#cfcfcf", "cement board 12"),
+    layers(30, 40, "WALL (steel to room)", [(1.6 * 4, "#9c4436", "steel 1.6 (x4 drawn)"), (36, FILL["eps"], "spray foam in valleys"),
+                                           (38, FILL["timber"], "batten 38 + spray foam 38"), (12, FILL["PLY12"], "ply 12, PU varnish")])
+    layers(160, 40, "CEILING (roof to room)", [(2 * 4, "#9c4436", "roof 2.0 (x4)"), (20, FILL["eps"], "spray foam in corrugation"),
+                                              (38, FILL["timber"], "batten + spray foam 38"), (12, FILL["PLY12"], "ply 12")])
+    layers(290, 40, "BATHROOM WET WALL", [(38, FILL["timber"], "stud 38 / spray foam"), (12, "#cfcfcf", "cement board 12"),
                                          (2, "#4a7bd1", "membrane"), (10, FILL["tile"], "tile + adhesive")])
     layers(30, 150, "PARTITION 70 (living | bath)", [(18, FILL["MPLY18"], "marine ply 18"), (40, FILL["timber"], "stud 40 + rock wool"),
                                                     (12, "#cfcfcf", "cement board 12")])
-    layers(160, 150, "FLOOR (living)", [(28, "#8a6a3a", "container ply 28 (treated)"), (1, "#777", "epoxy seal"),
-                                       (2, "#bbb", "underlay"), (5, FILL["floor"], "SPC 5")])
+    layers(160, 150, "FLOOR (living)", [(28, "#8a6a3a", "container ply 28 (treated)"), (1, "#777", "membrane"),
+                                       (12, FILL["PLY12"], "ply sheet 12"), (5, FILL["floor"], "oak SPC 5")])
     s.note(290, 150, [
-        "W1 (old door): 2 mm steel infill with 40 mm EPS welded",
-        "into the existing frame up to 1,150; obscure louvre",
+        "W1 (old door): 2 mm steel infill welded, foamed with",
+        "the walls, up to 1,150; obscure louvre",
         "window above with insect mesh; the bathroom fan exits",
         "through the infill panel (no new hole in a bracing wall).",
         "",
-        "Floor: never sand the treated plywood (STU-07).",
+        "Floor: never sand the treated plywood (STU-07); membrane, then 12 mm sheets.",
         "Drains pass between cross-members, never through them.",
         "Steel faces: rust converter + zinc primer before foam.",
-        "All EPS joints foam-sealed: no air path to the steel.",
+        "Closed-cell spray foam, no gaps: no air path to the steel. No welding after foam.",
     ], 2.4)
     return s
 

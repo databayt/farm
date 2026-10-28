@@ -1,6 +1,8 @@
 """The eleven kits (K1-K11) of one studio, built from Layout B (D-020). One call = one unit;
-the three studios use the same kit (parts are sized to the smallest surveyed unit)."""
+both studios use the same kit (parts are sized to the smaller surveyed unit)."""
 from __future__ import annotations
+
+import math
 
 from dataclasses import replace
 
@@ -88,44 +90,78 @@ def shell(lo: Layout) -> Kit:
 
 
 # ------------------------------------------------------------------------------- K1 lining
+def batten_lines(panels: list[tuple[float, float]], gap: float = 600.0) -> list[float]:
+    """Batten centrelines under a run of lining panels: one at every joint and at both ends, plus infill
+    so no span is over `gap`, so every panel edge lands on a batten."""
+    joints = [panels[0][0]] + [b for _, b in panels]
+    lines: list[float] = []
+    for a, b in zip(joints, joints[1:]):
+        n = max(1, math.ceil((b - a) / gap - 1e-9))
+        lines += [a + i * (b - a) / n for i in range(n)]
+    return lines + [joints[-1]]
+
+
 def k1_lining(lo: Layout) -> Kit:
-    k = Kit("K1", "Insulation and lining", "carpentry", "site")
-    st = "S03"
-    k.steps.append(Step("S02", "K1", "Seal the floor, prime the steel, foam-fill the corrugation valleys", [],
-                        {"L": 0}, 2, "Epoxy floor seal: do not sand the treated floor."))
-    # battens at 600 centres on the back wall and the front strips, horizontal on the ceiling
-    bats = []
-    x = 0.0
-    while x <= lo.bath_x0:
-        bats.append(("back", x))
-        x += 600
-    b_len = 0.0
-    for i, (wall, bx) in enumerate(bats):
-        bx = min(bx, lo.bath_x0 - 50)
-        k.buy(Bought(f"K1-BAT-B{i + 1:02d}", "Batten 38 x 50 treated (back wall)", "K1", "timber", "carpentry", 1,
-                     "each", "batten", Box(bx, -38, 0, bx + 50, 0, lo.H), step=st, layer="envelope", color="timber"))
-        b_len += lo.H / 1000
-    x = 0.0
-    while x <= lo.L:
-        k.buy(Bought(f"K1-BAT-C{int(x / 600) + 1:02d}", "Batten 38 x 50 treated (ceiling)", "K1", "timber",
-                     "carpentry", 1, "each", "batten", Box(min(x, lo.L - 50), 0, lo.H + 12, min(x, lo.L - 50) + 50,
-                                                           lo.W, lo.H + 50), step=st, layer="envelope",
-                     color="timber"))
-        x += 600
+    k = Kit("K1", "Insulation and lining", "carpentry + spray foam", "site")
+    e = P.LINING_WALL.value
+    # floor (founder 2026-10-28): 12 mm sheets wall to wall over a membrane on the treated container floor,
+    # long side along the box, the second run starting with a half sheet so no joint lines up (floor.html)
+    fx0, fx1, fy0, fy1 = -e, lo.L + e, -e, lo.W + e
+    z1 = -(P.LINING_FLOOR.value - 5)  # the 5 mm plank sits on top
+    sl, sw, _ = P.SHEETS["PLY12"]
+    floor_m2 = (fx1 - fx0) * (fy1 - fy0) / 1e6
+    # laid whole on site; the last sheet of each run is cut to fit, and run 2 (ripped to the leftover width)
+    # starts with the half sheet the run-1 offcut gives, so the sheets needed are the floor area rounded up
+    n_sheets = math.ceil(floor_m2 / (sl * sw / 1e6))
+    k.buy(Bought("K1-FLOOR", f"Ply 12 mm sheets {sl} x {sw} for the floor, laid wall to wall in two staggered runs",
+                 "K1", "boards", "carpentry", n_sheets, "each", "sheet_PLY12", Box(fx0, fy0, z1 - 12, fx1, fy1, z1),
+                 step="S02", layer="envelope", color="PLY12"))
+    floor_screws = math.ceil((fx1 - fx0) / 300 + 1) * math.ceil((fy1 - fy0) / 300 + 1)
+    k.steps.append(Step("S02", "K1", "Prime the steel; lay the membrane over the treated floor; screw down the floor sheets",
+                        [], {"F": floor_screws}, 2,
+                        "Never sand the treated container floor. Sheets 2440 x 1220, long side along the box, joints "
+                        "staggered by half a sheet, 3 mm gaps, a screw every 300 mm both ways."))
+    # battens: one under every panel joint and edge, infill at 600 or less (back wall, end A, front strip,
+    # slider head, ceiling); the bathroom walls are K2's studs
+    nb = 0
+
+    def batten(where: str, box: Box) -> None:
+        nonlocal nb
+        nb += 1
+        k.buy(Bought(f"K1-BAT-{nb:02d}", f"Batten 38 x 50 treated ({where})", "K1", "timber", "carpentry", 1, "each",
+                     "batten", box, step="S03", layer="envelope", color="timber"))
+
+    for x in batten_lines(split(0, lo.part_x0)):
+        x0 = min(max(x - 25, 0), lo.part_x0 - 50)
+        batten("back wall", Box(x0, -38, 0, x0 + 50, 0, lo.H))
+    for y in batten_lines(split(0, lo.W)):
+        y0 = min(max(y - 25, 0), lo.W - 50)
+        batten("end A", Box(-38, y0, 0, 0, y0 + 50, lo.H))
+    for x in batten_lines(split(0, lo.o1[0])):
+        x0 = min(max(x - 25, 0), lo.o1[0] - 50)
+        batten("front wall", Box(x0, lo.W, 0, x0 + 50, lo.W + 38, lo.H))
+    for a, b in split(lo.o1[0], lo.o1[1], 2400):
+        batten("slider head", Box(a, lo.W, lo.o1_head, b, lo.W + 38, min(lo.o1_head + 50, lo.H)))
+    for x in batten_lines(split(0, lo.L)):
+        x0 = min(max(x - 25, 0), lo.L - 50)
+        batten("ceiling", Box(x0, 0, lo.H + 12, x0 + 50, lo.W, lo.H + 50))
+    k.steps.append(Step("S03", "K1", "Fix the battens: one under every lining-panel joint and edge, infill at 600 mm or less",
+                        [], {"L": 6 * nb}, 2, "Winged screws into the steel at both ends and every 600 mm along each batten."))
+    # spray foam between the battens, after the first fix and its pressure test (S04)
     for wall, b in (("back", Box(0, -38, 0, lo.L, 0, lo.H)), ("front-A", Box(0, lo.W, 0, lo.o1[0], lo.W + 38, lo.H)),
                     ("ceiling", Box(0, 0, lo.H + 12, lo.L, lo.W, lo.H + 50)),
                     ("end-A", Box(-38, 0, 0, 0, lo.W, lo.H))):
-        k.buy(Bought(f"K1-EPS-{wall}", f"EPS insulation, {wall}", "K1", "insulation", "carpentry",
-                     round(b.size[0] * b.size[2] / 1e6 if wall != "ceiling" and wall != "end-A"
-                           else (b.size[0] * b.size[1] if wall == "ceiling" else b.size[1] * b.size[2]) / 1e6, 2),
-                     "m2", "eps", b, step=st, layer="envelope", color="eps"))
+        area = (b.size[0] * b.size[2] if wall in ("back", "front-A")
+                else b.size[0] * b.size[1] if wall == "ceiling" else b.size[1] * b.size[2]) / 1e6
+        k.buy(Bought(f"K1-INS-{wall}", f"Closed-cell spray foam between the battens, {wall}", "K1", "insulation",
+                     "spray foam", round(area, 2), "m2", "sprayfoam", b, step="S05", layer="envelope", color="eps"))
     # lining panels (12 mm ply): back wall to the partition, end A, front strip, ceiling
     n = 0
 
     def panel(name: str, box: Box) -> None:
         nonlocal n
         n += 1
-        k.add(Part(f"K1-{n:02d}", name, "K1", "PLY12", box, step="S04", layer="envelope", edges="",
+        k.add(Part(f"K1-{n:02d}", name, "K1", "PLY12", box, step="S05", layer="envelope", edges="",
                    explode=(0, 0, 0)))
 
     for a, b in split(0, lo.part_x0):
@@ -138,17 +174,19 @@ def k1_lining(lo: Layout) -> Kit:
         panel("Front head strip", Box(a, lo.W, lo.o1_head, b, lo.W + 12, lo.H))
     for a, b in split(0, lo.L):
         panel("Ceiling panel", Box(a, 0, lo.H, b, lo.W, lo.H + 12))
-    k.steps.append(Step("S03", "K1", "Fix battens and fit EPS between them; foam-seal every joint", [], {"L": 120}, 2))
-    k.steps.append(Step("S04", "K1", "Fix the numbered lining panels (cut-outs already in place)",
-                        [p.id for p in k.parts], {"F": 8 * len(k.parts)}, 2))
+    lining = [p.id for p in k.parts if p.step == "S05"]
+    k.steps.append(Step("S05", "K1", "Spray foam between the battens, let it cure and trim it flush; fix the numbered "
+                        "lining panels (cut-outs already in place)", lining, {"F": 40 * len(lining)}, 2,
+                        "HOLD: the S04 pressure test has passed. No welding or grinding on the shell once the foam is in."))
     k.buy(Bought("K1-FOAM", "PU foam adhesive and gap filler (750 ml)", "K1", "insulation", "carpentry", 12, "each",
                  "pufoam"))
-    k.buy(Bought("K1-EPOXY", "Primer + 100%-solids epoxy floor seal", "K1", "finishes", "painting", 14, "m2",
-                 "epoxy"))
-    k.buy(Bought("K1-SPC", "SPC flooring 5 mm, natural oak decor without knots, + underlay (living area)", "K1", "finishes", "carpentry",
-                 round(lo.part_x0 * lo.W / 1e6 * 1.08, 1), "m2", "spc", Box(0, 0, -5, lo.part_x0, lo.W, 0),
-                 step="S05", layer="envelope", color="floor"))
-    k.buy(Bought("K1-RUST", "Rust converter + zinc primer for steel", "K1", "finishes", "painting", 4, "L", "primer"))
+    k.buy(Bought("K1-DPM", "Polythene membrane 250 um over the treated container floor, laps 150 mm", "K1", "finishes",
+                 "carpentry", round(floor_m2 * 1.1, 1), "m2", "dpm", step="S02"))
+    k.buy(Bought("K1-SPC", "Oak SPC plank 5 mm with attached underlay, natural oak decor without knots (living area)", "K1",
+                 "finishes", "carpentry", round(lo.part_x0 * lo.W / 1e6 * 1.08, 1), "m2", "spc",
+                 Box(0, 0, -5, lo.part_x0, lo.W, 0), step="S11", layer="envelope", color="floor"))
+    k.buy(Bought("K1-RUST", "Rust converter + zinc primer for steel", "K1", "finishes", "painting", 4, "L", "primer",
+                 step="S02"))
     k.buy(Bought("K1-VARN", "Vapour-retarding primer + off-white paint for the linings", "K1", "finishes", "painting",
                  10, "L", "varnish"))
     return k
@@ -312,7 +350,8 @@ def k3_kitchen(lo: Layout) -> Kit:
     k.keepouts.append(KeepOut("KO-KITCHEN", Box(lo.part_x0 - WORKTOP_D - AISLE_MIN, 0, 0, lo.part_x0 - WORKTOP_D, run,
                                                 1800), f"Galley aisle {AISLE_MIN:.0f} (worktop to the sofa)", "K3"))
     k.steps += [
-        Step("S11", "K3", "Assemble the fridge bay, hob base and sink base on their legs along the partition",
+        Step("S11", "K3", "Lay the oak planks over the living area (end A to the partition); then assemble the fridge bay, "
+             "hob base and sink base on their legs along the partition",
              [p.id for p in k.parts if p.step == "S11"], {}, 2),
         Step("S12", "K3", "Assemble the overhead cabinet and hang it on the steel rail",
              [p.id for p in k.parts if p.step == "S12"], {}, 2, "Lift the cabinet up: two people."),
@@ -445,7 +484,7 @@ def k6_living(lo: Layout) -> Kit:
     k.buy(Bought("K6-CURT", "Blackout curtain + track for the 3 m slider", "K6", "furnishing", "furnishing", 1,
                  "set", "curtain", step="S17"))
     k.buy(Bought("K6-MESH", "Insect screens: slider (sliding), W1, vents", "K6", "glazing", "glazier", 1, "set",
-                 "mesh", step="S05"))
+                 "mesh", step="S18"))
     k.steps.append(Step("S17", "K6", "Place the sofa; slot together the table and the two chairs",
                         [p.id for p in k.parts], {}, 1))
     return k
@@ -478,7 +517,7 @@ def k7_trims(lo: Layout) -> Kit:
 def k10_steel(lo: Layout) -> Kit:
     k = Kit("K10", "Steel and glazing", "welding + glazier", "steel workshop + site")
     e = P.LINING_WALL.value
-    k.buy(Bought("K10-W1INF", "W1 infill: 2 mm steel + 40 mm EPS, welded into the old door frame (0-1,150)",
+    k.buy(Bought("K10-W1INF", "W1 infill: 2 mm steel welded into the old door frame (0-1,150), foamed with the walls",
                  "K10", "steel", "welding", 1, "each", "w1infill",
                  Box(lo.o2[0], lo.W, 0, lo.o2[1], lo.W + e, lo.w1_sill), step="S01", layer="envelope", color="steel"))
     k.buy(Bought("K10-W1WIN", "W1 obscure louvre window 520 x 890 + insect mesh (wash lobby)", "K10", "glazing",
@@ -496,8 +535,10 @@ def k10_steel(lo: Layout) -> Kit:
                  "each", "vent", step="S01"))
     k.buy(Bought("K10-AC", "AC wall sleeve 75 mm (provision, back wall, one hole)", "K10", "steel", "welding", 1,
                  "each", "sleeve", step="S01"))
-    k.steps.append(Step("S01", "K10", "Survey, level the supports, convert the old door to W1, seal end B", [], {},
-                        2, "Survey sheet first: nothing is cut before study/studio/survey.csv is complete."))
+    k.steps.append(Step("S01", "K10", "Survey and level the supports; all hot work now: convert the old door to W1, "
+                        "seal end B, cut the AC sleeve", [], {}, 2,
+                        "Survey sheet first: nothing is cut before study/studio/survey.csv is complete. "
+                        "No welding or grinding on the shell after the spray foam (S05)."))
     return k
 
 

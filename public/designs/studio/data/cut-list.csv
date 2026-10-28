@@ -1,23 +1,23 @@
 id,kit,name,material,length_mm,width_mm,thickness_mm,edges,edge_band_m,face_ops,edge_ops,step
-K1-01,K1,Back wall lining,PLY12,2323,1144,12,,0,0,0,S04
-K1-02,K1,Back wall lining,PLY12,2323,1144,12,,0,0,0,S04
-K1-03,K1,Back wall lining,PLY12,2323,1144,12,,0,0,0,S04
-K1-04,K1,Back wall lining,PLY12,2323,1144,12,,0,0,0,S04
-K1-05,K1,End A lining,PLY12,2323,1126,12,,0,0,0,S04
-K1-06,K1,End A lining,PLY12,2323,1126,12,,0,0,0,S04
-K1-07,K1,Front wall lining (end A),PLY12,2323,690,12,,0,0,0,S04
-K1-08,K1,Front wall lining (end A),PLY12,2323,690,12,,0,0,0,S04
-K1-09,K1,Front head strip,PLY12,1500,83,12,,0,0,0,S04
-K1-10,K1,Front head strip,PLY12,1500,83,12,,0,0,0,S04
-K1-11,K1,Ceiling panel,PLY12,2252,1160,12,,0,0,0,S04
-K1-12,K1,Ceiling panel,PLY12,2252,1160,12,,0,0,0,S04
-K1-13,K1,Ceiling panel,PLY12,2252,1160,12,,0,0,0,S04
-K1-14,K1,Ceiling panel,PLY12,2252,1160,12,,0,0,0,S04
-K1-15,K1,Ceiling panel,PLY12,2252,1160,12,,0,0,0,S04
-K2-01,K2,Partition skin (galley face),MPLY18,2323,885,18,,0,0,0,S06
-K2-02,K2,Partition skin (galley face),MPLY18,2323,885,18,,0,0,0,S06
-K2-03,K2,Cross wall skin over the door,MPLY18,600,273,18,,0,0,0,S06
-K2-04,K2,Cross wall skin (lobby face),MPLY18,2323,550,18,,0,0,0,S06
+K1-01,K1,Back wall lining,PLY12,2316,1144,12,,0,0,0,S05
+K1-02,K1,Back wall lining,PLY12,2316,1144,12,,0,0,0,S05
+K1-03,K1,Back wall lining,PLY12,2316,1144,12,,0,0,0,S05
+K1-04,K1,Back wall lining,PLY12,2316,1144,12,,0,0,0,S05
+K1-05,K1,End A lining,PLY12,2316,1126,12,,0,0,0,S05
+K1-06,K1,End A lining,PLY12,2316,1126,12,,0,0,0,S05
+K1-07,K1,Front wall lining (end A),PLY12,2316,690,12,,0,0,0,S05
+K1-08,K1,Front wall lining (end A),PLY12,2316,690,12,,0,0,0,S05
+K1-09,K1,Front head strip,PLY12,1500,76,12,,0,0,0,S05
+K1-10,K1,Front head strip,PLY12,1500,76,12,,0,0,0,S05
+K1-11,K1,Ceiling panel,PLY12,2252,1160,12,,0,0,0,S05
+K1-12,K1,Ceiling panel,PLY12,2252,1160,12,,0,0,0,S05
+K1-13,K1,Ceiling panel,PLY12,2252,1160,12,,0,0,0,S05
+K1-14,K1,Ceiling panel,PLY12,2252,1160,12,,0,0,0,S05
+K1-15,K1,Ceiling panel,PLY12,2252,1160,12,,0,0,0,S05
+K2-01,K2,Partition skin (galley face),MPLY18,2316,885,18,,0,0,0,S06
+K2-02,K2,Partition skin (galley face),MPLY18,2316,885,18,,0,0,0,S06
+K2-03,K2,Cross wall skin over the door,MPLY18,600,266,18,,0,0,0,S06
+K2-04,K2,Cross wall skin (lobby face),MPLY18,2316,550,18,,0,0,0,S06
 K2-05,K2,Door jamb (hinge side),MPLY18,2050,52,18,,0,0,0,S07
 K2-06,K2,Door jamb (latch side),MPLY18,2050,52,18,,0,0,0,S07
 K2-07,K2,Door head,MPLY18,564,52,18,,0,0,0,S07
@@ -129,6 +129,6 @@ K7-03,K7,"Skirting, front strip",PLY12,1368,70,12,L1,1.37,0,0,S18
 K7-04,K7,Slider head reveal,PLY12,1500,40,12,L1,1.5,0,0,S18
 K7-05,K7,Slider jamb reveal,PLY12,2240,40,12,L1,2.24,0,0,S18
 K7-06,K7,Slider jamb reveal,PLY12,2240,40,12,L1,2.24,0,0,S18
-K7-07,K7,Ceiling scribe strip over the overhead cabinet,PLY12,1600,23,12,,0,0,0,S18
+K7-07,K7,Ceiling scribe strip over the overhead cabinet,PLY12,1600,16,12,,0,0,0,S18
 K7-19,K7,Slider head reveal,PLY12,1500,40,12,L1,1.5,0,0,S18
 K7-20,K7,Galley end panel (scribed to the floor on site),PLY12,862,600,12,,0,0,0,S18

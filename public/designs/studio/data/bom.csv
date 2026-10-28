@@ -9,34 +9,35 @@ K2-K7,hardware,carpentry,Bag B: Wood dowel 8 x 35,25.2,each,20,A,AS-21,504,
 K2-K7,hardware,carpentry,Bag C: Connector bolt M6 x 60 + barrel nut 10 mm,29.4,each,600,A,AS-21,17640,
 K2-K7,hardware,carpentry,Bag D: Cup hinge 35 mm soft-close + plate,10.5,each,2500,A,AS-21,26250,
 K2-K7,hardware,carpentry,Bag E: Shelf pin 5 mm,12.6,each,30,A,AS-21,378,
-K2-K7,hardware,carpentry,Bag F: Wood screw 4 x 30,445.2,each,15,A,AS-21,6678,
+K2-K7,hardware,carpentry,Bag F: Wood screw 4 x 30,1147.65,each,15,A,AS-21,17215,
 K2-K7,hardware,carpentry,Bag G: Ball-bearing runner 450 mm (pair),2.1,each,9000,A,AS-21,18900,per pair
 K2-K7,hardware,carpentry,Bag J: Handle 128 mm centres,7.35,each,2000,A,AS-21,14700,
 K2-K7,hardware,carpentry,Bag K: Castor 50 mm,8.4,each,1500,A,AS-21,12600,
-K2-K7,hardware,carpentry,Bag L: Self-drilling screw 4.8 x 38 (battens to steel),126,each,50,A,AS-21,6300,
-K11,roof kit,welding,"Fabricated steel: beams, joists, posts, rails, treads (painted)",728.96,kg,2600,A,AS-21,1895287,"fabricated, painted steel per kg"
+K2-K7,hardware,carpentry,Bag L: Winged self-drilling screw 5.5 x 50 (38 mm battens to the steel),201.6,each,50,A,AS-21,10080,
+K11,roof kit,welding,"Fabricated steel: beams, joists, posts, rails, treads (painted)",728.85,kg,2600,A,AS-21,1895003,"fabricated, painted steel per kg"
 K11,roof kit,carpentry,"Treated hardwood: deck boards, top rail, chairs, side table",0.69,m3,900000,A,AS-21,618192,treated hardwood decking and slats per m3
 K11,roof kit,welding,Tinted multiwall polycarbonate 10 mm (front deck canopy),11.33,m2,28000,A,AS-21,317197,tinted multiwall polycarbonate per m2 (supplier not found)
 K11,roof kit,welding,"Guardrail cable infill: 4 mm stainless, 10 runs, with tensioners",169.92,m,3000,A,AS-21,509760,"4 mm stainless wire rope + tensioners, per m"
 K11,roof kit,welding,"Stair stringers, handrails and footings",1,set,450000,A,AS-21,450000,"stringers, handrails, footings"
-K1,insulation,carpentry,"EPS insulation, back",13.47,m2,9000,A,AS-21,121230,"EPS 40 mm per m2 (STU-19 lists sizes, no prices)"
-K1,insulation,carpentry,"EPS insulation, front-A",3.21,m2,9000,A,AS-21,28890,"EPS 40 mm per m2 (STU-19 lists sizes, no prices)"
-K1,insulation,carpentry,"EPS insulation, ceiling",13.06,m2,9000,A,AS-21,117540,"EPS 40 mm per m2 (STU-19 lists sizes, no prices)"
-K1,insulation,carpentry,"EPS insulation, end-A",5.23,m2,9000,A,AS-21,47070,"EPS 40 mm per m2 (STU-19 lists sizes, no prices)"
+K1,boards,carpentry,"Ply 12 mm sheets 2440 x 1220 for the floor, laid wall to wall in two staggered runs",5,each,35000,A,AS-21,175000,12 mm plywood
+K1,insulation,spray foam,"Closed-cell spray foam between the battens, back",13.43,m2,30000,A,AS-21,402900,"closed-cell spray foam about 40 mm, applied, per m2; no Kigali contractor found yet"
+K1,insulation,spray foam,"Closed-cell spray foam between the battens, front-A",3.2,m2,30000,A,AS-21,96000,"closed-cell spray foam about 40 mm, applied, per m2; no Kigali contractor found yet"
+K1,insulation,spray foam,"Closed-cell spray foam between the battens, ceiling",13.06,m2,30000,A,AS-21,391800,"closed-cell spray foam about 40 mm, applied, per m2; no Kigali contractor found yet"
+K1,insulation,spray foam,"Closed-cell spray foam between the battens, end-A",5.22,m2,30000,A,AS-21,156600,"closed-cell spray foam about 40 mm, applied, per m2; no Kigali contractor found yet"
 K1,insulation,carpentry,PU foam adhesive and gap filler (750 ml),12,each,7000,A,AS-21,84000,
-K1,finishes,painting,Primer + 100%-solids epoxy floor seal,14,m2,12000,A,AS-21,168000,per m2
-K1,finishes,carpentry,"SPC flooring 5 mm, natural oak decor without knots, + underlay (living area)",11.1,m2,18000,A,AS-21,199800,per m2
+K1,finishes,carpentry,"Polythene membrane 250 um over the treated container floor, laps 150 mm",15.3,m2,1500,A,AS-21,22950,"polythene membrane 250 um, per m2"
+K1,finishes,carpentry,"Oak SPC plank 5 mm with attached underlay, natural oak decor without knots (living area)",11.1,m2,18000,A,AS-21,199800,per m2
 K1,finishes,painting,Rust converter + zinc primer for steel,4,L,8000,A,AS-21,32000,per L
 K1,finishes,painting,Vapour-retarding primer + off-white paint for the linings,10,L,9000,A,AS-21,90000,per L
 K2,doors,carpentry,"Door leaf 564 x 2,030, moisture-resistant, opens into the bathroom, privacy lock",1,each,90000,A,AS-21,90000,
-K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, back wall",2.67,m2,14000,A,AS-21,37380,per m2 incl. membrane
-K2,wet walls,tiling,"Wall tiles + adhesive + grout, back wall",2.94,m2,16000,A,AS-21,47040,per m2 incl. adhesive and grout
-K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, end wall B, built out 30 mm over the concealed WC cistern (stud wall inside the cargo doors)",3.95,m2,14000,A,AS-21,55300,per m2 incl. membrane
-K2,wet walls,tiling,"Wall tiles + adhesive + grout, end wall B, built out 30 mm over the concealed WC cistern (stud wall inside the cargo doors)",4.35,m2,16000,A,AS-21,69600,per m2 incl. adhesive and grout
-K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, partition, bath face",3.95,m2,14000,A,AS-21,55300,per m2 incl. membrane
-K2,wet walls,tiling,"Wall tiles + adhesive + grout, partition, bath face",4.35,m2,16000,A,AS-21,69600,per m2 incl. adhesive and grout
-K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, cross wall, bath face",2.67,m2,14000,A,AS-21,37380,per m2 incl. membrane
-K2,wet walls,tiling,"Wall tiles + adhesive + grout, cross wall, bath face",2.94,m2,16000,A,AS-21,47040,per m2 incl. adhesive and grout
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, back wall",2.66,m2,14000,A,AS-21,37240,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, back wall",2.93,m2,16000,A,AS-21,46880,per m2 incl. adhesive and grout
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, end wall B, built out 30 mm over the concealed WC cistern (stud wall inside the cargo doors)",3.94,m2,14000,A,AS-21,55160,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, end wall B, built out 30 mm over the concealed WC cistern (stud wall inside the cargo doors)",4.33,m2,16000,A,AS-21,69280,per m2 incl. adhesive and grout
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, partition, bath face",3.94,m2,14000,A,AS-21,55160,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, partition, bath face",4.33,m2,16000,A,AS-21,69280,per m2 incl. adhesive and grout
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, cross wall, bath face",2.66,m2,14000,A,AS-21,37240,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, cross wall, bath face",2.93,m2,16000,A,AS-21,46880,per m2 incl. adhesive and grout
 K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, splashback behind the basin (end wall B, wash lobby)",1.12,m2,14000,A,AS-21,15680,per m2 incl. membrane
 K2,wet walls,tiling,"Wall tiles + adhesive + grout, splashback behind the basin (end wall B, wash lobby)",1.23,m2,16000,A,AS-21,19680,per m2 incl. adhesive and grout
 K2,finishes,tiling,"Safety vinyl sheet, coved 100 mm up the walls (bathroom and wash lobby)",3.2,m2,15000,A,AS-21,48000,per m2
@@ -95,7 +96,7 @@ K8,electrical,electrical,AC provision: isolator,1,each,9000,A,AS-21,9000,
 K8,safety,electrical,"Smoke alarm, 10-year battery",1,each,20000,A,AS-21,20000,
 K8,safety,electrical,"Heat alarm, kitchen, 10-year battery",1,each,20000,A,AS-21,20000,
 K8,electrical,electrical,"Earth rod 1.5 m copper-bonded in an inspection pit, behind the board",1,each,35000,A,AS-21,35000,
-K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Indoor lights and fans",37,m,500,A,AS-21,18500,per m
+K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Indoor lights and fans",36,m,500,A,AS-21,18000,per m
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, Sockets: bed, sofa and deck",26,m,750,A,AS-21,19500,per m
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, Kitchen sockets, fridge and hood",14,m,750,A,AS-21,10500,per m
 K8,electrical,electrical,"Cable 4.0 mm2 T+E/singles in conduit, Induction hob",6,m,1200,A,AS-21,7200,per m
@@ -127,7 +128,7 @@ K9,plumbing,plumbing,"Electric storage water heater 30 L, 2 kW, IPX4, with T&P v
 K9,plumbing,plumbing,Angle valves with filters,5,each,6000,A,AS-21,30000,
 K9,plumbing,plumbing,Air admittance valve 110 mm (spare) + rodding eyes,1,set,30000,A,AS-21,30000,
 K9,plumbing,plumbing,Stop valve + Y-filter + check water meter,1,set,45000,A,AS-21,45000,
-K10,steel,welding,"W1 infill: 2 mm steel + 40 mm EPS, welded into the old door frame (0-1,150)",1,each,180000,A,AS-21,180000,incl. welding
+K10,steel,welding,"W1 infill: 2 mm steel welded into the old door frame (0-1,150), foamed with the walls",1,each,180000,A,AS-21,180000,incl. welding
 K10,glazing,glazier,W1 obscure louvre window 520 x 890 + insect mesh (wash lobby),1,each,120000,A,AS-21,120000,
 K10,steel,welding,"Seal and lock the end-B cargo doors (weld tabs, sealant)",1,each,60000,A,AS-21,60000,
 K10,steel,masonry,Level the corner castings: concrete pads or steel shims (rock corner),4,each,25000,A,AS-21,100000,
@@ -137,7 +138,7 @@ K10,glazing,glazier,"Louvred trickle-vent strip with mesh (10,000 mm2)",1,each,3
 K10,steel,welding,"AC wall sleeve 75 mm (provision, back wall, one hole)",1,each,15000,A,AS-21,15000,
 K11,roofing,welding,Gutter + downpipe to the rainwater tank (deck canopy),1,set,90000,A,AS-21,90000,
 K11,electrical,electrical,Bonding: 16 mm2 green-yellow from the frame to the earth bar,1,set,25000,A,AS-21,25000,
-K1,timber,carpentry,"Battens 38 x 50 treated, 2.4 m",19.8,each,2500,A,AS-21,49500,"38 x 50 treated, 2.4 m"
+K1,timber,carpentry,"Battens 38 x 50 treated, 2.4 m",35.2,each,2500,A,AS-21,88000,"38 x 50 treated, 2.4 m"
 K2,timber,carpentry,"Studs 40 x 40 treated, 2.4 m",5.5,each,3000,A,AS-21,16500,"40 x 40, 2.4 m"
 labour,labour,,"Carpentry workshop: cutting, edging, drilling, labelling (per unit kit)",1,lot,450000,A,AS-21,450000,
 labour,labour,,Site carpentry and assembly: 2 people x 8 days,1,lot,320000,A,AS-21,320000,

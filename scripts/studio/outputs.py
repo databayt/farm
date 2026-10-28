@@ -121,7 +121,7 @@ def bom(m, layouts) -> tuple[list[list], dict]:
     verified = sum(r[9] for r in rows if r[7] == "V")
     tot = {"unit_materials_labour": unit, "unit_with_contingency": unit * (1 + CONTINGENCY), "shared_site": shared,
            "shared_with_contingency": shared * (1 + CONTINGENCY),
-           "three_units_total": (3 * unit + shared) * (1 + CONTINGENCY), "verified_share": verified / unit if unit else 0,
+           "units": P.UNITS, "all_units_total": (P.UNITS * unit + shared) * (1 + CONTINGENCY), "verified_share": verified / unit if unit else 0,
            "usd_rate": 1475.91}
     return rows, tot
 
@@ -144,12 +144,12 @@ def write_tables(m, out: Path, layouts) -> dict:
     cats: dict[str, float] = {}
     for r in rows:
         cats[r[1]] = cats.get(r[1], 0) + r[9]
-    summary = [[c, round(v), round(3 * v)] for c, v in sorted(cats.items(), key=lambda t: -t[1])]
-    summary += [["shared site works (all three)", "", round(tot["shared_site"])],
+    summary = [[c, round(v), round(P.UNITS * v)] for c, v in sorted(cats.items(), key=lambda t: -t[1])]
+    summary += [["shared site works (all units)", "", round(tot["shared_site"])],
                 [f"contingency {CONTINGENCY * 100:.0f} %", round(tot["unit_materials_labour"] * CONTINGENCY),
-                 round((3 * tot["unit_materials_labour"] + tot["shared_site"]) * CONTINGENCY)],
-                ["TOTAL", round(tot["unit_with_contingency"]), round(tot["three_units_total"])]]
-    wcsv(d / "bom-summary.csv", ["category", "per_unit_rwf", "three_units_rwf"], summary)
+                 round((P.UNITS * tot["unit_materials_labour"] + tot["shared_site"]) * CONTINGENCY)],
+                ["TOTAL", round(tot["unit_with_contingency"]), round(tot["all_units_total"])]]
+    wcsv(d / "bom-summary.csv", ["category", "per_unit_rwf", "all_units_rwf"], summary)
     wcsv(d / "shared-works.csv", ["item", "rwf", "label"], [[n, round(v), lab] for n, v, lab in SHARED])
     hw = [[code, HARDWARE[code][0]] for code in sorted(HARDWARE)]
     wcsv(d / "hardware.csv", ["bag", "item"], hw)
@@ -198,11 +198,11 @@ def write_xlsx(path: Path, rows, summary, tot) -> None:
     ws.append(["Container studios - bill of materials", f"rev {P.REV} {P.REV_DATE}", P.STATUS])
     ws.append(["Prices labelled A are placeholders (AS-21): three quotes per line before buying."])
     ws.append([])
-    ws.append(["category", "per unit RWF", "three units RWF"])
+    ws.append(["category", "per unit RWF", f"{P.UNITS} units RWF"])
     for r in summary:
         ws.append(r)
     ws.append([])
-    ws.append(["USD at BNR 1,475.91 (2026-10-23, STU-36)", "", round(tot["three_units_total"] / 1475.91)])
+    ws.append(["USD at BNR 1,475.91 (2026-10-23, STU-36)", "", round(tot["all_units_total"] / 1475.91)])
     ws2 = wb.create_sheet("BOM per unit")
     ws2.append(["kit", "category", "trade", "item", "qty", "unit", "unit price", "label", "source", "total", "note"])
     for r in rows:
@@ -289,7 +289,7 @@ def write_model(m, out: Path) -> None:
     lo = m["lo"]
     its = []
     for (b, fl, nm, i, k, layer) in S.items(m, layers=["furniture", "fixtures", "envelope", "shell"], exclude_layers=()):
-        if i.startswith(("K0-FRONT", "K0-ROOF", "K0-SLIDER", "K0-ENDB", "K1-BAT", "K1-EPS", "K2-CB-ENDB", "K2-CB-FRONT")) or b.z0 >= lo.H - 1:
+        if i.startswith(("K0-FRONT", "K0-ROOF", "K0-SLIDER", "K0-ENDB", "K1-BAT", "K1-INS", "K1-F", "K2-CB-ENDB", "K2-CB-FRONT")) or b.z0 >= lo.H - 1:
             continue
         if (layer == "envelope" and b.y0 >= lo.W - 1) or (i.startswith("K7-") and b.y1 >= lo.W - 1):
             continue
@@ -331,10 +331,64 @@ def write_drawings(m, out: Path, layouts) -> list[tuple[str, str, str]]:
     return files
 
 
+def write_dims(m, out: Path) -> None:
+    """The measurements the trade guides quote (guide/*.md {{studio.*}} tokens), in mm unless named."""
+    from layout import AISLE_MIN, GALLEY, GALLEY_D, WORKTOP_D
+    lo = m["lo"]
+    k1 = next(k for k in m["kits"] if k.id == "K1")
+    bought = {b.id: b for b in k1.bought}
+    bat = [b for b in k1.bought if b.price == "batten"]
+    foam = sum(b.qty for b in k1.bought if b.price == "sprayfoam")
+    r = lambda v: int(round(v))
+    d = {
+        "rev": P.REV, "rev_date": P.REV_DATE, "status": P.STATUS, "units": P.UNITS,
+        "int_l": r(P.m("int_length", P.INT_L)), "int_w": r(P.m("int_width", P.INT_W)), "int_h": r(P.m("int_height", P.INT_H)),
+        "l": r(lo.L), "w": r(lo.W), "h": r(lo.H), "area_m2": round(lo.L * lo.W / 1e6, 1),
+        "lining_wall": r(P.LINING_WALL.value), "lining_ceil": r(P.LINING_CEIL.value), "lining_floor": r(P.LINING_FLOOR.value),
+        "floor_sheets": r(bought["K1-FLOOR"].qty), "floor_m2": round((lo.L + 2 * P.LINING_WALL.value) * (lo.W + 2 * P.LINING_WALL.value) / 1e6, 1),
+        "floor_screws": next(s.hardware.get("F", 0) for s in k1.steps if s.id == "S02"),
+        "membrane_m2": bought["K1-DPM"].qty, "plank_m2": bought["K1-SPC"].qty,
+        "battens": len(bat), "batten_screws": next(s.hardware.get("L", 0) for s in k1.steps if s.id == "S03"),
+        "lining_screws": next(s.hardware.get("F", 0) for s in k1.steps if s.id == "S05"),
+        "foam_m2": round(foam, 1), "lining_panels": sum(1 for p in k1.parts),
+        "slider_x0": r(lo.o1[0]), "slider_x1": r(lo.o1[1]), "slider_head": r(lo.o1_head),
+        "w1_x0": r(lo.o2[0]), "w1_x1": r(lo.o2[1]), "w1_sill": r(lo.w1_sill), "w1_head": r(lo.w1_head),
+        "bed_x1": r(lo.bed_x1), "bed_y0": r(lo.bed_y0), "bed_y1": r(lo.bed_y1),
+        "bedside_x0": r(lo.bedside[0]), "bedside_x1": r(lo.bedside[1]),
+        "sofa_x0": r(lo.sofa[0]), "sofa_x1": r(lo.sofa[1]),
+        "galley_x0": r(lo.galley_x0), "galley_d": GALLEY_D, "worktop_d": WORKTOP_D, "galley_run": sum(GALLEY),
+        "fridge_w": GALLEY[0], "hob_w": GALLEY[1], "sink_w": GALLEY[2],
+        "aisle": r(lo.part_x0 - WORKTOP_D - lo.sofa[1]), "aisle_min": AISLE_MIN,
+        "part_x0": r(lo.part_x0), "part_t": r(lo.part_t), "bath_x0": r(lo.bath_x0), "wall_b": r(lo.wall_b),
+        "tray_l": r(lo.tray[1] - lo.tray[0]), "tray_w": r(lo.tray[3] - lo.tray[2]),
+        "heater_l": r(P.HEATER_L.value),
+        "parts": sum(1 for k in m["kits"] for p in k.parts if p.sheet and p.material in P.SHEETS),
+        "sheets": {mat: sum(1 for sl in m["layouts"] if sl.material == mat) for mat in sorted({sl.material for sl in m["layouts"]})},
+    }
+    d.update({f"sheets_{mat.lower()}": n for mat, n in d["sheets"].items()})
+    (out / "data" / "dims.json").write_text(json.dumps(d, indent=1, sort_keys=True) + "\n")
+    # batten set-out: each batten's centreline from the bare steel, as the carpenter marks it before any lining
+    e = P.LINING_WALL.value
+    rows = []
+    for b in bat:
+        where = b.name.split("(")[1].rstrip(")")
+        bx = b.box
+        if where == "end A":
+            rows.append([b.id, where, "from the steel of the back wall", r((bx.y0 + bx.y1) / 2 + e), r(bx.z1 - bx.z0)])
+        elif where == "slider head":
+            rows.append([b.id, where, "horizontal, from the steel of end A", f"{r(bx.x0 + e)}-{r(bx.x1 + e)}",
+                         r(bx.x1 - bx.x0)])
+        else:
+            rows.append([b.id, where, "from the steel of end A", r((bx.x0 + bx.x1) / 2 + e),
+                         r(bx.y1 - bx.y0 if where == "ceiling" else bx.z1 - bx.z0)])
+    wcsv(out / "data" / "battens.csv", ["id", "wall", "measured", "centre_mm", "length_mm"], rows)
+
+
 def write(m, out: Path) -> None:
     layouts = nest(all_parts(m))
     m["layouts"] = layouts
     write_tables(m, out, layouts)
+    write_dims(m, out)
     write_dxf(out, layouts)
     write_model(m, out)
     write_drawings(m, out, layouts)

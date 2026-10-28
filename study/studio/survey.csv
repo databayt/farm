@@ -17,12 +17,3 @@ U2,o2_start,,,,narrow door opening start from end A
 U2,o2_end,,,,narrow door opening end from end A
 U2,diag_diff,,,,floor diagonals difference
 U2,level_diff,,,,highest minus lowest corner casting
-U3,int_length,,,,inside length, end wall to end wall, at 1 m height
-U3,int_width,,,,inside width at 1 m height, mid-length
-U3,int_height,,,,floor to roof at mid-width
-U3,o1_start,,,,slider opening start from the inside face of end A
-U3,o1_end,,,,slider opening end from the inside face of end A
-U3,o2_start,,,,narrow door opening start from end A
-U3,o2_end,,,,narrow door opening end from end A
-U3,diag_diff,,,,floor diagonals difference
-U3,level_diff,,,,highest minus lowest corner casting

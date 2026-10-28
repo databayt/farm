@@ -22,8 +22,9 @@ PRICES: dict[str, tuple[float, str, str, str]] = {
     "rail": (8_000, "A", "AS-21", ""),
     # envelope
     "batten": (2_500, "A", "AS-21", "38 x 50 treated, 2.4 m"), "stud": (3_000, "A", "AS-21", "40 x 40, 2.4 m"),
-    "eps": (9_000, "A", "AS-21", "EPS 40 mm per m2 (STU-19 lists sizes, no prices)"),
-    "pufoam": (7_000, "A", "AS-21", ""), "epoxy": (12_000, "A", "AS-21", "per m2"),
+    "sprayfoam": (30_000, "A", "AS-21", "closed-cell spray foam about 40 mm, applied, per m2; no Kigali contractor found yet"),
+    "dpm": (1_500, "A", "AS-21", "polythene membrane 250 um, per m2"),
+    "pufoam": (7_000, "A", "AS-21", ""),
     "spc": (18_000, "A", "AS-21", "per m2"), "primer": (8_000, "A", "AS-21", "per L"),
     "varnish": (9_000, "A", "AS-21", "per L"), "cementboard": (14_000, "A", "AS-21", "per m2 incl. membrane"),
     "tile": (16_000, "A", "AS-21", "per m2 incl. adhesive and grout"), "vinyl": (15_000, "A", "AS-21", "per m2"),
@@ -85,7 +86,7 @@ LABOUR: list[tuple[str, float, str]] = [
     ("Welder: W1, roof frame, deck canopy, stair (per unit)", 600_000, "A"),
     ("Transport Kigali to site (share of 2 truck trips)", 120_000, "A"),
 ]
-SHARED: list[tuple[str, float, str]] = [  # site works shared by the three studios
+SHARED: list[tuple[str, float, str]] = [  # site works shared by the two studios and the office
     ("Septic tank (2 chambers, about 4 m3) + inspection chambers", 1_400_000, "A"),
     ("Soak pit and drain field after a percolation test", 600_000, "A"),
     ("Grease trap + kitchen soak pit", 350_000, "A"),

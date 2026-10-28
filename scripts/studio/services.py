@@ -21,7 +21,7 @@ from model import Box, Bought, Kit, Step
 CABLE = {1.5: (17.5, 29.0), 2.5: (24.0, 18.0), 4.0: (32.0, 11.0), 6.0: (41.0, 7.3), 10.0: (57.0, 4.4),
          16.0: (76.0, 2.8)}
 # mm2 -> current capacity A in conduit inside a thermally insulating wall (method A1), 30 C: the final circuits
-# run in the EPS-filled batten cavity of the lining (AS-15). IEC 60364-5-52 table B.52.2.
+# run in the foam-filled batten cavity of the lining (AS-15). IEC 60364-5-52 table B.52.2.
 CABLE_A1 = {1.5: 14.5, 2.5: 19.5, 4.0: 26.0, 6.0: 34.0, 10.0: 46.0, 16.0: 61.0}
 AMBIENT_FACTOR = 0.94  # 35 C ambient inside a warm steel box [A]
 STANDARD_INLET_A = 32.0  # the IEC 60309 size generators, inverters and site boards plug into
@@ -310,20 +310,20 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], list[CableRun], 
     k = Kit("K8", "Electrical", "electrical", "site")
     for p in pts:
         k.buy(Bought(f"K8-{p.id}", p.label, "K8", "safety" if p.kind == "alarm" else "electrical", "electrical", 1,
-                     "each", PRICE_KEY[p.model], device_box(p), step="S05" if p.kind == "earth" else "S19",
+                     "each", PRICE_KEY[p.model], device_box(p), step="S04" if p.kind == "earth" else "S19",
                      layer="electrical", color="electric"))
     for c in circuits:
         if c.loads:
             m = sum(r.length for r in runs if r.circuit == c.id) / 1000 * 1.1 + 1  # slack, and a metre in the board
             k.buy(Bought(f"K8-CBL-{c.id}", f"Cable {c.cable} mm2 T+E/singles in conduit, {c.name}", "K8",
-                         "electrical", "electrical", math.ceil(m), "m", f"cable{c.cable}", step="S05"))
+                         "electrical", "electrical", math.ceil(m), "m", f"cable{c.cable}", step="S04"))
     k.buy(Bought("K8-TAILS", f"Cable {sup['tails_mm2']:g} mm2 tails, inlet to main breaker, through a gland in the "
-                 "back wall", "K8", "electrical", "electrical", 2, "m", f"cable{sup['tails_mm2']}", step="S05"))
+                 "back wall", "K8", "electrical", "electrical", 2, "m", f"cable{sup['tails_mm2']}", step="S04"))
     k.buy(Bought("K8-PLUG", f"Matching {sup['rating_A']:.0f} A plug (IEC 60309 blue), for whatever supply cable",
                  "K8", "electrical", "electrical", 1, "each", "plug", step="S19"))
     k.buy(Bought("K8-CONDUIT", "PVC conduit 20 mm + boxes, in the lining", "K8", "electrical", "electrical",
                  math.ceil(conduit_length([r for r in runs if not r.outdoor]) / 1000 * 1.1), "m", "conduit",
-                 step="S05"))
+                 step="S04"))
     k.buy(Bought("K8-CONDUIT-OUT", "UV-stable conduit 20 mm + IP66 glands, outdoor runs", "K8", "electrical",
                  "electrical", math.ceil(conduit_length([r for r in runs if r.outdoor]) / 1000 * 1.1), "m",
                  "conduit_out", step="S19"))
@@ -342,8 +342,9 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], list[CableRun], 
     k.buy(Bought("K8-FIRE", "Fire extinguisher 2 kg ABC + fire blanket", "K8", "safety", "furnishing", 1, "set",
                  "extinguisher", step="S19"))
     k.steps += [
-        Step("S05", "K8", "Services first fix: earth rod, conduits and cables, pipes in the floor void; pressure-test "
-             "the pipes before any lining closes", [], {}, 2, "Licensed electrician and plumber on site."),
+        Step("S04", "K8", "Services first fix: earth rod, conduits and cables in the batten cavities, pipes in the floor "
+             "void; pressure-test the pipes at 10 bar before the foam", [], {}, 2,
+             "HOLD before S05: licensed electrician and plumber on site; the test is recorded."),
         Step("S19", "K8", "Second fix: unit board, devices, lights, alarms; test and certify", [], {}, 1,
              "Certificate from a RURA class A electrician before power-on."),
     ]
@@ -509,7 +510,7 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
     for (sys, dn), m in sorted(by.items()):
         k.buy(Bought(f"K9-{sys.upper()}-{dn}", f"{names[sys]} DN{dn}", "K9", "plumbing", "plumbing",
                      round(m * 1.15 + 1, 1), "m", f"pipe_{'ppr' if sys in ('cold', 'hot', 'tempered') else 'upvc'}{dn}",
-                     step="S05"))
+                     step="S04"))
     for i, (nm, unit, q, key) in enumerate((
             ("Pipe fittings and clips (allowance)", "set", 1, "fittings"),
             ("Thermostatic mixing valve (TMV) 41-44 C", "each", 1, "tmv"),
@@ -519,7 +520,7 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
             ("Air admittance valve 110 mm (spare) + rodding eyes", "set", 1, "aav"),
             ("Stop valve + Y-filter + check water meter", "set", 1, "watermeter"),
     )):
-        k.buy(Bought(f"K9-X{i + 1}", nm, "K9", "plumbing", "plumbing", q, unit, key, step="S05"))
+        k.buy(Bought(f"K9-X{i + 1}", nm, "K9", "plumbing", "plumbing", q, unit, key, step="S04"))
     k.buy(Bought("K9-HEATER-BOX", f"{P.HEATER_L.value:.0f} L heater box on end wall B above the WC", "K9", "plumbing",
                  "plumbing", 0, "each", "", Box(lo.wall_b - hd, lo.wc_cy - hw / 2, hz0, lo.wall_b, lo.wc_cy + hw / 2, hz0 + hh),
                  step="S10", color="white"))
@@ -528,7 +529,7 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
 
 
 def site_water() -> dict[str, float]:
-    """Shared water and sanitation for the three studios (P-301)."""
+    """Shared water and sanitation for the studios (P-301)."""
     persons = P.GUESTS.value * P.UNITS
     daily = persons * P.WATER_LPD.value
     pop = P.SEPTIC_POP.value
@@ -541,5 +542,5 @@ def site_water() -> dict[str, float]:
         "septic_rs143_m3": rs143, "septic_2012_m3": round(reg2012, 2), "septic_uk_m3": uk,
         "septic_m3": math.ceil(septic * 2) / 2, "chamber1_m3": round(math.ceil(septic * 2) / 2 * 2 / 3, 2),
         "chamber2_m3": round(math.ceil(septic * 2) / 2 / 3, 2),
-        "pump_lpm": 3 * 7 + 2 * 6,  # three showers at 7 L/min plus two taps at 6 L/min (design peak)
+        "pump_lpm": P.UNITS * 7 + 2 * 6,  # a shower per studio at 7 L/min plus two taps at 6 L/min (design peak)
     }

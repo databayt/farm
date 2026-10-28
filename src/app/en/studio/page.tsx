@@ -627,7 +627,7 @@ export default function StudioPage() {
       </section>
 
       {/* The bill of materials, once for the whole studio, right after Plumbing: a row per section of this page, in its
-          order, each opening onto its lines, then what the three studios share. Lines and prices come from bom.csv
+          order, each opening onto its lines, then what the studios share. Lines and prices come from bom.csv
           (placeholders until quoted, AS-21). The circuit, point and pipe tables follow it. */}
       <section id="bom" className="scroll-mt-20 border-t py-16">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6">

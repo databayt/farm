@@ -60,7 +60,7 @@ export function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fittings
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="h-auto w-full min-w-[960px] stroke-foreground"
       strokeWidth={2} strokeLinecap="round" fill="none"
       aria-label={`Water diagram: the farm's water through the studio's stop valve, filter and meter; cold to every outlet and the ${litres} heater, hot to the sink and the mixing valve, mixed water at ${deg(fit.TMV?.rating)} to the shower and the basin; the WC, shower and basin drain to an inspection chamber and the farm's septic tank, the kitchen sink apart to its grease trap`}>
-      {/* the farm's water: the tank and the booster pump, shared by the three studios */}
+      {/* the farm's water: the tank and the booster pump, shared by the studios */}
       <rect x={20} y={TOP - 34} width={140} height={68} rx={12} strokeDasharray="6 6" />
       <text x={90} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">Farm water</text>
       <text x={90} y={TOP + 18} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">

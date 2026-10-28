@@ -46,6 +46,7 @@ def write_all(m: dict, out: Path, pdf: bool) -> list[str]:
         if (out / d).exists():
             shutil.rmtree(out / d)
         (out / d).mkdir(parents=True, exist_ok=True)
+    (out / "render").mkdir(parents=True, exist_ok=True)  # holds hand-made renders too: never wiped
     outputs.write(m, out)
     if pdf:
         import out_pdf

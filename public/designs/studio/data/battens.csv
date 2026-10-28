@@ -1,0 +1,33 @@
+id,wall,measured,centre_mm,length_mm
+K1-BAT-01,back wall,from the steel of end A,75,2316
+K1-BAT-02,back wall,from the steel of end A,622,2316
+K1-BAT-03,back wall,from the steel of end A,1194,2316
+K1-BAT-04,back wall,from the steel of end A,1767,2316
+K1-BAT-05,back wall,from the steel of end A,2339,2316
+K1-BAT-06,back wall,from the steel of end A,2911,2316
+K1-BAT-07,back wall,from the steel of end A,3484,2316
+K1-BAT-08,back wall,from the steel of end A,4056,2316
+K1-BAT-09,back wall,from the steel of end A,4603,2316
+K1-BAT-10,end A,from the steel of the back wall,75,2316
+K1-BAT-11,end A,from the steel of the back wall,613,2316
+K1-BAT-12,end A,from the steel of the back wall,1176,2316
+K1-BAT-13,end A,from the steel of the back wall,1739,2316
+K1-BAT-14,end A,from the steel of the back wall,2277,2316
+K1-BAT-15,front wall,from the steel of end A,75,2316
+K1-BAT-16,front wall,from the steel of end A,395,2316
+K1-BAT-17,front wall,from the steel of end A,740,2316
+K1-BAT-18,front wall,from the steel of end A,1085,2316
+K1-BAT-19,front wall,from the steel of end A,1405,2316
+K1-BAT-20,slider head,"horizontal, from the steel of end A",1430-2930,1500
+K1-BAT-21,slider head,"horizontal, from the steel of end A",2930-4430,1500
+K1-BAT-22,ceiling,from the steel of end A,75,2252
+K1-BAT-23,ceiling,from the steel of end A,630,2252
+K1-BAT-24,ceiling,from the steel of end A,1210,2252
+K1-BAT-25,ceiling,from the steel of end A,1789,2252
+K1-BAT-26,ceiling,from the steel of end A,2369,2252
+K1-BAT-27,ceiling,from the steel of end A,2949,2252
+K1-BAT-28,ceiling,from the steel of end A,3529,2252
+K1-BAT-29,ceiling,from the steel of end A,4109,2252
+K1-BAT-30,ceiling,from the steel of end A,4688,2252
+K1-BAT-31,ceiling,from the steel of end A,5268,2252
+K1-BAT-32,ceiling,from the steel of end A,5823,2252

@@ -15,15 +15,15 @@ R-BEDSIDE,Sofa clear of the bedside table (mm),pass,20 >= 20
 R-GALLEY,Galley clear of the bathroom wall end (mm),pass,100 >= 30
 R-PASS,Walk past the galley end to the wash lobby (mm),pass,652 >= 600
 R-BED,Room beside the bed foot (mm),pass,214 >= 50
-R-HEIGHT,Clear height (mm),pass,2323 >= 2250
+R-HEIGHT,Clear height (mm),pass,2316 >= 2250
 R-PART,Partition clear of the old door (mm),pass,342 >= 150
 E-C1,Indoor lights and fans: Ib <= In <= Iz; drop <= 3.0%,pass,"Ib 0.6 A, In 6 A, Iz 13.6 A, drop 0.25%"
-E-C2,"Sockets: bed, sofa and deck: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 8.0 A, In 16 A, Iz 18.3 A, drop 1.53%"
-E-C3,"Kitchen sockets, fridge and hood: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 14.0 A, In 16 A, Iz 18.3 A, drop 1.36%"
+E-C2,"Sockets: bed, sofa and deck: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 8.0 A, In 16 A, Iz 18.3 A, drop 1.52%"
+E-C3,"Kitchen sockets, fridge and hood: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 14.0 A, In 16 A, Iz 18.3 A, drop 1.35%"
 E-C4,Induction hob: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 15.2 A, In 20 A, Iz 24.4 A, drop 0.32%"
 E-C5,30 L water heater: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 8.7 A, In 16 A, Iz 18.3 A, drop 0.27%"
 E-C6,"Outdoor lights: deck, stair and roof: Ib <= In <= Iz; drop <= 3.0%",pass,"Ib 0.2 A, In 6 A, Iz 13.6 A, drop 0.03%"
-E-C7,AC provision: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 12.0 A, In 16 A, Iz 18.3 A, drop 0.38%"
+E-C7,AC provision: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 12.0 A, In 16 A, Iz 18.3 A, drop 0.37%"
 E-MD,Diversified maximum demand within a 32 A inlet (the size any source plugs into),pass,30.0 A
 P-D1,DN110 soil fall at least 1:40,pass,steepest-needed 1:38
 P-D2,DN50 waste fall at least 1:40,pass,steepest-needed 1:34
