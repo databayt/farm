@@ -4,7 +4,7 @@ Status: guide of 2026-10-28. The field, its soil and its water are not yet measu
 
 How to start the vegetable field that feeds the galley and sells its surplus: the seasons, the beds, the water, the crops and the first month, step by step.
 
-Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](vegetables.rw.md) · Print: [this guide as a PDF](../../public/guides/vegetables.pdf)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](vegetables.rw.md) · Print: [this guide as a PDF](../../public/guides/vegetables.pdf) · The beds, crops and costs drawn: [the field page](/en/farming)
 
 ## The field at a glance
 
@@ -14,7 +14,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](vegetables.rw.md) · Print: [th
 | Beds | 1.2 m wide, raised 20 cm, 10 m long: about 200 beds, about 2,440 m² of growing area [E] |
 | Paths | 0.5 m between beds, 1 m between blocks of beds |
 | Water | drip lines, 2 per bed, fed from the tank; 10 to 13 m³ a day in the driest months [E] |
-| What the galley needs | about 40 to 50 kg of vegetables a week at the base-case occupancy [A]; the rest is sold |
+| What the galley needs | about 34 kg of vegetables a week at the base-case occupancy, 79 kg on a full house [A]; the field is sized to a full house ([the field page](/en/farming)) and the rest is sold |
 
 ## The seasons
 

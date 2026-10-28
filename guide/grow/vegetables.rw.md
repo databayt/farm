@@ -6,7 +6,7 @@ Status: amabwiriza yo ku wa 2026-10-28. Umurima, ubutaka bwawo n'amazi yawo ntib
 
 Uko watangiza umurima w'imboga ugaburira igikoni gikuru (galley) kandi ukagurisha ibisagutse byawo: ibihembwe, uturima, amazi, ibihingwa n'ukwezi kwa mbere, intambwe ku yindi.
 
-English: [read this guide in English](vegetables.md) · Gucapa: [aya mabwiriza nka PDF](../../public/guides/vegetables-rw.pdf)
+English: [read this guide in English](vegetables.md) · Gucapa: [aya mabwiriza nka PDF](../../public/guides/vegetables-rw.pdf) · Uturima, ibihingwa n'ibiciro mu bishushanyo: [urupapuro rw'umurima](/en/farming)
 
 ## Umurima mu ncamake
 
@@ -16,7 +16,7 @@ English: [read this guide in English](vegetables.md) · Gucapa: [aya mabwiriza n
 | Uturima (beds) | ubugari bwa m 1.2, tuzamuye cm 20, uburebure bwa m 10: hafi uturima 200, hafi 2,440 m² z'ubuso buhingwa [E] |
 | Inzira (paths) | m 0.5 hagati y'uturima, m 1 hagati y'amatsinda y'uturima |
 | Amazi | amatiyo y'ibitonyanga (drip lines), 2 kuri buri karima, ahabwa amazi n'ikigega cy'amazi (tank); 10 kugeza 13 m³ ku munsi mu mezi y'izuba ryinshi [E] |
-| Ibyo igikoni gikuru gikenera | hafi kg 40 kugeza 50 z'imboga mu cyumweru, iyo abashyitsi bangana n'abateganyijwe mu igenamigambi fatizo (base-case occupancy) [A]; ibisigaye bigurishwa |
+| Ibyo igikoni gikuru gikenera | hafi kg 34 z'imboga mu cyumweru iyo abashyitsi bangana n'abateganyijwe mu igenamigambi fatizo (base-case occupancy), kg 79 iyo amacumbi yose yuzuye [A]; umurima uteguwe ku macumbi yose yuzuye ([urupapuro rw'umurima](/en/farming)) kandi ibisigaye bigurishwa |
 
 ## Ibihembwe by'ihinga
 

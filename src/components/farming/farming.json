@@ -1,0 +1,82 @@
+{
+  "about": "The vegetable field, as /en/studio is one studio: grow every vegetable the galley needs to feed the farm's guests (founder, 2026-10-28). The field is sized to a FULL HOUSE every day of the year, so the galley never buys a vegetable; on an average night the surplus is sold. scripts/site/farming.mjs reads this file and src/components/site/site.json (zone `veg`) and writes public/designs/farming/data/. The 2D (farming-plan.tsx) and the 3D (scripts/site/render/farming.html) both read the generated plan. Facts and sources follow guide/grow/vegetables.md; [V] verified, [E] estimated, [A] assumed.",
+  "people": {
+    "about": "Who eats from the galley on a full house: 2 guests in each of the 2 studios, 3 en-suite rooms and 6 tents (guide/business/model.md), plus the team of about 7 who eat one meal a day there [A]. Events cook for their own numbers and buy what the field can't give.",
+    "guests": 22,
+    "team": 7,
+    "teamMealShare": 0.5,
+    "averageGuests": 7.4,
+    "averageNote": "about 2,700 guest-days a year in the base case (guide/business/model.md)"
+  },
+  "menu": {
+    "about": "Grams of each vegetable on a guest's plate in a day, breakfast and dinner together [A], about 450 g: a little over the WHO's 400 g of fruit and vegetables, because the galley cooks most of it."
+  },
+  "bed": {
+    "about": "Beds as the guide lays them: 1.2 m wide, 10 m long, raised 20 cm; 0.5 m paths between beds, 1 m paths between blocks of 10 beds and round the field.",
+    "w": 1.2,
+    "l": 10,
+    "h": 0.2,
+    "path": 0.5,
+    "aisle": 1.0,
+    "perBlock": 10,
+    "drip": 2,
+    "loss": 0.25,
+    "lossNote": "a quarter more beds than the plate needs, for pests, a failed planting and the rain season's losses [A]"
+  },
+  "season": {
+    "about": "Weeks a year a bed can grow: about 46, leaving 6 weeks to rest, compost and rebuild it [A]. Season C (July to September) is drip only, planted to the water the borehole proves.",
+    "weeks": 46
+  },
+  "crops": [
+    { "id": "tomato", "name": "Tomato", "family": "nightshade", "g": 80, "spacing": "100 × 50", "rows": 2, "plantM": 0.5, "nursery": 5, "firstWeeks": 11, "harvestWeeks": 8, "yieldKgM2": 2.0, "yieldNote": "20 t/ha on drip with stakes [E]; the national field average is about 8 t/ha [V CRP-17]", "watch": "Tuta absoluta, late blight, bacterial wilt", "plantHeight": 1.4, "colour": "#c8402f" },
+    { "id": "onion", "name": "Onion", "family": "allium", "g": 50, "spacing": "20 × 10", "rows": 6, "plantM": 0.1, "nursery": 6, "firstWeeks": 17, "harvestWeeks": 2, "yieldKgM2": 2.5, "yieldNote": "25 t/ha [E]; variety claims reach 60 t/ha", "watch": "thrips, downy mildew", "plantHeight": 0.45, "colour": "#b9784a" },
+    { "id": "cabbage", "name": "Cabbage", "family": "brassica", "g": 50, "spacing": "60 × 50", "rows": 2, "plantM": 0.5, "nursery": 4, "firstWeeks": 12, "harvestWeeks": 3, "yieldKgM2": 2.5, "yieldNote": "25 to 30 t/ha [V CRP-68]", "watch": "diamondback moth, black rot", "plantHeight": 0.35, "colour": "#9fc48a" },
+    { "id": "carrot", "name": "Carrot", "family": "umbellifer", "g": 40, "spacing": "rows 20, thinned to 6", "rows": 6, "plantM": 0.06, "nursery": 0, "firstWeeks": 13, "harvestWeeks": 3, "yieldKgM2": 2.0, "yieldNote": "20 to 30 t/ha [V CRP-68]", "watch": "carrot fly, leaf blight", "plantHeight": 0.35, "colour": "#e07a2c" },
+    { "id": "pepper", "name": "Sweet pepper", "family": "nightshade", "g": 25, "spacing": "60 × 45", "rows": 2, "plantM": 0.45, "nursery": 6, "firstWeeks": 11, "harvestWeeks": 10, "yieldKgM2": 2.0, "yieldNote": "20 t/ha [E]; about 40 t/ha in the best open fields [V CRP-68]", "watch": "whitefly, thrips, bacterial wilt", "plantHeight": 0.7, "colour": "#3d8a3a" },
+    { "id": "eggplant", "name": "Eggplant", "family": "nightshade", "g": 25, "spacing": "75 × 50", "rows": 2, "plantM": 0.5, "nursery": 6, "firstWeeks": 13, "harvestWeeks": 10, "yieldKgM2": 2.0, "yieldNote": "10 to 12 kg per 10 m row [V CRP-70]", "watch": "fruit borer, bacterial wilt", "plantHeight": 0.8, "colour": "#4b2e5a" },
+    { "id": "amaranth", "name": "Amaranth (dodo)", "family": "amaranth", "g": 30, "spacing": "40 × 30", "rows": 3, "plantM": 0.3, "nursery": 0, "firstWeeks": 4, "harvestWeeks": 6, "yieldKgM2": 1.5, "yieldNote": "up to 10 t/ha of leaves per cutting round [V CRP-71]; 15 t/ha over six weekly cuts [E]", "watch": "aphids", "plantHeight": 0.6, "colour": "#8a2f45" },
+    { "id": "kale", "name": "Kale (sukuma)", "family": "brassica", "g": 40, "spacing": "60 × 50", "rows": 2, "plantM": 0.5, "nursery": 4, "firstWeeks": 6, "harvestWeeks": 16, "yieldKgM2": 3.5, "yieldNote": "about 15 t/acre picked leaf by leaf [V CRP-69]", "watch": "diamondback moth, black rot", "plantHeight": 0.6, "colour": "#3f6b45" },
+    { "id": "beans", "name": "French beans", "family": "legume", "g": 35, "spacing": "30 × 15", "rows": 4, "plantM": 0.15, "nursery": 0, "firstWeeks": 7, "harvestWeeks": 4, "yieldKgM2": 0.6, "yieldNote": "bush beans 5 to 6 t/ha [V CRP-68]", "watch": "bean fly, rust", "plantHeight": 0.45, "colour": "#5f9a3c" },
+    { "id": "cucumber", "name": "Cucumber", "family": "cucurbit", "g": 30, "spacing": "100 × 50, on a trellis", "rows": 1, "plantM": 0.5, "nursery": 0, "firstWeeks": 8, "harvestWeeks": 5, "yieldKgM2": 2.5, "yieldNote": "on a trellis 25 t/ha [E]; 8 to 10 kg per 10 m row on the ground [V CRP-70]", "watch": "aphids, downy mildew", "plantHeight": 1.5, "colour": "#4f7f2f" },
+    { "id": "spinach", "name": "Spinach and chard", "family": "amaranth", "g": 30, "spacing": "45 × 25", "rows": 3, "plantM": 0.25, "nursery": 4, "firstWeeks": 8, "harvestWeeks": 10, "yieldKgM2": 2.0, "yieldNote": "20 t/ha picked leaf by leaf [E]", "watch": "leaf miners", "plantHeight": 0.45, "colour": "#2f6b3a" },
+    { "id": "herbs", "name": "Herbs", "family": "umbellifer", "g": 5, "spacing": "parsley 40 × 15, coriander rows 15", "rows": 4, "plantM": 0.15, "nursery": 0, "firstWeeks": 6, "harvestWeeks": 10, "yieldKgM2": 1.0, "yieldNote": "10 t/ha [E]", "watch": "aphids", "plantHeight": 0.3, "colour": "#6aa84f", "nearGalley": true }
+  ],
+  "nursery": {
+    "about": "A shade-net house for the seedlings, in the yard strip next to the beds: 8 x 4 m, 2.4 m high, 50 % net, trays on benches [A].",
+    "l": 8,
+    "w": 4,
+    "h": 2.4
+  },
+  "fence": {
+    "about": "A 1.5 m wire-mesh fence on timber posts at 3 m, round the beds, with one gate on the garden walk to the galley.",
+    "h": 1.5,
+    "post": 3
+  },
+  "bom": {
+    "about": "What the field needs to start, priced in RWF. Placeholders until three quotes per line [A], except the guide's verified Bugesera prices. `per` scales a line: bed (each bed), m (fence metres), once.",
+    "lines": [
+      { "section": "Ground and beds", "item": "Soil test at RAB (10 spots, one mixed sample)", "per": "once", "qty": 1, "unit": "test", "rwf": 30000 },
+      { "section": "Ground and beds", "item": "Compost or manure, about 250 kg per 100 m² of bed", "per": "bed", "qty": 0.03, "unit": "t", "rwf": 40000 },
+      { "section": "Ground and beds", "item": "Agricultural lime, only if the test asks (about 200 kg per 1,000 m²)", "per": "bed", "qty": 2.4, "unit": "kg", "rwf": 150 },
+      { "section": "Ground and beds", "item": "Labour to dig and raise the beds", "per": "bed", "qty": 1, "unit": "bed", "rwf": 6000 },
+      { "section": "Water", "item": "Drip tape, 16 mm, two lines a bed", "per": "bed", "qty": 20, "unit": "m", "rwf": 250 },
+      { "section": "Water", "item": "Header pipe, 32 mm PE", "per": "block", "qty": 18, "unit": "m", "rwf": 1500 },
+      { "section": "Water", "item": "Valve and fittings at each block", "per": "block", "qty": 1, "unit": "set", "rwf": 15000 },
+      { "section": "Water", "item": "Disc filter, 1 inch, at the tank", "per": "once", "qty": 1, "unit": "each", "rwf": 60000 },
+      { "section": "Water", "item": "Main pipe from the tank, 40 mm PE", "per": "once", "qty": 30, "unit": "m", "rwf": 2000 },
+      { "section": "Fence", "item": "Wire mesh, 1.5 m high", "per": "m", "qty": 1, "unit": "m", "rwf": 2500 },
+      { "section": "Fence", "item": "Treated timber posts", "per": "m", "qty": 0.334, "unit": "each", "rwf": 4000 },
+      { "section": "Fence", "item": "Gate onto the garden walk", "per": "once", "qty": 1, "unit": "each", "rwf": 60000 },
+      { "section": "Nursery", "item": "Shade net, 50 %", "per": "once", "qty": 60, "unit": "m²", "rwf": 1500 },
+      { "section": "Nursery", "item": "Poles and wire for the shade house", "per": "once", "qty": 1, "unit": "set", "rwf": 80000 },
+      { "section": "Nursery", "item": "Seedling trays, 128 cells", "per": "once", "qty": 30, "unit": "each", "rwf": 3000 },
+      { "section": "Nursery", "item": "Benches for the trays", "per": "once", "qty": 4, "unit": "each", "rwf": 25000 },
+      { "section": "Seed and plants", "item": "Seed for a year (Holland Greentech), all twelve crops", "per": "bed", "qty": 1, "unit": "bed", "rwf": 3500 },
+      { "section": "Seed and plants", "item": "Stakes and string for tomatoes, trellis for cucumbers", "per": "once", "qty": 1, "unit": "set", "rwf": 120000 },
+      { "section": "Seed and plants", "item": "Pheromone traps for Tuta absoluta", "per": "once", "qty": 10, "unit": "each", "rwf": 5000 },
+      { "section": "Tools", "item": "Hoes, rakes, forks, watering cans, wheelbarrows, knapsack sprayer, crates, a scale", "per": "once", "qty": 1, "unit": "set", "rwf": 350000 },
+      { "section": "People", "item": "Gardeners for the first three months", "per": "once", "qty": 6, "unit": "months", "rwf": 150000 }
+    ],
+    "contingency": 0.15
+  }
+}

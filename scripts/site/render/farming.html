@@ -1,0 +1,341 @@
+<!doctype html>
+<!--
+  /en/farming's pictures, in the pattern of the camp and bar renders: one block of ten beds of the vegetable
+  field, the block by the gate on the garden walk, with this season's crops from the generated plan
+  (public/designs/farming/data/plan.json, written by scripts/site/farming.mjs).
+
+    ?mode=line              the block from the main path, line drawing on a transparent ground -> render/field-line.png
+    ?mode=real              the same view with soil, plants and low sun                          -> render/field-real.webp
+    ?top=<layer>            the block from straight above, beds standing up the picture, for the Field build-up:
+                              ground (opaque) | beds | compost | drip | plants (transparent)  -> render/top-<layer>.webp
+                              window.PIECES holds each bed's rectangle as fractions of the picture
+    ?item=<crop>            3 m of a bed of that crop on its own, transparent, for the Crops rail   -> render/crop/<crop>.webp
+
+  Serve the repo root on a spare port, open this page at its size (2400 x 1100; the top view sets its own),
+  and once body[data-ready] is set save the data URL in #out.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+html,body{margin:0;background:#fff}
+#out{display:block}
+</style>
+<script type="importmap">
+{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<img id="out" alt="">
+<script type="module">
+import * as THREE from "three"
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js"
+import { OutlineEffect } from "three/addons/effects/OutlineEffect.js"
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js"
+import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js"
+import { LineMaterial } from "three/addons/lines/LineMaterial.js"
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js"
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
+import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+
+const Q = new URLSearchParams(location.search)
+const TOP = Q.get("top"), ITEM = Q.get("item")
+const LINE = Q.get("mode") === "line"
+const P = await (await fetch(`/public/designs/farming/data/plan.json?${Date.now()}`)).json()
+const INK = "#2b2a26", PAGE = "#ffffff"
+const CROP = Object.fromEntries(P.crops.map((c) => [c.id, c]))
+
+// The block: the one holding the herbs (by the gate). Its beds in block metres: x along the bed (0..10),
+// z across the beds (0 = the bed furthest from the main path), y up. An item render takes one bed alone.
+const herbBed = P.beds.find((b) => b.crop === "herbs")
+const block = P.blocks.find((b) => b.id === herbBed.block)
+const towardMain = block.y < P.mainY // the main path below the block on the plan: it is the near side
+let beds = P.beds.filter((b) => b.block === block.id).map((b) => ({ ...b, z0: b.y - block.y, x0: 0 }))
+if (!towardMain) beds = beds.map((b) => ({ ...b, z0: block.h - (b.y - block.y) - b.h }))
+if (ITEM) beds = [{ id: ITEM, crop: ITEM, x0: 0, z0: 0, w: 10, h: 1.2 }]
+const BW = ITEM ? 3 : 10, BH = ITEM ? 1.2 : block.h, H = 0.2 // an item shows 3 m of its bed, close enough to read the plants
+
+const [FW, FH] = TOP ? [2400, Math.round((2400 * (BW + 1.4)) / (BH + 1.4))] : [2400, 1100]
+document.getElementById("out").style.cssText = `width:${FW}px;height:${FH}px`
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true })
+renderer.setClearColor(0xffffff, 0)
+renderer.setPixelRatio(1)
+renderer.setSize(FW, FH)
+renderer.outputColorSpace = THREE.SRGBColorSpace
+const REAL = !LINE
+if (REAL) {
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+}
+const scene = new THREE.Scene()
+
+// ------------------------------------------------------------ textures
+let seed = 11
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+function tex(draw, w = 512, h = 512, s = 11) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h
+  seed = s
+  draw(c.getContext("2d"), w, h)
+  const t = new THREE.CanvasTexture(c)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.wrapS = t.wrapT = THREE.RepeatWrapping
+  t.anisotropy = 8
+  return t
+}
+const speckle = (base, light, dark, n) => (g, w, h) => {
+  g.fillStyle = base; g.fillRect(0, 0, w, h)
+  for (let i = 0; i < n; i++) { g.fillStyle = rnd() > 0.5 ? light : dark; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 3, 1 + rnd() * 3) }
+}
+const T = REAL ? {
+  soil: tex(speckle("#7a5236", "rgba(170,120,80,0.35)", "rgba(40,25,15,0.4)", 30000)), // the red-brown loam
+  compost: tex(speckle("#3b2a1f", "rgba(120,90,60,0.35)", "rgba(10,8,5,0.45)", 30000), 512, 512, 5),
+  path: tex(speckle("#a07a55", "rgba(200,170,120,0.4)", "rgba(80,55,35,0.35)", 24000), 512, 512, 3),
+  grass: tex(speckle("#6f9a4a", "rgba(170,200,110,0.35)", "rgba(40,70,30,0.35)", 26000), 512, 512, 9),
+} : {}
+
+// ------------------------------------------------------------ materials
+const MAT = {}
+function mat(name, colour) {
+  const key = colour ? `${name}:${colour}` : name
+  if (MAT[key]) return MAT[key]
+  let x
+  if (LINE) {
+    x = new THREE.MeshBasicMaterial({ color: PAGE, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
+    if (name === "stake" || name === "tape") x.userData.outlineParameters = { visible: false }
+  } else {
+    const std = (o) => new THREE.MeshStandardMaterial(o)
+    x = {
+      soil: () => std({ map: T.soil, roughness: 1 }),
+      compost: () => std({ map: T.compost, roughness: 1 }),
+      path: () => std({ map: T.path, roughness: 1 }),
+      grass: () => std({ map: T.grass, roughness: 1 }),
+      tape: () => std({ color: "#1d1f22", roughness: 0.5 }),
+      pipe: () => std({ color: "#1d1f22", roughness: 0.45 }),
+      stake: () => std({ color: "#9b7a4e", roughness: 0.8 }),
+      leaf: () => std({ color: colour, roughness: 0.75, side: THREE.DoubleSide }),
+      fruit: () => std({ color: colour, roughness: 0.35 }),
+      net: () => std({ color: "#e8e4da", roughness: 0.9 }),
+    }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
+  }
+  return (MAT[key] = x)
+}
+
+// geometry is collected per material and merged, so a bed of six hundred onions is a handful of meshes
+const meshes = []
+const bins = new Map()
+function put(geo, name, { pos = [0, 0, 0], rot = [0, 0, 0], scale = [1, 1, 1], colour, layer = "beds" } = {}) {
+  const g = geo.index ? geo.toNonIndexed() : geo.clone()
+  g.deleteAttribute("uv"); g.deleteAttribute("normal"); g.computeVertexNormals()
+  const m = new THREE.Matrix4().compose(new THREE.Vector3(...pos), new THREE.Quaternion().setFromEuler(new THREE.Euler(...rot)), new THREE.Vector3(...scale))
+  g.applyMatrix4(m)
+  const key = `${layer}|${name}|${colour ?? ""}`
+  if (!bins.has(key)) bins.set(key, [])
+  bins.get(key).push(g)
+}
+function add(geo, name, { pos, rot, layer = "ground", edges = true } = {}) {
+  const mesh = new THREE.Mesh(geo, mat(name))
+  if (pos) mesh.position.set(...pos)
+  if (rot) mesh.rotation.set(...rot)
+  mesh.castShadow = REAL; mesh.receiveShadow = REAL
+  mesh.userData = { layer, edges }
+  scene.add(mesh); meshes.push(mesh)
+  return mesh
+}
+function flush() {
+  for (const [key, list] of bins) {
+    const [layer, name, colour] = key.split("|")
+    const mesh = new THREE.Mesh(mergeGeometries(list), mat(name, colour || undefined))
+    mesh.castShadow = REAL; mesh.receiveShadow = REAL
+    // plants read by their outline; sharp-edged things (beds, pipes, stakes) also draw their creases
+    mesh.userData = { layer, edges: !["leaf", "fruit", "net"].includes(name) }
+    scene.add(mesh); meshes.push(mesh)
+  }
+}
+// low-poly shapes, enough at this distance
+const SPH = new THREE.IcosahedronGeometry(1, 1)
+const CONE = new THREE.ConeGeometry(1, 1, 6)
+const CYL = new THREE.CylinderGeometry(1, 1, 1, 6)
+const BOX = new THREE.BoxGeometry(1, 1, 1)
+
+// ------------------------------------------------------------ the ground
+const M = 0.7 // ground past the block on each side
+if (!ITEM) {
+  if (REAL) { T.path.repeat.set((BW + 2 * M) / 3, (BH + 2 * M) / 3) }
+  add(new THREE.PlaneGeometry(BW + 2 * M, BH + 2 * M), "path", { pos: [BW / 2, 0, BH / 2], rot: [-Math.PI / 2, 0, 0], edges: false })
+  if (REAL && !TOP) {
+    T.grass.repeat.set(30, 30)
+    add(new THREE.PlaneGeometry(120, 120), "grass", { pos: [BW / 2, -0.01, BH / 2], rot: [-Math.PI / 2, 0, 0], edges: false })
+  }
+}
+
+// ------------------------------------------------------------ plants, one shape per crop
+const R = () => rnd() - 0.5
+function plant(c, x, z, y0) {
+  const h = c.plantHeight * (0.9 + rnd() * 0.2), col = c.colour, L = { layer: "plants" }
+  const green = "#4e7d34"
+  switch (c.id) {
+    case "tomato": { // staked, a loose column of foliage hung with red fruit
+      put(CYL, "stake", { pos: [x, y0 + 0.8, z], scale: [0.012, 1.6, 0.012], ...L })
+      for (let k = 0; k < 9; k++) put(SPH, "leaf", { pos: [x + R() * 0.28, y0 + 0.15 + rnd() * h * 0.85, z + R() * 0.22], scale: [0.09 + rnd() * 0.06, 0.06 + rnd() * 0.04, 0.09 + rnd() * 0.06], rot: [R(), rnd() * 3, R()], colour: rnd() > 0.5 ? green : "#3f6d2b", ...L })
+      for (let k = 0; k < 5; k++) put(SPH, "fruit", { pos: [x + R() * 0.3, y0 + 0.25 + rnd() * 0.7, z + 0.1 + R() * 0.1], scale: [0.035, 0.032, 0.035], colour: rnd() > 0.35 ? col : "#e5a03a", ...L })
+      break
+    }
+    case "pepper": case "eggplant": { // a round bush with a few fruit
+      put(SPH, "leaf", { pos: [x, y0 + h * 0.5, z], scale: [0.24, h * 0.5, 0.24], colour: green, ...L })
+      for (let k = 0; k < 3; k++) put(SPH, "fruit", { pos: [x + R() * 0.3, y0 + h * (0.25 + rnd() * 0.3), z + 0.18], scale: c.id === "eggplant" ? [0.04, 0.08, 0.04] : [0.04, 0.05, 0.04], colour: col, ...L })
+      break
+    }
+    case "cabbage": { // a pale head in a ring of outer leaves
+      put(SPH, "leaf", { pos: [x, y0 + 0.13, z], scale: [0.14, 0.12, 0.14], colour: col, ...L })
+      for (let k = 0; k < 5; k++) { const a = (k / 5) * Math.PI * 2 + rnd(); put(SPH, "leaf", { pos: [x + Math.cos(a) * 0.15, y0 + 0.07, z + Math.sin(a) * 0.15], scale: [0.14, 0.04, 0.1], rot: [0, -a, 0.3], colour: "#7fa86a", ...L }) }
+      break
+    }
+    case "onion": { // a tuft of upright hollow leaves
+      for (let k = 0; k < 3; k++) put(CONE, "leaf", { pos: [x + R() * 0.03, y0 + h / 2, z + R() * 0.03], scale: [0.012, h, 0.012], rot: [R() * 0.3, 0, R() * 0.3], colour: "#6e9b4a", ...L })
+      break
+    }
+    case "carrot": case "herbs": { // a soft feathery mound
+      put(SPH, "leaf", { pos: [x, y0 + h * 0.4, z], scale: [0.07, h * 0.45, 0.07], colour: col === "#e07a2c" ? "#5d8f3a" : col, ...L })
+      break
+    }
+    case "amaranth": { // an upright stem of broad leaves, green below and wine red at the top
+      put(CYL, "leaf", { pos: [x, y0 + h * 0.45, z], scale: [0.012, h * 0.9, 0.012], colour: "#6b3a3a", ...L })
+      for (let k = 0; k < 6; k++) { const a = k * 2.4 + rnd(), y = y0 + h * (0.2 + k * 0.12); put(SPH, "leaf", { pos: [x + Math.cos(a) * 0.06, y, z + Math.sin(a) * 0.06], scale: [0.07, 0.02, 0.045], rot: [0, -a, 0.4], colour: k > 3 ? col : "#5e7f3a", ...L }) }
+      put(CONE, "leaf", { pos: [x, y0 + h * 0.95, z], scale: [0.03, h * 0.25, 0.03], colour: col, ...L })
+      break
+    }
+    case "kale": case "spinach": { // a stem with broad leaves leaning out
+      const n = c.id === "kale" ? 6 : 5
+      if (c.id === "kale") put(CYL, "leaf", { pos: [x, y0 + h * 0.3, z], scale: [0.02, h * 0.6, 0.02], colour: "#7d9a6a", ...L })
+      for (let k = 0; k < n; k++) { const a = (k / n) * Math.PI * 2 + rnd(); put(SPH, "leaf", { pos: [x + Math.cos(a) * 0.1, y0 + h * (0.5 + rnd() * 0.3), z + Math.sin(a) * 0.1], scale: [0.14, 0.03, 0.08], rot: [0, -a, 0.5], colour: col, ...L }) }
+      break
+    }
+    case "beans": { // a low bush
+      put(SPH, "leaf", { pos: [x, y0 + h * 0.45, z], scale: [0.11, h * 0.45, 0.11], colour: col, ...L })
+      break
+    }
+    case "cucumber": { // vines up the trellis, leaves and a few fruit
+      for (let k = 0; k < 5; k++) put(SPH, "leaf", { pos: [x + R() * 0.3, y0 + 0.2 + k * 0.27, z + R() * 0.05], scale: [0.13, 0.11, 0.05], colour: col, ...L })
+      for (let k = 0; k < 2; k++) put(CYL, "fruit", { pos: [x + R() * 0.3, y0 + 0.4 + rnd() * 0.7, z + 0.07], scale: [0.025, 0.18, 0.025], colour: "#2f5a22", ...L })
+      break
+    }
+  }
+}
+
+// ------------------------------------------------------------ the beds
+for (const b of beds) {
+  const c = CROP[b.crop]
+  const zc = b.z0 + b.h / 2
+  // the raised bed, a little narrower at the top, and its compost
+  const shape = new THREE.Shape([new THREE.Vector2(0, 0), new THREE.Vector2(b.h, 0), new THREE.Vector2(b.h - 0.06, H), new THREE.Vector2(0.06, H)])
+  const g = new THREE.ExtrudeGeometry(shape, { depth: BW, bevelEnabled: false })
+  g.rotateY(Math.PI / 2); g.translate(0, 0, b.z0 + b.h)
+  if (REAL) { T.soil.repeat.set(4, 1) }
+  add(g, "soil", { pos: [b.x0, 0, 0], layer: "beds" })
+  add(new THREE.BoxGeometry(BW - 0.04, 0.02, b.h - 0.14), "compost", { pos: [b.x0 + BW / 2, H + 0.01, zc], layer: "compost" })
+  if (!c) continue // a resting bed: compost and no crop
+  // two drip lines along the bed, the header at the near end
+  for (const k of [1 / 3, 2 / 3]) put(CYL, "tape", { pos: [b.x0 + BW / 2, H + 0.03, b.z0 + b.h * k], rot: [0, 0, Math.PI / 2], scale: [0.012, BW - 0.2, 0.012], layer: "drip" })
+  if (!ITEM) put(CYL, "pipe", { pos: [b.x0 - 0.15, 0.03, zc], rot: [Math.PI / 2, 0, 0], scale: [0.025, b.h + 0.5, 0.025], layer: "drip" })
+  // the plants in their rows at their spacing; the densest crops drawn at twice the spacing so they read
+  const step = c.plantM < 0.12 ? c.plantM * 2 : c.plantM
+  for (let r = 0; r < c.rows; r++) {
+    const z = b.z0 + 0.1 + ((r + 0.5) * (b.h - 0.2)) / c.rows
+    for (let x = step / 2 + 0.1; x < BW - 0.1; x += step) plant(c, b.x0 + x + R() * 0.02, z + R() * 0.02, H + 0.02)
+  }
+  if (c.id === "cucumber") { // the trellis: posts every 2.5 m and a net between them
+    for (let x = 0.1; x <= BW; x += 2.475) put(CYL, "stake", { pos: [b.x0 + x, H + 0.8, zc], scale: [0.025, 1.6, 0.025], layer: "plants" })
+    put(BOX, "net", { pos: [b.x0 + BW / 2, H + 1.0, zc - 0.02], scale: [BW - 0.2, 1.2, 0.004], layer: "plants" })
+  }
+}
+flush()
+
+// ------------------------------------------------------------ camera
+let camera
+if (TOP) {
+  // straight down, the beds standing up the picture: picture x runs across the beds, up runs along them
+  const pad = 0.7
+  camera = new THREE.OrthographicCamera(-(BH / 2 + pad), BH / 2 + pad, BW / 2 + pad, -(BW / 2 + pad), 0.1, 100)
+  camera.position.set(BW / 2, 30, BH / 2)
+  camera.up.set(1, 0, 0) // bed length toward the top of the picture; the picture's right is +z
+  camera.lookAt(BW / 2, 0, BH / 2)
+  // only the layer asked for; the ground alone is opaque
+  for (const m of meshes) m.visible = TOP === "ground" ? m.userData.layer === "ground" : m.userData.layer === TOP
+  if (TOP === "ground") renderer.setClearColor(0xffffff, 1)
+  // each bed's rectangle on the picture, as fractions, in the order they are laid (nearest the path first)
+  const W = BH + 2 * pad, Hh = BW + 2 * pad
+  window.PIECES = {
+    aspect: W / Hh,
+    beds: [...beds].sort((a, b) => b.z0 - a.z0).map((b) => [+((b.z0 + pad) / W).toFixed(5), +(pad / Hh).toFixed(5), +(b.h / W).toFixed(5), +(BW / Hh).toFixed(5)]),
+  }
+} else {
+  const target = new THREE.Vector3(BW / 2, 0.3, BH / 2)
+  const [el, az, dist] = ITEM ? [THREE.MathUtils.degToRad(30), THREE.MathUtils.degToRad(-30), 9] : [THREE.MathUtils.degToRad(32), THREE.MathUtils.degToRad(-22), 48]
+  camera = new THREE.PerspectiveCamera(ITEM ? 30 : 24, FW / FH, 0.5, 300)
+  camera.position.set(target.x + dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
+  camera.lookAt(target)
+  camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+  scene.updateMatrixWorld(true)
+  // fit the block (not the lawn) to the picture
+  const bb = new THREE.Box3()
+  for (const o of meshes) if (o.material !== MAT.grass && !(o.geometry.type === "PlaneGeometry" && ITEM)) bb.expandByObject(o)
+  let px = [Infinity, Infinity, -Infinity, -Infinity]
+  for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
+    const p = new THREE.Vector3(xx, yy, zz).project(camera)
+    const X = ((p.x + 1) / 2) * FW, Yp = ((1 - p.y) / 2) * FH
+    px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
+  }
+  let w = (px[2] - px[0]) * 1.06, h = (px[3] - px[1]) * 1.1
+  if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
+  camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+}
+
+// ------------------------------------------------------------ render
+if (LINE) {
+  const lineMat = new LineMaterial({ color: INK, linewidth: 1.2 })
+  lineMat.resolution.set(FW, FH)
+  lineMat.userData.outlineParameters = { visible: false }
+  scene.updateMatrixWorld(true)
+  for (const o of [...meshes]) {
+    if (!o.userData.edges || !o.visible) continue
+    const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
+    const l = new LineSegments2(g, lineMat)
+    l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
+    scene.add(l)
+  }
+  const ink = new THREE.Color(INK)
+  new OutlineEffect(renderer, { defaultThickness: 0.0025, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
+} else {
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  scene.environmentIntensity = 0.45
+  scene.add(new THREE.HemisphereLight(0xeef3ff, 0x6a5a3a, 0.9))
+  const sun = new THREE.DirectionalLight(0xffe2b8, 3.0)
+  // morning sun from the front left; straight down for the top view so no shadow crosses into a neighbour's piece
+  sun.position.set(...(TOP ? [BW / 2 + 0.01, 30, BH / 2 + 0.01] : [-12, 10, BH + 10]))
+  sun.target.position.set(BW / 2, 0, BH / 2); scene.add(sun.target)
+  sun.castShadow = true
+  sun.shadow.mapSize.set(4096, 4096)
+  Object.assign(sun.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 80 })
+  sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 3
+  scene.add(sun)
+  const composer = new EffectComposer(renderer)
+  composer.setSize(FW, FH)
+  composer.addPass(new RenderPass(scene, camera))
+  if (!TOP) {
+    const ao = new GTAOPass(scene, camera, FW, FH)
+    ao.blendIntensity = 0.7
+    ao.updateGtaoMaterial({ radius: 0.25, distanceExponent: 1.5, thickness: 1, scale: 1 })
+    composer.addPass(ao)
+  }
+  composer.addPass(new OutputPass())
+  composer.render()
+}
+document.getElementById("out").src = renderer.domElement.toDataURL("image/png")
+document.body.dataset.ready = "1"
+</script>
+</body>
+</html>
