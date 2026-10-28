@@ -104,7 +104,7 @@ const PAGES = [
   { slug: "location", src: "study/research/location.md" },
   { slug: "market", src: "study/research/rwanda-agriculture-market.md" },
   { slug: "crops", src: "study/research/crop-market-research.md" },
-  { slug: "livestock", src: "study/research/livestock-market-research.md" },
+  { slug: "livestock-research", src: "study/research/livestock-market-research.md" },
   { slug: "buyers", src: "study/research/buyer-database.md" },
   { slug: "regulations", src: "study/research/regulations.md" },
   { slug: "plant-suppliers", src: "study/research/plant-and-seed-suppliers.md" },
@@ -158,6 +158,12 @@ const twins = listed
   .filter((p) => p.src?.endsWith(".md") && existsSync(join(ROOT, p.src.replace(/\.md$/, ".rw.md"))))
   .map((p) => ({ slug: `${p.slug}-rw`, src: p.src.replace(/\.md$/, ".rw.md"), twinOf: p.src }))
 const entries = [...listed, ...twins]
+// one page per slug: a repeated slug would silently overwrite the earlier page's .mdx
+const seenSlugs = new Set()
+for (const { slug } of entries) {
+  if (seenSlugs.has(slug)) throw new Error(`sync-docs: slug "${slug}" is used twice in PAGES`)
+  seenSlugs.add(slug)
+}
 const slugByPath = new Map(entries.map((p) => [p.src ?? p.csv, p.slug]))
 
 // {{ns.key}} values: the studio generator's measurements, read only when a page uses one.
