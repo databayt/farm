@@ -7,6 +7,8 @@ export const DESIGN_BLUR: Record<string, string> = {
   "/designs/compound/render/compound-real.webp": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAAAQAgCdASoQAAgAAsBMJbAC7AEPh8ho5XgAAP7wtUZl+seyBbXgGto/VPooE0r2+XT3XWkd2pWpECP7Vpx3nsjXfViHvAAA",
   "/designs/guest-room/render/guest-room-hero.jpg": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADQAQCdASoQAAkAAsBMJZgCdAEPPDbmIAD+1RA4ku+Ew2Ub4CFXEApNN0iO8W/9WCrFX+qqeFnyIZM7LZVgI3eD9N4i5K3DLkW/AOjAAAA=",
   "/designs/guest-room/render/guest-room-real.webp": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAQAgCdASoQAAwAAsBMJbACdAEem14oCEUAAP7D/OMDIGIKjV/dIHgEE20dtaZx8xfk4Xd2ZOGR+ZN1//WUjnN2xxVvomAAAAA=",
+  "/designs/livestock/render/livestock-hero.jpg": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAACQAQCdASoQAAkAAsBMJbACdADro8AA/vOCXw9GSVa4wOmtioKhTOMvM9rDKuM6k+oFziT51lmCZnhuLttMz4i5CCUiM8YgAAA=",
+  "/designs/livestock/render/livestock-real.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAQCdASoQAAcAAsBMJbACdADpL122BaAA/ozb6SKM1lDwm3Qe4zu2aEVWUZkbfQruz4i3LIEkN/+QAAA=",
   "/designs/office/render/office-hero.jpg": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkAAsBMJZgCdAEVLhTVOcAA+6X2Qtp8JlvdLsym8f0G+hv43JfR8ZE8VlZ+Lizg7mXLDJxa4gakkwtKc/dcmAA=",
   "/designs/office/render/office-real.webp": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAADQAQCdASoQAAcAAsBMJbACdAEVz05WwAD+w+FDX2J04o0G4xzQygM4tP8h8Cfr731eVObVE4wh/JH0LgAAAA==",
   "/designs/studio/render/electric-real.jpg": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAAAQAgCdASoQAAcAAsBMJagCdAEf3boUQJhgAP7yNNk3FaWpXgFPV2HYn5DWnJu3VNGPHeWueZWYqrGQeFt1Ol4fcOUy6O/hwyBrUt7K7Ju44YjcIAA=",

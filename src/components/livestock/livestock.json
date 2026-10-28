@@ -1,0 +1,194 @@
+{
+  "about": "The livestock house, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (founder, 2026-10-28, D-030; the zone D split of study/design/livestock-plan.md), in one raised house with the two species in separate pens (copper in goat minerals is toxic to sheep, and sheep carry more worms [V LVS-26, LVS-46]). The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x along the house to the right as seen from the paddock (west end left), y toward the viewer (the open, sheltered side and the feed passage), the house's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
+  "house": {
+    "about": "7.0 x 3.9 m under one mono-pitch sheet roof, long axis east-west: 3.0 m of pens behind a 0.9 m feed passage. The slatted floor stands 1.0 m above the ground on treated timber posts, so droppings fall through to the manure floor.",
+    "l": 7.0,
+    "w": 3.9,
+    "floor": 1.0,
+    "slats": {
+      "about": "50 mm timber or split bamboo slats with 15 mm gaps, running across the house.",
+      "w": 0.05,
+      "gap": 0.015
+    },
+    "posts": {
+      "about": "100 x 100 mm treated posts on concrete pads, at 1.75 m along each row.",
+      "s": 0.1,
+      "x": [
+        -3.45,
+        -1.75,
+        0,
+        1.75,
+        3.45
+      ],
+      "y": [
+        -1.9,
+        -0.45,
+        1.05,
+        1.9
+      ]
+    },
+    "wall": 0.04,
+    "back": {
+      "about": "The windward back wall and the two ends: solid boards to the roof, dry and draught-free.",
+      "h": 2.0
+    },
+    "roof": {
+      "about": "Iron sheets on purlins, high over the passage (2.4 m above the slats) and falling to 2.0 m at the back, 0.6 m over the edges; the back gutter feeds the tank. Off in the line and real views so the pens show.",
+      "front": 2.4,
+      "back": 2.0,
+      "over": 0.6
+    },
+    "passage": {
+      "about": "The feed passage along the open front, at floor level: the racks and troughs are filled from here without stepping into a pen.",
+      "d": 0.9
+    },
+    "front": {
+      "about": "The pens' front fence on the passage: boards to 0.6 m, then vertical bars to 1.2 m, a gate into each pen. Above it the house is open to the air under the roof.",
+      "h": 1.2,
+      "solid": 0.6
+    }
+  },
+  "pens": {
+    "about": "West to east: goats 3.0 x 3.0 m (6 does at 1.2 m2 each plus kids at 0.3 m2 [A]), sheep 2.0 x 3.0 m (4 ewes, the same allowance), a kidding and sick pen 1.0 x 3.0 m, and the lockable feed store. Partitions are solid boards 1.2 m high, so goats and sheep do not touch or share minerals.",
+    "list": [
+      {
+        "id": "goats",
+        "label": "GOATS",
+        "x0": -3.5,
+        "x1": -0.5,
+        "head": 6,
+        "rack": 1.5,
+        "trough": 0.6
+      },
+      {
+        "id": "sheep",
+        "label": "SHEEP",
+        "x0": -0.5,
+        "x1": 1.5,
+        "head": 4,
+        "rack": 1.2,
+        "trough": 0.6
+      },
+      {
+        "id": "kidding",
+        "label": "KIDDING",
+        "x0": 1.5,
+        "x1": 2.5,
+        "head": 0,
+        "rack": 0.6,
+        "trough": 0
+      },
+      {
+        "id": "store",
+        "label": "FEED",
+        "x0": 2.5,
+        "x1": 3.5,
+        "head": 0,
+        "rack": 0,
+        "trough": 0
+      }
+    ],
+    "partition": 1.2,
+    "gate": 0.8
+  },
+  "fittings": {
+    "about": "On each pen's front fence, filled from the passage: a raised hay rack (feed off the floor lowers worm pick-up), a float trough on the water line, and a mineral box for that species alone. The feed store has shelves, sacks on a pallet and a lockable door onto the passage.",
+    "rack": {
+      "d": 0.35,
+      "y0": 0.5,
+      "h": 0.6
+    },
+    "trough": {
+      "d": 0.3,
+      "h": 0.25
+    },
+    "mineral": {
+      "w": 0.2,
+      "d": 0.15
+    }
+  },
+  "ramp": {
+    "about": "A cleated ramp from the passage's west end down to the paddock, 0.9 m wide and 2.5 m long (about 22 degrees).",
+    "l": 2.5,
+    "cleat": 0.25
+  },
+  "tank": {
+    "about": "A 1,000 L tank at the back east corner on a 1.2 m block stand, filled from the roof's back gutter and feeding the float troughs by gravity; the farm's water point tops it up.",
+    "x": 4.15,
+    "y": -1.35,
+    "r": 0.55,
+    "h": 1.2,
+    "stand": 1.2
+  },
+  "manure": {
+    "about": "A concrete floor under the pens, falling to the front, swept each week and carried to the compost pad.",
+    "fall": 0.03
+  },
+  "animals": {
+    "about": "Where the 3D stands the herd: local goats in browns and black, fat-tailed hair sheep with white coats and dark faces. Positions in pen metres, heading in degrees (0 = toward +x).",
+    "goats": [
+      {
+        "x": -3.0,
+        "y": -1.3,
+        "h": 30,
+        "coat": "brown"
+      },
+      {
+        "x": -2.2,
+        "y": -0.5,
+        "h": 120,
+        "coat": "black"
+      },
+      {
+        "x": -1.3,
+        "y": -1.4,
+        "h": 200,
+        "coat": "tan"
+      },
+      {
+        "x": -2.7,
+        "y": 0.4,
+        "h": 80,
+        "coat": "brown"
+      },
+      {
+        "x": -1.6,
+        "y": 0.5,
+        "h": 95,
+        "coat": "white"
+      },
+      {
+        "x": -0.95,
+        "y": -0.4,
+        "h": 260,
+        "coat": "black"
+      }
+    ],
+    "sheep": [
+      {
+        "x": -0.05,
+        "y": -1.2,
+        "h": 20,
+        "coat": "wool"
+      },
+      {
+        "x": 0.9,
+        "y": -0.9,
+        "h": 160,
+        "coat": "wool"
+      },
+      {
+        "x": 0.2,
+        "y": 0.35,
+        "h": 85,
+        "coat": "wool"
+      },
+      {
+        "x": 1.05,
+        "y": 0.45,
+        "h": 100,
+        "coat": "wool"
+      }
+    ]
+  }
+}

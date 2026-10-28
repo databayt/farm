@@ -1,0 +1,449 @@
+<!doctype html>
+<!--
+  /en/livestock's 3D, in the pattern of the bar's (scripts/site/render/bar.html): the goat and sheep house seen from
+  the paddock, built from src/components/livestock/livestock.json (the numbers the 2D draws). Treated timber on
+  posts, a slatted floor 1.0 m up over a concrete manure floor, the feed passage and its ramp, the 1,000 L tank, and
+  the starting herd standing in their pens: 6 local goats and 4 fat-tailed hair sheep. The roof is off so the pens
+  show. Rendered two ways:
+
+    ?mode=line  line drawing on a transparent ground   -> public/designs/livestock/render/livestock-line.png
+    ?mode=real  materials, low sun and shadow          -> public/designs/livestock/render/livestock-real.webp
+    &hero=1     real mode, roof on, from eye level in the paddock, 2400 x 1340 -> the stand-in livestock-hero.jpg
+
+  Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
+  save the data URL in #out.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+html,body{margin:0;background:#fff}
+#out{display:block;width:2400px;height:auto}
+</style>
+<script type="importmap">
+{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<img id="out" alt="">
+<script type="module">
+import * as THREE from "three"
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js"
+import { OutlineEffect } from "three/addons/effects/OutlineEffect.js"
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js"
+import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js"
+import { LineMaterial } from "three/addons/lines/LineMaterial.js"
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js"
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
+import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+
+const Q = new URLSearchParams(location.search)
+const LINE = Q.get("mode") !== "real"
+const HERO = !LINE && Q.get("hero") === "1"
+const [FW, FH] = HERO ? [2400, 1340] : [2400, 1100]
+const C = await (await fetch(`/src/components/livestock/livestock.json?${Date.now()}`)).json()
+const INK = "#2b2a26", PAGE = "#ffffff"
+// plan (x right, y toward the passage) -> three: x = x, y = height, z = y; the camera stands in the paddock, at +z
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true })
+renderer.setClearColor(0xffffff, 0)
+renderer.setPixelRatio(1)
+renderer.setSize(FW, FH)
+renderer.outputColorSpace = THREE.SRGBColorSpace
+if (!LINE) {
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+}
+const scene = new THREE.Scene()
+
+// ------------------------------------------------------------ procedural textures (real mode)
+let seed = 7
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+function tex(draw, w = 512, h = 512) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h
+  seed = 7
+  draw(c.getContext("2d"), w, h)
+  const t = new THREE.CanvasTexture(c)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.wrapS = t.wrapT = THREE.RepeatWrapping
+  t.anisotropy = 8
+  return t
+}
+const T = LINE ? {} : {
+  // treated pine boards, weathered toward grey-brown, 150 mm a board across the tile
+  boards: tex((g, w, h) => {
+    g.fillStyle = "#9c7a55"; g.fillRect(0, 0, w, h)
+    const n = 10
+    for (let i = 0; i < n; i++) {
+      g.fillStyle = `rgba(${rnd() > 0.5 ? "200,170,125" : "80,60,40"},${0.06 + rnd() * 0.12})`
+      g.fillRect(0, (i * h) / n, w, h / n)
+      g.fillStyle = "rgba(45,30,18,0.6)"; g.fillRect(0, ((i + 1) * h) / n - 2, w, 2)
+    }
+    for (let j = 0; j < 260; j++) { g.fillStyle = `rgba(95,70,45,${0.05 + rnd() * 0.08})`; g.fillRect(rnd() * w, rnd() * h, 30 + rnd() * 160, 1 + rnd()) }
+  }),
+  concrete: tex((g, w, h) => {
+    g.fillStyle = "#a7a39b"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 9000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.08)" : "rgba(60,55,45,0.1)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2) }
+    for (let i = 0; i < 40; i++) { g.fillStyle = `rgba(90,75,50,${0.05 + rnd() * 0.08})`; g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 10 + rnd() * 40, 6 + rnd() * 20, rnd() * 3, 0, Math.PI * 2); g.fill() }
+  }),
+  hay: tex((g, w, h) => {
+    g.fillStyle = "#b9a35a"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 2600; i++) {
+      const x = rnd() * w, y = rnd() * h, a = rnd() * Math.PI, len = 8 + rnd() * 30
+      g.strokeStyle = rnd() > 0.5 ? `rgba(230,210,140,${0.3 + rnd() * 0.4})` : `rgba(110,105,45,${0.2 + rnd() * 0.3})`
+      g.lineWidth = 1 + rnd(); g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * len, y + Math.sin(a) * len); g.stroke()
+    }
+  }),
+  grass: tex((g, w, h) => {
+    g.fillStyle = "#6f9a4a"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 26000; i++) {
+      g.fillStyle = rnd() > 0.5 ? "rgba(170,200,110,0.35)" : "rgba(40,70,30,0.35)"
+      g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
+    }
+  }),
+  iron: tex((g, w, h) => { // corrugated iron sheet: one rib's light and shade across
+    for (let x = 0; x < w; x++) {
+      const v = 0.72 + 0.2 * Math.sin((x / w) * Math.PI * 2)
+      g.fillStyle = `rgb(${Math.round(196 * v)},${Math.round(200 * v)},${Math.round(204 * v)})`
+      g.fillRect(x, 0, 1, h)
+    }
+  }, 64, 64),
+  sky: tex((g, w, h) => {
+    const gr = g.createLinearGradient(0, 0, 0, h)
+    gr.addColorStop(0, "#6f9fd0"); gr.addColorStop(0.3, "#a9c4dc"); gr.addColorStop(0.47, "#f2d3ac"); gr.addColorStop(1, "#f2d3ac")
+    g.fillStyle = gr; g.fillRect(0, 0, w, h)
+  }, 16, 512),
+}
+// metres one tile covers [along, across]
+const TILE = { boards: [1.5, 1.5], concrete: [2, 2], hay: [0.6, 0.6], grass: [9, 9], iron: [0.076, 1] }
+const MAP = { timber: "boards", slat: "boards", deck: "boards", concrete: "concrete", hay: "hay", lawn: "grass", iron: "iron" }
+
+// ------------------------------------------------------------ materials
+// thin parts get crease lines but no silhouette, so bars, rails and horns stay fine in the line drawing
+const THIN = new Set(["black", "steel", "horn", "hoof", "slat"])
+const COATS = { brown: "#7a4a2a", black: "#2b2522", tan: "#b48654", white: "#e6dfd2", wool: "#ece5d6" }
+const MAT = {}
+function mat(name) {
+  if (MAT[name]) return MAT[name]
+  let x
+  if (LINE) {
+    if (name === "water") x = new THREE.MeshBasicMaterial({ color: PAGE, transparent: true, opacity: 0, depthWrite: false })
+    else x = new THREE.MeshBasicMaterial({ color: PAGE, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
+    if (THIN.has(name)) x.userData.outlineParameters = { visible: false }
+  } else {
+    const std = (o) => new THREE.MeshStandardMaterial(o)
+    if (COATS[name]) x = std({ color: COATS[name], roughness: name === "wool" ? 1 : 0.85 })
+    else x = {
+      timber: () => std({ map: T.boards, roughness: 0.85 }),
+      slat: () => std({ map: T.boards, color: "#d8c4a8", roughness: 0.9 }),
+      deck: () => std({ map: T.boards, color: "#e6d6bf", roughness: 0.85 }),
+      post: () => std({ color: "#6e553b", roughness: 0.85 }),
+      concrete: () => std({ map: T.concrete, roughness: 0.95 }),
+      block: () => std({ color: "#9b958b", roughness: 0.95 }),
+      lawn: () => std({ map: T.grass, roughness: 1 }),
+      iron: () => std({ map: T.iron, color: "#b9bfc4", roughness: 0.4, metalness: 0.6, side: THREE.DoubleSide }),
+      steel: () => std({ color: "#8d9296", roughness: 0.35, metalness: 0.8 }),
+      black: () => std({ color: "#2d2e30", roughness: 0.5, metalness: 0.5 }),
+      trough: () => std({ color: "#3a4a5a", roughness: 0.45 }),
+      tank: () => std({ color: "#33503a", roughness: 0.5 }),
+      water: () => new THREE.MeshPhysicalMaterial({ color: "#7aa6b8", roughness: 0.05, transparent: true, opacity: 0.7 }),
+      hay: () => std({ map: T.hay, roughness: 1 }),
+      sack: () => std({ color: "#e8e1cf", roughness: 0.95 }),
+      mineral: () => std({ color: "#b56a4a", roughness: 0.7 }),
+      face: () => std({ color: "#211c19", roughness: 0.85 }),
+      horn: () => std({ color: "#7d6e5e", roughness: 0.6 }),
+      hoof: () => std({ color: "#3a332d", roughness: 0.6 }),
+      sky: () => new THREE.MeshBasicMaterial({ map: T.sky, side: THREE.BackSide, fog: false, toneMapped: false }),
+    }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
+  }
+  return (MAT[name] = x)
+}
+
+// ------------------------------------------------------------ geometry helpers (metres)
+const meshes = []
+let PARENT = scene
+function worldUV(geo, [tu, tv]) { // each face takes the texture from its own plane, at true scale
+  const pos = geo.attributes.position, nrm = geo.attributes.normal, uv = geo.attributes.uv
+  if (!uv) return
+  for (let i = 0; i < pos.count; i++) {
+    const n = [Math.abs(nrm.getX(i)), Math.abs(nrm.getY(i)), Math.abs(nrm.getZ(i))]
+    const axis = n.indexOf(Math.max(...n))
+    const p = [pos.getX(i), pos.getY(i), pos.getZ(i)]
+    const [a, b] = axis === 0 ? [2, 1] : axis === 2 ? [0, 1] : [0, 2]
+    uv.setXY(i, p[a] / tu, p[b] / tv)
+  }
+  uv.needsUpdate = true
+}
+function add(geo, name, opts = {}) {
+  if (!LINE && MAP[name] && !opts.keepUV) worldUV(geo, TILE[MAP[name]])
+  const mesh = new THREE.Mesh(geo, mat(name))
+  mesh.castShadow = !LINE && !["glass", "fridgeglass", "lawn", "sky"].includes(name)
+  mesh.receiveShadow = !LINE && name !== "sky"
+  if (opts.pos) mesh.position.set(...opts.pos)
+  if (opts.rot) mesh.rotation.set(...opts.rot)
+  if (opts.noEdges) mesh.userData.noEdges = true
+  PARENT.add(mesh)
+  meshes.push(mesh)
+  return mesh
+}
+function blk(xa, za, xb, zb, y0, y1, name, opts) {
+  const [x0, x1, z0, z1] = [Math.min(xa, xb), Math.max(xa, xb), Math.min(za, zb), Math.max(za, zb)]
+  return add(new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0), name, { pos: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2], ...opts })
+}
+function soft(x0, z0, x1, z1, y0, y1, r, name) {
+  return add(new RoundedBoxGeometry(x1 - x0, y1 - y0, z1 - z0, 3, r), name, { pos: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2] })
+}
+function cyl(x, z, r, y0, h, name, seg = 20, rTop = r) {
+  return add(new THREE.CylinderGeometry(rTop, r, h, seg), name, { pos: [x, y0 + h / 2, z] })
+}
+function pipe(a, b, r, name, seg = 6) {
+  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b)
+  const mesh = add(new THREE.CylinderGeometry(r, r, A.distanceTo(B), seg), name, { pos: A.clone().add(B).multiplyScalar(0.5).toArray() })
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.sub(A).normalize())
+  return mesh
+}
+
+
+// ------------------------------------------------------------ ground, manure floor, posts
+const { house: K, pens: P, fittings: FT, ramp: R, tank: TK, animals: AN } = C
+const L = K.l / 2, W = K.w / 2, t = K.wall
+const FY = W - K.passage.d // the pens' front fence
+const FL = K.floor + 0.05 // the top of the slats
+const STORE = P.list.find((p) => p.id === "store")
+const PENS = P.list.filter((p) => p.id !== "store")
+if (!LINE) {
+  T.grass.repeat.set(10, 10)
+  add(new THREE.CircleGeometry(40, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], keepUV: true })
+}
+blk(-L - 0.1, -W - 0.1, L + 0.1, FY + 0.1, 0, 0.08, "concrete") // the manure floor, swept to the front
+for (const x of K.posts.x) for (const z of K.posts.y) {
+  const top = z === K.posts.y.at(-1) ? (HERO ? K.floor + K.roof.front : FL + 0.9) : z === K.posts.y[0] ? K.floor + K.back.h : K.floor - 0.2
+  blk(x - 0.14, z - 0.14, x + 0.14, z + 0.14, 0, 0.12, "concrete") // its pad
+  blk(x - K.posts.s / 2, z - K.posts.s / 2, x + K.posts.s / 2, z + K.posts.s / 2, 0.12, top, "post")
+}
+// bearers along each row of posts, joists across them
+for (const z of K.posts.y) blk(-L, z - 0.05, L, z + 0.05, K.floor - 0.2, K.floor - 0.05, "post")
+for (let x = -L + 0.05; x <= L; x += 0.6) blk(x - 0.025, -W, x + 0.025, W, K.floor - 0.05, K.floor, "post", { noEdges: LINE })
+
+// ------------------------------------------------------------ the floor: slats over the pens, boards in the store and the passage
+{
+  const pitch = LINE ? 0.13 : K.slats.w + K.slats.gap
+  for (let x = -L + t + 0.01; x + K.slats.w <= STORE.x0; x += pitch)
+    blk(x, -W + t, x + K.slats.w, FY, K.floor, FL, "slat")
+  blk(STORE.x0, -W + t, L - t, FY, K.floor, FL, "deck")
+  blk(-L, FY, L, W, K.floor, FL, "deck")
+}
+
+// ------------------------------------------------------------ walls: the back and the two ends solid, the store walled in
+const WH = FL + K.back.h
+blk(-L, -W, L, -W + t, FL, WH, "timber")
+blk(-L, -W, -L + t, FY, FL, WH, "timber")
+blk(L - t, -W, L, FY, FL, WH, "timber")
+blk(STORE.x0 - t / 2, -W + t, STORE.x0 + t / 2, FY, FL, WH, "timber")
+{
+  // the store's front wall, its door shut on a hasp
+  const d0 = STORE.x1 - 0.85, d1 = STORE.x1 - 0.15
+  blk(STORE.x0, FY - t, d0, FY, FL, WH, "timber")
+  blk(d1, FY - t, L, FY, FL, WH, "timber")
+  blk(d0, FY - t, d1, FY, FL + 1.9, WH, "timber")
+  blk(d0 + 0.01, FY - t + 0.01, d1 - 0.01, FY + 0.005, FL + 0.01, FL + 1.89, "timber")
+  blk(d0 + 0.06, FY + 0.005, d0 + 0.18, FY + 0.02, FL + 1.0, FL + 1.06, "black")
+  blk(d0 + 0.03, FY + 0.01, d0 + 0.07, FY + 0.04, FL + 0.96, FL + 1.04, "steel")
+}
+// partitions between the pens, solid boards to 1.2 m
+for (const p of PENS.slice(1)) blk(p.x0 - t / 2, -W + t, p.x0 + t / 2, FY, FL, FL + P.partition, "timber")
+
+// ------------------------------------------------------------ the front fence on the passage: boards, then bars, a gate into each pen
+function fence(x0, x1) {
+  if (x1 - x0 < 0.05) return
+  blk(x0, FY - 0.03, x1, FY, FL, FL + K.front.solid, "timber")
+  blk(x0, FY - 0.04, x1, FY + 0.01, FL + K.front.h - 0.06, FL + K.front.h, "timber")
+  for (let x = x0 + 0.06; x < x1 - 0.03; x += LINE ? 0.15 : 0.1) cyl(x, FY - 0.015, 0.009, FL + K.front.solid, K.front.h - K.front.solid - 0.06, "black", 6)
+}
+for (const p of PENS) {
+  const g1 = p.x1 - 0.12, w = Math.min(P.gate, p.x1 - p.x0 - 0.24), a = g1 - w
+  fence(p.x0, a); fence(g1, p.x1)
+  // the gate, shut: a steel frame with bars, hinged at g1
+  blk(a + 0.02, FY - 0.01, g1, FY + 0.02, FL + 0.08, FL + 0.12, "black")
+  blk(a + 0.02, FY - 0.01, g1, FY + 0.02, FL + K.front.h - 0.08, FL + K.front.h - 0.04, "black")
+  for (const x of [a + 0.03, g1 - 0.01]) blk(x - 0.015, FY - 0.01, x + 0.015, FY + 0.02, FL + 0.08, FL + K.front.h - 0.04, "black")
+  for (let x = a + 0.12; x < g1 - 0.06; x += LINE ? 0.15 : 0.1) cyl(x, FY + 0.005, 0.008, FL + 0.12, K.front.h - 0.24, "black", 6)
+}
+
+// ------------------------------------------------------------ fittings, filled from the passage: hay rack, trough, mineral box
+for (const p of PENS) {
+  const r0 = p.x0 + 0.15, r1 = r0 + p.rack, z0 = FY - FT.rack.d, y0 = FL + FT.rack.y0, y1 = y0 + FT.rack.h
+  // the rack: a slatted V of steel bars over a timber tray, full of hay
+  blk(r0, z0, r1, FY - 0.03, y0 - 0.06, y0, "timber")
+  for (const x of [r0, r1 - 0.03]) blk(x, z0, x + 0.03, FY - 0.03, y0 - 0.06, y1, "timber")
+  blk(r0, z0 - 0.01, r1, z0 + 0.02, y1 - 0.03, y1, "black")
+  for (let x = r0 + 0.08; x < r1 - 0.05; x += LINE ? 0.15 : 0.1) pipe([x, y0, FY - 0.08], [x, y1 - 0.02, z0], 0.007, "black", 5)
+  if (!LINE) soft(r0 + 0.04, z0 + 0.05, r1 - 0.04, FY - 0.05, y0, y1 - 0.12, 0.08, "hay")
+  if (p.trough) {
+    // the float trough on a stand, then the mineral box beside it
+    const t0 = r1 + 0.1, t1 = t0 + p.trough, tz = FY - FT.trough.d, ty = FL + 0.3
+    for (const x of [t0 + 0.05, t1 - 0.05]) blk(x - 0.02, tz + 0.05, x + 0.02, FY - 0.08, FL, ty, "black")
+    soft(t0, tz, t1, FY - 0.03, ty, ty + FT.trough.h, 0.03, "trough")
+    blk(t0 + 0.03, tz + 0.03, t1 - 0.03, FY - 0.06, ty + FT.trough.h - 0.04, ty + FT.trough.h - 0.02, "water", { noEdges: true })
+    blk(t1 + 0.08, FY - FT.mineral.d, t1 + 0.08 + FT.mineral.w, FY - 0.03, FL + 0.55, FL + 0.75, "timber")
+    if (!LINE) blk(t1 + 0.1, FY - FT.mineral.d + 0.02, t1 + 0.06 + FT.mineral.w, FY - 0.05, FL + 0.72, FL + 0.76, "mineral")
+  }
+}
+
+// ------------------------------------------------------------ the feed store: a pallet of sacks, a shelf with buckets
+{
+  const [x0, x1] = [STORE.x0 + 0.12, STORE.x1 - 0.12]
+  blk(x0, -0.6, x1, 0.6, FL, FL + 0.12, "timber")
+  for (const [z, k] of [[-0.42, 0], [0, 0], [0.42, 0], [-0.21, 1], [0.21, 1]]) soft(x0 + 0.05, z - 0.19, x1 - 0.05, z + 0.19, FL + 0.12 + k * 0.2, FL + 0.32 + k * 0.2, 0.06, "sack")
+  blk(STORE.x0 + 0.1, -W + t, STORE.x1 - 0.1, -W + t + 0.35, FL + 1.3, FL + 1.33, "timber")
+  for (const x of [STORE.x0 + 0.3, STORE.x0 + 0.65]) cyl(x, -W + t + 0.18, 0.12, FL + 1.33, 0.26, "trough", 16, 0.14)
+}
+
+// ------------------------------------------------------------ the passage's rail, the ramp, the tank
+{
+  for (const x of [-L + K.passage.d, -L + 2.2, 0, 1.75]) blk(x - 0.04, W - 0.08, x + 0.04, W, FL, FL + 0.9, "post")
+  for (const y of [0.45, 0.9]) blk(-L + K.passage.d - 0.04, W - 0.07, L, W - 0.02, FL + y - 0.05, FL + y, "timber")
+  blk(L - 0.07, FY, L - 0.02, W, FL + 0.85, FL + 0.9, "timber") // across the passage's east end
+  blk(L - 0.08, FY, L, FY + 0.08, FL, FL + 0.9, "post")
+  // the ramp: cleated boards from the passage down to the paddock, on two stringers
+  const a = Math.atan2(K.floor, R.l), len = Math.hypot(K.floor, R.l), zc = (FY + W) / 2
+  const g = new THREE.Group()
+  g.position.set(-L - R.l / 2, K.floor / 2 + 0.02, zc); g.rotation.z = a
+  scene.add(g); PARENT = g
+  blk(-len / 2, -(W - FY) / 2, len / 2, (W - FY) / 2, -0.02, 0.02, "deck")
+  for (const z of [-(W - FY) / 2 + 0.04, (W - FY) / 2 - 0.04]) blk(-len / 2, z - 0.025, len / 2, z + 0.025, -0.15, -0.02, "post")
+  for (let s = -len / 2 + R.cleat; s < len / 2 - 0.05; s += R.cleat) blk(s - 0.015, -(W - FY) / 2 + 0.04, s + 0.015, (W - FY) / 2 - 0.04, 0.02, 0.045, "timber")
+  PARENT = scene
+  // the tank on its block stand, with a pipe from its foot along the back wall to the troughs
+  const sh = TK.stand
+  blk(TK.x - TK.r - 0.05, TK.y - TK.r - 0.05, TK.x + TK.r + 0.05, TK.y + TK.r + 0.05, 0, sh, "block")
+  cyl(TK.x, TK.y, TK.r, sh, TK.h, "tank", 32, TK.r * 0.96)
+  cyl(TK.x, TK.y, 0.16, sh + TK.h, 0.06, "tank", 16)
+  pipe([TK.x - TK.r, sh + 0.1, TK.y], [L + 0.02, sh + 0.1, TK.y], 0.016, "steel")
+}
+
+// ------------------------------------------------------------ the roof, in the hero only: iron sheets falling to the back
+if (HERO) {
+  const over = K.roof.over, hF = K.floor + K.roof.front, hB = K.floor + K.back.h
+  blk(-L - 0.05, W - 0.06, L + 0.05, W + 0.04, hF - 0.15, hF, "post") // the front beam on the tall posts
+  const a = Math.atan2(hF - hB, K.w), len = Math.hypot(hF - hB, K.w) + 2 * over
+  const r = add(new THREE.BoxGeometry(K.l + 2 * over, 0.02, len), "iron", { pos: [0, (hF + hB) / 2 + 0.06, 0] })
+  r.rotation.x = -a
+  // the gutter along the back, a downpipe to the tank
+  pipe([-L - over, hB - 0.05, -W - over * 0.95], [L + over, hB - 0.05, -W - over * 0.95], 0.05, "steel", 10)
+  pipe([TK.x, hB - 0.05, -W - over * 0.95], [TK.x, TK.stand + TK.h + 0.05, TK.y], 0.03, "steel", 8)
+}
+
+// ------------------------------------------------------------ the herd: 6 goats and 4 sheep, standing in their pens
+function ellipsoid(x, y, z, rx, ry, rz, name, rotZ = 0) {
+  const m = add(new THREE.SphereGeometry(1, 22, 14), name, { pos: [x, y, z], rot: [0, 0, rotZ] })
+  m.scale.set(rx, ry, rz)
+  return m
+}
+function animal(a, sheep, base = FL) {
+  const g = new THREE.Group()
+  g.position.set(a.x, base, a.y); g.rotation.y = THREE.MathUtils.degToRad(-a.h)
+  scene.add(g); PARENT = g
+  const coat = a.coat, head = sheep ? "face" : coat
+  const [bx, by, bz, cy] = sheep ? [0.4, 0.23, 0.2, 0.52] : [0.37, 0.18, 0.15, 0.48]
+  ellipsoid(0, cy, 0, bx, by, bz, coat)
+  const legH = sheep ? 0.32 : 0.34
+  for (const dx of [bx * 0.62, -bx * 0.65]) for (const dz of [bz * 0.5, -bz * 0.5]) {
+    cyl(dx, dz, 0.026, 0.04, legH, sheep ? "wool" : coat, 8, 0.036)
+    cyl(dx, dz, 0.024, 0, 0.04, "hoof", 8)
+  }
+  const nb = [bx * 0.8, cy + by * 0.35, 0], nt = [bx * 1.2, cy + by * 1.45, 0]
+  pipe(nb, nt, sheep ? 0.075 : 0.055, sheep ? "wool" : coat, 10)
+  ellipsoid(nt[0] + 0.07, nt[1] + 0.02, 0, 0.12, 0.07, sheep ? 0.07 : 0.06, head, -0.55)
+  for (const s of [1, -1]) {
+    // ears: the sheep's droop, the goat's stand out sideways
+    const e = add(new THREE.BoxGeometry(0.08, 0.015, 0.035), head, { pos: [nt[0] - 0.01, nt[1] + 0.03, s * (sheep ? 0.08 : 0.075)], rot: [s * (sheep ? 0.9 : 0.25), s * 1.2, 0] })
+    e.userData.noEdges = LINE
+    if (!sheep) pipe([nt[0] + 0.02, nt[1] + 0.07, s * 0.025], [nt[0] - 0.05, nt[1] + 0.12, s * 0.04], 0.012, "horn", 6)
+  }
+  if (sheep) ellipsoid(-bx * 1.02, cy - 0.08, 0, 0.07, 0.12, 0.09, "wool") // the fat tail
+  else pipe([-bx * 0.95, cy + 0.06, 0], [-bx * 1.1, cy + 0.15, 0], 0.016, coat, 6)
+  PARENT = scene
+}
+// in the hero it is daytime and the herd is out grazing in front of the house, goats and sheep in their own groups
+const OUT = { goats: [[-4.6, 3.2, 200], [-3.4, 4.1, 150], [-2.2, 3.4, 20], [-4.0, 5.3, 300], [-1.4, 4.8, 170], [-2.8, 6.0, 60]],
+  sheep: [[0.6, 4.2, 190], [1.6, 3.6, 160], [1.2, 5.2, 210], [2.4, 4.7, 140]] }
+for (const [k, a] of AN.goats.entries()) animal(HERO ? { ...a, x: OUT.goats[k][0], y: OUT.goats[k][1], h: OUT.goats[k][2] } : a, false, HERO ? 0 : FL)
+for (const [k, a] of AN.sheep.entries()) animal(HERO ? { ...a, x: OUT.sheep[k][0], y: OUT.sheep[k][1], h: OUT.sheep[k][2] } : a, true, HERO ? 0 : FL)
+
+// ------------------------------------------------------------ camera
+const camera = new THREE.PerspectiveCamera(HERO ? 38 : 22, FW / FH, 0.3, 300)
+if (HERO) {
+  // eye level in the paddock, front-left, the house right of centre and open grass bottom-left for the words
+  camera.position.set(-8.0, 1.4, 11.5)
+  camera.lookAt(new THREE.Vector3(-2.0, 1.2, 1.5))
+  add(new THREE.SphereGeometry(150, 32, 16), "sky", { noEdges: true, keepUV: true })
+  scene.fog = new THREE.Fog(0xe9dccb, 30, 140)
+} else {
+  // from the paddock, raised so the pens show over the front fence
+  const target = new THREE.Vector3(-0.6, 1.3, 0.2)
+  const [el, dist] = [THREE.MathUtils.degToRad(44), 34]
+  camera.position.set(-dist * Math.cos(el) * Math.sin(0.28), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(0.28))
+  camera.lookAt(target)
+}
+camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+scene.updateMatrixWorld(true)
+if (!HERO) { // fit the frame to the model
+  const bb = new THREE.Box3()
+  for (const o of meshes) if (!o.geometry.type.startsWith("Circle")) bb.expandByObject(o)
+  let px = [Infinity, Infinity, -Infinity, -Infinity]
+  for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
+    const p = new THREE.Vector3(xx, yy, zz).project(camera)
+    const X = ((p.x + 1) / 2) * FW, Yp = ((1 - p.y) / 2) * FH
+    px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
+  }
+  let w = (px[2] - px[0]) * 1.06, h = (px[3] - px[1]) * 1.1
+  if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
+  camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+}
+
+// ------------------------------------------------------------ render
+if (LINE) {
+  const lineMat = new LineMaterial({ color: INK, linewidth: 1.3, side: THREE.DoubleSide })
+  lineMat.resolution.set(FW, FH)
+  lineMat.userData.outlineParameters = { visible: false }
+  for (const o of meshes) {
+    if (o.userData.noEdges) continue
+    const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
+    const l = new LineSegments2(g, lineMat)
+    l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
+    scene.add(l)
+  }
+  const ink = new THREE.Color(INK)
+  new OutlineEffect(renderer, { defaultThickness: 0.003, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
+} else {
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  scene.environmentIntensity = 0.4
+  scene.add(new THREE.HemisphereLight(0xeef3ff, 0x8a7a5a, HERO ? 0.6 : 0.9))
+  // low sun from the front left: late afternoon over the paddock
+  const sun = new THREE.DirectionalLight(HERO ? 0xffd9a8 : 0xfff0d8, HERO ? 3.0 : 2.6)
+  sun.position.set(-10, HERO ? 5 : 9, 9)
+  sun.castShadow = true
+  sun.shadow.mapSize.set(4096, 4096)
+  Object.assign(sun.shadow.camera, { left: -7, right: 7, top: 7, bottom: -7, near: 1, far: 50 })
+  sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
+  scene.add(sun)
+  const composer = new EffectComposer(renderer)
+  composer.setSize(FW, FH)
+  composer.addPass(new RenderPass(scene, camera))
+  const ao = new GTAOPass(scene, camera, FW, FH)
+  ao.blendIntensity = 0.8
+  ao.updateGtaoMaterial({ radius: 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
+  composer.addPass(ao)
+  composer.addPass(new OutputPass())
+  composer.render()
+}
+document.getElementById("out").src = renderer.domElement.toDataURL("image/png")
+document.body.dataset.ready = "1"
+</script>
+</body>
+</html>
