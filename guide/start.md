@@ -24,8 +24,8 @@ The plan for a 5 ha farm near Kigali that becomes a container eco-stay which fee
 | Guest kitchen and BBQ | open-air, by the camp | Campers cook for themselves (D-028) | to come |
 | Camp | 6 tents on the lawn | Camping by the fire pit | `/en/camp` |
 | Volleyball | court 18 × 9 m, 24 × 15 m with its free zone | On the lawn | to come |
-| Field | the top-left arm | Vegetables and livestock for the galley, a few big trees | to come |
-| Trees | across the farm | Many in the compound, a few in the field: an even, forest feel | to come |
+| Field | the top-left arm | Vegetables and livestock for the galley, a few big trees | [vegetables](grow/vegetables.md), [livestock](grow/livestock.md) |
+| Trees | across the farm | Many in the compound, a few in the field: an even, forest feel | [master plan](master-plan.md) |
 
 ## This week
 
@@ -43,8 +43,8 @@ The plan for a 5 ha farm near Kigali that becomes a container eco-stay which fee
 | Electrician | [studio wiring](trades/electrician.md) | English, Kinyarwanda | revision A2 |
 | Plumber | [studio water and drains](trades/plumber.md) | English, Kinyarwanda | revision A2 |
 | Power | [grid, solar or both](trades/power.md) | English, Kinyarwanda | advice of 2026-10-28 |
-| Farmer | the vegetable field | English, Kinyarwanda | to come |
-| Livestock keeper | animals for the galley | English, Kinyarwanda | to come |
+| Farmer | [the vegetable field](grow/vegetables.md) | English, Kinyarwanda | guide of 2026-10-28 |
+| Livestock keeper | [eggs first, then goats](grow/livestock.md) | English, Kinyarwanda | guide of 2026-10-28 |
 | Landscaper | the trees | English, Kinyarwanda | to come |
 
 ## Running it
