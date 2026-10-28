@@ -1,6 +1,6 @@
 unit,item,value_mm,measured_by,date,note
-U1,int_length,,,,inside length, end wall to end wall, at 1 m height
-U1,int_width,,,,inside width at 1 m height, mid-length
+U1,int_length,,,,"inside length, end wall to end wall, at 1 m height"
+U1,int_width,,,,"inside width at 1 m height, mid-length"
 U1,int_height,,,,floor to roof at mid-width
 U1,o1_start,,,,slider opening start from the inside face of end A
 U1,o1_end,,,,slider opening end from the inside face of end A
@@ -8,8 +8,8 @@ U1,o2_start,,,,narrow door opening start from end A
 U1,o2_end,,,,narrow door opening end from end A
 U1,diag_diff,,,,floor diagonals difference
 U1,level_diff,,,,highest minus lowest corner casting
-U2,int_length,,,,inside length, end wall to end wall, at 1 m height
-U2,int_width,,,,inside width at 1 m height, mid-length
+U2,int_length,,,,"inside length, end wall to end wall, at 1 m height"
+U2,int_width,,,,"inside width at 1 m height, mid-length"
 U2,int_height,,,,floor to roof at mid-width
 U2,o1_start,,,,slider opening start from the inside face of end A
 U2,o1_end,,,,slider opening end from the inside face of end A

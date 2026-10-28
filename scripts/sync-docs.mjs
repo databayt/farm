@@ -293,8 +293,12 @@ function fromMarkdown({ src, title, description: fixed }) {
   const description = fixed ?? (sentence ?? status ?? heading)
     .replace(/[*_`]/g, "").replace(/\s+/g, " ").trim()
     .replace(/^(.{0,180}?[.!?])\s.*$/, "$1").slice(0, 200)
+  // a guide's lead sentence is its subtitle (the page shows the description under the title): don't repeat it
+  const lead = !fixed && src.startsWith("guide/") && firstText ? body.indexOf(firstText) : -1
+  const leadText = lead < 0 ? "" : sentence.replace(/[*_`]/g, "").replace(/\s+/g, " ").trim()
   let inFence = false
-  const out = body.map((line) => {
+  const out = body.map((line, i) => {
+    if (i === lead && leadText === description) return ""
     if (/^\s*(```|~~~)/.test(line)) { inFence = !inFence; return line }
     if (inFence) return line
     const block = blockDirective(line, src)

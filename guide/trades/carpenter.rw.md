@@ -4,7 +4,9 @@
 
 Status: verisiyo {{studio.rev}}, {{studio.rev_date}}, {{studio.status}}. Ibipimo biva ku mafoto kugeza igihe hapimwe ku Munsi wa 1; atelier ntigira icyo ikata mbere ya verisiyo B.
 
-Ibyo umubaji akeneye byose ngo atunganye imbere muri kontineri ya 20 ft ibe icyumba cy'abashyitsi (sitidiyo), intambwe ku yindi, n'ibipimo byose. Sitidiyo zombi zirasa, bityo aya mabwiriza akora kuri zombi.
+Ibyo umubaji akeneye byose ngo atunganye imbere muri kontineri ya 20 ft ibe icyumba cy'abashyitsi (sitidiyo), intambwe ku yindi, n'ibipimo byose.
+
+Sitidiyo zombi zirasa, bityo aya mabwiriza akora kuri zombi.
 
 English: [read this guide in English](carpenter.md) · Gucapa: [aya mabwiriza nka PDF](../../public/guides/carpenter-rw.pdf)
 
@@ -89,8 +91,6 @@ Pima kontineri zombi za sitidiyo mbere y'ikindi cyose, wohereze imibare uwo muns
 
 ## S02: membrane n'impapuro za hasi
 
-![AS-02 Membrane and floor sheets](../../public/designs/studio/drawings/as-02.svg)
-
 1. Siga rust converter, hanyuma zinc primer, ku cyuma cyambaye ubusa cyangwa cyafashwe n'ingese ku nkuta no ku gisenge (L 4 kuri sitidiyo).
 2. Kubura hasi ha kontineri. Shyiraho isashi ya membrane (250 µm) hasi hose: ibice byegeranye bigahurira kuri mm 150 (laps), bifatanyijwe na tape, bizamurwa mm 50 ku nkuta ({{studio.membrane_m2}} m² harimo laps).
 3. Shyiraho impapuro za pulayiwudi 12 mm (2440 × 1220), uruhande rurerure rukurikiye kontineri, umwanya wa mm 3 hagati y'impapuro na mm 5 uvuye ku cyuma: impapuro {{studio.floor_sheets}} kuri sitidiyo.
@@ -99,9 +99,9 @@ Pima kontineri zombi za sitidiyo mbere y'ikindi cyose, wohereze imibare uwo muns
 6. Bifunge ukoresheje vis z'igiti 4 × 30 (bag F) buri mm 300 mu mpande zombi, hafi {{studio.floor_screws}} kuri sitidiyo. Koresha vis za mm 30 gusa, kugira ngo zigume muri hasi ha kontineri ha mm 28.
 7. Genzura: nta ntera iri ku guhurira na kumwe, kandi hasi harangana kugeza kuri mm 3 munsi y'umutambiko ugororotse wa m 2.
 
-## S03: ibiti (battens)
+![AS-02 Membrane and floor sheets](../../public/designs/studio/drawings/as-02.svg)
 
-![AS-03 Battens](../../public/designs/studio/drawings/as-03.svg)
+## S03: ibiti (battens)
 
 1. Koresha ibiti byatewe umuti 38 × 50, bihagaze ku mpapuro za hasi: {{studio.battens}} kuri sitidiyo.
 2. Shyira igiti kimwe munsi ya buri guhurira kw'impapuro za lining, n'ikindi hagati yabyo, kugira ngo nta mwanya urenga mm 600. Shyira akamenyetso hagati ya buri giti uhereye ku cyuma, nk'uko imbonerahamwe ibivuga.
@@ -111,6 +111,8 @@ Pima kontineri zombi za sitidiyo mbere y'ikindi cyose, wohereze imibare uwo muns
 
 [Table: Aho ibiti bijya, hagati ya buri giti](../../public/designs/studio/data/battens.csv)
 
+![AS-03 Battens](../../public/designs/studio/drawings/as-03.svg)
+
 ## S04: first fix, ikorwa n'umuyagankuba n'umufundi w'amazi
 
 1. Gumana imyanya iri hagati y'ibiti isukuye kandi yumye.
@@ -119,13 +121,13 @@ Pima kontineri zombi za sitidiyo mbere y'ikindi cyose, wohereze imibare uwo muns
 
 ## S05: spray foam, hanyuma impapuro za lining
 
-![AS-05 Spray foam and lining panels](../../public/designs/studio/drawings/as-05.svg)
-
 1. Ushyiraho spray foam yuzuza hagati y'ibiti foam ifunze (closed-cell), hafi mm 38, ku nkuta no ku gisenge: {{studio.foam_m2}} m² kuri sitidiyo. Banza upfuke ikadiri y'urugi runyerera, idirishya na hasi.
 2. Nyuma y'amasaha 24, kata foam ingane n'ibiti.
 3. Shyiraho impapuro {{studio.lining_panels}} za lining zifite nimero (pulayiwudi 12, nimero K1-01 kugeza K1-15), banza igisenge, hanyuma inkuta. Buri ruhande rw'urupapuro rugwa hagati ku giti.
 4. Fata ukoresheje vis z'igiti 4 × 30 buri mm 200 ku mpande na buri mm 300 hagati, hafi {{studio.lining_screws}} kuri sitidiyo.
 5. Genzura buri mwobo watunganyijwe (cut-out) ugereranyije n'agasanduku kawo mbere yo gufunga urupapuro; hanyuma ugenzure ko nta foam igaragara kandi isura z'impapuro ziri ku rwego rumwe.
+
+![AS-05 Spray foam and lining panels](../../public/designs/studio/drawings/as-05.svg)
 
 ## S06 kugeza S10: ubwiherero (kit K2)
 

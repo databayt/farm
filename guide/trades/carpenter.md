@@ -2,7 +2,9 @@
 
 Status: revision {{studio.rev}}, {{studio.rev_date}}, {{studio.status}}. Sizes come from photos until the Day 1 survey; the workshop cuts nothing before revision B.
 
-Everything the carpenter needs to fit out one 20 ft container as a guest studio, step by step, with every measurement. The two studios are the same, so one guide serves both.
+Everything the carpenter needs to fit out one 20 ft container as a guest studio, step by step, with every measurement.
+
+The two studios are the same, so one guide serves both.
 
 Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](carpenter.rw.md) · Print: [this guide as a PDF](../../public/guides/carpenter.pdf)
 
@@ -87,8 +89,6 @@ Measure both studio containers before anything else and send the numbers the sam
 
 ## S02: membrane and floor sheets
 
-![AS-02 Membrane and floor sheets](../../public/designs/studio/drawings/as-02.svg)
-
 1. Brush rust converter, then zinc primer, on any bare or rusty steel of the walls and ceiling (4 L per studio).
 2. Sweep the container floor. Lay the polythene membrane (250 µm) over the whole floor: laps of 150 mm, taped, turned 50 mm up the walls ({{studio.membrane_m2}} m² with the laps).
 3. Lay the plywood sheets 12 mm (2440 × 1220), long side along the container, 3 mm gaps between sheets and 5 mm from the steel: {{studio.floor_sheets}} sheets per studio.
@@ -97,9 +97,9 @@ Measure both studio containers before anything else and send the numbers the sam
 6. Screw down with wood screws 4 × 30 (bag F) every 300 mm both ways, about {{studio.floor_screws}} per studio. Use 30 mm screws only, so they stay inside the 28 mm container floor.
 7. Check: no step at any joint, and the floor flat within 3 mm under a 2 m straightedge.
 
-## S03: battens
+![AS-02 Membrane and floor sheets](../../public/designs/studio/drawings/as-02.svg)
 
-![AS-03 Battens](../../public/designs/studio/drawings/as-03.svg)
+## S03: battens
 
 1. Use treated battens 38 × 50, standing on the floor sheets: {{studio.battens}} per studio.
 2. Put one batten under every lining-panel joint and one between, so no gap is over 600 mm. Mark each centre from the steel, as the set-out table says.
@@ -109,6 +109,8 @@ Measure both studio containers before anything else and send the numbers the sam
 
 [Table: Batten set-out, the centre of each batten](../../public/designs/studio/data/battens.csv)
 
+![AS-03 Battens](../../public/designs/studio/drawings/as-03.svg)
+
 ## S04: first fix, by the electrician and the plumber
 
 1. Keep the spaces between the battens clean and dry.
@@ -117,13 +119,13 @@ Measure both studio containers before anything else and send the numbers the sam
 
 ## S05: spray foam, then the lining panels
 
-![AS-05 Spray foam and lining panels](../../public/designs/studio/drawings/as-05.svg)
-
 1. The spray-foam contractor fills between the battens with closed-cell foam, about 38 mm, walls and ceiling: {{studio.foam_m2}} m² per studio. Mask the sliding-door frame, the window and the floor first.
 2. After 24 hours, trim the foam flush with the battens.
 3. Fix the {{studio.lining_panels}} numbered lining panels (plywood 12, ids K1-01 to K1-15), ceiling first, then the walls. Every panel edge lands on a batten centre.
 4. Screw with wood screws 4 × 30 every 200 mm along the edges and every 300 mm across the middle, about {{studio.lining_screws}} per studio.
 5. Check each cut-out against its box before fixing the panel; then check that no foam shows and the panel faces are in one plane.
+
+![AS-05 Spray foam and lining panels](../../public/designs/studio/drawings/as-05.svg)
 
 ## S06 to S10: the bathroom (kit K2)
 
