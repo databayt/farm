@@ -1,0 +1,89 @@
+{
+  "about": "The way in, as /en/camp is one camp: the outer gate off the public road, the sign wall beside it, the green parking just inside and the start of the rock road, as the homepage plans them (D-017, D-022). The 2D (parking-plan.tsx) and the 3D (scripts/site/render/parking.html) both read this file. Plan in true metres in compound.json's own frame (x east, y south, from the road into the farm), so every number it shares with the homepage (gate, sign, parking, shadeTrees, rockRoad, innerGate and the bays the cars stand in) is copied from src/components/home/compound.json as it is and must move with it. The homepage spreads the way in sideways for a wide screen (spread.wayIn), so there the sign wall stands 4.2 m from the gate's left pillar; here it is 0.6 m, as the true numbers give it. Both drawings turn it as the homepage does, flipped top to bottom: the public road at the bottom, the sign wall left of the gate. Nothing is surveyed, and the master plan (src/components/site/site.json) still has the gate's position to confirm. Every choice the compound files do not give is [A], a design choice.",
+  "road": {
+    "about": "The public road, a dirt road (study/website/render-brief.md). Its near edge is 0.8 m outside the gate line, where compound.json's publicRoad band starts; its width and surface are not known, so it is drawn 6 m wide [A].",
+    "edge": -7.5,
+    "w": 6
+  },
+  "turn": {
+    "about": "The turn from the public road: granite setts, as on the rock road, from the road's edge through the gate to the parking, so turning wheels never cut the verge [A]. 4.4 m wide between the pillars, splayed at 45 degrees to 0.5 m past each pillar at the road [A]. The pillars stand 0.5 m off the road, so a car makes the turn on the road itself.",
+    "splay": 0.5
+  },
+  "gate": {
+    "about": "The outer gate (D-022, after the founder's reference photo): two timber leaves of vertical boards on a frame braced in an X, with black iron strap hinges and a latch, between fieldstone pillars under timber caps, a lantern on the left one. 4.4 m between the pillars (compound.json); the leaves 1.8 m high and the pillars 0.6 m square and 2.1 m high under a 120 mm cap, as the homepage 3D draws them. The leaves open inward, over the drive [A]: the hero shows them open, the model view shut as the homepage draws them, the 2D their swing.",
+    "x": [20, 24.4],
+    "y": -6.7,
+    "post": 0.6,
+    "leaf": 1.8,
+    "pillar": 2.1
+  },
+  "sign": {
+    "about": "The sign wall (D-022): fieldstone under a timber cap, 7.6 m long, 0.6 m thick and 1.6 m high, 0.6 m from the gate's left pillar (compound.json). On its road face a dark steel panel 7.1 m long and 1.0 m high, from 0.35 m up, carries DIGITAL FARM in warm-white LED capitals across its width, as the homepage 3D draws it. The letters' supply and switching are not designed yet [A].",
+    "box": [11.2, -7.0, 18.8, -6.4],
+    "h": 1.6,
+    "panel": { "inset": 0.25, "y0": 0.35, "y1": 1.35, "text": "DIGITAL FARM" }
+  },
+  "hedge": {
+    "about": "The boundary hedge of the render brief, euphorbia, running away from the sign wall and the gate along the gate line and filling the 0.6 m between the sign wall and the left pillar: 0.8 m thick and 1.2 m high [A]. Drawn to the edges of the plan.",
+    "y": -6.7,
+    "w": 0.8,
+    "h": 1.2,
+    "runs": [[2.5, 11.2], [18.8, 19.4], [25, 34.5]]
+  },
+  "parking": {
+    "about": "Green parking (D-017): a lawn of grass pavers 22 by 6 m with rounded corners (compound.json), concrete blocks with 100 mm cells of grass, as the homepage 3D draws them [A]. Five bays 2.6 m wide along its west end (compound.json), cars nose in; the open east end, 9 m, takes the drive, the turn and the start of the rock road.",
+    "box": [8, -5, 30, 1],
+    "r": 0.4,
+    "bays": [8, 10.6, 13.2, 15.8, 18.4, 21],
+    "strips": {
+      "about": "Between neighbouring bays and along bay 5's open side, a row of granite setts 100 mm wide running 4.0 m from the far edge, laid a little proud of the pavers so the bays read (compound.html) [A].",
+      "w": 0.1,
+      "l": 4.0
+    },
+    "stops": {
+      "about": "A eucalyptus log wheel stop in each bay, 1.6 m long and 160 mm across, its centre 0.45 m from the far edge (compound.html), pinned to the ground [A]. The front tyres stop on it and the bonnet reaches over the lawn under the trees.",
+      "l": 1.6,
+      "r": 0.08,
+      "at": 0.45
+    },
+    "edging": {
+      "about": "A fieldstone edging 200 mm wide round the pavers, flush with them, after the render brief's low kerbs [A].",
+      "w": 0.2
+    }
+  },
+  "rockRoad": {
+    "about": "The rock road (D-022): 4 m of grey granite setts, about 100 mm, laid by hand in segmental arcs, from the parking's far edge to the inner gate 10 m on (compound.json's curve, copied as it is), with a fieldstone edging 200 mm wide each side [A, after the render brief]. The 2D and the 3D show its start, the first 40 % of the curve; the hero looks down all of it to the inner gate.",
+    "width": 4,
+    "curve": [[24, 1], [24, 4.6], [26, 7.5], [26, 11.1]],
+    "edging": 0.2,
+    "show": 0.4
+  },
+  "innerGate": {
+    "about": "The inner gate at the rock road's end (compound.json), the outer gate's twin with its lantern on the right; only the hero shows it.",
+    "x": [24.3, 27.7],
+    "y": 11.4,
+    "post": 0.6
+  },
+  "trees": {
+    "about": "Young broad-canopied shade trees where compound.json plants them, [x, y, crown radius]: two behind the bays with their crowns over the cars' bonnets, one past each end of the parking. The species is not chosen (the render brief's site bible names neem and acacia); drawn 4.5 m tall with the crown from 2.2 m [A].",
+    "list": [[9.3, 1.7, 2.1], [15.8, 1.7, 2.1], [32, -1.6, 2.0], [4.6, -1.8, 1.8]],
+    "h": 4.5,
+    "crown": 2.2
+  },
+  "cars": {
+    "about": "Two plain cars for scale, in the bays compound.json parks them in (1 and 3), driven in nose first until the front tyres touch the wheel stop: a white four-by-four and a smaller silver hatchback, as the render brief has them, with no number plates and no badges. Sizes are generic [A]; axles are measured from the tail.",
+    "list": [
+      { "bay": 1, "kind": "suv", "paint": "white", "l": 4.4, "w": 1.85, "h": 1.75, "wheel": 0.34, "axles": [0.85, 3.5] },
+      { "bay": 3, "kind": "hatch", "paint": "silver", "l": 4.0, "w": 1.75, "h": 1.5, "wheel": 0.31, "axles": [0.75, 3.2] }
+    ]
+  },
+  "open": {
+    "about": "Questions the plan leaves for the founder.",
+    "list": [
+      "Do five bays carry a full house? A full house is 22 guests in 11 parties (2 studios, 3 en-suite rooms, 6 tents) and a team of about 7 (D-031): if half the parties drive in, that is 6 cars for 5 bays before the team's. How guests arrive is not known.",
+      "Where does a minibus or a delivery truck turn? The open end is 9 by 6 m and the rock road 4 m wide, while a minibus needs a circle of roughly 12 m or more [A]; as drawn it backs out through the gate across the public road. No turning space is planned.",
+      "Reversing out: a parked car's tail is about 3 m from the back of the sign wall or the hedge, less than a car's length, so a car between two parked ones cannot back out. Bays at 90 degrees usually have about 6 m behind them [A], so they want about 3 m more.",
+      "A car waiting at the shut gate stands on the road: the gate line is 0.8 m from the road's edge."
+    ]
+  }
+}
