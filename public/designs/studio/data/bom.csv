@@ -131,7 +131,7 @@ K9,plumbing,plumbing,Stop valve + Y-filter + check water meter,1,set,45000,A,AS-
 K10,steel,welding,"W1 infill: 2 mm steel welded into the old door frame (0-1,150), foamed with the walls",1,each,180000,A,AS-21,180000,incl. welding
 K10,glazing,glazier,W1 obscure louvre window 520 x 890 + insect mesh (wash lobby),1,each,120000,A,AS-21,120000,
 K10,steel,welding,"Seal and lock the end-B cargo doors (weld tabs, sealant)",1,each,60000,A,AS-21,60000,
-K10,steel,masonry,Level the corner castings: concrete pads or steel shims (rock corner),4,each,25000,A,AS-21,100000,
+K10,steel,masonry,"Concrete block stands 40 x 60 cm under the four corner castings, levelled (D-029)",4,each,25000,A,AS-21,100000,
 K10,steel,welding,Steel hanging rail for the wall units,1,set,40000,A,AS-21,40000,
 K10,hardware,glazier,Keyed lock + secondary bolt for the slider,1,set,45000,A,AS-21,45000,
 K10,glazing,glazier,"Louvred trickle-vent strip with mesh (10,000 mm2)",1,each,30000,A,AS-21,30000,

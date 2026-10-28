@@ -84,7 +84,7 @@ Pima kontineri zombi za sitidiyo mbere y'ikindi cyose, wohereze imibare uwo muns
 ## S01: gupima, kuringaniza no gusudira kose
 
 1. Uzuza urupapuro rw'ibipimo (Umunsi wa 1 hejuru).
-2. Ringaniza inguni enye (corner castings) ku bitereko bya beto (concrete pads) cyangwa ibyuma byo kuringaniza (shims); inguni iri ku rutare ikeneye pad. Gerageza ko itandukaniro hagati y'inguni iri hejuru n'iri hasi riba munsi ya mm 5, uryandike muri level_diff.
+2. Shyira buri nguni muri enye (corner castings) ku gitereko cya beto (concrete block stand) cya 40 × 60 cm, uringanize n'ibyuma (shims); inguni iri ku rutare nayo ihabwa igitereko cyayo. Gerageza ko itandukaniro hagati y'inguni iri hejuru n'iri hasi riba munsi ya mm 5, uryandike muri level_diff.
 3. Umusuderi: sudira icyuma cya mm 2 mu rugi rwa kera rufunganye (kuva {{studio.w1_x0}} kugeza {{studio.w1_x1}} uhereye ku rukuta rurangiye rwa end A, kugeza kuri {{studio.w1_sill}} hejuru), ushyireho idirishya rya louvre 520 × 890 hejuru yacyo.
 4. Umusuderi: funga kandi ushyireho ingufuri ku nzugi za kontineri za end B, ukate umwobo wa mm 75 wa AC mu rukuta rw'inyuma.
 5. Guhera kuri S05, nta gusudira cyangwa gusya kuri kontineri: byatwika foam.

@@ -82,7 +82,7 @@ Measure both studio containers before anything else and send the numbers the sam
 ## S01: survey, level and all the welding
 
 1. Fill the survey sheet (Day 1 above).
-2. Level the four corner castings on concrete pads or steel shims; the corner on the rock needs a pad. Aim for under 5 mm between the highest and lowest corner, and write it in level_diff.
+2. Set each of the four corner castings on a concrete block stand 40 × 60 cm, shimmed with steel; the corner on the rock gets its block too. Aim for under 5 mm between the highest and lowest corner, and write it in level_diff.
 3. Welder: weld the 2 mm steel infill into the old narrow door ({{studio.w1_x0}} to {{studio.w1_x1}} from the finished end-A wall, up to {{studio.w1_sill}} high) and fit the louvre window 520 × 890 above it.
 4. Welder: seal and lock the end-B cargo doors, and cut the 75 mm sleeve for the AC in the back wall.
 5. From S05 on, no welding or grinding on the container: it would burn the foam.

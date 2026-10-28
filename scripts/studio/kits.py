@@ -525,7 +525,7 @@ def k10_steel(lo: Layout) -> Kit:
                  step="S01", color="glass"))
     k.buy(Bought("K10-ENDB", "Seal and lock the end-B cargo doors (weld tabs, sealant)", "K10", "steel", "welding",
                  1, "each", "endbdoors", step="S01"))
-    k.buy(Bought("K10-PADS", "Level the corner castings: concrete pads or steel shims (rock corner)", "K10", "steel",
+    k.buy(Bought("K10-PADS", "Concrete block stands 40 x 60 cm under the four corner castings, levelled (D-029)", "K10", "steel",
                  "masonry", 4, "each", "pad", step="S01"))
     k.buy(Bought("K10-RAIL", "Steel hanging rail for the wall units", "K10", "steel", "welding", 1,
                  "set", "hangrail", step="S12"))
