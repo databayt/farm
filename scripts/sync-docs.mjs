@@ -40,6 +40,8 @@ const PAGES = [
   "---The farm---",
   { slug: "farm", src: "guide/farm.md" },
   { slug: "master-plan", src: "guide/master-plan.md" },
+  { slug: "operations", src: "guide/operations.md" },
+  { slug: "film", src: "guide/film.md" },
   "---Studio package---",
   { slug: "studio", src: "study/studio/studio.md" },
   { slug: "studio-site", src: "study/studio/studio-site.md" },
