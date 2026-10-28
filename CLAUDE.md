@@ -58,7 +58,9 @@ study/registers    sources, prices, suppliers, buyers, assumptions
 study/feasibility  decision matrix, financial model (+ notes)
 study/studio       container studios (generated assets in public/designs/studio)
 study/execution    first 90 days, decision log
-scripts/           generators (financial model)
+guide/             the maintained execution guides, one per trade: X.md + its Kinyarwanda twin X.rw.md;
+                   numbers are {{studio.*}} tokens from public/designs/studio/data/dims.json
+scripts/           generators (financial model, studio package, site assets, contact sheets, docs sync)
 ```
 
 Regenerate the container-studio package (drawings, model, CNC, BOM) with `pnpm studio:build` (add `--pdf` for a revision's PDFs); inputs are `scripts/studio/params.py` and `study/studio/survey.csv`.

@@ -225,3 +225,21 @@ html:has([data-theme="farm"]) {
     }
   }
 }
+
+/* Printing a docs page (scripts/print-docs.mjs): A4, no chrome, nothing split across a page break. */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  tr,
+  figure,
+  [data-slot="alert"],
+  pre {
+    break-inside: avoid;
+  }
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+}

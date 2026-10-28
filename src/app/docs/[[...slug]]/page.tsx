@@ -57,7 +57,7 @@ async function DocsArticle({ params }: Pick<PageProps<"/docs/[[...slug]]">, "par
           <div className="flex flex-col gap-2">
             <div className="flex items-start justify-between gap-4">
               <h1 className="scroll-m-24 text-3xl font-semibold tracking-tight">{doc.title}</h1>
-              <div className="docs-nav bg-background/80 border-border/50 fixed inset-x-0 bottom-0 isolate z-50 flex items-center gap-2 border-t px-6 py-4 backdrop-blur-sm sm:static sm:z-0 sm:border-t-0 sm:bg-transparent sm:px-0 sm:pt-1.5 sm:backdrop-blur-none">
+              <div className="docs-nav print:hidden bg-background/80 border-border/50 fixed inset-x-0 bottom-0 isolate z-50 flex items-center gap-2 border-t px-6 py-4 backdrop-blur-sm sm:static sm:z-0 sm:border-t-0 sm:bg-transparent sm:px-0 sm:pt-1.5 sm:backdrop-blur-none">
                 <DocsCopyPage page={raw} url={`${ORIGIN}${page.url}`} />
                 {neighbours.previous && (
                   <Button variant="secondary" size="icon" className="extend-touch-target ms-auto size-8 shadow-none md:size-7" asChild>
@@ -85,7 +85,7 @@ async function DocsArticle({ params }: Pick<PageProps<"/docs/[[...slug]]">, "par
             <MDX components={mdxComponents} />
           </div>
         </div>
-        <div className="mx-auto hidden h-16 w-full max-w-3xl items-center gap-2 sm:flex">
+        <div className="mx-auto hidden h-16 w-full max-w-3xl items-center gap-2 sm:flex print:hidden">
           {neighbours.previous && (
             <Button variant="secondary" size="sm" asChild className="shadow-none">
               <Link href={neighbours.previous.url}>

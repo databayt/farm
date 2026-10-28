@@ -12,7 +12,13 @@
 //   ![Caption](../../public/designs/x.svg)       -> <Figure> (drawing on a white sheet)
 //   [Title](../../public/designs/x/studio.glb)   -> <StudioViewer> (needs parts.json + studio-poster.svg beside it)
 //   [Table: Title](../../public/designs/x.csv)   -> a Markdown table plus a download link
-// Other links into public/ become /designs/... downloads; a missing file fails the sync.
+// Other links into public/ become /designs/... downloads; a missing file fails the sync, except a printed
+// guide (public/guides/*.pdf), which stays plain text until scripts/print-docs.mjs has made it.
+//
+// guide/ holds the maintained execution guides. In them:
+//   {{studio.l}}  a value from public/designs/studio/data/dims.json (the studio generator); unknown keys fail
+//   X.rw.md       beside X.md becomes <slug>-rw, the Kinyarwanda twin: rendered, linked, kept out of the
+//                 sidebar, and checked against the English for the same sections, steps, numbers and links
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { basename, dirname, join, relative, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -24,6 +30,8 @@ const PUBLIC = join(ROOT, "public")
 // Sidebar order. A string starting with "---" is a group label (fumadocs separator).
 const PAGES = [
   { slug: "index", src: "PROJECT_STATUS.md", title: "Overview", description: "Where the farm study stands: what is done, what we know, and the questions for the founder." },
+  "---Trades---",
+  { slug: "carpenter", src: "guide/trades/carpenter.md" },
   "---Research---",
   { slug: "preliminary-report", src: "study/research/preliminary-report.md" },
   { slug: "location", src: "study/research/location.md" },
@@ -132,9 +140,27 @@ const PAGES = [
   },
 ]
 
-const entries = PAGES.filter((p) => typeof p !== "string")
+const listed = PAGES.filter((p) => typeof p !== "string")
 const toPosix = (p) => p.split(sep).join("/")
+// A Kinyarwanda twin X.rw.md beside a listed X.md: its own page, off the sidebar (meta.json lists only `listed`).
+const twins = listed
+  .filter((p) => p.src?.endsWith(".md") && existsSync(join(ROOT, p.src.replace(/\.md$/, ".rw.md"))))
+  .map((p) => ({ slug: `${p.slug}-rw`, src: p.src.replace(/\.md$/, ".rw.md"), twinOf: p.src }))
+const entries = [...listed, ...twins]
 const slugByPath = new Map(entries.map((p) => [p.src ?? p.csv, p.slug]))
+
+// {{ns.key}} values: the studio generator's measurements, read only when a page uses one.
+const TOKEN_FILES = { studio: join(PUBLIC, "designs", "studio", "data", "dims.json") }
+const tokenCache = {}
+function tokens(line, src) {
+  return line.replace(/\{\{([a-z]+)\.([a-z0-9_]+)\}\}/g, (match, ns, key) => {
+    if (!TOKEN_FILES[ns]) throw new Error(`${src}: unknown token namespace ${match}`)
+    tokenCache[ns] ??= JSON.parse(readFileSync(TOKEN_FILES[ns], "utf8"))
+    const v = tokenCache[ns][key]
+    if (v === undefined || typeof v === "object") throw new Error(`${src}: unknown token ${match}`)
+    return String(v)
+  })
+}
 
 /** Resolve a link target written in a study file to an absolute path. */
 const resolveTarget = (src, target) => resolve(ROOT, dirname(src), decodeURI(target))
@@ -191,6 +217,7 @@ function rewriteLinks(line, src) {
     const abs = resolveTarget(src, path)
     const slug = slugByPath.get(toPosix(relative(ROOT, abs)))
     if (slug) return `[${text}](/docs${slug === "index" ? "" : `/${slug}`}${hash ? `#${hash}` : ""})`
+    if (abs.startsWith(join(PUBLIC, "guides") + sep) && !existsSync(abs)) return `${text} (not printed yet)`
     const url = publicUrl(abs, src)
     if (url) return `[${text}](${url})`
     return text.includes("`") ? text : `\`${text}\``
@@ -228,7 +255,7 @@ function blockDirective(line, src) {
       const vb = readFileSync(abs, "utf8").match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/)
       if (vb) size = ` width={${Math.round(vb[1] * 4)}} height={${Math.round(vb[2] * 4)}}`
     }
-    return `<Figure src=${attr(url)} caption=${attr(mm[1])}${size} />`
+    return `<Figure src=${attr(url)} caption=${attr(mm[1])}${size}${src.startsWith("guide/") ? " eager" : ""} />`
   }
   mm = line.match(/^\s*\[Table:\s*([^\]]+)\]\(([^)\s]+\.csv)\)\s*$/)
   if (mm) {
@@ -255,7 +282,7 @@ function blockDirective(line, src) {
 const isDirective = (l) => /^\s*!\[[^\]]*\]\([^)]+\)\s*$/.test(l) || /^\s*\[(Table:[^\]]*|[^\]]+)\]\([^)\s]+\.(csv|glb)\)\s*$/.test(l)
 
 function fromMarkdown({ src, title, description: fixed }) {
-  const lines = readFileSync(join(ROOT, src), "utf8").split("\n")
+  const lines = readFileSync(join(ROOT, src), "utf8").split("\n").map((l) => tokens(l, src))
   const h1 = lines.findIndex((l) => l.startsWith("# "))
   const heading = h1 >= 0 ? lines[h1].slice(2).trim() : basename(src, ".md")
   const body = lines.slice(h1 + 1)
@@ -287,10 +314,53 @@ function fromCsv({ csv, title, description, columns }) {
     `${rows.length} rows · source file ${file} (all columns there; selected columns here).\n\n${csvTable(rows, columns)}\n`
 }
 
+/** What a twin must share with its English page: sections, numbered steps, numbers and linked files. */
+function parity(enSrc, rwSrc) {
+  const pair = new Set([enSrc, rwSrc])
+  const facts = (src) => {
+    const lines = readFileSync(join(ROOT, src), "utf8").split("\n").map((l) => tokens(l, src))
+    const links = new Set()
+    const numbers = new Set()
+    for (const l of lines) {
+      for (const [, t] of l.matchAll(/\]\(([^)\s]+)\)/g)) {
+        const rel = toPosix(relative(ROOT, resolveTarget(src, t.split("#")[0])))
+        // each language links its own printed PDF
+        if (!pair.has(rel) && !rel.startsWith("public/guides/") && !/^(https?:|mailto:|#)/.test(t)) links.add(rel)
+      }
+      for (const [n] of l.replace(/\]\([^)]*\)/g, "]").matchAll(/\d+(?:[.,]\d+)*/g)) numbers.add(n)
+    }
+    return {
+      sections: lines.filter((l) => /^#{2,3} /.test(l)).length,
+      steps: lines.filter((l) => /^\s*\d+\.\s/.test(l)).length,
+      links, numbers,
+    }
+  }
+  const en = facts(enSrc), rw = facts(rwSrc)
+  const gaps = []
+  if (en.sections !== rw.sections) gaps.push(`${rw.sections} of ${en.sections} sections`)
+  if (en.steps !== rw.steps) gaps.push(`${rw.steps} of ${en.steps} numbered steps`)
+  const missing = (a, b) => [...a].filter((x) => !b.has(x))
+  const nums = missing(en.numbers, rw.numbers)
+  if (nums.length) gaps.push(`numbers missing: ${nums.slice(0, 12).join(", ")}${nums.length > 12 ? " …" : ""}`)
+  const extra = missing(rw.numbers, en.numbers)
+  if (extra.length) gaps.push(`numbers not in the English: ${extra.slice(0, 12).join(", ")}`)
+  const files = missing(en.links, rw.links)
+  if (files.length) gaps.push(`links missing: ${files.join(", ")}`)
+  return gaps
+}
+
 rmSync(OUT, { recursive: true, force: true })
 mkdirSync(OUT, { recursive: true })
 for (const page of entries) {
-  writeFileSync(join(OUT, `${page.slug}.mdx`), page.csv ? fromCsv(page) : fromMarkdown(page))
+  let mdx = page.csv ? fromCsv(page) : fromMarkdown(page)
+  if (page.twinOf) {
+    const gaps = parity(page.twinOf, page.src)
+    if (gaps.length) {
+      console.warn(`sync-docs: ${page.src} differs from ${page.twinOf}: ${gaps.join("; ")}`)
+      mdx = mdx.replace("\n\n", `\n\n> **Behind the English page:** ${escapeProse(gaps.join("; "))}. Use the English until this is fixed.\n\n`)
+    }
+  }
+  writeFileSync(join(OUT, `${page.slug}.mdx`), mdx)
 }
 const pages = PAGES.map((p) => (typeof p === "string" ? p : p.slug))
 writeFileSync(join(OUT, "meta.json"), JSON.stringify({ title: "Farm study", pages }, null, 2) + "\n")
