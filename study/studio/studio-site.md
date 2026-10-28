@@ -25,7 +25,7 @@ Two checks matter beyond dimensions:
 
 ## The survey sheet
 
-Fill `study/studio/survey.csv`, one row per item per unit (U1, U2, U3), in mm, measured from the steel faces. Then run `pnpm studio:build`. The generator takes the smallest value across the three units for kit sizing, recomputes every drawing, list and check, and lifts the PRELIMINARY stamp once every row has a value.
+Fill `study/studio/survey.csv`, one row per item per unit (U1, U2), in mm, measured from the steel faces; the third box is the office and is not surveyed here. Then run `pnpm studio:build`. The generator takes the smaller value of the two units for kit sizing, recomputes every drawing, list and check, and lifts the PRELIMINARY stamp once every row has a value.
 
 [Table: Survey items](survey.csv)
 

@@ -38,7 +38,7 @@ Every step has its own sheet (AS-01 to AS-27) in `public/designs/studio/drawings
 
 ## Commissioning and snag list
 
-- Electrical: tests and certificate (S19). Plumbing: pressure test before lining (S05), drain fill tests, TMV temperature at the shower.
+- Electrical: tests and certificate (S19). Plumbing: pressure test at the first fix, before the foam (S04), drain fill tests, TMV temperature at the shower.
 - Doors, drawers and the bathroom door swing freely; the slider locks; insect mesh is tight.
 - A hot shower, then time the 30 L heater taking about 40 minutes to heat up again (D-024).
 - Roof: the engineer's inspection is recorded before the terrace opens (S27).

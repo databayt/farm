@@ -35,7 +35,7 @@ Strip and remake the bed; clean the bathroom and the kitchen; empty the fridge; 
 
 | Interval | Task |
 |---|---|
-| Monthly | RCD test button; alarms; clean the extract fan, the hood filter and the gutters |
+| Monthly | RCBO test buttons; alarms; clean the extract fan, the hood filter and the gutters |
 | Every 6 months | Re-seal silicone in the shower; check the roof deck bolts and the guardrail; check for condensation behind the bathroom panels |
 | Yearly | Electrician's inspection; earth-electrode reading; descale the heater; repaint rust spots |
 | Every 3 years | Desludge the septic tank [V STU-11] |

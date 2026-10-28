@@ -366,6 +366,14 @@ def write_dims(m, out: Path) -> None:
         "sheets": {mat: sum(1 for sl in m["layouts"] if sl.material == mat) for mat in sorted({sl.material for sl in m["layouts"]})},
     }
     d.update({f"sheets_{mat.lower()}": n for mat, n in d["sheets"].items()})
+    tot = json.loads((out / "data" / "totals.json").read_text())  # written by write_tables, just before
+    d.update({"unit_rwf_m": round(tot["unit_with_contingency"] / 1e6, 1), "all_units_rwf_m": round(tot["all_units_total"] / 1e6, 1),
+              "all_units_usd_k": round(tot["all_units_total"] / tot["usd_rate"] / 1000), "shared_rwf_m": round(tot["shared_site"] / 1e6, 1),
+              "persons": r(m["site"]["persons"]), "daily_l": r(m["site"]["daily_L"]), "tank_m3": m["site"]["tank_m3"],
+              "septic_m3": m["site"]["septic_m3"], "septic_c1_m3": m["site"]["chamber1_m3"], "septic_c2_m3": m["site"]["chamber2_m3"],
+              "septic_pop": r(P.SEPTIC_POP.value), "unit_ml_rwf_m": round(tot["unit_materials_labour"] / 1e6, 1)})
+    cats = {row["category"]: row for row in csv.DictReader((out / "data" / "bom-summary.csv").open(encoding="utf-8"))}
+    d["roof_rwf_m"] = round(float(cats["roof kit"]["per_unit_rwf"]) / 1e6, 1)
     (out / "data" / "dims.json").write_text(json.dumps(d, indent=1, sort_keys=True) + "\n")
     # batten set-out: each batten's centreline from the bare steel, as the carpenter marks it before any lining
     e = P.LINING_WALL.value

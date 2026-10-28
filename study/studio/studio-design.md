@@ -6,7 +6,7 @@ Status: Layout B, chosen by the founder on 2026-10-26 from two reference images 
 
 - Rentable farm-stay units for two guests: hotel-grade but durable, easy to clean between stays.
 - Bed, shower, WC, basin and a kitchen that guests will actually cook in; no gas inside a steel box.
-- All three identical, so one kit design, one cutting list, one manual.
+- Both identical, so one kit design, one cutting list, one manual.
 - Built from materials sold in Kigali, cut and drilled in a Kigali workshop, assembled on site by a small crew.
 - Keep the existing openings: a 3 m sliding glass wall and a narrow steel door.
 
@@ -49,7 +49,7 @@ The 3D drawing and the realistic image on the studio page are rendered from the 
 | Surface | Finish | Why |
 |---|---|---|
 | Walls and ceiling (living) | 12 mm ply, vapour-retarding primer and off-white paint | Light and calm; the primer seals the insulation from room air; repaintable |
-| Floor (living) | Epoxy seal over the treated container floor, then 5 mm SPC in a natural oak decor without knots (narrow random-length planks) | The original floor is insecticide-treated; never sand it [V STU-07] |
+| Floor (living) | A membrane over the treated container floor, 12 mm sheets screwed down every 300 mm, then 5 mm oak planks in a natural decor without knots (narrow random-length planks) (D-026) | The original floor is insecticide-treated; never sand it [V STU-07] |
 | Bathroom walls | Cement board, liquid membrane, ceramic tiles | Fully waterproof; easy to clean between guests |
 | Bathroom floor | Safety vinyl coved 100 mm up the walls, low-profile tray | No joints at the floor; the tray keeps IP zone 1 small [V STU-38] |
 | Furniture | Pine in medium oak, after the founder's bed reference: 18 mm pine-faced ply or solid pine, a medium-oak stain under clear matte PU varnish; golden amber with a soft patina and fine grain, select-grade pine with few, small knots, ABS edges; marine ply in the bathroom | The founder's reference finish; Kigali carpenters work pine every day; warm against off-white walls and the oak floor |

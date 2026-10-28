@@ -28,7 +28,7 @@ One studio is eleven kits. K1 to K7 are flat-pack woodwork from the carpentry wo
 
 ## Cutting diagrams
 
-One studio takes 8 sheets of 18 mm board, 14 of 12 mm ply, 3 of 18 mm marine ply and one worktop blank [E, generated]. The diagrams are drawn in cutting order: rip along the red lines first, then crosscut.
+One studio takes {{studio.sheets_ply18}} sheets of 18 mm board, {{studio.sheets_ply12}} of 12 mm ply, {{studio.sheets_mply18}} of 18 mm marine ply and {{studio.sheets_wtop38}} worktop blank, plus {{studio.floor_sheets}} sheets of 12 mm ply laid whole for the floor [E, generated]. The diagrams are drawn in cutting order: rip along the red lines first, then crosscut.
 
 [Table: Sheets and yield](../../public/designs/studio/data/nesting.csv)
 

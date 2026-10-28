@@ -10,13 +10,13 @@ Status: desk research of 2026-10-26. A listed supplier is not confirmed stock, a
 | 18 mm marine / WBP ply (bathroom) | Film-faced marine boards from Gold Wolf (Uganda) Ltd, Kibagabaga | [V STU-31] (a job advert; check in person) | MR board with every edge sealed |
 | 12 mm ply (linings, backs) | Same traders | not found (searched: Jiji Rwanda (closed), RwandaYP, Murukali) | 9 mm ply on closer battens |
 | Treated battens and studs | Gisozi; sawmills (eucalyptus, pine) | not found with prices | Any treated softwood 38 x 50 |
-| EPS boards, rock wool, foil foam | Insulation Rwanda LLC, Kicukiro: EPS 25-100 mm in 1.2 x 1.2 m, rock wool 50 mm at 100 kg/m3 | [V STU-19]; no prices | - |
+| Spray foam (D-026); EPS boards, rock wool, foil foam as the fallback | Spray-foam contractor: not found (searched: Kigali spray foam insulation, 2026-10-26). Insulation Rwanda LLC, Kicukiro: EPS 25-100 mm in 1.2 x 1.2 m, rock wool 50 mm at 100 kg/m3 | [V STU-19]; no prices | Find a contractor before S05 |
 | Furniture hardware (hinges, runners, confirmat, bolts) | Hardware district (Quincaillerie Bricotech, KN 84 St, lists furniture hardware) | [V STU-33]; stock not confirmed | Dowels and screws instead of confirmat; bring a hardware bag from Nairobi or Kampala if needed |
 | Roofing sheet, gutters | Tolirwa and Safintra, both in Masoro | [V STU-20, STU-21] | - |
 | Tinted polycarbonate | not found (searched: Kigali suppliers, roofing factories online) | AS-24 | Translucent GRP or opal corrugated sheet |
-| Paint, epoxy floor seal, wood glue | Ameki Color, Gikondo | [V STU-22] | - |
+| Paint, wood glue | Ameki Color, Gikondo | [V STU-22] | - |
 | PPR, PVC, HDPE pipe, tanks, septic tanks | Pro Water Rwanda (Gatsata); Build Mart (Kicukiro) | [V STU-23, STU-24] | - |
-| Water heater, fridge | Kanis Retail (online): 50 L heaters RWF 144,000-252,000; 90 L fridge RWF 265,000 | [V STU-P01, STU-P02, STU-P03] | 80 L heater: ask Build Mart (stocks heaters) |
+| Water heater, fridge | Kanis Retail (online): 50 L heaters RWF 144,000-252,000; 90 L fridge RWF 265,000 | [V STU-P01, STU-P02, STU-P03] | 30 L box heater (D-024): ask Build Mart (stocks heaters) |
 | Sanitaryware, tiles, SPC flooring | not found online (searched: Kigali showrooms, SPC Rwanda) | AS-24 | Visit the hardware district |
 | Cable, breakers | Legend Cables (Kigali, local production) for cable | [V STU-34]; breaker stock not found | Electrician's usual supplier |
 | Mattress | Rwanda Foam Ltd (Kigali) | [V STU-51]; sizes and prices not found | Bed frame takes 1,524 x 1,829 up to 1,600 x 2,000 |

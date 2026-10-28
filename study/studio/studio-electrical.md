@@ -36,7 +36,7 @@ Status: design intent. Every rating is an assumption [A, AS-19] until a RURA-lic
 
 [Table: Diversified maximum demand per studio](../../public/designs/studio/data/demand.csv)
 
-The generator checks every circuit for design current within the breaker within the derated cable capacity, and a voltage drop under 3% for lighting and 5% for the rest [E]. Capacities are for conduit inside the EPS-insulated lining (IEC 60364-5-52 method A1), derated for a 35 C box; every circuit passes on them. Cable data are typical IEC values for PVC copper; confirm them against the cable actually bought (Legend Cables makes cable in Kigali [V STU-34]).
+The generator checks every circuit for design current within the breaker within the derated cable capacity, and a voltage drop under 3% for lighting and 5% for the rest [E]. Capacities are for conduit inside the foam-insulated lining (IEC 60364-5-52 method A1), derated for a 35 C box; every circuit passes on them. Cable data are typical IEC values for PVC copper; confirm them against the cable actually bought (Legend Cables makes cable in Kigali [V STU-34]).
 
 ![E-202 Circuit schedule, earthing and bonding](../../public/designs/studio/drawings/e-202.svg)
 
