@@ -26,6 +26,7 @@ export const DOCS = { href: "/docs", label: "Docs" }
 
 // A hamburger on phones and desktops alike, opening a panel from the right. It is a native popover, so it needs
 // no dialog library: Escape, a click outside and the top layer come with it. The page you are on is underlined.
+// The links don't prefetch: opening the menu would otherwise preload every page's hero and drawings at once.
 export function SiteMenu({
   title,
   menu = { open: "Open the menu", close: "Close the menu" },
@@ -78,6 +79,7 @@ export function SiteMenu({
             <Link
               key={page.href}
               href={page.href}
+              prefetch={false}
               onClick={close}
               aria-current={here === page.href ? "page" : undefined}
               className={row}
@@ -87,6 +89,7 @@ export function SiteMenu({
           ))}
           <Link
             href={DOCS.href}
+            prefetch={false}
             onClick={close}
             aria-current={here.startsWith(DOCS.href) ? "page" : undefined}
             className={cn(row, "text-muted-foreground mt-4 border-t pt-4 text-base")}
