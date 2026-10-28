@@ -46,7 +46,7 @@ What the farm is, where it is and what already stands on it, so every guide star
 
 ## Water, power and waste, as reported
 
-- **Power:** the founder reports the national grid (REG) on site ([studio site](../study/studio/studio-site.md)), and power poles run along the road. Grid, solar or both is the power guide's question.
+- **Power:** the founder reports the national grid (REG) on site ([studio site](../study/studio/studio-site.md)), and power poles run along the road. Grid, solar or both: the [power guide](trades/power.md).
 - **Water:** the founder reports mains water (WASAC), a borehole and rainwater; the borehole's yield and quality are not tested [U].
 - **Waste:** no septic system yet. One is planned at least 50 m from the borehole, and no guest stays before it passes its inspection (D-016).
 

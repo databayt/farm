@@ -36,6 +36,7 @@ const PAGES = [
   { slug: "carpenter", src: "guide/trades/carpenter.md" },
   { slug: "electrician", src: "guide/trades/electrician.md" },
   { slug: "plumber", src: "guide/trades/plumber.md" },
+  { slug: "power", src: "guide/trades/power.md" },
   "---The farm---",
   { slug: "farm", src: "guide/farm.md" },
   { slug: "master-plan", src: "guide/master-plan.md" },

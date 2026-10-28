@@ -42,7 +42,7 @@ The plan for a 5 ha farm near Kigali that becomes a container eco-stay which fee
 | Carpenter | [studio interior](trades/carpenter.md) | English, Kinyarwanda | revision A2 |
 | Electrician | [studio wiring](trades/electrician.md) | English, Kinyarwanda | revision A2 |
 | Plumber | [studio water and drains](trades/plumber.md) | English, Kinyarwanda | revision A2 |
-| Power | grid, solar or both | English, Kinyarwanda | this week |
+| Power | [grid, solar or both](trades/power.md) | English, Kinyarwanda | advice of 2026-10-28 |
 | Farmer | the vegetable field | English, Kinyarwanda | to come |
 | Livestock keeper | animals for the galley | English, Kinyarwanda | to come |
 | Landscaper | the trees | English, Kinyarwanda | to come |
