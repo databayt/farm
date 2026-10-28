@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-900 -900 8498 5502" width="1416" height="917" font-family="Helvetica, Arial, sans-serif">
+<rect x="-900" y="-900" width="8498" height="5502" fill="#ffffff"/>
+<rect x="0" y="0" width="5898" height="2352" fill="#f4efe6" stroke="#9aa1a9" stroke-width="30"/>
+<rect x="-90" y="-90" width="180" height="180" fill="#9aa1a9" stroke="#1f2328" stroke-width="6"/>
+<rect x="5808" y="-90" width="180" height="180" fill="#9aa1a9" stroke="#1f2328" stroke-width="6"/>
+<rect x="-90" y="2262" width="180" height="180" fill="#9aa1a9" stroke="#1f2328" stroke-width="6"/>
+<rect x="5808" y="2262" width="180" height="180" fill="#9aa1a9" stroke="#1f2328" stroke-width="6"/>
+<text x="-300" y="1176" font-size="110" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -300 1176)">IMPERA A</text>
+<text x="6198" y="1176" font-size="110" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 6198 1176)">IMPERA B</text>
+<text x="2949" y="-330" font-size="110" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">URUKUTA RW'INYUMA</text>
+<line x1="0" y1="705.6" x2="5898" y2="705.6" stroke="#1d4ed8" stroke-width="10"/>
+<circle cx="2949" cy="705.6" r="85" fill="#1d4ed8"/>
+<text x="2949" y="709.6" font-size="106.25" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">1</text>
+<text x="2949" y="865.6" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">uburebure, m 1 hejuru ya hasi: ____ mm</text>
+<line x1="4246.5599999999995" y1="0" x2="4246.5599999999995" y2="2352" stroke="#1d4ed8" stroke-width="10"/>
+<circle cx="4246.5599999999995" cy="1458.24" r="85" fill="#1d4ed8"/>
+<text x="4246.5599999999995" y="1462.24" font-size="106.25" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">2</text>
+<text x="4386.5599999999995" y="1458.24" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle">ubugari: ____ mm</text>
+<line x1="0" y1="0" x2="5898" y2="2352" stroke="#1d4ed8" stroke-width="6" stroke-dasharray="60 50"/>
+<line x1="0" y1="2352" x2="5898" y2="0" stroke="#1d4ed8" stroke-width="6" stroke-dasharray="60 50"/>
+<circle cx="1474.5" cy="1764" r="85" fill="#1d4ed8"/>
+<text x="1474.5" y="1768" font-size="106.25" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">6</text>
+<text x="1614.5" y="1764" font-size="100" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle">diyagonale zombi: andika itandukaniro: ____ mm</text>
+<circle cx="-260" cy="-260" r="85" fill="#1d4ed8"/>
+<text x="-260" y="-256" font-size="106.25" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">7</text>
+<text x="-120" y="-260" font-size="100" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle">level: inguni iri hejuru ukuyemo iri hasi: ____ mm</text>
+<text x="2949" y="2612" font-size="110" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">URUKUTA RW'IMBERE</text>
+<rect x="0" y="3002" width="5898" height="700" fill="#f4efe6" stroke="#9aa1a9" stroke-width="20"/>
+<rect x="1430" y="3002" width="3000" height="700" fill="#cfe3f2" stroke="#1f2328" stroke-width="6"/>
+<rect x="5040" y="3002" width="520" height="700" fill="#cfe3f2" stroke="#1f2328" stroke-width="6"/>
+<circle cx="2930" cy="3352" r="85" fill="#1d4ed8"/>
+<text x="2930" y="3356" font-size="106.25" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">4</text>
+<circle cx="5300" cy="3352" r="85" fill="#1d4ed8"/>
+<text x="5300" y="3356" font-size="106.25" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">5</text>
+<text x="1430" y="3862" font-size="95" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle">4 · urugi runyerera: aho rutangirira n'aho rurangirira: ____ mm / ____ mm</text>
+<text x="1430" y="4012" font-size="95" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle">5 · urugi rwa kera: aho rutangirira n'aho rurangirira: ____ mm / ____ mm</text>
+<line x1="353.88" y1="3002" x2="353.88" y2="3702" stroke="#1d4ed8" stroke-width="10"/>
+<circle cx="353.88" cy="3352" r="85" fill="#1d4ed8"/>
+<text x="353.88" y="3356" font-size="106.25" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">3</text>
+<text x="1430" y="4162" font-size="95" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle">3 · uburebure bwo hejuru: ____ mm</text>
+<text x="0" y="4332" font-size="90" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">bipimwe uhereye ku cyuma cya end A</text>
+</svg>

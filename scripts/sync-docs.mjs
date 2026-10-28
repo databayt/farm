@@ -347,7 +347,8 @@ function parity(enSrc, rwSrc) {
     const numbers = new Set()
     for (const l of lines) {
       for (const [, t] of l.matchAll(/\]\(([^)\s]+)\)/g)) {
-        const rel = toPosix(relative(ROOT, resolveTarget(src, t.split("#")[0])))
+        // a drawing drawn per language (x.en.svg / x.rw.svg) counts as one file
+        const rel = toPosix(relative(ROOT, resolveTarget(src, t.split("#")[0]))).replace(/\.(en|rw)\.svg$/, ".svg")
         // each language links its own printed PDF
         if (!pair.has(rel) && !rel.startsWith("public/guides/") && !/^(https?:|mailto:|#)/.test(t)) links.add(rel)
       }

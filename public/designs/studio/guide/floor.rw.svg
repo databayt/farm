@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-700 -900 7298 4252" width="1216" height="709" font-family="Helvetica, Arial, sans-serif">
+<rect x="-700" y="-900" width="7298" height="4252" fill="#ffffff"/>
+<rect x="0" y="0" width="5898" height="2352" fill="#9aa1a9" stroke="#1f2328" stroke-width="12"/>
+<rect x="5" y="5" width="2440" height="1220" fill="#ead8b4" stroke="#1f2328" stroke-width="8"/>
+<text x="1225" y="555" font-size="120" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">2440 × 1220</text>
+<rect x="2448" y="5" width="2440" height="1220" fill="#ead8b4" stroke="#1f2328" stroke-width="8"/>
+<text x="3668" y="555" font-size="120" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">2440 × 1220</text>
+<rect x="4891" y="5" width="1002" height="1220" fill="#ead8b4" stroke="#c2410c" stroke-width="14"/>
+<text x="5392" y="555" font-size="120" font-weight="700" fill="#c2410c" text-anchor="middle" dominant-baseline="middle">kata 1002 × 1220</text>
+<rect x="5" y="1228" width="1220" height="1119" fill="#ead8b4" stroke="#1f2328" stroke-width="8"/>
+<text x="615" y="1727.5" font-size="120" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">1220 × 1119</text>
+<text x="615" y="1877.5" font-size="70" font-weight="400" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">kivuye ku gisigazwa cy'umurongo 1</text>
+<rect x="1228" y="1228" width="2440" height="1119" fill="#ead8b4" stroke="#c2410c" stroke-width="14"/>
+<text x="2448" y="1727.5" font-size="120" font-weight="700" fill="#c2410c" text-anchor="middle" dominant-baseline="middle">2440 × 1119</text>
+<rect x="3671" y="1228" width="2222" height="1119" fill="#ead8b4" stroke="#c2410c" stroke-width="14"/>
+<text x="4782" y="1727.5" font-size="120" font-weight="700" fill="#c2410c" text-anchor="middle" dominant-baseline="middle">kata 2222 × 1119</text>
+<text x="-330" y="615" font-size="90" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -330 615)">umurongo 1</text>
+<text x="-330" y="1787.5" font-size="90" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -330 1787.5)">umurongo 2</text>
+<text x="2949" y="-560" font-size="100" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">URUKUTA RW'INYUMA ↑</text>
+<line x1="0" y1="-230" x2="5898" y2="-230" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="-30" y1="-200" x2="30" y2="-260" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="5868" y1="-200" x2="5928" y2="-260" stroke="#1d4ed8" stroke-width="7"/>
+<text x="2949" y="-315" font-size="120" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">5898</text>
+<line x1="6228" y1="0" x2="6228" y2="2352" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="6198" y1="30" x2="6258" y2="-30" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="6198" y1="2382" x2="6258" y2="2322" stroke="#1d4ed8" stroke-width="7"/>
+<text x="6323" y="1176" font-size="120" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 6323 1176)">2352</text>
+<text x="0" y="2682" font-size="95" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">mm 3 hagati y'impapuro · mm 5 ku cyuma · vis 4 × 30 buri 300 × 300</text>
+<text x="0" y="2872" font-size="95" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">IMPERA A ←</text>
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-700 -1350 7198 4752" width="1200" height="792" font-family="Helvetica, Arial, sans-serif">
+<rect x="-700" y="-1350" width="7198" height="4752" fill="#ffffff"/>
+<rect x="-50" y="-50" width="5898" height="2352" fill="#9aa1a9" stroke="none" stroke-width="0"/>
+<rect x="0" y="0" width="5798" height="2252" fill="#fbf8f1" stroke="#1f2328" stroke-width="10"/>
+<rect x="1380" y="2247" width="3000" height="60" fill="#cfe3f2" stroke="#1f2328" stroke-width="5"/>
+<rect x="4990" y="2247" width="520" height="60" fill="#cfe3f2" stroke="#1f2328" stroke-width="5"/>
+<rect x="0" y="18" width="1640" height="2020" fill="#f3e3c9" stroke="#1f2328" stroke-width="6"/>
+<text x="820" y="1028" font-size="130" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">IGITANDA</text>
+<rect x="1640" y="0" width="340" height="340" fill="#ead2ad" stroke="#1f2328" stroke-width="6"/>
+<text x="1810" y="170" font-size="80" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">340</text>
+<rect x="2000" y="0" width="1300" height="750" fill="#dfe4ea" stroke="#1f2328" stroke-width="6"/>
+<text x="2650" y="375" font-size="110" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">SOFA</text>
+<rect x="2270" y="850" width="860" height="500" fill="#ead2ad" stroke="#1f2328" stroke-width="6"/>
+<text x="2700" y="1100" font-size="80" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">AMEZA</text>
+<rect x="2280" y="1420" width="400" height="400" fill="#ead2ad" stroke="#1f2328" stroke-width="6"/>
+<rect x="2720" y="1420" width="400" height="400" fill="#ead2ad" stroke="#1f2328" stroke-width="6"/>
+<rect x="3978" y="0" width="600" height="550" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<text x="4278" y="275" font-size="70" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">FRIGO</text>
+<rect x="3978" y="550" width="600" height="600" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<text x="4278" y="850" font-size="70" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">AMASHYIGA</text>
+<rect x="3978" y="1150" width="600" height="450" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<text x="4278" y="1375" font-size="70" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">EVIYE</text>
+<rect x="4578" y="0" width="70" height="1770" fill="#8d8578" stroke="#1f2328" stroke-width="6"/>
+<rect x="4648" y="1700" width="0" height="70" fill="#8d8578" stroke="#1f2328" stroke-width="6"/>
+<rect x="5248" y="1700" width="520" height="70" fill="#8d8578" stroke="#1f2328" stroke-width="6"/>
+<rect x="4768" y="0" width="1000" height="900" fill="#cfe3f2" stroke="#1f2328" stroke-width="6"/>
+<text x="5268" y="450" font-size="85" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">DOUCHE</text>
+<rect x="5248" y="1110" width="520" height="380" fill="#ffffff" stroke="#1f2328" stroke-width="6"/>
+<text x="5508" y="1300" font-size="80" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">WC</text>
+<rect x="5498" y="1820" width="300" height="400" fill="#ffffff" stroke="#1f2328" stroke-width="6"/>
+<text x="5648" y="2020" font-size="65" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 5648 2020)">LAVABO</text>
+<text x="4613" y="1890" font-size="65" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle" transform="rotate(90 4613 1890)">PARTITION 70</text>
+<rect x="5768" y="0" width="30" height="2252" fill="#d8d2c6" stroke="#1f2328" stroke-width="4"/>
+<text x="-330" y="1126" font-size="115" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -330 1126)">IMPERA A</text>
+<text x="6128" y="1126" font-size="115" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 6128 1126)">IMPERA B</text>
+<text x="2899" y="2582" font-size="95" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">URUKUTA RW'IMBERE · URUGI RW'IKIRAHURE · IDIRISHYA W1</text>
+<line x1="0" y1="-260" x2="5798" y2="-260" stroke="#1d4ed8" stroke-width="4"/>
+<line x1="0" y1="-300" x2="0" y2="-220" stroke="#1d4ed8" stroke-width="6"/>
+<text x="0" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 0 -330)">0</text>
+<line x1="1640" y1="-300" x2="1640" y2="-220" stroke="#1d4ed8" stroke-width="6"/>
+<text x="1640" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 1640 -330)">1640</text>
+<line x1="2000" y1="-300" x2="2000" y2="-220" stroke="#1d4ed8" stroke-width="6"/>
+<text x="2000" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 2000 -330)">2000</text>
+<line x1="3300" y1="-300" x2="3300" y2="-220" stroke="#1d4ed8" stroke-width="6"/>
+<text x="3300" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 3300 -330)">3300</text>
+<line x1="3978" y1="-300" x2="3978" y2="-220" stroke="#1d4ed8" stroke-width="6"/>
+<text x="3978" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 3978 -330)">3978</text>
+<line x1="4578" y1="-300" x2="4578" y2="-220" stroke="#1d4ed8" stroke-width="6"/>
+<text x="4578" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 4578 -330)">4578</text>
+<line x1="5798" y1="-300" x2="5798" y2="-220" stroke="#1d4ed8" stroke-width="6"/>
+<text x="5798" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 5798 -330)">5798</text>
+<text x="0" y="-1240" font-size="90" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">bipimwe uhereye ku rukuta rurangiye rwa end A (mm)</text>
+<line x1="0" y1="2812" x2="5798" y2="2812" stroke="#1d4ed8" stroke-width="4"/>
+<line x1="1380" y1="2772" x2="1380" y2="2852" stroke="#1d4ed8" stroke-width="6"/>
+<text x="1380" y="2882" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 1380 2882)">1380</text>
+<line x1="4380" y1="2772" x2="4380" y2="2852" stroke="#1d4ed8" stroke-width="6"/>
+<text x="4380" y="2882" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 4380 2882)">4380</text>
+<line x1="4990" y1="2772" x2="4990" y2="2852" stroke="#1d4ed8" stroke-width="6"/>
+<text x="4990" y="2882" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 4990 2882)">4990</text>
+<line x1="5510" y1="2772" x2="5510" y2="2852" stroke="#1d4ed8" stroke-width="6"/>
+<text x="5510" y="2882" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 5510 2882)">5510</text>
+<line x1="-480" y1="0" x2="-480" y2="2252" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="-510" y1="30" x2="-450" y2="-30" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="-510" y1="2282" x2="-450" y2="2222" stroke="#1d4ed8" stroke-width="7"/>
+<text x="-575" y="1126" font-size="120" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -575 1126)">2252</text>
+</svg>

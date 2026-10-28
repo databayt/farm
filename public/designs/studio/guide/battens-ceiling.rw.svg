@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-500 -1000 7298 4052" width="1216" height="675" font-family="Helvetica, Arial, sans-serif">
+<rect x="-500" y="-1000" width="7298" height="4052" fill="#ffffff"/>
+<rect x="0" y="0" width="5898" height="2352" fill="#f4efe6" stroke="#9aa1a9" stroke-width="16"/>
+<rect x="50" y="50" width="1160" height="2252" fill="none" stroke="#c9c2b4" stroke-width="6" stroke-dasharray="40 30"/>
+<text x="350" y="337.8" font-size="80" font-weight="700" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">K1-11</text>
+<text x="350" y="447.8" font-size="80" font-weight="400" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">1160</text>
+<rect x="1210" y="50" width="1160" height="2252" fill="none" stroke="#c9c2b4" stroke-width="6" stroke-dasharray="40 30"/>
+<text x="1510" y="337.8" font-size="80" font-weight="700" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">K1-12</text>
+<text x="1510" y="447.8" font-size="80" font-weight="400" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">1160</text>
+<rect x="2370" y="50" width="1160" height="2252" fill="none" stroke="#c9c2b4" stroke-width="6" stroke-dasharray="40 30"/>
+<text x="2670" y="337.8" font-size="80" font-weight="700" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">K1-13</text>
+<text x="2670" y="447.8" font-size="80" font-weight="400" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">1160</text>
+<rect x="3530" y="50" width="1160" height="2252" fill="none" stroke="#c9c2b4" stroke-width="6" stroke-dasharray="40 30"/>
+<text x="3830" y="337.8" font-size="80" font-weight="700" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">K1-14</text>
+<text x="3830" y="447.8" font-size="80" font-weight="400" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">1160</text>
+<rect x="4690" y="50" width="1160" height="2252" fill="none" stroke="#c9c2b4" stroke-width="6" stroke-dasharray="40 30"/>
+<text x="4990" y="337.8" font-size="80" font-weight="700" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">K1-15</text>
+<text x="4990" y="447.8" font-size="80" font-weight="400" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">1160</text>
+<rect x="50" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<rect x="605" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<rect x="1185" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<rect x="1764" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<rect x="2344" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<rect x="2924" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<rect x="3504" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<rect x="4084" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<rect x="4663" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<rect x="5243" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<rect x="5798" y="50" width="50" height="2252" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<line x1="0" y1="2612" x2="5898" y2="2612" stroke="#1d4ed8" stroke-width="4"/>
+<line x1="75" y1="2572" x2="75" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="75" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 75 2682)">75</text>
+<line x1="630" y1="2572" x2="630" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="630" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 630 2682)">630</text>
+<line x1="1210" y1="2572" x2="1210" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="1210" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 1210 2682)">1210</text>
+<line x1="1789" y1="2572" x2="1789" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="1789" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 1789 2682)">1789</text>
+<line x1="2369" y1="2572" x2="2369" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="2369" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 2369 2682)">2369</text>
+<line x1="2949" y1="2572" x2="2949" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="2949" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 2949 2682)">2949</text>
+<line x1="3529" y1="2572" x2="3529" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="3529" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 3529 2682)">3529</text>
+<line x1="4109" y1="2572" x2="4109" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="4109" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 4109 2682)">4109</text>
+<line x1="4688" y1="2572" x2="4688" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="4688" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 4688 2682)">4688</text>
+<line x1="5268" y1="2572" x2="5268" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="5268" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 5268 2682)">5268</text>
+<line x1="5823" y1="2572" x2="5823" y2="2652" stroke="#1d4ed8" stroke-width="6"/>
+<text x="5823" y="2682" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 5823 2682)">5823</text>
+<line x1="6178" y1="50" x2="6178" y2="2302" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="6148" y1="80" x2="6208" y2="20" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="6148" y1="2332" x2="6208" y2="2272" stroke="#1d4ed8" stroke-width="7"/>
+<text x="6273" y="1176" font-size="120" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 6273 1176)">2252</text>
+<text x="0" y="-650" font-size="95" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">IGISENGE (urebye uri hasi) · hagati ya buri giti, bipimwe uhereye ku cyuma cya end A</text>
+</svg>

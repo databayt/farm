@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4600 3400" width="767" height="567" font-family="Helvetica, Arial, sans-serif">
+<rect x="0" y="0" width="4600" height="3400" fill="#ffffff"/>
+<text x="150" y="80" font-size="120" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">URUKUTA: icyuma → icyumba</text>
+<rect x="150" y="250" width="44" height="300" fill="#9aa1a9" stroke="#1f2328" stroke-width="6"/>
+<line x1="172" y1="550" x2="172" y2="590" stroke="#1f2328" stroke-width="3"/>
+<text x="142" y="650" font-size="80" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">icyuma</text>
+<rect x="194" y="250" width="836" height="300" fill="#f2d36b" stroke="#1f2328" stroke-width="6"/>
+<line x1="612" y1="550" x2="612" y2="740" stroke="#1f2328" stroke-width="3"/>
+<text x="582" y="800" font-size="80" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">igiti 38 + spray foam</text>
+<rect x="1030" y="250" width="264" height="300" fill="#ead8b4" stroke="#1f2328" stroke-width="6"/>
+<line x1="1162" y1="550" x2="1162" y2="890" stroke="#1f2328" stroke-width="3"/>
+<text x="1132" y="950" font-size="80" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">pulayiwudi 12</text>
+<text x="1414" y="400" font-size="150" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle">= 50</text>
+<text x="150" y="1080" font-size="120" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">HASI: hejuru ya hasi ha kontineri 28 (hatewe umuti)</text>
+<rect x="150" y="1250" width="40" height="300" fill="#2563eb" stroke="#1f2328" stroke-width="6"/>
+<line x1="170" y1="1550" x2="170" y2="1590" stroke="#1f2328" stroke-width="3"/>
+<text x="140" y="1650" font-size="80" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">membrane</text>
+<rect x="190" y="1250" width="264" height="300" fill="#ead8b4" stroke="#1f2328" stroke-width="6"/>
+<line x1="322" y1="1550" x2="322" y2="1740" stroke="#1f2328" stroke-width="3"/>
+<text x="292" y="1800" font-size="80" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">urupapuro rwa pulayiwudi 12</text>
+<rect x="454" y="1250" width="110" height="300" fill="#c9935a" stroke="#1f2328" stroke-width="6"/>
+<line x1="509" y1="1550" x2="509" y2="1890" stroke="#1f2328" stroke-width="3"/>
+<text x="479" y="1950" font-size="80" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">imbaho z'igiti 5</text>
+<text x="684" y="1400" font-size="150" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle">= + 17</text>
+<text x="150" y="2080" font-size="120" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">IGISENGE: icyuma cy'igisenge → icyumba</text>
+<rect x="150" y="2250" width="44" height="300" fill="#9aa1a9" stroke="#1f2328" stroke-width="6"/>
+<line x1="172" y1="2550" x2="172" y2="2590" stroke="#1f2328" stroke-width="3"/>
+<text x="142" y="2650" font-size="80" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">icyuma</text>
+<rect x="194" y="2250" width="1056" height="300" fill="#f2d36b" stroke="#1f2328" stroke-width="6"/>
+<line x1="722" y1="2550" x2="722" y2="2740" stroke="#1f2328" stroke-width="3"/>
+<text x="692" y="2800" font-size="80" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">igiti 38 + spray foam</text>
+<rect x="1250" y="2250" width="264" height="300" fill="#ead8b4" stroke="#1f2328" stroke-width="6"/>
+<line x1="1382" y1="2550" x2="1382" y2="2890" stroke="#1f2328" stroke-width="3"/>
+<text x="1352" y="2950" font-size="80" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">pulayiwudi 12</text>
+<text x="1634" y="2400" font-size="150" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle">= 60</text>
+<text x="150" y="3200" font-size="140" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle">uburebure bw'icyumba: 2393 − 17 − 60 = 2316</text>
+</svg>
