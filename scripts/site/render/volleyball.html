@@ -1,0 +1,460 @@
+<!doctype html>
+<!--
+  /en/volleyball's 3D, in the pattern of the livestock's (scripts/site/render/livestock.html): the court on the lawn
+  seen from the open side, built from src/components/volleyball/volleyball.json (the numbers the 2D draws). The
+  FIVB court on the lawn's own grass: the playing area mown short, white tape lines, the net on its padded posts
+  with an antenna over each side line, a white ball by the net, and beyond the far free zone two timber benches
+  under thatched umbrellas and the ball store. Rendered two ways:
+
+    ?mode=line  line drawing on a transparent ground   -> public/designs/volleyball/render/volleyball-line.png
+    ?mode=real  materials, low sun and shadow          -> public/designs/volleyball/render/volleyball-real.webp
+    &hero=1     real mode, from eye level on the lawn in late-afternoon sun, the master plan's boundary trees
+                behind (src/components/site/site.json), 2400 x 1340 -> the stand-in volleyball-hero.jpg
+
+  Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
+  save the data URL in #out.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+html,body{margin:0;background:#fff}
+#out{display:block;width:2400px;height:auto}
+</style>
+<script type="importmap">
+{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<img id="out" alt="">
+<script type="module">
+import * as THREE from "three"
+import { OutlineEffect } from "three/addons/effects/OutlineEffect.js"
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js"
+import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js"
+import { LineMaterial } from "three/addons/lines/LineMaterial.js"
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js"
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
+import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+
+const Q = new URLSearchParams(location.search)
+const LINE = Q.get("mode") !== "real"
+const HERO = !LINE && Q.get("hero") === "1"
+const [FW, FH] = HERO ? [2400, 1340] : [2400, 1100]
+const C = await (await fetch(`/src/components/volleyball/volleyball.json?${Date.now()}`)).json()
+const INK = "#2b2a26", PAGE = "#ffffff"
+// plan (x along the court, y toward the viewer) -> three: x = x, y = height, z = y; the camera stands on the open lawn, at +z
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true })
+renderer.setClearColor(0xffffff, 0)
+renderer.setPixelRatio(1)
+renderer.setSize(FW, FH)
+renderer.outputColorSpace = THREE.SRGBColorSpace
+if (!LINE) {
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+}
+const scene = new THREE.Scene()
+
+// ------------------------------------------------------------ procedural textures (real mode)
+let seed = 7
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+function tex(draw, w = 512, h = 512) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h
+  seed = 7
+  draw(c.getContext("2d"), w, h)
+  const t = new THREE.CanvasTexture(c)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.wrapS = t.wrapT = THREE.RepeatWrapping
+  t.anisotropy = 8
+  return t
+}
+const T = LINE ? {} : {
+  // the lawn round the court, left longer
+  grass: tex((g, w, h) => {
+    g.fillStyle = "#6f9a4a"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 26000; i++) {
+      g.fillStyle = rnd() > 0.5 ? "rgba(170,200,110,0.35)" : "rgba(40,70,30,0.35)"
+      g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
+    }
+  }),
+  // the playing area mown short, in passes: one light and one dark stripe across the tile
+  mown: tex((g, w, h) => {
+    g.fillStyle = "#78a54d"; g.fillRect(0, 0, w, h / 2)
+    g.fillStyle = "#6d9a46"; g.fillRect(0, h / 2, w, h / 2)
+    for (let i = 0; i < 30000; i++) {
+      g.fillStyle = rnd() > 0.5 ? "rgba(185,210,125,0.22)" : "rgba(45,75,32,0.22)"
+      g.fillRect(rnd() * w, rnd() * h, 1 + rnd(), 1 + rnd())
+    }
+  }),
+  // timber boards for the benches and the chest, 150 mm a board across the tile
+  boards: tex((g, w, h) => {
+    g.fillStyle = "#9c7a55"; g.fillRect(0, 0, w, h)
+    const n = 10
+    for (let i = 0; i < n; i++) {
+      g.fillStyle = `rgba(${rnd() > 0.5 ? "200,170,125" : "80,60,40"},${0.06 + rnd() * 0.12})`
+      g.fillRect(0, (i * h) / n, w, h / n)
+      g.fillStyle = "rgba(45,30,18,0.6)"; g.fillRect(0, ((i + 1) * h) / n - 2, w, 2)
+    }
+    for (let j = 0; j < 260; j++) { g.fillStyle = `rgba(95,70,45,${0.05 + rnd() * 0.08})`; g.fillRect(rnd() * w, rnd() * h, 30 + rnd() * 160, 1 + rnd()) }
+  }),
+  concrete: tex((g, w, h) => {
+    g.fillStyle = "#a7a39b"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 9000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.08)" : "rgba(60,55,45,0.1)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2) }
+  }),
+  // dry thatch: straws running down the cone
+  thatch: tex((g, w, h) => {
+    g.fillStyle = "#a2814a"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 3200; i++) {
+      const x = rnd() * w, y = rnd() * h, len = 20 + rnd() * 70
+      g.strokeStyle = rnd() > 0.45 ? `rgba(222,192,124,${0.3 + rnd() * 0.4})` : `rgba(88,66,34,${0.25 + rnd() * 0.3})`
+      g.lineWidth = 1 + rnd() * 1.5; g.beginPath(); g.moveTo(x, y); g.lineTo(x + (rnd() - 0.5) * 6, y + len); g.stroke()
+    }
+  }),
+  // the net: 10 cm squares of black cord; a faint veil between them so it still reads from across the lawn
+  net: tex((g, w, h) => {
+    g.fillStyle = "rgba(20,20,20,0.08)"; g.fillRect(0, 0, w, h)
+    g.fillStyle = "#141414"; g.fillRect(0, 0, w, 6); g.fillRect(0, 0, 6, h)
+  }, 64, 64),
+  // late afternoon: blue overhead, warm at the horizon
+  sky: tex((g, w, h) => {
+    const gr = g.createLinearGradient(0, 0, 0, h)
+    gr.addColorStop(0, "#4f83c0"); gr.addColorStop(0.36, "#86aed6"); gr.addColorStop(0.42, "#bccfdc"); gr.addColorStop(0.47, "#ead8bd"); gr.addColorStop(0.5, "#f4c48a"); gr.addColorStop(1, "#f4c48a")
+    g.fillStyle = gr; g.fillRect(0, 0, w, h)
+  }, 16, 512),
+}
+// metres one tile covers [along, across]
+const TILE = { boards: [1.5, 1.5], concrete: [2, 2], mown: [4, 2] }
+const MAP = { timber: "boards", concrete: "concrete", mown: "mown" }
+
+// ------------------------------------------------------------ materials
+// thin parts get crease lines but no silhouette, so the tape, the cords and the antennae stay fine in the line drawing
+const THIN = new Set(["tape", "cable", "red", "white", "black"])
+const MAT = {}
+function mat(name) {
+  if (MAT[name]) return MAT[name]
+  let x
+  if (LINE) {
+    if (name === "net") x = new THREE.MeshBasicMaterial({ color: PAGE, transparent: true, opacity: 0, depthWrite: false })
+    else x = new THREE.MeshBasicMaterial({ color: PAGE, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
+    if (THIN.has(name)) x.userData.outlineParameters = { visible: false }
+  } else {
+    const std = (o) => new THREE.MeshStandardMaterial(o)
+    x = {
+      lawn: () => std({ map: T.grass, roughness: 1 }),
+      mown: () => std({ map: T.mown, roughness: 1 }),
+      tape: () => std({ color: "#f1efe7", roughness: 0.85 }),
+      canvas: () => std({ color: "#f3f1ea", roughness: 0.85 }), // the net's bands
+      net: () => std({ map: T.net, transparent: true, depthWrite: false, side: THREE.DoubleSide, roughness: 0.9 }),
+      cable: () => std({ color: "#1d1d1d", roughness: 0.6 }),
+      steel: () => std({ color: "#9aa0a4", roughness: 0.35, metalness: 0.7 }),
+      pad: () => std({ color: "#2f4a3b", roughness: 0.7 }), // the posts' padding
+      red: () => std({ color: "#c4302b", roughness: 0.5 }),
+      white: () => std({ color: "#f2f0ea", roughness: 0.5 }),
+      black: () => std({ color: "#2d2e30", roughness: 0.5, metalness: 0.5 }),
+      concrete: () => std({ map: T.concrete, roughness: 0.95 }),
+      timber: () => std({ map: T.boards, roughness: 0.85 }),
+      post: () => std({ color: "#6e553b", roughness: 0.85 }), // the benches' legs
+      pole: () => std({ color: "#7a5a3a", roughness: 0.8 }),
+      thatch: () => std({ map: T.thatch, roughness: 1, side: THREE.DoubleSide }),
+      ball: () => std({ color: "#f4f2ec", roughness: 0.55 }),
+      bark: () => std({ color: "#5b4b3b", roughness: 0.95 }),
+      leaf0: () => std({ color: "#4a7239", roughness: 0.95 }),
+      leaf1: () => std({ color: "#5a8443", roughness: 0.95 }),
+      leaf2: () => std({ color: "#3b6030", roughness: 0.95 }),
+      sky: () => new THREE.MeshBasicMaterial({ map: T.sky, side: THREE.BackSide, fog: false, toneMapped: false }),
+    }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
+  }
+  return (MAT[name] = x)
+}
+
+// ------------------------------------------------------------ geometry helpers (metres)
+const meshes = []
+const EXTRA = [] // line mode: segments drawn fine, not from mesh edges (the net's cords, the ball's seams)
+function worldUV(geo, [tu, tv]) { // each face takes the texture from its own plane, at true scale
+  const pos = geo.attributes.position, nrm = geo.attributes.normal, uv = geo.attributes.uv
+  if (!uv) return
+  for (let i = 0; i < pos.count; i++) {
+    const n = [Math.abs(nrm.getX(i)), Math.abs(nrm.getY(i)), Math.abs(nrm.getZ(i))]
+    const axis = n.indexOf(Math.max(...n))
+    const p = [pos.getX(i), pos.getY(i), pos.getZ(i)]
+    const [a, b] = axis === 0 ? [2, 1] : axis === 2 ? [0, 1] : [0, 2]
+    uv.setXY(i, p[a] / tu, p[b] / tv)
+  }
+  uv.needsUpdate = true
+}
+function add(geo, name, opts = {}) {
+  if (!LINE && MAP[name] && !opts.keepUV) worldUV(geo, TILE[MAP[name]])
+  const mesh = new THREE.Mesh(geo, mat(name))
+  mesh.castShadow = !LINE && !["net", "lawn", "mown", "tape", "sky"].includes(name)
+  mesh.receiveShadow = !LINE && name !== "sky"
+  if (opts.pos) mesh.position.set(...opts.pos)
+  if (opts.rot) mesh.rotation.set(...opts.rot)
+  if (opts.noEdges) mesh.userData.noEdges = true
+  scene.add(mesh)
+  meshes.push(mesh)
+  return mesh
+}
+function blk(xa, za, xb, zb, y0, y1, name, opts) {
+  const [x0, x1, z0, z1] = [Math.min(xa, xb), Math.max(xa, xb), Math.min(za, zb), Math.max(za, zb)]
+  return add(new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0), name, { pos: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2], ...opts })
+}
+function cyl(x, z, r, y0, h, name, seg = 20, rTop = r) {
+  return add(new THREE.CylinderGeometry(rTop, r, h, seg), name, { pos: [x, y0 + h / 2, z] })
+}
+function pipe(a, b, r, name, seg = 6) {
+  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b)
+  const mesh = add(new THREE.CylinderGeometry(r, r, A.distanceTo(B), seg), name, { pos: A.clone().add(B).multiplyScalar(0.5).toArray() })
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.sub(A).normalize())
+  return mesh
+}
+
+// ------------------------------------------------------------ the lawn and the playing area, mown short
+const { court: K, net: N, posts: P, benches: B, shade: S, store: ST, ball: BL } = C
+const L = K.l / 2, W = K.w / 2, t = K.line
+const FX = L + K.free, FZ = W + K.free // the free zone's edge
+const PZ = W + P.out // the posts, 1 m outside the side lines
+const G = 0.01 // the mown playing area stands this proud of the lawn round it
+if (!LINE) {
+  T.grass.repeat.set(HERO ? 50 : 10, HERO ? 50 : 10)
+  add(new THREE.CircleGeometry(HERO ? 140 : 40, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], keepUV: true })
+}
+blk(-FX, -FZ, FX, FZ, 0, G, "mown")
+
+// ------------------------------------------------------------ the lines: 50 mm white tape, inside the 18 x 9 m
+{
+  const tape = (x0, z0, x1, z1) => blk(x0, z0, x1, z1, G, G + 0.003, "tape")
+  tape(-L, -W, L, -W + t); tape(-L, W - t, L, W) // the side lines
+  tape(-L, -W + t, -L + t, W - t); tape(L - t, -W + t, L, W - t) // the end lines, between them
+  tape(-t / 2, -W + t, t / 2, W - t) // the centre line, under the net
+  for (const s of [-1, 1]) tape(s * (K.attack - t), -W + t, s * K.attack, W - t) // each attack line, its rear edge 3 m out
+  // the service zone's short lines, 20 cm behind each end line in line with the side lines
+  for (const s of [-1, 1]) for (const z of [-W, W - t]) tape(s * (L + K.service.gap), z, s * (L + K.service.gap + K.service.l), z + t)
+}
+
+// ------------------------------------------------------------ the posts: 1 m outside the side lines, in sleeves, padded
+for (const s of [-1, 1]) {
+  const z = s * PZ, f = P.footing.w / 2, r = P.d / 2
+  blk(-f, z - f, f, z + f, 0, G + 0.004, "concrete") // the footing's top, flush with the grass
+  cyl(0, z, r, 0, P.h, "steel", 20)
+  cyl(0, z, r + 0.006, P.h - 0.02, 0.02, "steel", 20) // the cap
+  cyl(0, z, r + P.pad.t, G, P.pad.h, "pad", 24)
+  if (s > 0) {
+    // the winch on the near post's outer face, its crank turned down
+    blk(-0.05, z + r + P.pad.t, 0.05, z + r + P.pad.t + 0.07, P.winch - 0.08, P.winch + 0.08, "black")
+    pipe([0.05, P.winch, z + r + P.pad.t + 0.035], [0.12, P.winch, z + r + P.pad.t + 0.035], 0.008, "black")
+    pipe([0.12, P.winch, z + r + P.pad.t + 0.035], [0.12, P.winch - 0.12, z + r + P.pad.t + 0.035], 0.008, "black")
+  }
+}
+
+// ------------------------------------------------------------ the net over the centre line, at the men's height
+{
+  const NH = N.men, NL = N.l / 2, nb = NH - N.d, mh = N.d - N.top - N.foot
+  // the mesh between the bands, see-through
+  const m = add(new THREE.PlaneGeometry(N.l, mh), "net", { pos: [0, nb + N.foot + mh / 2, 0], rot: [0, Math.PI / 2, 0], noEdges: true, keepUV: true })
+  if (!LINE) { T.net.repeat.set(N.l / N.mesh, mh / N.mesh); m.renderOrder = 1 }
+  else {
+    // the cords: every 20 cm in the drawing so it stays legible (the net's are 10 cm)
+    for (let z = -NL; z <= NL + 1e-6; z += 0.2) EXTRA.push(0, nb + N.foot, z, 0, NH - N.top, z)
+    for (let y = nb + N.foot + 0.2; y < NH - N.top - 0.05; y += 0.2) EXTRA.push(0, y, -NL, 0, y, NL)
+  }
+  // the bands: white canvas along the top and the foot, a side band over each side line
+  blk(-0.008, -NL, 0.008, NL, NH - N.top, NH, "canvas")
+  blk(-0.006, -NL, 0.006, NL, nb, nb + N.foot, "canvas")
+  for (const s of [-1, 1]) blk(-0.009, s * (W - N.band.w), 0.009, s * W, nb, nb + N.band.h, "canvas")
+  // the cable in the top band and the rope through the foot, on to the posts
+  for (const s of [-1, 1]) for (const y of [NH - N.top / 2, nb + N.foot / 2])
+    pipe([0, y, s * (NL - 0.02)], [0, y, s * (PZ - P.d / 2)], 0.005, "cable")
+  // an antenna at each side band's outer edge, the two on opposite faces of the net, the top 80 cm striped
+  for (const s of [-1, 1]) {
+    const a = N.antenna, x = s * 0.016, z = s * (W + a.d / 2), y0 = NH + a.above - a.l
+    cyl(x, z, a.d / 2, y0, NH - y0, "white", 8)
+    for (let k = 0; k < Math.round(a.above / a.stripe); k++) cyl(x, z, a.d / 2, NH + k * a.stripe, a.stripe, k % 2 ? "red" : "white", 8)
+  }
+}
+
+// ------------------------------------------------------------ the ball, white, on the grass by the net
+{
+  const r = BL.r, c = [BL.x, G + r, BL.y]
+  add(new THREE.SphereGeometry(r, 32, 20), "ball", { pos: c, noEdges: true })
+  // its panels: the six faces of a cube blown up to the sphere, three strips on each, each face's strips across its
+  // neighbours'
+  const sph = ([x, y, z]) => {
+    const [x2, y2, z2] = [x * x, y * y, z * z]
+    return [x * Math.sqrt(1 - y2 / 2 - z2 / 2 + (y2 * z2) / 3), y * Math.sqrt(1 - z2 / 2 - x2 / 2 + (z2 * x2) / 3), z * Math.sqrt(1 - x2 / 2 - y2 / 2 + (x2 * y2) / 3)]
+  }
+  const seams = [], n = 16, rr = r * 1.006
+  const seg = (f) => {
+    for (let i = 0; i < n; i++) {
+      const a = sph(f(i / n)), b = sph(f((i + 1) / n))
+      seams.push(c[0] + a[0] * rr, c[1] + a[1] * rr, c[2] + a[2] * rr, c[0] + b[0] * rr, c[1] + b[1] * rr, c[2] + b[2] * rr)
+    }
+  }
+  for (let ax = 0; ax < 3; ax++) for (const s of [-1, 1]) {
+    const p = (u, v) => { const q = [0, 0, 0]; q[ax] = s; q[(ax + 1) % 3] = u; q[(ax + 2) % 3] = v; return q }
+    for (const e of [-1, 1]) { seg((k) => p(e, -1 + 2 * k)); seg((k) => p(-1 + 2 * k, e)) }
+    for (const e of [-1 / 3, 1 / 3]) seg((k) => p(e, -1 + 2 * k))
+  }
+  if (LINE) EXTRA.push(...seams)
+  else {
+    const g = new THREE.BufferGeometry()
+    g.setAttribute("position", new THREE.Float32BufferAttribute(seams, 3))
+    scene.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: "#a39e93" })))
+  }
+}
+
+// ------------------------------------------------------------ beyond the far free zone: the benches, the ball store, the umbrellas
+const BZ = -(FZ + B.gap) // their front edge, toward the court
+for (const x of B.x) {
+  // three slats on two trestles
+  const z0 = BZ - B.d, sw = (B.d - 0.03) / 3
+  for (let k = 0; k < 3; k++) blk(x - B.l / 2, z0 + 0.015 + k * sw, x + B.l / 2, z0 + 0.015 + (k + 1) * sw - 0.015, B.h - 0.035, B.h, "timber")
+  for (const dx of [-B.l / 2 + 0.25, B.l / 2 - 0.25]) {
+    for (const z of [z0 + 0.06, BZ - 0.06]) blk(x + dx - 0.035, z - 0.035, x + dx + 0.035, z + 0.035, 0, B.h - 0.035, "post")
+    blk(x + dx - 0.03, z0 + 0.02, x + dx + 0.03, BZ - 0.02, B.h - 0.11, B.h - 0.035, "post")
+  }
+  // the thatched umbrella: its pole behind the bench, a cone of thatch with a fringe at the eave
+  const pz = z0 - S.behind
+  cyl(x, pz, S.pole / 2, 0, S.top - 0.02, "pole", 12)
+  add(new THREE.ConeGeometry(S.r, S.top - S.eave, 48, 1, true), "thatch", { pos: [x, (S.eave + S.top) / 2, pz], keepUV: true })
+  cyl(x, pz, S.r + 0.03, S.eave - 0.14, 0.14, "thatch", 48, S.r - 0.02)
+  cyl(x, pz, 0.025, S.top - 0.04, 0.16, "pole", 8, 0.008) // the finial
+  // in the drawing, the thatch's bundles from the top down to the eave
+  if (LINE) for (let k = 0; k < 16; k++) {
+    const a = (k / 16) * Math.PI * 2
+    EXTRA.push(x, S.top, pz, x + Math.cos(a) * S.r, S.eave, pz + Math.sin(a) * S.r)
+  }
+}
+if (!LINE) T.thatch.repeat.set(10, 1)
+{
+  // the ball store: a lidded chest on four feet, a hasp on its front
+  const x0 = ST.x - ST.l / 2, x1 = ST.x + ST.l / 2, z0 = BZ - ST.d
+  for (const x of [x0 + 0.08, x1 - 0.08]) for (const z of [z0 + 0.06, BZ - 0.06]) blk(x - 0.04, z - 0.04, x + 0.04, z + 0.04, 0, 0.05, "post")
+  blk(x0, z0, x1, BZ, 0.05, ST.h - 0.04, "timber")
+  blk(x0 - 0.02, z0 - 0.02, x1 + 0.02, BZ + 0.02, ST.h - 0.04, ST.h, "timber")
+  blk(ST.x - 0.05, BZ + 0.02, ST.x + 0.05, BZ + 0.035, ST.h - 0.16, ST.h - 0.02, "black")
+}
+
+// ------------------------------------------------------------ the hero's trees: the master plan's boundary row, as
+// scripts/site/master-plan.mjs lays it (a tree every 8 m, 2 m in from the boundary, off the paths); heights are the render's
+if (HERO) {
+  const site = await (await fetch(`/src/components/site/site.json?${Date.now()}`)).json()
+  const [fx0, fy0, fx1, fy1] = site.features.find((f) => f.id === "volleyball").rect
+  const [cx, cy] = [(fx0 + fx1) / 2, (fy0 + fy1) / 2]
+  const Bd = site.boundary, { spacing: sp, inset } = site.trees.boundary
+  const distSeg = ([px, py], [ax, ay], [bx, by]) => {
+    const dx = bx - ax, dy = by - ay, u = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy || 1)))
+    return Math.hypot(px - (ax + u * dx), py - (ay + u * dy))
+  }
+  const onPath = (p, extra) => site.paths.some((pa) => pa.points.slice(1).some((b, i) => distSeg(p, pa.points[i], b) < pa.width / 2 + extra))
+  seed = 2026
+  const LEAF = new THREE.IcosahedronGeometry(1, 1)
+  for (let i = 0; i < Bd.length; i++) {
+    const a = Bd[i], b = Bd[(i + 1) % Bd.length], len = Math.hypot(b[0] - a[0], b[1] - a[1])
+    const nx = -(b[1] - a[1]) / len, ny = (b[0] - a[0]) / len
+    for (let d = sp / 2; d < len; d += sp) {
+      const p = [a[0] + ((b[0] - a[0]) * d) / len + nx * inset, a[1] + ((b[1] - a[1]) * d) / len + ny * inset]
+      const [x, z] = [p[0] - cx, p[1] - cy]
+      if (onPath(p, 3) || Math.hypot(x, z) > 90) continue
+      // a trunk forking into three or four boughs, each with a clump of leaves; the crown about 5 m across (the plan's canopy)
+      const trunk = 2.0 + rnd() * 1.5, r = 2.5 * (0.85 + rnd() * 0.3), top = trunk + r * (1.6 + rnd() * 0.6)
+      cyl(x, z, 0.17, 0, trunk + 0.6, "bark", 8, 0.11)
+      const boughs = 3 + Math.floor(rnd() * 2)
+      for (let j = 0; j < boughs; j++) {
+        const a = (j / boughs) * Math.PI * 2 + rnd() * 0.8, o = r * (0.25 + rnd() * 0.3), by = trunk + (top - trunk) * (0.35 + rnd() * 0.35)
+        const [bx, bz, br] = [x + Math.cos(a) * o, z + Math.sin(a) * o, r * (0.42 + rnd() * 0.18)]
+        pipe([x, trunk + 0.4, z], [bx, by, bz], 0.07, "bark", 6)
+        for (let k = 0; k < 18; k++) {
+          // a point in the clump, mostly toward its skin so the edge stays ragged
+          const u = rnd() * Math.PI * 2, v = Math.acos(2 * rnd() - 1), q = 0.45 + 0.55 * Math.cbrt(rnd())
+          const m = add(LEAF, `leaf${(j + k) % 3}`, { pos: [bx + Math.sin(v) * Math.cos(u) * br * q, by + Math.cos(v) * br * q * 0.8, bz + Math.sin(v) * Math.sin(u) * br * q] })
+          m.scale.setScalar(0.32 + rnd() * 0.3)
+        }
+      }
+    }
+  }
+}
+
+// ------------------------------------------------------------ camera
+const camera = new THREE.PerspectiveCamera(HERO ? 38 : 22, FW / FH, 0.3, 400)
+if (HERO) {
+  // eye level on the open lawn beyond the near left corner, the net right of centre and open grass bottom-left for the words
+  camera.position.set(-9.0, 1.65, 12.5)
+  camera.lookAt(new THREE.Vector3(-1.5, 1.25, -2.5))
+  add(new THREE.SphereGeometry(320, 32, 16), "sky", { noEdges: true, keepUV: true })
+  scene.fog = new THREE.Fog(0xecd2ae, 25, 200)
+} else {
+  // from the open lawn, raised and a little to the left so the net shows its face
+  const target = new THREE.Vector3(0, 0.8, -1.5)
+  const [el, dist, az] = [THREE.MathUtils.degToRad(34), 110, 0.3]
+  camera.position.set(-dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
+  camera.lookAt(target)
+}
+camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+scene.updateMatrixWorld(true)
+if (!HERO) { // fit the frame to the model: each part's box, since one box round a long flat court leaves its corners empty
+  const bb = new THREE.Box3()
+  let px = [Infinity, Infinity, -Infinity, -Infinity]
+  for (const o of meshes) {
+    if (o.geometry.type.startsWith("Circle")) continue
+    bb.setFromObject(o)
+    for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
+      const p = new THREE.Vector3(xx, yy, zz).project(camera)
+      const X = ((p.x + 1) / 2) * FW, Yp = ((1 - p.y) / 2) * FH
+      px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
+    }
+  }
+  let w = (px[2] - px[0]) * 1.05, h = (px[3] - px[1]) * 1.1
+  if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
+  camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+}
+
+// ------------------------------------------------------------ render
+if (LINE) {
+  const lineMat = new LineMaterial({ color: INK, linewidth: 1.3, side: THREE.DoubleSide })
+  lineMat.resolution.set(FW, FH)
+  lineMat.userData.outlineParameters = { visible: false }
+  for (const o of meshes) {
+    if (o.userData.noEdges) continue
+    const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
+    const l = new LineSegments2(g, lineMat)
+    l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
+    scene.add(l)
+  }
+  const fine = new LineMaterial({ color: INK, linewidth: 0.8 })
+  fine.resolution.set(FW, FH)
+  fine.userData.outlineParameters = { visible: false }
+  scene.add(new LineSegments2(new LineSegmentsGeometry().setPositions(EXTRA), fine))
+  const ink = new THREE.Color(INK)
+  new OutlineEffect(renderer, { defaultThickness: 0.003, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
+} else {
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  scene.environmentIntensity = HERO ? 0.2 : 0.4
+  scene.add(new THREE.HemisphereLight(HERO ? 0xcfdcf0 : 0xeef3ff, HERO ? 0x6a5a3a : 0x8a7a5a, HERO ? 0.3 : 0.9))
+  // low sun from the left; in the hero, late afternoon from a little beyond the court, long shadows toward the viewer
+  const sun = new THREE.DirectionalLight(HERO ? 0xffbb7a : 0xfff0d8, HERO ? 5.0 : 2.6)
+  sun.position.set(HERO ? -30 : -14, HERO ? 7.5 : 10, HERO ? -7 : 10)
+  sun.castShadow = true
+  sun.shadow.mapSize.set(4096, 4096)
+  Object.assign(sun.shadow.camera, { left: -17, right: 17, top: 17, bottom: -17, near: 1, far: 90 })
+  sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
+  scene.add(sun)
+  const composer = new EffectComposer(renderer)
+  composer.setSize(FW, FH)
+  composer.addPass(new RenderPass(scene, camera))
+  const ao = new GTAOPass(scene, camera, FW, FH)
+  ao.blendIntensity = 0.8
+  ao.updateGtaoMaterial({ radius: 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
+  composer.addPass(ao)
+  composer.addPass(new OutputPass())
+  composer.render()
+}
+document.getElementById("out").src = renderer.domElement.toDataURL("image/png")
+document.body.dataset.ready = "1"
+</script>
+</body>
+</html>

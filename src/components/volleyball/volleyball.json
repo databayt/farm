@@ -1,0 +1,77 @@
+{
+  "about": "The volleyball court, as /en/camp is one camp: the master plan's court on the lawn (src/components/site/site.json, features id \"volleyball\": 24 x 15 m, the court 18 x 9 m inside its 3 m free zone), where guests already play round a net on the grass (guide/farm.md). The 2D (volleyball-plan.tsx) and the 3D (scripts/site/render/volleyball.html) both read this file. Plan in metres: x along the court to the right and y toward the viewer and the open lawn, both as on the master plan, the court's centre at 0,0; heights from the grass. The court, the net, the posts and the ball follow the FIVB Official Volleyball Rules (the rule numbers are in each note); everything marked [A] is a design choice until it is tried on the ground.",
+  "source": "FIVB Official Volleyball Rules 2025-2028, approved by the 39th FIVB World Congress 2024 (fivb.com)",
+  "court": {
+    "about": "FIVB rules 1.1 to 1.4: the court is 18 x 9 m inside a free zone at least 3 m wide on all sides (here 3 m, so 24 x 15 m in all), and the free playing space over the whole playing area is clear of anything to at least 7 m: no branch may reach over it below that, and the master plan keeps every tree 4 m off it (site.json trees.clear). All lines are 5 cm wide and of a light colour; the side and end lines are drawn inside the 18 x 9 m. The centre line runs under the net from side line to side line and splits the court into two of 9 x 9 m; on each side the attack line's rear edge is 3 m from the centre line's axis. The service zone is the 9 m behind each end line, out to the end of the free zone, marked by two 15 cm lines drawn 20 cm behind the end line in line with the side lines.",
+    "l": 18,
+    "w": 9,
+    "free": 3,
+    "line": 0.05,
+    "attack": 3,
+    "service": { "gap": 0.2, "l": 0.15 },
+    "clear": 7
+  },
+  "surface": {
+    "about": "[A] a design choice: the lawn's own grass, not sand. Guests already play on the grass; sand would make it beach volleyball, a different game on a 16 x 8 m court under FIVB's beach rules, and mean digging, draining and filling a bed of sand. The rules ask for a surface that is flat, horizontal and uniform, never rough or slippery (rule 1.2.1), and let an outdoor court fall 5 mm a metre for drainage (rule 1.2.3): so the 24 x 15 m is levelled to one plane falling no more than that, the way the lawn falls (to read on site), and mown short, the grass round it left longer. Wet grass is slippery, so there is no play in the rain; the grass at the net and behind the end lines wears first and is reseeded in the rains. Lines of solid materials are not allowed outdoors (rule 1.2.3): the lines are 50 mm white webbing tape pegged flat into the grass, lifted to mow.",
+    "fall": 0.005,
+    "tape": 0.05
+  },
+  "net": {
+    "about": "FIVB rules 2.1 to 2.4: over the centre line, the top of the net is 2.43 m above the court's centre for men and 2.24 m for women, the same over both side lines. The net is 1 m deep and 9.50 to 10 m long, of 10 cm square black mesh, with a 7 cm band of white canvas along its top (a cable inside it to the posts) and a 5 cm band along its foot (a rope through it). Over each side line stands a white side band 5 cm wide and 1 m long, and at its outer edge an antenna: a flexible rod 1.80 m long and 10 mm thick whose top 80 cm stands above the net in 10 cm stripes, red and white; the two antennae are on opposite faces of the net. Here [A]: a 9.5 m net, drawn at the men's height; the posts take either.",
+    "men": 2.43,
+    "women": 2.24,
+    "d": 1.0,
+    "l": 9.5,
+    "mesh": 0.1,
+    "top": 0.07,
+    "foot": 0.05,
+    "band": { "w": 0.05, "h": 1.0 },
+    "antenna": { "l": 1.8, "d": 0.01, "above": 0.8, "stripe": 0.1 }
+  },
+  "posts": {
+    "about": "FIVB rule 2.5: the posts are rounded and smooth, 2.55 m high and preferably adjustable, 0.50 to 1.00 m outside the side lines, and fixed to the ground without wires. Here [A]: 1.0 m out, as at FIVB competitions, so a player at the net has the most room; steel tube 90 mm across, padded to 1.8 m; the top cable runs to a winch on the near post, 1.1 m up.",
+    "out": 1.0,
+    "h": 2.55,
+    "d": 0.09,
+    "pad": { "t": 0.05, "h": 1.8 },
+    "winch": 1.1,
+    "footing": {
+      "about": "[A] until a builder sees the soil: each post drops into a steel sleeve cast in a concrete footing 0.5 x 0.5 m and 0.8 m deep, its top flush with the grass, so the posts stand without guy wires (rule 2.5.2) and lift out to mow or for the rains, a cap closing the sleeve.",
+      "w": 0.5,
+      "depth": 0.8
+    }
+  },
+  "benches": {
+    "about": "[A] two slatted timber benches 2.0 m long on the far side, 1 m back from the free zone, one each side of the centre line, as the rules put the team benches either side of the scorer's table, outside the free zone (rule 4.2.1). On the far side they leave the open lawn to the viewer, with the master plan's boundary trees behind them.",
+    "l": 2.0,
+    "d": 0.4,
+    "h": 0.45,
+    "gap": 1.0,
+    "x": [-3.0, 3.0]
+  },
+  "shade": {
+    "about": "[A] a thatched umbrella over each bench, like those on today's camping lawn (guide/farm.md): a timber pole 0.35 m behind the bench, a thatch cone 2.8 m across, its eave at 2.1 m and its top at 3.3 m.",
+    "r": 1.4,
+    "eave": 2.1,
+    "top": 3.3,
+    "behind": 0.35,
+    "pole": 0.1
+  },
+  "store": {
+    "about": "[A] the ball store: a lockable timber chest 2.0 x 0.5 m and 0.5 m high at the left end of the bench row, the end toward the compound. Long enough for the antennae, it keeps the balls, a pump and a gauge, the net and the post pads between games, and seats two.",
+    "x": -6.5,
+    "l": 2.0,
+    "d": 0.5,
+    "h": 0.5
+  },
+  "ball": {
+    "about": "FIVB rule 3.1: round, 65 to 67 cm in circumference and 260 to 280 g, in a light colour or a mix of colours. The 3D leaves a white one on the grass by the net.",
+    "r": 0.105,
+    "x": -0.8,
+    "y": 3.2
+  },
+  "lighting": {
+    "about": "[A] no floodlights at first: play stops at sunset, about 18:00 all year this close to the equator, when the fire pit is lit. Lights added later need at least 300 lux on the court (rule 1.6): poles outside the free zone, aimed along the court and away from the rooms and the tents, sized in the power guide.",
+    "lux": 300
+  }
+}
