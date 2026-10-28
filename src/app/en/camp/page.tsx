@@ -11,7 +11,7 @@ import { CampPlan } from "@/components/camp/camp-plan"
 
 export const metadata: Metadata = {
   title: "The camp · Farm",
-  description: "A tent for two on its own timber deck, by the lake and the fire pit, at the Digital Farm near Kigali.",
+  description: "A tent for two on its own timber deck, by the fire pit and with lake views, at the Digital Farm near Kigali.",
 }
 
 const D = "/designs/camp"
@@ -30,7 +30,7 @@ export default function CampPage() {
           <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
             <p className="text-sm text-white/80">Digital Farm</p>
             <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">
-              A tent by the lake, with fire-pit nights
+              A tent with lake views and fire-pit nights
             </h1>
             <Button asChild className="mt-6">
               <Link href="/#enquire">Book it now</Link>

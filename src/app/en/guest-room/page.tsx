@@ -12,7 +12,7 @@ import { GuestRoomPlan } from "@/components/guest-room/guest-room-plan"
 
 export const metadata: Metadata = {
   title: "The guest room · Farm",
-  description: "A room for two in the saffron container block, a double bed and a timber veranda by the lake, at the Digital Farm near Kigali.",
+  description: "A room for two in the container block, with a double bed, its own shower and WC, and a timber veranda with lake views, at the Digital Farm near Kigali.",
 }
 
 const D = "/designs/guest-room"

@@ -12,7 +12,7 @@ import { StudyRoomPlan } from "@/components/study-room/study-room-plan"
 
 export const metadata: Metadata = {
   title: "The study room · Farm",
-  description: "A quiet room for twelve to study, work or teach, glazed onto a deck by the lake, at the Digital Farm near Kigali.",
+  description: "A quiet room for twelve to study, work or teach, glazed onto a deck with lake views, at the Digital Farm near Kigali.",
 }
 
 const D = "/designs/study-room"
