@@ -1,6 +1,6 @@
 import { getImageProps } from "next/image"
 import { Cormorant_Garamond } from "next/font/google"
-import { ArrowDown, MoveRight, Play } from "lucide-react"
+import { ArrowDown, MoveRight } from "lucide-react"
 
 import { copy } from "./copy"
 import { HERO } from "./hero.generated"
@@ -35,7 +35,7 @@ function HeroPicture() {
 }
 
 export function Hero() {
-  const { headline, walk, watch, scroll } = copy.hero
+  const { headline, walk, scroll } = copy.hero
   return (
     <section
       id="top"
@@ -66,17 +66,11 @@ export function Hero() {
         </h1>
         <div className="farm-intro-3 mt-8 flex flex-wrap items-center gap-x-10 gap-y-5 text-[15px] tracking-[0.02em] uppercase">
           <a
-            href="#way-in"
+            href="#plans"
             className="text-soil inline-flex h-14 items-center gap-5 bg-[rgb(214_207_190/0.92)] px-7 backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]"
           >
             {walk}
             <MoveRight className="size-6" strokeWidth={1.5} aria-hidden />
-          </a>
-          <a href="#film" className="group inline-flex items-center gap-3">
-            <span className="decoration-chalk/70 group-hover:decoration-chalk underline decoration-1 underline-offset-[7px]">
-              {watch}
-            </span>
-            <Play className="size-3.5" strokeWidth={1.5} aria-hidden />
           </a>
         </div>
       </div>

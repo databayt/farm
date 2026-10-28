@@ -17,7 +17,7 @@ export function Header({
   title: string
   nav: NavLink[]
   menu: { open: string; close: string }
-  cta: NavLink
+  cta?: NavLink
 }) {
   const ref = React.useRef<HTMLElement>(null)
 
@@ -52,12 +52,12 @@ export function Header({
             </a>
           ))}
         </nav>
-        <a
+        {cta && <a
           href={cta.href}
           className="hidden h-11 items-center justify-self-end px-6 text-sm tracking-[0.04em] uppercase transition-colors hover:bg-chalk/10 group-data-[solid]/header:hover:bg-soil/5 lg:inline-flex"
         >
           {cta.label}
-        </a>
+        </a>}
         <button
           type="button"
           popoverTarget="farm-menu"
@@ -87,13 +87,13 @@ export function Header({
               {link.label}
             </a>
           ))}
-          <a
+          {cta && <a
             href={cta.href}
             onClick={closeMenu}
             className="mt-6 inline-flex h-12 items-center justify-center text-sm tracking-[0.08em] uppercase"
           >
             {cta.label}
-          </a>
+          </a>}
         </nav>
       </div>
     </header>
