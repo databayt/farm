@@ -47,6 +47,12 @@ The plan for a 5 ha farm near Kigali that becomes a container eco-stay which fee
 | Livestock keeper | animals for the galley | English, Kinyarwanda | to come |
 | Landscaper | the trees | English, Kinyarwanda | to come |
 
+## Running it
+
+- [How the farm runs](operations.md): the guest's stay, the team, a day on the farm, the loops.
+- [The film](film.md): the story shot by shot, and what to film next.
+- [The business model](business/model.md), [marketing](business/marketing.md) and [the digital farm](business/digital.md).
+
 ## How the guides work
 
 - Every measurement comes from the studio's drawing generator, so when a size changes, the drawings, the bill of materials and the guides change together.
