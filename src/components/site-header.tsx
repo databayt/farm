@@ -6,7 +6,7 @@ export function SiteHeader() {
   return (
     <header className="bg-background/90 sticky top-0 z-40 flex print:hidden h-(--header-height) items-center gap-4 border-b px-4 backdrop-blur lg:px-6">
       <Link href="/docs" className="text-sm font-semibold">
-        Farm study
+        Farm docs
       </Link>
       <Link href="/" className="text-muted-foreground hover:text-foreground ml-auto text-sm">
         Digital Farm

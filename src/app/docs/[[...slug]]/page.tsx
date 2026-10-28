@@ -24,7 +24,7 @@ export async function generateMetadata(props: PageProps<"/docs/[[...slug]]">): P
   const page = docsSource.getPage(slug)
   if (!page) notFound()
   return {
-    title: `${page.data.title} · Farm study`,
+    title: `${page.data.title} · Farm docs`,
     description: page.data.description,
   }
 }

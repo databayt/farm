@@ -84,7 +84,9 @@ export function DocsSidebar({
   const setOpen = (id: string, open: boolean) => writeStored({ ...readStored(), [id]: open })
   // The group of the page being read is always open.
   const activeId = groups.find((g) => g.items.some((i) => isActive(i.url)))?.id
-  const isOpen = (id: string) => id === activeId || (stored[id] ?? true)
+  // Archive groups (the 2026-10 study) start closed; every other group starts open. The server renders
+  // the same defaults (stored is empty there), so there is no hydration mismatch.
+  const isOpen = (id: string) => id === activeId || (stored[id] ?? !id.startsWith("s:Archive"))
 
   const menu = (items: Item[]) => (
     <SidebarMenu>
@@ -114,7 +116,7 @@ export function DocsSidebar({
             group.label ? (
               <Collapsible
                 key={group.id}
-                // The visitor's last choice wins; groups start open.
+                // The visitor's last choice wins; groups start open, the archive closed.
                 open={isOpen(group.id)}
                 onOpenChange={(open) => setOpen(group.id, open)}
                 className="group/collapsible"
