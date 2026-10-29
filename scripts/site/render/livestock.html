@@ -1,16 +1,15 @@
 <!doctype html>
 <!--
-  /en/livestock's 3D, in the pattern of the studio's (scripts/studio/render/room.html): the livestock yard (D-037 to
-  D-039) seen straight on from the paddock, the roofs off so the hall shows, on the white page. Built from
-  src/components/livestock/livestock.json (the numbers the 2D draws): one outline, the palisade at the back and one
-  post-and-rail fence round the rest; inside it the shelter of upright eucalyptus poles on its fieldstone plinth, the
-  open hall with straw litter, one slatted bamboo sleeping platform, two hay racks and the movable kidding hurdles,
-  the boarded feed store; the village yard the herd, the farm friends and the guests share, with troughs, climbing
-  stones, the guarded shade tree, the dovecote, the cats' house and a bench; the tank, the fodder baskets, the
-  compost bays and the guard dogs' run in the back east corner; shrubs round the outside. 6 goats, 4 sheep, 2 dogs,
-  3 cats and doves. In the feel of the founder's reference photo (D-041): hand-cut poles that lean a little, rails
-  lashed bay by bay, soft overcast light. The crowns of the trees are cut like the roof: from this height they would
-  hide the hall and the store; the trees behind the palisade show only at eye level. Rendered three ways:
+  /en/livestock's 3D, in the pattern of the studio's (scripts/studio/render/room.html): the livestock yard (D-039 to
+  D-044) seen straight on from the paddock, on the white page. Built from src/components/livestock/livestock.json (the
+  numbers the 2D draws): one outline, the palisade at the back and one post-and-rail fence round the rest, its rails
+  thick, crooked and lashed with rope as the founder's photo's; inside it the herd's shed, as the photo's shed: dark
+  weathered boards at the back and the east end, the west side open behind two rails, heavy front posts braced to the
+  eaves beam, the steep gable's rafters standing with the thatch off (as the studio's roof), straw, a straw bale, a
+  slatted feed table, a lockable feed bin and the mineral boxes; the village yard with troughs, climbing stones, the
+  guarded shade tree, the dovecote, the cats' house and a bench; the tank, the fodder baskets, the compost bays and
+  the guard dogs' run in the back east corner; shrubs round the outside. 6 goats, 4 sheep, 2 dogs, 3 cats and doves,
+  in soft overcast light. The page's hero is the founder's photo (D-042), not a render. Rendered three ways:
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/livestock/render/livestock-line.png
     ?mode=real  materials, daylight and soft shadow    -> public/designs/livestock/render/livestock-real.webp
@@ -169,7 +168,7 @@ function mat(name) {
       fodder: () => std({ color: "#5d7d3a", roughness: 0.9 }),
       trunk: () => std({ color: "#6d5a48", roughness: 0.9 }),
       leaf: () => std({ color: "#55663f", roughness: 0.95, flatShading: true }),
-      thatch: () => std({ map: T.thatch, roughness: 1, side: THREE.DoubleSide }),
+      thatch: () => std({ map: T.thatch, color: "#a39684", roughness: 1, side: THREE.DoubleSide }), // grey-brown, weathered, as the photo's
       lawn: () => std({ map: T.grass, roughness: 1 }),
       face: () => std({ color: "#211c19", roughness: 0.85 }),
       horn: () => std({ color: "#7d6e5e", roughness: 0.6 }),
@@ -228,19 +227,18 @@ function pipe(a, b, r, name, seg = 6) {
 const pole = (x, z, r, y0, y1, seg = 7) => cyl(x, z, r, y0, y1 - y0, "pole", seg, r * 0.92)
 
 // ------------------------------------------------------------ the plan
-const { shelter: S, pens: P, platform: PF, fittings: FT, yards: Y, palisade: PA, stones: ST, tree: TR, tank: TK,
+const { shelter: S, pens: P, fittings: FT, yards: Y, palisade: PA, stones: ST, tree: TR, tank: TK,
   baskets: BK, compost: CO, dogs: DG, friends: FR, planting: PL, animals: AN } = C
 const L = S.l / 2, W = S.d / 2, WALL = S.wall
 const FL = S.plinth.h // the plinth's top, the pens' floor
 const LIT = FL + 0.05 // the top of the straw litter
 const EAVE = S.roof.eaves
-const { hall: HALL, kidding: KID, store: STORE } = P
 const RAILS = [0.35, 0.78, 1.18]
 
 // ------------------------------------------------------------ the ground: the village yard's earth and straw inside the outline, the plinth
 blk(Y.x0, Y.y0, Y.x1, Y.y1, -0.02, 0.02, "yard")
 blk(Y.gate.x0, Y.y1, Y.gate.x0 + Y.gate.w, Y.y1 + 0.6, -0.02, 0.015, "packed") // the track out of the gate to the paddock
-// the path behind the store to the tank, the baskets and the compost bays
+// the path past the shed's east end to the tank, the baskets and the compost bays
 blk(L + S.plinth.edge, -W - 0.4, CO.x0 + CO.bay + 0.3, W, -0.02, 0.015, "packed")
 if (HERO) {
   T.grass.repeat.set(10, 10)
@@ -261,37 +259,11 @@ if (HERO) {
   }
   const [a, b, c, d] = [-L - e + 0.13, L + e - 0.13, -W - e + 0.13, W + e - 0.13]
   ring(a, d, b, d); ring(a, c, a, d); ring(b, c, b, d)
-  blk(-L + WALL, -W + WALL, HALL.x1 - 0.03, W, FL, LIT, "litter")
+  blk(-L + 0.02, -W + WALL, L - WALL, W, FL, LIT, "litter")
 }
 
-// ------------------------------------------------------------ the shelter, as the founder's photo's shed: wide dark weathered boards set upright at the
-// back and the ends, heavy barked posts along the open front, braced to the eaves beam
-{
-  const plank = (x0, z0, x1, z1) => blk(x0, z0, x1, z1, FL, EAVE - 0.04 + (rnd() - 0.5) * 0.06, "plank")
-  for (let x = -L; x < L - 0.05; x += 0.21) plank(x, -W, Math.min(x + 0.19, L), -W + WALL)
-  for (let z = -W + WALL; z < W - 0.05; z += 0.21) plank(-L, z, -L + WALL, Math.min(z + 0.19, W))
-  // the east end: boards beside the store's door, which opens onto the path behind
-  const door = 0.7
-  for (let z = -W + WALL; z < W - 0.05; z += 0.21) if (z + 0.19 < -0.02 || z > door + 0.02) plank(L - WALL, z, L, Math.min(z + 0.19, W))
-  // the corner and front posts, heavy and barked; the eaves beam and the wall plates; a knee brace at each front post
-  const posts = [-L + 0.09, (HALL.x0 + HALL.x1) / 2, STORE.x0, L - 0.09]
-  for (const x of posts) pole(x, W - 0.09, 0.1, FL, EAVE + 0.18, 9)
-  for (const x of [-L + 0.09, L - 0.09]) pole(x, -W + 0.09, 0.1, FL, EAVE + 0.12, 9)
-  pipe([-L - 0.2, EAVE + 0.1, W - 0.09], [L + 0.2, EAVE + 0.1, W - 0.09], 0.1, "pole", 9)
-  pipe([-L, EAVE + 0.04, -W + 0.09], [L, EAVE + 0.04, -W + 0.09], 0.08, "pole", 9)
-  for (const x of [-L + 0.09, L - 0.09]) pipe([x, EAVE + 0.04, -W], [x, EAVE + 0.04, W], 0.08, "pole", 9)
-  for (const x of posts) for (const s of [-1, 1]) {
-    if ((x === posts[0] && s < 0) || (x === posts.at(-1) && s > 0)) continue
-    pipe([x, EAVE - 0.55, W - 0.09], [x + s * 0.5, EAVE + 0.06, W - 0.09], 0.045, "pole", 6)
-  }
-  // the store's boarded walls: its west wall, its front onto the yard, its door shut on a hasp
-  for (let z = -W + WALL; z < W - 0.05; z += 0.21) blk(STORE.x0 - 0.04, z, STORE.x0 + 0.04, Math.min(z + 0.19, W), FL, EAVE, "plank")
-  for (let x = STORE.x0; x < L - WALL - 0.05; x += 0.21) blk(x, W - 0.07, Math.min(x + 0.19, L - WALL), W, FL, EAVE, "plank")
-  blk(L - 0.04, 0, L + 0.01, door, FL, FL + 1.9, "plank")
-  blk(L + 0.01, 0.06, L + 0.03, 0.18, FL + 1.0, FL + 1.06, "pole")
-}
-
-// ------------------------------------------------------------ the hall: one open space; its front a rail and two gates, shut at night
+// ------------------------------------------------------------ the herd's shed, as the founder's photo's: wide dark weathered boards set upright at the back and
+// the east end, the west side open behind two rails, heavy barked posts along the open front braced to the eaves beam
 function rails(x0, z0, x1, z1, y0, heights, r = 0.035) {
   for (const h of heights) pipe([x0, y0 + h, z0], [x1, y0 + h, z1], r, "pole", 7)
 }
@@ -301,51 +273,37 @@ function gate(x0, z0, x1, z1, y0, h) { // shut: a frame of thin poles with a dia
   pipe([x0, y0 + 0.12, z0], [x1, y0 + h - 0.04, z1], 0.025, "pole", 6)
 }
 {
-  const ends = [HALL.x0 + WALL, ...P.gates.flatMap((g) => [g, g + P.gate]), HALL.x1 - 0.03]
-  for (let i = 0; i < ends.length; i += 2) {
-    pole(ends[i] + 0.04, W - 0.04, 0.045, FL, FL + 1.25); pole(ends[i + 1] - 0.04, W - 0.04, 0.045, FL, FL + 1.25)
-    rails(ends[i], W - 0.04, ends[i + 1], W - 0.04, FL, RAILS)
+  const plank = (x0, z0, x1, z1) => blk(x0, z0, x1, z1, FL, EAVE - 0.04 + (rnd() - 0.5) * 0.06, "plank")
+  for (let x = -L + 0.18; x < L - 0.05; x += 0.21) plank(x, -W, Math.min(x + 0.19, L), -W + WALL)
+  for (let z = -W + WALL; z < W - 0.15; z += 0.21) plank(L - WALL, z, L, Math.min(z + 0.19, W - 0.15))
+  // the posts: the four corners and the middle of the front, heavy and barked; the eaves beam and the plates
+  const posts = [-L + 0.09, 0, L - 0.09]
+  for (const x of posts) pole(x, W - 0.09, 0.11, FL, EAVE + 0.18, 9)
+  for (const x of [-L + 0.09, L - 0.09]) pole(x, -W + 0.09, 0.1, FL, EAVE + 0.12, 9)
+  pipe([-L - 0.25, EAVE + 0.1, W - 0.09], [L + 0.25, EAVE + 0.1, W - 0.09], 0.1, "pole", 9)
+  pipe([-L - 0.2, EAVE + 0.04, -W + 0.09], [L + 0.2, EAVE + 0.04, -W + 0.09], 0.09, "pole", 9)
+  for (const x of [-L + 0.09, L - 0.09]) pipe([x, EAVE + 0.04, -W], [x, EAVE + 0.04, W], 0.08, "pole", 9)
+  for (const x of posts) for (const s of [-1, 1]) { // a knee brace each side of each front post, as the photo's
+    if ((x === posts[0] && s < 0) || (x === posts.at(-1) && s > 0)) continue
+    pipe([x, EAVE - 0.6, W - 0.09], [x + s * 0.55, EAVE + 0.06, W - 0.09], 0.045, "pole", 6)
   }
-  for (const g of P.gates) gate(g + 0.04, W - 0.04, g + P.gate - 0.04, W - 0.04, FL + 0.04, 1.1)
-  // the movable kidding hurdles, standing across the hall's east end
-  const kz0 = -W + WALL + PF.d + 0.05, kz1 = W - 0.2
-  for (const z of [kz0, (kz0 + kz1) / 2, kz1]) pole(KID.x0, z, 0.035, LIT, LIT + 1.0)
-  rails(KID.x0, kz0, KID.x0, kz1, LIT, [0.25, 0.6, 0.95], 0.028)
-}
-
-// ------------------------------------------------------------ in the hall: the sleeping platform, the hay racks, the mineral boxes
-{
-  const px0 = HALL.x0 + WALL + 0.03, px1 = HALL.x1 - 0.07
-  const z0 = -W + WALL + 0.02, z1 = -W + WALL + PF.d, top = LIT + PF.h
-  for (let x = px0 + 0.04; x <= px1 - 0.03; x += Math.min(1.2, (px1 - px0) / Math.ceil((px1 - px0) / 1.2)))
-    for (const z of [z0 + 0.04, z1 - 0.04]) pole(x, z, 0.035, LIT - 0.02, top - 0.03)
-  for (const z of [z0 + 0.05, z1 - 0.05]) pipe([px0, top - 0.05, z], [px1, top - 0.05, z], 0.035, "pole", 7)
-  for (let x = px0 + 0.03; x < px1 - 0.02; x += LINE ? 0.11 : 0.065) pipe([x, top - 0.01, z0], [x, top - 0.01, z1], 0.025, "bamboo", 6)
-  // the racks, off the floor: a pole frame, slanted bars, a tray, hay; the west one on the wall, the middle one fed from both sides
-  const y0 = LIT + FT.rack.y0, y1 = y0 + FT.rack.h
-  for (const r of FT.racks) {
-    const alongZ = r.y1 - r.y0 > r.x1 - r.x0
-    for (const [x, z] of alongZ ? [[r.x0 + 0.04, r.y0], [r.x0 + 0.04, r.y1]] : [[r.x0, (r.y0 + r.y1) / 2], [r.x1, (r.y0 + r.y1) / 2]]) pole(x, z, 0.035, LIT, y1)
-    blk(r.x0, r.y0, r.x1, r.y1, y0 - 0.05, y0, "board")
-    if (alongZ) for (let z = r.y0 + 0.08; z < r.y1 - 0.04; z += LINE ? 0.15 : 0.1) pipe([r.x1, y1 - 0.02, z], [r.x0 + 0.06, y0, z], 0.012, "pole", 5)
-    else for (let x = r.x0 + 0.08; x < r.x1 - 0.04; x += LINE ? 0.15 : 0.1) for (const s of [-1, 1]) pipe([x, y1 - 0.02, (r.y0 + r.y1) / 2 + s * 0.17], [x, y0, (r.y0 + r.y1) / 2], 0.012, "pole", 5)
-    pipe(alongZ ? [r.x0 + 0.04, y1, r.y0] : [r.x0, y1, (r.y0 + r.y1) / 2], alongZ ? [r.x0 + 0.04, y1, r.y1] : [r.x1, y1, (r.y0 + r.y1) / 2], 0.03, "pole", 7)
-    if (!LINE) soft(r.x0 + 0.04, r.y0 + 0.04, r.x1 - 0.04, r.y1 - 0.04, y0, y1 - 0.1, 0.08, "hay")
-  }
-  // the goats' mineral box high on the west wall, the sheep's low by the middle rack
-  for (const m of FT.minerals) {
-    if (m.for === "sheep") pole((m.x0 + m.x1) / 2, (m.y0 + m.y1) / 2, 0.03, LIT, LIT + m.z)
-    blk(m.x0, m.y0, m.x1, m.y1, LIT + m.z, LIT + m.z + 0.2, "board")
+  // the open west side: two barked rails between the corner posts
+  rails(-L + 0.09, -W + 0.09, -L + 0.09, W - 0.09, FL, P.rails, 0.05)
+  // inside, as the photo's: the straw bale, the slatted feed table with hay, the lockable feed bin, the mineral boxes
+  const b = P.bale
+  soft(b.x0, b.y0, b.x1, b.y1, LIT, LIT + 0.5, 0.07, "hay")
+  const t = P.table
+  for (const x of [t.x0 + 0.06, t.x1 - 0.06]) for (const z of [t.y0 + 0.06, t.y1 - 0.06]) pole(x, z, 0.035, LIT, LIT + t.h)
+  for (let z = t.y0; z < t.y1 - 0.02; z += 0.1) blk(t.x0, z, t.x1, z + 0.08, LIT + t.h - 0.03, LIT + t.h, "plank")
+  if (!LINE) soft(t.x0 + 0.1, t.y0 + 0.05, t.x1 - 0.1, t.y1 - 0.05, LIT + t.h, LIT + t.h + 0.2, 0.06, "hay")
+  const n = P.bin
+  blk(n.x0, n.y0, n.x1, n.y1, LIT, LIT + 0.8, "plank")
+  blk(n.x0 - 0.02, n.y0 - 0.02, n.x1 + 0.02, n.y1 + 0.02, LIT + 0.8, LIT + 0.84, "plank")
+  if (!LINE) blk(n.x0 + 0.05, n.y1 + 0.02, n.x0 + 0.15, n.y1 + 0.04, LIT + 0.62, LIT + 0.72, "dogblack") // its hasp
+  for (const m of P.minerals) {
+    blk(m.x0, m.y0, m.x1, m.y1, LIT + m.z, LIT + m.z + 0.2, "plank")
     if (!LINE) blk(m.x0 + 0.02, m.y0 + 0.02, m.x1 - 0.02, m.y1 - 0.02, LIT + m.z + 0.18, LIT + m.z + 0.21, "mineral")
   }
-}
-
-// ------------------------------------------------------------ the feed store: sacks on a pallet, a shelf
-{
-  const [x0, x1] = [STORE.x0 + 0.12, STORE.x1 - 0.18]
-  blk(x0, -1.2, x1, 0.2, FL, FL + 0.12, "board")
-  for (const [z, k] of [[-0.95, 0], [-0.5, 0], [-0.05, 0], [-0.72, 1], [-0.27, 1]]) soft(x0 + 0.05, z - 0.19, x1 - 0.05, z + 0.19, FL + 0.12 + k * 0.2, FL + 0.32 + k * 0.2, 0.06, "sack")
-  blk(STORE.x0 + 0.1, -W + WALL, L - WALL, -W + WALL + 0.35, FL + 1.3, FL + 1.33, "board")
 }
 
 // ------------------------------------------------------------ the outline and the yard: posts and three lashed rails, the gate, troughs
@@ -440,15 +398,17 @@ for (const s of ST.list) {
   }
 }
 
-// ------------------------------------------------------------ the roof, at eye level only: grass thatch on a pole gable
-if (HERO) {
-  const o = S.roof.over, rise = S.roof.ridge - EAVE, half = W + o
-  const len = Math.hypot(half, rise), a = Math.atan2(rise, half)
-  for (const s of [1, -1]) {
-    const r = add(new THREE.BoxGeometry(S.l + 2 * o, 0.25, len), "thatch", { pos: [0, EAVE + rise / 2 + 0.1, (s * half) / 2] })
-    r.rotation.x = s * a
+// ------------------------------------------------------------ the roof, as the photo's steep gable: the thatch off in this cutaway (as the studio's roof),
+// its pole rafters and ridge left standing so the shape reads and the shed shows inside
+{
+  const o = S.roof.over, rise = S.roof.ridge - EAVE, R = S.roof.ridge + 0.05
+  for (const x of [-L + 0.09, L - 0.09]) pole(x, 0, 0.07, EAVE, S.roof.ridge)
+  pipe([-L - o, R, 0], [L + o, R, 0], 0.08, "pole", 8)
+  const n = Math.round((S.l + 2 * o) / 0.8)
+  for (let k = 0; k <= n; k++) {
+    const x = -L - o + ((S.l + 2 * o) * k) / n
+    for (const s of [1, -1]) pipe([x, R, 0], [x, EAVE - (o * rise) / W + 0.1, s * (W + o)], 0.045, "pole", 6)
   }
-  for (const s of [1, -1]) pole(s * (L - WALL / 2), 0, 0.07, EAVE, S.roof.ridge)
 }
 
 // ------------------------------------------------------------ the herd: 6 goats and 4 sheep

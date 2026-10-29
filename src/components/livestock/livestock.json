@@ -1,105 +1,80 @@
 {
-  "about": "The livestock yard, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (D-030), in one thatched pole shelter opening onto one village yard (D-037, D-038, after the founder's reference photo of 2026-10-29: a thatched shed, a pole palisade, lashed post-and-rail fences, stones, fodder baskets). One outline holds it all (D-039): the palisade at the back, one post-and-rail fence round the rest. The goats, the sheep, the doves, the cats and the guests share the yard by day, and the goats and the sheep sleep together in one open hall. Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high, where sheep cannot reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. Both species carry the same worms [V LVS-46], so the yard is kept dry, the hay stays in racks and the herd is dewormed animal by animal (FAMACHA). The yard is part of the farm's loop: litter and manure go to the compost bays and on to the vegetable beds, the beds' residues and cut fodder come back in baskets. The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x to the right as seen from the paddock (west end left), y toward the viewer (the yards and the paddock), the shelter's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
+  "about": "The livestock yard, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (D-030), in one thatched pole shelter opening onto one village yard (D-037, D-038, after the founder's reference photo of 2026-10-29: a thatched shed, a pole palisade, lashed post-and-rail fences, stones, fodder baskets). One outline holds it all (D-039): the palisade at the back, one post-and-rail fence round the rest. The goats, the sheep, the doves, the cats and the guests share the yard by day, and the goats and the sheep sleep together in one shed, built as the shed in the founder's photo (D-044). Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high, where sheep cannot reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. Both species carry the same worms [V LVS-46], so the yard is kept dry, the hay stays in racks and the herd is dewormed animal by animal (FAMACHA). The yard is part of the farm's loop: litter and manure go to the compost bays and on to the vegetable beds, the beds' residues and cut fodder come back in baskets. The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x to the right as seen from the paddock (west end left), y toward the viewer (the yards and the paddock), the shelter's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
   "shelter": {
-    "about": "7.0 x 3.6 m, long axis east-west, open to the yard on the south. Back and ends of split eucalyptus poles set upright to the eaves, under a grass-thatched gable roof on pole rafters that overhangs 0.7 m, so the troughs along the front stand in its shade. The floor is rammed earth on a plinth 0.3 m high edged in fieldstone, so rain runs away from the bedding.",
-    "l": 7.0,
+    "about": "The herd's shed, as the shed in the founder's photo (D-044): 5.0 x 3.6 m (18 m2: 10 head at 1.2 m2 plus kids at 0.3 m2 [A]), long axis east-west. Its back and its east end are wide dark weathered boards set upright; its west side is open behind two rails; its front is open under heavy barked posts braced to the eaves beam. A steep, shaggy grass-thatched gable roof overhangs 0.7 m all round. The floor is rammed earth deep in straw on a low plinth edged in fieldstones, so rain runs off and the herd lies dry.",
+    "l": 5.0,
     "d": 3.6,
     "wall": 0.1,
     "plinth": {
-      "h": 0.3,
+      "h": 0.2,
       "edge": 0.2
     },
     "roof": {
       "eaves": 2.0,
-      "ridge": 3.6,
-      "over": 0.7,
-      "about": "Grass thatch, about 0.25 m thick, on pole rafters and battens; renewed every few years with grass cut on the farm."
+      "ridge": 3.7,
+      "over": 0.7
     }
   },
   "pens": {
-    "about": "Inside the shelter, one open sleeping hall for the whole herd, 6.0 x 3.6 m (10 head at 1.2 m2 plus kids at 0.3 m2 [A]), and the lockable feed store at the east end, boarded to the roof, its door on the east gable. The kidding pen is a set of movable pole hurdles at the hall's east end, put up when a doe or a ewe is due and taken down after. The open front has a rail and two gates, shut at night against theft.",
-    "hall": {
-      "x0": -3.5,
-      "x1": 2.5,
-      "label": "HERD",
-      "head": 10
+    "about": "Inside the shed, as in the photo: a straw bale, a slatted feed table that keeps the hay off the floor (worm pick-up), and a lockable feed bin in the corner, the feed kept from thieves and from the herd. Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high on the back wall, above the sheep's reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. For kidding, two hurdles close off a corner when a doe or a ewe is due.",
+    "label": "SHED",
+    "head": 10,
+    "bale": {
+      "x0": -2.15,
+      "x1": -1.15,
+      "y0": -1.55,
+      "y1": -0.9
     },
-    "kidding": {
-      "x0": 1.5,
-      "x1": 2.5,
-      "label": "KIDDING"
+    "table": {
+      "x0": 0.5,
+      "x1": 2.0,
+      "y0": -1.62,
+      "y1": -0.95,
+      "h": 0.8
     },
-    "store": {
-      "x0": 2.5,
-      "x1": 3.5,
-      "label": "FEED"
-    },
-    "gate": 0.9,
-    "gates": [
-      -2.2,
-      0.6
-    ]
-  },
-  "platform": {
-    "about": "A slatted bamboo sleeping platform along the whole back of the hall, 0.4 m up, so the herd lies dry above the litter: the dry floor of livestock-plan §7 without the 1 m stilts.",
-    "d": 1.0,
-    "h": 0.4
-  },
-  "fittings": {
-    "about": "Two raised hay racks filled by the keeper (feed off the floor lowers worm pick-up; the hay on the ground in the reference photo is what this avoids): one on the hall's west wall, one free-standing and fed from both sides in the middle. The goats' mineral box hangs on the west wall at 1.2 m, above the sheep's reach; the sheep's sits low on the middle rack. Two float troughs in the yard under the eaves, fed from the tank.",
-    "rack": {
-      "d": 0.35,
-      "y0": 0.5,
-      "h": 0.6
-    },
-    "racks": [
-      {
-        "x0": -3.4,
-        "x1": -3.05,
-        "y0": -0.5,
-        "y1": 1.0
-      },
-      {
-        "x0": -0.75,
-        "x1": 0.75,
-        "y0": 0.05,
-        "y1": 0.45
-      }
-    ],
-    "mineral": {
-      "w": 0.2,
-      "d": 0.15
+    "bin": {
+      "x0": 1.65,
+      "x1": 2.32,
+      "y0": 0.3,
+      "y1": 0.85
     },
     "minerals": [
       {
-        "x0": -3.4,
-        "x1": -3.25,
-        "y0": 1.15,
-        "y1": 1.35,
+        "x0": -0.75,
+        "x1": -0.45,
+        "y0": -1.7,
+        "y1": -1.55,
         "z": 1.2,
         "for": "goats"
       },
       {
-        "x0": 0.8,
-        "x1": 1.0,
-        "y0": 0.15,
-        "y1": 0.35,
+        "x0": -0.2,
+        "x1": 0.1,
+        "y0": -1.7,
+        "y1": -1.55,
         "z": 0.3,
         "for": "sheep"
       }
     ],
+    "rails": [
+      0.5,
+      0.95
+    ]
+  },
+  "fittings": {
+    "about": "Two float troughs in the yard under the eaves, fed from the tank.",
     "trough": {
       "d": 0.35,
       "h": 0.4
     },
     "troughs": [
       {
-        "x0": -3.35,
-        "x1": -2.35
+        "x0": -2.6,
+        "x1": -1.6
       },
       {
-        "x0": 1.6,
-        "x1": 2.45
+        "x0": 1.0,
+        "x1": 2.0
       }
     ]
   },
@@ -151,15 +126,15 @@
     "guard": 0.4
   },
   "tank": {
-    "about": "A 1,000 L tank behind the feed store on a 1.2 m block stand, filled from the farm's water line (thatch does not collect rain cleanly) and feeding the float troughs by gravity.",
-    "x": 4.15,
+    "about": "A 1,000 L tank by the shed's east end on a 1.2 m block stand, filled from the farm's water line (thatch does not collect rain cleanly) and feeding the float troughs by gravity.",
+    "x": 3.9,
     "y": -1.35,
     "r": 0.55,
     "h": 1.2,
     "stand": 1.2
   },
   "baskets": {
-    "about": "Woven baskets of cut fodder and the field's residues by the feed store door: the vegetable beds feed the herd. Two more stand outside the front fence by the gate, as the cut fodder comes in from the field.",
+    "about": "Woven baskets of cut fodder and the field's residues by the shed: the vegetable beds feed the herd. Two more stand outside the front fence by the gate, as the cut fodder comes in from the field.",
     "list": [
       {
         "x": 4.15,
@@ -253,14 +228,14 @@
     "about": "Where the 3D stands the animals, in plan metres, heading in degrees (0 = toward +x): local goats in browns and black and fat-tailed hair sheep with white coats and dark faces, two in the shelter and the rest mixing in the yard; `on` names a stone a goat stands on, or the cats' house. The dogs stand in their run; the doves sit on the dovecote.",
     "goats": [
       {
-        "x": -2.7,
-        "y": -0.1,
+        "x": -1.3,
+        "y": -0.2,
         "h": 20,
         "coat": "brown"
       },
       {
-        "x": -1.2,
-        "y": 0.9,
+        "x": 0.1,
+        "y": 0.6,
         "h": 200,
         "coat": "black"
       },
@@ -293,7 +268,7 @@
     "sheep": [
       {
         "x": 0.9,
-        "y": 0.9,
+        "y": 0.2,
         "h": 170,
         "coat": "wool"
       },

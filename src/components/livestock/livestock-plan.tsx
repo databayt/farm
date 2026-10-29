@@ -2,13 +2,14 @@ import livestock from "./livestock.json"
 
 // The livestock yard drawn in the pattern of the studio's plan (public/designs/studio/render/plan.svg): solid walls
 // in black, fittings in thin outline, what is where named in one row above and only the two overall dimensions.
-// One outline holds it all (D-039): the palisade at the back, one post-and-rail fence round the rest. The shelter's
-// open hall faces down the page onto the village yard, toward the paddock and the viewer of the 3D. Units are
+// One outline holds it all (D-039): the palisade at the back, one post-and-rail fence round the rest. The herd's shed,
+// as the founder's photo's (D-044), opens down the page onto the village yard, toward the paddock and the viewer of
+// the 3D. Units are
 // metres, the shelter's centre at 0,0, y toward the yard. All in currentColor, so the page sets its colour.
 
-const { shelter, pens, platform, fittings, yards, palisade, stones, tree, tank, baskets, compost, dogs, friends, planting } = livestock
-const WALL = 0.1 // the pole back wall and the ends, and the feed store's boarded walls
-const FENCE = 0.04 // the rail and gates across the hall's open front
+const { shelter, pens, fittings, yards, palisade, stones, tree, tank, baskets, compost, dogs, friends, planting } = livestock
+const WALL = 0.1 // the shed's boarded back and east end
+const FENCE = 0.04 // the rails along the shed's open west side
 const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEffect: "non-scaling-stroke" } as const
 const fine = { ...line, strokeWidth: 0.6 } as const
 const dashed = { ...line, strokeDasharray: "4 3" } as const
@@ -72,9 +73,7 @@ function DimensionUp({ y0, y1, x }: { y0: number; y1: number; x: number }) {
 
 export function LivestockPlan({ title, className }: { title: string; className?: string }) {
   const L = shelter.l / 2, W = shelter.d / 2, E = shelter.plinth.edge
-  const { hall, kidding, store } = pens
   const Y = yards.y1
-  const door = 0.7
   const { dovecote, cats, bench } = friends
   const yg = yards.gate, dg = dogs.gate
   const edge = { x0: Math.min(...planting.shrubs.map((b) => b.x - b.r)), x1: Math.max(...planting.shrubs.map((b) => b.x + b.r)),
@@ -82,9 +81,6 @@ export function LivestockPlan({ title, className }: { title: string; className?:
   const x0 = edge.x0 - 0.3, x1 = edge.x1 + 0.75
   const dimY = edge.y1 + 0.35, top = palisade.y - 0.6, bottom = dimY + 0.6
   const row = palisade.y - 0.25 // the names, in one row above the palisade
-  const px0 = hall.x0 + WALL + 0.03, px1 = hall.x1 - WALL / 2 - 0.03 // the sleeping platform
-  const py0 = -W + WALL, py1 = -W + WALL + platform.d
-  const front = [hall.x0 + WALL, ...pens.gates.flatMap((g) => [g, g + pens.gate]), hall.x1] // rail runs between the gates
   return (
     <svg viewBox={`${f(x0)} ${f(top)} ${f(x1 - x0)} ${f(bottom - top)}`} role="img" aria-label={title} className={className}>
       {/* The outline: the palisade of upright poles at the back, one post-and-rail fence round the rest, one gate of
@@ -98,33 +94,27 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       <Fence x0={yards.x1} y0={Y} x1={yards.x1} y1={yards.y0} />
       {[yg.x0, yg.x0 + yg.w].map((x, i) => <Gate key={x} x={x} y={Y} w={yg.w / 2} c={[i ? -1 : 1, 0]} o={[0, -1]} />)}
 
-      {/* The shelter on its fieldstone plinth: pole back wall and ends to the eaves, the feed store boarded with its
-          door on the east gable */}
+      {/* The shed, as the photo's, on its low fieldstone plinth: the thatch's overhang dashed, the back and the east end
+          boarded, the west side open behind two rails, the front open under its braced posts (dots) */}
+      <rect {...rect(-L - shelter.roof.over, -W - shelter.roof.over, L + shelter.roof.over, W + shelter.roof.over)} {...dashed} />
       <rect {...rect(-L - E, -W - E, L + E, W + E)} {...fine} />
       <rect {...rect(-L, -W, L, -W + WALL)} {...solid} />
-      <rect {...rect(-L, -W, -L + WALL, W)} {...solid} />
-      <rect {...rect(L - WALL, -W, L, 0)} {...solid} />
-      <rect {...rect(L - WALL, door, L, W)} {...solid} />
-      <Gate x={L} y={door} w={door} c={[0, -1]} o={[1, 0]} />
-      <rect {...rect(store.x0 - WALL / 2, -W + WALL, store.x0 + WALL / 2, W)} {...solid} />
-      <rect {...rect(store.x0, W - WALL, L, W)} {...solid} />
+      <rect {...rect(L - WALL, -W, L, W)} {...solid} />
+      <rect {...rect(-L + 0.02, -W + WALL, -L + 0.02 + FENCE, W - 0.1)} {...solid} />
+      {[-L + 0.09, 0, L - 0.09].map((x) => <circle key={x} cx={f(x)} cy={f(W - 0.09)} r={0.1} {...solid} />)}
+      <circle cx={f(-L + 0.09)} cy={f(-W + 0.09)} r={0.1} {...solid} />
 
-      {/* The hall's open front: a rail and two gates, shut at night */}
-      {front.filter((_, i) => i % 2 === 0).map((a, i) => <rect key={a} {...rect(a, W - FENCE / 2, front[i * 2 + 1], W + FENCE / 2)} {...solid} />)}
-      {pens.gates.map((g) => <Gate key={g} x={g + pens.gate} y={W} w={pens.gate} c={[-1, 0]} o={[0, 1]} />)}
-
-      {/* In the hall: the bamboo sleeping platform along the whole back, the movable kidding hurdles (dashed), the hay
-          racks on the west wall and in the middle, the goats' mineral box high, the sheep's low */}
-      <rect {...rect(px0, py0, px1, py1)} {...line} />
-      {Array.from({ length: Math.floor((px1 - px0) / 0.25) }, (_, k) => f(px0 + (k + 1) * 0.25)).filter((x) => x < px1 - 0.05).map((x) => (
-        <line key={x} x1={x} x2={x} y1={f(py0)} y2={f(py1)} {...fine} />
-      ))}
-      <path d={`M${kidding.x0} ${f(py1)}L${kidding.x0} ${f(W - 0.15)}`} {...dashed} />
-      {fittings.racks.map((r) => <rect key={r.x0} {...box(r)} {...line} />)}
-      {fittings.minerals.map((m) => <rect key={m.x0} {...box(m)} {...line} />)}
-
-      {/* The feed store: three sacks on a pallet */}
-      {[-0.95, -0.5, -0.05].map((y) => <rect key={y} {...rect(store.x0 + 0.18, y - 0.18, store.x1 - 0.18, y + 0.18)} rx={0.07} {...line} />)}
+      {/* Inside, as the photo's: the straw bale, the slatted feed table, the lockable feed bin; the goats' mineral box
+          high on the back wall and the sheep's low */}
+      <rect {...box(pens.bale)} rx={0.08} {...line} />
+      <rect {...box(pens.table)} {...line} />
+      {[0.25, 0.5, 0.75].map((t) => {
+        const x = f(pens.table.x0 + (pens.table.x1 - pens.table.x0) * t)
+        return <line key={t} x1={x} x2={x} y1={pens.table.y0} y2={pens.table.y1} {...fine} />
+      })}
+      <rect {...box(pens.bin)} {...line} />
+      <line x1={pens.bin.x0} x2={pens.bin.x1} y1={pens.bin.y0} y2={pens.bin.y1} {...fine} />
+      {pens.minerals.map((m) => <rect key={m.x0} {...box(m)} {...line} />)}
 
       {/* In the yard: the troughs under the eaves, stones to climb, the shade tree in its pole guard */}
       {fittings.troughs.map((t) => <rect key={t.x0} {...rect(t.x0, W + 0.4, t.x1, W + 0.4 + fittings.trough.d)} rx={0.08} {...line} />)}
@@ -140,7 +130,7 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       <circle cx={cats.house.x} cy={cats.house.y} r={0.07} {...solid} />
       <rect {...rect(bench.x0, bench.y - 0.15, bench.x1, bench.y + 0.15)} rx={0.12} {...line} />
 
-      {/* Behind the store: the tank, the fodder baskets, the three compost bays with their removable front rail
+      {/* By the shed's east end: the tank, the fodder baskets, the three compost bays with their removable front rail
           (dashed) */}
       <circle cx={tank.x} cy={tank.y} r={tank.r} {...line} />
       {baskets.list.map((b) => (
@@ -180,10 +170,9 @@ export function LivestockPlan({ title, className }: { title: string; className?:
 
       {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH; the rest in place */}
       {([
-        [cats.house.x, "CATS"], [(hall.x0 + kidding.x0) / 2, hall.label], [(store.x0 + store.x1) / 2, store.label], [tank.x, "TANK"],
+        [cats.house.x, "CATS"], [0, pens.label], [tank.x, "TANK"],
         [compost.x0 + compost.bay / 2, "COMPOST"], [(dogs.x0 + dogs.x1) / 2, "DOGS"],
       ] as const).map(([x, t]) => <text key={t} x={f(x)} y={f(row)} textAnchor="middle" style={label}>{t}</text>)}
-      <text x={f((kidding.x0 + kidding.x1) / 2)} y={f(W - 0.35)} textAnchor="middle" style={small}>{kidding.label}</text>
       <text x={-1.0} y={3.4} textAnchor="middle" style={label}>VILLAGE YARD</text>
       <text x={dovecote.x} y={f(dovecote.y + dovecote.s / 2 + 0.22)} textAnchor="middle" style={small}>DOVES</text>
       <text x={f((bench.x0 + bench.x1) / 2)} y={f(bench.y + 0.4)} textAnchor="middle" style={small}>BENCH</text>

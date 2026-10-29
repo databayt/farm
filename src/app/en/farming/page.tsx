@@ -71,7 +71,7 @@ export default function FarmingPage() {
           </div>
           <p className="text-muted-foreground mt-3 max-w-2xl">Six goats and four sheep share a village yard with cats and doves, beyond the field: their litter goes to the compost bays and back to these beds.</p>
           <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
-            <LivestockPlan title="Plan of the livestock yard: one outline round a thatched pole shelter with one open hall for the herd and a feed store, one village yard for the herd, the cats, the doves and the guests, three compost bays and the guard dogs’ run."
+            <LivestockPlan title="Plan of the livestock yard: one outline round the herd’s thatched shed, one village yard for the herd, the cats, the doves and the guests, three compost bays and the guard dogs’ run."
               className="h-auto w-full lg:h-full lg:w-auto" />
           </div>
         </div>
