@@ -12,6 +12,19 @@
     &hero=1     real mode from eye level across the public road, 2400 x 1340, the rock road run on to the inner
                 gate -> the stand-in parking-hero.jpg
 
+    ?top=<layer>  real mode from straight above the parking, the road at the bottom, for the page's BuildUp:
+                  ground (opaque: the lawn and the dug box) | sub | edging | pavers | grass | marks (transparent)
+                  -> render/top-<layer>.webp; window.TAGS holds each piece's rectangle as fractions of the picture
+                  (saved by render.mjs, then reshaped into render/top-pieces.json)
+    ?item=<id>    one part on its own, transparent, 1600 x 1200, for the rails -> render/item/<id>.webp:
+                  gate | sign | lantern | stop | tree | pavers | setts (the design's own meshes or a patch of them),
+                  enclosure | duct (lighting.json parts), layers | trench | soakaway (drainage, cut open)
+    ?view=light   the model view with the lighting circuit (parking.json lighting): &mode=line draws every duct run in
+                  its colour and sets window.TAGS -> render/light-line.png + light-tags.json; &mode=real renders it
+                  at dusk, the sign and the lantern lit -> render/light-real.webp
+    ?view=drain   the same for where the rain goes (parking.json drainage): the falls as arrows, the trench and the
+                  soakaway -> render/drain-line.png + drain-tags.json; real -> render/drain-real.webp
+
   Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
   save the data URL in #out.
 -->
@@ -41,11 +54,17 @@ import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
-const LINE = Q.get("mode") !== "real"
+const TOP = Q.get("top"), ITEM = Q.get("item"), VIEW = Q.get("view") // VIEW: "light" | "drain"
+// the model view draws in line unless asked for real; the build-up and the rail's parts are real unless asked for line
+const LINE = TOP || ITEM ? Q.get("mode") === "line" : Q.get("mode") !== "real"
 const HERO = !LINE && Q.get("hero") === "1"
-const [FW, FH] = HERO ? [2400, 1340] : [2400, 1100]
 const C = await (await fetch(`/src/components/parking/parking.json?${Date.now()}`)).json()
+// the build-up's frame: the parking box and 0.8 m round it, in plan metres
+const TB = [C.parking.box[0] - 0.8, C.parking.box[1] - 0.8, C.parking.box[2] + 0.8, C.parking.box[3] + 0.8]
+const [FW, FH] = HERO ? [2400, 1340] : TOP ? [2400, Math.round((2400 * (TB[3] - TB[1])) / (TB[2] - TB[0]))] : ITEM ? [1600, 1200] : [2400, 1100]
+document.getElementById("out").style.cssText = `width:${FW}px;height:${FH}px`
 const INK = "#2b2a26", PAGE = "#ffffff"
+const DUSK = !LINE && VIEW === "light" // the lighting's real view: after sunset, the sign and the lantern lit
 // plan (x east, y south, compound.json's frame) -> three: x = x, y = height, z = -y. The public road then lies toward
 // the camera, at +z, and seen from it the sign wall stands left of the gate, as on the homepage.
 
@@ -166,10 +185,37 @@ const T = LINE ? {} : {
     gr.addColorStop(0, "#4a82c4"); gr.addColorStop(0.32, "#86b0dc"); gr.addColorStop(0.48, "#d6e4ee"); gr.addColorStop(1, "#d6e4ee")
     g.fillStyle = gr; g.fillRect(0, 0, w, h)
   }, 16, 512),
+  // the dug box: red-brown subsoil, scraped flat, with the digger's tracks
+  earth: tex((g, w, h) => {
+    g.fillStyle = "#8a5634"; g.fillRect(0, 0, w, h)
+    speckle(g, w, h, 22000, "rgba(200,140,95,0.35)", "rgba(70,38,20,0.35)")
+    for (let i = 0; i < 18; i++) { g.fillStyle = `rgba(60,32,18,${0.05 + rnd() * 0.06})`; g.fillRect(0, rnd() * h, w, 6 + rnd() * 18) }
+  }),
+  // crushed stone, 20 to 40 mm, rolled
+  gravel: tex((g, w, h) => {
+    g.fillStyle = "#8f8a82"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 9000; i++) {
+      const t = rnd(); g.fillStyle = t > 0.66 ? "#b2ada4" : t > 0.33 ? "#77736c" : "#9c968c"
+      g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 2 + rnd() * 4, 1.5 + rnd() * 3, rnd() * Math.PI, 0, Math.PI * 2); g.fill()
+    }
+  }),
+  // the pavers as laid: the concrete grid, its cells of fresh topsoil not yet grown
+  pavers0: tex((g, w, h) => {
+    g.fillStyle = "#bdb8ac"; g.fillRect(0, 0, w, h)
+    const n = 4, s = w / n
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { g.fillStyle = (i + j) % 2 ? "#6b4a33" : "#72503a"; g.fillRect(i * s + s * 0.18, j * s + s * 0.18, s * 0.64, s * 0.64) }
+    speckle(g, w, h, 6000, "rgba(255,255,255,0.2)", "rgba(0,0,0,0.15)")
+  }, 256, 256),
+  concrete: tex((g, w, h) => {
+    g.fillStyle = "#a9a59d"; g.fillRect(0, 0, w, h)
+    speckle(g, w, h, 9000, "rgba(255,255,255,0.1)", "rgba(60,55,45,0.12)")
+  }),
 }
 // metres one tile of each texture covers [along, across]
-const TILE = { grass: [9, 9], murram: [4, 4], pavers: [0.4, 0.4], setts: [1.6, 1.6], row: [0.1, 1], stone: [1, 1], hedge: [0.9, 0.9] }
-const MAP = { lawn: "grass", murram: "murram", pavers: "pavers", setts: "setts", row: "row", stone: "stone", hedge: "hedge" }
+const TILE = { grass: [9, 9], murram: [4, 4], pavers: [0.4, 0.4], setts: [1.6, 1.6], row: [0.1, 1], stone: [1, 1], hedge: [0.9, 0.9],
+  earth: [3, 3], gravel: [0.8, 0.8], pavers0: [0.4, 0.4], concrete: [1, 1] }
+const MAP = { lawn: "grass", murram: "murram", pavers: "pavers", setts: "setts", row: "row", stone: "stone", hedge: "hedge",
+  earth: "earth", gravel: "gravel", pavers0: "pavers0", concrete: "concrete" }
 
 // DIGITAL FARM for the sign's panel, sized to it as the homepage's: LED letters in warm white with their glow on dark
 // steel, or plain letters in the page's ink for the line drawing
@@ -223,7 +269,21 @@ function mat(name) {
       stone: () => std({ map: T.stone, roughness: 0.95 }),
       gatewood: () => std({ color: "#b48f63", roughness: 0.8 }), // weathered pine, as the reference gate
       black: () => std({ color: "#26272b", roughness: 0.45, metalness: 0.5 }),
-      lamp: () => std({ color: "#f6ecd2", roughness: 0.3, emissive: "#ffe2a8", emissiveIntensity: 0.25 }),
+      lamp: () => std({ color: "#f6ecd2", roughness: 0.3, emissive: "#ffe2a8", emissiveIntensity: DUSK ? 6 : 0.25 }),
+      earth: () => std({ map: T.earth, roughness: 1 }),
+      gravel: () => std({ map: T.gravel, roughness: 1 }),
+      pavers0: () => std({ map: T.pavers0, roughness: 0.95 }),
+      concrete: () => std({ map: T.concrete, roughness: 0.95 }),
+      sand: () => std({ color: "#cdb68a", roughness: 1 }),
+      topsoil: () => std({ color: "#5d3f2a", roughness: 1 }),
+      geotex: () => std({ color: "#e4e0d4", roughness: 1, side: THREE.DoubleSide }),
+      box: () => std({ color: "#d8dbd7", roughness: 0.5 }), // the grey weatherproof box
+      duct: () => std({ color: "#2b2c2e", roughness: 0.6 }),
+      cable: () => std({ color: "#1a1a1a", roughness: 0.5 }),
+      perf: () => std({ color: "#3a3c3a", roughness: 0.6 }),
+      tapeY: () => std({ color: "#e8c22a", roughness: 0.7 }), // the warning tape over a duct
+      sett0: () => std({ color: "#8c8b87", roughness: 0.85 }), sett1: () => std({ color: "#a2a19b", roughness: 0.85 }),
+      sett2: () => std({ color: "#787a78", roughness: 0.85 }),
       log: () => std({ color: "#a37a52", roughness: 0.85 }), // eucalyptus, barked and oiled
       hedge: () => std({ map: T.hedge, roughness: 0.9 }),
       bark: () => std({ color: "#6f6253", roughness: 0.9 }),
@@ -248,6 +308,8 @@ function mat(name) {
 // ------------------------------------------------------------ geometry helpers (metres)
 const meshes = []
 let PARENT = scene
+// what each mesh belongs to, for the rail's parts (?item=) and the build-up's layers (?top=): set before each part
+let PART = "site", LAYER = null
 let gseed = 3 // the hedge and the crowns' own sequence
 const grnd = () => ((gseed = (gseed * 16807) % 2147483647) / 2147483647)
 function worldUV(geo, [tu, tv]) { // each face takes the texture from its own plane, at true scale
@@ -270,6 +332,7 @@ function add(geo, name, opts = {}) {
   if (opts.pos) mesh.position.set(...opts.pos)
   if (opts.rot) mesh.rotation.set(...opts.rot)
   if (opts.noEdges) mesh.userData.noEdges = true
+  mesh.userData.part = PART; mesh.userData.layer = LAYER
   PARENT.add(mesh)
   meshes.push(mesh)
   return mesh
@@ -318,14 +381,17 @@ function group(build, pos, rotY = 0) {
 const { road: RD, turn: TN, gate: G, sign: S, hedge: HG, parking: PK, rockRoad: RR, innerGate: IG, trees: TR, cars: CARS } = C
 // the plan's edges; the hero runs the road and the hedge on out of the frame
 const [X0, X1] = HERO ? [-90, 130] : [Math.min(...HG.runs.flat()), Math.max(...HG.runs.flat())]
+PART = "lawn"
 if (!LINE) {
   T.grass.repeat.set(HERO ? 90 : 10, HERO ? 90 : 10)
   add(new THREE.CircleGeometry(HERO ? 400 : 45, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], pos: [19, 0, 3], keepUV: true })
 }
+PART = "road"
 // the model view keeps the road's near 2.5 m, cut as the 2D cuts it; the hero stands across all of it
 blk(X0, RD.edge - (HERO ? RD.w : 2.5), X1, RD.edge, 0, 0.03, "murram", { noShadow: true })
 
 // ------------------------------------------------------------ the boundary hedge: a body of stems under a lumpy top
+PART = "hedge"
 for (const [k, [a0, b0]] of HG.runs.entries()) {
   const a = k === 0 ? X0 : a0, b = k === HG.runs.length - 1 ? X1 : b0
   const [y0, y1] = [HG.y - HG.w / 2, HG.y + HG.w / 2]
@@ -337,6 +403,7 @@ for (const [k, [a0, b0]] of HG.runs.entries()) {
 }
 
 // ------------------------------------------------------------ the sign wall: fieldstone under a timber cap, the LED panel on its road face
+PART = "sign"
 {
   const [x0, y0, x1, y1] = S.box, h = S.h, { inset, y0: q0, y1: q1 } = S.panel
   blk(x0, y0, x1, y1, 0, h, "stone")
@@ -355,10 +422,13 @@ function pillar(x0, y0, x1, y1, h, lantern) {
   blk(x0, y0, x1, y1, 0, h, "stone")
   blk(x0 - 0.06, y0 - 0.06, x1 + 0.06, y1 + 0.06, h, h + 0.12, "gatewood") // the timber cap
   if (lantern) {
+    const was = PART; PART = "lantern"
     const [cx, cy] = [(x0 + x1) / 2, (y0 + y1) / 2]
     blk(cx - 0.08, cy - 0.08, cx + 0.08, cy + 0.08, h + 0.12, h + 0.16, "black")
     blk(cx - 0.07, cy - 0.07, cx + 0.07, cy + 0.07, h + 0.16, h + 0.38, "lamp")
     blk(cx - 0.1, cy - 0.1, cx + 0.1, cy + 0.1, h + 0.38, h + 0.42, "black")
+    if (DUSK) { const l = new THREE.PointLight(0xffc982, 9, 9, 1.6); l.position.set(cx, h + 0.27, -cy); scene.add(l) }
+    PART = was
   }
 }
 // a flat piece of timber in the leaf's plane (x along the leaf, y up), from a to b, w wide, between z0 and z1
@@ -387,9 +457,11 @@ function gate({ x: [l, r], y, post: p }, h, lanternSide) {
   group(() => leaf(len, h), [l + 0.005, 0.03, -y], open) // swung in toward the farm, about its hinge
   group(() => leaf(len, h), [r - 0.005, 0.03, -y], -open).scale.x = -1 // the other leaf, mirrored
 }
+PART = "gate"
 gate(G, G.leaf, "left")
 
 // ------------------------------------------------------------ the turn: setts from the road through the gate to the parking
+PART = "turn"
 {
   const [l, r] = G.x, p = G.post, front = G.y - p / 2, yP = PK.box[1], s = TN.splay
   extrude(polygon([[l, yP], [l, front], [l - p, front], [l - p - s, RD.edge], [r + p + s, RD.edge], [r + p, front], [r, front], [r, yP]]),
@@ -399,6 +471,7 @@ gate(G, G.leaf, "left")
 // ------------------------------------------------------------ the green parking: pavers in a fieldstone edging, sett strips, wheel stops
 {
   const [x0, y0, x1, y1] = PK.box, e = PK.edging.w, inner = [x0 + e, y0 + e, x1 - e, y1 - e]
+  PART = "lot"
   extrude(rrect(new THREE.Shape(), inner, PK.r - e), 0, 0.04, "pavers", { noShadow: true })
   const ring = rrect(new THREE.Shape(), PK.box, PK.r)
   ring.holes.push(rrect(new THREE.Path(), inner, PK.r - e))
@@ -406,6 +479,7 @@ gate(G, G.leaf, "left")
   for (const x of PK.bays.slice(1)) blk(x - PK.strips.w / 2, y1 - PK.strips.l, x + PK.strips.w / 2, y1 - e, 0.04, 0.065, "row", { noShadow: true })
   for (let i = 0; i < PK.bays.length - 1; i++) {
     const cx = (PK.bays[i] + PK.bays[i + 1]) / 2
+    PART = i === 0 ? "stop" : "stops"
     add(new THREE.CylinderGeometry(PK.stops.r, PK.stops.r, PK.stops.l, 16), "log", { pos: [cx, 0.04 + PK.stops.r, -(y1 - PK.stops.at)], rot: [0, 0, Math.PI / 2] })
   }
 }
@@ -430,6 +504,7 @@ function band(t0, t1, d0, d1, h, name) {
   }
   extrude(polygon([...a, ...b.reverse()]), 0, h, name, { noShadow: true })
 }
+PART = "rockroad"
 {
   const show = HERO ? 1 : RR.show, half = RR.width / 2, e = RR.edging
   band(0, show, half - e, -half + e, 0.05, "setts")
@@ -449,7 +524,8 @@ if (HERO) {
 
 // ------------------------------------------------------------ shade trees: a trunk, three limbs, a crown of rounded masses
 gseed = 3 // the same crowns in every view, however much hedge came before
-for (const [x, y, r] of TR.list) {
+for (const [k0, [x, y, r]] of TR.list.entries()) {
+  PART = k0 === 0 ? "tree" : "trees"
   const base = TR.crown, rh = (TR.h - base) / 2, hc = base + rh, fork = base - 0.3
   cyl(x, y, 0.11, 0, fork, "bark", 10, 0.09)
   for (let k = 0; k < 3; k++) { // the limbs, from the fork up and out, soon lost in the crown
@@ -536,33 +612,189 @@ function car(c) {
     box(c.l - 0.05, c.l + 0.012, K.sill, K.sill + 0.13, 0.04, w - 0.04, "trim")
   }, [cx - w / 2, 0, -tail], Math.PI / 2)
 }
+PART = "cars"
 for (const c of CARS.list) car(c)
+PART = "extra"
+
+// ------------------------------------------------------------ the build-up, from above (?top=): each layer as it goes down
+const PIECES = {}
+const TW = TB[2] - TB[0], TH = TB[3] - TB[1]
+const frac = (x0, y0, x1, y1) => [(x0 - TB[0]) / TW, (TB[3] - y1) / TH, (x1 - x0) / TW, (y1 - y0) / TH].map((v) => +v.toFixed(5))
+if (TOP) {
+  const [x0, y0, x1, y1] = PK.box, e = PK.edging.w, inner = [x0 + e, y0 + e, x1 - e, y1 - e]
+  PART = "top"
+  LAYER = "ground" // the turf lifted and the box dug out, pegged and strung
+  blk(TB[0] - 1, TB[1] - 1, TB[2] + 1, TB[3] + 1, -0.02, 0, "lawn")
+  extrude(rrect(new THREE.Shape(), PK.box, PK.r), 0, 0.005, "earth")
+  for (const [x, y] of [[x0 - 0.2, y0 - 0.2], [x1 + 0.2, y0 - 0.2], [x0 - 0.2, y1 + 0.2], [x1 + 0.2, y1 + 0.2]]) cyl(x, y, 0.04, 0, 0.3, "log", 10)
+  for (const y of [y0 - 0.2, y1 + 0.2]) blk(x0 - 0.2, y - 0.012, x1 + 0.2, y + 0.012, 0.28, 0.29, "black")
+  for (const x of [x0 - 0.2, x1 + 0.2]) blk(x - 0.012, y0 - 0.2, x + 0.012, y1 + 0.2, 0.28, 0.29, "black")
+  LAYER = "sub" // the crushed-stone sub-base, rolled
+  extrude(rrect(new THREE.Shape(), PK.box, PK.r), 0.01, 0.01, "gravel")
+  LAYER = "edging" // the fieldstone edging set round it
+  const ring = rrect(new THREE.Shape(), PK.box, PK.r)
+  ring.holes.push(rrect(new THREE.Path(), inner, PK.r - e))
+  extrude(ring, 0.02, 0.01, "stone")
+  LAYER = "pavers" // the blocks laid, their cells filled with topsoil
+  extrude(rrect(new THREE.Shape(), inner, PK.r - e), 0.03, 0.01, "pavers0")
+  LAYER = "grass" // the grass come through
+  extrude(rrect(new THREE.Shape(), inner, PK.r - e), 0.04, 0.01, "pavers")
+  LAYER = "marks" // the sett strips between the bays and the wheel stops
+  for (const x of PK.bays.slice(1)) blk(x - PK.strips.w / 2, y1 - PK.strips.l, x + PK.strips.w / 2, y1 - e, 0.05, 0.06, "row")
+  for (let i = 0; i < PK.bays.length - 1; i++) {
+    const cx = (PK.bays[i] + PK.bays[i + 1]) / 2
+    add(new THREE.CylinderGeometry(PK.stops.r, PK.stops.r, PK.stops.l, 16), "log", { pos: [cx, 0.06 + PK.stops.r, -(y1 - PK.stops.at)], rot: [0, 0, Math.PI / 2] })
+  }
+  LAYER = null
+  const quarters = [0, 1, 2, 3].map((k) => frac(x0 + (k * (x1 - x0)) / 4, y0, x0 + ((k + 1) * (x1 - x0)) / 4, y1))
+  const cols = []
+  for (let x = inner[0]; x < inner[2] - 0.01; x += 2) cols.push(frac(x, inner[1], Math.min(x + 2, inner[2]), inner[3]))
+  const sx = PK.bays.slice(1).map((x) => frac(x - PK.strips.w / 2 - 0.02, y1 - PK.strips.l - 0.02, x + PK.strips.w / 2 + 0.02, y1 - e + 0.02))
+  const st = PK.bays.slice(0, -1).map((b, i) => { const cx = (b + PK.bays[i + 1]) / 2, cy = y1 - PK.stops.at; return frac(cx - PK.stops.l / 2 - 0.03, cy - PK.stops.r - 0.03, cx + PK.stops.l / 2 + 0.03, cy + PK.stops.r + 0.03) })
+  Object.assign(PIECES, {
+    aspect: +(TW / TH).toFixed(5),
+    sub: quarters,
+    edging: [frac(x0, y0, x0 + e, y1), frac(x0, y1 - e, x1, y1), frac(x1 - e, y0, x1, y1), frac(x0, y0, x1, y0 + e)],
+    pavers: cols, grass: cols, strips: sx, stops: st,
+  })
+}
+
+// ------------------------------------------------------------ the rail's parts that the model has no single mesh for (?item=)
+if (ITEM) {
+  PART = ITEM
+  // a block of grass pavers: 400 x 400 x 80 mm of concrete round sixteen cells, grassed, or with bare topsoil
+  const paver = (x, y, z, grassed) => {
+    const P = C.build.paver, n = 4, c = P.l / n, hole = c * 0.64
+    const sh = new THREE.Shape([[0, 0], [P.l, 0], [P.l, P.w], [0, P.w]].map(([u, v]) => new THREE.Vector2(u, v)))
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      const u = i * c + (c - hole) / 2, v = j * c + (c - hole) / 2
+      sh.holes.push(new THREE.Path([[u, v], [u + hole, v], [u + hole, v + hole], [u, v + hole]].map(([a, b]) => new THREE.Vector2(a, b))))
+    }
+    const g = new THREE.ExtrudeGeometry(sh, { depth: P.h, bevelEnabled: false })
+    add(g, "concrete", { pos: [x, z, -y], rot: [-Math.PI / 2, 0, 0] })
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      const u = x + i * c + c / 2, v = y + j * c + c / 2
+      blk(u - hole / 2, v - hole / 2, u + hole / 2, v + hole / 2, z, z + P.h - (grassed ? 0.004 : 0.015), "topsoil", { noEdges: true })
+      if (grassed) for (let k = 0; k < 5; k++) { // a tuft of blades
+        const bl = add(new THREE.ConeGeometry(0.006, 0.05 + rnd() * 0.03, 3), k % 2 ? "leaf" : "leaf2", { pos: [u + (rnd() - 0.5) * hole * 0.7, z + P.h + 0.02, -(v + (rnd() - 0.5) * hole * 0.7)], noEdges: true })
+        bl.rotation.set((rnd() - 0.5) * 0.5, 0, (rnd() - 0.5) * 0.5)
+      }
+    }
+  }
+  const sett = (x, y, z, s = 0.1) => {
+    const t = rnd()
+    const m = blk(x - s / 2 + 0.006, y - s / 2 + 0.006, x + s / 2 - 0.006, y + s / 2 - 0.006, z, z + 0.08 + (rnd() - 0.5) * 0.01, t > 0.66 ? "sett0" : t > 0.33 ? "sett1" : "sett2")
+    m.rotation.y = (rnd() - 0.5) * 0.08
+  }
+  if (ITEM === "pavers") {
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) paver(i * 0.4, j * 0.4, 0, j > 0)
+  } else if (ITEM === "setts") {
+    for (let i = 0; i < 10; i++) for (let j = 0; j < 6; j++) sett(i * 0.1 + (j % 2) * 0.05, j * 0.1, 0)
+  } else if (ITEM === "enclosure") { // the weatherproof box: a grey body, its door, two glands below, the photocell on top
+    const { w, d, h: [h0, h1] } = C.lighting.box
+    // drawn with its door toward the camera (plan -y), the wall behind it
+    blk(-w / 2, -(d - 0.02), w / 2, 0, h0, h1, "box")
+    blk(-w / 2 + 0.01, -d, w / 2 - 0.01, -(d - 0.02), h0 + 0.01, h1 - 0.01, "box")
+    blk(w / 2 - 0.05, -d - 0.012, w / 2 - 0.035, -d, (h0 + h1) / 2 - 0.04, (h0 + h1) / 2 + 0.04, "black") // the catch
+    for (const x of [-0.08, 0.08]) cyl(x, -d / 2, 0.016, h0 - 0.03, 0.03, "black", 12)
+    for (const x of [-0.08, 0.08]) cyl(x, -d / 2, 0.012, h0 - 0.35, 0.32, "duct", 12) // the ducts rising out of the ground
+    cyl(0, -d / 2, 0.025, h1, 0.05, "white", 16) // the photocell
+    blk(-0.4, 0, 0.4, 0.05, h0 - 0.35, h1 + 0.25, "stone") // the wall behind it
+  } else if (ITEM === "duct") { // a coil of 50 mm duct, a length of armoured cable out of it, the warning tape
+    for (let k = 0; k < 5; k++) add(new THREE.TorusGeometry(0.42, 0.025, 10, 64), "duct", { pos: [0, 0.025 + k * 0.05, 0], rot: [Math.PI / 2, 0, 0] })
+    add(new THREE.CylinderGeometry(0.025, 0.025, 0.7, 16), "duct", { pos: [0.77, 0.025, -0.42], rot: [0, 0, Math.PI / 2] })
+    add(new THREE.CylinderGeometry(0.008, 0.008, 0.35, 12), "cable", { pos: [1.29, 0.025, -0.42], rot: [0, 0, Math.PI / 2] })
+    blk(0.55, 0.3, 1.45, 0.38, 0, 0.004, "tapeY")
+  } else if (ITEM === "layers") { // the parking cut open, each layer stepped back so its top shows
+    const L = 1.2, D = 0.8, { dig, subbase, bedding, paver: P } = C.build
+    blk(0, 0, L, D, -dig - 0.25, -dig, "earth")
+    blk(0.25, 0, L, D, -dig, -dig + subbase, "gravel")
+    blk(0.5, 0, L, D, -dig + subbase, -dig + subbase + bedding, "sand")
+    for (const y of [0, 0.4]) paver(0.8, y, -P.h, true)
+  } else if (ITEM === "trench") { // a metre of the trench, cut open: the lining, the stone, the pipe
+    const { w, depth, pipe: dp } = C.drainage.trench
+    blk(-0.5, 0, -w / 2, 1, -depth - 0.2, 0, "earth"); blk(w / 2, 0, 0.5, 1, -depth - 0.2, 0, "earth"); blk(-w / 2, 0, w / 2, 1, -depth - 0.2, -depth, "earth")
+    blk(-w / 2, 0, w / 2, 1, -depth, -depth + 0.005, "geotex")
+    blk(-w / 2, 0.2, w / 2, 1, -depth + 0.005, -0.02, "gravel")
+    add(new THREE.CylinderGeometry(dp / 2, dp / 2, 1, 24), "perf", { pos: [0, -depth + 0.1, -0.5], rot: [Math.PI / 2, 0, 0] })
+    for (let k = 0; k < 8; k++) cyl(0.02 * (k % 2 ? 1 : -1), 0.05 + k * 0.12, 0.008, -depth + 0.1 + dp / 2 - 0.004, 0.006, "black", 8) // the slots
+  } else if (ITEM === "soakaway") { // the pit cut open at a corner: stone in its geotextile wrap under a slab cover, the pipe in
+    const { size: s, depth } = C.drainage.pit
+    blk(0, 0, s, s, -depth, -0.1, "gravel")
+    for (const [a, b, c2, d2] of [[0, s, s, s + 0.005], [s, 0, s + 0.005, s]]) blk(a, b, c2, d2, -depth, -0.1, "geotex") // the wrap, on the far sides
+    blk(-0.05, -0.05, s + 0.05, s + 0.05, -0.1, 0, "concrete")
+    add(new THREE.CylinderGeometry(0.055, 0.055, 0.7, 20), "perf", { pos: [s + 0.35, -0.3, -s / 2], rot: [0, 0, Math.PI / 2] })
+  }
+}
+
+// ------------------------------------------------------------ the services' views: the box on the wall, the trench and the pit
+const LCOL = { feed: "#1d4e89", lamp: "#2f7ed8", sign: "#d9822b" }
+const DCOL = { fall: "#2f7ed8", trench: "#1d4e89", pit: "#5fb0ea" }
+const runs = [] // [colour, width, ...a, ...b] for the line view
+const seg3 = (col, wdt, [ax, ay, ah], [bx, by, bh]) => runs.push([col, wdt, ax, ah, -ay, bx, bh, -by])
+const poly = (col, wdt, pts, h = 0.03) => { for (let i = 1; i < pts.length; i++) seg3(col, wdt, [...pts[i - 1], h], [...pts[i], h]) }
+const arrow = (col, [ax, ay], [bx, by], h = 0.08) => { // a fall: from high to low, its head at the low end
+  poly(col, 3, [[ax, ay], [bx, by]], h)
+  const a = Math.atan2(by - ay, bx - ax), k = 0.5
+  for (const s of [-1, 1]) poly(col, 3, [[bx, by], [bx - k * Math.cos(a + s * 0.45), by - k * Math.sin(a + s * 0.45)]], h)
+}
+// a polyline cut where it leaves the model view (the rock road is drawn to its first 40 %)
+const clipY = (pts, ymax) => {
+  const out = []
+  for (let i = 0; i < pts.length; i++) {
+    const p = pts[i], q = pts[i - 1]
+    if (p[1] <= ymax) { if (q && q[1] > ymax) out.push([q[0] + ((p[0] - q[0]) * (ymax - q[1])) / (p[1] - q[1]), ymax]); out.push(p) }
+  }
+  return out
+}
+const SPOTS = {} // each tag's point, in plan metres and height
+if (VIEW === "light") {
+  const LT = C.lighting, b = LT.box
+  PART = "box"
+  blk(b.x - b.w / 2, b.y, b.x + b.w / 2, b.y + b.d, b.h[0], b.h[1], "box")
+  cyl(b.x, b.y + b.d / 2, 0.025, b.h[1], 0.05, "white", 16)
+  const feed = clipY(LT.route.feed, 4.8)
+  poly(LCOL.feed, 3.4, feed)
+  poly(LCOL.lamp, 3.4, LT.route.lantern)
+  seg3(LCOL.lamp, 3.4, [19.7, -6.3, 0.03], [19.7, -6.55, G.leaf + 0.3 + 0.16]) // up inside the pillar to the lantern
+  seg3(LCOL.sign, 3.4, [b.x, b.y, (b.h[0] + b.h[1]) / 2], [b.x, S.box[1], (b.h[0] + b.h[1]) / 2]) // through the wall to the letters' driver
+  seg3(LCOL.sign, 3.4, [b.x, S.box[1], (b.h[0] + b.h[1]) / 2], [b.x - 0.4, S.box[1], (S.panel.y0 + S.panel.y1) / 2])
+  Object.assign(SPOTS, { LF: [...feed[0], 0.03], LD: [21, -2.3, 0.03], EB: [b.x, b.y + b.d, b.h[1]], SG: [15, S.box[1], S.panel.y1], L1: [19.7, -6.7, G.leaf + 0.3 + 0.42] })
+} else if (VIEW === "drain") {
+  const DR = C.drainage, t = DR.trench, p = DR.pit
+  PART = "drain"
+  if (!LINE) { // what shows of them: the trench's stone at the surface, the pit's slab
+    blk(t.x - t.w / 2, t.y[0], t.x + t.w / 2, t.y[1], 0, 0.03, "gravel", { noShadow: true })
+    blk(p.at[0] - p.size / 2, p.at[1] - p.size / 2, p.at[0] + p.size / 2, p.at[1] + p.size / 2, 0, 0.04, "concrete", { noShadow: true })
+  }
+  poly(DCOL.trench, 4, [[t.x, t.y[1]], [t.x, t.y[0]], p.at])
+  const s = p.size / 2
+  poly(DCOL.pit, 3.4, [[p.at[0] - s, p.at[1] - s], [p.at[0] + s, p.at[1] - s], [p.at[0] + s, p.at[1] + s], [p.at[0] - s, p.at[1] + s], [p.at[0] - s, p.at[1] - s]])
+  for (const y of [-3.6, -1.6, 0.2]) arrow(DCOL.fall, [28.6, y], [9.2, y]) // the lot, falling to its west end
+  for (const x of [21.4, 23]) arrow(DCOL.fall, [x, -5.1], [x, -7.3]) // the turn, back to the road
+  for (const tt of [0.12, 0.3]) { // the rock road, crowned, to its edgings
+    const [x, y] = bezier(tt), [nx, ny] = normal(tt)
+    for (const sgn of [-1, 1]) arrow(DCOL.fall, [x + nx * 0.3 * sgn, y + ny * 0.3 * sgn], [x + nx * 1.9 * sgn, y + ny * 1.9 * sgn])
+  }
+  Object.assign(SPOTS, { P: [13.2, -2.6, 0.05], F1: [19, -1.6, 0.08], F2: [23, -6.4, 0.08], F3: [24.4, 3.0, 0.08], T1: [t.x, -2, 0.05], SK: [...p.at, 0.05] })
+}
+PART = "extra"
+
+// ------------------------------------------------------------ what each view shows
+for (const o of meshes) {
+  const { part, layer } = o.userData
+  o.visible = TOP ? layer === TOP : ITEM ? part === ITEM : part !== "top"
+}
 
 // ------------------------------------------------------------ camera
-const camera = new THREE.PerspectiveCamera(HERO ? 54 : 22, FW / FH, 0.3, 900)
-if (HERO) {
-  // eye level across the public road, level so verticals stay straight: the sign wall left, the gate right with the
-  // rock road and the inner gate seen through it; the frame shifted down, as a shift lens would, for less sky
-  camera.position.set(18.4, 1.55, 15.5)
-  camera.lookAt(new THREE.Vector3(18.4, 1.55, 0))
-  camera.setViewOffset(FW, FH, 0, FH * 0.04, FW, FH) // the horizon at 46 % from the top
-  add(new THREE.SphereGeometry(600, 32, 16), "sky", { noEdges: true, keepUV: true })
-  scene.fog = new THREE.Fog(0xd6e4ee, 40, 300)
-} else {
-  // from beyond the road, centred as the homepage's view is, raised so the bays show over the sign wall and the hedge
-  const target = new THREE.Vector3(18.5, 0.6, 2.5)
-  const [el, az, dist] = [THREE.MathUtils.degToRad(44), 0, 80]
-  camera.position.set(target.x + dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
-  camera.lookAt(target)
-}
-camera.updateMatrixWorld(); camera.updateProjectionMatrix()
-scene.updateMatrixWorld(true)
-if (!HERO) { // fit the frame to the model, each part's box projected on its own (one box round a scene this wide
-  // would leave sky over it)
+let camera
+const fit = (margin) => { // fit the frame to what shows, each part's box projected on its own
+  camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+  scene.updateMatrixWorld(true)
   let px = [Infinity, Infinity, -Infinity, -Infinity]
   const bb = new THREE.Box3()
   for (const o of meshes) {
-    if (o.geometry.type.startsWith("Circle")) continue
+    if (!o.visible || o.geometry.type.startsWith("Circle")) continue
     bb.setFromObject(o)
     for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
       const p = new THREE.Vector3(xx, yy, zz).project(camera)
@@ -570,10 +802,56 @@ if (!HERO) { // fit the frame to the model, each part's box projected on its own
       px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
     }
   }
-  let w = (px[2] - px[0]) * 1.04, h = (px[3] - px[1]) * 1.08
+  let w = (px[2] - px[0]) * margin[0], h = (px[3] - px[1]) * margin[1]
   if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
   camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
 }
+const centre = new THREE.Vector3(19, 0, 3) // what the sun aims at
+if (TOP) {
+  // straight down, the public road at the bottom of the picture and the farm at the top, east to the right
+  camera = new THREE.OrthographicCamera(-TW / 2, TW / 2, TH / 2, -TH / 2, 0.1, 100)
+  const [cx, cy] = [(TB[0] + TB[2]) / 2, (TB[1] + TB[3]) / 2]
+  camera.position.set(cx, 40, -cy); camera.up.set(0, 0, -1); camera.lookAt(cx, 0, -cy)
+  centre.set(cx, 0, -cy)
+  if (TOP === "ground") renderer.setClearColor(0xffffff, 1)
+} else if (ITEM) {
+  camera = new THREE.PerspectiveCamera(30, FW / FH, 0.05, 200)
+  const bb = new THREE.Box3()
+  for (const o of meshes) if (o.visible) bb.expandByObject(o)
+  bb.getCenter(centre)
+  const size = bb.getSize(new THREE.Vector3()).length()
+  const [el, az] = [THREE.MathUtils.degToRad(26), THREE.MathUtils.degToRad(-32)]
+  camera.position.set(centre.x + size * 2 * Math.cos(el) * Math.sin(az), centre.y + size * 2 * Math.sin(el), centre.z + size * 2 * Math.cos(el) * Math.cos(az))
+  camera.lookAt(centre)
+  fit([1.12, 1.12])
+} else {
+  camera = new THREE.PerspectiveCamera(HERO ? 54 : 22, FW / FH, 0.3, 900)
+  if (HERO) {
+    // eye level across the public road, level so verticals stay straight: the sign wall left, the gate right with the
+    // rock road and the inner gate seen through it; the frame shifted down, as a shift lens would, for less sky
+    camera.position.set(18.4, 1.55, 15.5)
+    camera.lookAt(new THREE.Vector3(18.4, 1.55, 0))
+    camera.setViewOffset(FW, FH, 0, FH * 0.04, FW, FH) // the horizon at 46 % from the top
+    add(new THREE.SphereGeometry(600, 32, 16), "sky", { noEdges: true, keepUV: true })
+    scene.fog = new THREE.Fog(0xd6e4ee, 40, 300)
+  } else {
+    // from beyond the road, centred as the homepage's view is, raised so the bays show over the sign wall and the hedge
+    const target = new THREE.Vector3(18.5, 0.6, 2.5)
+    const [el, az, dist] = [THREE.MathUtils.degToRad(44), 0, 80]
+    camera.position.set(target.x + dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
+    camera.lookAt(target)
+    fit([1.04, 1.08])
+  }
+}
+camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+scene.updateMatrixWorld(true)
+
+// each tag's spot in the frame, for the tagged figure; the build-up's pieces ride the same channel
+if (TOP) window.TAGS = PIECES
+else if (VIEW && LINE) window.TAGS = Object.entries(SPOTS).map(([id, [x, y, h]]) => {
+  const v = new THREE.Vector3(x, h, -y).project(camera)
+  return { id, x: +((v.x + 1) / 2).toFixed(4), y: +((1 - v.y) / 2).toFixed(4), edge: "" }
+})
 
 // ------------------------------------------------------------ render
 if (LINE) {
@@ -581,24 +859,34 @@ if (LINE) {
   lineMat.resolution.set(FW, FH)
   lineMat.userData.outlineParameters = { visible: false }
   for (const o of meshes) {
-    if (o.userData.noEdges) continue
+    if (o.userData.noEdges || !o.visible) continue
     const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
     const l = new LineSegments2(g, lineMat)
     l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
     scene.add(l)
   }
+  // the service in its colours, over the ink drawing and through whatever stands in front of it
+  for (const [col, wdt, ...p] of runs) {
+    const m = new LineMaterial({ color: col, linewidth: wdt, depthTest: false })
+    m.resolution.set(FW, FH); m.userData.outlineParameters = { visible: false }
+    const l = new LineSegments2(new LineSegmentsGeometry().setPositions(p), m)
+    l.renderOrder = 10
+    scene.add(l)
+  }
   const ink = new THREE.Color(INK)
-  new OutlineEffect(renderer, { defaultThickness: 0.0026, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
+  new OutlineEffect(renderer, { defaultThickness: ITEM ? 0.004 : 0.0026, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
 } else {
   const pmrem = new THREE.PMREMGenerator(renderer)
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
-  scene.environmentIntensity = 0.4
-  scene.add(new THREE.HemisphereLight(0xeef3ff, 0x8a7a5a, HERO ? 0.8 : 0.9))
+  scene.environmentIntensity = DUSK ? 0.08 : 0.4
+  scene.add(new THREE.HemisphereLight(DUSK ? 0x5a6a90 : 0xeef3ff, DUSK ? 0x2a2a30 : 0x8a7a5a, DUSK ? 0.45 : HERO ? 0.8 : 0.9))
   // daylight: in the hero the sun is low behind the wall's left end, so the wall's shadow falls across the road toward
-  // the viewer and the LED face sits in soft shade; in the model view it is high over the front left
-  const sun = new THREE.DirectionalLight(0xfff2de, HERO ? 2.8 : 2.7)
-  sun.position.set(...(HERO ? [-18, 26, -40] : [-6, 30, 26]))
-  sun.target.position.set(19, 0, 3)
+  // the viewer and the LED face sits in soft shade; in the model view it is high over the front left; at dusk only the
+  // last of the sky; from straight above for the build-up, so no shadow crosses into a neighbouring piece
+  const sun = new THREE.DirectionalLight(DUSK ? 0x8fa2c8 : 0xfff2de, DUSK ? 0.5 : HERO ? 2.8 : 2.7)
+  sun.position.set(...(HERO ? [-18, 26, -40] : TOP ? [centre.x + 0.01, 30, centre.z + 0.01]
+    : ITEM ? [centre.x - 14, centre.y + 20, centre.z + 12] : [-6, 30, 26]))
+  sun.target.position.copy(centre)
   sun.castShadow = true
   sun.shadow.mapSize.set(4096, 4096)
   Object.assign(sun.shadow.camera, { left: -28, right: 28, top: 28, bottom: -28, near: 1, far: 120 })
@@ -607,10 +895,12 @@ if (LINE) {
   const composer = new EffectComposer(renderer)
   composer.setSize(FW, FH)
   composer.addPass(new RenderPass(scene, camera))
-  const ao = new GTAOPass(scene, camera, FW, FH)
-  ao.blendIntensity = 0.8
-  ao.updateGtaoMaterial({ radius: 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
-  composer.addPass(ao)
+  if (!TOP) {
+    const ao = new GTAOPass(scene, camera, FW, FH)
+    ao.blendIntensity = 0.8
+    ao.updateGtaoMaterial({ radius: ITEM ? 0.05 : 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
+    composer.addPass(ao)
+  }
   composer.addPass(new OutputPass())
   composer.render()
 }

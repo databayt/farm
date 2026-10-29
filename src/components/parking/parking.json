@@ -85,5 +85,43 @@
       "Reversing out: a parked car's tail is about 3 m from the back of the sign wall or the hedge, less than a car's length, so a car between two parked ones cannot back out. Bays at 90 degrees usually have about 6 m behind them [A], so they want about 3 m more.",
       "A car waiting at the shut gate stands on the road: the gate line is 0.8 m from the road's edge."
     ]
+  },
+  "build": {
+    "about": "[A] How the green parking is built, a common way to lay grass pavers for cars on a clay soil, until a builder sees the ground and the soil is tested: the turf lifted and the box dug out, a compacted crushed-stone sub-base, a bedding layer of sharp sand and topsoil, the fieldstone edging set round it to hold the pavers, the paver blocks laid butted, their cells filled with topsoil and seeded, then the sett strips between the bays and the wheel stops. Depths are planning figures; the sub-base thickens if the ground is soft. The BuildUp on the page and its renders (parking.html?top=) read these.",
+    "dig": 0.32,
+    "subbase": 0.2,
+    "bedding": 0.04,
+    "paver": { "l": 0.4, "w": 0.4, "h": 0.08, "cell": 0.1 },
+    "cure": "6 to 8 weeks of rain or watering before cars park on the grass"
+  },
+  "drainage": {
+    "about": "[A] Where the rain goes. The pavers and their sub-base are the drain: rain falls through the grass cells and is held in the stone while it soaks away, so the lawn needs no gully. For a storm heavier than that, the lot falls 1 in 100 along its length to its west end, where a gravel trench across that end, outside the edging, takes the overflow into a soakaway pit under the lawn. The turn falls 1 in 50 back toward the public road, so the road water never runs in through the gate; the rock road is crowned and sheds to its fieldstone edgings and the grass beyond them. The soakaway is sized after a percolation test on site [U]; until then its size is a placeholder.",
+    "lot": 0.01,
+    "turn": 0.02,
+    "road": 0.025,
+    "trench": {
+      "about": "[A] a trench 0.4 m wide and 0.6 m deep across the west end, 0.3 m outside the edging, lined with geotextile, filled with 20 to 40 mm clean stone round a 110 mm perforated pipe, falling 1 in 100 to the pit at its south end, by the hedge and clear of the shade tree's trunk.",
+      "x": 7.4,
+      "y": [-4.6, 0.6],
+      "w": 0.4,
+      "depth": 0.6,
+      "pipe": 0.11
+    },
+    "pit": {
+      "about": "[A] a soakaway pit 1.2 m square and 1.2 m deep, stone-filled and wrapped in geotextile, under a slab cover set flush with the grass; sized again after the percolation test [U].",
+      "at": [6, -4.9],
+      "size": 1.2,
+      "depth": 1.2
+    }
+  },
+  "lighting": {
+    "about": "[A] The way in lit after dark, on the farm’s outdoor-lights circuit, one of the loads that must never stop (guide/trades/power.md). A feed from the compound’s board comes down the rock road in a buried duct, past the inner gate’s lantern, to a weatherproof box on the back of the sign wall. In the box: an isolator, a dusk-to-dawn photocell with a timer, and the 24 V driver for the sign’s LED letters. From the box, the sign panel, and a cable along the back of the hedge to the lantern on the outer gate’s left pillar. Cables run in 50 mm ducts about 450 mm down under a warning tape, and rise inside the pillars and the wall. The circuit’s RCD and breaker are at the compound’s board. Nothing is sized or sourced yet: the lamps’ and the letters’ wattage wait for the products.",
+    "box": { "about": "The weatherproof box (IP65 or better) on the sign wall's back face, at its east end: x its centre, y the wall's back face, h its bottom and top.", "x": 18.2, "y": -6.4, "h": [0.6, 1], "w": 0.4, "d": 0.15 },
+    "duct": { "d": 0.05, "depth": 0.45 },
+    "route": {
+      "about": "The duct, in plan, as polylines: the feed from the inner gate down the lawn 0.3 m outside the rock road's west edging, under the sett strip on bay 5's open side and across under the lawn behind the sign wall to the box; and the branch from the box behind the hedge to the outer gate's left pillar. The model view shows the rock road's first 40 %, so there the feed comes in from beyond the drawing.",
+      "feed": [[23.7, 11.1], [22.8, 6.7], [21.7, 1.4], [21, 1], [21, -5.7], [18.3, -5.7], [18.3, -6.3]],
+      "lantern": [[18.1, -6.3], [18.1, -6.05], [19.7, -6.05], [19.7, -6.3]]
+    }
   }
 }
