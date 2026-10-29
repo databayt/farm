@@ -37,7 +37,7 @@ const T = ([x, y]: Point) => [x, SIZE - y]
 // the public bathroom, the outermost building east.
 const court = volleyball.court
 const VIEW = [
-  N.continues.at[0] - N.continues.length - 1.5,
+  N.continues.at[0] - N.continues.text - 1,
   0.6,
   Math.max(...compound.units.map((u) => B(u.box)[2])) + 1.5,
   55.5,
@@ -403,7 +403,8 @@ function Volleyball() {
 // West of the compound, past the break, in the band of land from the study room to the first guest room: the
 // first half of the vegetable field's two blocks nearest it (/en/farming), cut there; each bed 1.2 x 10 m as plan.json lays them, turned a quarter
 // so the field runs west: plan.json's y (toward its far end) runs left, its x (its fence's east side at the top)
-// runs down the page. Its fence on the two sides toward the compound; the field goes on past both break lines.
+// runs down the page. Its fence on the two sides toward the compound; the bottom is cut with a break line and the
+// west side left open toward the arrow: the field goes on.
 function Field() {
   const [fx, fy] = T(N.field.corner)
   const [, top, east] = plan.fence
@@ -421,7 +422,6 @@ function Field() {
         return <rect key={b.id} {...at([x0, y0, x0 + b.h, y0 + b.w])} {...thin} strokeDasharray={b.crop === "rest" ? "3 3" : undefined} />
       })}
       <path d={`M${wx} ${ey0}H${ex}V${ey1}`} {...medium} />
-      <Zigzag a={[wx, ey0]} b={[wx, ey1]} />
       <Zigzag a={[wx, ey1]} b={[ex, ey1]} />
       <Page href={N.field.page}>
         <text x={f((wx + ex) / 2)} y={f(ey1 + 1.4)} textAnchor="middle" style={label}>
@@ -440,11 +440,11 @@ function Continues() {
   return (
     <Page href={N.continues.page}>
       <path d={`M${f(x)} ${f(y)}H${f(end)}M${f(end + 0.6)} ${f(y - 0.4)}L${f(end)} ${f(y)}L${f(end + 0.6)} ${f(y + 0.4)}`} {...medium} />
-      <text x={f(end)} y={f(y - 1)} style={small}>
-        SEE THE WHOLE FARM
+      <text x={f(x)} y={f(y - 0.8)} textAnchor="end" style={small}>
+        TO BE CONTINUED
       </text>
-      <text x={f(end)} y={f(y + 1.5)} style={{ ...small, fontWeight: 500 }}>
-        FIELD · NURSERY · LIVESTOCK
+      <text x={f(x)} y={f(y + 1.3)} textAnchor="end" style={{ ...small, fontWeight: 500 }}>
+        SEE THE FULL FARM
       </text>
     </Page>
   )

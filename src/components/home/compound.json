@@ -180,7 +180,7 @@
     "about": "The master plan's neighbours of the compound (src/components/site/site.json), brought close so the homepage's 2D and 3D show them beside it at their true sizes (founder, 2026-10-29). Positions are in this file's frame AFTER the spread (x east, y south), so neither drawing spreads them again. The volleyball court stands on the lawn between the guest rooms and the parking, turned so its long side runs east-west (turn). The land lies west, past a break, as one horizontal band from the study room's back wall to the end of the first guest room (founder, 2026-10-29): the vegetable field turned a quarter (turn: plan.json's y runs west, its x runs toward the gates), the first half of each of its two blocks nearest the compound (beds, of ten) from public/designs/farming/data/plan.json, cut there (founder, 2026-10-29). The rest of the field, the nursery and the livestock lie beyond the cut: an arrow there links to /en/farming, which draws the whole farm. On the land the field starts some 26 m past the compound and the livestock lies beyond it, sited after the 200 m lake check. Each links to its page.",
     "volleyball": { "page": "/en/volleyball", "at": [-7.5, 4.5], "turn": true },
     "field": { "page": "/en/farming", "corner": [-23.5, 44.94], "blocks": ["A4", "A3"], "beds": 5, "cut": 1.5, "turn": true },
-    "continues": { "page": "/en/farming", "at": [-35, 33.5], "length": 10 },
+    "continues": { "page": "/en/farming", "at": [-34.1, 33.5], "length": 3.5, "text": 6 },
     "break": -21.5
   },
   "spread": {
