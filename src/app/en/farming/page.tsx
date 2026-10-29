@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
-import { BlurImg } from "@/components/atom/blur-img"
+import { DrawingSection, ModelSection, PageHero } from "@/components/page/sections"
 import { Button } from "@/components/ui/button"
 import { BuildUp } from "@/components/docs/build-up"
 import { ItemRail, type RailItem } from "@/components/docs/item-rail"
@@ -51,33 +51,15 @@ export default function FarmingPage() {
     <main className="w-full flex-1">
       {/* First screen: a STAND-IN until a photo of the planted field or the founder's remaster: the block by
           the gate rendered from the main path (scripts/site/render/farming.html?mode=real). */}
-      <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#6f9a4a]">
-        <BlurImg src={`${D}/render/field-real.webp`} width={2400} height={1100} fetchPriority="high"
-          alt="Ten raised beds of red-brown soil on drip lines: herbs nearest, then amaranth, spinach, kale and staked tomatoes at the back, on a sandy path in the grass."
-          className="absolute inset-0 size-full object-cover object-[50%_45%]" />
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
-          <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
-            <p className="text-sm text-white/80">Digital Farm</p>
-            <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">
-              Everything on the plate, grown here
-            </h1>
-            <Button asChild className="mt-6">
-              <Link href="/#enquire">Book it now</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <PageHero src={`${D}/render/field-real.webp`} width={2400} height={1100} className="bg-[#6f9a4a]" imgClassName="object-[50%_45%]"
+        title="Everything on the plate, grown here"
+        alt="Ten raised beds of red-brown soil on drip lines: herbs nearest, then amaranth, spinach, kale and staked tomatoes at the back, on a sandy path in the grass." />
 
       {/* 2D, full screen: the field's plan (src/components/farming/farming-plan.tsx), in the text colour. */}
-      <section id="plans">
-        <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
-          <h2 className="text-3xl font-semibold tracking-tight">2D</h2>
-          <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
-            <FarmingPlan title={`Plan: ${bedsWide} raised beds 1.2 by 10 m in blocks of ten inside a fence, ${plan.bedsNeeded} of them planted for the galley and the rest resting or grown for sale, a 2 m main path from the gate on the garden walk to the galley, and the nursery's shade house beside the field.`}
-              className="h-auto w-full lg:h-full lg:w-auto" />
-          </div>
-        </div>
-      </section>
+      <DrawingSection id="plans" title="2D">
+        <FarmingPlan title={`Plan: ${bedsWide} raised beds 1.2 by 10 m in blocks of ten inside a fence, ${plan.bedsNeeded} of them planted for the galley and the rest resting or grown for sale, a 2 m main path from the gate on the garden walk to the galley, and the nursery's shade house beside the field.`}
+          className="h-auto w-full lg:h-full lg:w-auto" />
+      </DrawingSection>
 
       {/* Livestock: the homepage's 2D shows half the field and sends "the whole farm" here (D-035), so the farm's
           other land use is drawn here too, the house's plan from /en/livestock, with a link to its page. */}
@@ -97,25 +79,10 @@ export default function FarmingPage() {
 
       {/* 3D, in the 2D section's pattern: the block by the gate from the main path as a line drawing, then
           rendered. Both from scripts/site/render/farming.html. */}
-      <section id="model">
-        <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
-          <h2 className="text-3xl font-semibold tracking-tight">3D</h2>
-          <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${D}/render/field-line.png`} width={2400} height={1100}
-              alt="Line drawing of one block of ten raised beds seen from the main path: two drip lines along each bed, herbs in the nearest bed, then amaranth, spinach and kale, and tomatoes on stakes at the back."
-              className="w-full object-contain lg:max-h-full dark:invert" />
-          </div>
-        </div>
-        <figure className="px-4 pb-10 md:px-10">
-          <div className="overflow-hidden">
-            <BlurImg src={`${D}/render/field-real.webp`} width={2400} height={1100} loading="lazy"
-              alt="The same block rendered: red-brown beds with dark compost, black drip tape, herbs, wine-red amaranth, spinach, kale and staked tomatoes with red and yellow fruit, on a sandy path in the grass."
-              className="h-auto w-full" />
-          </div>
-          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model: the block by the gate, one season</figcaption>
-        </figure>
-      </section>
+      <ModelSection line={`${D}/render/field-line.png`} real={`${D}/render/field-real.webp`} width={2400} height={1100}
+        caption={<>Rendered from the design model: the block by the gate, one season</>}
+        lineAlt="Line drawing of one block of ten raised beds seen from the main path: two drip lines along each bed, herbs in the nearest bed, then amaranth, spinach and kale, and tomatoes on stakes at the back."
+        realAlt="The same block rendered: red-brown beds with dark compost, black drip tape, herbs, wine-red amaranth, spinach, kale and staked tomatoes with red and yellow fruit, on a sandy path in the grass." />
 
       {/* Field, pinned while one block builds up in fast motion, seen from above: the bare ground, the raised
           beds, the compost, the drip lines, the planting. Renders: farming.html?top=<layer>. */}

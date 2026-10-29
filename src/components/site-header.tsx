@@ -6,7 +6,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { DOCS, SiteMenu } from "@/components/site-menu"
 
-// The header on every page but the homepage (components/home/header.tsx draws its own): the farm's name, the
+// The header on the docs and the 404 (the homepage and /en/* use components/home/header.tsx): the farm's name, the
 // docs and the site menu. On a page that opens on a full-screen hero (overlay), it sits on the picture in white,
 // steps out of the way while the reader scrolls down and comes back, solid, as soon as they scroll up.
 export function SiteHeader({ overlay = false }: { overlay?: boolean }) {

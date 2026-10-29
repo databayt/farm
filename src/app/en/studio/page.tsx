@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 
 import { BlurImg } from "@/components/atom/blur-img"
+import { DrawingSection, ModelSection, PageHero } from "@/components/page/sections"
 import { Button } from "@/components/ui/button"
 import { Figure } from "@/components/docs/figure"
 import { BuildUp } from "@/components/docs/build-up"
@@ -417,60 +418,26 @@ export default function StudioPage() {
           the yellow container on its red deck in the eucalyptus, the slider half open on the bed, a steel ladder up to
           the lounge chairs on the roof. Shared from Gemini at 1376 px and upscaled 4x with Real-ESRGAN (x4plus).
           No "Concept render" badge on it: the founder took it off (2026-10-27), an exception to D-018's label. */}
-      <section className="relative h-svh min-h-[520px] w-full overflow-hidden bg-[#a9c8df]">
-        <BlurImg src={`${D}/render/studio-hero.jpg`} width={2400} height={1340} fetchPriority="high"
-          alt="A yellow container studio at golden hour under a dark roof canopy: the sliding glass wall half open on a bed, a sofa and two chairs, a red-railed timber deck with a bistro table and a potted plant, a steel ladder up the side to two lounge chairs on the roof, and eucalyptus behind."
-          className="absolute inset-0 size-full object-cover object-[50%_55%]" />
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
-          <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
-            <p className="text-sm text-white/80">Digital Farm</p>
-            <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">
-              Studio in nature, with forest vibes
-            </h1>
-            <Button asChild className="mt-6">
-              <Link href="/#enquire">Book it now</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <PageHero src={`${D}/render/studio-hero.jpg`} width={2400} height={1340} className="bg-[#a9c8df]" imgClassName="object-[50%_55%]"
+        title="Studio in nature, with forest vibes"
+        alt="A yellow container studio at golden hour under a dark roof canopy: the sliding glass wall half open on a bed, a sofa and two chairs, a red-railed timber deck with a bistro table and a potted plant, a steel ladder up the side to two lounge chairs on the roof, and eucalyptus behind." />
 
       {/* 2D, full screen: the simplified plan fills the screen; 3D follows straight after. */}
-      <section id="plans">
-        <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
-          <h2 className="text-3xl font-semibold tracking-tight">2D</h2>
-          {/* The simplified plan (render/plan.svg, black on transparent; inverted in dark mode), written by
-              the generator, across the full width. */}
-          <div className="mt-6 flex min-h-0 flex-1 items-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${D}/render/plan.svg`} alt="Plan: the bed at one end, a sofa with a table and two chairs, the galley on the bathroom wall, and at the other end the shower and WC behind a door, with the basin outside it."
-              className="w-full object-contain lg:max-h-full dark:invert" />
-          </div>
-        </div>
-      </section>
+      <DrawingSection id="plans" title="2D">
+        {/* The simplified plan (render/plan.svg, black on transparent; inverted in dark mode), written by
+            the generator, across the full width. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={`${D}/render/plan.svg`} alt="Plan: the bed at one end, a sofa with a table and two chairs, the galley on the bathroom wall, and at the other end the shower and WC behind a door, with the basin outside it."
+          className="w-full object-contain lg:max-h-full dark:invert" />
+      </DrawingSection>
 
       {/* 3D, full screen and in the 2D section's pattern: a black-and-white line drawing of the furnished
           room seen from the front (render/front-line.png, inverted in dark mode), then the same view rendered
           realistically (render/front-real.jpg). Both come from scripts/studio/render/room.html, built from
           render/scene.json. */}
-      <section id="model">
-        <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
-          <h2 className="text-3xl font-semibold tracking-tight">3D</h2>
-          <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`${D}/render/front-line.png`} width={2400} height={1100}
-              alt="Line drawing of the studio seen from the front with the front wall off: the bed against the wall with two storage boxes, a bedside table with a reading lamp, the sofa with a low table and two chairs, the galley with a wide two-zone hob under a slim hood, a sink and an overhead cabinet, and the bathroom with the shower, a wall-hung WC and the basin on its console outside the door."
-              className="w-full object-contain lg:max-h-full dark:invert" />
-          </div>
-        </div>
-        <figure className="px-4 pb-10 md:px-10">
-          <div className="overflow-hidden">
-            <BlurImg src={`${D}/render/front-real.jpg`} width={2400} height={1100} loading="lazy"
-              alt="The same view rendered with materials and daylight: pine furniture in a medium-oak finish on a natural oak floor, a white bed with storage boxes and a lit bedside lamp, a grey sofa with yellow and blue cushions, a table and two chairs, the galley with a black-glass hob under a black hood, and a white marble bathroom with a glass shower screen, a wall-hung WC and a basin on a black metal console."
-              className="h-auto w-full" />
-          </div>
-          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
-        </figure>
-      </section>
+      <ModelSection line={`${D}/render/front-line.png`} real={`${D}/render/front-real.jpg`} width={2400} height={1100}
+        lineAlt="Line drawing of the studio seen from the front with the front wall off: the bed against the wall with two storage boxes, a bedside table with a reading lamp, the sofa with a low table and two chairs, the galley with a wide two-zone hob under a slim hood, a sink and an overhead cabinet, and the bathroom with the shower, a wall-hung WC and the basin on its console outside the door."
+        realAlt="The same view rendered with materials and daylight: pine furniture in a medium-oak finish on a natural oak floor, a white bed with storage boxes and a lit bedside lamp, a grey sofa with yellow and blue cushions, a table and two chairs, the galley with a black-glass hob under a black hood, and a white marble bathroom with a glass shower screen, a wall-hung WC and a basin on a black metal console." />
 
       {/* Floor, pinned while it builds up in fast motion, seen from above: the empty container, then flat
           wood sheets screwed down, then the planks, then the bathroom's vinyl. Renders: scripts/studio/render/floor.html. */}

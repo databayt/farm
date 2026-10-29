@@ -7,7 +7,7 @@ import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // Every page of the site, in the founder's order (2026-10-28), then the docs. The homepage's header
-// (components/home/header.tsx) and every other page's (site-header.tsx) open this one menu.
+// (components/home/header.tsx, on the homepage and every /en page) and the docs header (site-header.tsx) open this one menu.
 export const PAGES = [
   { href: "/en/studio", label: "Studio" },
   { href: "/en/guest-room", label: "Guest room" },
