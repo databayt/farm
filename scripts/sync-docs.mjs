@@ -228,11 +228,13 @@ function escapeProse(line) {
     .join("")
 }
 
-/** Links to other study files become /docs links, links into public/ become downloads, others become code. */
+/** Links to other study files become /docs links, links into public/ become downloads, site pages stay links, others become code. */
 function rewriteLinks(line, src) {
   return line.replace(/(!?)\[([^\]]+)\]\(([^)\s]+)\)/g, (match, bang, text, target) => {
     if (bang) throw new Error(`${src}: put images on their own line (${target})`)
     if (/^(https?:|mailto:|#)/.test(target)) return match
+    // the site's own pages (/en/farming, the homepage's /#plans) stay links
+    if (/^\/(en\/|#|$)/.test(target)) return match
     const [path, hash] = target.split("#")
     const abs = resolveTarget(src, path)
     const slug = slugByPath.get(toPosix(relative(ROOT, abs)))

@@ -24,8 +24,12 @@ The whole farm on one sheet: where each part goes, the trees, the paths and the 
 | Compost, tanks, tools | a 10 m strip | Between the beds and the animals |
 | Livestock paddock | {{site.paddock_m2}} m² | Fenced, with shade trees at the corners |
 | Poultry and goat houses | {{site.houses_m2}} m² | Sited only after the 200 m lake check |
-| Lawn | beside the compound | Volleyball, the guest kitchen and BBQ, the solar option |
+| Lawn | beside the compound | Volleyball ([its page](/en/volleyball)), the guest kitchen and BBQ, the solar option |
 | Woodland and walks | {{site.woodland_m2}} m² | The forest: trees on an even, loose grid, a loop walk, an event clearing |
+
+The homepage draws the compound with its nearest neighbours: the volleyball court on the lawn, and the vegetable field and the livestock house drawn close, their true distances being the ones on this sheet. See [the farm plan](/#plans) and [its 3D model](/#model).
+
+![The compound with the volleyball court, the field's nearest beds and the livestock house, drawn close](../public/designs/compound/render/compound-real.webp)
 
 ## The trees: an even forest
 

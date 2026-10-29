@@ -6,7 +6,7 @@ Status: amabwiriza yo ku wa 2026-10-28. Umurima, ubutaka bwawo n'amazi yawo ntib
 
 Uko watangiza umurima w'imboga ugaburira igikoni gikuru (galley) kandi ukagurisha ibisagutse byawo: ibihembwe, uturima, amazi, ibihingwa n'ukwezi kwa mbere, intambwe ku yindi.
 
-English: [read this guide in English](vegetables.md) · Gucapa: [aya mabwiriza nka PDF](../../public/guides/vegetables-rw.pdf) · Uturima, ibihingwa n'ibiciro mu bishushanyo: [urupapuro rw'umurima](/en/farming)
+English: [read this guide in English](vegetables.md) · Gucapa: [aya mabwiriza nka PDF](../../public/guides/vegetables-rw.pdf) · Uturima, ibihingwa n'ibiciro mu bishushanyo: [urupapuro rw'umurima](/en/farming) · Aho uri iruhande rw'inzu z'abashyitsi: [igishushanyo cy'umurima wose](/#plans)
 
 ## Umurima mu ncamake
 

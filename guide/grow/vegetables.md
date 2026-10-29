@@ -4,7 +4,7 @@ Status: guide of 2026-10-28. The field, its soil and its water are not yet measu
 
 How to start the vegetable field that feeds the galley and sells its surplus: the seasons, the beds, the water, the crops and the first month, step by step.
 
-Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](vegetables.rw.md) · Print: [this guide as a PDF](../../public/guides/vegetables.pdf) · The beds, crops and costs drawn: [the field page](/en/farming)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](vegetables.rw.md) · Print: [this guide as a PDF](../../public/guides/vegetables.pdf) · The beds, crops and costs drawn: [the field page](/en/farming) · Where it sits beside the compound: [the farm plan](/#plans)
 
 ## The field at a glance
 

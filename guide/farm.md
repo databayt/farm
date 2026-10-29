@@ -24,7 +24,7 @@ What the farm is, where it is and what already stands on it, so every guide star
 - **Containers:** red and yellow 20 ft boxes on steel decks about 700 mm up, with red pipe rails; the yellow joined pair with red doors (the future guest rooms); a teal 40 ft box; a red 20 ft kiosk (the future bar).
 - **A brick building** behind the containers; its use is not decided [U].
 - **The camping lawn:** pop-up tents, reed screens, thatched and coloured umbrellas, a round concrete fire pit, string lights for events. It has already hosted night camps with covered tables.
-- **Sport:** a volleyball net on the lawn.
+- **Sport:** a volleyball net on the lawn. The planned court, 18 × 9 m, is drawn on [its page](/en/volleyball) and beside the compound on [the farm plan](/#plans).
 - **Trees:** rows of young trees, palms, and a tall, slim tree line toward the lake.
 - **Arrival:** a timber X-braced gate on a concrete apron; red laterite roads; power poles along the road down to the lake.
 

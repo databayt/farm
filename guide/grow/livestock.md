@@ -4,7 +4,7 @@ Status: guide of 2026-10-28. No animal arrives before the checks below; house si
 
 How to start the animals that give the galley its eggs and, later, goats to sell: what to keep and why, the houses with their sizes, the daily care and the rules.
 
-Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](livestock.rw.md) · Print: [this guide as a PDF](../../public/guides/livestock.pdf)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](livestock.rw.md) · Print: [this guide as a PDF](../../public/guides/livestock.pdf) · The house drawn: [the livestock page](/en/livestock) · Where it sits beside the compound: [the farm plan](/#plans)
 
 ## What to keep, and when
 

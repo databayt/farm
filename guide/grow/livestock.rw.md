@@ -6,7 +6,7 @@ Status: amabwiriza yo ku wa 2026-10-28. Nta tungo rizazanwa mbere y'uko ibigenzu
 
 Uko watangira korora amatungo aha igikoni gikuru (galley) amagi, nyuma akazatanga n'ihene zo kugurisha: ayo korora n'impamvu, inzu zayo n'ingano zazo, uko yitabwaho buri munsi n'amategeko.
 
-English: [read this guide in English](livestock.md) · Gucapa: [aya mabwiriza nka PDF](../../public/guides/livestock-rw.pdf)
+English: [read this guide in English](livestock.md) · Gucapa: [aya mabwiriza nka PDF](../../public/guides/livestock-rw.pdf) · Inzu mu bishushanyo: [urupapuro rw'amatungo](/en/livestock) · Aho iri iruhande rw'inzu z'abashyitsi: [igishushanyo cy'umurima wose](/#plans)
 
 ## Amatungo yo korora, n'igihe
 
