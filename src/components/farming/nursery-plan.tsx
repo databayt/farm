@@ -2,8 +2,8 @@ import farming from "./farming.json"
 
 // The seedling nursery drawn in the pattern of the studio's plan (public/designs/studio/render/plan.svg): its shade-
 // net walls in a line with the poles solid, the two benches of trays and the path between them, the door at the end
-// toward the field; dimensioned as the studio's: the zones named in one row above with a chain of their widths under
-// them, a chain across the house down one side, a tray's size, the overall length below and the width on the far side. Metres, the house's long
+// toward the field; dimensioned as the studio's: the zones named small in one row above, each thing measured on
+// its own with a light broken line and slash ticks, the overall length below and the width on the far side. Metres, the house's long
 // side across the page. Sizes from src/components/farming/farming.json, all [A]. In currentColor.
 
 const { nursery: N } = farming
@@ -12,44 +12,36 @@ const fine = { ...line, strokeWidth: 0.5 } as const
 const dashed = { ...line, strokeDasharray: "4 3" } as const
 const solid = { fill: "currentColor" } as const
 const font = { fontFamily: "Helvetica, Arial, sans-serif", fill: "currentColor" } as const
-const label = { ...font, fontSize: 0.2, fontWeight: 700, letterSpacing: "0.03em" } as const
-const small = { ...font, fontSize: 0.15 } as const
+const label = { ...font, fontSize: 0.115, fontWeight: 700, letterSpacing: "0.03em" } as const
+const small = { ...font, fontSize: 0.095 } as const
 
 const f = (n: number) => +n.toFixed(3)
 const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 
-function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.08, cx = f((x0 + x1) / 2)
+// Dimensions as the studio's plan draws them: a thin line broken round its number, a slash tick at each end with
+// the line running on a little past it; each measures one thing
+const TICK = 0.05, OVER = 0.05, GAP = 0.045
+const textW = (n: string) => n.length * 0.058 + 2 * GAP
+function Dimension({ x0, x1, y, text }: { x0: number; x1: number; y: number; text?: string }) {
+  const t = text ?? mm(x1 - x0), cx = (x0 + x1) / 2, h = textW(t) / 2
   return (
     <g>
-      <line x1={x0} x2={x1} y1={y} y2={y} {...line} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...line} />)}
-      {x1 - x0 < 1 ? ( // a short run: its number beside the line, above it, as the studio's
-        <text x={cx} y={f(y - 0.14)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
-      ) : (
-        <>
-          <rect x={f(cx - 0.4)} y={f(y - 0.12)} width={0.8} height={0.24} className="fill-background" />
-          <text x={cx} y={f(y + 0.05)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
-        </>
-      )}
+      <line x1={f(x0 - OVER)} x2={f(cx - h)} y1={y} y2={y} {...fine} />
+      <line x1={f(cx + h)} x2={f(x1 + OVER)} y1={y} y2={y} {...fine} />
+      {[x0, x1].map((x) => <line key={x} x1={f(x - TICK)} x2={f(x + TICK)} y1={f(y + TICK)} y2={f(y - TICK)} {...line} />)}
+      <text x={f(cx)} y={f(y + 0.033)} textAnchor="middle" style={small}>{t}</text>
     </g>
   )
 }
-// the same, standing: the text turned to read down the page, as the studio's
+// the same, standing: the text turned to read down the page
 function DimensionUp({ y0, y1, x }: { y0: number; y1: number; x: number }) {
-  const tick = 0.08, cy = f((y0 + y1) / 2)
+  const t = mm(y1 - y0), cy = (y0 + y1) / 2, h = textW(t) / 2
   return (
     <g>
-      <line x1={x} x2={x} y1={y0} y2={y1} {...line} />
-      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...line} />)}
-      {y1 - y0 < 1 ? ( // a short run: its number beside the line, outside it
-        <text x={f(x - 0.14)} y={cy} textAnchor="middle" transform={`rotate(90 ${f(x - 0.14)} ${cy})`} style={small}>{mm(y1 - y0)}</text>
-      ) : (
-        <>
-          <rect x={f(x - 0.12)} y={f(cy - 0.4)} width={0.24} height={0.8} className="fill-background" />
-          <text x={f(x + 0.05)} y={cy} textAnchor="middle" transform={`rotate(90 ${f(x + 0.05)} ${cy})`} style={small}>{mm(y1 - y0)}</text>
-        </>
-      )}
+      <line y1={f(y0 - OVER)} y2={f(cy - h)} x1={x} x2={x} {...fine} />
+      <line y1={f(cy + h)} y2={f(y1 + OVER)} x1={x} x2={x} {...fine} />
+      {[y0, y1].map((y) => <line key={y} x1={f(x - TICK)} x2={f(x + TICK)} y1={f(y + TICK)} y2={f(y - TICK)} {...line} />)}
+      <text x={f(x + 0.033)} y={f(cy)} textAnchor="middle" transform={`rotate(90 ${f(x + 0.033)} ${f(cy)})`} style={small}>{t}</text>
     </g>
   )
 }
@@ -61,7 +53,7 @@ export function NurseryPlan({ title, className }: { title: string; className?: s
   const across = Math.floor(b.d / t.w), along = Math.floor(b.l / t.l)
   const posts = Array.from({ length: Math.round(L / N.post) + 1 }, (_, k) => k * N.post)
   return (
-    <svg viewBox={`-1.0 -1.35 ${f(L + 2.25)} ${f(W + 2.05)}`} role="img" aria-label={title} className={className}>
+    <svg viewBox={`-0.4 -0.6 ${f(L + 1.6)} ${f(W + 1.0)}`} role="img" aria-label={title} className={className}>
       {/* The shade-net walls, the poles every 2 m solid, the door in the end toward the field, its swing dashed */}
       <path d={`M${L} ${f(d0)}L${L} 0L0 0L0 ${W}L${L} ${W}L${L} ${f(d1)}`} {...line} />
       {posts.flatMap((x) => [0, W].map((y) => <rect key={`${x}-${y}`} x={f(x - 0.06)} y={f(y - 0.06)} width={0.12} height={0.12} {...solid} />))}
@@ -80,26 +72,21 @@ export function NurseryPlan({ title, className }: { title: string; className?: s
       {/* The tap by the door */}
       <circle cx={N.tap.x} cy={N.tap.y} r={0.09} {...line} />
 
-      {/* What is where, in one row above, each with its width under it, as the studio's BED 1,640 · SEATING 1,300 */}
-      <text x={f(b.inset + b.l / 2)} y={-0.95} textAnchor="middle" style={label}>SEEDLING TRAYS</text>
-      <text x={f((b.inset + b.l + L) / 2)} y={-0.95} textAnchor="middle" style={label}>DOOR</text>
-      <Dimension x0={0} x1={b.inset} y={-0.45} />
-      <Dimension x0={b.inset} x1={f(b.inset + b.l)} y={-0.45} />
-      <Dimension x0={f(b.inset + b.l)} x1={L} y={-0.45} />
-      <text x={f(b.inset + b.l / 2)} y={f(W / 2 + 0.07)} textAnchor="middle" style={small}>PATH</text>
-      <text x={N.tap.x} y={f(N.tap.y + 0.3)} textAnchor="middle" style={small}>TAP</text>
+      {/* What is where, in one row above, each with its size under it, as the studio's BED 1,640 · SEATING 1,300 */}
+      <text x={f(b.inset + b.l / 2)} y={-0.42} textAnchor="middle" style={label}>SEEDLING TRAYS</text>
+      <text x={f(L - 0.4)} y={-0.42} textAnchor="middle" style={label}>DOOR</text>
+      <Dimension x0={b.inset} x1={f(b.inset + b.l)} y={-0.2} />
+      <text x={f(b.inset + b.l / 2)} y={f(W / 2 + 0.035)} textAnchor="middle" style={small}>PATH</text>
+      <text x={N.tap.x} y={f(N.tap.y + 0.22)} textAnchor="middle" style={small}>TAP</text>
 
-      {/* Across the house, down the near side: wall to bench, bench, path, bench, bench to wall */}
-      {[0, b.inset, b.inset + b.d, W - b.inset - b.d, W - b.inset].map((y0, i, a) => (
-        <DimensionUp key={y0} y0={f(y0)} y1={f(a[i + 1] ?? W)} x={-0.45} />
-      ))}
-      {/* The door's width, by the door; one tray's size, on the first tray */}
-      <DimensionUp y0={f(d0)} y1={f(d1)} x={f(L - 0.4)} />
-      <Dimension x0={f(b.inset + 0.04)} x1={f(b.inset + 0.04 + t.l)} y={f(benches[1] - 0.25)} />
-
-      {/* The overall length below, the overall width on the far side */}
-      <Dimension x0={0} x1={L} y={f(W + 0.45)} />
-      <DimensionUp y0={0} y1={W} x={f(L + 0.95)} />
+      {/* One thing each: a bench's depth, the path between the benches, a tray, the door, the overall sizes */}
+      <DimensionUp y0={benches[0]} y1={f(benches[0] + b.d)} x={-0.2} />
+      <DimensionUp y0={benches[1]} y1={f(benches[1] + b.d)} x={-0.2} />
+      <DimensionUp y0={f(benches[0] + b.d)} y1={benches[1]} x={f(b.inset + b.l * 0.75)} />
+      <Dimension x0={f(b.inset + 0.04)} x1={f(b.inset + 0.04 + t.l)} y={f(benches[1] - 0.15)} />
+      <DimensionUp y0={f(d0)} y1={f(d1)} x={f(L - 0.2)} />
+      <Dimension x0={0} x1={L} y={f(W + 0.25)} />
+      <DimensionUp y0={0} y1={W} x={f(L + 1.05)} />
     </svg>
   )
 }
