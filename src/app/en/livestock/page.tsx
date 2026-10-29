@@ -20,12 +20,13 @@ const D = "/designs/livestock"
 export default function LivestockPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: the founder's photo (2026-10-29, D-042), the yard's look and feel: a thatched shed, a palisade,
-          crooked rail fences lashed with rope, goats and sheep on straw. Cut to 2400 x 1340 from the 2000 px original
-          (assets/livestock/hero-reference.png, above the Lens badge in its corner). The words keep the lower left. */}
-      <PageHero src={`${D}/render/livestock-hero.jpg`} width={2400} height={1340} className="bg-[#d9d4c6]" imgClassName="object-[60%_60%]"
+      {/* First screen: the founder's Nano Banana remake (2026-10-29, D-046) of the reference photo on the farm: the shed,
+          the lashed rails and the baskets of the photo, set in Rwanda's terraced green hills with eucalyptus and banana
+          plants, the herd in the yard and a sheep in the shed, the dovecote, the cats' house, the tank, the compost bays
+          and the dogs' kennels. Served at its native 1678 x 937 (original: assets/livestock/hero-gemini.png). */}
+      <PageHero src={`${D}/render/livestock-hero.jpg`} width={1678} height={937} className="bg-[#b9bdb4]" imgClassName="object-[55%_55%]"
         title="Goats and sheep on open pasture"
-        alt="A small thatched shed of dark boards and poles, a white goat inside; in front, goats and woolly sheep on earth and straw among straw bales, behind a crooked rail fence of barked poles lashed with rope; a board trough under the rails, cut stone blocks and woven baskets outside; a palisade of upright poles, trees and misty wooded hills behind." />
+        alt="A livestock yard on a Rwandan hillside under a soft grey sky: a shed with a shaggy thatched roof, goats and black-headed sheep on straw behind a rail fence lashed with rope, a sheep in the shed, a dovecote with white doves and a cats’ house on posts at the left, a water tank and two dog kennels at the right, woven baskets by the gate, a palisade of upright poles, banana plants and eucalyptus, and terraced green hills behind." />
 
       {/* 2D, full screen: the house's plan (src/components/livestock/livestock-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
