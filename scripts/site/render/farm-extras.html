@@ -3,8 +3,8 @@
   /en/farming's two smaller 3D views, in the pattern of the studio's and the field's: on the white page, seen from
   the front with a long lens, from src/components/farming/farming.json and public/designs/farming/data/plan.json.
 
-    ?view=nursery  the seedling nursery: the shade-net house on its eucalyptus poles, the net off the front so its
-                   two benches of trays show, the door at the end, the tap   -> render/nursery-line.png, nursery-real.webp
+    ?view=nursery  the seedling nursery seen level from the front, as the studio's: the shade-net house on its
+                   eucalyptus poles, the net off the front and the roof so its two benches of trays show, the door at the end, the tap   -> render/nursery-line.png, nursery-real.webp
     ?view=fruit    a stretch of the fruit row behind the field's back fence: banana mats between avocado, mango,
                    lemon and papaya trees, at their 3 m spacing             -> render/fruit-line.png, fruit-real.webp
     &mode=line     line drawing on a transparent ground; otherwise materials and soft daylight
@@ -97,10 +97,12 @@ if (VIEW === "nursery") {
   const N = F.nursery, L = N.l, W = N.w, Ht = N.h, b = N.bench, t = N.tray
   blk(-0.3, -0.3, L + 0.3, W + 0.3, -0.03, 0, "ground")
   // the frame: poles every 2 m on both long sides, a ridge pole and rafters for a low pitched roof, the net over the back and the roof
-  for (let x = 0; x <= L + 1e-6; x += N.post) for (const z of [0, W]) cyl(x, z, 0.06, 0, Ht, "pole", 8, 0.055)
+  // the poles: every 2 m along the back; along the front only the corners, the rest off in this cutaway, as the
+  // studio's front wall
+  for (let x = 0; x <= L + 1e-6; x += N.post) for (const z of [0, W]) if (z === 0 || x === 0 || x >= L - 1e-6) cyl(x, z, 0.06, 0, Ht, "pole", 8, 0.055)
   for (const z of [0, W]) pipe([0, Ht, z], [L, Ht, z], 0.05, "pole")
   for (let x = 0; x <= L + 1e-6; x += N.post) pipe([x, Ht, 0], [x, Ht, W], 0.045, "pole")
-  add(new THREE.PlaneGeometry(L, W), "net", { pos: [L / 2, Ht + 0.02, W / 2], rot: [-Math.PI / 2, 0, 0], noEdges: true }) // the net roof
+  // the roof net is off in this cutaway, as the studio's ceiling, so the benches show
   add(new THREE.PlaneGeometry(L, Ht), "net", { pos: [L / 2, Ht / 2, 0], noEdges: true }) // the back; the front is drawn open
   for (const x of [0, L]) { // the ends: net, with the door frame in the end at +x
     add(new THREE.PlaneGeometry(W, Ht), "net", { pos: [x, Ht / 2, W / 2], rot: [0, Math.PI / 2, 0], noEdges: true })
@@ -165,10 +167,17 @@ if (VIEW === "fruit") {
 const bb = new THREE.Box3()
 for (const o of meshes) bb.expandByObject(o)
 const mid = bb.getCenter(new THREE.Vector3())
-const camera = new THREE.PerspectiveCamera(18, FW / FH, 0.3, 300)
-const [el, dist] = [THREE.MathUtils.degToRad(VIEW === "nursery" ? 32 : 18), 40]
-camera.position.set(mid.x, mid.y + dist * Math.sin(el), mid.z + dist * Math.cos(el))
-camera.lookAt(mid)
+let camera
+if (VIEW === "nursery") { // as the studio's front view: standing in front at a little over head height, level, so verticals stay straight
+  camera = new THREE.PerspectiveCamera(56, FW / FH, 0.1, 100)
+  camera.position.set(mid.x, 3.0, bb.max.z + 4.6)
+  camera.lookAt(mid.x, 3.0, 0)
+} else {
+  camera = new THREE.PerspectiveCamera(18, FW / FH, 0.3, 300)
+  const [el, dist] = [THREE.MathUtils.degToRad(18), 40]
+  camera.position.set(mid.x, mid.y + dist * Math.sin(el), mid.z + dist * Math.cos(el))
+  camera.lookAt(mid)
+}
 camera.updateMatrixWorld(); camera.updateProjectionMatrix(); scene.updateMatrixWorld(true)
 {
   let px = [Infinity, Infinity, -Infinity, -Infinity]

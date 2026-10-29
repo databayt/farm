@@ -8,7 +8,7 @@ export const DESIGN_BLUR: Record<string, string> = {
   "/designs/farming/render/field-hero.jpg": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADwAQCdASoQAAkAAsBMJbACdAEViUXagAAA/mAKEoGDntU0wgYHiH0zaPOOnKne36oHpJfWUtbggAAA",
   "/designs/farming/render/field-real.webp": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAAAQAgCdASoQAAcAAsBMJYwC7H8AFXirZBeAAP76re0yEvfzv16C8+ewb3xzyXLOBxB4RQunRUbSOwdIE95Z6f615Bmv9NAA",
   "/designs/farming/render/fruit-real.webp": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADQAQCdASoQAAUAAsBMJZwAAup1/+NYAAD+92mZX9/voTJccdb7z1L6GD1L2QaYeXAZugAeLACSAAAA",
-  "/designs/farming/render/nursery-real.webp": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAAAQAgCdASoQAAcAAsBMJQBOgP4Ay0ZRJjsAAP73bWjVA2MUtoXoqCTUVkMjRzER3VTcdRRWowv3S3WRXVnVRHyxisAAAA==",
+  "/designs/farming/render/nursery-real.webp": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAwAgCdASoQAAcAAsBMJZQCdH8GJ/gbDENzIAD++DX86xLkrvYfi0EKBrxp3bgkkNt19U/Loe7oTAx7UO2TGAhueG1dI1Bh0KwKvAAA",
   "/designs/galley/render/galley-hero.jpg": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADQAQCdASoQAAkAAsBMJbACdAD6CcGFgAD+8gjuvoSOpkoyBUqFUsAJiV2I78fJlAJMzzEnp6b6wSyI6KyBWgiX5U9fB8MQAAA=",
   "/designs/galley/render/galley-real.webp": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAACwAQCdASoQAAcAAsBMJbACdAEPNFggAP6RZFAXQGUwDucXP4Px602LgxI4H44fzFRKf3011dfAAA==",
   "/designs/guest-room/render/guest-room-hero.jpg": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADQAQCdASoQAAkAAsBMJZgCdAEPPDbmIAD+1RA4ku+Ew2Ub4CFXEApNN0iO8W/9WCrFX+qqeFnyIZM7LZVgI3eD9N4i5K3DLkW/AOjAAAA=",

@@ -94,8 +94,8 @@ export default function FarmingPage() {
         realAlt="The same block rendered on the white page: red-brown beds with dark compost, black drip tape, herbs, wine-red amaranth, spinach, kale and staked tomatoes with red and yellow fruit, on a sandy path." />
 
       <ModelSection id="nursery-3d" title="Nursery 3D" line={`${D}/render/nursery-line.png`} real={`${D}/render/nursery-real.webp`} width={2400} height={1100}
-        lineAlt="Line drawing of the seedling nursery from the front with its front net off: eucalyptus poles every 2 m under a flat frame, two waist-high benches of seedling trays, the door frame at the right end and a tap by it."
-        realAlt="The same view rendered: grey-green shade net over the roof and the back, timber benches holding black trays of green seedlings, and a steel tap by the door." />
+        lineAlt="Line drawing of the seedling nursery seen level from the front with its front and roof off: eucalyptus poles every 2 m along the back under a flat frame, two waist-high benches of seedling trays, the door frame at the right end and a tap by it."
+        realAlt="The same view rendered: eucalyptus poles, grey-green shade net at the back and the ends, timber benches holding black trays of green seedlings, and a steel tap by the door." />
 
       {/* The fruit row behind the field's back fence (D-052): banana mats between grafted avocado, mango, lemon and papaya
           trees, 3 m apart, in the field 2D's pattern (scripts/site/render/farm-extras.html?view=fruit). */}
