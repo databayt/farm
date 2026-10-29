@@ -84,8 +84,8 @@ export default function OfficePage() {
       {/* 3D, in the 2D section's pattern: a line drawing of the office seen from the front with its front wall
           and roof off, then the same view rendered. Both from scripts/site/render/office.html. */}
       <ModelSection line={`${D}/render/office-line.png`} real={`${D}/render/office-real.webp`} width={2400} height={1100}
-        lineAlt="Line drawing of the office from the front with the front wall off: the container raised on its frame, the deck with railings and the stair, a round table with four chairs, a split AC, the filing wall, the reception desk with a monitor and chair, and a second desk, printer and wall fan at the far end."
-        realAlt="The same view rendered: saffron corrugated steel, off-white walls and an oak floor, Medium Oak desks, shelves and meeting chairs, black mesh office chairs, coloured box files, a tall plant, on red steel posts with a eucalyptus deck and red railings over the lawn." />
+        lineAlt="Line drawing of the office from the front with the front wall off: the container raised on its frame, the deck with railings and the stair, an L sofa across the cargo-door end and along the back wall with a low table, and a big desk across the far end wall with a Studio Display, a Mac Studio and a gaming chair."
+        realAlt="The same view rendered: saffron corrugated steel, off-white walls and an oak floor, a stone-grey L sofa and a Medium Oak table, a Medium Oak desk with a silver Studio Display and Mac Studio, a black gaming chair, on red steel posts with a eucalyptus deck and red railings over the lawn." />
 
       {/* The rail, in the studio's pattern: each piece on its own (office.html?item=<id>), the card in focus showing its
           size, source and cost below. */}

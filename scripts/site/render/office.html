@@ -16,7 +16,7 @@
     &view=network   the same for the network (office.json `network`): the cabinet, its router, switch, gateway and
                 UPS, the access point and the data outlets -> render/network-line.png + network-tags.json
     &item=<id>  one piece on its own, real mode, 1200 x 900 on a transparent ground: the furniture and equipment
-                (table, woodchair, reception, officechair, monitor, desk, shelves, printer, screen, ac)
+                (sofa, sofatable, bigdesk, display, macstudio, keyboard, gamingchair)
                 -> render/furniture/<id>.webp; a device by its model -> render/electric/<id>.webp or render/network/<id>.webp
 
   Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
@@ -221,6 +221,8 @@ function mat(name) {
       leg: () => std({ color: "#9c9fa3", roughness: 0.35, metalness: 0.8 }),
       screen: () => std({ map: T.map, roughness: 0.3, emissive: "#ffffff", emissiveMap: T.map, emissiveIntensity: 0.25 }),
       monitor: () => std({ color: "#1d2a35", roughness: 0.2, emissive: "#4d6a80", emissiveIntensity: 0.25 }),
+      alu: () => std({ color: "#c7c9cc", roughness: 0.32, metalness: 0.75 }), // the Studio Display and the Mac Studio
+      fabric: () => std({ color: "#a59d90", roughness: 0.95 }), // the sofa, a warm stone weave
       files: () => std({ map: T.files, roughness: 0.8 }),
       pot: () => std({ color: "#d9d4c8", roughness: 0.8 }),
       soil: () => std({ color: "#4a3626", roughness: 1 }),
@@ -289,7 +291,7 @@ function pipe(a, b, r, name) {
 }
 
 // ------------------------------------------------------------ the box on its frame, the deck, the stair
-const { container: K, glazing, deck, meeting, reception, desk, shelves, printer, screen, ac, fan, plants } = C
+const { container: K, glazing, deck, workstation: ws, sofa } = C
 const L = K.l, H = K.w / 2, Y0 = K.raised, HC = K.h
 const FL = Y0 + K.floor, CE = Y0 + K.ceiling // inside: the finished floor, the ceiling
 const { x0: ix0, x1: ix1, y0: iz0, y1: iz1 } = K.inner
@@ -348,144 +350,80 @@ if (!LINE && !ITEM) {
 }
 
 // ------------------------------------------------------------ furniture
-// an office chair: five-star base on castors, gas column, black seat and a mesh back; faces +z (rot turns it)
-function officeChair(x, z, rot) {
+// a gaming chair: five-star base on castors, gas column, a deep seat and a tall winged back with a headrest;
+// faces +z (rot turns it)
+function gamingChair(x, z, rot) {
   const g = new THREE.Group(); g.position.set(x, FL, z); g.rotation.y = rot
-  const parts = []
-  const put = (geo, name, pos, r) => { const m = add(geo, name, { pos }); if (r) m.rotation.set(...r); scene.remove(m); g.add(m); parts.push(m) }
+  const put = (geo, name, pos, r) => { const m = add(geo, name, { pos }); if (r) m.rotation.set(...r); scene.remove(m); g.add(m) }
   for (let k = 0; k < 5; k++) {
     const a = (k * 2 * Math.PI) / 5
-    put(new THREE.BoxGeometry(0.03, 0.03, 0.3), "black", [Math.sin(a) * 0.14, 0.07, Math.cos(a) * 0.14], [0, a, 0])
-    put(new THREE.CylinderGeometry(0.025, 0.025, 0.04, 8), "black", [Math.sin(a) * 0.29, 0.025, Math.cos(a) * 0.29], [Math.PI / 2, a, 0])
+    put(new THREE.BoxGeometry(0.035, 0.035, 0.32), "black", [Math.sin(a) * 0.15, 0.07, Math.cos(a) * 0.15], [0, a, 0])
+    put(new THREE.CylinderGeometry(0.028, 0.028, 0.045, 8), "black", [Math.sin(a) * 0.31, 0.028, Math.cos(a) * 0.31], [Math.PI / 2, a, 0])
   }
-  put(new THREE.CylinderGeometry(0.025, 0.025, 0.36, 8), "leg", [0, 0.26, 0])
-  put(new RoundedBoxGeometry(0.48, 0.07, 0.46, 3, 0.025), "mesh", [0, 0.47, 0.02])
-  put(new RoundedBoxGeometry(0.45, 0.52, 0.04, 3, 0.018), "mesh", [0, 0.82, -0.22], [-0.12, 0, 0])
+  put(new THREE.CylinderGeometry(0.028, 0.028, 0.34, 8), "leg", [0, 0.25, 0])
+  put(new RoundedBoxGeometry(0.54, 0.1, 0.52, 3, 0.04), "mesh", [0, 0.47, 0.02])
+  put(new RoundedBoxGeometry(0.54, 0.86, 0.09, 3, 0.04), "mesh", [0, 0.98, -0.25], [-0.14, 0, 0])
+  put(new RoundedBoxGeometry(0.3, 0.12, 0.06, 3, 0.025), "black", [0, 1.28, -0.27], [-0.14, 0, 0]) // the headrest pad
   for (const s of [-1, 1]) {
-    put(new THREE.BoxGeometry(0.03, 0.2, 0.03), "black", [s * 0.25, 0.58, 0.05])
-    put(new THREE.BoxGeometry(0.05, 0.025, 0.24), "black", [s * 0.25, 0.69, 0.05])
+    put(new RoundedBoxGeometry(0.07, 0.5, 0.1, 3, 0.03), "mesh", [s * 0.27, 0.86, -0.22], [-0.14, 0, 0]) // the wings
+    put(new THREE.BoxGeometry(0.03, 0.22, 0.03), "black", [s * 0.29, 0.6, 0.05])
+    put(new RoundedBoxGeometry(0.07, 0.035, 0.26, 3, 0.012), "black", [s * 0.29, 0.72, 0.05])
   }
   scene.add(g)
   g.updateMatrixWorld(true)
 }
-// a timber meeting chair: four legs, a seat, a slatted back; faces +z
-function woodChair(x, z, rot) {
-  const { w, d, seat, back } = meeting.chair
-  const g = new THREE.Group(); g.position.set(x, FL, z); g.rotation.y = rot
-  const put = (geo, name, pos) => { const m = add(geo, name, { pos }); scene.remove(m); g.add(m) }
-  for (const [lx, lz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
-    const top = lz < 0 ? back : seat
-    put(new THREE.BoxGeometry(0.035, top, 0.035), "oak", [lx * (w / 2 - 0.03), top / 2, lz * (d / 2 - 0.03)])
-  }
-  put(new THREE.BoxGeometry(w, 0.03, d), "oak", [0, seat, 0])
-  for (const y of [seat + 0.18, seat + 0.32]) put(new THREE.BoxGeometry(w - 0.04, 0.07, 0.02), "oak", [0, y, -d / 2 + 0.03])
-  scene.add(g)
-  g.updateMatrixWorld(true)
-}
-// a desk with panel ends and a modesty panel, as in today's office
-function panelDesk(x0, z0, x1, z1, h, modestyAt) {
+// a desk with panel ends and a modesty panel
+function panelDesk(x0, z0, x1, z1, h) {
   blk(x0, z0, x1, z1, FL + h - 0.025, FL + h, "oak")
-  const along = x1 - x0 > z1 - z0
-  if (along) {
-    for (const x of [x0 + 0.01, x1 - 0.035]) blk(x, z0 + 0.03, x + 0.025, z1 - 0.03, FL, FL + h - 0.025, "oak")
-    const z = modestyAt === "front" ? z1 - 0.06 : z0 + 0.03
-    blk(x0 + 0.035, z, x1 - 0.035, z + 0.02, FL + 0.3, FL + h - 0.025, "oak")
-  } else {
-    for (const z of [z0 + 0.01, z1 - 0.035]) blk(x0 + 0.03, z, x1 - 0.03, z + 0.025, FL, FL + h - 0.025, "oak")
-    blk(x1 - 0.05, z0 + 0.035, x1 - 0.03, z1 - 0.035, FL + 0.3, FL + h - 0.025, "oak")
-  }
-}
-function monitor(x, z, top, rot) {
-  const g = new THREE.Group(); g.position.set(x, top, z); g.rotation.y = rot
-  const put = (geo, name, pos) => { const m = add(geo, name, { pos }); scene.remove(m); g.add(m) }
-  put(new THREE.BoxGeometry(0.22, 0.012, 0.16), "black", [0, 0.006, 0])
-  put(new THREE.BoxGeometry(0.04, 0.2, 0.025), "black", [0, 0.11, -0.03])
-  put(new THREE.BoxGeometry(0.56, 0.34, 0.025), "black", [0, 0.36, -0.01])
-  put(new THREE.BoxGeometry(0.53, 0.31, 0.004), "monitor", [0, 0.36, 0.004])
-  put(new THREE.BoxGeometry(0.42, 0.015, 0.13), "black", [0, 0.008, 0.2]) // the keyboard
-  scene.add(g)
-  g.updateMatrixWorld(true)
-}
-function plant(x, z, y0, s) {
-  cyl(x, z, 0.13 * s, y0, 0.28 * s, "pot", 20, 0.16 * s)
-  cyl(x, z, 0.14 * s, y0 + 0.26 * s, 0.015, "soil", 20)
-  const leaves = [[0, 0.62, 0, 0.22], [0.1, 0.48, 0.06, 0.15], [-0.1, 0.5, -0.04, 0.16], [0.03, 0.78, -0.05, 0.14], [-0.06, 0.4, 0.09, 0.12]]
-  leaves.forEach(([dx, dy, dz, r], i) => add(new THREE.IcosahedronGeometry(r * s, 1), i % 2 ? "leaf2" : "leaf", { pos: [x + dx * s, y0 + dy * s, z + dz * s] }))
-  if (s > 1) cyl(x, z, 0.012 * s, y0 + 0.26 * s, 0.3 * s, "leaf", 6)
+  for (const z of [z0 + 0.01, z1 - 0.035]) blk(x0 + 0.03, z, x1 - 0.03, z + 0.025, FL, FL + h - 0.025, "oak")
+  blk(x1 - 0.05, z0 + 0.035, x1 - 0.03, z1 - 0.035, FL + 0.3, FL + h - 0.025, "oak")
 }
 
-// the meeting table for four, its chairs, the screen with the farm's map over it, the AC, the tall plant
+// the L sofa in one piece: a plinth under both legs, the backrest round the inside of the L, an arm at each free
+// end, the corner seat and the seat cushions
 {
-  const { x, y, r, h } = meeting
-  TAG = "table"
-  cyl(x, y, r, FL + h - 0.03, 0.03, "oak", 48)
-  cyl(x, y, 0.04, FL + 0.02, h - 0.05, "oak", 12)
-  cyl(x, y, 0.26, FL, 0.025, "oak", 32)
-  for (const [k, [cx, cz]] of meeting.chairs.entries()) { TAG = k ? `woodchair#${k}` : "woodchair"; woodChair(cx, cz, Math.atan2(x - cx, y - cz)) }
-  TAG = "screen"
-  const sy = screen.y, sb = FL + screen.bottom
-  blk(ix0, sy - screen.w / 2, ix0 + 0.04, sy + screen.w / 2, sb, sb + screen.h, "black")
-  blk(ix0 + 0.04, sy - screen.w / 2 + 0.02, ix0 + 0.045, sy + screen.w / 2 - 0.02, sb + 0.02, sb + screen.h - 0.02, "screen", { noShadow: true })
-  TAG = "ac"
-  soft(ac.x0, iz0, ac.x1, iz0 + ac.d, FL + ac.y0, FL + ac.y1, 0.03, "white")
-  blk(ac.x0 + 0.05, iz0 + ac.d, ac.x1 - 0.05, iz0 + ac.d + 0.005, FL + ac.y0 + 0.03, FL + ac.y0 + 0.06, "black")
-  TAG = ""
-  plant(plants.floor[0], plants.floor[1], FL, 1.6)
+  TAG = "sofa"
+  const { d, arm, rest, x1, seats } = sofa, z0 = iz0, z1 = iz1
+  const base = FL + 0.1, seat = FL + 0.43, top = FL + 0.82, armTop = FL + 0.6
+  blk(ix0, z0, x1, z0 + d, FL + 0.02, base, "fabric")
+  blk(ix0, z0 + d, ix0 + d, z1, FL + 0.02, base, "fabric")
+  for (const [x, z] of [[ix0 + 0.06, z0 + 0.06], [x1 - 0.06, z0 + 0.06], [x1 - 0.06, z0 + d - 0.06], [ix0 + d - 0.06, z1 - 0.06], [ix0 + 0.06, z1 - 0.06], [ix0 + d - 0.06, z0 + d + 0.06]])
+    cyl(x, z, 0.02, FL, 0.02, "black", 8)
+  soft(ix0, z0, x1 - arm, z0 + rest, base, top, 0.05, "fabric")
+  soft(ix0, z0 + rest, ix0 + rest, z1 - arm, base, top, 0.05, "fabric")
+  soft(x1 - arm, z0, x1, z0 + d, base, armTop, 0.05, "fabric")
+  soft(ix0, z1 - arm, ix0 + d, z1, base, armTop, 0.05, "fabric")
+  soft(ix0 + rest, z0 + rest, ix0 + d, z0 + d, base, seat, 0.05, "fabric")
+  const wl = (x1 - arm - ix0 - d) / seats.wall, el = (z1 - arm - z0 - d) / seats.end
+  for (let k = 0; k < seats.wall; k++) soft(ix0 + d + k * wl, z0 + rest, ix0 + d + (k + 1) * wl, z0 + d, base, seat, 0.05, "fabric")
+  for (let k = 0; k < seats.end; k++) soft(ix0 + rest, z0 + d + k * el, ix0 + d, z0 + d + (k + 1) * el, base, seat, 0.05, "fabric")
+  // the low table in front, Medium Oak on four legs
+  TAG = "sofatable"
+  const t = sofa.table
+  blk(t.x0, t.y0, t.x1, t.y1, FL + 0.38, FL + 0.41, "oak")
+  for (const x of [t.x0 + 0.05, t.x1 - 0.08]) for (const z of [t.y0 + 0.05, t.y1 - 0.08]) blk(x, z, x + 0.03, z + 0.03, FL, FL + 0.38, "oak")
 }
-// the filing wall: closed cupboards below, open shelves with box files above, a small plant
+// the big desk across the far end wall: the Studio Display on its stand, the Mac Studio beside it, the keyboard
+// and mouse, the gaming chair facing the wall
 {
-  TAG = "shelves"
-  const { x0, x1, d, h, base, rows } = shelves, z0 = iz0, z1 = iz0 + d
-  blk(x0, z0, x1, z1, FL, FL + 0.06, "oak")
-  for (const x of [x0, x0 + (x1 - x0) / 2 - 0.009, x1 - 0.018]) blk(x, z0, x + 0.018, z1, FL, FL + h, "oak")
-  const n = 4, dw = (x1 - x0) / n
-  for (let i = 0; i < n; i++) blk(x0 + i * dw + 0.02, z1 - 0.018, x0 + (i + 1) * dw - 0.003, z1, FL + 0.065, FL + base - 0.005, "oak")
-  for (let i = 0; i < n; i++) blk(x0 + (i + 0.5) * dw - 0.06, z1, x0 + (i + 0.5) * dw + 0.06, z1 + 0.015, FL + base - 0.09, FL + base - 0.075, "leg")
-  const pitch = (h - base) / rows
-  for (let k = 0; k <= rows; k++) blk(x0, z0, x1, z1, FL + base + k * pitch - (k === 0 ? 0.02 : 0.018), FL + base + k * pitch + (k === 0 ? 0 : 0), "oak")
-  for (let k = 0; k < rows; k++) {
-    const y = FL + base + k * pitch
-    // files fill each shelf, with a gap where the plant stands
-    const gap = k === 0 ? [plants.shelf[0] - 0.2, plants.shelf[0] + 0.2] : null
-    const spans = gap ? [[x0 + 0.02, gap[0]], [gap[1], x1 - 0.02]] : [[x0 + 0.02, x1 - 0.02]]
-    for (const [a, b] of spans) blk(a, z0 + 0.02, b, z0 + d - 0.04, y, y + pitch * 0.72, "files")
-  }
-  TAG = ""
-  plant(plants.shelf[0], plants.shelf[1] + 0.08, FL + base, 0.6)
-}
-// the reception desk facing the glazing, its chair behind, a monitor
-{
-  const r = reception
-  TAG = "reception"
-  panelDesk(r.x0, r.y0, r.x1, r.y1, r.h, "front")
-  TAG = "officechair"
-  officeChair(r.chair[0], r.chair[1], 0)
-  TAG = "monitor"
-  monitor((r.x0 + r.x1) / 2, r.y0 + 0.2, FL + r.h, 0)
-}
-// the second desk on the far end wall, chair facing the wall, monitor; the printer cabinet; the wall fan
-{
-  TAG = "desk"
-  panelDesk(desk.x0, desk.y0, desk.x1, desk.y1, desk.h)
-  TAG = "officechair#2"
-  officeChair(desk.chair[0], desk.chair[1], Math.PI / 2)
-  TAG = "monitor#2"
-  monitor(desk.x1 - 0.2, (desk.y0 + desk.y1) / 2, FL + desk.h, -Math.PI / 2)
-  TAG = "printer"
-  const p = printer
-  blk(p.x0, p.y0, p.x1, p.y1, FL, FL + p.h, "oak")
-  blk(p.x0 - 0.012, p.y0 + 0.02, p.x0, p.y1 - 0.02, FL + 0.05, FL + p.h - 0.03, "oak")
-  soft(p.x0 + 0.05, p.y0 + 0.08, p.x1 - 0.06, p.y1 - 0.08, FL + p.h, FL + p.h + 0.26, 0.02, "white")
-  blk(p.x0 + 0.02, p.y0 + 0.12, p.x0 + 0.05, p.y1 - 0.12, FL + p.h + 0.08, FL + p.h + 0.11, "black")
-  TAG = "wallfan"
-  const fy = FL + fan.at, fz = fan.y
-  blk(ix1 - 0.06, fz - 0.06, ix1, fz + 0.06, fy - 0.08, fy + 0.08, "white")
-  cyl(ix1 - 0.15, fz, 0.07, fy - 0.07, 0.14, "white", 16).rotation.z = Math.PI / 2
-  const cage = add(new THREE.TorusGeometry(fan.r, 0.008, 6, 32), "cage", { pos: [ix1 - 0.26, fy, fz] })
-  cage.rotation.y = Math.PI / 2
-  const disc = add(new THREE.CircleGeometry(fan.r - 0.01, 24), "white", { pos: [ix1 - 0.265, fy, fz], noEdges: true })
-  disc.rotation.y = -Math.PI / 2
-  if (!LINE) { disc.material = disc.material.clone(); disc.material.transparent = true; disc.material.opacity = 0.35 }
+  const h = 0.75, top = FL + h, dx = ix1 - ws.d
+  TAG = "bigdesk"
+  panelDesk(dx, iz0, ix1, iz1, h)
+  TAG = "display"
+  const { w, t, foot } = ws.display
+  blk(ix1 - 0.07 - foot, -0.09, ix1 - 0.07, 0.09, top, top + 0.008, "alu")
+  blk(ix1 - 0.09, -0.08, ix1 - 0.075, 0.08, top + 0.008, top + 0.3, "alu")
+  blk(ix1 - 0.12 - t, -w / 2, ix1 - 0.12, w / 2, top + 0.12, top + 0.477, "alu")
+  blk(ix1 - 0.12 - t - 0.002, -w / 2 + 0.012, ix1 - 0.12 - t, w / 2 - 0.012, top + 0.132, top + 0.465, "monitor", { noShadow: true })
+  TAG = "macstudio"
+  const mc = ix1 - 0.08 - ws.mac.w / 2, mz = ws.mac.y, mw = ws.mac.w / 2
+  soft(mc - mw, mz - mw, mc + mw, mz + mw, top, top + 0.095, 0.02, "alu")
+  blk(mc - mw - 0.002, mz - 0.05, mc - mw, mz + 0.05, top + 0.02, top + 0.03, "black", { noEdges: true })
+  TAG = "keyboard"
+  blk(dx + 0.12, -0.22, dx + 0.25, 0.22, top, top + 0.012, "white")
+  soft(dx + 0.15, 0.32, dx + 0.25, 0.38, top, top + 0.025, 0.01, "white")
+  TAG = "gamingchair"
+  gamingChair(ws.chair[0], ws.chair[1], Math.PI / 2)
 }
 
 TAG = ""
@@ -500,7 +438,7 @@ if (ITEM) { S.build(C.electric.points, existing); S.build(C.network.points) }
 
 // ------------------------------------------------------------ camera: the front view, a little from the stair end
 scene.updateMatrixWorld(true)
-const ITEM_VIEW = { shelves: [0.6, 0.55, 1], desk: [-1, 0.6, 0.6], "officechair": [0.6, 0.6, -1], printer: [-1, 0.6, 0.75], screen: [1, 0.4, 0.6], ac: [0.5, 0.2, 1], wallfan: [-1, 0.3, 0.7] }
+const ITEM_VIEW = { bigdesk: [-1, 0.6, 0.6], display: [-1, 0.4, 0.5], macstudio: [-1, 0.6, 0.6], gamingchair: [0.6, 0.6, -1], sofa: [0.6, 0.5, 1] }
 const camera = new THREE.PerspectiveCamera(22, FW / FH, 0.5, 200)
 let itemBox = null
 if (ITEM) {
