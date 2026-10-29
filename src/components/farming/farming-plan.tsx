@@ -7,7 +7,7 @@ import plan from "../../../public/designs/farming/data/plan.json"
 // and only the two overall dimensions. Everything comes from the generated plan (scripts/site/farming.mjs), whose
 // metres run x to the galley and y down the master plan; here they are turned a quarter so the gate faces the viewer.
 
-const { beds, fence, gate, main, mainY, nursery } = plan
+const { beds, blocks, fence, gate, main, mainY } = plan
 const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEffect: "non-scaling-stroke" } as const
 const dashed = { ...line, strokeDasharray: "4 3" } as const
 const solid = { fill: "currentColor" } as const
@@ -56,41 +56,44 @@ export function FarmingPlan({ title, className }: { title: string; className?: s
   const W = fy1 - fy0, H = fx1 - fx0 // the fenced field, across and down the page
   const gu = U(gate[1]), gw = 1.5 // the gate, its half width
   const pu = U(mainY) // the main path's middle
-  const n = nursery
-  const top = Math.min(0, V(n.x)) - 1.5, bottom = H + 7.5
-  const left = -0.6, right = Math.max(W, U(n.y)) + 2.4 // tight round the drawing, so it fills the width
-  const row = -1.1 // the names, in one row above the fence
+  // the two rows of blocks nearest the gate; the cut runs just beyond them
+  const rows = [...new Set(blocks.map((b) => b.x))].sort((a, b) => a - b)
+  const shown = rows.slice(-2), hidden = rows.length - shown.length
+  const cut = V(shown[0]) - 0.6
+  const bedLen = blocks[0].w
+  const top = cut - 2.6, bottom = H + 6.1
+  const left = -0.6, right = W + 2.6 // tight round the drawing, so it fills the width
+  const row = cut - 1.6 // the names, in one row above the cut
+  // the break line across the field where it goes on: straight, with a zigzag at its middle
+  const zx = W - 5
+  const brk = `M${-0.6} ${f(cut)}L${f(zx - 0.8)} ${f(cut)}L${f(zx - 0.3)} ${f(cut - 0.7)}L${f(zx + 0.3)} ${f(cut + 0.7)}L${f(zx + 0.8)} ${f(cut)}L${f(W + 0.6)} ${f(cut)}`
   return (
     <svg viewBox={`${f(left)} ${f(top)} ${f(right - left)} ${f(bottom - top)}`} role="img" aria-label={title} className={className}>
-      {/* The fence, drawn solid as the studio's walls, with the gate in the front toward the galley */}
-      <rect x={0} y={0} width={f(W)} height={FENCE} {...solid} />
-      <rect x={0} y={0} width={FENCE} height={f(H)} {...solid} />
-      <rect x={f(W - FENCE)} y={0} width={FENCE} height={f(H)} {...solid} />
+      {/* The fence, drawn solid as the studio's walls, its sides running on past the break, the gate in the front */}
+      <rect x={0} y={f(cut)} width={FENCE} height={f(H - cut)} {...solid} />
+      <rect x={f(W - FENCE)} y={f(cut)} width={FENCE} height={f(H - cut)} {...solid} />
       <rect x={0} y={f(H - FENCE)} width={f(gu - gw)} height={FENCE} {...solid} />
       <rect x={f(gu + gw)} y={f(H - FENCE)} width={f(W - gu - gw)} height={FENCE} {...solid} />
       <path d={`M${f(gu - gw)} ${f(H)}A${2 * gw} ${2 * gw} 0 0 0 ${f(gu + gw)} ${f(H - 2 * gw)}`} {...dashed} />
       <line x1={f(gu + gw)} x2={f(gu + gw)} y1={f(H)} y2={f(H - 2 * gw)} {...line} />
+      <path d={brk} {...line} />
 
-      {/* The beds: an outline each, solid where planted this season, dashed where resting or grown for sale */}
-      {beds.map((b) => <rect key={b.id} {...box(b.x, b.y, b.x + b.w, b.y + b.h)} {...(b.crop === "rest" ? dashed : line)} />)}
+      {/* The beds of the two rows: an outline each, solid where planted this season, dashed where resting or grown for sale */}
+      {beds.filter((b) => b.x >= shown[0]).map((b) => <rect key={b.id} {...box(b.x, b.y, b.x + b.w, b.y + b.h)} {...(b.crop === "rest" ? dashed : line)} />)}
 
       {/* The garden walk out of the gate to the galley */}
-      <line x1={f(pu - main / 2)} x2={f(pu - main / 2)} y1={f(H)} y2={f(H + 3.2)} {...line} />
-      <line x1={f(pu + main / 2)} x2={f(pu + main / 2)} y1={f(H)} y2={f(H + 3.2)} {...line} />
+      <line x1={f(pu - main / 2)} x2={f(pu - main / 2)} y1={f(H)} y2={f(H + 2.4)} {...line} />
+      <line x1={f(pu + main / 2)} x2={f(pu + main / 2)} y1={f(H)} y2={f(H + 2.4)} {...line} />
 
-      {/* The nursery's shade house above the field, trays on its benches */}
-      <rect {...box(n.x, n.y, n.x + n.w, n.y + n.h)} {...line} />
-      {[0.25, 0.75].map((k) => <rect key={k} {...box(n.x + n.w * k - 0.45, n.y + 0.6, n.x + n.w * k + 0.45, n.y + n.h - 0.6)} {...line} />)}
-
-      {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH */}
+      {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH; what lies past the break */}
       {([[f(pu / 2), "BEDS"], [f(pu), "MAIN PATH"], [f((pu + W) / 2), "BEDS"]] as const).map(([x, t], i) => (
         <text key={i} x={x} y={f(row)} textAnchor="middle" style={label}>{t}</text>
       ))}
-      <text x={f(U(n.y + n.h) - 1)} y={f(V(n.x + n.w / 2) + 0.45)} textAnchor="end" style={label}>NURSERY</text>
-      <text x={f(pu)} y={f(H + 4.6)} textAnchor="middle" style={small}>GATE · TO THE GALLEY</text>
+      <text x={f(W)} y={f(row)} textAnchor="end" style={small} aria-label={`The field goes on: ${hidden} more rows of blocks, then the nursery`}>THE FIELD GOES ON ↑</text>
+      <text x={f(pu)} y={f(H + 3.6)} textAnchor="middle" style={small}>GATE · TO THE GALLEY</text>
 
-      <Dimension x0={0} x1={f(W)} y={f(H + 6.3)} />
-      <DimensionUp y0={0} y1={f(H)} x={f(right - 1.2)} />
+      <Dimension x0={0} x1={f(W)} y={f(H + 5.1)} />
+      <DimensionUp y0={f(V(shown[1]))} y1={f(V(shown[1]) + bedLen)} x={f(W + 1.5)} />
     </svg>
   )
 }
