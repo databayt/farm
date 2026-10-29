@@ -48,12 +48,13 @@ export default function FarmingPage() {
   const bom = bomSections()
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (handoff in ~/Desktop/farming-nano-banana: the
-          livestock hero for the place and the light, the 3D, the 2D and a frame of the site footage). For now it is the
-          block by the gate rendered on the lawn from the main path (scripts/site/render/farming.html?mode=real&hero=1). */}
-      <PageHero src={`${D}/render/field-hero.jpg`} width={2400} height={1340} className="bg-[#6f9a4a]" imgClassName="object-[50%_45%]"
+      {/* First screen: the founder's Nano Banana image of the field (2026-10-29, D-054), made from the handoff in
+          ~/Desktop/farming-nano-banana: the same farm and light as the livestock hero, the raised beds and their crops,
+          the gate on the main path, the fruit row and the nursery. Cut to 2400 x 1340 from its 2752 px original
+          (assets/farming/hero-gemini.jpeg). The baskets and the wheelbarrow keep the lower left under the words. */}
+      <PageHero src={`${D}/render/field-hero.jpg`} width={2400} height={1340} className="bg-[#8a7a62]" imgClassName="object-[50%_60%]"
         title="Everything on the plate, grown here"
-        alt="Ten raised beds of red-brown soil on drip lines: herbs nearest, then amaranth, spinach, kale and staked tomatoes at the back, on a sandy path in the grass." />
+        alt="A kitchen-garden field on a Rwandan hillside under a soft grey sky: raised beds of red-brown soil with staked tomatoes, flowering potatoes, carrots, onions, cabbages, red amaranth, kale and chard on drip lines, a rail fence of barked poles with a gate on the main path, a wheelbarrow of compost and baskets of tomatoes, carrots, potatoes and greens in front, a shade-net nursery at the right, and bananas, papaya and eucalyptus before terraced green hills." />
 
       {/* 2D, full screen: the field's plan (src/components/farming/farming-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D" full>
