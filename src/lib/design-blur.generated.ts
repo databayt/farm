@@ -21,7 +21,7 @@ export const DESIGN_BLUR: Record<string, string> = {
   "/designs/livestock/render/livestock-hero.jpg": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADQAQCdASoQAAkAAsBMJYgCdAEOJOP+gAD8/CA4PpBGYRKHnx5w88J925Mhm4Kd4jBG2aAzfRf0+ifIzuYdy5l9D4xDaCvikpAUK6uV5eFQAA==",
   "/designs/livestock/render/livestock-real.webp": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAACwAQCdASoQAAkAAsBMJQBOgB88i/JAAP73LjhxaUhZ4X3526jx2qblTH9VYwMBaEs/VBVv0pgONxfycAltjm8+8BEjzxVS+fDRakAQeoarXAAA",
   "/designs/livestock/render/water-real.webp": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAQCdASoQAAkAAsBMJZgCdAEN+FD0RKgA/u3vQ+2nmFM6+nToRmKhfHF2O49MQDcyzA2EtT8+wFXlYpcoFKBPdrb0DmLJNMtfrnW/hfkfNm0yL1RSiAAA",
-  "/designs/office/render/electric-real.webp": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAADQAQCdASoQAAcAAsBMJbACdAEVz05o2AD+w+FDX2J04o0G4xzQygM4tP8h8Cfr731eVObVE4wh/JH0LgAAAA==",
+  "/designs/office/render/electric-real.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAcAAsBMJbACdAEN4XeNAAD+w/PpeeIO5eG2wO48cKUltZSvBPmTdf/1lGG7rk3bnwwSIAA=",
   "/designs/office/render/office-hero.jpg": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkAAsBMJZgCdAEVLhTVOcAA+6X2Qtp8JlvdLsym8f0G+hv43JfR8ZE8VlZ+Lizg7mXLDJxa4gakkwtKc/dcmAA=",
   "/designs/office/render/office-real.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAcAAsBMJbACdAEUiZoiiAD+w/pbUIePP3iKMd4e55fCIuplH1QO447hnSi3SHrUCWiAAAA=",
   "/designs/parking/render/drain-real.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAcAAsBMJbACdAEQCu6c8AD+jfv3/uOAiXe/CRjCFVMjJ0gpGExop9gSlymYPQNJ1nWAAAA=",

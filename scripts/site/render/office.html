@@ -4,17 +4,18 @@
   front with its front wall off, built from src/components/office/office.json (the numbers the 2D draws).
   The box follows the homepage model (scripts/site/render/compound.html, rowUnit): a saffron 20 ft container
   with ribs, raised 0.8 m on a red steel frame, a timber deck in front, red pipe railings and the stair at the
-  deck's end. The furniture follows the studio's (scripts/studio/render/room.html): off-white linings, an oak
-  floor, Medium Oak furniture. Rendered two ways:
+  deck's end. Inside, the founder's 2026-10-29 layout: the L sofa and its low table at the cargo-door end, the big
+  desk with a Studio Display, a Mac Studio and a gaming chair at the far end; on the deck, an Egyptian ahwa set.
+  Finishes as the studio's (scripts/studio/render/room.html): off-white linings, an oak floor, Medium Oak furniture.
+  Rendered two ways:
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/office/render/office-line.png
     ?mode=real  materials, daylight and shadow         -> public/designs/office/render/office-real.webp
     &view=electric  the wiring in the same view (office.json `electric`, built by room-services.js): line mode
-                draws the room faint, every device dark and each circuit's run in its colour, dashed under the floor
-                to the reception's floor box, and sets window.TAGS -> render/electric-line.png + electric-tags.json;
+                draws the room faint, every device dark and each circuit's run in its colour, and sets window.TAGS -> render/electric-line.png + electric-tags.json;
                 real mode shows the finished devices -> render/electric-real.webp
     &view=network   the same for the network (office.json `network`): the cabinet, its router, switch, gateway and
-                UPS, the access point and the data outlets -> render/network-line.png + network-tags.json
+                UPS, the access point and the data outlet -> render/network-line.png + network-tags.json
     &item=<id>  one piece on its own, real mode, 1200 x 900 on a transparent ground: the furniture and equipment
                 (sofa, sofatable, bigdesk, display, macstudio, keyboard, gamingchair, cafetable, cafechair)
                 -> render/furniture/<id>.webp; a device by its model -> render/electric/<id>.webp or render/network/<id>.webp
@@ -157,29 +158,6 @@ const T = LINE ? {} : {
       g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
     }
   }),
-  // the farm's map on the wall screen: lake, lawn, the compound's blocks in their paints
-  map: tex((g, w, h) => {
-    g.fillStyle = "#8fb06a"; g.fillRect(0, 0, w, h)
-    g.fillStyle = "#6b8ea3"; g.beginPath(); g.ellipse(w * 0.5, h * 1.05, w * 0.7, h * 0.32, 0, 0, Math.PI * 2); g.fill()
-    g.fillStyle = "#e4d6b4"; g.fillRect(w * 0.08, h * 0.16, w * 0.84, h * 0.5)
-    for (const [x, y, ww, hh, c] of [[0.1, 0.18, 0.08, 0.4, "#3e8a86"], [0.2, 0.18, 0.04, 0.2, "#8a3227"], [0.3, 0.56, 0.12, 0.07, "#d9a21b"],
-      [0.46, 0.56, 0.12, 0.07, "#8a3227"], [0.62, 0.56, 0.12, 0.07, "#8a3227"], [0.3, 0.18, 0.3, 0.07, "#3e8a86"], [0.66, 0.18, 0.2, 0.07, "#8a8a8a"]]) {
-      g.fillStyle = c; g.fillRect(w * x, h * y, w * ww, h * hh)
-    }
-    g.strokeStyle = "#f6f2e8"; g.lineWidth = 3; g.strokeRect(w * 0.08, h * 0.16, w * 0.84, h * 0.5)
-  }, 512, 300),
-  // box files and binders on the open shelves: spines in a few office colours
-  files: tex((g, w, h) => {
-    g.fillStyle = "#f0ece3"; g.fillRect(0, 0, w, h)
-    let x = 0
-    const cols = ["#2f4f6a", "#d8d2c4", "#a63a2c", "#3c3c3c", "#c9973a", "#e9e4d8", "#4c6e4a"]
-    while (x < w) {
-      const bw = 18 + rnd() * 26, bh = h * (0.7 + rnd() * 0.3)
-      g.fillStyle = cols[Math.floor(rnd() * cols.length)]; g.fillRect(x, h - bh, bw - 2, bh)
-      g.fillStyle = "rgba(255,255,255,0.7)"; g.fillRect(x + bw * 0.2, h - bh * 0.6, bw * 0.5, bh * 0.18)
-      x += bw + (rnd() > 0.85 ? 30 : 0)
-    }
-  }, 512, 128),
 }
 // metres one tile covers [along, across]
 const TILE = { saffron: [0.278, 2.6], timber: [1.4, 1.4], floor: [2.4, 1.2], oak: [1.2, 0.6] }
@@ -187,7 +165,7 @@ const TILE = { saffron: [0.278, 2.6], timber: [1.4, 1.4], floor: [2.4, 1.2], oak
 // ------------------------------------------------------------ materials
 const SAFFRON = "#d9a21b"
 // thin parts get crease lines but no silhouette, so railings and legs stay fine in the line drawing
-const THIN = new Set(["red", "white-frame", "steel", "leg", "black", "cage"])
+const THIN = new Set(["red", "white-frame", "steel", "leg", "black"])
 const MAT = {}
 function mat(name) {
   if (MAT[name]) return MAT[name]
@@ -215,22 +193,15 @@ function mat(name) {
       floor: () => std({ map: T.planks, color: "#d1c8c1", roughness: 0.55 }),
       oak: () => std({ map: T.oak, roughness: 0.6 }), // the furniture, Medium Oak
       white: () => std({ color: "#f3f2ee", roughness: 0.5 }),
-      cage: () => std({ color: "#f3f2ee", roughness: 0.5 }), // the fan's guard, thin in the line drawing
       black: () => std({ color: "#232427", roughness: 0.55, metalness: 0.2 }),
       mesh: () => std({ color: "#2b2c30", roughness: 0.9 }), // the chairs' mesh and seats
       leg: () => std({ color: "#9c9fa3", roughness: 0.35, metalness: 0.8 }),
-      screen: () => std({ map: T.map, roughness: 0.3, emissive: "#ffffff", emissiveMap: T.map, emissiveIntensity: 0.25 }),
       monitor: () => std({ color: "#1d2a35", roughness: 0.2, emissive: "#4d6a80", emissiveIntensity: 0.25 }),
       alu: () => std({ color: "#c7c9cc", roughness: 0.32, metalness: 0.75 }), // the Studio Display and the Mac Studio
       fabric: () => std({ color: "#a59d90", roughness: 0.95 }), // the sofa, a warm stone weave
       beech: () => std({ color: "#5e3b22", roughness: 0.55 }), // the ahwa chairs, dark-stained wood
       rush: () => std({ color: "#c7a467", roughness: 0.95 }), // their woven rush seats
       marble: () => std({ color: "#ece8e1", roughness: 0.22 }), // the ahwa table's top
-      files: () => std({ map: T.files, roughness: 0.8 }),
-      pot: () => std({ color: "#d9d4c8", roughness: 0.8 }),
-      soil: () => std({ color: "#4a3626", roughness: 1 }),
-      leaf: () => std({ color: "#5f7c46", roughness: 0.9 }),
-      leaf2: () => std({ color: "#76924f", roughness: 0.9 }),
       lawn: () => std({ map: T.grass, roughness: 1 }),
       glass: () => new THREE.MeshPhysicalMaterial({ color: "#d3e3e8", roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.35, depthWrite: false }),
     }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
@@ -465,7 +436,7 @@ TAG = ""
 const S = services({ scene, meshes, LINE, floor: FL, ceiling: K.ceiling - K.floor })
 const SYS = NET ? C.network : C.electric
 const existing = new Set(C.electric.points.filter((p) => p.existing).map((p) => p.model))
-for (const o of meshes) if (existing.has(o.userData.tag) && (ELEC || ITEM)) o.userData.elec = true // the 3D's own fan
+for (const o of meshes) if (existing.has(o.userData.tag) && (ELEC || ITEM)) o.userData.elec = true // devices the room draws itself
 if (ELEC || NET) S.build(SYS.points, existing)
 if (ITEM) { S.build(C.electric.points, existing); S.build(C.network.points) }
 
@@ -516,7 +487,7 @@ if (LINE) {
     scene.add(l)
   }
   if (FAINT) {
-    // the room's materials outline grey, except the 3D's own fan in the electric view, which stays dark
+    // the room's materials outline grey, except devices the room draws itself, which stay dark
     for (const [k, m] of Object.entries(MAT)) m.userData.outlineParameters = { ...m.userData.outlineParameters, color: [0.74, 0.74, 0.74] }
     if (ELEC) for (const o of meshes) if (o.userData.elec && Object.values(MAT).includes(o.material)) {
       o.material = o.material.clone(); o.material.userData.outlineParameters = { ...o.material.userData.outlineParameters, color: [0.08, 0.08, 0.08] }

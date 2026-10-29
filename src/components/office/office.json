@@ -1,5 +1,5 @@
 {
-  "about": "The compound's office (compound.json units id \"office\"): a 20 ft container painted saffron, raised 0.8 m on a red steel frame with a 1.5 m timber deck in front facing north onto the courtyard, red pipe railings and a stair at the deck's end toward the guest rooms. First in the south row of 20 ft units, the studios' sibling. Furnished as the farm's reception and work office after today's office (assets/reference/office/01-img_3188.jpg: two panel-end desks, black mesh chairs, a red barred window), in the studio's finishes: off-white linings, oak floor, Medium Oak furniture. The 2D (office-plan.tsx) and the 3D (scripts/site/render/office.html) both read this file. Plan in metres seen from the deck, as the 3D's front view: x to the right from the stair end (the cargo doors, toward the guest rooms; west), y toward the deck (north), the container's centre line at y = 0. Assumptions, not yet sourced: the front is a 3 m band of glazed sliding doors onto the deck, as on the studios (the homepage 3D still draws the office with a door and a window behind a slatted screen); linings 50 mm, inside 5.86 x 2.2 m with 2.3 m to the ceiling; every furniture size is a design choice.",
+  "about": "The compound's office (compound.json units id \"office\"): a 20 ft container painted saffron, raised 0.8 m on a red steel frame with a 1.5 m timber deck in front facing north onto the courtyard, red pipe railings and a stair at the deck's end toward the guest rooms. First in the south row of 20 ft units, the studios' sibling. Furnished (2026-10-29, the founder's layout) as a lounge and a programmer's and gamer's workroom: one L sofa round a low table at the cargo-door end, one big desk with a Studio Display and a Mac Studio across the far end wall, and an Egyptian ahwa set on the deck; in the studio's finishes: off-white linings, oak floor, Medium Oak furniture. The 2D (office-plan.tsx) and the 3D (scripts/site/render/office.html) both read this file. Plan in metres seen from the deck, as the 3D's front view: x to the right from the stair end (the cargo doors, toward the guest rooms; west), y toward the deck (north), the container's centre line at y = 0. Assumptions, not yet sourced: the front is a 3 m band of glazed sliding doors onto the deck, as on the studios (the homepage 3D still draws the office with a door and a window behind a slatted screen); linings 50 mm, inside 5.86 x 2.2 m with 2.3 m to the ceiling; every furniture size is a design choice.",
   "container": {
     "about": "ISO 20 ft, outside; the floor and ceiling heights are above the container's underside.",
     "l": 6.058,
@@ -23,20 +23,20 @@
     "stair": { "w": 1.0, "risers": 5, "tread": 0.28 }
   },
   "cafe": {
-    "about": "The 2D's and 3D's layout (2026-10-29): a traditional Egyptian ahwa set on the deck, in front of the solid wall at the far end, clear of the glazing and the stair: a small round marble-topped table on a cast-iron pedestal, two dark wooden chairs with woven rush seats either side of it, both looking out over the front garden. Plan metres; sizes are design choices.",
+    "about": "The layout (2026-10-29): a traditional Egyptian ahwa set on the deck, in front of the solid wall at the far end, clear of the glazing and the stair: a small round marble-topped table on a cast-iron pedestal, two dark wooden chairs with woven rush seats either side of it, both looking out over the front garden. Plan metres; sizes are design choices.",
     "table": { "x": 5.2, "y": 1.97, "r": 0.3, "h": 0.7 },
     "chairs": [[4.62, 1.97], [5.78, 1.97]],
     "chair": { "w": 0.42, "d": 0.42, "seat": 0.45, "back": 0.9 }
   },
   "workstation": {
-    "about": "The 2D's layout (2026-10-29): one big desk across the whole far end wall for a programmer and gamer, 0.8 m deep and the room's full 2.2 m wide: a single Apple Studio Display (623 mm wide, its stand foot 168 mm deep) centred on it, a Mac Studio (197 x 197 mm) beside it, a keyboard and mouse, a gaming chair facing the wall. The two Apple sizes are Apple's published dimensions from memory, not yet sourced [A]. The 3D and the rail still draw the earlier layout (meeting, reception, desk, shelves, printer).",
+    "about": "The layout (2026-10-29): one big desk across the whole far end wall for a programmer and gamer, 0.8 m deep and the room's full 2.2 m wide: a single Apple Studio Display (623 mm wide, its stand foot 168 mm deep) centred on it, a Mac Studio (197 x 197 mm) beside it, a keyboard and mouse, a gaming chair facing the wall. The two Apple sizes are Apple's published dimensions from memory, not yet sourced [A].",
     "d": 0.8,
     "display": { "w": 0.623, "t": 0.03, "foot": 0.168 },
     "mac": { "w": 0.197, "y": -0.6 },
     "chair": [4.7, 0.0]
   },
   "sofa": {
-    "about": "The 2D's layout (2026-10-29): one L sofa in a single piece, its short leg across the whole width of the cargo-door end wall, its long leg along the back wall, a corner seat where they meet and a low table in front. x1: where the back-wall leg ends; seats: cushions on each leg beside the corner seat.",
+    "about": "The layout (2026-10-29): one L sofa in a single piece, its short leg across the whole width of the cargo-door end wall, its long leg along the back wall, a corner seat where they meet and a low table in front. x1: where the back-wall leg ends; seats: cushions on each leg beside the corner seat.",
     "d": 0.9,
     "arm": 0.2,
     "rest": 0.22,
@@ -44,106 +44,42 @@
     "seats": { "wall": 2, "end": 1 },
     "table": { "x0": 1.45, "x1": 2.45, "y0": 0.05, "y1": 0.55 }
   },
-  "meeting": {
-    "about": "A round timber table for four at the cargo-door end, under the wall screen.",
-    "x": 1.25,
-    "y": 0.0,
-    "r": 0.45,
-    "h": 0.74,
-    "chairs": [[0.53, 0.0], [1.97, 0.0], [1.25, -0.72], [1.25, 0.72]],
-    "chair": { "w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.82 }
-  },
-  "reception": {
-    "about": "The reception and work desk facing the glazing, a modesty panel to the door, a monitor and a desk plant; a black mesh chair behind it, as in today's office.",
-    "x0": 3.0,
-    "x1": 4.5,
-    "y0": -0.1,
-    "y1": 0.6,
-    "h": 0.75,
-    "chair": [3.75, -0.42]
-  },
-  "desk": {
-    "about": "A second work desk along the far end wall, its chair facing the wall, a monitor on it.",
-    "x0": 5.258,
-    "x1": 5.958,
-    "y0": -1.1,
-    "y1": 0.1,
-    "h": 0.75,
-    "chair": [4.95, -0.5]
-  },
-  "shelves": {
-    "about": "The filing wall along the back: closed filing cupboards to 0.75 m, open shelves above with box files and binders.",
-    "x0": 2.4,
-    "x1": 4.6,
-    "d": 0.35,
-    "h": 2.1,
-    "base": 0.75,
-    "rows": 4
-  },
-  "printer": {
-    "about": "A low cabinet in the front corner by the second desk, the printer on it.",
-    "x0": 5.408,
-    "x1": 5.958,
-    "y0": 0.45,
-    "y1": 1.1,
-    "h": 0.72
-  },
-  "screen": {
-    "about": "A wall screen on the cargo-door end showing the farm's map, over the meeting table.",
-    "y": 0.0,
-    "w": 1.2,
-    "h": 0.7,
-    "bottom": 1.15
-  },
-  "ac": { "about": "A split AC high on the back wall over the meeting table.", "x0": 0.85, "x1": 1.65, "d": 0.22, "y0": 1.98, "y1": 2.28 },
-  "fan": { "about": "A wall fan high on the far end wall, over the second desk.", "y": -0.5, "at": 1.95, "r": 0.22 },
-  "plants": {
-    "about": "A tall plant in the back corner by the meeting table, a small one on the shelves.",
-    "floor": [0.38, -0.82],
-    "shelf": [4.25, -0.93]
-  },
   "electric": {
-    "about": "The office's wiring in the studio's pattern (D-021): a surface unit board on the back wall, a double-pole main switch and type 2 surge protection, one RCBO 30 mA type A per circuit, cables in conduit in the linings; the reception desk, standing free in the room, is fed through a floor box from under the floor. The network cabinet and its UPS get a circuit of their own, so the farm's Wi-Fi and cameras ride through on the battery (the power guide puts Wi-Fi and CCTV on the batteries that never stop). The supply is a cable from the farm's site board; its size is the electrician's. Points in plan metres (x, y as the plan, z above the finished floor) at their centre; size in mm (w, h, d). design_A: lights and the fan from their watts at 230 V; sockets and the AC provision at the studio's design loads (C2 and C7), the network circuit at the UPS's input [A]. rwf: the studio BOM's placeholder unit prices (AS-21), not quotes. existing: drawn by the office's own 3D already.",
+    "about": "The office's wiring in the studio's pattern (D-021): a surface unit board on the back wall, a double-pole main switch and type 2 surge protection, one RCBO 30 mA type A per circuit, cables in conduit in the linings. The network cabinet and its UPS get a circuit of their own, so the farm's Wi-Fi and cameras ride through on the battery (the power guide puts Wi-Fi and CCTV on the batteries that never stop). The 2026-10-29 layout has no AC and no wall fan (the founder dropped them with the old furniture); a cooling circuit can come back as the spare. The supply is a cable from the farm's site board; its size is the electrician's. Points in plan metres (x, y as the plan, z above the finished floor) at their centre; size in mm (w, h, d). design_A: lights from their watts at 230 V; sockets at the studio's design load (C2), the network circuit at the UPS's input [A]. rwf: the studio BOM's placeholder unit prices (AS-21), not quotes.",
     "main_A": 32,
     "circuits": [
-      { "id": "C1", "serves": "Lights and the wall fan", "device": "B6", "cable_mm2": 1.5, "group": "lights", "colour": "#2a78d6" },
-      { "id": "C2", "serves": "Sockets: the desks, the printer, the meeting table and the screen", "device": "B16", "cable_mm2": 2.5, "design_A": 8, "group": "sockets", "colour": "#eb6834" },
+      { "id": "C1", "serves": "Lights", "device": "B6", "cable_mm2": 1.5, "group": "lights", "colour": "#2a78d6" },
+      { "id": "C2", "serves": "Sockets: the big desk, the sofa and the back wall", "device": "B16", "cable_mm2": 2.5, "design_A": 8, "group": "sockets", "colour": "#eb6834" },
       { "id": "C3", "serves": "Network cabinet and UPS", "device": "B10", "cable_mm2": 2.5, "design_A": 3, "group": "sockets", "colour": "#eb6834" },
-      { "id": "C4", "serves": "AC", "device": "B16", "cable_mm2": 2.5, "design_A": 12, "group": "fixed", "colour": "#1baf7a" },
-      { "id": "C5", "serves": "Spare", "device": "B16", "cable_mm2": 2.5, "group": "spare", "colour": "#9a9893" }
+      { "id": "C4", "serves": "Spare", "device": "B16", "cable_mm2": 2.5, "group": "spare", "colour": "#9a9893" }
     ],
     "points": [
-      { "id": "DB", "model": "board", "description": "Unit board, 12 modules, on the back wall between the AC and the filing wall", "at": [2.1, -1.05, 1.55], "face": "+y", "size": [300, 250, 100], "rwf": 65000 },
-      { "id": "L1", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, over the meeting table", "at": [1.25, 0, 2.275], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
-      { "id": "L2", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, over the reception desk", "at": [3.3, 0, 2.275], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
-      { "id": "L3", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, over the second desk", "at": [5.1, 0, 2.275], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
-      { "id": "S1", "model": "switch2", "circuit": "C1", "description": "Two-gang switch inside the glazing at the meeting end: L1, and L2 with L3", "at": [0.105, 0.85, 1.1], "face": "+x", "size": [146, 86, 10], "rwf": 3500 },
-      { "id": "F1", "model": "wallfan", "circuit": "C1", "description": "Wall fan, high on the far end wall over the second desk", "at": [5.83, -0.5, 1.95], "face": "-x", "size": [440, 440, 260], "watts": 45, "rwf": 35000, "existing": true },
-      { "id": "FB", "model": "floorbox", "circuit": "C2", "description": "Floor box under the reception desk: two sockets and two data outlets (D2)", "at": [3.75, 0.25, 0.005], "face": "up", "size": [200, 200, 10] },
-      { "id": "P1", "model": "usb", "circuit": "C2", "description": "Socket + USB-C over the second desk", "at": [5.953, -0.65, 0.95], "face": "-x", "size": [146, 86, 10], "rwf": 15000 },
-      { "id": "P2", "model": "socket2", "circuit": "C2", "description": "Double socket over the printer cabinet", "at": [5.953, 0.78, 1.15], "face": "-x", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P3", "model": "socket2", "circuit": "C2", "description": "Double socket under the wall screen, for the screen and a laptop", "at": [0.105, 0.0, 0.95], "face": "+x", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P4", "model": "socket2", "circuit": "C2", "description": "Double socket on the back wall by the meeting table", "at": [0.75, -1.095, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P5", "model": "socket2", "circuit": "C3", "description": "Double socket for the UPS, under the network cabinet", "at": [5.15, -1.095, 0.55], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P6", "model": "isolator", "circuit": "C4", "description": "AC isolator beside the split unit", "at": [1.75, -1.09, 1.9], "face": "+y", "size": [86, 86, 20], "rwf": 9000 }
+      { "id": "DB", "model": "board", "description": "Unit board, 12 modules, on the back wall over the sofa", "at": [2.1, -1.05, 1.55], "face": "+y", "size": [300, 250, 100], "rwf": 65000 },
+      { "id": "L1", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, over the sofa's corner", "at": [1.25, -0.3, 2.275], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
+      { "id": "L2", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, mid-room", "at": [3.3, 0, 2.275], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
+      { "id": "L3", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, over the big desk", "at": [5.3, 0, 2.275], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
+      { "id": "S1", "model": "switch2", "circuit": "C1", "description": "Two-gang switch on the cargo-door end over the sofa, by the glazing: L1, and L2 with L3", "at": [0.105, 0.85, 1.1], "face": "+x", "size": [146, 86, 10], "rwf": 3500 },
+      { "id": "P1", "model": "usb", "circuit": "C2", "description": "Socket + USB-C over the big desk, behind the Mac Studio", "at": [5.953, -0.75, 0.95], "face": "-x", "size": [146, 86, 10], "rwf": 15000 },
+      { "id": "P2", "model": "socket2", "circuit": "C2", "description": "Double socket over the big desk, for the Studio Display and a charger", "at": [5.953, 0.55, 0.95], "face": "-x", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P3", "model": "socket2", "circuit": "C2", "description": "Double socket on the cargo-door end over the sofa, for phones and a lamp", "at": [0.105, 0.2, 0.95], "face": "+x", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P4", "model": "socket2", "circuit": "C2", "description": "Double socket on the back wall past the sofa's arm", "at": [3.35, -1.095, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P5", "model": "socket2", "circuit": "C3", "description": "Double socket for the UPS, beside it under the network cabinet", "at": [4.35, -1.095, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 9000 }
     ]
   },
   "network": {
-    "about": "The farm's network starts here, the office taken as the base of the IoT architecture's case A [A]: one 4G router with a second operator's SIM as failover, a PoE switch, the edge gateway (MQTT broker, store-and-forward, local dashboard and the cameras' recorder), all in a small wall cabinet on the office's own circuit and UPS. From the switch: a ceiling access point for the office, the desk and screen outlets, and outdoor cable to the access points and cameras elsewhere on the farm. Signal at the site is [U] until the survey; nothing is sourced or priced yet.",
+    "about": "The farm's network starts here, the office taken as the base of the IoT architecture's case A [A]: one 4G router with a second operator's SIM as failover, a PoE switch, the edge gateway (MQTT broker, store-and-forward, local dashboard and the cameras' recorder), all in a small wall cabinet on the office's own circuit and UPS. From the switch: a ceiling access point for the office, the big desk's data outlet, and outdoor cable to the access points and cameras elsewhere on the farm. Signal at the site is [U] until the survey; nothing is sourced or priced yet.",
     "circuits": [
       { "id": "N1", "serves": "PoE to the access point", "group": "data", "colour": "#8e5bd6" },
-      { "id": "N2", "serves": "Data to the desks and the screen", "group": "data", "colour": "#c2489b" }
+      { "id": "N2", "serves": "Data to the big desk", "group": "data", "colour": "#c2489b" }
     ],
     "points": [
-      { "id": "RK", "model": "rack", "description": "Wall cabinet 9U, open front, on the back wall between the filing wall and the second desk", "at": [4.93, -0.9, 1.85], "face": "+y", "size": [550, 450, 400] },
-      { "id": "R1", "model": "router", "description": "4G router with two SIMs, on top of the cabinet", "at": [4.8, -0.975, 2.095], "face": "+y", "size": [220, 40, 150] },
-      { "id": "SW", "model": "poe", "description": "PoE switch, 8 ports, in the cabinet", "at": [4.93, -0.963, 1.9], "face": "+y", "size": [440, 44, 250] },
-      { "id": "GW", "model": "gateway", "description": "Edge gateway: MQTT broker, store-and-forward, local dashboard, camera recorder", "at": [4.85, -1.028, 1.72], "face": "+y", "size": [180, 60, 120] },
-      { "id": "UPS", "model": "ups", "description": "UPS for the cabinet, on the floor under it", "at": [4.93, -0.92, 0.115], "face": "+y", "size": [145, 225, 360] },
+      { "id": "RK", "model": "rack", "description": "Wall cabinet 9U, open front, high on the back wall beside the big desk", "at": [4.7, -0.9, 1.85], "face": "+y", "size": [550, 450, 400] },
+      { "id": "R1", "model": "router", "description": "4G router with two SIMs, on top of the cabinet", "at": [4.57, -0.975, 2.095], "face": "+y", "size": [220, 40, 150] },
+      { "id": "SW", "model": "poe", "description": "PoE switch, 8 ports, in the cabinet", "at": [4.7, -0.963, 1.9], "face": "+y", "size": [440, 44, 250] },
+      { "id": "GW", "model": "gateway", "description": "Edge gateway: MQTT broker, store-and-forward, local dashboard, camera recorder", "at": [4.62, -1.028, 1.72], "face": "+y", "size": [180, 60, 120] },
+      { "id": "UPS", "model": "ups", "description": "UPS for the cabinet, on the floor under it", "at": [4.7, -0.92, 0.115], "face": "+y", "size": [145, 225, 360] },
       { "id": "AP1", "model": "ap", "circuit": "N1", "description": "Wi-Fi access point on the ceiling, powered over its cable", "at": [3.0, -0.45, 2.28], "face": "down", "size": [200, 200, 35] },
-      { "id": "D1", "model": "data", "circuit": "N2", "description": "Data outlet over the second desk", "at": [5.953, -0.35, 0.95], "face": "-x", "size": [86, 86, 10] },
-      { "id": "D2", "model": "floorbox", "circuit": "N2", "description": "Two data outlets in the reception desk's floor box (FB)", "at": [3.75, 0.25, 0.005], "face": "up", "size": [200, 200, 10] },
-      { "id": "D3", "model": "data", "circuit": "N2", "description": "Data outlet under the wall screen, for the screen", "at": [0.105, 0.25, 0.95], "face": "+x", "size": [86, 86, 10] }
+      { "id": "D1", "model": "data", "circuit": "N2", "description": "Data outlet over the big desk, beside P1, for the Mac Studio", "at": [5.953, -0.45, 0.95], "face": "-x", "size": [86, 86, 10] }
     ]
   }
 }

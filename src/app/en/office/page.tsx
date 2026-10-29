@@ -18,7 +18,7 @@ import networkTags from "../../../../public/designs/office/render/network-tags.j
 
 export const metadata: Metadata = {
   title: "The office · Farm",
-  description: "The farm's reception and work office: a saffron container on a raised deck by the courtyard, at the Digital Farm near Kigali.",
+  description: "The farm's office, a lounge and a programmer's workroom: a saffron container on a raised deck by the courtyard, at the Digital Farm near Kigali.",
 }
 
 const D = "/designs/office"
@@ -33,20 +33,20 @@ function rail(rows: Row[]): RailItem[] {
     details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: "Not sourced yet" }, { label: "Cost", value: "Not priced yet" }],
   }))
 }
-const { meeting, reception, desk, shelves, printer, screen, ac } = office
+const { sofa, workstation: ws, cafe } = office
 const furnitureRail = rail([
-  { id: "reception", title: "Reception desk", size: `${m2(reception.x1 - reception.x0)} × ${m2(reception.y1 - reception.y0)} m, ${m2(reception.h)} m high`,
-    note: "Panel ends and a modesty panel toward the glazing, as in today's office; fed from the floor box under it (FB)." },
-  { id: "officechair", title: "Office chairs × 2", size: "Five-star base on castors, a mesh back", note: "Black mesh chairs, as in today's office." },
-  { id: "monitor", title: "Monitors × 2", size: "About 0.56 m wide, with a keyboard", note: "One on each desk." },
-  { id: "desk", title: "Second desk", size: `${m2(desk.x1 - desk.x0)} × ${m2(desk.y1 - desk.y0)} m, ${m2(desk.h)} m high`, note: "On the far end wall, its chair facing the wall." },
-  { id: "shelves", title: "Filing wall", size: `${m2(shelves.x1 - shelves.x0)} m wide, ${m2(shelves.d)} m deep, ${m2(shelves.h)} m high`,
-    note: `Closed cupboards to ${m2(shelves.base)} m, ${shelves.rows} rows of open shelves above for box files.` },
-  { id: "printer", title: "Printer cabinet", size: `${m2(printer.x1 - printer.x0)} × ${m2(printer.y1 - printer.y0)} m, ${m2(printer.h)} m high`, note: "In the front corner by the second desk, the printer on it." },
-  { id: "table", title: "Meeting table", size: `Ø ${m2(meeting.r * 2)} m, ${m2(meeting.h)} m high`, note: "Round, for four, under the wall screen at the cargo-door end." },
-  { id: "woodchair", title: "Meeting chairs × 4", size: `${m2(meeting.chair.w)} × ${m2(meeting.chair.d)} m, seat ${m2(meeting.chair.seat)} m` },
-  { id: "screen", title: "Wall screen", size: `${m2(screen.w)} × ${m2(screen.h)} m, its foot at ${m2(screen.bottom)} m`, note: "Shows the farm's map; plugs into P3 and the data outlet D3 under it." },
-  { id: "ac", title: "Split AC", size: `${m2(ac.x1 - ac.x0)} × ${m2(ac.y1 - ac.y0)} m, ${m2(ac.d)} m deep`, note: "High on the back wall over the meeting table, on its own circuit (C4) behind the isolator P6." },
+  { id: "sofa", title: "L sofa", size: `${m2(sofa.x1 - office.container.inner.x0)} × ${m2(office.container.inner.y1 - office.container.inner.y0)} m, ${m2(sofa.d)} m deep`,
+    note: "One piece: its short leg across the whole cargo-door end, its long leg along the back wall, a corner seat between." },
+  { id: "sofatable", title: "Low table", size: `${m2(sofa.table.x1 - sofa.table.x0)} × ${m2(sofa.table.y1 - sofa.table.y0)} m, 0.41 m high`, note: "Medium Oak, in front of the sofa." },
+  { id: "bigdesk", title: "Big desk", size: `${m2(office.container.inner.y1 - office.container.inner.y0)} × ${m2(ws.d)} m, 0.75 m high`,
+    note: "Across the whole far end wall, for a programmer and gamer; panel ends and a modesty panel." },
+  { id: "display", title: "Studio Display", size: `${m2(ws.display.w)} m wide, its stand foot ${m2(ws.display.foot)} m deep`, note: "One, centred on the desk. Apple's size from memory [A], not yet sourced." },
+  { id: "macstudio", title: "Mac Studio", size: `${m2(ws.mac.w)} × ${m2(ws.mac.w)} m, 0.095 m high`, note: "On the desk beside the display. Apple's size from memory [A], not yet sourced." },
+  { id: "keyboard", title: "Keyboard and mouse", size: "About 0.44 × 0.13 m", note: "In front of the display." },
+  { id: "gamingchair", title: "Gaming chair", size: "Five-star base on castors, a tall winged back with a headrest", note: "Facing the desk and the wall." },
+  { id: "cafetable", title: "Ahwa table", size: `Ø ${m2(cafe.table.r * 2)} m, ${m2(cafe.table.h)} m high`, note: "Marble top on a cast-iron pedestal, as in a traditional Egyptian cafe; on the deck." },
+  { id: "cafechair", title: "Ahwa chairs × 2", size: `${m2(cafe.chair.w)} × ${m2(cafe.chair.d)} m, seat ${m2(cafe.chair.seat)} m`,
+    note: "Dark wood with woven rush seats, either side of the table, looking out over the garden." },
 ])
 
 // The Electric and Network sections: office.json `electric` and `network`, drawn by RoomWiring and NetworkDiagram,
@@ -92,8 +92,8 @@ export default function OfficePage() {
       <RailSection id="furniture" title="Furniture and equipment" items={furnitureRail} />
 
       {/* Electric, in the studio's pattern: the office's wiring drawn full width from the farm's supply to every circuit,
-          the installation in the 3D view's camera (render/electric-line.png, every run in its circuit's colour, dashed
-          under the floor to the reception's floor box, every point tagged), the finished office (render/electric-real.webp),
+          the installation in the 3D view's camera (render/electric-line.png, every run in its circuit's colour, every
+          point tagged), the finished office (render/electric-real.webp),
           then each device on its own. All from scripts/site/render/office.html?view=electric and ?item=<model>. */}
       <ServiceSection id="electrical" title="Electric"
         diagram={<RoomWiring circuits={circuits} mainA={E.main_A} board="the office's 12-module board, on the back wall"
@@ -101,15 +101,14 @@ export default function OfficePage() {
           notes={[`Design ${designA} A on a ${E.main_A} A main switch · one RCBO 30 mA type A per circuit · the studio's conventions (D-021)`,
             "C3 feeds only the network cabinet's UPS · ratings are design intent until a RURA class A electrician designs the supply and certifies"]} />}
         figure={<TaggedFigure src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
-          alt="Line drawing of the office from the front: the unit board on the back wall between the AC and the filing wall, its circuits rising along the ceiling edge and down to each point, in blue for the three ceiling lights, the switch and the wall fan, orange for the sockets at the desks, the printer, the screen and the network cabinet, dashed under the floor to the reception desk's floor box, and green for the AC isolator."
+          alt="Line drawing of the office from the front: the unit board on the back wall over the sofa, its circuits rising along the ceiling edge and down to each point, in blue for the three ceiling lights and the switch, orange for the sockets at the big desk, over the sofa, on the back wall and for the network cabinet's UPS."
           info={tagInfo(points, circuits)} />}
         note={<>
-          Every run goes up into the ceiling, along it and straight down to its device, in conduit inside the linings; the
-          reception desk stands free, so its run drops behind the board and crosses under the floor to the floor box (FB).
+          Every run goes up into the ceiling, along it and straight down to its device, in conduit inside the linings.
           Each tag opens its row in the <a href="#electric-points" className="underline underline-offset-4">points table</a>.
         </>}
         real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1100, caption: "Rendered from the design model",
-          alt: "The same view rendered as finished: the white unit board on the back wall, three slim ceiling lights, a two-gang switch by the glazing, sockets over the second desk, the printer and under the screen, the floor box under the reception desk, the wall fan and the red AC isolator beside the split unit." }}
+          alt: "The same view rendered as finished: the white unit board on the back wall over the sofa, three slim ceiling lights, a two-gang switch by the glazing, sockets over the big desk, over the sofa's end and on the back wall, and the UPS socket under the network cabinet." }}
         rail={deviceRail(points, (m) => `${D}/render/electric/${m}.webp`)} />
 
       <TextSection id="electric-points" title="Electric points">
@@ -122,7 +121,7 @@ export default function OfficePage() {
       <ServiceSection id="network" title="Network"
         diagram={<NetworkDiagram links={N.circuits} points={netPoints} />}
         figure={<TaggedFigure src={`${D}/render/network-line.png`} aspect={networkTags.aspect} tags={networkTags.tags}
-          alt="Line drawing of the office from the front: the black wall cabinet on the back wall with the router on top, the PoE switch and the gateway inside and the UPS on the floor under it; a purple cable along the ceiling to the access point, and magenta cables to the data outlets over the second desk and under the screen, dashed under the floor to the reception desk's floor box."
+          alt="Line drawing of the office from the front: the black wall cabinet on the back wall beside the big desk with the router on top, the PoE switch and the gateway inside and the UPS on the floor under it; a purple cable along the ceiling to the access point, and a magenta cable to the data outlet over the big desk."
           info={tagInfo(netPoints, netLinks)} />}
         note={<>
           The router, the switch and the gateway sit in one small cabinet on their own circuit (C3) and UPS, so the farm&rsquo;s
@@ -130,7 +129,7 @@ export default function OfficePage() {
           down to each outlet. Each tag opens its row in the <a href="#network-points" className="underline underline-offset-4">points table</a>.
           Signal at the site is unknown until a survey of both networks; buy no radio hardware before it.
         </>}
-        rail={deviceRail(netPoints, (m) => `${D}/render/${m === "floorbox" ? "electric" : "network"}/${m}.webp`, { floorbox: { title: "Floor box" } })} />
+        rail={deviceRail(netPoints, (m) => `${D}/render/network/${m}.webp`)} />
 
       <TextSection id="network-points" title="Network points">
         <PointsTable points={netPoints} circuits={netLinks} />
