@@ -45,6 +45,7 @@
   "units": [
     {
       "id": "bar",
+      "page": "/en/bar",
       "label": "BAR",
       "kind": "20",
       "paint": "oxide",
@@ -55,6 +56,7 @@
     },
     {
       "id": "rooms",
+      "page": "/en/guest-room",
       "label": "GUEST ROOMS",
       "kind": "40x2",
       "paint": "saffron",
@@ -66,6 +68,7 @@
     },
     {
       "id": "office",
+      "page": "/en/office",
       "label": "OFFICE",
       "kind": "20",
       "paint": "saffron",
@@ -76,6 +79,7 @@
     },
     {
       "id": "studio-one",
+      "page": "/en/studio",
       "label": "STUDIO",
       "kind": "20",
       "paint": "saffron",
@@ -87,6 +91,7 @@
     },
     {
       "id": "studio-two",
+      "page": "/en/studio",
       "label": "STUDIO",
       "kind": "20",
       "paint": "saffron",
@@ -98,6 +103,7 @@
     },
     {
       "id": "study",
+      "page": "/en/study-room",
       "label": "STUDY ROOM",
       "kind": "40",
       "paint": "teal",
@@ -108,6 +114,7 @@
     },
     {
       "id": "galley",
+      "page": "/en/galley",
       "label": "GALLEY",
       "kind": "40-galley",
       "paint": "teal",
@@ -117,6 +124,7 @@
     },
     {
       "id": "bath",
+      "page": "/en/public-bathroom",
       "label": "PUBLIC BATHROOM",
       "kind": "20-bath",
       "paint": "teal",
@@ -167,6 +175,13 @@
       "ring": 2.1,
       "r": 0.2
     }
+  },
+  "neighbours": {
+    "about": "The master plan's neighbours of the compound (src/components/site/site.json), brought close so the homepage's 2D and 3D show them beside it at their true sizes (founder, 2026-10-29). Positions are in this file's frame AFTER the spread (x east, y south), so neither drawing spreads them again. The volleyball court stands on the lawn east of the compound, turned so its long side runs north-south to fit beside the courtyard. The vegetable field (one column of beds, the blocks nearest the compound, from public/designs/farming/data/plan.json) and the livestock house (src/components/livestock/livestock.json) lie west, past a break: on the land the field starts some 26 m past the compound and the livestock lies beyond it, sited after the 200 m lake check. Each links to its page.",
+    "volleyball": { "page": "/en/volleyball", "at": [54.5, 14] },
+    "field": { "page": "/en/farming", "corner": [-18.5, 44], "blocks": ["A4", "B4"], "cut": 3.5 },
+    "livestock": { "page": "/en/livestock", "at": [-23.5, -0.5], "paddock": [-30, -4.5, -16.5, 1.45] },
+    "break": -15
   },
   "spread": {
     "about": "The 2D and the 3D set the compound apart sideways for a wide screen, every building at its true size: x' = mid + (x - mid) * factor for each centre. The way in (the gates, the sign wall, the parking and the rock road) keeps the places it had at 1.5, where the founder wants the rock road, while the buildings take 1.8 (2026-10-27).",

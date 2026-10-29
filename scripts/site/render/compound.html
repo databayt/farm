@@ -7,7 +7,10 @@
   left, D-022). Details follow the 2026-10-25 footage (assets/library/footage/2026-10-25): corrugated walls, white-framed
   sliding doors, red pipe railings with the deck stairs at their ends, a concrete cap on the fire pit,
   hexagonal pop-up tents. The studios follow the studio's hero (/en/studio, render/studio-hero.jpg), and the
-  sign wall carries DIGITAL FARM in LED letters. Rendered two ways:
+  sign wall carries DIGITAL FARM in LED letters. Its neighbours stand beside it as the 2D draws them
+  (compound.json neighbours), from their own pages' data: the volleyball court (volleyball.json) on the lawn east, and,
+  on a separate piece of ground past the 2D's break, the vegetable field's nearest beds (farming plan.json) and
+  the livestock house and paddock (livestock.json). Rendered two ways:
 
     ?mode=line  line drawing in the page's ink        -> public/designs/compound/render/compound-line.png
     ?mode=real  paint, timber, stone, sun and shadow  -> public/designs/compound/render/compound-real.webp
@@ -46,6 +49,10 @@ const Q = new URLSearchParams(location.search)
 const LINE = Q.get("mode") !== "real"
 const [FW, FH] = [2400, 1260]
 const C = await (await fetch(`/src/components/home/compound.json?${Date.now()}`)).json()
+// the neighbours the 2D draws beside the compound, from their own pages' data (compound.json neighbours)
+const [VB, LV, FP] = await Promise.all(["/src/components/volleyball/volleyball.json", "/src/components/livestock/livestock.json",
+  "/public/designs/farming/data/plan.json"].map(async (u) => (await fetch(`${u}?${Date.now()}`)).json()))
+const N = C.neighbours
 const INK = "#2b2a26", PAGE = "#f7f5ef" // the farm theme's soil and chalk
 const HC = 2.591 // a container's height
 // The 2D sets the compound apart sideways for a wide screen (compound.json's spread), every building at its
@@ -268,7 +275,7 @@ function ledTexture() {
 // ------------------------------------------------------------ materials
 const PAINT = { saffron: "#d9a21b", oxide: "#8a3227", teal: "#3e8a86" }
 // thin parts get crease lines but no silhouette, so railings and slats stay fine in the line drawing
-const THIN = new Set(["red", "white-frame", "steel", "black", "slat", "cable", "louvre", "frame-saffron", "frame-oxide", "frame-teal"])
+const THIN = new Set(["tape", "net", "wire", "red", "white-frame", "steel", "black", "slat", "cable", "louvre", "frame-saffron", "frame-oxide", "frame-teal"])
 const MAT = {}
 function mat(name) {
   if (MAT[name]) return MAT[name]
@@ -286,7 +293,7 @@ function mat(name) {
       : new THREE.MeshStandardMaterial({ map, emissiveMap: map, emissive: "#ffffff", emissiveIntensity: 1.6, roughness: 0.45, metalness: 0.2 })
     x.userData.outlineParameters = { visible: false }
   } else if (LINE) {
-    if (name === "glass" || name === "canopy") x = new THREE.MeshBasicMaterial({ color: PAGE, transparent: true, opacity: 0, depthWrite: false })
+    if (name === "glass" || name === "canopy" || name === "net") x = new THREE.MeshBasicMaterial({ color: PAGE, transparent: true, opacity: 0, depthWrite: false })
     else x = new THREE.MeshBasicMaterial({ color: PAGE, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
     if (THIN.has(name)) x.userData.outlineParameters = { visible: false }
     if (name === "bark") x.userData.outlineParameters = { thickness: 0.0011 } // trunks stay slender
@@ -335,6 +342,14 @@ function mat(name) {
       leaf2: () => std({ color: "#6f8a52", roughness: 0.9 }),
       gum: () => std({ color: "#7a8d68", roughness: 0.9 }), // eucalyptus grey-green
       cushion: () => std({ color: "#e9e3d6", roughness: 0.95 }),
+      tape: () => std({ color: "#f4f3ee", roughness: 0.8 }), // the court's webbing lines
+      net: () => std({ color: "#1e1f22", roughness: 0.8, transparent: true, opacity: 0.35, depthWrite: false, side: THREE.DoubleSide }),
+      wire: () => std({ color: "#8f9296", roughness: 0.4, metalness: 0.8 }),
+      bed: () => std({ color: "#6e4a32", roughness: 1 }), // raised beds of dark soil
+      crop: () => std({ color: "#5d8a3c", roughness: 0.9 }),
+      crop2: () => std({ color: "#7aa04a", roughness: 0.9 }),
+      goat: () => std({ color: "#6b4a33", roughness: 0.95 }),
+      sheep: () => std({ color: "#e8e2d2", roughness: 1 }),
 
       white: () => std({ color: "#eeeeec", roughness: 0.3, metalness: 0.4 }),
       silver: () => std({ color: "#a9adb1", roughness: 0.3, metalness: 0.6 }),
@@ -440,11 +455,14 @@ function group(build, pos, rotY = 0) {
 // ------------------------------------------------------------ the site
 // As the 2D draws it: the compound on its ground, a model base, with no lake, road or trees (D-022).
 // the base reaches 2.5 m past the outermost buildings east and west
-const MX0 = Math.min(...C.units.map((u) => u.box[0])) - 2.5
-const MX1 = Math.max(...C.units.map((u) => u.box[2])) + 2.5
+// and past the neighbours: the livestock paddock west, the volleyball court's free zone east
+const MX0 = Math.min(N.livestock.paddock[0], N.field.corner[0] - 10.5) - 2.5
+const MX1 = Math.max(...C.units.map((u) => u.box[2]), N.volleyball.at[0] + VB.court.w / 2 + VB.court.free) + 2.5
 const [MZ0, MZ1] = [-8.4, 45.6]
-// one lawn over the whole base, its top level with the old courtyard lawn: no courtyard outline, as the 2D
-slab([MX0, MZ0, MX1, MZ1], 0.01, -1.0, 1.035, "lawn", { sides: "soil" })
+// one lawn over the whole base, its top level with the old courtyard lawn: no courtyard outline, as the 2D;
+// the base splits at the 2D's break, where the field and the livestock are drawn close
+slab([MX0, MZ0, N.break - 0.8, MZ1], 0.01, -1.0, 1.035, "lawn", { sides: "soil" })
+slab([N.break + 0.8, MZ0, MX1, MZ1], 0.01, -1.0, 1.035, "lawn", { sides: "soil" })
 
 // The gates, after the founder's reference photo: two leaves of vertical boards on a frame of stiles and
 // top, middle and bottom rails, braced in an X, with black iron strap hinges and a latch, hung closed between
@@ -778,6 +796,85 @@ for (const [id, windows] of [["galley", [[3.2, 4.8], [7.4, 9.0]]], ["bath", [[0.
   }
 }
 
+// ------------------------------------------------------------ the neighbours, drawn close (compound.json neighbours)
+const G = 0.035 // the lawn's top
+// The volleyball court (/en/volleyball): white tape lines on the grass, its long side along z as on the 2D,
+// the net over the centre line between two posts 1 m outside the side lines.
+{
+  const [cx, cz] = N.volleyball.at, c = VB.court, t = c.line
+  const [x0, x1, z0, z1] = [cx - c.w / 2, cx + c.w / 2, cz - c.l / 2, cz + c.l / 2]
+  const tape = (xa, za, xb, zb) => blk(xa, za, xb, zb, G, G + 0.008, "tape")
+  tape(x0, z0, x0 + t, z1); tape(x1 - t, z0, x1, z1); tape(x0, z0, x1, z0 + t); tape(x0, z1 - t, x1, z1)
+  for (const d of [-c.attack, 0, c.attack]) tape(x0, cz + d - t / 2, x1, cz + d + t / 2)
+  const n = VB.net, p = VB.posts, px = c.w / 2 + p.out
+  for (const s of [-1, 1]) cyl(cx + s * px, cz, p.d / 2, G, p.h, "white", 12)
+  blk(cx - n.l / 2, cz - 0.004, cx + n.l / 2, cz + 0.004, G + n.men - n.d, G + n.men - n.top, "net")
+  blk(cx - n.l / 2, cz - 0.01, cx + n.l / 2, cz + 0.01, G + n.men - n.top, G + n.men, "tape")
+  if (!LINE) add(new THREE.SphereGeometry(VB.ball.r, 16, 12), "tape", { pos: [cx + VB.ball.y, G + VB.ball.r, cz + VB.ball.x] })
+}
+
+// The livestock house (/en/livestock), its open side toward the gates: x_c = x + local x, z = y - local y.
+{
+  const [ax, az] = N.livestock.at, h = LV.house, [L, W] = [h.l / 2, h.w / 2], F = h.floor
+  const X = (x) => ax + x, Z = (y) => az - y
+  for (const x of h.posts.x) for (const y of h.posts.y) blk(X(x) - 0.05, Z(y) - 0.05, X(x) + 0.05, Z(y) + 0.05, G, F, "slat")
+  blk(X(-L), Z(-W), X(L), Z(W), F - 0.05, F, "timber")
+  blk(X(-L), Z(-W), X(L), Z(-W) - 0.04, F, F + h.back.h, "timber") // the boarded back wall
+  for (const x of [-L, L - 0.04]) blk(X(x), Z(-W), X(x + 0.04), Z(W), F, F + h.back.h, "timber")
+  const fy = W - h.passage.d
+  blk(X(-L), Z(fy) - 0.02, X(L), Z(fy) + 0.02, F, F + 0.6, "slat") // the pens' front fence: boards, then a rail
+  blk(X(-L), Z(fy) - 0.03, X(L), Z(fy) + 0.03, F + h.front.h - 0.06, F + h.front.h, "slat")
+  for (const p of LV.pens.list.slice(1)) blk(X(p.x0) - 0.02, Z(-W), X(p.x0) + 0.02, Z(fy), F, F + h.front.h, "slat")
+  // the mono-pitch roof, high over the passage and falling to the back
+  const [rf, rb, o] = [F + h.roof.front, F + h.roof.back, h.roof.over], a = Math.atan2(rf - rb, 2 * W)
+  add(new THREE.BoxGeometry(2 * (L + o), 0.04, (2 * (W + o)) / Math.cos(a)), "roofsheet", { pos: [ax, (rf + rb) / 2, az], rot: [a, 0, 0] })
+  const rl = Math.hypot(LV.ramp.l, F)
+  add(new THREE.BoxGeometry(1.0, 0.05, rl), "timber", { pos: [ax, F / 2, Z(W) - LV.ramp.l / 2], rot: [-Math.atan2(F, LV.ramp.l), 0, 0] })
+  cyl(X(LV.tank.x), Z(LV.tank.y), LV.tank.r * 0.8, G, LV.tank.stand, "slat", 8)
+  cyl(X(LV.tank.x), Z(LV.tank.y), LV.tank.r, LV.tank.stand, LV.tank.h, "black", 20)
+  // the herd in their pens (real mode only: at this scale they would only clutter the line drawing)
+  if (!LINE) for (const [kind, list] of [["goat", LV.animals.goats], ["sheep", LV.animals.sheep]]) for (const b of list) {
+    group(() => {
+      blk(-0.32, -0.13, 0.32, 0.13, 0.35, 0.68, kind)
+      blk(0.3, -0.07, 0.48, 0.07, 0.6, 0.82, kind)
+      for (const [lx, lz] of [[-0.25, -0.08], [-0.25, 0.08], [0.22, -0.08], [0.22, 0.08]]) blk(lx - 0.03, lz - 0.03, lx + 0.03, lz + 0.03, 0, 0.36, kind)
+    }, [X(b.x), F, Z(b.y)], THREE.MathUtils.degToRad(b.h))
+  }
+  // the paddock's post-and-wire fence
+  const [p0, q0, p1, q1] = N.livestock.paddock
+  const side = (a, b) => {
+    const len = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.ceil(len / 2.5)
+    for (let k = 0; k <= n; k++) cyl(a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n, 0.05, G, 1.2, "slat", 6)
+    for (const y of [0.5, 1.1]) pipe([a[0], y, a[1]], [b[0], y, b[1]], 0.012, "wire")
+  }
+  side([p0, q0], [p1, q0]); side([p1, q0], [p1, q1]); side([p0, q0], [p0, q1])
+  side([p0, q1], [X(-L), q1]); side([X(L), q1], [p1, q1])
+}
+
+// The vegetable field (/en/farming): its blocks nearest the compound, each bed 1.2 x 10 m and 20 cm high, crop rows
+// on the beds that grow this season, the fence on the compound side with the gate onto the main path.
+{
+  const [cx, cz] = N.field.corner, [, top, east] = FP.fence
+  const X = (x) => cx + x - east, Z = (y) => cz - (y - top)
+  const beds = FP.beds.filter((b) => N.field.blocks.includes(b.block))
+  beds.forEach((b, k) => {
+    blk(X(b.x), Z(b.y), X(b.x + b.w), Z(b.y + b.h), G, G + 0.2, "bed")
+    if (b.crop === "rest") return
+    for (const r of [0.3, 0.6, 0.9]) blk(X(b.x + 0.25), Z(b.y + r - 0.11), X(b.x + b.w - 0.25), Z(b.y + r + 0.11), G + 0.2, G + 0.42, k % 3 ? "crop" : "crop2")
+  })
+  const shown = FP.blocks.filter((b) => N.field.blocks.includes(b.id))
+  const bottom = Math.max(...shown.map((b) => b.y + b.h)) + N.field.cut, west = Math.min(...shown.map((b) => b.x)) - 0.5
+  const [g0, g1] = [FP.mainY - FP.main / 2, FP.mainY + FP.main / 2]
+  const fence = (a, b) => {
+    const len = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(1, Math.ceil(len / 2.5))
+    for (let k = 0; k <= n; k++) cyl(a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n, 0.05, G, 1.5, "slat", 6)
+    for (const y of [0.4, 0.9, 1.4]) pipe([a[0], y, a[1]], [b[0], y, b[1]], 0.012, "wire")
+  }
+  fence([X(west), Z(top)], [X(east), Z(top)])
+  fence([X(east), Z(top)], [X(east), Z(g0)])
+  fence([X(east), Z(g1)], [X(east), Z(bottom)])
+}
+
 // ------------------------------------------------------------ camera: the front view
 // As the studio's 3D is seen from its front, the compound is seen from beyond the gates, centred, from high
 // up through a long lens, so the containers' verticals stay nearly straight and the back row still shows.
@@ -829,7 +926,7 @@ if (LINE) {
   sun.target.position.copy(target)
   sun.castShadow = true
   sun.shadow.mapSize.set(4096, 4096)
-  Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 45, bottom: -45, near: 1, far: 200 })
+  Object.assign(sun.shadow.camera, { left: -(MX1 - MX0) / 2 - 10, right: (MX1 - MX0) / 2 + 10, top: 45, bottom: -45, near: 1, far: 200 })
   sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03; sun.shadow.radius = 3
   scene.add(sun, sun.target)
   const composer = new EffectComposer(renderer)

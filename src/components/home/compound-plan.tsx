@@ -1,3 +1,9 @@
+import type { ReactNode } from "react"
+
+import plan from "../../../public/designs/farming/data/plan.json"
+import livestock from "../livestock/livestock.json"
+import site from "../site/site.json"
+import volleyball from "../volleyball/volleyball.json"
 import compound from "./compound.json"
 
 // The compound drawn in the pattern of the studio's plan (/en/studio, render/plan.svg): solid black
@@ -25,11 +31,16 @@ const spreadBy = (factor: number) => {
 const { P, B } = spreadBy(compound.spread.factor)
 // the way in (gates, sign wall, parking, rock road) keeps the places it had before the buildings spread further
 const WAY = spreadBy(compound.spread.wayIn)
-// The frame follows the spread: from past the guest rooms' labels to past the furthest building.
+// The neighbours are placed after the spread already (compound.json neighbours): only turned top to bottom.
+const N = compound.neighbours
+const T = ([x, y]: Point) => [x, SIZE - y]
+// The frame follows the spread and the neighbours: from the livestock paddock's far fence to past the
+// volleyball court's free zone.
+const court = volleyball.court
 const VIEW = [
-  Math.min(...compound.units.map((u) => B(u.box)[0])) - 4.2,
+  Math.min(N.livestock.paddock[0], N.field.corner[0] - 10) - 1.5,
   0.6,
-  Math.max(...compound.units.map((u) => B(u.box)[2])) + 1.5,
+  Math.max(...compound.units.map((u) => B(u.box)[2]), N.volleyball.at[0] + court.w / 2 + court.free) + 1.5,
   55.5,
 ]
 
@@ -47,6 +58,16 @@ const label = {
   fill: "currentColor",
 } as const
 const small = { ...label, fontSize: 0.5, fontWeight: 600 } as const
+
+// A name on the plan opens its own page: underlined on hover and keyboard focus, the browser's focus ring kept.
+function Page({ href, children }: { href?: string; children: ReactNode }) {
+  if (!href) return children
+  return (
+    <a href={href} className="[&:focus-visible_text]:underline [&:hover_text]:underline">
+      {children}
+    </a>
+  )
+}
 
 const f = (n: number) => +n.toFixed(3)
 const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
@@ -146,9 +167,11 @@ function GuestRooms({ unit }: { unit: Unit }) {
       ))}
       <Dimension a={[x0, y0]} b={[x0, y1]} offset={-1.2} />
       <Dimension a={[x0, y0]} b={[x1, y0]} offset={-1.2} />
-      <text x={f(x0 - 2.9)} y={f((y0 + y1) / 2)} textAnchor="middle" transform={`rotate(-90 ${f(x0 - 2.9)} ${f((y0 + y1) / 2)})`} style={label}>
-        {unit.label}
-      </text>
+      <Page href={unit.page}>
+        <text x={f(x0 - 2.9)} y={f((y0 + y1) / 2)} textAnchor="middle" transform={`rotate(-90 ${f(x0 - 2.9)} ${f((y0 + y1) / 2)})`} style={label}>
+          {unit.label}
+        </text>
+      </Page>
     </g>
   )
 }
@@ -164,9 +187,11 @@ function Bar({ unit, east }: { unit: Unit; east: number }) {
       <rect {...at([x0, y0, x1, y1])} {...wall} />
       <Gap a={[x1, h0]} b={[x1, h1]} />
       <rect {...at([x1, h0, x1 + 0.4, h1])} {...thin} />
-      <text x={f(x0 - 0.7)} y={f((y0 + y1) / 2 + 0.32)} textAnchor="end" style={label}>
-        {unit.label}
-      </text>
+      <Page href={unit.page}>
+        <text x={f(x0 - 0.7)} y={f((y0 + y1) / 2 + 0.32)} textAnchor="end" style={label}>
+          {unit.label}
+        </text>
+      </Page>
     </g>
   )
 }
@@ -205,9 +230,11 @@ function RowUnit({ unit, dimension }: { unit: Unit; dimension?: boolean }) {
           <Glazing a={[f(cx - 0.2), y1]} b={[f(cx + 1.4), y1]} />
         </>
       )}
-      <text x={cx} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
-        {unit.label}
-      </text>
+      <Page href={unit.page}>
+        <text x={cx} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
+          {unit.label}
+        </text>
+      </Page>
       {dimension ? <Dimension a={[x0, y0]} b={[x1, y0]} offset={-2.4} /> : null}
     </g>
   )
@@ -225,9 +252,11 @@ function Study({ unit, west }: { unit: Unit; west: number }) {
       <rect {...at([x0, y1, x1, y1 + deck])} {...thin} />
       <rect {...at([x0, y0, x1, y1])} {...wall} />
       <Glazing a={[f(g0), y1]} b={[f(g1), y1]} />
-      <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
-        {unit.label}
-      </text>
+      <Page href={unit.page}>
+        <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
+          {unit.label}
+        </text>
+      </Page>
     </g>
   )
 }
@@ -246,9 +275,11 @@ function Galley({ unit }: { unit: Unit }) {
       ))}
       <Door hinge={[f(x0 + 1.2), y1]} along={[1, 0]} into={[0, -1]} width={0.9} />
       <Door hinge={[f(x1 - 1.2), y1]} along={[-1, 0]} into={[0, -1]} width={0.9} />
-      <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
-        {unit.label}
-      </text>
+      <Page href={unit.page}>
+        <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
+          {unit.label}
+        </text>
+      </Page>
     </g>
   )
 }
@@ -278,9 +309,11 @@ function Bath({ unit }: { unit: Unit }) {
       ))}
       <path d={`M${f(x1)} ${f(y0 + 0.9)}A0.25 0.25 0 0 0 ${f(x1)} ${f(y0 + 1.4)}`} {...thin} />
       <Door hinge={[f(x0 + 3.0), y1]} along={[1, 0]} into={[0, -1]} width={0.9} />
-      <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
-        {unit.label}
-      </text>
+      <Page href={unit.page}>
+        <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
+          {unit.label}
+        </text>
+      </Page>
     </g>
   )
 }
@@ -322,12 +355,137 @@ function Outdoor() {
           </g>
         )
       })}
-      <text x={f(left - 0.6)} y={f(middle + 0.18)} textAnchor="end" style={small}>
-        CAMPING
-      </text>
+      <Page href="/en/camp">
+        <text x={f(left - 0.6)} y={f(middle + 0.18)} textAnchor="end" style={small}>
+          CAMPING
+        </text>
+      </Page>
       {rows.map(([a, b]) => (
         <rect key={a} {...at([tx - length / 2, a, tx + length / 2, b])} {...thin} />
       ))}
+    </g>
+  )
+}
+
+// The volleyball court on the lawn east of the compound, in /en/volleyball's numbers (FIVB rules): the 18 x 9 m
+// court inside its 3 m free zone, the net over the centre line, an attack line 3 m each side of it, the posts
+// 1 m outside the side lines. Turned so its long side runs up the page, beside the courtyard.
+function Volleyball() {
+  const [cx, cy] = T(N.volleyball.at)
+  const [hw, hl, free] = [court.w / 2, court.l / 2, court.free]
+  const [x0, y0, x1, y1] = [cx - hw, cy - hl, cx + hw, cy + hl]
+  const post = hw + volleyball.posts.out
+  return (
+    <g>
+      <rect {...at([x0 - free, y0 - free, x1 + free, y1 + free])} {...thin} strokeDasharray="3 3" />
+      <rect {...at([x0, y0, x1, y1])} {...medium} />
+      {[-court.attack, court.attack].map((d) => (
+        <line key={d} x1={f(x0)} x2={f(x1)} y1={f(cy + d)} y2={f(cy + d)} {...thin} />
+      ))}
+      <line x1={f(cx - post)} x2={f(cx + post)} y1={f(cy)} y2={f(cy)} stroke="currentColor" strokeWidth={0.1} />
+      {[-post, post].map((d) => (
+        <circle key={d} cx={f(cx + d)} cy={f(cy)} r={0.18} fill="currentColor" />
+      ))}
+      <Dimension a={[x1, y0]} b={[x1, y1]} offset={1.4} />
+      <Dimension a={[x0, y1]} b={[x1, y1]} offset={1.4} />
+      <Page href={N.volleyball.page}>
+        <text x={f(cx)} y={f(y0 - free - 0.8)} textAnchor="middle" style={label}>
+          VOLLEYBALL
+        </text>
+      </Page>
+    </g>
+  )
+}
+
+// West of the compound, past the break: the vegetable field's blocks nearest it (/en/farming), each bed 1.2 x 10 m
+// as plan.json lays them, the fence on the compound side with the gate onto the main path. plan.json's y runs
+// toward the gates, so a field point (x, y) sits at corner + (x - fence east, y - fence top) on the page.
+function Field() {
+  const [fx, fy] = T(N.field.corner)
+  const [, top, east] = plan.fence
+  const F = (x: number, y: number) => [f(fx + x - east), f(fy + y - top)]
+  const shown = plan.blocks.filter((b) => N.field.blocks.includes(b.id))
+  const beds = plan.beds.filter((b) => N.field.blocks.includes(b.block))
+  const bottom = Math.max(...shown.map((b) => b.y + b.h)) + N.field.cut
+  const west = Math.min(...shown.map((b) => b.x)) - 0.5
+  const [gate0, gate1] = [plan.mainY - plan.main / 2, plan.mainY + plan.main / 2]
+  const [ex, ey0] = F(east, top)
+  const [wx, ey1] = F(west, bottom)
+  const [, g0] = F(east, gate0)
+  const [, g1] = F(east, gate1)
+  return (
+    <g>
+      {beds.map((b) => {
+        const [x0, y0] = F(b.x, b.y)
+        return <rect key={b.id} {...at([x0, y0, x0 + b.w, y0 + b.h])} {...thin} strokeDasharray={b.crop === "rest" ? "3 3" : undefined} />
+      })}
+      <path d={`M${wx} ${ey0}H${ex}V${g0}M${ex} ${g1}V${ey1}`} {...medium} />
+      <Zigzag a={[wx, ey1]} b={[ex, ey1]} />
+      <Page href={N.field.page}>
+        <text x={f(ex + 1.3)} y={f((ey0 + ey1) / 2)} textAnchor="middle" transform={`rotate(-90 ${f(ex + 1.3)} ${f((ey0 + ey1) / 2)})`} style={label}>
+          VEGETABLE FIELD · {plan.bedsTotal} BEDS
+        </text>
+      </Page>
+    </g>
+  )
+}
+
+// The livestock house (/en/livestock) at the paddock's top fence: 7.0 x 3.9 m, the pens behind the feed passage,
+// its open side toward the gates, the ramp down into the paddock and the tank at its east end.
+function Livestock() {
+  const { house, pens, ramp, tank, animals } = livestock
+  const [cx, cy] = T(N.livestock.at)
+  const [L, W] = [house.l / 2, house.w / 2]
+  const fence = cy + W - house.passage.d
+  const [px0, py1, px1, py0] = N.livestock.paddock
+  const [, ty] = T([0, py0])
+  const [, by] = T([0, py1])
+  return (
+    <g>
+      <rect {...at([px0, ty, px1, by])} {...thin} strokeDasharray="6 3" />
+      <rect {...at([cx - L - house.roof.over, cy - W - house.roof.over, cx + L + house.roof.over, cy + W + house.roof.over])} {...thin} strokeDasharray="3 3" />
+      <path d={`M${f(cx - L)} ${f(cy + W)}V${f(cy - W)}H${f(cx + L)}V${f(cy + W)}`} {...wall} />
+      <line x1={f(cx - L)} x2={f(cx + L)} y1={f(fence)} y2={f(fence)} {...thin} />
+      {pens.list.slice(1).map((p) => (
+        <line key={p.id} x1={f(cx + p.x0)} x2={f(cx + p.x0)} y1={f(cy - W)} y2={f(fence)} {...thin} />
+      ))}
+      <rect {...at([cx - 0.5, cy + W, cx + 0.5, cy + W + ramp.l])} {...thin} />
+      <circle cx={f(cx + tank.x)} cy={f(cy + tank.y)} r={tank.r} {...thin} />
+      <Page href={N.livestock.page}>
+        <text x={f(cx)} y={f(by + 1.0)} textAnchor="middle" style={label}>
+          LIVESTOCK · {animals.goats.length} GOATS, {animals.sheep.length} SHEEP
+        </text>
+      </Page>
+      <text x={f(px0 + 0.5)} y={f(by - 0.6)} style={small}>
+        PADDOCK
+      </text>
+    </g>
+  )
+}
+
+// A break line, as a drawing shortens what it leaves out: a straight run with one zigzag in its middle.
+function Zigzag({ a: [ax, ay], b: [bx, by] }: { a: Point; b: Point }) {
+  const [mx, my] = [(ax + bx) / 2, (ay + by) / 2]
+  const [ux, uy] = [(bx - ax) / Math.hypot(bx - ax, by - ay), (by - ay) / Math.hypot(bx - ax, by - ay)]
+  const k = 0.5
+  return (
+    <path
+      d={`M${f(ax)} ${f(ay)}L${f(mx - ux * k)} ${f(my - uy * k)}L${f(mx - ux * k * 0.3 - uy * k * 1.4)} ${f(my - uy * k * 0.3 + ux * k * 1.4)}L${f(mx + ux * k * 0.3 + uy * k * 1.4)} ${f(my + uy * k * 0.3 - ux * k * 1.4)}L${f(mx + ux * k)} ${f(my + uy * k)}L${f(bx)} ${f(by)}`}
+      {...thin}
+    />
+  )
+}
+
+// Between the field and the compound: the gap drawn short, and how far it is on the land (site.json).
+const westGap = Math.round(site.zones.find((z) => z.id === "compound")!.rect[0] - plan.fence[2])
+function Break() {
+  const x = N.break
+  return (
+    <g>
+      <Zigzag a={[x, 2]} b={[x, 52]} />
+      <text x={f(x - 0.5)} y={14} textAnchor="middle" transform={`rotate(-90 ${f(x - 0.5)} 14)`} style={{ ...small, fontWeight: 500, stroke: PAGE, strokeWidth: 0.6, paintOrder: "stroke" }}>
+        DRAWN CLOSE · ON THE LAND THE FIELD IS {westGap} M AWAY
+      </text>
     </g>
   )
 }
@@ -361,6 +519,12 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       <Bar unit={units.bar} east={B(units.rooms.box)[2]} />
       <GuestRooms unit={units.rooms} />
 
+      {/* The neighbours, drawn close: the volleyball court on the lawn; past the break, the field and the livestock */}
+      <Volleyball />
+      <Break />
+      <Field />
+      <Livestock />
+
       {/* The courtyard: no outline, only its name and the stone fire pit */}
       <circle cx={pitX} cy={pitY} r={pitR} {...medium} />
       <circle cx={pitX} cy={pitY} r={pitInner} {...thin} />
@@ -381,9 +545,11 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       ))}
       <path d={roadPath} fill="none" stroke="currentColor" strokeWidth={compound.rockRoad.width} />
       <path d={roadPath} fill="none" stroke={PAGE} strokeWidth={compound.rockRoad.width - 0.16} />
-      <text x={f(px1 - 0.6)} y={f(py0 + 1.4)} textAnchor="end" style={label}>
-        PARKING
-      </text>
+      <Page href="/en/parking">
+        <text x={f(px1 - 0.6)} y={f(py0 + 1.4)} textAnchor="end" style={label}>
+          PARKING
+        </text>
+      </Page>
       <Gate {...turn(compound.gate)} />
       <rect {...at(sign)} fill="currentColor" />
       <text x={f(sign[0] - 0.5)} y={f(sign[3] - 0.05)} textAnchor="end" style={small}>

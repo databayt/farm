@@ -12,7 +12,7 @@ export function Plans() {
           {title}
         </h2>
         <div className="mt-6 overflow-x-auto">
-          <CompoundPlan title={label} className="block h-auto w-full min-w-[640px]" />
+          <CompoundPlan title={label} className="block h-auto w-full min-w-[900px]" />
         </div>
         <p className="text-muted-foreground mt-3 text-sm">{note}</p>
       </div>

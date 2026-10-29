@@ -4,7 +4,7 @@ export const DESIGN_BLUR: Record<string, string> = {
   "/designs/bar/render/bar-real.webp": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAACQAQCdASoQAAcAAsBMJbACdADA+cAA/ozlipbHwEmTFH5f4Ll/EpOPEeBpS7Agvuh76vKnNvQFybtz+/KbgAAA",
   "/designs/camp/render/camp-hero.jpg": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAQAgCdASoQAAkAAsBMJaACdAEQFSd8Yp6AAP7GB6LSSO3RorhpJg7hFU28y7IHpkpqVP+nzr0hErH53tdwzfWlofrTDypcsK/7AAAA",
   "/designs/camp/render/camp-real.webp": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADQAQCdASoQAAcAAsBMJbACdADB8okMAAD90k+cBN6Ql0244ZUMIJ5SIQk4C7KbApqUK/qHO4470rZPHONEwIAA",
-  "/designs/compound/render/compound-real.webp": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAQAgCdASoQAAgAAsBMJbAC7AEPhpbkb2MAAP70FiPkWptjxbcTiDhtAinMKY7bBb7wCCA5D+F3bDij9q047o/4swWCOeX/AAA=",
+  "/designs/compound/render/compound-real.webp": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADQAQCdASoQAAgAAsBMJZAC7AENoem/OAD+8o1J36kJGYqFucDieJMzo2oAwgX4cwFq0P0lrgxWRgUtMP9vC6kg7PaooAAA",
   "/designs/farming/render/field-real.webp": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAAAwAgCdASoQAAcAAsBMJbACdH8AGOQOmVuM4AD+jTX0c/37QJFOQs7ZGXiXlqT3WfcP4i63GxASAAAA",
   "/designs/galley/render/galley-hero.jpg": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADQAQCdASoQAAkAAsBMJbACdAD6CcGFgAD+8gjuvoSOpkoyBUqFUsAJiV2I78fJlAJMzzEnp6b6wSyI6KyBWgiX5U9fB8MQAAA=",
   "/designs/galley/render/galley-real.webp": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAACwAQCdASoQAAcAAsBMJbACdAEPNFggAP6RZFAXQGUwDucXP4Px602LgxI4H44fzFRKf3011dfAAA==",
