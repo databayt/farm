@@ -30,7 +30,7 @@ function cropRail(): RailItem[] {
     src: `${D}/render/crop/${c.id}.webp`, alt: `Three metres of a bed of ${c.name.toLowerCase()} in ${c.rows} ${c.rows === 1 ? "row" : "rows"} on drip.`, title: c.name,
     details: [
       { label: "For the galley", value: `${c.kgWeek} kg a week on a full house, ${c.averageKgWeek} kg on an average one` },
-      { label: "Beds", value: `${c.beds}, planted ${c.batch} at a time every ${c.every === 1 ? "week" : `${c.every} weeks`}` },
+      { label: "Beds", value: `${c.planted} at the start (${c.beds} for a full house), planted ${c.batch} at a time every ${c.every === 1 ? "week" : `${c.every} weeks`}` },
       { label: "First harvest", value: `${c.firstWeeks} weeks ${c.nursery ? `after transplanting (${c.nursery} weeks in the nursery first)` : "after sowing"}, then ${c.harvestWeeks} weeks of picking` },
     ],
     note: `Spacing ${c.spacing} cm. Watch for ${c.watch}. Yield: ${c.yieldNote}.`,
@@ -46,7 +46,6 @@ function bomSections() {
 
 export default function FarmingPage() {
   const bom = bomSections()
-  const bedsWide = plan.beds.length
   return (
     <main className="w-full flex-1">
       {/* First screen: a STAND-IN until the founder's Nano Banana remaster (handoff in ~/Desktop/farming-nano-banana: the
@@ -58,7 +57,7 @@ export default function FarmingPage() {
 
       {/* 2D, full screen: the field's plan (src/components/farming/farming-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D" full>
-        <FarmingPlan title={`Plan, seen from the gate: the two rows of blocks nearest the gate of a fenced field 53,500 mm across, raised beds 1.2 by 10 m in blocks of ten either side of a 2 m main path, the beds planted this season solid and the rest resting or grown for sale dashed; the gate at the front onto the garden walk to the galley; a break line where the field goes on past two more rows of blocks to the nursery.`}
+        <FarmingPlan title={`Plan, seen from the gate: the field as it starts, the two rows of blocks nearest the gate, ${plan.bedsTotal} raised beds 1.2 by 10 m in blocks of ten either side of a 2 m main path inside a fence 53,500 by 22,500 mm; ${plan.bedsNeeded} planted this season (solid) and the rest resting (dashed); the gate at the front onto the garden walk to the galley; the nursery up the yard.`}
           className="h-auto w-full" />
       </DrawingSection>
 
@@ -106,7 +105,7 @@ export default function FarmingPage() {
           ]}
           stages={[
             { title: "The bare ground", text: "Fenced, tested and marked out: soil samples to RAB, the borehole's flow measured over 6 hours, and the beds pegged across the slope." },
-            { title: "Step 1 · Beds", text: `1.2 m wide, 10 m long, raised 20 cm, with 0.5 m paths between them and 1 m between blocks of ten. ${plan.bedsNeeded} beds feed the galley.` },
+            { title: "Step 1 · Beds", text: `1.2 m wide, 10 m long, raised 20 cm, with 0.5 m paths between them and 1 m between blocks of ten. The start plants ${plan.bedsNeeded} of its ${plan.bedsTotal}.` },
             { title: "Step 2 · Compost", text: "About 250 kg of compost or manure per 100 m² dug into each bed, and lime only if the soil test asks for it." },
             { title: "Step 3 · Drip", text: "Two drip lines per bed from a header pipe and a filter at the tank. Run it for an hour and check every emitter before planting." },
             { title: "Step 4 · Planting", text: "Kale, cabbage, onion, tomato, pepper, eggplant and spinach come from the nursery after 4 to 6 weeks; beans, carrots, amaranth, cucumber and herbs are sown in place." },
@@ -126,10 +125,12 @@ export default function FarmingPage() {
         <section id="demand" className="scroll-mt-20 border-t py-16">
           <h2 className="text-3xl font-semibold tracking-tight">What the galley needs</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            The field is sized for a full house every day: {plan.eaters} people at the galley&rsquo;s table, 22 guests and
-            the team, about {plan.kgWeek} kg of vegetables a week. On an average week ({plan.averageKgWeek} kg) the rest is
-            sold. That takes {plan.bedsNeeded} beds, about {frw(plan.plantedM2)} m² of growing area, a quarter more than the
-            plate needs for pests and a failed planting.
+            A full house every day is {plan.eaters} people at the galley&rsquo;s table, 22 guests and the team, about{" "}
+            {plan.kgWeek} kg of vegetables a week, and would take {plan.bedsFull} beds. The field starts smaller: the two rows of
+            blocks nearest the gate, {plan.bedsTotal} beds, {plan.bedsNeeded} of them planted, about {frw(plan.plantedM2)} m² of
+            growing area with a quarter more than the plate needs for pests and a failed planting. They give about{" "}
+            {plan.grownKgWeek} kg a week: {plan.coverFull} % of a full house and more than an average week ({plan.averageKgWeek} kg),
+            whose surplus is sold. On the busiest weeks the galley buys the rest; the other two rows follow the bookings.
           </p>
           <div className="mt-6 overflow-x-auto rounded-xl border">
             <table className="w-full text-sm">
@@ -139,7 +140,8 @@ export default function FarmingPage() {
                   <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Per guest a day</th>
                   <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Full house, a week</th>
                   <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Average week</th>
-                  <th className="px-3 py-2 text-end font-medium">Beds</th>
+                  <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Beds at the start</th>
+                  <th className="text-muted-foreground px-3 py-2 text-end font-medium whitespace-nowrap">Full house</th>
                 </tr>
               </thead>
               <tbody>
@@ -149,7 +151,8 @@ export default function FarmingPage() {
                     <td className="px-3 py-2 text-end tabular-nums">{c.g} g</td>
                     <td className="px-3 py-2 text-end tabular-nums">{c.kgWeek} kg</td>
                     <td className="text-muted-foreground px-3 py-2 text-end tabular-nums">{c.averageKgWeek} kg</td>
-                    <td className="px-3 py-2 text-end tabular-nums">{c.beds}</td>
+                    <td className="px-3 py-2 text-end tabular-nums">{c.planted}</td>
+                    <td className="text-muted-foreground px-3 py-2 text-end tabular-nums">{c.beds}</td>
                   </tr>
                 ))}
               </tbody>
@@ -160,6 +163,7 @@ export default function FarmingPage() {
                   <td className="px-3 py-3 text-end tabular-nums">{plan.kgWeek} kg</td>
                   <td className="px-3 py-3 text-end tabular-nums">{plan.averageKgWeek} kg</td>
                   <td className="px-3 py-3 text-end tabular-nums">{plan.bedsNeeded} of {plan.bedsTotal}</td>
+                  <td className="text-muted-foreground px-3 py-3 text-end tabular-nums">{plan.bedsFull}</td>
                 </tr>
               </tfoot>
             </table>

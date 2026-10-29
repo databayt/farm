@@ -1,21 +1,21 @@
 section,item,qty,unit,rwf,total
 Ground and beds,"Soil test at RAB (10 spots, one mixed sample)",1,test,30000,30000
-Ground and beds,"Compost or manure, about 250 kg per 100 m² of bed",2.6,t,40000,104000
-Ground and beds,"Agricultural lime, only if the test asks (about 200 kg per 1,000 m²)",211.2,kg,150,31680
-Ground and beds,Labour to dig and raise the beds,88,bed,6000,528000
-Water,"Drip tape, 16 mm, two lines a bed",1760,m,250,440000
-Water,"Header pipe, 32 mm PE",162,m,1500,243000
-Water,Valve and fittings at each block,9,set,15000,135000
+Ground and beds,"Compost or manure, about 250 kg per 100 m² of bed",1.6,t,40000,64000
+Ground and beds,"Agricultural lime, only if the test asks (about 200 kg per 1,000 m²)",129.6,kg,150,19440
+Ground and beds,Labour to dig and raise the beds,54,bed,6000,324000
+Water,"Drip tape, 16 mm, two lines a bed",1080,m,250,270000
+Water,"Header pipe, 32 mm PE",108,m,1500,162000
+Water,Valve and fittings at each block,6,set,15000,90000
 Water,"Disc filter, 1 inch, at the tank",1,each,60000,60000
 Water,"Main pipe from the tank, 40 mm PE",30,m,2000,60000
-Fence,"Wire mesh, 1.5 m high",196,m,2500,490000
-Fence,Treated timber posts,65.5,each,4000,262000
+Fence,"Wire mesh, 1.5 m high",152,m,2500,380000
+Fence,Treated timber posts,50.8,each,4000,203200
 Fence,Gate onto the garden walk,1,each,60000,60000
 Nursery,"Shade net, 50 %",60,m²,1500,90000
 Nursery,Poles and wire for the shade house,1,set,80000,80000
 Nursery,"Seedling trays, 128 cells",30,each,3000,90000
 Nursery,Benches for the trays,4,each,25000,100000
-Seed and plants,"Seed for a year (Holland Greentech), all twelve crops",88,bed,3500,308000
+Seed and plants,"Seed for a year (Holland Greentech), all twelve crops",54,bed,3500,189000
 Seed and plants,"Stakes and string for tomatoes, trellis for cucumbers",1,set,120000,120000
 Seed and plants,Pheromone traps for Tuta absoluta,10,each,5000,50000
 Tools,"Hoes, rakes, forks, watering cans, wheelbarrows, knapsack sprayer, crates, a scale",1,set,350000,350000

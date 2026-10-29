@@ -3,16 +3,19 @@
  "eaters": 25.5,
  "kgWeek": 78.6,
  "averageKgWeek": 33.7,
- "bedsNeeded": 88,
- "bedsTotal": 120,
+ "bedsNeeded": 54,
+ "bedsFull": 88,
+ "grownKgWeek": 51.6,
+ "coverFull": 66,
+ "bedsTotal": 60,
  "bedM2": 12,
- "plantedM2": 1056,
+ "plantedM2": 648,
  "water": {
-  "dryLow": 4.3,
-  "dryHigh": 5.6,
-  "wet": 1.6
+  "dryLow": 2.7,
+  "dryHigh": 3.4,
+  "wet": 1
  },
- "fenceM": 196,
+ "fenceM": 152,
  "zone": [
   76,
   12,
@@ -32,7 +35,7 @@
   50
  ],
  "fence": [
-  79.5,
+  101.5,
   14.5,
   124,
   68
@@ -56,27 +59,13 @@
  "blocks": [
   {
    "id": "A1",
-   "x": 80,
-   "y": 15,
-   "w": 10,
-   "h": 16.5
-  },
-  {
-   "id": "A2",
-   "x": 91,
-   "y": 15,
-   "w": 10,
-   "h": 16.5
-  },
-  {
-   "id": "A3",
    "x": 102,
    "y": 15,
    "w": 10,
    "h": 16.5
   },
   {
-   "id": "A4",
+   "id": "A2",
    "x": 113,
    "y": 15,
    "w": 10,
@@ -84,27 +73,13 @@
   },
   {
    "id": "B1",
-   "x": 80,
-   "y": 32.5,
-   "w": 10,
-   "h": 16.5
-  },
-  {
-   "id": "B2",
-   "x": 91,
-   "y": 32.5,
-   "w": 10,
-   "h": 16.5
-  },
-  {
-   "id": "B3",
    "x": 102,
    "y": 32.5,
    "w": 10,
    "h": 16.5
   },
   {
-   "id": "B4",
+   "id": "B2",
    "x": 113,
    "y": 32.5,
    "w": 10,
@@ -112,27 +87,13 @@
   },
   {
    "id": "C1",
-   "x": 80,
-   "y": 51,
-   "w": 10,
-   "h": 16.5
-  },
-  {
-   "id": "C2",
-   "x": 91,
-   "y": 51,
-   "w": 10,
-   "h": 16.5
-  },
-  {
-   "id": "C3",
    "x": 102,
    "y": 51,
    "w": 10,
    "h": 16.5
   },
   {
-   "id": "C4",
+   "id": "C2",
    "x": 113,
    "y": 51,
    "w": 10,
@@ -143,7 +104,7 @@
   {
    "id": "A1-01",
    "block": "A1",
-   "x": 80,
+   "x": 102,
    "y": 15,
    "w": 10,
    "h": 1.2,
@@ -152,7 +113,7 @@
   {
    "id": "A1-02",
    "block": "A1",
-   "x": 80,
+   "x": 102,
    "y": 16.7,
    "w": 10,
    "h": 1.2,
@@ -161,7 +122,7 @@
   {
    "id": "A1-03",
    "block": "A1",
-   "x": 80,
+   "x": 102,
    "y": 18.4,
    "w": 10,
    "h": 1.2,
@@ -170,7 +131,7 @@
   {
    "id": "A1-04",
    "block": "A1",
-   "x": 80,
+   "x": 102,
    "y": 20.1,
    "w": 10,
    "h": 1.2,
@@ -179,7 +140,7 @@
   {
    "id": "A1-05",
    "block": "A1",
-   "x": 80,
+   "x": 102,
    "y": 21.8,
    "w": 10,
    "h": 1.2,
@@ -188,7 +149,7 @@
   {
    "id": "A1-06",
    "block": "A1",
-   "x": 80,
+   "x": 102,
    "y": 23.5,
    "w": 10,
    "h": 1.2,
@@ -197,663 +158,303 @@
   {
    "id": "A1-07",
    "block": "A1",
-   "x": 80,
+   "x": 102,
    "y": 25.2,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "onion"
   },
   {
    "id": "A1-08",
    "block": "A1",
-   "x": 80,
+   "x": 102,
    "y": 26.9,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "onion"
   },
   {
    "id": "A1-09",
    "block": "A1",
-   "x": 80,
+   "x": 102,
    "y": 28.6,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "onion"
   },
   {
    "id": "A1-10",
    "block": "A1",
-   "x": 80,
+   "x": 102,
    "y": 30.3,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "carrot"
   },
   {
    "id": "A2-01",
    "block": "A2",
-   "x": 91,
+   "x": 113,
    "y": 15,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "onion"
   },
   {
    "id": "A2-02",
    "block": "A2",
-   "x": 91,
+   "x": 113,
    "y": 16.7,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "onion"
   },
   {
    "id": "A2-03",
    "block": "A2",
-   "x": 91,
+   "x": 113,
    "y": 18.4,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "carrot"
   },
   {
    "id": "A2-04",
    "block": "A2",
-   "x": 91,
+   "x": 113,
    "y": 20.1,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "carrot"
   },
   {
    "id": "A2-05",
    "block": "A2",
-   "x": 91,
+   "x": 113,
    "y": 21.8,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "cabbage"
   },
   {
    "id": "A2-06",
    "block": "A2",
-   "x": 91,
+   "x": 113,
    "y": 23.5,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "beans"
   },
   {
    "id": "A2-07",
    "block": "A2",
-   "x": 91,
+   "x": 113,
    "y": 25.2,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "beans"
   },
   {
    "id": "A2-08",
    "block": "A2",
-   "x": 91,
+   "x": 113,
    "y": 26.9,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "beans"
   },
   {
    "id": "A2-09",
    "block": "A2",
-   "x": 91,
+   "x": 113,
    "y": 28.6,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "cucumber"
   },
   {
    "id": "A2-10",
    "block": "A2",
-   "x": 91,
+   "x": 113,
    "y": 30.3,
-   "w": 10,
-   "h": 1.2,
-   "crop": "onion"
-  },
-  {
-   "id": "A3-01",
-   "block": "A3",
-   "x": 102,
-   "y": 15,
-   "w": 10,
-   "h": 1.2,
-   "crop": "rest"
-  },
-  {
-   "id": "A3-02",
-   "block": "A3",
-   "x": 102,
-   "y": 16.7,
-   "w": 10,
-   "h": 1.2,
-   "crop": "rest"
-  },
-  {
-   "id": "A3-03",
-   "block": "A3",
-   "x": 102,
-   "y": 18.4,
-   "w": 10,
-   "h": 1.2,
-   "crop": "rest"
-  },
-  {
-   "id": "A3-04",
-   "block": "A3",
-   "x": 102,
-   "y": 20.1,
-   "w": 10,
-   "h": 1.2,
-   "crop": "onion"
-  },
-  {
-   "id": "A3-05",
-   "block": "A3",
-   "x": 102,
-   "y": 21.8,
-   "w": 10,
-   "h": 1.2,
-   "crop": "carrot"
-  },
-  {
-   "id": "A3-06",
-   "block": "A3",
-   "x": 102,
-   "y": 23.5,
-   "w": 10,
-   "h": 1.2,
-   "crop": "carrot"
-  },
-  {
-   "id": "A3-07",
-   "block": "A3",
-   "x": 102,
-   "y": 25.2,
-   "w": 10,
-   "h": 1.2,
-   "crop": "cabbage"
-  },
-  {
-   "id": "A3-08",
-   "block": "A3",
-   "x": 102,
-   "y": 26.9,
-   "w": 10,
-   "h": 1.2,
-   "crop": "beans"
-  },
-  {
-   "id": "A3-09",
-   "block": "A3",
-   "x": 102,
-   "y": 28.6,
-   "w": 10,
-   "h": 1.2,
-   "crop": "beans"
-  },
-  {
-   "id": "A3-10",
-   "block": "A3",
-   "x": 102,
-   "y": 30.3,
-   "w": 10,
-   "h": 1.2,
-   "crop": "beans"
-  },
-  {
-   "id": "A4-01",
-   "block": "A4",
-   "x": 113,
-   "y": 15,
-   "w": 10,
-   "h": 1.2,
-   "crop": "cabbage"
-  },
-  {
-   "id": "A4-02",
-   "block": "A4",
-   "x": 113,
-   "y": 16.7,
-   "w": 10,
-   "h": 1.2,
-   "crop": "beans"
-  },
-  {
-   "id": "A4-03",
-   "block": "A4",
-   "x": 113,
-   "y": 18.4,
-   "w": 10,
-   "h": 1.2,
-   "crop": "beans"
-  },
-  {
-   "id": "A4-04",
-   "block": "A4",
-   "x": 113,
-   "y": 20.1,
-   "w": 10,
-   "h": 1.2,
-   "crop": "beans"
-  },
-  {
-   "id": "A4-05",
-   "block": "A4",
-   "x": 113,
-   "y": 21.8,
-   "w": 10,
-   "h": 1.2,
-   "crop": "cucumber"
-  },
-  {
-   "id": "A4-06",
-   "block": "A4",
-   "x": 113,
-   "y": 23.5,
    "w": 10,
    "h": 1.2,
    "crop": "eggplant"
-  },
-  {
-   "id": "A4-07",
-   "block": "A4",
-   "x": 113,
-   "y": 25.2,
-   "w": 10,
-   "h": 1.2,
-   "crop": "pepper"
-  },
-  {
-   "id": "A4-08",
-   "block": "A4",
-   "x": 113,
-   "y": 26.9,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "A4-09",
-   "block": "A4",
-   "x": 113,
-   "y": 28.6,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "A4-10",
-   "block": "A4",
-   "x": 113,
-   "y": 30.3,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
   },
   {
    "id": "B1-01",
    "block": "B1",
-   "x": 80,
+   "x": 102,
    "y": 32.5,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "carrot"
   },
   {
    "id": "B1-02",
    "block": "B1",
-   "x": 80,
+   "x": 102,
    "y": 34.2,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "cabbage"
   },
   {
    "id": "B1-03",
    "block": "B1",
-   "x": 80,
+   "x": 102,
    "y": 35.9,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "beans"
   },
   {
    "id": "B1-04",
    "block": "B1",
-   "x": 80,
+   "x": 102,
    "y": 37.6,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "beans"
   },
   {
    "id": "B1-05",
    "block": "B1",
-   "x": 80,
+   "x": 102,
    "y": 39.3,
    "w": 10,
    "h": 1.2,
-   "crop": "rest"
+   "crop": "beans"
   },
   {
    "id": "B1-06",
    "block": "B1",
-   "x": 80,
+   "x": 102,
    "y": 41,
    "w": 10,
    "h": 1.2,
-   "crop": "onion"
+   "crop": "eggplant"
   },
   {
    "id": "B1-07",
    "block": "B1",
-   "x": 80,
+   "x": 102,
    "y": 42.7,
    "w": 10,
    "h": 1.2,
-   "crop": "onion"
+   "crop": "eggplant"
   },
   {
    "id": "B1-08",
    "block": "B1",
-   "x": 80,
+   "x": 102,
    "y": 44.4,
    "w": 10,
    "h": 1.2,
-   "crop": "carrot"
+   "crop": "pepper"
   },
   {
    "id": "B1-09",
    "block": "B1",
-   "x": 80,
+   "x": 102,
    "y": 46.1,
    "w": 10,
    "h": 1.2,
-   "crop": "cabbage"
+   "crop": "tomato"
   },
   {
    "id": "B1-10",
    "block": "B1",
-   "x": 80,
+   "x": 102,
    "y": 47.8,
    "w": 10,
    "h": 1.2,
-   "crop": "cabbage"
+   "crop": "tomato"
   },
   {
    "id": "B2-01",
    "block": "B2",
-   "x": 91,
+   "x": 113,
    "y": 32.5,
    "w": 10,
    "h": 1.2,
-   "crop": "onion"
+   "crop": "pepper"
   },
   {
    "id": "B2-02",
    "block": "B2",
-   "x": 91,
+   "x": 113,
    "y": 34.2,
    "w": 10,
    "h": 1.2,
-   "crop": "carrot"
+   "crop": "tomato"
   },
   {
    "id": "B2-03",
    "block": "B2",
-   "x": 91,
+   "x": 113,
    "y": 35.9,
    "w": 10,
    "h": 1.2,
-   "crop": "cabbage"
+   "crop": "tomato"
   },
   {
    "id": "B2-04",
    "block": "B2",
-   "x": 91,
+   "x": 113,
    "y": 37.6,
    "w": 10,
    "h": 1.2,
-   "crop": "beans"
+   "crop": "tomato"
   },
   {
    "id": "B2-05",
    "block": "B2",
-   "x": 91,
+   "x": 113,
    "y": 39.3,
    "w": 10,
    "h": 1.2,
-   "crop": "beans"
+   "crop": "spinach"
   },
   {
    "id": "B2-06",
    "block": "B2",
-   "x": 91,
+   "x": 113,
    "y": 41,
    "w": 10,
    "h": 1.2,
-   "crop": "beans"
+   "crop": "spinach"
   },
   {
    "id": "B2-07",
    "block": "B2",
-   "x": 91,
+   "x": 113,
    "y": 42.7,
    "w": 10,
    "h": 1.2,
-   "crop": "beans"
+   "crop": "kale"
   },
   {
    "id": "B2-08",
    "block": "B2",
-   "x": 91,
+   "x": 113,
    "y": 44.4,
    "w": 10,
    "h": 1.2,
-   "crop": "eggplant"
+   "crop": "kale"
   },
   {
    "id": "B2-09",
    "block": "B2",
-   "x": 91,
+   "x": 113,
    "y": 46.1,
    "w": 10,
    "h": 1.2,
-   "crop": "eggplant"
+   "crop": "amaranth"
   },
   {
    "id": "B2-10",
    "block": "B2",
-   "x": 91,
-   "y": 47.8,
-   "w": 10,
-   "h": 1.2,
-   "crop": "pepper"
-  },
-  {
-   "id": "B3-01",
-   "block": "B3",
-   "x": 102,
-   "y": 32.5,
-   "w": 10,
-   "h": 1.2,
-   "crop": "cucumber"
-  },
-  {
-   "id": "B3-02",
-   "block": "B3",
-   "x": 102,
-   "y": 34.2,
-   "w": 10,
-   "h": 1.2,
-   "crop": "eggplant"
-  },
-  {
-   "id": "B3-03",
-   "block": "B3",
-   "x": 102,
-   "y": 35.9,
-   "w": 10,
-   "h": 1.2,
-   "crop": "pepper"
-  },
-  {
-   "id": "B3-04",
-   "block": "B3",
-   "x": 102,
-   "y": 37.6,
-   "w": 10,
-   "h": 1.2,
-   "crop": "pepper"
-  },
-  {
-   "id": "B3-05",
-   "block": "B3",
-   "x": 102,
-   "y": 39.3,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "B3-06",
-   "block": "B3",
-   "x": 102,
-   "y": 41,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "B3-07",
-   "block": "B3",
-   "x": 102,
-   "y": 42.7,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "B3-08",
-   "block": "B3",
-   "x": 102,
-   "y": 44.4,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "B3-09",
-   "block": "B3",
-   "x": 102,
-   "y": 46.1,
-   "w": 10,
-   "h": 1.2,
-   "crop": "spinach"
-  },
-  {
-   "id": "B3-10",
-   "block": "B3",
-   "x": 102,
-   "y": 47.8,
-   "w": 10,
-   "h": 1.2,
-   "crop": "spinach"
-  },
-  {
-   "id": "B4-01",
-   "block": "B4",
-   "x": 113,
-   "y": 32.5,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "B4-02",
-   "block": "B4",
-   "x": 113,
-   "y": 34.2,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "B4-03",
-   "block": "B4",
-   "x": 113,
-   "y": 35.9,
-   "w": 10,
-   "h": 1.2,
-   "crop": "spinach"
-  },
-  {
-   "id": "B4-04",
-   "block": "B4",
-   "x": 113,
-   "y": 37.6,
-   "w": 10,
-   "h": 1.2,
-   "crop": "kale"
-  },
-  {
-   "id": "B4-05",
-   "block": "B4",
-   "x": 113,
-   "y": 39.3,
-   "w": 10,
-   "h": 1.2,
-   "crop": "kale"
-  },
-  {
-   "id": "B4-06",
-   "block": "B4",
-   "x": 113,
-   "y": 41,
-   "w": 10,
-   "h": 1.2,
-   "crop": "kale"
-  },
-  {
-   "id": "B4-07",
-   "block": "B4",
-   "x": 113,
-   "y": 42.7,
-   "w": 10,
-   "h": 1.2,
-   "crop": "amaranth"
-  },
-  {
-   "id": "B4-08",
-   "block": "B4",
-   "x": 113,
-   "y": 44.4,
-   "w": 10,
-   "h": 1.2,
-   "crop": "amaranth"
-  },
-  {
-   "id": "B4-09",
-   "block": "B4",
-   "x": 113,
-   "y": 46.1,
-   "w": 10,
-   "h": 1.2,
-   "crop": "amaranth"
-  },
-  {
-   "id": "B4-10",
-   "block": "B4",
    "x": 113,
    "y": 47.8,
    "w": 10,
@@ -863,362 +464,182 @@
   {
    "id": "C1-01",
    "block": "C1",
-   "x": 80,
+   "x": 102,
    "y": 51,
    "w": 10,
    "h": 1.2,
-   "crop": "cabbage"
+   "crop": "tomato"
   },
   {
    "id": "C1-02",
    "block": "C1",
-   "x": 80,
+   "x": 102,
    "y": 52.7,
    "w": 10,
    "h": 1.2,
-   "crop": "carrot"
+   "crop": "tomato"
   },
   {
    "id": "C1-03",
    "block": "C1",
-   "x": 80,
+   "x": 102,
    "y": 54.4,
-   "w": 10,
-   "h": 1.2,
-   "crop": "carrot"
-  },
-  {
-   "id": "C1-04",
-   "block": "C1",
-   "x": 80,
-   "y": 56.1,
-   "w": 10,
-   "h": 1.2,
-   "crop": "onion"
-  },
-  {
-   "id": "C1-05",
-   "block": "C1",
-   "x": 80,
-   "y": 57.8,
-   "w": 10,
-   "h": 1.2,
-   "crop": "onion"
-  },
-  {
-   "id": "C1-06",
-   "block": "C1",
-   "x": 80,
-   "y": 59.5,
-   "w": 10,
-   "h": 1.2,
-   "crop": "rest"
-  },
-  {
-   "id": "C1-07",
-   "block": "C1",
-   "x": 80,
-   "y": 61.2,
-   "w": 10,
-   "h": 1.2,
-   "crop": "rest"
-  },
-  {
-   "id": "C1-08",
-   "block": "C1",
-   "x": 80,
-   "y": 62.9,
-   "w": 10,
-   "h": 1.2,
-   "crop": "rest"
-  },
-  {
-   "id": "C1-09",
-   "block": "C1",
-   "x": 80,
-   "y": 64.6,
-   "w": 10,
-   "h": 1.2,
-   "crop": "rest"
-  },
-  {
-   "id": "C1-10",
-   "block": "C1",
-   "x": 80,
-   "y": 66.3,
-   "w": 10,
-   "h": 1.2,
-   "crop": "rest"
-  },
-  {
-   "id": "C2-01",
-   "block": "C2",
-   "x": 91,
-   "y": 51,
    "w": 10,
    "h": 1.2,
    "crop": "pepper"
   },
   {
-   "id": "C2-02",
-   "block": "C2",
-   "x": 91,
-   "y": 52.7,
+   "id": "C1-04",
+   "block": "C1",
+   "x": 102,
+   "y": 56.1,
    "w": 10,
    "h": 1.2,
    "crop": "eggplant"
   },
   {
-   "id": "C2-03",
-   "block": "C2",
-   "x": 91,
-   "y": 54.4,
+   "id": "C1-05",
+   "block": "C1",
+   "x": 102,
+   "y": 57.8,
    "w": 10,
    "h": 1.2,
    "crop": "cucumber"
   },
   {
-   "id": "C2-04",
-   "block": "C2",
-   "x": 91,
-   "y": 56.1,
-   "w": 10,
-   "h": 1.2,
-   "crop": "beans"
-  },
-  {
-   "id": "C2-05",
-   "block": "C2",
-   "x": 91,
-   "y": 57.8,
-   "w": 10,
-   "h": 1.2,
-   "crop": "beans"
-  },
-  {
-   "id": "C2-06",
-   "block": "C2",
-   "x": 91,
+   "id": "C1-06",
+   "block": "C1",
+   "x": 102,
    "y": 59.5,
    "w": 10,
    "h": 1.2,
    "crop": "beans"
   },
   {
-   "id": "C2-07",
-   "block": "C2",
-   "x": 91,
+   "id": "C1-07",
+   "block": "C1",
+   "x": 102,
    "y": 61.2,
    "w": 10,
    "h": 1.2,
    "crop": "beans"
   },
   {
-   "id": "C2-08",
-   "block": "C2",
-   "x": 91,
+   "id": "C1-08",
+   "block": "C1",
+   "x": 102,
    "y": 62.9,
+   "w": 10,
+   "h": 1.2,
+   "crop": "beans"
+  },
+  {
+   "id": "C1-09",
+   "block": "C1",
+   "x": 102,
+   "y": 64.6,
    "w": 10,
    "h": 1.2,
    "crop": "cabbage"
   },
   {
+   "id": "C1-10",
+   "block": "C1",
+   "x": 102,
+   "y": 66.3,
+   "w": 10,
+   "h": 1.2,
+   "crop": "cabbage"
+  },
+  {
+   "id": "C2-01",
+   "block": "C2",
+   "x": 113,
+   "y": 51,
+   "w": 10,
+   "h": 1.2,
+   "crop": "amaranth"
+  },
+  {
+   "id": "C2-02",
+   "block": "C2",
+   "x": 113,
+   "y": 52.7,
+   "w": 10,
+   "h": 1.2,
+   "crop": "amaranth"
+  },
+  {
+   "id": "C2-03",
+   "block": "C2",
+   "x": 113,
+   "y": 54.4,
+   "w": 10,
+   "h": 1.2,
+   "crop": "kale"
+  },
+  {
+   "id": "C2-04",
+   "block": "C2",
+   "x": 113,
+   "y": 56.1,
+   "w": 10,
+   "h": 1.2,
+   "crop": "kale"
+  },
+  {
+   "id": "C2-05",
+   "block": "C2",
+   "x": 113,
+   "y": 57.8,
+   "w": 10,
+   "h": 1.2,
+   "crop": "spinach"
+  },
+  {
+   "id": "C2-06",
+   "block": "C2",
+   "x": 113,
+   "y": 59.5,
+   "w": 10,
+   "h": 1.2,
+   "crop": "spinach"
+  },
+  {
+   "id": "C2-07",
+   "block": "C2",
+   "x": 113,
+   "y": 61.2,
+   "w": 10,
+   "h": 1.2,
+   "crop": "tomato"
+  },
+  {
+   "id": "C2-08",
+   "block": "C2",
+   "x": 113,
+   "y": 62.9,
+   "w": 10,
+   "h": 1.2,
+   "crop": "tomato"
+  },
+  {
    "id": "C2-09",
    "block": "C2",
-   "x": 91,
+   "x": 113,
    "y": 64.6,
    "w": 10,
    "h": 1.2,
-   "crop": "carrot"
+   "crop": "tomato"
   },
   {
    "id": "C2-10",
    "block": "C2",
-   "x": 91,
+   "x": 113,
    "y": 66.3,
-   "w": 10,
-   "h": 1.2,
-   "crop": "onion"
-  },
-  {
-   "id": "C3-01",
-   "block": "C3",
-   "x": 102,
-   "y": 51,
-   "w": 10,
-   "h": 1.2,
-   "crop": "spinach"
-  },
-  {
-   "id": "C3-02",
-   "block": "C3",
-   "x": 102,
-   "y": 52.7,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "C3-03",
-   "block": "C3",
-   "x": 102,
-   "y": 54.4,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "C3-04",
-   "block": "C3",
-   "x": 102,
-   "y": 56.1,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "C3-05",
-   "block": "C3",
-   "x": 102,
-   "y": 57.8,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "C3-06",
-   "block": "C3",
-   "x": 102,
-   "y": 59.5,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "C3-07",
-   "block": "C3",
-   "x": 102,
-   "y": 61.2,
    "w": 10,
    "h": 1.2,
    "crop": "pepper"
-  },
-  {
-   "id": "C3-08",
-   "block": "C3",
-   "x": 102,
-   "y": 62.9,
-   "w": 10,
-   "h": 1.2,
-   "crop": "eggplant"
-  },
-  {
-   "id": "C3-09",
-   "block": "C3",
-   "x": 102,
-   "y": 64.6,
-   "w": 10,
-   "h": 1.2,
-   "crop": "eggplant"
-  },
-  {
-   "id": "C3-10",
-   "block": "C3",
-   "x": 102,
-   "y": 66.3,
-   "w": 10,
-   "h": 1.2,
-   "crop": "cucumber"
-  },
-  {
-   "id": "C4-01",
-   "block": "C4",
-   "x": 113,
-   "y": 51,
-   "w": 10,
-   "h": 1.2,
-   "crop": "herbs"
-  },
-  {
-   "id": "C4-02",
-   "block": "C4",
-   "x": 113,
-   "y": 52.7,
-   "w": 10,
-   "h": 1.2,
-   "crop": "amaranth"
-  },
-  {
-   "id": "C4-03",
-   "block": "C4",
-   "x": 113,
-   "y": 54.4,
-   "w": 10,
-   "h": 1.2,
-   "crop": "amaranth"
-  },
-  {
-   "id": "C4-04",
-   "block": "C4",
-   "x": 113,
-   "y": 56.1,
-   "w": 10,
-   "h": 1.2,
-   "crop": "kale"
-  },
-  {
-   "id": "C4-05",
-   "block": "C4",
-   "x": 113,
-   "y": 57.8,
-   "w": 10,
-   "h": 1.2,
-   "crop": "kale"
-  },
-  {
-   "id": "C4-06",
-   "block": "C4",
-   "x": 113,
-   "y": 59.5,
-   "w": 10,
-   "h": 1.2,
-   "crop": "kale"
-  },
-  {
-   "id": "C4-07",
-   "block": "C4",
-   "x": 113,
-   "y": 61.2,
-   "w": 10,
-   "h": 1.2,
-   "crop": "spinach"
-  },
-  {
-   "id": "C4-08",
-   "block": "C4",
-   "x": 113,
-   "y": 62.9,
-   "w": 10,
-   "h": 1.2,
-   "crop": "spinach"
-  },
-  {
-   "id": "C4-09",
-   "block": "C4",
-   "x": 113,
-   "y": 64.6,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
-  },
-  {
-   "id": "C4-10",
-   "block": "C4",
-   "x": 113,
-   "y": 66.3,
-   "w": 10,
-   "h": 1.2,
-   "crop": "tomato"
   }
  ],
  "rotation": {
@@ -1252,8 +673,9 @@
    "cycleKg": 24,
    "inGround": 19,
    "beds": 16,
+   "planted": 10,
    "every": 4,
-   "batch": 4,
+   "batch": 2,
    "plantsPerBed": 40
   },
   {
@@ -1277,6 +699,7 @@
    "cycleKg": 30,
    "inGround": 19,
    "beds": 8,
+   "planted": 5,
    "every": 2,
    "batch": 1,
    "plantsPerBed": 600
@@ -1302,8 +725,9 @@
    "cycleKg": 30,
    "inGround": 15,
    "beds": 7,
+   "planted": 4,
    "every": 3,
-   "batch": 2,
+   "batch": 1,
    "plantsPerBed": 40
   },
   {
@@ -1327,8 +751,9 @@
    "cycleKg": 24,
    "inGround": 16,
    "beds": 7,
+   "planted": 4,
    "every": 3,
-   "batch": 2,
+   "batch": 1,
    "plantsPerBed": 996
   },
   {
@@ -1352,8 +777,9 @@
    "cycleKg": 24,
    "inGround": 21,
    "beds": 6,
+   "planted": 4,
    "every": 4,
-   "batch": 2,
+   "batch": 1,
    "plantsPerBed": 44
   },
   {
@@ -1377,8 +803,9 @@
    "cycleKg": 24,
    "inGround": 23,
    "beds": 7,
+   "planted": 4,
    "every": 4,
-   "batch": 2,
+   "batch": 1,
    "plantsPerBed": 40
   },
   {
@@ -1402,8 +829,9 @@
    "cycleKg": 18,
    "inGround": 10,
    "beds": 5,
+   "planted": 3,
    "every": 4,
-   "batch": 2,
+   "batch": 1,
    "plantsPerBed": 99
   },
   {
@@ -1427,6 +855,7 @@
    "cycleKg": 42,
    "inGround": 22,
    "beds": 6,
+   "planted": 4,
    "every": 4,
    "batch": 1,
    "plantsPerBed": 40
@@ -1452,8 +881,9 @@
    "cycleKg": 7.2,
    "inGround": 11,
    "beds": 14,
+   "planted": 9,
    "every": 4,
-   "batch": 5,
+   "batch": 3,
    "plantsPerBed": 264
   },
   {
@@ -1477,8 +907,9 @@
    "cycleKg": 30,
    "inGround": 13,
    "beds": 4,
+   "planted": 2,
    "every": 4,
-   "batch": 2,
+   "batch": 1,
    "plantsPerBed": 20
   },
   {
@@ -1502,8 +933,9 @@
    "cycleKg": 24,
    "inGround": 18,
    "beds": 6,
+   "planted": 4,
    "every": 4,
-   "batch": 2,
+   "batch": 1,
    "plantsPerBed": 120
   },
   {
@@ -1527,6 +959,7 @@
    "cycleKg": 12,
    "inGround": 16,
    "beds": 2,
+   "planted": 1,
    "every": 4,
    "batch": 1,
    "plantsPerBed": 264
@@ -1544,50 +977,50 @@
   {
    "section": "Ground and beds",
    "item": "Compost or manure, about 250 kg per 100 m² of bed",
-   "qty": 2.6,
+   "qty": 1.6,
    "unit": "t",
    "rwf": 40000,
-   "total": 104000
+   "total": 64000
   },
   {
    "section": "Ground and beds",
    "item": "Agricultural lime, only if the test asks (about 200 kg per 1,000 m²)",
-   "qty": 211.2,
+   "qty": 129.6,
    "unit": "kg",
    "rwf": 150,
-   "total": 31680
+   "total": 19440
   },
   {
    "section": "Ground and beds",
    "item": "Labour to dig and raise the beds",
-   "qty": 88,
+   "qty": 54,
    "unit": "bed",
    "rwf": 6000,
-   "total": 528000
+   "total": 324000
   },
   {
    "section": "Water",
    "item": "Drip tape, 16 mm, two lines a bed",
-   "qty": 1760,
+   "qty": 1080,
    "unit": "m",
    "rwf": 250,
-   "total": 440000
+   "total": 270000
   },
   {
    "section": "Water",
    "item": "Header pipe, 32 mm PE",
-   "qty": 162,
+   "qty": 108,
    "unit": "m",
    "rwf": 1500,
-   "total": 243000
+   "total": 162000
   },
   {
    "section": "Water",
    "item": "Valve and fittings at each block",
-   "qty": 9,
+   "qty": 6,
    "unit": "set",
    "rwf": 15000,
-   "total": 135000
+   "total": 90000
   },
   {
    "section": "Water",
@@ -1608,18 +1041,18 @@
   {
    "section": "Fence",
    "item": "Wire mesh, 1.5 m high",
-   "qty": 196,
+   "qty": 152,
    "unit": "m",
    "rwf": 2500,
-   "total": 490000
+   "total": 380000
   },
   {
    "section": "Fence",
    "item": "Treated timber posts",
-   "qty": 65.5,
+   "qty": 50.8,
    "unit": "each",
    "rwf": 4000,
-   "total": 262000
+   "total": 203200
   },
   {
    "section": "Fence",
@@ -1664,10 +1097,10 @@
   {
    "section": "Seed and plants",
    "item": "Seed for a year (Holland Greentech), all twelve crops",
-   "qty": 88,
+   "qty": 54,
    "unit": "bed",
    "rwf": 3500,
-   "total": 308000
+   "total": 189000
   },
   {
    "section": "Seed and plants",
@@ -1702,7 +1135,7 @@
    "total": 900000
   }
  ],
- "subtotal": 4531680,
- "contingency": 679752,
- "total": 5211432
+ "subtotal": 3691640,
+ "contingency": 553746,
+ "total": 4245386
 }
