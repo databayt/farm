@@ -1,5 +1,5 @@
 {
-  "about": "The livestock yard, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (D-030), in one thatched pole shelter with a day yard for each species (D-037, after the founder's reference photo of 2026-10-29: a thatched shed, a pole palisade, lashed post-and-rail yards, stones, fodder baskets). Goats and sheep never share a pen, a yard or a fence: copper in goat minerals is toxic to sheep and sheep carry more worms [V LVS-26, LVS-46], so a keeper's lane runs between the two yards. The yard is part of the farm's loop: litter and manure go to the compost bays and on to the vegetable beds, the beds' residues and cut fodder come back in baskets. The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x to the right as seen from the paddock (west end left), y toward the viewer (the yards and the paddock), the shelter's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
+  "about": "The livestock yard, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (D-030), in one thatched pole shelter opening onto one village yard (D-037, D-038, after the founder's reference photo of 2026-10-29: a thatched shed, a pole palisade, lashed post-and-rail fences, stones, fodder baskets). By day the goats, the sheep, the ducks, the doves, the cats and the guests share the yard; at night the goats and the sheep sleep in their own pens, and each species has its own mineral box in its pen, because copper in goat minerals is toxic to sheep [V LVS-26]. Both species carry the same worms [V LVS-46], so the yard is kept dry, the hay stays in racks and the herd is dewormed animal by animal (FAMACHA). The yard is part of the farm's loop: litter and manure go to the compost bays and on to the vegetable beds, the beds' residues and cut fodder come back in baskets. The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x to the right as seen from the paddock (west end left), y toward the viewer (the yards and the paddock), the shelter's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
   "shelter": {
     "about": "7.0 x 3.6 m, long axis east-west, open to the yards on the south. Back and ends of split eucalyptus poles set upright to the eaves, under a grass-thatched gable roof on pole rafters that overhangs 0.7 m, so the troughs along the front stand in its shade. The floor is rammed earth on a plinth 0.3 m high edged in fieldstone, so rain runs away from the bedding.",
     "l": 7.0,
@@ -80,28 +80,25 @@
     }
   },
   "yards": {
-    "about": "A day yard in front of each species' pen, fenced with round eucalyptus poles: posts every 1.8 m, three rails lashed with sisal rope, 1.2 m high. Straw over the earth, cleared to the compost with the bedding. Between the yards a 1.0 m keeper's lane runs from the shelter to the paddock gate, so the two herds never touch over a fence and each goes out on its own.",
+    "about": "One village yard, fenced with round eucalyptus poles: posts every 1.8 m, three rails lashed with sisal rope, 1.2 m high, mesh low down where the ducks and the rabbits are. In front of the shelter it runs 13.5 x 5.5 m; west of the shelter a wing runs back to the palisade, for the ducks' pond and house and the rabbits. Straw over the earth, cleared to the compost with the bedding. One gate, two leaves, onto the paddock, for the herd and the guests.",
+    "x0": -9.0,
+    "x1": 4.5,
     "y1": 7.3,
     "post": 1.8,
     "h": 1.2,
-    "lane": [
-      -0.5,
-      0.5
-    ],
-    "goats": {
-      "x0": -6.0,
-      "x1": -0.5
+    "wing": {
+      "y0": -2.0,
+      "x1": -3.7
     },
-    "sheep": {
-      "x0": 0.5,
-      "x1": 4.5
-    },
-    "gate": 1.0
+    "gate": {
+      "x0": -0.5,
+      "w": 1.0
+    }
   },
   "palisade": {
     "about": "A windbreak of upright eucalyptus poles behind the shelter, 1.8 m high, against the prevailing wind; climbers grow on it.",
     "y": -2.3,
-    "x0": -6.5,
+    "x0": -9.5,
     "x1": 4.5,
     "h": 1.8
   },
@@ -119,7 +116,7 @@
         "r": 0.35
       },
       {
-        "x": -5.2,
+        "x": -5.4,
         "y": 6.2,
         "r": 0.3
       }
@@ -162,8 +159,99 @@
     "bay": 1.2,
     "n": 3
   },
+  "dogs": {
+    "about": "The farm's two guard dogs (livestock-plan §5 names a dog or a night watch against theft [V LVS-01]), in a run east of the compost bays on the path by the feed store, where they watch the store, the yards and the way in. Two raised kennels with pitched roofs at the back, a shade roof over half the run, a water bowl, a gate onto the path. The run is fenced apart from the farm friends; the dogs are vaccinated against rabies and walked on the lead past the small animals. Sizes [A].",
+    "x0": 6.7,
+    "x1": 9.7,
+    "y0": -1.4,
+    "y1": 2.4,
+    "h": 1.5,
+    "head": 2,
+    "kennels": [
+      {
+        "x0": 6.95,
+        "x1": 7.95,
+        "y0": -1.2,
+        "y1": -0.4
+      },
+      {
+        "x0": 8.45,
+        "x1": 9.45,
+        "y0": -1.2,
+        "y1": -0.4
+      }
+    ],
+    "shade": {
+      "y0": -1.4,
+      "y1": 0.6
+    },
+    "gate": {
+      "y0": 1.2,
+      "w": 1.0
+    },
+    "bowl": {
+      "x": 7.3,
+      "y": 0.2,
+      "r": 0.15
+    }
+  },
+  "friends": {
+    "about": "The farm friends: animals for the guests to meet, not for sale (founder, 2026-10-29; D-038). They live in the village yard with the herd: 4 ducks with a low duck house and a lined pond on a gravel apron at the yard's west edge, away from the troughs so the ground by the water stays dry [A]; free-flying doves in a dovecote on a pole; 2 neutered cats with a raised house on a post. 3 rabbits are the exception: a raised hutch and a fenced grass run inside the yard, because hooves trample them and they dig out. A log bench for the guests. The cats keep off the hay and the feed, which are covered: cat droppings can carry toxoplasmosis, which makes ewes and does abort [A, to check with the vet]. Sizes and numbers [A].",
+    "ducks": {
+      "house": {
+        "x0": -8.75,
+        "x1": -7.55,
+        "y0": -1.85,
+        "y1": -0.85
+      },
+      "pond": {
+        "x": -7.5,
+        "y": 0.35,
+        "rx": 1.0,
+        "ry": 0.65,
+        "apron": 0.35
+      },
+      "head": 4
+    },
+    "rabbits": {
+      "hutch": {
+        "x0": -6.0,
+        "x1": -4.2,
+        "y0": -1.85,
+        "y1": -1.15,
+        "h": 0.6
+      },
+      "run": {
+        "x0": -6.0,
+        "x1": -3.9,
+        "y0": -0.85,
+        "y1": 0.95
+      },
+      "head": 3
+    },
+    "dovecote": {
+      "x": -8.3,
+      "y": 5.9,
+      "s": 0.7,
+      "h": 2.6
+    },
+    "cats": {
+      "house": {
+        "x": -8.4,
+        "y": 2.6,
+        "s": 0.55,
+        "h": 1.2
+      },
+      "head": 2
+    },
+    "bench": {
+      "x0": -7.8,
+      "x1": -6.2,
+      "y": 4.3
+    }
+  },
   "animals": {
-    "about": "Where the 3D stands the herd: local goats in browns and black, fat-tailed hair sheep with white coats and dark faces. Positions in plan metres, heading in degrees (0 = toward +x); `on` names a stone a goat stands on. Two of each species are in the shelter, the rest out in their yards.",
+    "about": "Where the 3D stands the animals, in plan metres, heading in degrees (0 = toward +x): local goats in browns and black and fat-tailed hair sheep with white coats and dark faces, two in the shelter and the rest mixing in the yard; `on` names a stone a goat stands on, or the cats' house. The dogs stand in their run, the ducks by the pond, the rabbits in their run; the doves sit on the dovecote.",
     "goats": [
       {
         "x": -2.7,
@@ -185,20 +273,20 @@
         "on": 0
       },
       {
-        "x": -2.4,
-        "y": 3.2,
+        "x": -2.0,
+        "y": 3.4,
         "h": 250,
         "coat": "brown"
       },
       {
-        "x": -3.2,
-        "y": 5.0,
+        "x": 0.6,
+        "y": 5.6,
         "h": 30,
         "coat": "white"
       },
       {
-        "x": -1.6,
-        "y": 5.8,
+        "x": -6.2,
+        "y": 5.6,
         "h": 160,
         "coat": "black"
       }
@@ -211,22 +299,86 @@
         "coat": "wool"
       },
       {
-        "x": 1.3,
-        "y": 3.0,
+        "x": -0.6,
+        "y": 4.2,
         "h": 200,
         "coat": "wool"
       },
       {
         "x": 2.4,
-        "y": 3.7,
+        "y": 3.6,
         "h": 140,
         "coat": "wool"
       },
       {
-        "x": 1.4,
-        "y": 5.4,
+        "x": 1.3,
+        "y": 6.4,
         "h": 80,
         "coat": "wool"
+      }
+    ],
+    "dogs": [
+      {
+        "x": 7.6,
+        "y": 0.9,
+        "h": 200
+      },
+      {
+        "x": 9.0,
+        "y": 1.5,
+        "h": 120
+      }
+    ],
+    "cats": [
+      {
+        "x": -8.4,
+        "y": 2.6,
+        "h": 250,
+        "on": "house"
+      },
+      {
+        "x": -6.6,
+        "y": 3.9,
+        "h": 30
+      }
+    ],
+    "ducks": [
+      {
+        "x": -7.7,
+        "y": 0.2,
+        "h": 20
+      },
+      {
+        "x": -7.1,
+        "y": 0.5,
+        "h": 200
+      },
+      {
+        "x": -6.8,
+        "y": 1.4,
+        "h": 290
+      },
+      {
+        "x": -7.9,
+        "y": 1.3,
+        "h": 120
+      }
+    ],
+    "rabbits": [
+      {
+        "x": -5.5,
+        "y": -0.3,
+        "h": 0
+      },
+      {
+        "x": -4.6,
+        "y": 0.4,
+        "h": 160
+      },
+      {
+        "x": -5.0,
+        "y": 0.1,
+        "h": 250
       }
     ]
   }

@@ -2,11 +2,11 @@ import livestock from "./livestock.json"
 
 // The livestock yard drawn in the pattern of the studio's plan (public/designs/studio/render/plan.svg): solid walls
 // in black, fittings in thin outline, the shelter's rooms named in one row above and only the two overall
-// dimensions. The shelter opens down the page onto the two yards and the lane between them, toward the paddock and
+// dimensions. The shelter opens down the page onto the village yard, which the herd, the farm friends and the guests share, toward the paddock and
 // the viewer of the 3D. Units are metres, the shelter's centre at 0,0, y toward the yards. All in currentColor, so
 // the page sets its colour.
 
-const { shelter, pens, platform, fittings, yards, palisade, stones, tree, tank, baskets, compost } = livestock
+const { shelter, pens, platform, fittings, yards, palisade, stones, tree, tank, baskets, compost, dogs, friends } = livestock
 const WALL = 0.1 // the pole back wall and the ends, and the feed store's boarded walls
 const FENCE = 0.04 // the pole hurdles between the pens and on their fronts, 1.2 m high
 const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEffect: "non-scaling-stroke" } as const
@@ -72,11 +72,12 @@ export function LivestockPlan({ title, className }: { title: string; className?:
   const L = shelter.l / 2, W = shelter.d / 2
   const store = pens.list.find((p) => p.id === "store")!
   const animals = pens.list.filter((p) => p.id !== "store")
-  const [lane0, lane1] = yards.lane
   const Y = yards.y1
   const g = pens.gate
   const door = 0.7
-  const x0 = palisade.x0 - 0.25, x1 = compost.x0 + compost.bay + 0.75
+  const x0 = palisade.x0 - 0.25, x1 = dogs.x1 + 0.75
+  const { ducks, rabbits, dovecote, cats, bench } = friends
+  const yg = yards.gate, dg = dogs.gate
   const top = palisade.y - 0.6, bottom = Y + 1.1
   return (
     <svg viewBox={`${f(x0)} ${f(top)} ${f(x1 - x0)} ${f(bottom - top)}`} role="img" aria-label={title} className={className}>
@@ -96,7 +97,7 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       <rect {...rect(store.x0 - WALL / 2, -W + WALL, store.x0 + WALL / 2, W)} {...solid} />
       <rect {...rect(store.x0, W - WALL, L, W)} {...solid} />
 
-      {/* The hurdles between the pens; each pen's front onto its yard, a gate in it (the kidding pen's onto the lane) */}
+      {/* The hurdles between the pens; each pen's front onto the yard, a gate in it */}
       {animals.slice(1).map((p) => <rect key={p.id} {...rect(p.x0 - FENCE / 2, -W + WALL, p.x0 + FENCE / 2, W)} {...solid} />)}
       {animals.map((p, i) => {
         const a = f(p.x1 - 0.1 - g)
@@ -130,28 +131,22 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       {/* The feed store: three sacks on a pallet */}
       {[-0.95, -0.5, -0.05].map((y) => <rect key={y} {...rect(store.x0 + 0.18, y - 0.18, store.x1 - 0.18, y + 0.18)} rx={0.07} {...line} />)}
 
-      {/* The yards: post-and-rail of round poles, the lane between them, a gate from each yard into the lane and the
-          lane's gate to the paddock, two leaves; a float trough in each yard under the eaves */}
-      <Fence x0={-L} y0={W} x1={yards.goats.x0} y1={W} />
-      <Fence x0={yards.goats.x0} y0={W} x1={yards.goats.x0} y1={Y} />
-      <Fence x0={yards.goats.x0} y0={Y} x1={lane0} y1={Y} />
-      <Fence x0={L} y0={W} x1={yards.sheep.x1} y1={W} />
-      <Fence x0={yards.sheep.x1} y0={W} x1={yards.sheep.x1} y1={Y} />
-      <Fence x0={yards.sheep.x1} y0={Y} x1={lane1} y1={Y} />
-      {[lane0, lane1].map((x, i) => (
-        <g key={x}>
-          <Fence x0={x} y0={W} x1={x} y1={4} />
-          <Fence x0={x} y0={4 + yards.gate} x1={x} y1={Y} />
-          <Gate x={x} y={f(4 + yards.gate)} w={yards.gate} c={[0, -1]} o={[i ? -1 : 1, 0]} />
-          <Gate x={x} y={Y} w={f((lane1 - lane0) / 2)} c={[i ? -1 : 1, 0]} o={[0, -1]} />
-        </g>
-      ))}
+      {/* The village yard: post-and-rail of round poles from the plinth's back west corner round the wing, along the
+          front with the gate to the paddock (two leaves), back to the shelter's east end; a float trough by each pen
+          under the eaves */}
+      <Fence x0={-L - shelter.plinth.edge} y0={yards.wing.y0} x1={yards.x0} y1={yards.wing.y0} />
+      <Fence x0={yards.x0} y0={yards.wing.y0} x1={yards.x0} y1={Y} />
+      <Fence x0={yards.x0} y0={Y} x1={yg.x0} y1={Y} />
+      <Fence x0={f(yg.x0 + yg.w)} y0={Y} x1={yards.x1} y1={Y} />
+      <Fence x0={yards.x1} y0={Y} x1={yards.x1} y1={W} />
+      <Fence x0={yards.x1} y0={W} x1={L + shelter.plinth.edge} y1={W} />
+      {[yg.x0, yg.x0 + yg.w].map((x, i) => <Gate key={x} x={f(x)} y={Y} w={f(yg.w / 2)} c={[i ? -1 : 1, 0]} o={[0, -1]} />)}
       {animals.filter((p) => p.trough).map((p) => {
         const t0 = (p.x0 + p.x1) / 2 - p.trough / 2 - 0.4
         return <rect key={p.id} {...rect(t0, W + 0.4, t0 + p.trough, W + 0.4 + fittings.trough.d)} rx={0.08} {...line} />
       })}
 
-      {/* Stones in the goat yard to climb; a shade tree in the sheep yard, its trunk in a pole guard */}
+      {/* Stones to climb; a shade tree, its trunk in a pole guard */}
       {stones.list.map((s) => <ellipse key={s.x} cx={s.x} cy={s.y} rx={s.r} ry={f(s.r * 0.75)} transform={`rotate(-15 ${s.x} ${s.y})`} {...line} />)}
       <circle cx={tree.x} cy={tree.y} r={tree.crown} {...dashed} />
       <circle cx={tree.x} cy={tree.y} r={tree.guard} {...line} />
@@ -175,17 +170,58 @@ export function LivestockPlan({ title, className }: { title: string; className?:
         )
       })}
 
+      {/* The guard dogs' run on the path past the compost: two raised kennels with pitched roofs, a shade roof
+          (dashed) over the back half, a water bowl, a gate onto the path */}
+      <Fence x0={dogs.x0} y0={dogs.y0} x1={dogs.x1} y1={dogs.y0} />
+      <Fence x0={dogs.x1} y0={dogs.y0} x1={dogs.x1} y1={dogs.y1} />
+      <Fence x0={dogs.x1} y0={dogs.y1} x1={dogs.x0} y1={dogs.y1} />
+      <Fence x0={dogs.x0} y0={dogs.y0} x1={dogs.x0} y1={dg.y0} />
+      <Fence x0={dogs.x0} y0={f(dg.y0 + dg.w)} x1={dogs.x0} y1={dogs.y1} />
+      <Gate x={dogs.x0} y={f(dg.y0 + dg.w)} w={dg.w} c={[0, -1]} o={[1, 0]} />
+      <rect {...rect(dogs.x0, dogs.shade.y0, dogs.x1, dogs.shade.y1)} {...dashed} />
+      {dogs.kennels.map((k) => (
+        <g key={k.x0}>
+          <rect {...rect(k.x0, k.y0, k.x1, k.y1)} {...line} />
+          <line x1={k.x0} x2={k.x1} y1={f((k.y0 + k.y1) / 2)} y2={f((k.y0 + k.y1) / 2)} {...fine} />
+        </g>
+      ))}
+      <circle cx={dogs.bowl.x} cy={dogs.bowl.y} r={dogs.bowl.r} {...line} />
+
+      {/* The farm friends in the yard: the duck house and the pond on its gravel apron at the west edge, the rabbits'
+          raised hutch and their fenced grass run, the dovecote on its pole, the cats' house on a post, a log bench */}
+      <rect {...rect(ducks.house.x0, ducks.house.y0, ducks.house.x1, ducks.house.y1)} {...line} />
+      <line x1={ducks.house.x0} x2={ducks.house.x1} y1={f((ducks.house.y0 + ducks.house.y1) / 2)} y2={f((ducks.house.y0 + ducks.house.y1) / 2)} {...fine} />
+      <ellipse cx={ducks.pond.x} cy={ducks.pond.y} rx={f(ducks.pond.rx + ducks.pond.apron)} ry={f(ducks.pond.ry + ducks.pond.apron)} {...dashed} />
+      <ellipse cx={ducks.pond.x} cy={ducks.pond.y} rx={ducks.pond.rx} ry={ducks.pond.ry} {...line} />
+      <ellipse cx={ducks.pond.x} cy={ducks.pond.y} rx={f(ducks.pond.rx - 0.12)} ry={f(ducks.pond.ry - 0.12)} {...fine} />
+      <rect {...rect(rabbits.hutch.x0, rabbits.hutch.y0, rabbits.hutch.x1, rabbits.hutch.y1)} {...line} />
+      <line x1={f((rabbits.hutch.x0 + rabbits.hutch.x1) / 2)} x2={f((rabbits.hutch.x0 + rabbits.hutch.x1) / 2)} y1={rabbits.hutch.y0} y2={rabbits.hutch.y1} {...fine} />
+      <rect {...rect(rabbits.run.x0, rabbits.run.y0, rabbits.run.x1, rabbits.run.y1)} {...line} />
+      {[[rabbits.run.x0, rabbits.run.y0], [rabbits.run.x1, rabbits.run.y0], [rabbits.run.x1, rabbits.run.y1], [rabbits.run.x0, rabbits.run.y1]].map(([x, y]) => (
+        <circle key={`${x}-${y}`} cx={x} cy={y} r={0.05} {...solid} />
+      ))}
+      <rect {...rect(dovecote.x - dovecote.s / 2, dovecote.y - dovecote.s / 2, dovecote.x + dovecote.s / 2, dovecote.y + dovecote.s / 2)} {...line} />
+      <circle cx={dovecote.x} cy={dovecote.y} r={0.07} {...solid} />
+      <rect {...rect(cats.house.x - cats.house.s / 2, cats.house.y - cats.house.s / 2, cats.house.x + cats.house.s / 2, cats.house.y + cats.house.s / 2)} {...line} />
+      <circle cx={cats.house.x} cy={cats.house.y} r={0.07} {...solid} />
+      <rect {...rect(bench.x0, bench.y - 0.15, bench.x1, bench.y + 0.15)} rx={0.12} {...line} />
+
       {/* The shelter's rooms named in one row above, as the studio's BED, SEATING, GALLEY, BATH; the yards in place */}
       {pens.list.map((p) => <text key={p.id} x={f((p.x0 + p.x1) / 2)} y={f(palisade.y - 0.25)} textAnchor="middle" style={label}>{p.label}</text>)}
       <text x={tank.x} y={f(palisade.y - 0.25)} textAnchor="middle" style={label}>TANK</text>
       <text x={f(compost.x0 + compost.bay / 2)} y={f(palisade.y - 0.25)} textAnchor="middle" style={label}>COMPOST</text>
-      <text x={-2.6} y={3.6} textAnchor="middle" style={label}>GOAT YARD</text>
-      <text x={1.6} y={3.4} textAnchor="middle" style={label}>SHEEP YARD</text>
-      <text x={0} y={5.9} textAnchor="middle" transform="rotate(-90 0 5.9)" style={small}>LANE</text>
-      <text x={0} y={f(bottom - 0.12)} textAnchor="middle" style={small}>TO THE PADDOCK</text>
+      <text x={f((ducks.house.x0 + ducks.house.x1) / 2)} y={f(palisade.y - 0.25)} textAnchor="middle" style={label}>DUCKS</text>
+      <text x={f((rabbits.hutch.x0 + rabbits.hutch.x1) / 2)} y={f(palisade.y - 0.25)} textAnchor="middle" style={label}>RABBITS</text>
+      <text x={f((dogs.x0 + dogs.x1) / 2)} y={f(palisade.y - 0.25)} textAnchor="middle" style={label}>DOGS</text>
+      <text x={-1.8} y={3.4} textAnchor="middle" style={label}>VILLAGE YARD</text>
+      <text x={ducks.pond.x} y={f(ducks.pond.y + 0.05)} textAnchor="middle" style={small}>POND</text>
+      <text x={dovecote.x} y={f(dovecote.y + dovecote.s / 2 + 0.22)} textAnchor="middle" style={small}>DOVES</text>
+      <text x={cats.house.x} y={f(cats.house.y + cats.house.s / 2 + 0.22)} textAnchor="middle" style={small}>CATS</text>
+      <text x={f((bench.x0 + bench.x1) / 2)} y={f(bench.y + 0.4)} textAnchor="middle" style={small}>BENCH</text>
+      <text x={f(yg.x0 + yg.w / 2)} y={f(bottom - 0.12)} textAnchor="middle" style={small}>TO THE PADDOCK · GUESTS</text>
 
-      <Dimension x0={yards.goats.x0} x1={yards.sheep.x1} y={f(Y + 0.5)} />
-      <DimensionUp y0={-W} y1={Y} x={f(compost.x0 + compost.bay + 0.4)} />
+      <Dimension x0={yards.x0} x1={dogs.x1} y={f(Y + 0.5)} />
+      <DimensionUp y0={yards.wing.y0} y1={Y} x={f(dogs.x1 + 0.4)} />
     </svg>
   )
 }
