@@ -20,13 +20,12 @@ const D = "/designs/livestock"
 export default function LivestockPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (handoff in ~/Desktop/livestock-nano-banana:
-          the reference photo, this render, the 3D overview and a frame of the site footage). For now it is the design
-          model from low and close across the front fence corner in overcast light, after the reference photo
-          (scripts/site/render/livestock.html?mode=real&hero=1, 2400 x 1340). The words keep the lower left. */}
+      {/* First screen: the founder's photo (2026-10-29, D-042), the yard's look and feel: a thatched shed, a palisade,
+          crooked rail fences lashed with rope, goats and sheep on straw. Cut to 2400 x 1340 from the 2000 px original
+          (assets/livestock/hero-reference.png, above the Lens badge in its corner). The words keep the lower left. */}
       <PageHero src={`${D}/render/livestock-hero.jpg`} width={2400} height={1340} className="bg-[#d9d4c6]" imgClassName="object-[60%_60%]"
         title="Goats and sheep on open pasture"
-        alt="Across a crooked post-and-rail fence of barked poles lashed with rope, two woven baskets of green fodder; behind it goats and black-headed sheep on straw and earth, fieldstones, and a thatched shelter of upright poles on a stone plinth, with leafy trees and shrubs round it under a soft grey sky." />
+        alt="A small thatched shed of dark boards and poles, a white goat inside; in front, goats and woolly sheep on earth and straw among straw bales, behind a crooked rail fence of barked poles lashed with rope; a board trough under the rails, cut stone blocks and woven baskets outside; a palisade of upright poles, trees and misty wooded hills behind." />
 
       {/* 2D, full screen: the house's plan (src/components/livestock/livestock-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
