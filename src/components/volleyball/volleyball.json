@@ -9,6 +9,7 @@
     "line": 0.05,
     "attack": 3,
     "service": { "gap": 0.2, "l": 0.15 },
+    "extension": { "about": "FIVB rule 1.3.4: each attack line runs on past both side lines as a broken line of five short lines 15 cm long, drawn 20 cm apart, 1.75 m in all.", "n": 5, "l": 0.15, "gap": 0.2 },
     "clear": 7
   },
   "surface": {
@@ -73,5 +74,14 @@
   "lighting": {
     "about": "[A] no floodlights at first: play stops at sunset, about 18:00 all year this close to the equator, when the fire pit is lit. Lights added later need at least 300 lux on the court (rule 1.6): poles outside the free zone, aimed along the court and away from the rooms and the tents, sized in the power guide.",
     "lux": 300
+  },
+  "match": {
+    "about": "The 2D's match moment, not a build item, drawn as broadcast pictures show a rally's first shot: six a side in their rotation order at the moment of service (FIVB rule 7.4: 4, 3 and 2 at the net from left to right as each team faces it, 5, 6 and 1 behind), the serving team's player in position 1 serving from the service zone (rule 12.4), the ball's flight across the net to the seam between two receivers, and the two referees: the 1st on a stand at one end of the net, the 2nd standing by the far post, on the benches' side (rules 22 and 23).",
+    "front": 1.5,
+    "back": 6.5,
+    "lane": 3.0,
+    "server": [-10.4, 3.0],
+    "land": [6.9, -1.5],
+    "referee": 0.9
   }
 }

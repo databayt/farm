@@ -1,0 +1,40 @@
+{
+  "about": "The tennis court the volleyball page switches to: the same lawn, the same net line and the same centre, laid out to the ITF Rules of Tennis. Plan in metres as volleyball.json: x along the court to the right, y toward the viewer and the open lawn, the centre of the net at 0,0. The court and the net follow the rules (rule 1); the space round it follows the ITF's recreational guidance; everything marked [A] is a design choice. [U] whether the lawn has the room: the playing area is 34.75 x 17.07 m against the volleyball's 24 x 15 m, so it reaches 5.4 m further at each end and 1.0 m further at each side.",
+  "source": "ITF Rules of Tennis (itftennis.com), rule 1 The Court and Appendix IV; checked against Tennis Australia's court dimensions page (tennis.com.au), 2026-10-29",
+  "court": {
+    "about": "ITF rule 1: a rectangle 23.77 m long, 8.23 m wide for singles and 10.97 m for doubles, measured to the outside of the lines. The service lines run 6.40 m from the net between the singles side lines; the centre service line joins them, splitting each side into two service boxes; each baseline carries a centre mark 10 cm long. Lines 2.5 to 5 cm wide, the baseline up to 10 cm; the centre service line and centre mark 5 cm. Here [A]: every line 5 cm, the baseline 10 cm.",
+    "l": 23.77,
+    "singles": 8.23,
+    "doubles": 10.97,
+    "service": 6.4,
+    "mark": 0.1,
+    "line": 0.05,
+    "baseline": 0.1
+  },
+  "space": {
+    "about": "ITF Appendix IV, recreational and club play: at least 5.48 m behind each baseline (the run-back) and 3.05 m beside each side line (the run-off), so a playing area of 34.75 x 17.07 m; tournaments ask for 6.40 and 3.66 m. Here the recreational figure.",
+    "back": 5.49,
+    "side": 3.05
+  },
+  "net": {
+    "about": "ITF rule 1: the net hangs on a cord or cable over two posts 1.07 m high, the posts' centres 0.914 m outside the doubles side lines; at the centre it is held down to 0.914 m by a white strap. Played as singles on a doubles net, two singles sticks hold the net at 1.07 m, 0.914 m outside the singles side lines.",
+    "centre": 0.914,
+    "post": 1.07,
+    "out": 0.914
+  },
+  "posts": {
+    "about": "[A] the volleyball posts stand 5.5 m from the centre and the tennis posts 6.40 m, so the two nets cannot share sleeves: two more steel sleeves on the same net line, 0.9 m further out, lidded flush with the grass while the court is set for volleyball.",
+    "d": 0.08,
+    "footing": 0.4
+  },
+  "surface": {
+    "about": "[A] the lawn's own grass, as for volleyball: tennis is played on grass, but the ball needs it short, firm and level to bounce true, closer to a bowling green than a lawn. [U] whether the lawn can be kept that way; if not, an artificial-grass or hard court is the fallback and a cost to price.",
+    "tape": 0.05
+  },
+  "players": {
+    "about": "The 2D's match moment, not a build item: a singles point at its first shot, the server just right of the centre mark on the left baseline serving to the deuce court across the net, the receiver waiting behind the far baseline.",
+    "server": [-12.35, 1.1],
+    "receiver": [12.6, -3.1],
+    "land": [5.6, -2.9]
+  }
+}
