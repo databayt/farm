@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { BuildUp } from "@/components/docs/build-up"
 import { ItemRail, type RailItem } from "@/components/docs/item-rail"
 import { FarmingPlan } from "@/components/farming/farming-plan"
+import { NurseryPlan } from "@/components/farming/nursery-plan"
 import { LivestockPlan } from "@/components/livestock/livestock-plan"
 import plan from "../../../../public/designs/farming/data/plan.json"
 import topPieces from "../../../../public/designs/farming/render/top-pieces.json"
@@ -59,6 +60,13 @@ export default function FarmingPage() {
       <DrawingSection id="plans" title="2D" full>
         <FarmingPlan title={`Plan, seen from the gate: the field as it starts, the two rows of blocks nearest the gate, ${plan.bedsTotal} raised beds 1.2 by 10 m in blocks of ten either side of a 2 m main path inside a fence 53,500 by 22,500 mm; ${plan.bedsNeeded} planted this season (solid) and the rest resting (dashed); the gate at the front onto the garden walk to the galley; the nursery up the yard.`}
           className="h-auto w-full" />
+      </DrawingSection>
+
+      {/* The seedling nursery, in the 2D's pattern: the shade-net house in the yard where the field's seedlings start,
+          its benches of trays and its door toward the field (src/components/farming/nursery-plan.tsx). */}
+      <DrawingSection id="nursery" title="Nursery">
+        <NurseryPlan title="Plan of the seedling nursery: a shade-net house 8,000 by 4,000 mm on eucalyptus poles every 2 m, two benches 7 m long along its long sides, each holding 48 seedling trays, a 1.2 m path between them, the door at the end toward the field and a tap beside it."
+          className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 
       {/* Livestock: the homepage's 2D shows half the field and sends "the whole farm" here (D-035), so the farm's

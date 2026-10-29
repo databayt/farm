@@ -239,10 +239,25 @@
     }
   ],
   "nursery": {
-    "about": "A shade-net house for the seedlings, in the yard strip next to the beds: 8 x 4 m, 2.4 m high, 50 % net, trays on benches [A].",
+    "about": "A shade-net house for the seedlings, in the yard strip with the compost, tanks and tools, 33 m from the field (D-050): 8 x 4 m, 2.4 m high, 50 % net over a frame of eucalyptus poles every 2 m, trays on benches [A]. Inside (D-051, sizes [A]): two benches 7 m long and 1.2 m deep along the long sides, waist high, each holding 48 standard seedling trays (54 x 28 cm), with a 1.2 m path between them; the door at the end toward the field; a tap and a hose by the door.",
     "l": 8,
     "w": 4,
-    "h": 2.4
+    "h": 2.4,
+    "post": 2,
+    "bench": {
+      "l": 7.0,
+      "d": 1.2,
+      "inset": 0.2
+    },
+    "tray": {
+      "l": 0.54,
+      "w": 0.28
+    },
+    "door": 1.2,
+    "tap": {
+      "x": 7.5,
+      "y": 0.45
+    }
   },
   "fence": {
     "about": "A 1.5 m wire-mesh fence on timber posts at 3 m, round the beds, with one gate on the garden walk to the galley.",

@@ -7,7 +7,7 @@ import plan from "../../../public/designs/farming/data/plan.json"
 // and only the two overall dimensions. Everything comes from the generated plan (scripts/site/farming.mjs), whose
 // metres run x to the galley and y down the master plan; here they are turned a quarter so the gate faces the viewer.
 
-const { beds, fence, gate, main, mainY, nursery } = plan
+const { beds, fence, gate, main, mainY } = plan
 const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEffect: "non-scaling-stroke" } as const
 const dashed = { ...line, strokeDasharray: "4 3" } as const
 const solid = { fill: "currentColor" } as const
@@ -56,7 +56,6 @@ export function FarmingPlan({ title, className }: { title: string; className?: s
   const W = fy1 - fy0, H = fx1 - fx0 // the fenced field, across and down the page
   const gu = U(gate[1]), gw = 1.5 // the gate, its half width
   const pu = U(mainY) // the main path's middle
-  const away = Math.round(fx0 - (nursery.x + nursery.w)) // the nursery, that far up the yard
   const top = -2.6, bottom = H + 6.1
   const left = -0.6, right = W + 2.6 // tight round the drawing, so it fills the width
   const row = -1.1 // the names, in one row above the fence
@@ -82,7 +81,7 @@ export function FarmingPlan({ title, className }: { title: string; className?: s
       {([[f(pu / 2), "BEDS"], [f(pu), "MAIN PATH"], [f((pu + W) / 2), "BEDS"]] as const).map(([x, t], i) => (
         <text key={i} x={x} y={f(row)} textAnchor="middle" style={label}>{t}</text>
       ))}
-      <text x={f(W)} y={f(row)} textAnchor="end" style={small}>{`SEEDLING NURSERY · IN THE YARD, ${away} M ↑`}</text>
+      <text x={f(W)} y={f(row)} textAnchor="end" style={small}>NURSERY ↑</text>
       <text x={f(pu)} y={f(H + 3.6)} textAnchor="middle" style={small}>GATE · TO THE GALLEY</text>
 
       <Dimension x0={0} x1={f(W)} y={f(H + 5.1)} />
