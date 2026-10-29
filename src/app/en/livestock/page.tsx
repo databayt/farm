@@ -21,12 +21,12 @@ export default function LivestockPage() {
   return (
     <main className="w-full flex-1">
       {/* First screen: the founder's Nano Banana remake (2026-10-29, D-046) of the reference photo on the farm: the shed,
-          the lashed rails and the baskets of the photo, set in Rwanda's terraced green hills with eucalyptus and banana
-          plants, the herd in the yard and a sheep in the shed, the dovecote, the cats' house, the tank, the compost bays
-          and the dogs' kennels. Served at its native 1678 x 937 (original: assets/livestock/hero-gemini.png). */}
+          the lashed rails and the baskets of the photo, the yard open on Rwanda's terraced green hills with eucalyptus
+          and banana plants, the herd in the yard and two sheep in the shed, the dovecote, the cats' house, the tank, the
+          compost bays and the dogs' kennels. Served at its native 1678 x 937 (original: assets/livestock/hero-gemini.png). */}
       <PageHero src={`${D}/render/livestock-hero.jpg`} width={1678} height={937} className="bg-[#b9bdb4]" imgClassName="object-[55%_55%]"
         title="Goats and sheep on open pasture"
-        alt="A livestock yard on a Rwandan hillside under a soft grey sky: a shed with a shaggy thatched roof, goats and black-headed sheep on straw behind a rail fence lashed with rope, a sheep in the shed, a dovecote with white doves and a cats’ house on posts at the left, a water tank and two dog kennels at the right, woven baskets by the gate, a palisade of upright poles, banana plants and eucalyptus, and terraced green hills behind." />
+        alt="A livestock yard on a Rwandan hillside under a soft grey sky: a shed with a shaggy thatched roof and two sheep inside, goats and black-headed sheep on straw behind a rail fence lashed with rope, a dovecote with white doves and a cats’ house on posts at the left, a water tank and two dog kennels at the right, woven baskets by the gate, banana plants and eucalyptus round the yard, and terraced green hills behind." />
 
       {/* 2D, full screen: the house's plan (src/components/livestock/livestock-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
