@@ -34,13 +34,14 @@ export function PageHero({ src, width, height, alt, title, className, imgClassNa
 }
 
 // A full-screen drawing under a plain title: the 2D plan, or any drawing in its pattern. The drawing is black on
-// transparent (an SVG in currentColor, or an image inverted in dark mode).
-export function DrawingSection({ id, title, children, after }: {
-  id: string; title: string; children: React.ReactNode; after?: React.ReactNode
+// transparent (an SVG in currentColor, or an image inverted in dark mode). `full`: the drawing takes the section's
+// full width and the section grows to fit it, for a drawing too square to fill the width within one screen.
+export function DrawingSection({ id, title, children, after, full = false }: {
+  id: string; title: string; children: React.ReactNode; after?: React.ReactNode; full?: boolean
 }) {
   return (
     <section id={id}>
-      <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
+      <div className={cn("flex flex-col px-4 pt-10 pb-6 md:px-10", !full && "lg:h-svh lg:min-h-[560px]")}>
         <h2 className="text-3xl font-semibold tracking-tight">{title}</h2>
         <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">{children}</div>
       </div>

@@ -58,7 +58,7 @@ export function FarmingPlan({ title, className }: { title: string; className?: s
   const pu = U(mainY) // the main path's middle
   const n = nursery
   const top = Math.min(0, V(n.x)) - 1.5, bottom = H + 7.5
-  const left = -1.5, right = Math.max(W, U(n.y)) + 4
+  const left = -0.6, right = Math.max(W, U(n.y)) + 2.4 // tight round the drawing, so it fills the width
   const row = -1.1 // the names, in one row above the fence
   return (
     <svg viewBox={`${f(left)} ${f(top)} ${f(right - left)} ${f(bottom - top)}`} role="img" aria-label={title} className={className}>
@@ -90,7 +90,7 @@ export function FarmingPlan({ title, className }: { title: string; className?: s
       <text x={f(pu)} y={f(H + 4.6)} textAnchor="middle" style={small}>GATE · TO THE GALLEY</text>
 
       <Dimension x0={0} x1={f(W)} y={f(H + 6.3)} />
-      <DimensionUp y0={0} y1={f(H)} x={f(right - 1.6)} />
+      <DimensionUp y0={0} y1={f(H)} x={f(right - 1.2)} />
     </svg>
   )
 }
