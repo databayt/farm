@@ -168,10 +168,11 @@ def plan_bw(m) -> str:
     """The plan for the web, simplified: walls, glazing, one outline per piece of furniture, the
     bathroom door swing, zone names and the overall size. No carcass detail, sheet or checks."""
     lo, s = m["lo"], Sheet("", "")
-    sc, ox, oy, ink, sw = 25, 8.0, 16.0, "#111", 0.22
+    sc, ox, oy, ink, sw = 25, 18.0, 24.0, "#111", 0.22
     X = lambda x: ox + x / sc  # noqa: E731
     Y = lambda y: oy + y / sc  # noqa: E731
     by_id = {i: b for (b, fl, n, i, *_x) in items(m, layers=None, exclude_layers=())}
+    mm = lambda v: f"{v:,.0f}"  # noqa: E731
 
     def box(x0, y0, x1, y1, fill="#fff", w=sw) -> None:
         s.rect(X(x0), Y(y0), (x1 - x0) / sc, (y1 - y0) / sc, fill, ink, w)
@@ -235,10 +236,22 @@ def plan_bw(m) -> str:
     box(bs.x0, bs.y0, bs.x1, bs.y1)
     for x0, x1, lab in ((0, lo.bed_x1, "BED"), (*lo.sofa, "SEATING"),
                         (lo.part_x0 - 620, lo.part_x0, "GALLEY"), (lo.bath_x0, lo.L, "BATH")):
-        s.text(X((x0 + x1) / 2), oy - 7, lab, 2.6, "middle", "bold", ink)
-    s.dim(X(0), Y(lo.W) + 4, X(lo.L), Y(lo.W) + 4, f"{lo.L:,.0f}", 4, 2.4, inline=True)
-    s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:,.0f}", -4, 2.4, inline=True)
-    return s.bare(ox + (lo.L + 300) / sc + 10, Y(lo.W) + 14)
+        s.text(X((x0 + x1) / 2), oy - 15, lab, 2.6, "middle", "bold", ink)
+        s.dim(X(x0), oy - 4, X(x1), oy - 4, mm(x1 - x0), -4, 2.4, inline=True)  # the zone chain on the back wall
+    # the front wall: the glass wall and window W1, then the overall length
+    for (x0, x1), lab in ((lo.o1, "glass"), (lo.o2, "window")):
+        s.dim(X(x0), Y(lo.W) + 4, X(x1), Y(lo.W) + 4, f"{lab} {mm(x1 - x0)}", 4, 2.4, inline=True)
+    s.dim(X(0), Y(lo.W) + 4, X(lo.L), Y(lo.W) + 4, mm(lo.L), 10, 2.4, inline=True)
+    # end A: the bed's length and the floor in front of it; end B: the bathroom's depth, then the overall width
+    for y0, y1 in ((lo.bed_y0, lo.bed_y1), (lo.bed_y1, lo.W)):
+        s.dim(X(0) - 6, Y(y0), X(0) - 6, Y(y1), mm(y1 - y0), 4, 2.4, inline=True)
+    s.dim(X(lo.L) + 4, Y(0), X(lo.L) + 4, Y(cy0), mm(cy0), -4, 2.4, inline=True)
+    s.dim(X(lo.L) + 4, Y(0), X(lo.L) + 4, Y(lo.W), mm(lo.W), -10, 2.4, inline=True)
+    # inside: the bathroom door opening, and the walkway between the sofa end and the worktop
+    s.dim(X(d0 + 18), Y(cy1) + 1, X(d1), Y(cy1) + 1, mm(d1 - d0 - 18), 3, 2.2, inline=True)
+    wy = Y((sb.y0 + sb.y1) / 2)
+    s.dim(X(sb.x1), wy, X(X0), wy, mm(X0 - sb.x1), 0, 2.2, inline=True)
+    return s.bare(X(lo.L) + 22, Y(lo.W) + 22)
 
 
 def scene_json(m) -> dict:
