@@ -123,7 +123,7 @@ const T = LINE ? {} : {
 }
 // metres one tile covers [along, across]
 const TILE = { earth: [2.5, 2.5], straw: [1, 1], packed: [2, 2], bark: [0.4, 2], boards: [1.5, 1.5], hay: [0.6, 0.6], compost: [1, 1], thatch: [1.2, 1.2], grass: [9, 9], weave: [0.3, 0.3] }
-const MAP = { yard: "earth", litter: "straw", packed: "packed", pole: "bark", board: "boards", hay: "hay", compost: "compost", thatch: "thatch", lawn: "grass", basket: "weave" }
+const MAP = { plank: "boards", yard: "earth", litter: "straw", packed: "packed", pole: "bark", board: "boards", hay: "hay", compost: "compost", thatch: "thatch", lawn: "grass", basket: "weave" }
 
 // ------------------------------------------------------------ materials
 // thin parts get crease lines but no silhouette, so slats, rails and horns stay fine in the line drawing
@@ -146,6 +146,7 @@ function mat(name) {
       packed: () => std({ map: T.packed, roughness: 1 }),
       pole: () => std({ map: T.bark, roughness: 0.9 }),
       board: () => std({ map: T.boards, roughness: 0.85 }),
+      plank: () => std({ map: T.boards, color: "#76634f", roughness: 0.9 }), // dark weathered boards, as the photo's shed
       bamboo: () => std({ color: "#c9ae6e", roughness: 0.6 }),
       stone: () => std({ color: "#8d877c", roughness: 0.95, flatShading: true }),
       rope: () => std({ color: "#c2a874", roughness: 1 }),
@@ -263,23 +264,30 @@ if (HERO) {
   blk(-L + WALL, -W + WALL, HALL.x1 - 0.03, W, FL, LIT, "litter")
 }
 
-// ------------------------------------------------------------ the shelter: upright split poles at the back and the ends to the eaves
+// ------------------------------------------------------------ the shelter, as the founder's photo's shed: wide dark weathered boards set upright at the
+// back and the ends, heavy barked posts along the open front, braced to the eaves beam
 {
-  const r = WALL / 2
-  for (let x = -L + r; x <= L - r + 1e-6; x += 2 * r * 0.98) pole(x, -W + r, r, FL, EAVE + (rnd() - 0.5) * 0.06)
-  for (let z = -W + 3 * r; z <= W - r + 1e-6; z += 2 * r * 0.98) pole(-L + r, z, r, FL, EAVE + (rnd() - 0.5) * 0.06)
-  // the east end: poles beside the store's door, which opens onto the path behind
+  const plank = (x0, z0, x1, z1) => blk(x0, z0, x1, z1, FL, EAVE - 0.04 + (rnd() - 0.5) * 0.06, "plank")
+  for (let x = -L; x < L - 0.05; x += 0.21) plank(x, -W, Math.min(x + 0.19, L), -W + WALL)
+  for (let z = -W + WALL; z < W - 0.05; z += 0.21) plank(-L, z, -L + WALL, Math.min(z + 0.19, W))
+  // the east end: boards beside the store's door, which opens onto the path behind
   const door = 0.7
-  for (let z = -W + 3 * r; z <= W - r + 1e-6; z += 2 * r * 0.98) if (z < -0.02 || z > door + 0.02) pole(L - r, z, r, FL, EAVE + (rnd() - 0.5) * 0.06)
-  // the posts along the open front carry the eaves beam; the wall plates along the back and the ends
-  for (const x of [-L + r, (HALL.x0 + HALL.x1) / 2, STORE.x0, L - r]) pole(x, W - r, 0.07, FL, EAVE + 0.15, 9)
-  pipe([-L, EAVE + 0.1, W - r], [L, EAVE + 0.1, W - r], 0.08, "pole", 9)
-  pipe([-L, EAVE + 0.04, -W + r], [L, EAVE + 0.04, -W + r], 0.07, "pole", 9)
-  for (const x of [-L + r, L - r]) pipe([x, EAVE + 0.04, -W], [x, EAVE + 0.04, W], 0.07, "pole", 9)
-  // the store's boarded walls: its west wall, its front onto the sheep yard, its door shut on a hasp
-  blk(STORE.x0 - 0.03, -W + WALL, STORE.x0 + 0.03, W, FL, EAVE, "board")
-  blk(STORE.x0, W - 0.06, L - WALL, W, FL, EAVE, "board")
-  blk(L - 0.04, 0, L + 0.01, door, FL, FL + 1.9, "board")
+  for (let z = -W + WALL; z < W - 0.05; z += 0.21) if (z + 0.19 < -0.02 || z > door + 0.02) plank(L - WALL, z, L, Math.min(z + 0.19, W))
+  // the corner and front posts, heavy and barked; the eaves beam and the wall plates; a knee brace at each front post
+  const posts = [-L + 0.09, (HALL.x0 + HALL.x1) / 2, STORE.x0, L - 0.09]
+  for (const x of posts) pole(x, W - 0.09, 0.1, FL, EAVE + 0.18, 9)
+  for (const x of [-L + 0.09, L - 0.09]) pole(x, -W + 0.09, 0.1, FL, EAVE + 0.12, 9)
+  pipe([-L - 0.2, EAVE + 0.1, W - 0.09], [L + 0.2, EAVE + 0.1, W - 0.09], 0.1, "pole", 9)
+  pipe([-L, EAVE + 0.04, -W + 0.09], [L, EAVE + 0.04, -W + 0.09], 0.08, "pole", 9)
+  for (const x of [-L + 0.09, L - 0.09]) pipe([x, EAVE + 0.04, -W], [x, EAVE + 0.04, W], 0.08, "pole", 9)
+  for (const x of posts) for (const s of [-1, 1]) {
+    if ((x === posts[0] && s < 0) || (x === posts.at(-1) && s > 0)) continue
+    pipe([x, EAVE - 0.55, W - 0.09], [x + s * 0.5, EAVE + 0.06, W - 0.09], 0.045, "pole", 6)
+  }
+  // the store's boarded walls: its west wall, its front onto the yard, its door shut on a hasp
+  for (let z = -W + WALL; z < W - 0.05; z += 0.21) blk(STORE.x0 - 0.04, z, STORE.x0 + 0.04, Math.min(z + 0.19, W), FL, EAVE, "plank")
+  for (let x = STORE.x0; x < L - WALL - 0.05; x += 0.21) blk(x, W - 0.07, Math.min(x + 0.19, L - WALL), W, FL, EAVE, "plank")
+  blk(L - 0.04, 0, L + 0.01, door, FL, FL + 1.9, "plank")
   blk(L + 0.01, 0.06, L + 0.03, 0.18, FL + 1.0, FL + 1.06, "pole")
 }
 
@@ -341,23 +349,24 @@ function gate(x0, z0, x1, z1, y0, h) { // shut: a frame of thin poles with a dia
 }
 
 // ------------------------------------------------------------ the outline and the yard: posts and three lashed rails, the gate, troughs
-// hand-cut: each post leans a little and stands at its own height; each rail spans one bay, crooked by a few
-// centimetres and overlapping the next at the post, as in the founder's reference photo
+// as the founder's photo's fence: heavy barked posts, each leaning a little at its own height; thick rails, each one bay
+// long, crooked by several centimetres and overlapping the next at the post, lashed with rope
 function fence(x0, z0, x1, z1) {
   const len = Math.hypot(x1 - x0, z1 - z0), n = Math.max(1, Math.ceil(len / Y.post))
   const ux = (x1 - x0) / len, uz = (z1 - z0) / len
   const at = (k) => [x0 + ((x1 - x0) * k) / n, z0 + ((z1 - z0) * k) / n]
   for (let k = 0; k <= n; k++) {
     const [x, z] = at(k)
-    const p = pole(x, z, 0.055 + rnd() * 0.02, 0, Y.h + 0.1 + (rnd() - 0.5) * 0.12, 8)
-    p.rotation.set((rnd() - 0.5) * 0.06, 0, (rnd() - 0.5) * 0.06)
-    if (!LINE) for (const h of RAILS) cyl(x, z, 0.07, h - 0.05, 0.1, "rope", 8) // the sisal lashing at each rail
+    const p = pole(x, z, 0.075 + rnd() * 0.03, 0, Y.h + 0.14 + (rnd() - 0.5) * 0.16, 8)
+    p.rotation.set((rnd() - 0.5) * 0.08, 0, (rnd() - 0.5) * 0.08)
+    if (!LINE) for (const h of RAILS) cyl(x, z, 0.1, h - 0.07, 0.14, "rope", 8) // the rope lashing at each rail
   }
   for (let k = 0; k < n; k++) {
     const [ax, az] = at(k), [bx, bz] = at(k + 1)
     for (const h of RAILS) {
-      const r = 0.035 + rnd() * 0.012, j = () => (rnd() - 0.5) * 0.07
-      pipe([ax - ux * 0.1, h + j(), az - uz * 0.1], [bx + ux * 0.1, h + j(), bz + uz * 0.1], r, "pole", 7)
+      // thick barked rails, as the photo's: each one bay long, crooked, overlapping the next at the post
+      const r = 0.05 + rnd() * 0.022, j = () => (rnd() - 0.5) * 0.11
+      pipe([ax - ux * 0.18, h + j(), az - uz * 0.18], [bx + ux * 0.18, h + j(), bz + uz * 0.18], r, "pole", 8)
     }
   }
 }
