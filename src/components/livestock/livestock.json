@@ -1,5 +1,5 @@
 {
-  "about": "The livestock yard, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (D-030), in one thatched pole shelter opening onto one village yard (D-037, D-038, after the founder's reference photo of 2026-10-29: a thatched shed, a pole palisade, lashed post-and-rail fences, stones, fodder baskets). One outline holds it all (D-039): the palisade at the back, one post-and-rail fence round the rest. The goats, the sheep, the doves, the cats and the guests share the yard by day, and the goats and the sheep sleep together in one shed, built as the shed in the founder's photo (D-044). Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high, where sheep cannot reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. Both species carry the same worms [V LVS-46], so the yard is kept dry, the hay stays in racks and the herd is dewormed animal by animal (FAMACHA). The yard is part of the farm's loop: litter and manure go to the compost bays and on to the vegetable beds, the beds' residues and cut fodder come back in baskets. The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x to the right as seen from the paddock (west end left), y toward the viewer (the yards and the paddock), the shelter's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
+  "about": "The livestock yard, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (D-030), in one thatched pole shelter opening onto one village yard (D-037, D-038, after the founder's reference photo of 2026-10-29: a thatched shed, a pole palisade, lashed post-and-rail fences, stones, fodder baskets). One outline holds it all (D-039, D-047): one post-and-rail fence all round, open on the planting and the hills, as in the hero. The goats, the sheep, the doves, the cats and the guests share the yard by day, and the goats and the sheep sleep together in one shed, built as the shed in the founder's photo (D-044). Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high, where sheep cannot reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. Both species carry the same worms [V LVS-46], so the yard is kept dry, the hay stays in racks and the herd is dewormed animal by animal (FAMACHA). The yard is part of the farm's loop: litter and manure go to the compost bays and on to the vegetable beds, the beds' residues and cut fodder come back in baskets. The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x to the right as seen from the paddock (west end left), y toward the viewer (the yards and the paddock), the shelter's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
   "shelter": {
     "about": "The herd's shed, copied from the shed in the founder's photo (D-044, D-045): 4.4 x 3.0 m (13 m2: 10 head at 1.2 m2 [A]), long axis east-west. Its back and its east end are wide dark weathered boards set upright; its west end is open with one rail between the corner posts; its front is open between two heavy barked corner posts under the eaves beam, each braced to it. A steep, shaggy grey-brown grass-thatched gable overhangs 0.7 m, its gable ends open on the rafters and the tie beam. The floor is rammed earth deep in straw on a low plinth edged in fieldstones, so rain runs off and the herd lies dry.",
     "l": 4.4,
@@ -16,7 +16,7 @@
     }
   },
   "pens": {
-    "about": "Inside the shed, as in the photo: one sheep on the straw, a straw bale in the middle, and on the right a plank table with a basket on it (the hay, off the floor against worm pick-up) over a lidded crate that locks, for the feed. Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high on the back wall, above the sheep's reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. For kidding, two hurdles close off a corner when a doe or a ewe is due.",
+    "about": "Inside the shed, as in the photo: sheep on the straw (two in the hero), a straw bale in the middle, and on the right a plank table with a basket on it (the hay, off the floor against worm pick-up) over a lidded crate that locks, for the feed. Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high on the back wall, above the sheep's reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. For kidding, two hurdles close off a corner when a doe or a ewe is due.",
     "label": "SHED",
     "head": 10,
     "bale": {
@@ -83,7 +83,7 @@
     ]
   },
   "yards": {
-    "about": "One outline round everything: the palisade is its back; round the west, the front and the east, round eucalyptus poles, posts every 1.8 m, three rails lashed with sisal rope, 1.2 m high. Inside, one village yard: straw over the earth, cleared to the compost with the bedding. One gate, two leaves, onto the paddock, for the herd and the guests. The compost bays close with a removable rail so the goats stay out of them.",
+    "about": "One outline round everything, as in the hero (D-047): round eucalyptus poles all round, posts about every 1.8 m, three thick crooked rails lashed with rope, 1.2 m high, with no palisade, so the yard opens on the banana plants and the hills. Inside, one village yard: straw over the earth, cleared to the compost with the bedding. One gate onto the paddock, for the herd and the guests. The compost bays close with a removable rail so the goats stay out of them.",
     "x0": -7.5,
     "x1": 9.7,
     "y0": -2.3,
@@ -94,13 +94,6 @@
       "x0": -0.5,
       "w": 1.0
     }
-  },
-  "palisade": {
-    "about": "The outline's back: a windbreak of upright eucalyptus poles, 1.8 m high, against the prevailing wind; climbers grow on it.",
-    "y": -2.3,
-    "x0": -7.5,
-    "x1": 9.7,
-    "h": 1.8
   },
   "stones": {
     "about": "Fieldstones in the goat yard to climb on, which also wears their hooves down.",
@@ -130,12 +123,29 @@
     "guard": 0.4
   },
   "tank": {
-    "about": "A 1,000 L tank by the shed's east end on a 1.2 m block stand, filled from the farm's water line (thatch does not collect rain cleanly) and feeding the float troughs by gravity.",
+    "about": "A 1,000 L tank by the shed's east end on a fieldstone base, as in the hero, filled from the farm's water line (thatch does not collect rain cleanly) and feeding the troughs by gravity; three black buckets beside it for carrying water and feed.",
     "x": 3.6,
     "y": -1.35,
     "r": 0.55,
     "h": 1.2,
-    "stand": 1.2
+    "stand": 1.2,
+    "buckets": [
+      {
+        "x": 3.3,
+        "y": -0.3,
+        "r": 0.2
+      },
+      {
+        "x": 3.75,
+        "y": -0.05,
+        "r": 0.2
+      },
+      {
+        "x": 3.35,
+        "y": 0.3,
+        "r": 0.18
+      }
+    ]
   },
   "baskets": {
     "about": "Woven baskets of cut fodder and the field's residues by the shed: the vegetable beds feed the herd. Two more stand outside the front fence by the gate, as the cut fodder comes in from the field.",
@@ -229,7 +239,7 @@
     }
   },
   "animals": {
-    "about": "Where the 3D stands the animals, in plan metres, heading in degrees (0 = toward +x): local goats in browns and black and fat-tailed hair sheep with white coats and dark faces, one sheep in the shed, as in the photo, and the rest mixing in the yard; `on` names a stone a goat stands on, or the cats' house. The dogs stand in their run; the doves sit on the dovecote.",
+    "about": "Where the 3D stands the animals, in plan metres, heading in degrees (0 = toward +x): local goats in browns and black and fat-tailed hair sheep with white coats and dark faces, two sheep in the shed, as in the hero, and the rest mixing in the yard; `on` names a stone a goat stands on, or the cats' house. The dogs stand in their run; the doves sit on the dovecote.",
     "goats": [
       {
         "x": -4.1,
@@ -277,9 +287,9 @@
         "coat": "wool"
       },
       {
-        "x": -0.6,
-        "y": 4.2,
-        "h": 200,
+        "x": -0.2,
+        "y": 0.45,
+        "h": 20,
         "coat": "wool"
       },
       {
@@ -327,62 +337,83 @@
     ]
   },
   "planting": {
-    "about": "The yard sits in greenery, as in the founder's reference photo (D-041): shrubs round the outside of the outline (fodder shrubs such as Calliandra where the goats cannot reach them, livestock-plan; species [A]), and trees behind the palisade. Nothing is planted inside the outline, where the herd would strip it.",
+    "about": "The yard sits in the farm's planting, as in the hero (D-047): banana clumps behind the back fence and at the sides, shrubs along the sides, and outside the front fence two vegetable beds (cabbages and greens), where the herd cannot reach. Nothing is planted inside the outline.",
     "shrubs": [
       {
-        "x": -8.1,
-        "y": 0.2,
+        "x": -8.5,
+        "y": 0.6,
         "r": 0.7
       },
       {
-        "x": -8.2,
-        "y": 2.9,
+        "x": -8.5,
+        "y": 3.2,
         "r": 0.8
       },
       {
-        "x": -8.0,
-        "y": 5.6,
+        "x": -8.5,
+        "y": 5.8,
         "r": 0.6
       },
       {
-        "x": -7.0,
-        "y": 8.0,
-        "r": 0.7
-      },
-      {
-        "x": -4.8,
-        "y": 8.1,
-        "r": 0.8
-      },
-      {
-        "x": 2.6,
-        "y": 8.0,
-        "r": 0.7
-      },
-      {
-        "x": 5.2,
-        "y": 8.1,
-        "r": 0.9
-      },
-      {
-        "x": 8.2,
-        "y": 8.0,
-        "r": 0.7
-      },
-      {
-        "x": 10.3,
-        "y": 6.2,
-        "r": 0.7
-      },
-      {
-        "x": 10.4,
+        "x": 10.8,
         "y": 3.4,
         "r": 0.8
       },
       {
-        "x": 10.3,
-        "y": 0.6,
-        "r": 0.6
+        "x": 10.8,
+        "y": 6.0,
+        "r": 0.7
+      }
+    ],
+    "bananas": [
+      {
+        "x": -6.6,
+        "y": -3.9,
+        "r": 0.9
+      },
+      {
+        "x": -3.9,
+        "y": -3.9,
+        "r": 1.0
+      },
+      {
+        "x": 2.4,
+        "y": -3.9,
+        "r": 0.9
+      },
+      {
+        "x": 5.2,
+        "y": -3.9,
+        "r": 1.0
+      },
+      {
+        "x": 8.4,
+        "y": -3.9,
+        "r": 0.9
+      },
+      {
+        "x": -8.4,
+        "y": -1.6,
+        "r": 0.8
+      },
+      {
+        "x": 10.5,
+        "y": -1.2,
+        "r": 0.8
+      }
+    ],
+    "beds": [
+      {
+        "x0": -7.4,
+        "x1": -3.0,
+        "y0": 8.6,
+        "y1": 9.6
+      },
+      {
+        "x0": 1.4,
+        "x1": 9.4,
+        "y0": 8.6,
+        "y1": 9.6
       }
     ],
     "trees": [

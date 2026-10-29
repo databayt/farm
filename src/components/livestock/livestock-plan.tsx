@@ -2,12 +2,12 @@ import livestock from "./livestock.json"
 
 // The livestock yard drawn in the pattern of the studio's plan (public/designs/studio/render/plan.svg): solid walls
 // in black, fittings in thin outline, what is where named in one row above and only the two overall dimensions.
-// One outline holds it all (D-039): the palisade at the back, one post-and-rail fence round the rest. The herd's shed,
+// One outline holds it all (D-039, D-047): one post-and-rail fence all round, as in the hero. The herd's shed,
 // as the founder's photo's (D-044), opens down the page onto the village yard, toward the paddock and the viewer of
 // the 3D. Units are
 // metres, the shelter's centre at 0,0, y toward the yard. All in currentColor, so the page sets its colour.
 
-const { shelter, pens, fittings, yards, palisade, stones, tree, tank, baskets, compost, dogs, friends, planting } = livestock
+const { shelter, pens, fittings, yards, stones, tree, tank, baskets, compost, dogs, friends, planting } = livestock
 const WALL = 0.1 // the shed's boarded back and east end
 const FENCE = 0.04 // the rails along the shed's open west side
 const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEffect: "non-scaling-stroke" } as const
@@ -76,18 +76,17 @@ export function LivestockPlan({ title, className }: { title: string; className?:
   const Y = yards.y1
   const { dovecote, cats, bench } = friends
   const yg = yards.gate, dg = dogs.gate
-  const edge = { x0: Math.min(...planting.shrubs.map((b) => b.x - b.r)), x1: Math.max(...planting.shrubs.map((b) => b.x + b.r)),
-    y1: Math.max(...planting.shrubs.map((b) => b.y + b.r)) } // the planting round the outline
+  const green = [...planting.shrubs, ...planting.bananas] // the planting round the outline
+  const edge = { x0: Math.min(...green.map((b) => b.x - b.r)), x1: Math.max(...green.map((b) => b.x + b.r)),
+    y0: Math.min(...green.map((b) => b.y - b.r)), y1: Math.max(...planting.beds.map((b) => b.y1)) }
   const x0 = edge.x0 - 0.3, x1 = edge.x1 + 0.75
-  const dimY = edge.y1 + 0.35, top = palisade.y - 0.6, bottom = dimY + 0.6
-  const row = palisade.y - 0.25 // the names, in one row above the palisade
+  const dimY = edge.y1 + 0.75, top = edge.y0 - 0.3, bottom = dimY + 0.6
+  const row = yards.y0 - 0.3 // the names, in one row above the back fence
   return (
     <svg viewBox={`${f(x0)} ${f(top)} ${f(x1 - x0)} ${f(bottom - top)}`} role="img" aria-label={title} className={className}>
-      {/* The outline: the palisade of upright poles at the back, one post-and-rail fence round the rest, one gate of
-          two leaves to the paddock */}
-      {Array.from({ length: Math.floor((palisade.x1 - palisade.x0) / 0.14) + 1 }, (_, k) => (
-        <circle key={k} cx={f(palisade.x0 + k * 0.14)} cy={palisade.y} r={0.06} {...solid} />
-      ))}
+      {/* The outline: one post-and-rail fence all round, open on the planting as in the hero, one gate of two leaves
+          to the paddock */}
+      <Fence x0={yards.x0} y0={yards.y0} x1={yards.x1} y1={yards.y0} />
       <Fence x0={yards.x0} y0={yards.y0} x1={yards.x0} y1={Y} />
       <Fence x0={yards.x0} y0={Y} x1={yg.x0} y1={Y} />
       <Fence x0={f(yg.x0 + yg.w)} y0={Y} x1={yards.x1} y1={Y} />
@@ -124,7 +123,7 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       <circle cx={tree.x} cy={tree.y} r={tree.guard} {...line} />
       <circle cx={tree.x} cy={tree.y} r={0.13} {...solid} />
 
-      {/* The farm friends: the dovecote on its pole, the cats' house on a post by the palisade, a log bench */}
+      {/* The farm friends: the dovecote on its pole, the cats' house on a post by the back fence, a log bench */}
       <rect {...rect(dovecote.x - dovecote.s / 2, dovecote.y - dovecote.s / 2, dovecote.x + dovecote.s / 2, dovecote.y + dovecote.s / 2)} {...line} />
       <circle cx={dovecote.x} cy={dovecote.y} r={0.07} {...solid} />
       <rect {...rect(cats.house.x - cats.house.s / 2, cats.house.y - cats.house.s / 2, cats.house.x + cats.house.s / 2, cats.house.y + cats.house.s / 2)} {...line} />
@@ -134,6 +133,8 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       {/* By the shed's east end: the tank, the fodder baskets, the three compost bays with their removable front rail
           (dashed) */}
       <circle cx={tank.x} cy={tank.y} r={tank.r} {...line} />
+      <rect {...rect(tank.x - tank.r - 0.08, tank.y - tank.r - 0.08, tank.x + tank.r + 0.08, tank.y + tank.r + 0.08)} {...fine} />
+      {tank.buckets.map((b) => <circle key={b.x + b.y} cx={b.x} cy={b.y} r={b.r} {...line} />)}
       {baskets.list.map((b) => (
         <g key={b.x}>
           <circle cx={b.x} cy={b.y} r={b.r} {...line} />
@@ -166,8 +167,26 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       ))}
       <circle cx={dogs.bowl.x} cy={dogs.bowl.y} r={dogs.bowl.r} {...line} />
 
-      {/* The planting round the outside of the outline: shrubs, drawn as soft crowns (trees stand behind the palisade) */}
+      {/* The planting round the outside of the outline, as in the hero: shrubs as soft crowns, banana clumps as crowns of
+          leaves, and the vegetable beds outside the front with their rows */}
       {planting.shrubs.map((b) => <circle key={`${b.x}-${b.y}`} cx={b.x} cy={b.y} r={b.r} {...dashed} />)}
+      {planting.bananas.map((b) => (
+        <g key={`${b.x}-${b.y}`}>
+          {Array.from({ length: 6 }, (_, k) => {
+            const a = (k / 6) * Math.PI * 2 + 0.3
+            return <path key={k} d={`M${b.x} ${b.y}Q${f(b.x + Math.cos(a + 0.35) * b.r * 0.6)} ${f(b.y + Math.sin(a + 0.35) * b.r * 0.6)} ${f(b.x + Math.cos(a) * b.r)} ${f(b.y + Math.sin(a) * b.r)}`} {...fine} />
+          })}
+          <circle cx={b.x} cy={b.y} r={0.08} {...solid} />
+        </g>
+      ))}
+      {planting.beds.map((b) => (
+        <g key={b.x0}>
+          <rect {...box(b)} {...fine} />
+          {Array.from({ length: Math.floor((b.x1 - b.x0) / 0.5) }, (_, k) => [0.3, 0.7].map((t) => (
+            <circle key={`${k}-${t}`} cx={f(b.x0 + 0.25 + k * 0.5)} cy={f(b.y0 + (b.y1 - b.y0) * t)} r={0.16} {...fine} />
+          )))}
+        </g>
+      ))}
 
       {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH; the rest in place */}
       {([
@@ -178,6 +197,7 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       <text x={dovecote.x} y={f(dovecote.y + dovecote.s / 2 + 0.22)} textAnchor="middle" style={small}>DOVES</text>
       <text x={f((bench.x0 + bench.x1) / 2)} y={f(bench.y + 0.4)} textAnchor="middle" style={small}>BENCH</text>
       <text x={f(yg.x0 + yg.w / 2)} y={f(bottom - 0.12)} textAnchor="middle" style={small}>TO THE PADDOCK · GUESTS</text>
+      <text x={f((planting.beds[1].x0 + planting.beds[1].x1) / 2)} y={f(planting.beds[1].y1 + 0.3)} textAnchor="middle" style={small}>VEGETABLES</text>
 
       <Dimension x0={yards.x0} x1={yards.x1} y={f(dimY)} />
       <DimensionUp y0={yards.y0} y1={Y} x={f(edge.x1 + 0.4)} />

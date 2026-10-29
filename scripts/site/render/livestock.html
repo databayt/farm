@@ -2,14 +2,14 @@
 <!--
   /en/livestock's 3D, in the pattern of the studio's (scripts/studio/render/room.html): the livestock yard (D-039 to
   D-044) seen straight on from the paddock, on the white page. Built from src/components/livestock/livestock.json (the
-  numbers the 2D draws): one outline, the palisade at the back and one post-and-rail fence round the rest, its rails
+  numbers the 2D draws): one outline, one post-and-rail fence all round as in the hero (D-047), its rails
   thick, crooked and lashed with rope as the founder's photo's; inside it the herd's shed, copied from the photo's
   shed (D-045): dark weathered boards at the back and the east end, the west end open behind one rail, two heavy
   corner posts braced to the eaves beam, a steep shaggy thatch on the gable with its ends open on the rafters, and
   under it one sheep on the straw, a straw bale, a plank table with a basket over a lidded crate, the mineral boxes.
   The view is low enough to see under the eaves into the shed, as the photo does; the village yard with troughs, climbing stones, the
   guarded shade tree, the dovecote, the cats' house and a bench; the tank, the fodder baskets, the compost bays and
-  the guard dogs' run in the back east corner; shrubs round the outside. 6 goats, 4 sheep, 2 dogs, 3 cats and doves,
+  the guard dogs' run in the back east corner; shrubs and banana clumps round the outside, vegetable beds in front. 6 goats, 4 sheep, 2 dogs, 3 cats and doves,
   in soft overcast light. The page's hero is the founder's photo (D-042), not a render. Rendered three ways:
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/livestock/render/livestock-line.png
@@ -152,7 +152,9 @@ function mat(name) {
       rope: () => std({ color: "#c2a874", roughness: 1 }),
       trough: () => std({ map: T.boards, color: "#c8b9a5", roughness: 0.85 }),
       water: () => new THREE.MeshPhysicalMaterial({ color: "#7aa6b8", roughness: 0.05, transparent: true, opacity: 0.7 }),
-      tank: () => std({ color: "#33503a", roughness: 0.5 }),
+      tank: () => std({ color: "#8a7963", roughness: 0.8 }), // earth-brown, as the hero's
+      stem: () => std({ color: "#7d8a52", roughness: 0.9 }),
+      soil: () => std({ color: "#5a4433", roughness: 1 }),
       mesh: () => std({ color: "#6b6e70", roughness: 0.6, metalness: 0.5, transparent: true, opacity: 0.35 }),
       roofing: () => std({ color: "#5a4a3a", roughness: 0.9 }),
       dogtan: () => std({ color: "#a8743f", roughness: 0.85 }),
@@ -228,7 +230,7 @@ function pipe(a, b, r, name, seg = 6) {
 const pole = (x, z, r, y0, y1, seg = 7) => cyl(x, z, r, y0, y1 - y0, "pole", seg, r * 0.92)
 
 // ------------------------------------------------------------ the plan
-const { shelter: S, pens: P, fittings: FT, yards: Y, palisade: PA, stones: ST, tree: TR, tank: TK,
+const { shelter: S, pens: P, fittings: FT, yards: Y, stones: ST, tree: TR, tank: TK,
   baskets: BK, compost: CO, dogs: DG, friends: FR, planting: PL, animals: AN } = C
 const L = S.l / 2, W = S.d / 2, WALL = S.wall
 const FL = S.plinth.h // the plinth's top, the pens' floor
@@ -330,8 +332,9 @@ function fence(x0, z0, x1, z1) {
     }
   }
 }
-{ // the outline: the palisade is its back; the post-and-rail round the west, the front with its gate, the east
+{ // the outline, as the hero's: one post-and-rail fence all round, the gate in the front
   const G = Y.gate
+  fence(Y.x0, Y.y0, Y.x1, Y.y0)
   fence(Y.x0, Y.y0, Y.x0, Y.y1)
   fence(Y.x0, Y.y1, G.x0, Y.y1)
   fence(G.x0 + G.w, Y.y1, Y.x1, Y.y1)
@@ -346,10 +349,6 @@ for (const t of FT.troughs) { // the float troughs in the shade of the eaves
   blk(t.x0, z0, t.x1, z1, h - 0.2, h, "trough")
   blk(t.x0 + 0.04, z0 + 0.04, t.x1 - 0.04, z1 - 0.04, h - 0.06, h - 0.03, "water", { noEdges: true })
 }
-
-// ------------------------------------------------------------ the palisade windbreak behind the shelter
-for (let x = PA.x0; x <= PA.x1 + 1e-6; x += 0.14) pole(x, PA.y, 0.06, 0, PA.h + (rnd() - 0.5) * 0.12, 7)
-rails(PA.x0, PA.y - 0.08, PA.x1, PA.y - 0.08, 0, [0.4, PA.h - 0.35], 0.04)
 
 // ------------------------------------------------------------ stones to climb, the shade tree in its guard
 const stoneTop = []
@@ -379,9 +378,10 @@ for (const s of ST.list) {
 // ------------------------------------------------------------ behind the store: the tank, the fodder baskets, the compost bays
 {
   const sh = TK.stand
-  blk(TK.x - TK.r - 0.05, TK.y - TK.r - 0.05, TK.x + TK.r + 0.05, TK.y + TK.r + 0.05, 0, sh, "block")
+  blk(TK.x - TK.r - 0.08, TK.y - TK.r - 0.08, TK.x + TK.r + 0.08, TK.y + TK.r + 0.08, 0, sh, "stone") // a fieldstone base, as the hero's
   cyl(TK.x, TK.y, TK.r, sh, TK.h, "tank", 32, TK.r * 0.96)
   cyl(TK.x, TK.y, 0.16, sh + TK.h, 0.06, "tank", 16)
+  for (const b of TK.buckets) cyl(b.x, b.y, b.r, 0, 0.32, "dogblack", 18, b.r * 1.15) // the black buckets
   for (const b of BK.list) {
     cyl(b.x, b.y, b.r * 0.85, 0, 0.5, "basket", 24, b.r)
     if (!LINE) soft(b.x - b.r * 0.7, b.y - b.r * 0.7, b.x + b.r * 0.7, b.y + b.r * 0.7, 0.36, 0.58, 0.08, "fodder")
@@ -544,7 +544,7 @@ for (const [dx, dz] of [[-0.25, 0.4], [0.05, 0.42], [0.3, 0.38]]) {
   ellipsoid(V.x + dx + 0.06, FRT.dove + 0.14, V.y + dz, 0.03, 0.03, 0.03, "dove")
 }
 
-// ------------------------------------------------------------ the planting round the outline: shrubs, and trees behind the palisade
+// ------------------------------------------------------------ the planting round the outline, as the hero's: shrubs, banana clumps, the vegetable beds outside the front
 seed = 41
 function bush(x, z, r, y0, name = "leaf") {
   for (let k = 0; k < 4; k++) {
@@ -553,6 +553,24 @@ function bush(x, z, r, y0, name = "leaf") {
   }
 }
 for (const b of PL.shrubs) bush(b.x, b.y, b.r, 0)
+for (const b of PL.bananas) { // a clump: three pseudo-stems, each crowned with long arching leaves
+  for (let k = 0; k < 3; k++) {
+    const x = b.x + (rnd() - 0.5) * b.r * 0.6, z = b.y + (rnd() - 0.5) * b.r * 0.6, h = 1.6 + rnd() * 0.8
+    cyl(x, z, 0.09, 0, h, "stem", 8, 0.07).userData.noFrame = true
+    for (let l = 0; l < 6; l++) {
+      const a = (l / 6) * Math.PI * 2 + rnd(), len = b.r * (0.9 + rnd() * 0.4)
+      const leaf = add(new THREE.BoxGeometry(len, 0.02, 0.32), "leaf", { pos: [x + Math.cos(a) * len * 0.45, h + 0.15, z + Math.sin(a) * len * 0.45], noFrame: true, noEdges: LINE })
+      leaf.rotation.set(0, -a, -0.45 - rnd() * 0.3)
+    }
+  }
+}
+for (const b of PL.beds) { // a raised bed of soil, two rows of cabbages and greens
+  blk(b.x0, b.y0, b.x1, b.y1, 0, 0.15, "soil", { noFrame: true })
+  for (let x = b.x0 + 0.25; x < b.x1 - 0.1; x += 0.5) for (const t of [0.3, 0.7]) {
+    const m = add(new THREE.IcosahedronGeometry(0.17, 1), "leaf", { pos: [x, 0.25, b.y0 + (b.y1 - b.y0) * t], noFrame: true })
+    m.scale.set(1, 0.7, 1)
+  }
+}
 if (HERO) for (const t of PL.trees) { cyl(t.x, t.y, 0.12, 0, 2.6, "trunk", 10, 0.09); bush(t.x, t.y, t.r, 2.2) } // at eye level only, as the crown
 
 // ------------------------------------------------------------ camera
