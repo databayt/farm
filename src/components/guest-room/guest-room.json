@@ -72,5 +72,28 @@
     "chair": { "w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.85, "y": 1.55 }
   },
   "hooks": { "about": "A rail of coat hooks on the right wall, clear of the door's swing.", "y0": 0.25, "y1": 1.15, "h": 1.65 },
-  "rug": { "about": "Woven rug under the lower two thirds of the bed.", "w": 2.4, "d": 1.8, "y": -0.6 }
+  "rug": { "about": "Woven rug under the lower two thirds of the bed.", "w": 2.4, "d": 1.8, "y": -0.6 },
+  "electric": {
+    "about": "The room's wiring in the studio's pattern (D-021): its own surface unit board, a double-pole main switch and type 2 surge protection, one RCBO 30 mA type A per circuit, cables in conduit in the linings. The supply is a cable from the farm's site board (the power guide); its size is the electrician's, to the run's length. Points in plan metres (x, y as the plan, z above the floor) at their centre, facing out of their wall; size in mm (w, h, d). design_A: lights and the fan from their watts at 230 V; sockets and the AC provision at the studio's design loads (C2 and C7). rwf: the studio BOM's placeholder unit prices (AS-21), not quotes. No en-suite is drawn (see about), so there is no plumbing and no water-heater circuit yet.",
+    "main_A": 32,
+    "circuits": [
+      { "id": "C1", "serves": "Lights and the wall fan", "device": "B6", "cable_mm2": 1.5, "group": "lights", "colour": "#2a78d6" },
+      { "id": "C2", "serves": "Sockets: the bed, the desk and the cleaning socket", "device": "B16", "cable_mm2": 2.5, "design_A": 8, "group": "sockets", "colour": "#eb6834" },
+      { "id": "C3", "serves": "AC provision", "device": "B16", "cable_mm2": 2.5, "design_A": 12, "group": "fixed", "colour": "#1baf7a" },
+      { "id": "C4", "serves": "Spare", "device": "B16", "cable_mm2": 2.5, "group": "spare", "colour": "#9a9893" }
+    ],
+    "points": [
+      { "id": "DB", "model": "board", "description": "Unit board, 12 modules, on the right wall by the bed", "at": [1.92, -1.6, 1.75], "face": "-x", "size": [300, 250, 100], "rwf": 65000 },
+      { "id": "L1", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, over the bed", "at": [0, -1.0, 2.325], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
+      { "id": "L2", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, by the door and the desk", "at": [0, 1.25, 2.325], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
+      { "id": "S1", "model": "switch2", "circuit": "C1", "description": "Two-gang switch by the door, past its swing: L1 and L2", "at": [1.965, 1.35, 1.1], "face": "-x", "size": [146, 86, 10], "rwf": 3500 },
+      { "id": "F1", "model": "wallfan", "circuit": "C1", "description": "Wall fan 300 mm, high on the left wall over the bed", "at": [-1.845, -1.35, 1.95], "face": "+x", "size": [300, 300, 250], "watts": 45, "rwf": 35000 },
+      { "id": "P1", "model": "usb", "circuit": "C2", "description": "Socket + USB-C beside the left bedside table, for its lamp and a phone", "at": [-1.5, -2.345, 0.7], "face": "+y", "size": [146, 86, 10], "rwf": 15000 },
+      { "id": "P2", "model": "usb", "circuit": "C2", "description": "Socket + USB-C beside the right bedside table, for its lamp and a phone", "at": [1.5, -2.345, 0.7], "face": "+y", "size": [146, 86, 10], "rwf": 15000 },
+      { "id": "P3", "model": "socket2", "circuit": "C2", "description": "Double socket by the desk, for its lamp and a laptop", "at": [-1.965, 1.75, 0.3], "face": "+x", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P4", "model": "socket2", "circuit": "C2", "description": "Double socket on the right wall: cleaning, a kettle, the luggage bench", "at": [1.965, -0.75, 0.3], "face": "-x", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P5", "model": "isolator", "circuit": "C3", "description": "AC provision: isolator high on the back wall, for a split unit later", "at": [1.55, -2.34, 2.0], "face": "+y", "size": [86, 86, 20], "rwf": 9000 },
+      { "id": "A1", "model": "alarm", "description": "Smoke alarm, 10-year battery, on the ceiling by the door", "at": [0.9, 0.55, 2.33], "face": "down", "size": [100, 100, 40], "rwf": 20000 }
+    ]
+  }
 }

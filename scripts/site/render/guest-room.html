@@ -10,6 +10,14 @@
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/guest-room/render/guest-room-line.png
     ?mode=real  materials, daylight and shadow         -> public/designs/guest-room/render/guest-room-real.webp
+    &view=electric  the wiring in the same view (guest-room.json `electric`, built by room-services.js): line mode
+                draws the room faint, every device dark and each circuit's conduit route in its colour, and sets
+                window.TAGS -> render/electric-line.png + render/electric-tags.json; real mode shows the finished
+                devices -> render/electric-real.webp
+    &item=<id>  one piece on its own, real mode, 1200 x 900 on a transparent ground: the furniture (bed, mattress,
+                bedding, bedside, lamp, bench, wardrobe, desk, chair, hooks, rug, verandachair, verandatable)
+                -> render/furniture/<id>.webp, or a device by its model (board, ceiling, switch2, wallfan, usb,
+                socket2, isolator, alarm) -> render/electric/<id>.webp
 
   Serve the repo root on a spare port, open this page at 2400 x 1800, and once body[data-ready] is set
   save the data URL in #out.
@@ -39,10 +47,13 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
 import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+import { services, frameItem, itemGround } from "./room-services.js"
 
 const Q = new URLSearchParams(location.search)
 const LINE = Q.get("mode") !== "real"
-const [FW, FH] = [2400, 1800]
+const ITEM = Q.get("item"), ELEC = Q.get("view") === "electric"
+const [FW, FH] = ITEM ? [1200, 900] : [2400, 1800]
+let TAG = "" // the piece being built, for ?item=
 const C = await (await fetch(`/src/components/guest-room/guest-room.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#ffffff"
 // plan (x right, y toward the door) -> three: x = x, y = height, z = y; the camera stands in front, at +z
@@ -234,6 +245,7 @@ function add(geo, name, opts = {}) {
   if (opts.pos) mesh.position.set(...opts.pos)
   if (opts.rot) mesh.rotation.set(...opts.rot)
   if (opts.noEdges) mesh.userData.noEdges = true
+  mesh.userData.tag = TAG
   scene.add(mesh)
   meshes.push(mesh)
   return mesh
@@ -278,7 +290,7 @@ const TOP = block.plinth + block.height // the containers' top
 const V = OZ + veranda.d
 
 // ------------------------------------------------------------ the lawn, the plinth, the veranda
-if (!LINE) {
+if (!LINE && !ITEM) {
   T.grass.repeat.set(10, 10)
   add(new THREE.CircleGeometry(30, 64), "lawn", { rot: [-Math.PI / 2, 0, 0] })
 }
@@ -312,7 +324,7 @@ cutWall(door.x1, IZ, IX, OZ - 0.04, FY, FY + 0.12)
 blk(door.x0, IZ, door.x1, OZ, FY - 0.01, FY + 0.012, "timber") // the threshold
 // the joint: a red steel post against each partition, a beam across overhead
 for (const sgn of [-1, 1]) blk(sgn * IX, joint.y - joint.post / 2, sgn * (IX - joint.post), joint.y + joint.post / 2, FY, FY + room.h, "red")
-blk(-IX, joint.y - 0.05, IX, joint.y + 0.05, FY + room.h - 0.12, FY + room.h, "red")
+blk(-IX, joint.y - 0.05, IX, joint.y + 0.05, FY + room.h - 0.12, FY + room.h, "red").visible = !ELEC // the electric view leaves the beam off, so the back wall shows
 
 // a red-framed window, barred, across a wall from z0 to z1 (out: which side is outside)
 function barredWindow(a, b, s, hd, z0, z1, out) {
@@ -339,15 +351,19 @@ function barredWindow(a, b, s, hd, z0, z1, out) {
 }
 
 // ------------------------------------------------------------ the bed, bedsides and lamps, the bench
+TAG = "rug"
 blk(-rug.w / 2, rug.y - rug.d / 2, rug.w / 2, rug.y + rug.d / 2, FY, FY + 0.012, "rug")
 const B0 = -IZ, B1 = -IZ + bed.l
 {
   const [x0, x1] = [-bed.w / 2, bed.w / 2]
+  TAG = "bed"
   blk(x0, B0, x1, B0 + 0.05, FY, FY + bed.headboard, "pine", 0.008) // the headboard on the back wall
   blk(x0, B0 + 0.05, x1, B1, FY, FY + bed.frame, "pine", 0.01) // a solid frame, MALM look
   const m = FY + bed.frame
+  TAG = "mattress"
   blk(x0 + 0.02, B0 + 0.07, x1 - 0.02, B1 - 0.02, m - 0.04, m + bed.mattress - 0.04, "linen", 0.05)
   const t = m + bed.mattress - 0.04
+  TAG = "bedding"
   blk(x0 + 0.005, B0 + 0.75, x1 - 0.005, B1 + 0.01, t - 0.07, t + 0.04, "duvet", 0.05) // the duvet
   blk(x0, B0 + 0.75, x1, B0 + 0.95, t - 0.04, t + 0.07, "duvet", 0.03) // turned down
   blk(x0 - 0.01, B1 - 0.5, x1 + 0.01, B1 - 0.15, t + 0.0, t + 0.06, "throw", 0.02)
@@ -355,30 +371,35 @@ const B0 = -IZ, B1 = -IZ + bed.l
   blk(-0.25, B0 + 0.5, 0.25, B0 + 0.62, t + 0.0, t + 0.25, "cushion", 0.05) // a cushion against the pillows
 }
 for (const sgn of [-1, 1]) {
+  TAG = sgn < 0 ? "bedside" : "bedside#2"
   const x0 = sgn < 0 ? -bed.w / 2 - bedsides.gap - bedsides.w : bed.w / 2 + bedsides.gap, x1 = x0 + bedsides.w
   const [z0, z1, h, lg] = [B0, B0 + bedsides.d, FY + bedsides.h, 0.036]
   blk(x0, z0, x1, z1, h - 0.035, h, "pine", 0.006)
   for (const lx of [x0, x1 - lg]) for (const lz of [z0, z1 - lg]) blk(lx, lz, lx + lg, lz + lg, FY, h - 0.035, "leg", 0.003)
   blk(x0 + lg, z0 + lg, x1 - lg, z1 - lg, FY + 0.18, FY + 0.198, "pine", 0.003)
   const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2 + 0.03
+  TAG = sgn < 0 ? "lamp" : "lamp#2"
   cyl(cx, cz, 0.07, h, 0.024, "black", 32, 0.06)
   cyl(cx, cz, 0.007, h + 0.024, 0.26, "black", 8)
   const shade = add(new THREE.CylinderGeometry(0.1, 0.13, 0.18, 48, 1, true), "shade", { pos: [cx, h + 0.33, cz] })
   if (!LINE) { const l = new THREE.PointLight(0xffd9a0, 0.6, 1.6); l.position.set(cx, h + 0.3, cz); scene.add(l) }
 }
 {
+  TAG = "bench"
   const z0 = B1 + bench.gap, z1 = z0 + bench.d, h = FY + bench.h, [x0, x1] = [-bench.w / 2, bench.w / 2]
   for (let k = 0; k < 4; k++) { const a = z0 + k * (bench.d / 4) + 0.005; blk(x0, a, x1, a + bench.d / 4 - 0.01, h - 0.03, h, "pine", 0.004) } // slats
   for (const x of [x0 + 0.04, x1 - 0.08]) {
     blk(x, z0 + 0.02, x + 0.04, z0 + 0.06, FY, h - 0.03, "leg"); blk(x, z1 - 0.06, x + 0.04, z1 - 0.02, FY, h - 0.03, "leg")
     blk(x, z0 + 0.02, x + 0.04, z1 - 0.02, FY + 0.12, FY + 0.15, "leg")
   }
+  TAG = "towels"
   blk(x0 + 0.12, z0 + 0.06, x0 + 0.62, z1 - 0.04, h, h + 0.04, "towel", 0.01) // folded towels
   blk(x0 + 0.14, z0 + 0.08, x0 + 0.6, z1 - 0.06, h + 0.04, h + 0.08, "towel", 0.01)
 }
 
 // ------------------------------------------------------------ the wardrobe, the desk and chair, the hooks
 {
+  TAG = "wardrobe"
   const { x0, y0, d, w, h } = wardrobe, x1 = x0 + d
   blk(x0, y0, x1, y0 + w, FY, FY + h, "pine", 0.008)
   blk(x1, y0 + w / 2 - 0.002, x1 + 0.004, y0 + w / 2 + 0.002, FY + 0.06, FY + h - 0.04, "cut") // the doors' meeting line
@@ -386,10 +407,12 @@ for (const sgn of [-1, 1]) {
   blk(x0 + 0.02, y0 + 0.02, x1 - 0.02, y0 + w - 0.02, FY, FY + 0.06, "cut") // the plinth's shadow gap
 }
 {
+  TAG = "desk"
   const z1 = IZ, z0 = IZ - desk.d, h = FY + desk.h, lg = 0.04
   blk(desk.x0, z0, desk.x1, z1, h - 0.03, h, "pine", 0.006)
   for (const x of [desk.x0, desk.x1 - lg]) for (const z of [z0, z1 - lg]) blk(x, z, x + lg, z + lg, FY, h - 0.03, "leg")
   blk(desk.x0 + lg, z1 - 0.03, desk.x1 - lg, z1, h - 0.15, h - 0.03, "pine") // the back rail
+  TAG = "deskprops"
   plant(desk.x0 + 0.15, h, z1 - 0.15, 0.85)
   // a small reading lamp on the desk, and a notebook
   const lx = desk.x1 - 0.18, lz = z1 - 0.15
@@ -397,6 +420,7 @@ for (const sgn of [-1, 1]) {
   add(new THREE.CylinderGeometry(0.07, 0.1, 0.13, 40, 1, true), "shade", { pos: [lx, h + 0.36, lz] })
   blk(desk.x0 + 0.4, z0 + 0.1, desk.x0 + 0.62, z0 + 0.4, h, h + 0.015, "cushion", 0.003)
   // the chair, facing the window, its back to the room
+  TAG = "chair"
   const { w, d: cd, seat, back, y } = desk.chair, cx = (desk.x0 + desk.x1) / 2
   const [cx0, cx1, cz0, cz1] = [cx - w / 2, cx + w / 2, y - cd / 2, y + cd / 2]
   blk(cx0, cz0, cx1, cz1, FY + seat - 0.03, FY + seat, "pine", 0.006)
@@ -405,6 +429,7 @@ for (const sgn of [-1, 1]) {
   blk(cx0, cz0, cx1, cz0 + 0.025, FY + back - 0.16, FY + back, "pine", 0.004) // the backrest
 }
 {
+  TAG = "hooks"
   const x = IX - 0.02, h = FY + hooks.h
   blk(x, hooks.y0, IX, hooks.y1, h - 0.05, h + 0.05, "pine", 0.003)
   const n = 4
@@ -412,13 +437,15 @@ for (const sgn of [-1, 1]) {
     const z = hooks.y0 + ((i + 0.5) * (hooks.y1 - hooks.y0)) / n
     pipe([x, h, z], [x - 0.07, h + 0.02, z], 0.007, "hook")
   }
+  TAG = "towel"
   blk(x - 0.04, hooks.y0 + 0.1, x - 0.005, hooks.y0 + 0.36, h - 0.55, h - 0.02, "towel", 0.01) // a towel hung on the first
 }
 
 // ------------------------------------------------------------ the veranda: two chairs and a table
 {
   const { w, d, seat, back } = veranda.chair
-  for (const [cx, cz] of veranda.chairs) {
+  for (const [k, [cx, cz]] of veranda.chairs.entries()) {
+    TAG = k ? "verandachair#2" : "verandachair"
     const [x0, x1, z0, z1] = [cx - w / 2, cx + w / 2, cz - d / 2, cz + d / 2] // its back toward the wall
     blk(x0, z0 + 0.05, x1, z1, VY + seat - 0.03, VY + seat, "pine")
     for (let i = 0; i < 3; i++) blk(x0, z0 + 0.02, x1, z0 + 0.05, VY + seat + 0.08 + i * 0.13, VY + seat + 0.18 + i * 0.13, "pine")
@@ -428,16 +455,31 @@ for (const sgn of [-1, 1]) {
     }
   }
   const { x, y, r, h } = veranda.table
+  TAG = "verandatable"
   cyl(x, y, r, VY + h - 0.03, 0.03, "pine", 32)
   cyl(x, y, 0.025, VY + 0.02, h - 0.05, "leg", 8)
   cyl(x, y, 0.16, VY, 0.02, "leg", 24)
   cyl(x, y, 0.05, VY + h, 0.03, "black", 6); cyl(x, y, 0.04, VY + h + 0.03, 0.11, "lamp", 6); cyl(x, y, 0.05, VY + h + 0.14, 0.03, "black", 6)
 }
 
+TAG = ""
+
+// ------------------------------------------------------------ the electrical installation (guest-room.json electric)
+const E = C.electric
+const S = services({ scene, meshes, LINE, floor: FY, ceiling: room.h })
+if (ELEC || ITEM) S.build(E.points)
+
 // ------------------------------------------------------------ camera: the front view
+scene.updateMatrixWorld(true)
+const ITEM_VIEW = { wardrobe: [1, 0.6, 0.75], hooks: [-1, 0.6, 0.75] }
 const target = new THREE.Vector3(0, 1.0, 0.7)
 const [el, dist] = [THREE.MathUtils.degToRad(36), 30]
 const camera = new THREE.PerspectiveCamera(22, FW / FH, 0.5, 200)
+let itemBox = null
+if (ITEM) {
+  const view = S.viewOf(E.points, ITEM) ?? new THREE.Vector3(...(ITEM_VIEW[ITEM] ?? [0.75, 0.6, 1]))
+  itemBox = frameItem({ camera, meshes, item: ITEM, view, FW, FH }).bb
+} else {
 camera.position.set(0, target.y + dist * Math.sin(el), target.z + dist * Math.cos(el))
 camera.lookAt(target)
 camera.updateMatrixWorld(); camera.updateProjectionMatrix()
@@ -453,18 +495,31 @@ for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) fo
 let w = (px[2] - px[0]) * 1.08, h = (px[3] - px[1]) * 1.08
 if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
 camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+}
 
 // ------------------------------------------------------------ render
 if (LINE) {
-  const lineMat = new LineMaterial({ color: INK, linewidth: 1.3 })
-  lineMat.resolution.set(FW, FH)
-  lineMat.userData.outlineParameters = { visible: false }
+  // the electric view draws the room faint, so the devices and the runs read first
+  const lines = (color, linewidth) => {
+    const x = new LineMaterial({ color, linewidth })
+    x.resolution.set(FW, FH)
+    x.userData.outlineParameters = { visible: false }
+    return x
+  }
+  const lineMat = ELEC ? lines(0xbdbdbd, 1.2) : lines(INK, 1.3), devMat = lines(0x141414, 1.6)
   for (const o of meshes) {
-    if (o.userData.noEdges || o.material === MAT.cut) continue
+    if (o.userData.noEdges || o.material === MAT.cut || !o.visible) continue
+    o.updateMatrixWorld(true)
     const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
-    const l = new LineSegments2(g, lineMat)
+    const l = new LineSegments2(g, o.userData.elec ? devMat : lineMat)
     l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
     scene.add(l)
+  }
+  if (ELEC) {
+    for (const m of Object.values(MAT)) m.userData.outlineParameters = { ...m.userData.outlineParameters, color: [0.74, 0.74, 0.74] }
+    MAT.cut?.color.set("#a3a3a3")
+    S.runs(E.points, E.circuits, "DB", camera, FW, FH)
+    window.TAGS = S.tags(E.points, camera)
   }
   const ink = new THREE.Color(INK)
   MAT.cut && (MAT.cut.userData.outlineParameters = { visible: false })
@@ -481,6 +536,7 @@ if (LINE) {
   Object.assign(sun.shadow.camera, { left: -6, right: 6, top: 6, bottom: -6, near: 1, far: 40 })
   sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
   scene.add(sun)
+  if (ITEM) itemGround(scene, itemBox)
   const composer = new EffectComposer(renderer)
   composer.setSize(FW, FH)
   composer.addPass(new RenderPass(scene, camera))
