@@ -113,5 +113,97 @@
     "y0": 0.5,
     "h": 0.9
   },
-  "fire": { "about": "A fire blanket and an extinguisher for cooking-oil fires on the east end wall, by the service door [A].", "y": 0.22 }
+  "fire": { "about": "A fire blanket and an extinguisher for cooking-oil fires on the east end wall, by the service door [A].", "y": 0.22 },
+  "water": {
+    "about": "The galley's water and drains, a design choice for the plumber to check [A]. One cold supply from the farm's tank and booster pump at 2.5 to 3 bar (guide/trades/plumber.md, shared with the compound), in under the staff door end to a stop valve, Y-filter and check meter by the hand-wash basin, then along the front wall under the worktop to every outlet and to a 100 L electric storage heater on the east end wall above the bins; hot back along the same wall to the pre-rinse spray, both sinks and the basin. Every drain falls at 1:40 or steeper (plumber.md) to one 110 mm collector laid under the plinth along the front, out at the east end to the kitchen's grease trap and its own soak pit (operations.md: the kitchen drains to its grease trap). No dishwasher is drawn (worktop.about), so none is plumbed; a 50 mm waste and a cold tee are left capped under the dish drop for one. Points at [x, y, h]: plan x and y as the rest of this file, h above the finished floor (the ground is at -0.45). Each run's path is one or more polylines of such points; its length is their sum. Sizes are design intent; nothing is sourced or priced.",
+    "colours": { "cold": "#2a78d6", "hot": "#e34948", "waste": "#8b4a12", "vent": "#9a9893" },
+    "heater": { "litres": 100, "kw": 3, "d": 0.45, "h": 0.9 },
+    "points": [
+      { "id": "SV", "what": "Stop valve, Y-filter and check meter on the main", "where": "On the front wall between the basin and the staff door, low", "size": "DN25", "at": [0.75, 1.04, 0.3], "item": "meter" },
+      { "id": "HB", "what": "Hand-wash basin tap, hands-free, mixed", "where": "At the basin by the staff door", "size": "Sensor or knee-operated spout, 15 mm feeds", "at": [0.345, 1.08, 0.97], "item": "basintap" },
+      { "id": "PS", "what": "Prep sink mixer", "where": "At the west window, where the harvest is washed", "size": "Deck mixer, swivel spout, 15 mm feeds", "at": [4.0, 1.06, 1.24], "item": "mixer" },
+      { "id": "DF", "what": "Drinking-water filter and its faucet", "where": "On the undershelf by the prep sink", "size": "Twin canisters, its own faucet beside the mixer", "at": [3.55, 0.9, 0.35], "item": "filter" },
+      { "id": "WS", "what": "Wash-up sink mixer", "where": "At the east window, for pots and plates", "size": "Deck mixer, swivel spout, 15 mm feeds", "at": [8.2, 1.06, 1.24], "item": "mixer" },
+      { "id": "PR", "what": "Pre-rinse spray", "where": "Over the wash-up sink", "size": "Riser about 1 m, sprung hose and spray head, hot and cold", "at": [8.47, 1.06, 1.9], "item": "prerinse" },
+      { "id": "WH", "what": "Electric storage water heater, 100 L, 3 kW", "where": "On the east end wall above the bins, its own valve set", "size": "Vertical, about 450 mm across and 900 mm high", "at": [11.85, -0.6, 1.8], "item": "heater" },
+      { "id": "AV", "what": "Air admittance valve", "where": "On the wash-up sink's waste, under the worktop", "size": "50 mm", "at": [8.45, 0.92, 0.55], "item": "aav" },
+      { "id": "FG", "what": "Floor gully with a removable basket", "where": "In the aisle in front of the wash-up sink, the resin floor laid to it", "size": "150 mm grating, 75 mm outlet", "at": [8.2, 0.25, 0.0], "item": "gully" },
+      { "id": "GT", "what": "Grease trap", "where": "Outside the east end, buried with a lid", "size": "Two chambers, sized by the plumber to the galley's flow", "at": [12.95, 0.4, -0.45], "item": "greasetrap" },
+      { "id": "SP", "what": "The kitchen's soak pit", "where": "Downhill of the grease trap, off the drawing; never the septic tank", "size": "After a percolation test", "at": null }
+    ],
+    "runs": [
+      { "id": "W1", "system": "cold", "dn": 25, "note": "The main in from the farm's tank and booster pump, under the plinth to the stop valve", "paths": [[[-1.2, 1.04, -0.75], [0.75, 1.04, -0.75], [0.75, 1.04, 0.3]]] },
+      { "id": "W2", "system": "cold", "dn": 25, "note": "Cold along the front wall under the worktop to every outlet, then up the east end wall to the heater", "paths": [
+        [[0.75, 1.04, 0.3], [0.75, 1.06, 0.62], [12.04, 1.06, 0.62], [12.04, -0.6, 0.62], [12.04, -0.6, 1.35]],
+        [[0.75, 1.06, 0.62], [0.30, 1.06, 0.62], [0.30, 1.06, 0.95]],
+        [[3.94, 1.06, 0.62], [3.94, 1.06, 1.24]],
+        [[3.55, 1.06, 0.62], [3.55, 0.9, 0.62], [3.55, 0.9, 0.5]],
+        [[8.14, 1.06, 0.62], [8.14, 1.06, 1.24]],
+        [[8.43, 1.06, 0.62], [8.43, 1.06, 1.9]],
+        [[9.6, 1.06, 0.62], [9.6, 0.95, 0.62], [9.6, 0.95, 0.4]]
+      ] },
+      { "id": "H1", "system": "hot", "dn": 20, "note": "Hot from the heater back along the front wall to the pre-rinse spray, both sinks and the basin", "paths": [
+        [[11.92, -0.6, 1.35], [11.92, -0.6, 0.5], [11.92, 1.0, 0.5], [0.40, 1.0, 0.5], [0.40, 1.0, 0.95]],
+        [[4.06, 1.0, 0.5], [4.06, 1.0, 1.24]],
+        [[8.26, 1.0, 0.5], [8.26, 1.0, 1.24]],
+        [[8.51, 1.0, 0.5], [8.51, 1.0, 1.9]]
+      ] },
+      { "id": "D1", "system": "waste", "dn": 110, "note": "The collector under the plinth along the front, falling east at 1:40 to the grease trap", "paths": [[[0.345, 0.95, -0.6], [12.5, 0.95, -0.9], [12.95, 0.4, -0.92]]] },
+      { "id": "D2", "system": "waste", "dn": 40, "note": "The basin's trap down through the floor to the collector", "paths": [[[0.345, 0.93, 0.6], [0.345, 0.95, -0.6]]] },
+      { "id": "D3", "system": "waste", "dn": 50, "note": "The prep sink's trap down to the collector", "paths": [[[4.0, 0.93, 0.6], [4.0, 0.95, -0.69]]] },
+      { "id": "D4", "system": "waste", "dn": 50, "note": "The wash-up sink's trap, with the air admittance valve, down to the collector", "paths": [[[8.2, 0.93, 0.55], [8.2, 0.95, -0.8]], [[8.2, 0.93, 0.55], [8.45, 0.92, 0.55]]] },
+      { "id": "D5", "system": "waste", "dn": 75, "note": "The floor gully down to the collector", "paths": [[[8.2, 0.25, 0.0], [8.2, 0.25, -0.8], [8.3, 0.95, -0.8]]] },
+      { "id": "D6", "system": "waste", "dn": 50, "note": "Capped under the dish drop, for an undercounter dishwasher if the cook wants one", "paths": [[[9.6, 0.93, 0.3], [9.6, 0.95, -0.84]]] }
+    ]
+  },
+  "electric": {
+    "about": "The galley's power, a design choice for a RURA class A electrician to check and certify [A]. The power guide's 25 kWh a day and 14 kW peak assume electric cooking (guide/trades/power.md); gas or electric is still open (line.about), so the line is drawn electric: a three-phase 400 V supply from the farm's site board to a board on the front wall by the staff door, one RCBO per circuit, the range, griddle and fryer each on a three-phase circuit with its own isolator beside the line, and an emergency stop by the service door that drops them all through one contactor. The line only runs while the extract fan runs (an interlock in the hood control). Every rating (kW) is a design value for the chosen model's rating plate. Points at [x, y, h] as the water's; `face` is the way a device looks: +y off the back wall, -y off the front wall, -x off the east end wall, down from the ceiling.",
+    "colours": { "lights": "#2a78d6", "sockets": "#eb6834", "fixed": "#1baf7a", "spare": "#9a9893" },
+    "track0": 0.3,
+    "supply": { "title": "Farm site board", "sub": "400 V three-phase, buried cable", "main": "Main switch 63 A 4P", "mainSub": "with surge protection" },
+    "board": { "x": 0.88, "y": 1.08, "h": 1.6, "w": 0.45, "hh": 0.6 },
+    "circuits": [
+      { "id": "C1", "serves": "Lights", "device": "B10", "cable": 1.5, "kw": 0.2, "group": "lights", "phases": 1 },
+      { "id": "C2", "serves": "Worktop sockets, west", "device": "B16", "cable": 2.5, "kw": 3, "group": "sockets", "phases": 1 },
+      { "id": "C3", "serves": "Worktop sockets, east", "device": "B16", "cable": 2.5, "kw": 3, "group": "sockets", "phases": 1 },
+      { "id": "C4", "serves": "Freezer and fridge", "device": "B16", "cable": 2.5, "kw": 1, "group": "sockets", "phases": 1 },
+      { "id": "C5", "serves": "Cold bench and the pass", "device": "B16", "cable": 2.5, "kw": 2.5, "group": "sockets", "phases": 1 },
+      { "id": "C6", "serves": "Range and oven", "device": "B32 3P", "cable": 6, "kw": 15, "group": "fixed", "phases": 3, "stop": true },
+      { "id": "C7", "serves": "Griddle", "device": "B16 3P", "cable": 2.5, "kw": 6, "group": "fixed", "phases": 3, "stop": true },
+      { "id": "C8", "serves": "Fryer", "device": "B16 3P", "cable": 2.5, "kw": 6, "group": "fixed", "phases": 3, "stop": true },
+      { "id": "C9", "serves": "Extract fan and hood lights", "device": "B10", "cable": 1.5, "kw": 0.6, "group": "fixed", "phases": 1 },
+      { "id": "C10", "serves": "Water heater", "device": "B16", "cable": 2.5, "kw": 3, "group": "fixed", "phases": 1 },
+      { "id": "C11", "serves": "Spare", "device": "B16", "cable": 2.5, "kw": 0, "group": "spare", "phases": 1 }
+    ],
+    "points": [
+      { "id": "DB", "what": "Distribution board, 4-pole, 24 modules", "circuit": "", "at": [0.88, 1.08, 1.6], "face": "-y", "model": "board", "size": "About 450 × 600 mm, 110 mm deep" },
+      { "id": "L1", "what": "LED batten, IP65", "circuit": "C1", "at": [1.5, 0.35, 2.28], "face": "down", "model": "batten", "size": "1.5 m long" },
+      { "id": "L2", "what": "LED batten, IP65", "circuit": "C1", "at": [3.6, 0.35, 2.28], "face": "down", "model": "batten", "size": "1.5 m long" },
+      { "id": "L3", "what": "LED batten, IP65", "circuit": "C1", "at": [8.4, 0.35, 2.28], "face": "down", "model": "batten", "size": "1.5 m long" },
+      { "id": "L4", "what": "LED batten, IP65", "circuit": "C1", "at": [10.6, 0.35, 2.28], "face": "down", "model": "batten", "size": "1.5 m long" },
+      { "id": "S1", "what": "Light switch, two-way, by the staff door", "circuit": "C1", "at": [2.16, 1.08, 1.2], "face": "-y", "model": "switch", "size": "86 × 86 mm" },
+      { "id": "S2", "what": "Light switch, two-way, by the service door", "circuit": "C1", "at": [10.04, 1.08, 1.2], "face": "-y", "model": "switch", "size": "86 × 86 mm" },
+      { "id": "P1", "what": "Double socket IP44, harvest bench", "circuit": "C2", "at": [2.75, 1.08, 1.0], "face": "-y", "model": "socket", "size": "146 × 86 mm, with lids" },
+      { "id": "P2", "what": "Double socket IP44, prep bench", "circuit": "C2", "at": [5.6, 1.08, 1.0], "face": "-y", "model": "socket", "size": "146 × 86 mm, with lids" },
+      { "id": "P3", "what": "Double socket IP44, prep bench", "circuit": "C3", "at": [7.0, 1.08, 1.0], "face": "-y", "model": "socket", "size": "146 × 86 mm, with lids" },
+      { "id": "P4", "what": "Double socket IP44, dish drop", "circuit": "C3", "at": [9.6, 1.08, 1.0], "face": "-y", "model": "socket", "size": "146 × 86 mm, with lids" },
+      { "id": "P5", "what": "Freezer socket, above it", "circuit": "C4", "at": [0.47, -1.08, 2.18], "face": "+y", "model": "single", "size": "86 × 86 mm" },
+      { "id": "P6", "what": "Fridge socket, above it", "circuit": "C4", "at": [1.52, -1.08, 2.18], "face": "+y", "model": "single", "size": "86 × 86 mm" },
+      { "id": "P7", "what": "Double socket, cold bench", "circuit": "C5", "at": [8.05, -1.08, 1.05], "face": "+y", "model": "socket", "size": "146 × 86 mm" },
+      { "id": "P8", "what": "Double socket, the pass: heated cupboard and heat lamps", "circuit": "C5", "at": [10.3, -1.08, 1.05], "face": "+y", "model": "socket", "size": "146 × 86 mm" },
+      { "id": "Q1", "what": "Range isolator, 3P", "circuit": "C6", "at": [4.55, -1.08, 1.65], "face": "+y", "model": "isolator", "size": "About 90 × 140 mm" },
+      { "id": "Q2", "what": "Griddle isolator, 3P", "circuit": "C7", "at": [4.55, -1.08, 1.42], "face": "+y", "model": "isolator", "size": "About 90 × 140 mm" },
+      { "id": "Q3", "what": "Fryer isolator, 3P", "circuit": "C8", "at": [4.55, -1.08, 1.19], "face": "+y", "model": "isolator", "size": "About 90 × 140 mm" },
+      { "id": "O1", "what": "Range connection box, behind it", "circuit": "C6", "at": [5.3, -1.08, 0.45], "face": "+y", "model": "outlet", "size": "86 × 86 mm" },
+      { "id": "O2", "what": "Griddle connection box, behind it", "circuit": "C7", "at": [6.25, -1.08, 0.45], "face": "+y", "model": "outlet", "size": "86 × 86 mm" },
+      { "id": "O3", "what": "Fryer connection box, behind it", "circuit": "C8", "at": [6.85, -1.08, 0.45], "face": "+y", "model": "outlet", "size": "86 × 86 mm" },
+      { "id": "HC", "what": "Hood control: fan speed, hood lights, the line's interlock", "circuit": "C9", "at": [7.3, -1.08, 1.5], "face": "+y", "model": "control", "size": "About 120 × 160 mm" },
+      { "id": "FN", "what": "Roof extract fan, its isolator on the curb", "circuit": "C9", "at": [5.9, -0.75, 2.42], "face": "+y", "model": "fan", "size": "Ø 600 mm upblast fan on a 200 mm curb" },
+      { "id": "Q4", "what": "Water heater isolator, double-pole", "circuit": "C10", "at": [12.07, 0.0, 1.75], "face": "-x", "model": "isolator", "size": "About 90 × 140 mm" },
+      { "id": "ES", "what": "Emergency stop for the cooking line, to the contactor in the board", "circuit": "", "control": true, "at": [11.05, 1.08, 1.5], "face": "-y", "model": "estop", "size": "Red mushroom button, 40 mm, in a yellow box" },
+      { "id": "HA1", "what": "Heat alarm, 10-year battery", "circuit": "", "at": [3.0, 0.0, 2.29], "face": "down", "model": "alarm", "size": "Ø 110 mm" },
+      { "id": "HA2", "what": "Heat alarm, 10-year battery", "circuit": "", "at": [9.4, 0.0, 2.29], "face": "down", "model": "alarm", "size": "Ø 110 mm" },
+      { "id": "E1", "what": "Earth rod in an inspection pit", "circuit": "", "at": null, "face": "", "model": "earth", "size": "1.5 m rod, outside the staff door end, off the drawing" }
+    ]
+  }
 }

@@ -10,6 +10,16 @@
     ?mode=line  line drawing on a transparent ground   -> public/designs/galley/render/galley-line.png
     ?mode=real  materials, daylight and shadow         -> public/designs/galley/render/galley-real.webp
     &hero=1     real mode, front wall and roof on, from eye level in the courtyard, 2400 x 1340 -> the stand-in galley-hero.jpg
+    ?view=water&mode=line     the same view with the fit-out in grey and the water in its colours (galley.json's
+                              water: every run, dashed under the floor, every point drawn and in window.TAGS)
+                                                            -> render/water-line.png + water-tags.json
+    ?view=water&mode=real     the same view rendered, the pipes drawn as they are   -> render/water-real.webp
+    ?view=electric&mode=...   the same for galley.json's electric: the board, every circuit up into the ceiling,
+                              along its own track and down to its points            -> render/electric-line.png, -real.webp
+    ?item=<id>                one piece on its own, rendered, transparent, for a rail: the equipment (freezer,
+                              fridge, dry, range, griddle, fryer, hood, bench, pass, worktop, basin, cleaning, bins,
+                              plates, fire) or a service part (a water point's `item`, an electric point's `model`,
+                              ppr, upvc)                                            -> render/<rail>/<id>.webp
 
   Serve the repo root on a spare port, open this page at 2400 x 1000, and once body[data-ready] is set
   save the data URL in #out (scripts/site/render.mjs does both).
@@ -41,9 +51,10 @@ import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
-const LINE = Q.get("mode") !== "real"
-const HERO = !LINE && Q.get("hero") === "1"
-const [FW, FH] = HERO ? [2400, 1340] : [2400, 1000]
+const ITEM = Q.get("item"), VIEW = Q.get("view")
+const LINE = Q.get("mode") !== "real" && !ITEM
+const HERO = !LINE && !ITEM && Q.get("hero") === "1"
+const [FW, FH] = HERO ? [2400, 1340] : ITEM ? [1200, 900] : [2400, 1000]
 const C = await (await fetch(`/src/components/galley/galley.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#ffffff"
 // plan (x right from the west end, y toward the front) -> three: x = x, y = height, z = y; the camera stands in
@@ -137,6 +148,7 @@ const THIN = new Set(["red", "white-frame", "leg", "black", "wire"])
 const MAT = {}
 function mat(name) {
   if (MAT[name]) return MAT[name]
+  if (name.startsWith("svc-")) return (MAT[name] = svcMat(name))
   if (name === "rib") { // the corrugations: the wall's paint, no silhouette in the line drawing
     if (!LINE) return (MAT[name] = mat("teal"))
     const m = new THREE.MeshBasicMaterial({ color: PAGE, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
@@ -198,6 +210,8 @@ function mat(name) {
 
 // ------------------------------------------------------------ geometry helpers (metres)
 const meshes = []
+// ITEMS: the rail pieces the next meshes belong to (?item=); SVCMARK: they are a service's, inked in its views
+let ITEMS = [], SVCMARK = false
 // texture coordinates at true scale: each face takes the texture from its own plane; with grain, along the
 // piece's longest side (the stainless), without it u runs along the wall (the corrugations)
 function worldUV(geo, [tu, tv], grain = true) {
@@ -220,6 +234,7 @@ function add(geo, name, opts = {}) {
   const tile = TILE[name === "rib" ? "teal" : name]
   if (!LINE && tile) worldUV(geo, tile, name !== "teal" && name !== "rib")
   const mesh = new THREE.Mesh(geo, mat(name))
+  mesh.userData.items = ITEMS; mesh.userData.svc = SVCMARK
   mesh.castShadow = !LINE && !["glass", "lawn", "sky"].includes(name) && !opts.noShadow
   mesh.receiveShadow = !LINE && name !== "sky"
   if (opts.pos) mesh.position.set(...opts.pos)
@@ -357,6 +372,7 @@ if (HERO) {
 
 // ------------------------------------------------------------ the long worktop under the windows, its two sinks
 {
+  ITEMS = ["worktop"]
   const { x0, x1, d, h, t, shelf, sinks } = WT, z0 = iz1 - d, z1 = iz1, top = FL + h
   const bowls = sinks.map((s) => ({ ...s, a: s.x - s.w / 2, b: s.x + s.w / 2, c0: z0 + (d - s.d) / 2, c1: z0 + (d - s.d) / 2 + s.d }))
   // the stainless top, cut round the bowls, its front edge turned down along the aisle
@@ -377,17 +393,20 @@ if (HERO) {
     blk(s.a + 0.012, s.c0, s.b - 0.012, s.c0 + 0.012, y, top - t, "steel"); blk(s.a + 0.012, s.c1 - 0.012, s.b - 0.012, s.c1, y, top - t, "steel")
     cyl(s.x, (s.c0 + s.c1) / 2, 0.03, FL, y - 0.012 - FL, "leg", 12)
     const tz = z1 - 0.04
+    ITEMS = s.id === "wash" ? ["worktop", "mixer"] : ["worktop"]
     cyl(s.x, tz, 0.024, top, 0.34, "leg", 12)
     pipe([s.x, top + 0.34, tz], [s.x, top + 0.34, tz - 0.24], 0.014, "leg")
     pipe([s.x, top + 0.34, tz - 0.24], [s.x, top + 0.27, tz - 0.24], 0.014, "leg")
     if (s.id === "wash") {
       // the pre-rinse spray: a riser beside the tap, an arm out over the bowl, the hose down to the spray head
       const rx = s.b - 0.08
+      ITEMS = ["worktop", "prerinse"]
       cyl(rx, tz, 0.016, top, 1.0, "leg", 10)
       pipe([rx, top + 1.0, tz], [rx, top + 1.0, tz - 0.24], 0.012, "leg")
       pipe([rx, top + 1.0, tz - 0.24], [rx, top + 0.5, tz - 0.24], 0.01, "black")
       cyl(rx, tz - 0.24, 0.028, top + 0.4, 0.1, "leg", 12)
     }
+    ITEMS = ["worktop"]
   }
   // stainless legs at 1.3 m or less along both edges, the undershelf between the sinks
   const stops = [x0 + 0.04, ...bowls.flatMap((s) => [s.a - 0.05, s.b + 0.05]), x1 - 0.04]
@@ -449,14 +468,17 @@ if (HERO) {
 
 // ------------------------------------------------------------ the staff door's corner: the hand-wash basin, soap, towels, apron hooks
 {
+  ITEMS = ["basin"]
   const { x0, x1, d, h } = BA, z0 = iz1 - d, z1 = iz1, top = FL + h, cx = (x0 + x1) / 2
   // a stainless basin on a pedestal: its bowl, the rim, the hands-free spout from the back
   blk(x0, z0, x1, z1, top - 0.16, top - 0.15, "steel")
   for (const [a, b, c, e] of [[x0, x0 + 0.03, z0, z1], [x1 - 0.03, x1, z0, z1], [x0, x1, z0, z0 + 0.03], [x0, x1, z1 - 0.03, z1]]) blk(a, c, b, e, top - 0.15, top, "steel")
   blk(x0, z0, x1, z0 + 0.015, top - 0.32, top - 0.15, "steel") // the knee panel
   cyl(cx, (z0 + z1) / 2, 0.05, FL, top - 0.32 - FL, "steel", 16)
+  ITEMS = ["basin", "basintap"]
   pipe([cx, top + 0.12, z1 - 0.02], [cx, top + 0.12, z1 - 0.16], 0.012, "leg")
   cyl(cx, z1 - 0.02, 0.02, top, 0.12, "leg", 10)
+  ITEMS = []
   // on the end wall: the paper towels and the soap
   blk(ix0, 0.45, ix0 + 0.1, 0.72, FL + 1.05, FL + 1.4, "white")
   blk(ix0, 0.82, ix0 + 0.08, 0.94, FL + 1.12, FL + 1.32, "white")
@@ -470,6 +492,7 @@ if (HERO) {
 
 // ------------------------------------------------------------ cold storage across from the staff door: the freezer, the two-door fridge
 for (const u of CO.units) {
+  ITEMS = [u.id]
   const z0 = iz0, z1 = iz0 + CO.d, [a, b] = [u.x0 + 0.005, u.x1 - 0.005]
   for (const lx of [a + 0.05, b - 0.05]) for (const lz of [z0 + 0.08, z1 - 0.08]) cyl(lx, lz, 0.022, FL, 0.1, "leg", 10)
   blk(a, z0, b, z1 - 0.03, FL + 0.1, FL + CO.h, "steel")
@@ -485,6 +508,7 @@ for (const u of CO.units) {
 
 // ------------------------------------------------------------ the dry store: shelving, sacks below, tubs, oil, jars and tins above
 {
+  ITEMS = ["dry"]
   const { x0, x1, d, shelves } = DR, z0 = iz0, z1 = iz0 + d, top = FL + shelves.at(-1) + 0.05
   for (const x of [x0 + 0.015, (x0 + x1) / 2, x1 - 0.015]) for (const z of [z0 + 0.015, z1 - 0.015]) blk(x - 0.015, z - 0.015, x + 0.015, z + 0.015, FL, top, "leg")
   for (const y of shelves) blk(x0, z0, x1, z1, FL + y - 0.025, FL + y, "steel")
@@ -509,8 +533,10 @@ for (const u of CO.units) {
 // ------------------------------------------------------------ the cooking line under the hood: range, griddle, fryer
 {
   const z0 = iz0, z1 = iz0 + LN.d, top = FL + LN.h
+  ITEMS = []
   blk(HD.x0, iz0, HD.x1, iz0 + 0.01, top, FL + HD.y0, "steel") // the splashback, up to the hood
   for (const u of LN.units) {
+    ITEMS = [u.id]
     const [a, b] = [u.x0 + 0.004, u.x1 - 0.004], cx = (a + b) / 2
     for (const lx of [a + 0.05, b - 0.05]) for (const lz of [z0 + 0.08, z1 - 0.08]) cyl(lx, lz, 0.022, FL, 0.12, "leg", 10)
     blk(a, z0 + 0.01, b, z1, FL + 0.12, top - 0.03, "steel")
@@ -558,6 +584,7 @@ for (const u of CO.units) {
 
 // ------------------------------------------------------------ the canopy hood, its duct
 {
+  ITEMS = ["hood"]
   const { x0, x1, d, y0 } = HD, z0 = iz0, z1 = iz0 + d, y = FL + y0
   blk(x0, z0, x1, z1, y, CE, "steel")
   blk(x0 - 0.01, z1 - 0.04, x1 + 0.01, z1 + 0.01, y - 0.05, y, "steel") // the grease gutter round its lower edge
@@ -568,6 +595,7 @@ for (const u of CO.units) {
 
 // ------------------------------------------------------------ the cold bench: an undercounter fridge, breakfast's eggs and fruit on top
 {
+  ITEMS = ["bench"]
   const { x0, x1, d, h } = BE, z0 = iz0, z1 = iz0 + d, top = FL + h
   for (const lx of [x0 + 0.06, x1 - 0.06]) for (const lz of [z0 + 0.08, z1 - 0.08]) cyl(lx, lz, 0.022, FL, 0.1, "leg", 10)
   blk(x0 + 0.01, z0, x1 - 0.01, z1 - 0.03, FL + 0.1, top - 0.04, "steel")
@@ -587,6 +615,7 @@ for (const u of CO.units) {
 
 // ------------------------------------------------------------ the pass: a heated cupboard, the gantry and its heat lamps, plates
 {
+  ITEMS = ["pass"]
   const { x0, x1, d, h, gantry, shelf } = PA, z0 = iz0, z1 = iz0 + d, top = FL + h
   for (const lx of [x0 + 0.06, x1 - 0.06]) for (const lz of [z0 + 0.08, z1 - 0.08]) cyl(lx, lz, 0.022, FL, 0.12, "leg", 10)
   blk(x0 + 0.01, z0, x1 - 0.01, z1 - 0.03, FL + 0.12, top - 0.03, "steel")
@@ -611,18 +640,21 @@ for (const u of CO.units) {
 
 // ------------------------------------------------------------ the east end: the cleaning cupboard, the bins, the plate cupboard, the fire point
 {
+  ITEMS = ["cleaning"]
   const { x0, x1, d, h } = CL, z0 = iz0, z1 = iz0 + d, m = (x0 + x1) / 2
   blk(x0 + 0.01, z0, x1 - 0.01, z1, FL + 0.06, FL + h, "locker")
   blk(m - 0.002, z1, m + 0.002, z1 + 0.004, FL + 0.08, FL + h - 0.02, "black")
   for (const s of [-1, 1]) blk(m + s * 0.04 - 0.01, z1, m + s * 0.04 + 0.01, z1 + 0.03, FL + 1.0, FL + 1.2, "black")
   blk(x0 + 0.01, z0, x1 - 0.01, z1 - 0.02, FL, FL + 0.06, "black") // its plinth
 }
+ITEMS = ["bins"]
 for (const y of BI.y) {
   const [x0, x1, z0, z1] = [ix1 - BI.off - BI.d, ix1 - BI.off, y - BI.w / 2, y + BI.w / 2]
   soft(x0 + 0.01, z0 + 0.01, x1 - 0.01, z1 - 0.01, FL, FL + BI.h - 0.065, 0.03, "bin")
   soft(x0, z0, x1, z1, FL + BI.h - 0.06, FL + BI.h, 0.02, "bin")
   blk(x0 - 0.07, y - 0.08, x0 + 0.02, y + 0.08, FL + 0.02, FL + 0.05, "black") // the pedal
 }
+ITEMS = ["plates"]
 {
   const { x0, y0, h } = PL, top = FL + h
   blk(x0 + 0.01, y0 + 0.02, ix1, iz1, FL + 0.1, top - 0.04, "steel")
@@ -639,18 +671,241 @@ for (const y of BI.y) {
 }
 {
   // the fire point on the east end wall: the extinguisher on its bracket, the fire blanket's case above
+  ITEMS = ["fire"]
   const z = FI.y
   blk(ix1 - 0.04, z - 0.05, ix1, z + 0.05, FL + 0.36, FL + 0.39, "black")
   cyl(ix1 - 0.1, z, 0.075, FL + 0.39, 0.44, "extinguisher", 20)
   cyl(ix1 - 0.1, z, 0.03, FL + 0.83, 0.06, "black", 12)
   pipe([ix1 - 0.1, FL + 0.88, z], [ix1 - 0.17, FL + 0.84, z + 0.02], 0.008, "black")
   blk(ix1 - 0.09, z - 0.14, ix1, z + 0.14, FL + 1.2, FL + 1.5, "extinguisher")
+  ITEMS = []
+}
+
+const CEH = K.ceiling - K.floor - 0.05 // the cable tracks, just under the ceiling, above the floor
+// ------------------------------------------------------------ the services (?view=water|electric, ?item=<part>)
+// Built only for a service view or a part's render, so the page's 3D stays as it was. The points and runs come
+// from the JSON's `water` and `electric`: [x, y, h] with h above the finished floor. In a view's line drawing the
+// fit-out drops to grey and the service stands out in ink, each run in its colour, dashed under the floor; in its
+// real render the pipes and conduit are drawn as they are. window.TAGS holds each point's spot in the frame.
+const SVC = { lines: [], view: VIEW, tags: [] }
+const P3 = ([x, y, h]) => [x, FL + h, y]
+const NRM = { "+y": [0, 0, 1], "-y": [0, 0, -1], "+x": [1, 0, 0], "-x": [-1, 0, 0], down: [0, -1, 0] }
+// a box on a device's face: du along the wall, dv up it (along plan y on the ceiling), from `off` to `off + d` out of it
+function frame(at, f) {
+  const n = NRM[f] ?? NRM["+y"], side = f === "+x" || f === "-x"
+  return { n, p: P3(at), u: side ? [0, 0, 1] : [1, 0, 0], v: f === "down" ? [0, 0, 1] : [0, 1, 0], side }
+}
+function onFace(at, f, du, dv, w, h, d, off, name) {
+  const { n, p, u, v, side } = frame(at, f)
+  const pos = [0, 1, 2].map((i) => p[i] + u[i] * du + v[i] * dv + n[i] * (off + d / 2))
+  return add(new THREE.BoxGeometry(...(f === "down" ? [w, d, h] : side ? [d, h, w] : [w, h, d])), name, { pos })
+}
+function onDisc(at, f, du, dv, r, d, off, name) {
+  const { n, p, u, v } = frame(at, f)
+  const pos = [0, 1, 2].map((i) => p[i] + u[i] * du + v[i] * dv + n[i] * (off + d / 2))
+  const m = add(new THREE.CylinderGeometry(r, r, d, 28), name, { pos })
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(...n))
+  return m
+}
+const bx = (x, y, z, sx, sy, sz, name) => add(new THREE.BoxGeometry(sx, sy, sz), name, { pos: [x, y, z] })
+
+// the electrical devices, each drawn on its face
+const EMODEL = {
+  board: (p, f) => {
+    const { w, hh } = C.electric.board
+    onFace(p.at, f, 0, 0, w, hh, 0.11, 0, "svc-white")
+    for (const dv of [hh * 0.2, -hh * 0.2]) onFace(p.at, f, -0.02, dv, w * 0.72, hh * 0.16, 0.004, 0.11, "svc-dark")
+    onFace(p.at, f, w * 0.4, -0.02, 0.015, 0.07, 0.015, 0.11, "svc-grey")
+  },
+  batten: (p) => { onFace(p.at, "down", 0, 0, 1.5, 0.08, 0.05, 0, "svc-white"); onFace(p.at, "down", 0, 0, 1.46, 0.06, 0.006, 0.05, "svc-opal") },
+  ceiling: (p) => { onDisc(p.at, "down", 0, 0, 0.1, 0.035, 0, "svc-white"); onDisc(p.at, "down", 0, 0, 0.085, 0.006, 0.035, "svc-opal") },
+  switch: (p, f) => { onFace(p.at, f, 0, 0, 0.086, 0.086, 0.01, 0, "svc-white"); onFace(p.at, f, 0, 0, 0.03, 0.05, 0.008, 0.01, "svc-white") },
+  socket: (p, f) => {
+    onFace(p.at, f, 0, 0, 0.146, 0.086, 0.045, 0, "svc-grey")
+    for (const du of [-0.036, 0.036]) onFace(p.at, f, du, 0.004, 0.058, 0.064, 0.01, 0.045, "svc-grey")
+  },
+  single: (p, f) => { onFace(p.at, f, 0, 0, 0.086, 0.086, 0.01, 0, "svc-white"); onFace(p.at, f, 0, 0, 0.05, 0.05, 0.004, 0.01, "svc-grey") },
+  socket66: (p, f) => { onFace(p.at, f, 0, 0, 0.1, 0.15, 0.07, 0, "svc-grey"); onFace(p.at, f, 0, 0.01, 0.09, 0.1, 0.012, 0.07, "svc-grey") },
+  isolator: (p, f) => {
+    onFace(p.at, f, 0, 0, 0.09, 0.14, 0.075, 0, "svc-grey")
+    onFace(p.at, f, 0, 0.02, 0.07, 0.07, 0.004, 0.075, "svc-yellow")
+    onFace(p.at, f, 0, 0.02, 0.055, 0.016, 0.03, 0.079, "svc-red")
+  },
+  outlet: (p, f) => { onFace(p.at, f, 0, 0, 0.086, 0.086, 0.03, 0, "svc-white"); onFace(p.at, f, 0, -0.058, 0.02, 0.03, 0.02, 0.005, "svc-dark") },
+  control: (p, f) => {
+    onFace(p.at, f, 0, 0, 0.12, 0.16, 0.04, 0, "svc-white")
+    onFace(p.at, f, 0, 0.04, 0.08, 0.035, 0.003, 0.04, "svc-dark")
+    for (const du of [-0.03, 0, 0.03]) onFace(p.at, f, du, -0.025, 0.018, 0.018, 0.006, 0.04, "svc-grey")
+  },
+  estop: (p, f) => { onFace(p.at, f, 0, 0, 0.08, 0.08, 0.07, 0, "svc-yellow"); onDisc(p.at, f, 0, 0, 0.022, 0.03, 0.07, "svc-red") },
+  alarm: (p) => onDisc(p.at, "down", 0, 0, 0.055, 0.035, 0, "svc-white"),
+  fan: (p) => { // the upblast fan on its curb, on the roof over the hood's duct
+    const [x, y, z] = P3(p.at)
+    bx(x, y + 0.1, z, 0.6, 0.2, 0.6, "svc-steel")
+    cyl(x, z, 0.27, y + 0.2, 0.06, "svc-grey", 32)
+    cyl(x, z, 0.3, y + 0.26, 0.36, "svc-steel", 32, 0.23)
+    cyl(x, z, 0.18, y + 0.62, 0.03, "svc-dark", 32)
+  },
+  // parts with nothing new in the view (the shelf strips and the flap's light are in the model already) or off the
+  // drawing (the earth rod): drawn only for their own picture
+  strip: () => { bx(0, 1, 0, 0.6, 0.012, 0.016, "svc-steel"); bx(0, 0.992, 0, 0.58, 0.005, 0.012, "svc-opal") },
+  bar: () => { bx(0, 1, 0, 1.0, 0.03, 0.05, "svc-dark"); bx(0, 0.983, 0, 0.96, 0.005, 0.035, "svc-opal") },
+  earth: () => {
+    for (const [x, z, sx, sz] of [[0, -0.15, 0.32, 0.02], [0, 0.15, 0.32, 0.02], [-0.15, 0, 0.02, 0.32], [0.15, 0, 0.02, 0.32]]) bx(x, 0.15, z, sx, 0.3, sz, "svc-grey")
+    cyl(0, 0, 0.008, -0.6, 1.0, "svc-copper", 12)
+    bx(0.05, 0.3, 0, 0.1, 0.01, 0.06, "svc-dark")
+  },
+}
+const ITEM_ONLY = new Set(["strip", "bar", "earth", "ppr", "upvc"])
+
+// the water's parts, by the rail's item; taps already in the model are tagged there instead
+const WMODEL = {
+  meter: (p) => {
+    const [x, y, z] = P3(p.at)
+    cyl(x, z, 0.012, y - 0.25, 0.5, "svc-ppr", 12)
+    cyl(x, z, 0.03, y - 0.17, 0.07, "svc-brass", 16)
+    bx(x + 0.05, y - 0.13, z, 0.09, 0.012, 0.016, "svc-red")
+    cyl(x, z, 0.022, y - 0.08, 0.06, "svc-brass", 16)
+    cyl(x, z, 0.045, y - 0.01, 0.1, "svc-blue", 24)
+    cyl(x, z, 0.04, y + 0.09, 0.012, "svc-white", 24)
+  },
+  scalefilter: (p) => {
+    const [x, y, z] = P3(p.at)
+    bx(x, y + 0.2, z, 0.1, 0.06, 0.1, "svc-grey")
+    cyl(x, z, 0.06, y - 0.2, 0.37, "svc-white", 24)
+  },
+  filter: (p) => {
+    const [x, y, z] = P3(p.at)
+    bx(x, y + 0.17, z, 0.25, 0.05, 0.1, "svc-grey")
+    for (const dx of [-0.065, 0.065]) cyl(x + dx, z, 0.055, y - 0.15, 0.3, "svc-white", 24)
+  },
+  heater: (p) => {
+    const [x, y, z] = P3(p.at), H = C.water.heater
+    if (H.litres > 50) { // a vertical cylinder on the end wall, on two brackets, its valve set under it
+      cyl(x, z, H.d / 2, y - H.h / 2, H.h, "svc-white", 40)
+      for (const dy of [-0.25, 0.25]) bx(x + H.d / 2 - 0.02, y + dy, z, 0.12, 0.05, 0.3, "svc-grey")
+      for (const dz of [-0.08, 0.08]) cyl(x, z + dz, 0.012, y - H.h / 2 - 0.16, 0.16, "svc-brass", 12)
+      bx(x, y + 0.15, z + H.d / 2 - 0.01, 0.12, 0.08, 0.02, "svc-dark")
+    } else { // a small box under the sink
+      bx(x, y, z, 0.36, 0.36, 0.3, "svc-white")
+      for (const dx of [-0.07, 0.07]) cyl(x + dx, z, 0.01, y + 0.18, 0.1, "svc-brass", 12)
+      bx(x, y + 0.05, z + 0.151, 0.08, 0.05, 0.004, "svc-dark")
+    }
+  },
+  aav: (p) => { const [x, y, z] = P3(p.at); cyl(x, z, 0.03, y - 0.04, 0.07, "svc-pvc", 16); cyl(x, z, 0.036, y + 0.03, 0.025, "svc-dark", 16) },
+  gully: (p) => { const [x, , z] = P3(p.at); bx(x, FL + 0.004, z, 0.15, 0.008, 0.15, "svc-steel"); cyl(x, z, 0.08, FL - 0.25, 0.24, "svc-pvc", 20) },
+  greasetrap: (p) => {
+    const [x, y, z] = P3(p.at)
+    bx(x, y - 0.35, z, 0.9, 0.7, 0.6, "svc-trap")
+    bx(x, y + 0.02, z, 0.95, 0.04, 0.65, "svc-lid")
+    for (const dx of [-0.25, 0.25]) bx(x + dx, y + 0.045, z, 0.05, 0.01, 0.2, "svc-dark")
+  },
+  ppr: () => { // supply pipe: lengths with an elbow and a tee
+    pipe([-0.5, 0.05, 0], [0.4, 0.05, 0], 0.0125, "svc-ppr", 16); pipe([0.42, 0.05, 0], [0.42, 0.5, 0], 0.0125, "svc-ppr", 16)
+    pipe([-0.1, 0.05, 0], [-0.1, 0.05, 0.4], 0.01, "svc-ppr", 16)
+    for (const [x, y, z] of [[0.42, 0.05, 0], [-0.1, 0.05, 0]]) add(new THREE.SphereGeometry(0.019, 16, 12), "svc-ppr", { pos: [x, y, z] })
+  },
+  upvc: () => { // a drain: a length, a bend down and a bottle trap
+    pipe([-0.6, 0.06, 0], [0.3, 0.06, 0], 0.055, "svc-pvc", 24); pipe([0.3, 0.06, 0], [0.55, 0.31, 0], 0.055, "svc-pvc", 24)
+    cyl(-0.4, 0, 0.025, 0.1, 0.4, "svc-pvc", 16); cyl(-0.4, 0, 0.045, 0.45, 0.12, "svc-pvc", 20)
+  },
+}
+
+if (VIEW || ITEM) {
+  SVCMARK = true
+  const seen = new Set()
+  const tagFirst = (key) => { ITEMS = key && !seen.has(key) ? [key] : []; if (key) seen.add(key) }
+  // water parts
+  if (VIEW !== "electric") for (const p of C.water.points) {
+    if (!WMODEL[p.item] || !p.at) continue
+    tagFirst(p.item); WMODEL[p.item](p)
+  }
+  // electrical devices
+  if (VIEW !== "water") for (const p of C.electric.points) {
+    if (!p.at || ITEM_ONLY.has(p.model) || !EMODEL[p.model]) continue
+    tagFirst(p.model); EMODEL[p.model](p, p.face)
+  }
+  if (ITEM && ITEM_ONLY.has(ITEM)) { ITEMS = [ITEM]; (EMODEL[ITEM] ?? WMODEL[ITEM])() }
+  ITEMS = []
+
+  if (VIEW === "water") {
+    const COL = C.water.colours
+    for (const r of C.water.runs) for (const path of r.paths) for (let i = 1; i < path.length; i++) {
+      const [a, b] = [P3(path[i - 1]), P3(path[i])]
+      if (LINE) SVC.lines.push({ colour: COL[r.system], width: r.system === "waste" ? 4 : 3, dashed: (path[i - 1][2] + path[i][2]) / 2 < -0.02, p: [...a, ...b] })
+      else pipe(a, b, r.dn / 2000, r.system === "waste" ? "svc-pvc" : "svc-ppr", 12)
+    }
+    SVC.tags = C.water.points.filter((p) => p.at)
+  }
+  if (VIEW === "electric") {
+    // each circuit up from the board into the ceiling, along its own track across the room, then down to its points
+    const E = C.electric, B = E.board, top = B.h + B.hh / 2
+    const runTo = (k, p, colour) => {
+      const yt = E.track0 - k * 0.06
+      const pts = [[B.x + (k - 5) * 0.025, B.y, top], [B.x + (k - 5) * 0.025, B.y, CEH], [B.x + (k - 5) * 0.025, yt, CEH], [p.at[0], yt, CEH], [p.at[0], p.at[1], CEH], p.at]
+      for (let i = 1; i < pts.length; i++) {
+        const [a, b] = [P3(pts[i - 1]), P3(pts[i])]
+        if (a.every((v, j) => Math.abs(v - b[j]) < 1e-3)) continue
+        if (LINE) SVC.lines.push({ colour, width: 3, dashed: false, p: [...a, ...b] })
+        else pipe(a, b, 0.01, "svc-conduit", 8)
+      }
+    }
+    E.circuits.forEach((c, k) => {
+      for (const p of E.points.filter((q) => q.circuit === c.id && q.at)) runTo(k, p, E.colours[c.group])
+    })
+    for (const p of E.points.filter((q) => q.control && q.at)) runTo(E.circuits.length, p, E.colours.spare)
+    SVC.tags = E.points.filter((p) => p.at)
+  }
+  SVCMARK = false
+  // the taps already in the model are the water's too
+  if (VIEW === "water") for (const m of meshes) if (m.userData.items.some((i) => C.water.points.some((p) => p.item === i))) m.userData.svc = true
+}
+
+// the material of a service part: white in the line drawing with an ink outline, so it stands out of the grey fit-out
+function svcMat(name) {
+  if (LINE) {
+    const m = new THREE.MeshBasicMaterial({ color: PAGE, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
+    const ink = new THREE.Color(INK)
+    m.userData.outlineParameters = { color: [ink.r, ink.g, ink.b] }
+    return m
+  }
+  const std = (o) => new THREE.MeshStandardMaterial(o)
+  return ({
+    "svc-white": () => std({ color: "#f4f4f1", roughness: 0.4 }),
+    "svc-opal": () => std({ color: "#fffaf0", emissive: "#fff2d8", emissiveIntensity: 0.7, roughness: 0.5 }),
+    "svc-grey": () => std({ color: "#b4b8bc", roughness: 0.5 }),
+    "svc-dark": () => std({ color: "#26272b", roughness: 0.4, metalness: 0.3 }),
+    "svc-steel": () => std({ color: "#c9ccce", roughness: 0.3, metalness: 0.85 }),
+    "svc-yellow": () => std({ color: "#f2c230", roughness: 0.45 }),
+    "svc-red": () => std({ color: "#c62a1f", roughness: 0.4 }),
+    "svc-blue": () => std({ color: "#2d5fa8", roughness: 0.4 }),
+    "svc-brass": () => std({ color: "#c39a45", roughness: 0.35, metalness: 0.8 }),
+    "svc-ppr": () => std({ color: "#5f8f5a", roughness: 0.5 }), // PP-R supply pipe, green
+    "svc-pvc": () => std({ color: "#8e9398", roughness: 0.55 }), // uPVC drain, grey
+    "svc-conduit": () => std({ color: "#f1f0ec", roughness: 0.5 }),
+    "svc-copper": () => std({ color: "#b8733f", roughness: 0.35, metalness: 0.8 }),
+    "svc-lid": () => std({ color: "#6b6b6b", roughness: 0.9 }),
+    "svc-trap": () => std({ color: "#4c5a52", roughness: 0.6 }),
+  }[name] ?? (() => std({ color: "#cccccc" })))()
 }
 
 // ------------------------------------------------------------ camera
 scene.updateMatrixWorld(true)
+// a piece on its own: everything else hidden
+if (ITEM) for (const m of meshes) m.visible = m.userData.items.includes(ITEM)
 const camera = new THREE.PerspectiveCamera(HERO ? 34 : 30, FW / FH, 0.3, 300)
-if (HERO) {
+if (ITEM) {
+  // a three-quarter view from in front and a little above; a device looks out of its wall, a ceiling light down
+  const p = [...C.water.points, ...C.electric.points].find((q) => q.item === ITEM || q.model === ITEM)
+  const f = p?.item ? "" : p?.face ?? ""
+  const [az, el] = f === "-y" ? [155, 18] : f === "-x" ? [-60, 15] : f === "down" ? [-25, -35] : [-25, 18]
+  const bb = new THREE.Box3()
+  for (const o of meshes) if (o.visible) bb.expandByObject(o)
+  const target = bb.getCenter(new THREE.Vector3()), r = bb.getSize(new THREE.Vector3()).length() / 2
+  const [a, e] = [THREE.MathUtils.degToRad(az), THREE.MathUtils.degToRad(el)]
+  camera.position.set(target.x + 10 * r * Math.cos(e) * Math.sin(a), target.y + 10 * r * Math.sin(e), target.z + 10 * r * Math.cos(e) * Math.cos(a))
+  camera.lookAt(target)
+} else if (HERO) {
   // eye level in the courtyard, in front of the west end, the galley right of centre and open lawn bottom-left
   // for the words
   camera.position.set(-6.5, 1.6, 13.5)
@@ -667,7 +922,7 @@ if (HERO) {
 camera.updateMatrixWorld(); camera.updateProjectionMatrix()
 if (!HERO) { // fit the frame to the model
   const bb = new THREE.Box3()
-  for (const o of meshes) if (!o.geometry.type.startsWith("Circle")) bb.expandByObject(o)
+  for (const o of meshes) if (o.visible && !o.geometry.type.startsWith("Circle")) bb.expandByObject(o)
   let px = [Infinity, Infinity, -Infinity, -Infinity]
   for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
     const p = new THREE.Vector3(xx, yy, zz).project(camera)
@@ -681,18 +936,46 @@ if (!HERO) { // fit the frame to the model
 
 // ------------------------------------------------------------ render
 if (LINE) {
-  const lineMat = new LineMaterial({ color: INK, linewidth: 1.2, side: THREE.DoubleSide })
-  lineMat.resolution.set(FW, FH)
-  lineMat.userData.outlineParameters = { visible: false }
+  // in a service view the fit-out drops to grey, so the service in ink and colour stands out
+  const GREY = "#bab8b2", ink = new THREE.Color(VIEW ? GREY : INK)
+  const edgeMat = (colour) => {
+    const m = new LineMaterial({ color: colour, linewidth: 1.2, side: THREE.DoubleSide })
+    m.resolution.set(FW, FH); m.userData.outlineParameters = { visible: false }
+    return m
+  }
+  const lineMat = edgeMat(VIEW ? GREY : INK), svcLine = edgeMat(INK)
+  const edges = (geo, matrix, m) => {
+    const l = new LineSegments2(new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(geo, 30)), m)
+    l.matrixAutoUpdate = false; l.matrix.copy(matrix)
+    scene.add(l)
+  }
   for (const o of meshes) {
     if (o.userData.noEdges) continue
     o.updateMatrixWorld(true)
-    const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
-    const l = new LineSegments2(g, lineMat)
-    l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
-    scene.add(l)
+    edges(o.geometry, o.matrixWorld, o.userData.svc ? svcLine : lineMat)
   }
-  const ink = new THREE.Color(INK)
+  if (VIEW) {
+    // the front wall's lining, cut away, as a faint outline round its doors and windows: the board, the sockets and
+    // the pipes under the worktop sit on it
+    const ghost = edgeMat("#d9d7d2"), at = (x0, x1, y0, y1) => {
+      const g = new THREE.BoxGeometry(x1 - x0, y1 - y0, 0.02); g.translate((x0 + x1) / 2, (y0 + y1) / 2, iz1 + 0.01)
+      edges(g, new THREE.Matrix4(), ghost)
+    }
+    let x = ix0
+    for (const [a, b, lo, hi] of OPEN) { at(x, a, FL, CE); if (lo - FL > 0.03) at(a, b, FL, lo); at(a, b, hi, CE); x = b }
+    at(x, ix1, FL, CE)
+    for (const r of SVC.lines) {
+      const m = new LineMaterial({ color: r.colour, linewidth: r.width, dashed: r.dashed, dashSize: 0.1, gapSize: 0.07 })
+      m.resolution.set(FW, FH); m.userData.outlineParameters = { visible: false }
+      const l = new LineSegments2(new LineSegmentsGeometry().setPositions(r.p), m)
+      if (r.dashed) { l.computeLineDistances(); m.depthTest = false } // hidden in the floor or the plinth: drawn through it
+      scene.add(l)
+    }
+    window.TAGS = SVC.tags.map((p) => {
+      const v = new THREE.Vector3(...P3(p.at)).project(camera)
+      return { id: p.id, x: +((v.x + 1) / 2).toFixed(4), y: +((1 - v.y) / 2).toFixed(4), edge: "" }
+    })
+  }
   new OutlineEffect(renderer, { defaultThickness: 0.0024, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
 } else {
   const pmrem = new THREE.PMREMGenerator(renderer)
@@ -708,6 +991,14 @@ if (LINE) {
   Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 7, bottom: -7, near: 1, far: 50 })
   sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
   scene.add(sun)
+  if (ITEM) { // a piece on its own takes only its shadow, on the transparent ground
+    const bb = new THREE.Box3()
+    for (const o of meshes) if (o.visible) bb.expandByObject(o)
+    const c = bb.getCenter(new THREE.Vector3())
+    const g = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: 0.16 }))
+    g.rotation.x = -Math.PI / 2; g.position.set(c.x, bb.min.y - 0.002, c.z); g.receiveShadow = true
+    scene.add(g)
+  }
   // the kitchen's own light along the room, clear of the hood's steel, and the hood's light over the line
   for (const x of [2.4, 8.4, 10.9]) {
     const l = new THREE.PointLight(0xfff6ea, HERO ? 1.6 : 1.3, 6, 2)
