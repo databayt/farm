@@ -34,13 +34,13 @@ const WAY = spreadBy(compound.spread.wayIn)
 // The neighbours are placed after the spread already (compound.json neighbours): only turned top to bottom.
 const N = compound.neighbours
 const T = ([x, y]: Point) => [x, SIZE - y]
-// The frame follows the spread and the neighbours: from the livestock paddock's far fence to past the
-// volleyball court's free zone.
+// The frame follows the spread and the neighbours: from the arrow that carries the land on westward to past
+// the public bathroom, the outermost building east.
 const court = volleyball.court
 const VIEW = [
-  Math.min(N.livestock.paddock[0], N.field.corner[0] - 10) - 1.5,
+  N.continues.at[0] - N.continues.length - 1.5,
   0.6,
-  Math.max(...compound.units.map((u) => B(u.box)[2]), N.volleyball.at[0] + court.w / 2 + court.free) + 1.5,
+  Math.max(...compound.units.map((u) => B(u.box)[2])) + 1.5,
   55.5,
 ]
 
@@ -367,24 +367,28 @@ function Outdoor() {
   )
 }
 
-// The volleyball court on the lawn east of the compound, in /en/volleyball's numbers (FIVB rules): the 18 x 9 m
-// court inside its 3 m free zone, the net over the centre line, an attack line 3 m each side of it, the posts
-// 1 m outside the side lines. Turned so its long side runs up the page, beside the courtyard.
+// The volleyball court on the lawn between the guest rooms and the parking, in /en/volleyball's numbers (FIVB
+// rules): the 18 x 9 m court inside its 3 m free zone, the net over the centre line, an attack line 3 m each side
+// of it, the posts 1 m outside the side lines. Turned (compound.json) so its long side runs across the page.
 function Volleyball() {
   const [cx, cy] = T(N.volleyball.at)
-  const [hw, hl, free] = [court.w / 2, court.l / 2, court.free]
+  const turn = N.volleyball.turn
+  const [hw, hl, free] = turn ? [court.l / 2, court.w / 2, court.free] : [court.w / 2, court.l / 2, court.free]
   const [x0, y0, x1, y1] = [cx - hw, cy - hl, cx + hw, cy + hl]
-  const post = hw + volleyball.posts.out
+  const post = (turn ? hl : hw) + volleyball.posts.out
+  // a line across the court at distance d from the net, and the net between its posts
+  const across = (d: number, reach: number) =>
+    turn ? { x1: f(cx + d), x2: f(cx + d), y1: f(cy - reach), y2: f(cy + reach) } : { x1: f(cx - reach), x2: f(cx + reach), y1: f(cy + d), y2: f(cy + d) }
   return (
     <g>
       <rect {...at([x0 - free, y0 - free, x1 + free, y1 + free])} {...thin} strokeDasharray="3 3" />
       <rect {...at([x0, y0, x1, y1])} {...medium} />
       {[-court.attack, court.attack].map((d) => (
-        <line key={d} x1={f(x0)} x2={f(x1)} y1={f(cy + d)} y2={f(cy + d)} {...thin} />
+        <line key={d} {...across(d, turn ? hl : hw)} {...thin} />
       ))}
-      <line x1={f(cx - post)} x2={f(cx + post)} y1={f(cy)} y2={f(cy)} stroke="currentColor" strokeWidth={0.1} />
+      <line {...across(0, post)} stroke="currentColor" strokeWidth={0.1} />
       {[-post, post].map((d) => (
-        <circle key={d} cx={f(cx + d)} cy={f(cy)} r={0.18} fill="currentColor" />
+        <circle key={d} cx={f(turn ? cx : cx + d)} cy={f(turn ? cy + d : cy)} r={0.18} fill="currentColor" />
       ))}
       <Dimension a={[x1, y0]} b={[x1, y1]} offset={1.4} />
       <Dimension a={[x0, y1]} b={[x1, y1]} offset={1.4} />
@@ -397,36 +401,53 @@ function Volleyball() {
   )
 }
 
-// West of the compound, past the break: the vegetable field's blocks nearest it (/en/farming), each bed 1.2 x 10 m
-// as plan.json lays them, the fence on the compound side with the gate onto the main path. plan.json's y runs
-// toward the gates, so a field point (x, y) sits at corner + (x - fence east, y - fence top) on the page.
+// West of the compound, past the break, in the band of land from the study room to the first guest room: the
+// vegetable field's blocks nearest it (/en/farming), each bed 1.2 x 10 m as plan.json lays them, turned a quarter
+// so the field runs west: plan.json's y (toward its far end) runs left, its x (its fence's east side at the top)
+// runs down the page. Its fence on the two sides toward the compound; the field goes on past both break lines.
 function Field() {
   const [fx, fy] = T(N.field.corner)
   const [, top, east] = plan.fence
-  const F = (x: number, y: number) => [f(fx + x - east), f(fy + y - top)]
+  const F = (x: number, y: number) => [f(fx - (y - top)), f(fy + (east - x))]
   const shown = plan.blocks.filter((b) => N.field.blocks.includes(b.id))
   const beds = plan.beds.filter((b) => N.field.blocks.includes(b.block))
-  const bottom = Math.max(...shown.map((b) => b.y + b.h)) + N.field.cut
+  const far = Math.max(...shown.map((b) => b.y + b.h)) + N.field.cut
   const west = Math.min(...shown.map((b) => b.x)) - 0.5
-  const [gate0, gate1] = [plan.mainY - plan.main / 2, plan.mainY + plan.main / 2]
   const [ex, ey0] = F(east, top)
-  const [wx, ey1] = F(west, bottom)
-  const [, g0] = F(east, gate0)
-  const [, g1] = F(east, gate1)
+  const [wx, ey1] = F(west, far)
   return (
     <g>
       {beds.map((b) => {
-        const [x0, y0] = F(b.x, b.y)
-        return <rect key={b.id} {...at([x0, y0, x0 + b.w, y0 + b.h])} {...thin} strokeDasharray={b.crop === "rest" ? "3 3" : undefined} />
+        const [x0, y0] = F(b.x + b.w, b.y + b.h)
+        return <rect key={b.id} {...at([x0, y0, x0 + b.h, y0 + b.w])} {...thin} strokeDasharray={b.crop === "rest" ? "3 3" : undefined} />
       })}
-      <path d={`M${wx} ${ey0}H${ex}V${g0}M${ex} ${g1}V${ey1}`} {...medium} />
+      <path d={`M${wx} ${ey0}H${ex}V${ey1}`} {...medium} />
+      <Zigzag a={[wx, ey0]} b={[wx, ey1]} />
       <Zigzag a={[wx, ey1]} b={[ex, ey1]} />
       <Page href={N.field.page}>
-        <text x={f(ex + 1.3)} y={f((ey0 + ey1) / 2)} textAnchor="middle" transform={`rotate(-90 ${f(ex + 1.3)} ${f((ey0 + ey1) / 2)})`} style={label}>
+        <text x={f((wx + ex) / 2)} y={f(ey1 + 1.4)} textAnchor="middle" style={label}>
           VEGETABLE FIELD · {plan.bedsTotal} BEDS
         </text>
       </Page>
     </g>
+  )
+}
+
+// At the drawing's west edge, the land going on: an arrow pointing out of the drawing, to the master plan,
+// which draws all of it (founder, 2026-10-29).
+function Continues() {
+  const [x, y] = T(N.continues.at)
+  const end = x - N.continues.length
+  return (
+    <Page href={N.continues.page}>
+      <path d={`M${f(x)} ${f(y)}H${f(end)}M${f(end + 0.6)} ${f(y - 0.4)}L${f(end)} ${f(y)}L${f(end + 0.6)} ${f(y + 0.4)}`} {...medium} />
+      <text x={f(end)} y={f(y - 1)} style={small}>
+        CONTINUED
+      </text>
+      <text x={f(end)} y={f(y + 1.5)} style={{ ...small, fontWeight: 500 }}>
+        MASTER PLAN
+      </text>
+    </Page>
   )
 }
 
@@ -482,7 +503,7 @@ function Break() {
   const x = N.break
   return (
     <g>
-      <Zigzag a={[x, 2]} b={[x, 52]} />
+      <Zigzag a={[x, 1]} b={[x, 27]} />
       <text x={f(x - 0.5)} y={14} textAnchor="middle" transform={`rotate(-90 ${f(x - 0.5)} 14)`} style={{ ...small, fontWeight: 500, stroke: PAGE, strokeWidth: 0.6, paintOrder: "stroke" }}>
         DRAWN CLOSE · ON THE LAND THE FIELD IS {westGap} M AWAY
       </text>
@@ -524,6 +545,7 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       <Break />
       <Field />
       <Livestock />
+      <Continues />
 
       {/* The courtyard: no outline, only its name and the stone fire pit */}
       <circle cx={pitX} cy={pitY} r={pitR} {...medium} />

@@ -8,9 +8,9 @@
   sliding doors, red pipe railings with the deck stairs at their ends, a concrete cap on the fire pit,
   hexagonal pop-up tents. The studios follow the studio's hero (/en/studio, render/studio-hero.jpg), and the
   sign wall carries DIGITAL FARM in LED letters. Its neighbours stand beside it as the 2D draws them
-  (compound.json neighbours), from their own pages' data: the volleyball court (volleyball.json) on the lawn east, and,
-  on a separate piece of ground past the 2D's break, the vegetable field's nearest beds (farming plan.json) and
-  the livestock house and paddock (livestock.json). Rendered two ways:
+  (compound.json neighbours), from their own pages' data: the volleyball court (volleyball.json) on the lawn between the guest rooms and the
+  parking, and, on a separate piece of ground past the 2D's break, in one band beside the study room, the vegetable
+  field's nearest beds turned to run west (farming plan.json) and beyond them the livestock house and paddock (livestock.json). Rendered two ways:
 
     ?mode=line  line drawing in the page's ink        -> public/designs/compound/render/compound-line.png
     ?mode=real  paint, timber, stone, sun and shadow  -> public/designs/compound/render/compound-real.webp
@@ -455,9 +455,9 @@ function group(build, pos, rotY = 0) {
 // ------------------------------------------------------------ the site
 // As the 2D draws it: the compound on its ground, a model base, with no lake, road or trees (D-022).
 // the base reaches 2.5 m past the outermost buildings east and west
-// and past the neighbours: the livestock paddock west, the volleyball court's free zone east
-const MX0 = Math.min(N.livestock.paddock[0], N.field.corner[0] - 10.5) - 2.5
-const MX1 = Math.max(...C.units.map((u) => u.box[2]), N.volleyball.at[0] + VB.court.w / 2 + VB.court.free) + 2.5
+// and past the neighbours: the livestock paddock west; east, the outermost building (the court is inside)
+const MX0 = N.livestock.paddock[0] - 2.5
+const MX1 = Math.max(...C.units.map((u) => u.box[2])) + 2.5
 const [MZ0, MZ1] = [-8.4, 45.6]
 // one lawn over the whole base, its top level with the old courtyard lawn: no courtyard outline, as the 2D;
 // the base splits at the 2D's break, where the field and the livestock are drawn close
@@ -798,19 +798,26 @@ for (const [id, windows] of [["galley", [[3.2, 4.8], [7.4, 9.0]]], ["bath", [[0.
 
 // ------------------------------------------------------------ the neighbours, drawn close (compound.json neighbours)
 const G = 0.035 // the lawn's top
-// The volleyball court (/en/volleyball): white tape lines on the grass, its long side along z as on the 2D,
-// the net over the centre line between two posts 1 m outside the side lines.
+// The volleyball court (/en/volleyball): white tape lines on the grass, the net over the centre line between two
+// posts 1 m outside the side lines. Drawn in the court's own frame (u across, v along its length) and laid with
+// its long side along z, or along x when it is turned (compound.json), as on the 2D.
 {
   const [cx, cz] = N.volleyball.at, c = VB.court, t = c.line
-  const [x0, x1, z0, z1] = [cx - c.w / 2, cx + c.w / 2, cz - c.l / 2, cz + c.l / 2]
-  const tape = (xa, za, xb, zb) => blk(xa, za, xb, zb, G, G + 0.008, "tape")
-  tape(x0, z0, x0 + t, z1); tape(x1 - t, z0, x1, z1); tape(x0, z0, x1, z0 + t); tape(x0, z1 - t, x1, z1)
-  for (const d of [-c.attack, 0, c.attack]) tape(x0, cz + d - t / 2, x1, cz + d + t / 2)
-  const n = VB.net, p = VB.posts, px = c.w / 2 + p.out
-  for (const s of [-1, 1]) cyl(cx + s * px, cz, p.d / 2, G, p.h, "white", 12)
-  blk(cx - n.l / 2, cz - 0.004, cx + n.l / 2, cz + 0.004, G + n.men - n.d, G + n.men - n.top, "net")
-  blk(cx - n.l / 2, cz - 0.01, cx + n.l / 2, cz + 0.01, G + n.men - n.top, G + n.men, "tape")
-  if (!LINE) add(new THREE.SphereGeometry(VB.ball.r, 16, 12), "tape", { pos: [cx + VB.ball.y, G + VB.ball.r, cz + VB.ball.x] })
+  const turn = N.volleyball.turn
+  const W = (u, v) => (turn ? [cx + v, cz + u] : [cx + u, cz + v])
+  const box = (ua, va, ub, vb, y0, y1, name) => blk(...W(ua, va), ...W(ub, vb), y0, y1, name)
+  const [u0, u1, v0, v1] = [-c.w / 2, c.w / 2, -c.l / 2, c.l / 2]
+  const tape = (ua, va, ub, vb) => box(ua, va, ub, vb, G, G + 0.008, "tape")
+  tape(u0, v0, u0 + t, v1); tape(u1 - t, v0, u1, v1); tape(u0, v0, u1, v0 + t); tape(u0, v1 - t, u1, v1)
+  for (const d of [-c.attack, 0, c.attack]) tape(u0, d - t / 2, u1, d + t / 2)
+  const n = VB.net, p = VB.posts, pu = c.w / 2 + p.out
+  for (const s of [-1, 1]) cyl(...W(s * pu, 0), p.d / 2, G, p.h, "white", 12)
+  box(-n.l / 2, -0.004, n.l / 2, 0.004, G + n.men - n.d, G + n.men - n.top, "net")
+  box(-n.l / 2, -0.01, n.l / 2, 0.01, G + n.men - n.top, G + n.men, "tape")
+  if (!LINE) {
+    const [bx, bz] = W(VB.ball.y, VB.ball.x)
+    add(new THREE.SphereGeometry(VB.ball.r, 16, 12), "tape", { pos: [bx, G + VB.ball.r, bz] })
+  }
 }
 
 // The livestock house (/en/livestock), its open side toward the gates: x_c = x + local x, z = y - local y.
@@ -852,27 +859,27 @@ const G = 0.035 // the lawn's top
 }
 
 // The vegetable field (/en/farming): its blocks nearest the compound, each bed 1.2 x 10 m and 20 cm high, crop rows
-// on the beds that grow this season, the fence on the compound side with the gate onto the main path.
+// on the beds that grow this season. Turned a quarter as on the 2D (compound.json): plan.json's y runs west, its x
+// toward the gates. The fence on the two sides toward the compound; the field goes on past the far ones.
 {
   const [cx, cz] = N.field.corner, [, top, east] = FP.fence
-  const X = (x) => cx + x - east, Z = (y) => cz - (y - top)
+  const M = (x, y) => [cx - (y - top), cz - (east - x)]
+  const box = (xa, ya, xb, yb, y0, y1, name) => blk(...M(xa, ya), ...M(xb, yb), y0, y1, name)
   const beds = FP.beds.filter((b) => N.field.blocks.includes(b.block))
   beds.forEach((b, k) => {
-    blk(X(b.x), Z(b.y), X(b.x + b.w), Z(b.y + b.h), G, G + 0.2, "bed")
+    box(b.x, b.y, b.x + b.w, b.y + b.h, G, G + 0.2, "bed")
     if (b.crop === "rest") return
-    for (const r of [0.3, 0.6, 0.9]) blk(X(b.x + 0.25), Z(b.y + r - 0.11), X(b.x + b.w - 0.25), Z(b.y + r + 0.11), G + 0.2, G + 0.42, k % 3 ? "crop" : "crop2")
+    for (const r of [0.3, 0.6, 0.9]) box(b.x + 0.25, b.y + r - 0.11, b.x + b.w - 0.25, b.y + r + 0.11, G + 0.2, G + 0.42, k % 3 ? "crop" : "crop2")
   })
   const shown = FP.blocks.filter((b) => N.field.blocks.includes(b.id))
-  const bottom = Math.max(...shown.map((b) => b.y + b.h)) + N.field.cut, west = Math.min(...shown.map((b) => b.x)) - 0.5
-  const [g0, g1] = [FP.mainY - FP.main / 2, FP.mainY + FP.main / 2]
+  const far = Math.max(...shown.map((b) => b.y + b.h)) + N.field.cut, west = Math.min(...shown.map((b) => b.x)) - 0.5
   const fence = (a, b) => {
     const len = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(1, Math.ceil(len / 2.5))
     for (let k = 0; k <= n; k++) cyl(a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n, 0.05, G, 1.5, "slat", 6)
     for (const y of [0.4, 0.9, 1.4]) pipe([a[0], y, a[1]], [b[0], y, b[1]], 0.012, "wire")
   }
-  fence([X(west), Z(top)], [X(east), Z(top)])
-  fence([X(east), Z(top)], [X(east), Z(g0)])
-  fence([X(east), Z(g1)], [X(east), Z(bottom)])
+  fence(M(west, top), M(east, top))
+  fence(M(east, top), M(east, far))
 }
 
 // ------------------------------------------------------------ camera: the front view

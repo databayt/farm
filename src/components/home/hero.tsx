@@ -1,9 +1,10 @@
 import { getImageProps } from "next/image"
 import { Cormorant_Garamond } from "next/font/google"
-import { ArrowDown, MoveRight } from "lucide-react"
+import { ArrowDown } from "lucide-react"
 
 import { copy } from "./copy"
 import { HERO } from "./hero.generated"
+import { WatchFilm } from "./watch-film"
 
 // The guide's headline face: a fine, high-contrast serif in capitals. Only the hero uses it.
 const display = Cormorant_Garamond({ subsets: ["latin"], weight: "500", display: "swap" })
@@ -35,7 +36,7 @@ function HeroPicture() {
 }
 
 export function Hero() {
-  const { headline, walk, scroll } = copy.hero
+  const { headline, scroll } = copy.hero
   return (
     <section
       id="top"
@@ -65,13 +66,7 @@ export function Hero() {
           ))}
         </h1>
         <div className="farm-intro-3 mt-8 flex flex-wrap items-center gap-x-10 gap-y-5 text-[15px] tracking-[0.02em] uppercase">
-          <a
-            href="#plans"
-            className="text-soil inline-flex h-14 items-center gap-5 bg-[rgb(214_207_190/0.92)] px-7 backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]"
-          >
-            {walk}
-            <MoveRight className="size-6" strokeWidth={1.5} aria-hidden />
-          </a>
+          <WatchFilm className="text-soil inline-flex h-14 cursor-pointer items-center gap-5 bg-[rgb(214_207_190/0.92)] px-7 uppercase backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]" />
         </div>
       </div>
 

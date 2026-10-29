@@ -177,11 +177,12 @@
     }
   },
   "neighbours": {
-    "about": "The master plan's neighbours of the compound (src/components/site/site.json), brought close so the homepage's 2D and 3D show them beside it at their true sizes (founder, 2026-10-29). Positions are in this file's frame AFTER the spread (x east, y south), so neither drawing spreads them again. The volleyball court stands on the lawn east of the compound, turned so its long side runs north-south to fit beside the courtyard. The vegetable field (one column of beds, the blocks nearest the compound, from public/designs/farming/data/plan.json) and the livestock house (src/components/livestock/livestock.json) lie west, past a break: on the land the field starts some 26 m past the compound and the livestock lies beyond it, sited after the 200 m lake check. Each links to its page.",
-    "volleyball": { "page": "/en/volleyball", "at": [54.5, 14] },
-    "field": { "page": "/en/farming", "corner": [-18.5, 44], "blocks": ["A4", "B4"], "cut": 3.5 },
-    "livestock": { "page": "/en/livestock", "at": [-23.5, -0.5], "paddock": [-30, -4.5, -16.5, 1.45] },
-    "break": -15
+    "about": "The master plan's neighbours of the compound (src/components/site/site.json), brought close so the homepage's 2D and 3D show them beside it at their true sizes (founder, 2026-10-29). Positions are in this file's frame AFTER the spread (x east, y south), so neither drawing spreads them again. The volleyball court stands on the lawn between the guest rooms and the parking, turned so its long side runs east-west (turn). The land lies west, past a break, as one horizontal band from the study room's back wall to the end of the first guest room (founder, 2026-10-29): the vegetable field turned a quarter (turn: plan.json's y runs west, its x runs toward the gates), two blocks of its beds nearest the compound from public/designs/farming/data/plan.json, and beyond them the livestock house (src/components/livestock/livestock.json) at the top of its paddock. The land goes on further west than the drawing: an arrow at its edge says it continues, on the master plan. On the land the field starts some 26 m past the compound and the livestock lies beyond it, sited after the 200 m lake check. Each links to its page.",
+    "volleyball": { "page": "/en/volleyball", "at": [-7.5, 4.5], "turn": true },
+    "field": { "page": "/en/farming", "corner": [-23.5, 44.94], "blocks": ["A4", "A3"], "cut": 1.5, "turn": true },
+    "livestock": { "page": "/en/livestock", "at": [-50.75, 34.55], "paddock": [-57.5, 30.55, -44, 36.5] },
+    "continues": { "page": "/docs/master-plan", "at": [-59, 34.5], "length": 5 },
+    "break": -21.5
   },
   "spread": {
     "about": "The 2D and the 3D set the compound apart sideways for a wide screen, every building at its true size: x' = mid + (x - mid) * factor for each centre. The way in (the gates, the sign wall, the parking and the rock road) keeps the places it had at 1.5, where the founder wants the rock road, while the buildings take 1.8 (2026-10-27).",
