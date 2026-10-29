@@ -1,61 +1,66 @@
 # Digital Farm: start here
 
-Status: updated 2026-10-28. The studio fit-out starts 2026-10-29.
+Status: updated 2026-10-29. This page covers November 2026 only. The sidebar shows only what we need this month.
 
-The plan for a 5 ha farm near Kigali that becomes a container eco-stay which feeds itself, and the guides each trade builds from.
+## The farm in one minute
 
-## The farm in short
+- **What:** about 5 ha in Gashora, Bugesera, an hour from Kigali. The lake is in view, but not on the farm (D-027).
+- **The idea:** guests stay in containers, eat what the field grows, and work in the study room.
+- **This month:** we do two things. We **build the two studios** and we **get the field ready**.
 
-- **Land:** about 5 ha in an upside-down L. The compound (containers, camp, bar, study room) fills the right block; the field for vegetables and livestock is the top-left arm, behind the study room. Details: [the farm today](farm.md).
-- **Place:** Gashora sector, Bugesera, about an hour from Kigali (D-017). The lake is in view, across a neighbour's plot; it is not on the farm (D-027).
-- **Idea:** guests stay in container studios and rooms, camp, eat what the field grows, and work or study in the study room; the farm runs on simple, measured systems.
+## This month in 4 weeks
 
-## What we are building
+| Week | Studios | Field |
+|---|---|---|
+| 1 (from 29 Oct) | Measure both containers. Book the welder. Finish all welding. | Test the soil and the borehole water. |
+| 2 | Lay the floor sheets, then the battens. | Fence the field. Mark out the beds. |
+| 3 | Electrician and plumber lay cables and pipes. Test and photograph everything. | Build the first 40 beds. Lay the drip lines. |
+| 4 | Spray foam. Then the wall panels. | Start the seedlings. Sow beans and amaranth. |
 
-| Place | Box | What for | Page |
-|---|---|---|---|
-| Studios, two | 20 ft each | A guest studio for 2, with its own bathroom and kitchen | [carpenter](trades/carpenter.md), [electrician](trades/electrician.md), [plumber](trades/plumber.md) |
-| Guest rooms, three | the joined 40 ft pair | Rooms for 2 | `/en/guest-room` |
-| Office | 20 ft | Reception and the farm office | `/en/office` |
-| Bar | 20 ft | A cigar and whisky lounge (D-028) | `/en/bar` |
-| Study room | 40 ft | 12 seats and a screen | `/en/study-room` |
-| Galley | 40 ft | The staff kitchen for the bar and meals | to come |
-| Public bathroom | 20 ft | 2 WCs, 2 basins, a urinal | to come |
-| Guest kitchen and BBQ | open-air, by the camp | Campers cook for themselves (D-028) | to come |
-| Camp | 6 tents on the lawn | Camping by the fire pit | `/en/camp` |
-| Volleyball | court 18 × 9 m, 24 × 15 m with its free zone | On the lawn | to come |
-| Field | the top-left arm | Vegetables and livestock for the galley, a few big trees | [vegetables](grow/vegetables.md), [livestock](grow/livestock.md) |
-| Trees | across the farm | Many in the compound, a few in the field: an even, forest feel | [master plan](master-plan.md) |
+Dates are a target, not a promise. The order matters more than the dates.
 
-## This week
+## The 5 rules that must not break
 
-1. Thursday 29 October: the carpenter measures both studio containers (Day 1 of the [carpenter's guide](trades/carpenter.md)) and sends the numbers; revision B follows.
-2. Book a welder for the hot work (S01) and find a spray-foam contractor before S05.
-3. The electrician and the plumber do their first fix (S04) once the battens are up.
-4. The owner sends a Google Maps pin of the gate or the land-title number (UPI), for the master plan.
-5. Ask for the original videos, sent as "Document", for the film.
+1. **Measure before you cut.** The workshop cuts nothing before the measurements come back (revision B).
+2. **No welding after the foam.** All hot work is done first.
+3. **Nothing gets buried untested.** Before the foam, the cables pass their test and the pipes hold 10 bar for one hour. Photograph every wall.
+4. **No power on before the certificate.** A licensed electrician signs the tests first.
+5. **No animals yet.** First register as a keeper, name a vet, check the 200 m distance from the lake, and put up the fence and water.
 
-## The guides
+## The guides, in one line each
 
-| Trade | Guide | Languages | Status |
-|---|---|---|---|
-| Carpenter | [studio interior](trades/carpenter.md) | English, Kinyarwanda | revision A2 |
-| Electrician | [studio wiring](trades/electrician.md) | English, Kinyarwanda | revision A2 |
-| Plumber | [studio water and drains](trades/plumber.md) | English, Kinyarwanda | revision A2 |
-| Power | [grid, solar or both](trades/power.md) | English, Kinyarwanda | advice of 2026-10-28 |
-| Farmer | [the vegetable field](grow/vegetables.md) | English, Kinyarwanda | guide of 2026-10-28 |
-| Livestock keeper | [eggs first, then goats](grow/livestock.md) | English, Kinyarwanda | guide of 2026-10-28 |
-| Landscaper | the trees | English, Kinyarwanda | to come |
+### Build the studios
 
-## Running it
+| Guide | Who | What it says, simply |
+|---|---|---|
+| [Carpenter](trades/carpenter.md) | the carpenter | Measure 7 numbers on day 1. Then floor, battens, wall panels, bathroom, kitchen and bed, in that order. |
+| [Electrician](trades/electrician.md) | the electrician | Cables go in after the battens and before the foam. The board and sockets come at the end. |
+| [Plumber](trades/plumber.md) | the plumber | Pipes go in with the cables, then the 10 bar test. No guest stays until the septic tank passes inspection. |
+| [Power](trades/power.md) | the owner | Connect to the grid, add solar with batteries, and keep a generator as a spare. This month: ask EUCL for a written quote. |
 
-- [How the farm runs](operations.md): the guest's stay, the team, a day on the farm, the loops.
-- [The film](film.md): the story shot by shot, and what to film next.
-- [The business model](business/model.md), [marketing](business/marketing.md) and [the digital farm](business/digital.md).
+### Start the field
 
-## How the guides work
+| Guide | Who | What it says, simply |
+|---|---|---|
+| [Vegetables](grow/vegetables.md) | the farmer | Test the soil and water, fence, build 40 beds, lay drip, start seedlings. First harvest in 4 to 8 weeks. |
+| [Livestock](grow/livestock.md) | the owner | Prepare only this month: register, find a vet, measure the distance from the lake, build the fence and the water. |
 
-- Every measurement comes from the studio's drawing generator, so when a size changes, the drawings, the bill of materials and the guides change together.
-- Every guide has a Kinyarwanda twin. It is a machine draft until a native speaker checks it; where they differ, the English wins.
-- Every guide prints to A4 from the link at its top, to share on WhatsApp.
-- The research behind the plan stays below, as the study: [study overview](../PROJECT_STATUS.md), [decision log](../study/execution/decision-log.md).
+### The land
+
+| Guide | What it says, simply |
+|---|---|
+| [The farm today](farm.md) | What is on the land now: the buildings, the water, the power. |
+| [Master plan](master-plan.md) | Where everything goes: the compound on the right, the field on the top-left arm, trees everywhere. |
+
+Every guide is in English and Kinyarwanda, and prints to A4 from the link at its top to share on WhatsApp.
+
+## What we need from the owner
+
+1. **The location:** a Google Maps pin of the gate, or the land-title number (UPI).
+2. **Who sprays the foam?** We need a contractor before week 4.
+3. **Gas or electric cooking in the galley?** It changes the size of the solar system.
+4. **The original videos,** sent on WhatsApp as "Document", for the film.
+
+## Not this month
+
+These pages are hidden from the sidebar but still open from their links: [how the farm runs](operations.md), [the film](film.md), [the business model](business/model.md), [marketing](business/marketing.md), [the digital farm](business/digital.md), the full studio package ([studio](../study/studio/studio.md)), the [decision log](../study/execution/decision-log.md) and the research study ([study overview](../PROJECT_STATUS.md)).

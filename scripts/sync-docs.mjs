@@ -28,8 +28,8 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
 const OUT = join(ROOT, "content", "docs")
 const PUBLIC = join(ROOT, "public")
 
-// Sidebar order. A string starting with "---" is a group label (fumadocs separator); a group whose
-// label starts with "Archive" starts closed (docs-sidebar.tsx): the 2026-10 study, kept as evidence.
+// Every docs page, grouped by kind ("---" lines are labels for the reader of this file). The sidebar
+// shows only SIDEBAR, below; the rest render off the sidebar, like the Kinyarwanda twins.
 const PAGES = [
   { slug: "index", src: "guide/start.md", title: "Start here" },
   "---Trades---",
@@ -150,6 +150,24 @@ const PAGES = [
   { slug: "website-plan", src: "study/website/implementation-plan.md" },
   { slug: "website-render-brief", src: "study/website/render-brief.md" },
 ]
+
+// What the sidebar shows: this month's work only (November 2026). Every page in PAGES still renders at
+// its /docs URL and stays linked from the guides and Start here; add a slug back when it is needed again.
+const SIDEBAR = [
+  "index",
+  "---Build the studios---",
+  "carpenter",
+  "electrician",
+  "plumber",
+  "power",
+  "---Start the field---",
+  "vegetables",
+  "livestock",
+  "---The land---",
+  "farm",
+  "master-plan",
+]
+const fail = (slug) => { throw new Error(`sync-docs: SIDEBAR lists "${slug}", which is not in PAGES`) }
 
 const listed = PAGES.filter((p) => typeof p !== "string")
 const toPosix = (p) => p.split(sep).join("/")
@@ -389,6 +407,6 @@ for (const page of entries) {
   }
   writeFileSync(join(OUT, `${page.slug}.mdx`), mdx)
 }
-const pages = PAGES.map((p) => (typeof p === "string" ? p : p.slug))
+const pages = SIDEBAR.filter((s) => s.startsWith("---") || seenSlugs.has(s) || fail(s))
 writeFileSync(join(OUT, "meta.json"), JSON.stringify({ title: "Farm docs", pages }, null, 2) + "\n")
 console.log(`synced ${entries.length} pages to content/docs`)
