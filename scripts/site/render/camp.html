@@ -9,6 +9,16 @@
     ?mode=line  line drawing on a transparent ground   -> public/designs/camp/render/camp-line.png
     ?mode=real  materials, daylight and shadow         -> public/designs/camp/render/camp-real.webp
 
+  and, for the page's later sections (real mode):
+
+    ?mode=real&top=<ground|sheet|tent|rug|furnish|tea>  the pitch from straight above, one layer at a time on a
+                transparent ground (the lawn opaque), 2400 wide -> render/top-<layer>.webp; window.TAGS holds each
+                piece's rectangle as fractions of the picture, saved by render.mjs's fourth argument as
+                render/top-pieces.json (its "tags"), for the Pitch build-up
+    ?mode=real&item=<tent|futon|chair|cushions|rug|throw|tray|lantern>  one piece of the kit on its own, three-quarter
+                view, 1200 x 900, transparent ground with only its shadow -> render/kit/<id>.webp. The tent is whole:
+                all six walls, its hips and top, the door rolled up
+
   Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
   save the data URL in #out.
 -->
@@ -17,7 +27,7 @@
 <meta charset="utf-8">
 <style>
 html,body{margin:0;background:#fff}
-#out{display:block;width:2400px;height:1100px}
+#out{display:block;width:2400px;height:auto}
 </style>
 <script type="importmap">
 {"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
@@ -40,8 +50,12 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
 const LINE = Q.get("mode") !== "real"
-const [FW, FH] = [2400, 1100]
+const TOP = Q.get("top"), ITEM = Q.get("item")
 const C = await (await fetch(`/src/components/camp/camp.json?${Date.now()}`)).json()
+// the top view's frame: the tent's footprint and a margin, door toward the bottom of the picture
+const EX = C.tent.r + 0.3, EZ = C.tent.r * Math.sin(Math.PI / 3) + 0.3
+const [FW, FH] = TOP ? [2400, Math.round((2400 * EZ) / EX)] : ITEM ? [1200, 900] : [2400, 1100]
+const WHOLE = TOP || ITEM === "tent" // the tent with all six walls, as pitched
 const INK = "#2b2a26", PAGE = "#ffffff"
 // plan (x right, y toward the door) -> three: x = x, y = height, z = y; the camera stands in front, at +z
 
@@ -147,6 +161,9 @@ function mat(name) {
 
 // ------------------------------------------------------------ geometry helpers (metres)
 const meshes = []
+// what the meshes made next belong to: a layer of the top view and a piece of the kit
+let CUR = { layer: null, item: null }
+const part = (layer, item) => (CUR = { layer, item })
 function add(geo, name, opts = {}) {
   const mesh = new THREE.Mesh(geo, mat(name))
   mesh.castShadow = !LINE && name !== "glass" && name !== "lawn"
@@ -154,6 +171,7 @@ function add(geo, name, opts = {}) {
   if (opts.pos) mesh.position.set(...opts.pos)
   if (opts.rot) mesh.rotation.set(...opts.rot)
   if (opts.noEdges) mesh.userData.noEdges = true
+  mesh.userData.layer = CUR.layer; mesh.userData.item = CUR.item
   scene.add(mesh)
   meshes.push(mesh)
   return mesh
@@ -188,7 +206,8 @@ const halfWidth = (r, dz) => r - Math.abs(dz) / Math.sqrt(3) // a flat-fronted h
 
 // ------------------------------------------------------------ the lawn
 const { tent, rug, floorChair: chair, throw: wrap, futon, pillow, cushions, tray, lantern: lamp } = C
-if (!LINE) {
+if (!LINE && !ITEM) {
+  part("ground", null)
   T.grass.repeat.set(10, 10) // 6 m a tile over the 60 m lawn
   add(new THREE.CircleGeometry(30, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], pos: [0, 0, 0] })
 }
@@ -200,29 +219,47 @@ if (!LINE) {
 const Y = 0.01 // the groundsheet
 const BACK = [3, 4, 5]
 {
+  part("sheet", "tent")
   const floor = new THREE.Shape(Array.from({ length: 6 }, (_, k) => { const [x, , z] = corner(tent.r, k, 0); return new THREE.Vector2(x, -z) }))
   add(new THREE.ExtrudeGeometry(floor, { depth: Y, bevelEnabled: false }), "floor", { rot: [-Math.PI / 2, 0, 0] })
+  part("tent", "tent")
   const sh = tent.shoulder, tp = tent.top
-  for (const k of BACK) {
+  // the walls: the back three in the 3D; all but the door in the top view and the kit, the door rolled up
+  for (const k of WHOLE ? [0, 2, 3, 4, 5] : BACK)
     quad([corner(tent.r, k, 0), corner(tent.r, k + 1, 0), corner(sh.r, k + 1, sh.h), corner(sh.r, k, sh.h)], "wall")
-    quad([corner(sh.r, k, sh.h), corner(sh.r, k + 1, sh.h), corner(tp.r, k + 1, tp.h), corner(tp.r, k, tp.h)], "canvas")
+  if (WHOLE) {
+    // the door's side: the strip over the rolled-up door, the roll under a strap
+    const a = corner(sh.r, 1, sh.h), b = corner(sh.r, 2, sh.h), d = (y) => [corner(tent.r - (tent.r - sh.r) * y, 1, sh.h * y), corner(tent.r - (tent.r - sh.r) * y, 2, sh.h * y)]
+    const [c, e] = d(0.82)
+    quad([c, e, b, a], "canvas")
+    const [p, q] = d(0.78)
+    pipe([p[0] + 0.12, p[1], p[2] + 0.02], [q[0] - 0.12, q[1], q[2] + 0.02], 0.055, "canvas")
   }
-  // the top, its back half
-  const top = new THREE.Shape([3, 4, 5, 6].map((k) => { const [x, , z] = corner(tp.r, k, 0); return new THREE.Vector2(x, -z) }))
-  add(new THREE.ExtrudeGeometry(top, { depth: 0.02, bevelEnabled: false }), "canvas", { rot: [-Math.PI / 2, 0, 0], pos: [0, tp.h, 0] })
-  // the poles outside, up each back corner from the grass to the top
-  for (const k of [3, 4, 5, 6]) {
+  // the hips up to the top: the back three in the 3D, all six on the kit's tent; the top view leaves them off,
+  // so the room shows inside the walls
+  if (!TOP) {
+    for (const k of ITEM === "tent" ? [0, 1, 2, 3, 4, 5] : BACK)
+      quad([corner(sh.r, k, sh.h), corner(sh.r, k + 1, sh.h), corner(tp.r, k + 1, tp.h), corner(tp.r, k, tp.h)], "canvas")
+    const ks = ITEM === "tent" ? [0, 1, 2, 3, 4, 5] : [3, 4, 5, 6] // the top, its back half in the 3D
+    const top = new THREE.Shape(ks.map((k) => { const [x, , z] = corner(tp.r, k, 0); return new THREE.Vector2(x, -z) }))
+    add(new THREE.ExtrudeGeometry(top, { depth: 0.02, bevelEnabled: false }), "canvas", { rot: [-Math.PI / 2, 0, 0], pos: [0, tp.h, 0] })
+  }
+  // the poles outside, up each corner from the grass to the top (the back ones in the 3D)
+  for (const k of WHOLE ? [0, 1, 2, 3, 4, 5] : [3, 4, 5, 6]) {
     const o = 0.03
     pipe(corner(tent.r + o + 0.08, k, 0), corner(sh.r + o, k, sh.h), 0.012, "pole")
-    pipe(corner(sh.r + o, k, sh.h), corner(tp.r + o, k, tp.h + 0.02), 0.012, "pole")
+    if (!TOP) pipe(corner(sh.r + o, k, sh.h), corner(tp.r + o, k, tp.h + 0.02), 0.012, "pole") // the top view stops at the shoulder
   }
-  for (const k of [0, 1, 2]) quad([corner(tent.r, k, 0), corner(tent.r, k + 1, 0), corner(tent.r, k + 1, 0.12), corner(tent.r, k, 0.12)], "canvas")
+  if (!WHOLE) for (const k of [0, 1, 2]) quad([corner(tent.r, k, 0), corner(tent.r, k + 1, 0), corner(tent.r, k + 1, 0.12), corner(tent.r, k, 0.12)], "canvas")
+  else quad([corner(tent.r, 1, 0), corner(tent.r, 2, 0), corner(tent.r, 2, 0.12), corner(tent.r, 1, 0.12)], "canvas") // the door's sill
 }
 
 // ------------------------------------------------------------ inside, as the hero has it
+part("rug", "rug")
 blk(rug.x - rug.w / 2, rug.y - rug.d / 2, rug.x + rug.w / 2, rug.y + rug.d / 2, Y, Y + 0.01, "rug")
 const R = Y + 0.01 // the rug's top
 {
+  part("furnish", "chair")
   // the floor chair: a cushioned seat on the floor and a back leaning a little, both in tan linen
   const { x, y, w, d, seat, back } = chair
   soft(x - w / 2, y - d / 2 + 0.06, x + w / 2, y + d / 2, Y, Y + seat, 0.035, "tan")
@@ -232,20 +269,24 @@ const R = Y + 0.01 // the rug's top
   })
   b.rotation.x = -lean
 }
+part("furnish", "throw")
 soft(wrap.x - wrap.w / 2, wrap.y - wrap.d / 2, wrap.x + wrap.w / 2, wrap.y + wrap.d / 2, Y, Y + wrap.h, 0.025, "wool")
 {
   // the futon along the right wall, the patterned cushion standing at its head, two cushions stacked in front
+  part("furnish", "futon")
   const { x, y0, y1, w, h } = futon
   soft(x - w / 2, y0, x + w / 2, y1, Y, Y + h, 0.04, "white")
   const p = add(new RoundedBoxGeometry(pillow.w, pillow.h, pillow.t, 4, 0.05), "pillow", {
     pos: [x, Y + h + pillow.h / 2 - 0.02, y0 + 0.1],
   })
   p.rotation.x = -0.18
+  part("furnish", "cushions")
   const c = cushions
   for (let i = 0; i < c.count; i++) soft(c.x - c.w / 2, c.y - c.d / 2, c.x + c.w / 2, c.y + c.d / 2, Y + i * c.h, Y + (i + 1) * c.h - 0.005, 0.035, "white")
 }
 {
   // the tea board on the rug: a round clay teapot with a spout and a lid, two cups
+  part("tea", "tray")
   const { x, y, w, d, h } = tray
   blk(x - w / 2, y - d / 2, x + w / 2, y + d / 2, R, R + h, "wood")
   const t = add(new THREE.SphereGeometry(0.065, 20, 12), "clay", { pos: [x + 0.1, R + h + 0.055, y] })
@@ -256,36 +297,73 @@ soft(wrap.x - wrap.w / 2, wrap.y - wrap.d / 2, wrap.x + wrap.w / 2, wrap.y + wra
 }
 {
   // the hurricane lantern on the floor: a brass foot and cap round a lit glass
+  part("tea", "lantern")
   const { x, y, h } = lamp
   cyl(x, y, 0.07, Y, 0.04, "brass", 16)
   cyl(x, y, 0.05, Y + 0.04, h * 0.5, "lamp", 16, 0.045)
   cyl(x, y, 0.06, Y + 0.04 + h * 0.5, 0.05, "brass", 16, 0.035)
   add(new THREE.TorusGeometry(0.05, 0.005, 6, 16), "brass", { pos: [x, Y + h, y] })
-  if (!LINE) {
+  if (!LINE && !TOP) { // the top view's layers stay unlit by it, so no glow lands before the lantern does
     const l = new THREE.PointLight(0xffb866, 2.2, 3.5, 2)
     l.position.set(x, Y + 0.18, y); scene.add(l)
   }
 }
 
-// ------------------------------------------------------------ camera: the front view
-const target = new THREE.Vector3(0, 0.5, 0)
-const [el, dist] = [THREE.MathUtils.degToRad(30), 24]
-const camera = new THREE.PerspectiveCamera(22, FW / FH, 0.5, 200)
-camera.position.set(0, target.y + dist * Math.sin(el), target.z + dist * Math.cos(el))
-camera.lookAt(target)
-camera.updateMatrixWorld(); camera.updateProjectionMatrix()
-scene.updateMatrixWorld(true)
-const bb = new THREE.Box3()
-for (const o of meshes) if (!o.geometry.type.startsWith("Circle")) bb.expandByObject(o)
-let px = [Infinity, Infinity, -Infinity, -Infinity]
-for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
-  const p = new THREE.Vector3(xx, yy, zz).project(camera)
-  const X = ((p.x + 1) / 2) * FW, Yp = ((1 - p.y) / 2) * FH
-  px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
+// ------------------------------------------------------------ one layer, or one piece
+if (TOP) for (const m of meshes) m.visible = m.userData.layer === TOP
+if (ITEM) for (const m of meshes) m.visible = m.userData.item === ITEM
+if (TOP === "ground") renderer.setClearColor(0xffffff, 1)
+if (ITEM && !LINE) { // a piece on its own: a transparent ground that takes only its shadow
+  const g = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.ShadowMaterial({ opacity: 0.18 }))
+  g.rotation.x = -Math.PI / 2; g.position.y = -0.001; g.receiveShadow = true
+  scene.add(g)
 }
-let w = (px[2] - px[0]) * 1.08, h = (px[3] - px[1]) * 1.12
-if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
-camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+
+let camera
+if (TOP) {
+  // straight down, the door toward the bottom of the picture: picture x is plan x, picture down is plan y
+  camera = new THREE.OrthographicCamera(-EX, EX, EZ, -EZ, 0.1, 100)
+  camera.position.set(0, 30, 0)
+  camera.up.set(0, 0, -1)
+  camera.lookAt(0, 0, 0)
+  // each piece's rectangle on the picture [x, y, w, h], as fractions, in the order it is laid
+  const R = (x0, z0, x1, z1) => [+((x0 + EX) / (2 * EX)).toFixed(5), +((z0 + EZ) / (2 * EZ)).toFixed(5),
+    +((x1 - x0) / (2 * EX)).toFixed(5), +((z1 - z0) / (2 * EZ)).toFixed(5)]
+  const box = (cx, cz, w, d, m = 0.03) => R(cx - w / 2 - m, cz - d / 2 - m, cx + w / 2 + m, cz + d / 2 + m)
+  const hz = tent.r * Math.sin(Math.PI / 3)
+  window.TAGS = {
+    sheet: [R(-tent.r - 0.02, -hz - 0.02, tent.r + 0.02, hz + 0.02)],
+    tent: [R(-tent.r - 0.16, -hz - 0.16, tent.r + 0.16, hz + 0.16)],
+    rug: [box(rug.x, rug.y, rug.w, rug.d)],
+    // the chair's back leans out behind its seat; the cushion stands at the futon's head
+    furnish: [box(chair.x, chair.y - 0.08, chair.w, chair.d + 0.16), box(futon.x, (futon.y0 + futon.y1) / 2, Math.max(futon.w, pillow.w), futon.y1 - futon.y0 + 0.1),
+      box(cushions.x, cushions.y, cushions.w, cushions.d), box(wrap.x, wrap.y, wrap.w, wrap.d)],
+    tea: [box(tray.x, tray.y, tray.w + 0.08, tray.d + 0.08), box(lamp.x, lamp.y, 0.16, 0.16)],
+  }
+} else {
+  const target = new THREE.Vector3(0, 0.5, 0)
+  // the front view; a piece of the kit from the front left, three-quarter
+  const [el, az, dist] = ITEM ? [THREE.MathUtils.degToRad(ITEM === "rug" || ITEM === "throw" ? 40 : 28), THREE.MathUtils.degToRad(-30), 12]
+    : [THREE.MathUtils.degToRad(30), 0, 24]
+  camera = new THREE.PerspectiveCamera(22, FW / FH, 0.2, 200)
+  const bb = new THREE.Box3()
+  for (const o of meshes) if (o.visible && !o.geometry.type.startsWith("Circle")) bb.expandByObject(o)
+  if (ITEM) bb.getCenter(target)
+  camera.position.set(target.x + dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
+  camera.lookAt(target)
+  camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+  scene.updateMatrixWorld(true)
+  let px = [Infinity, Infinity, -Infinity, -Infinity]
+  for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
+    const p = new THREE.Vector3(xx, yy, zz).project(camera)
+    const X = ((p.x + 1) / 2) * FW, Yp = ((1 - p.y) / 2) * FH
+    px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
+  }
+  const pad = ITEM ? 1.12 : 1.08
+  let w = (px[2] - px[0]) * pad, h = (px[3] - px[1]) * (ITEM ? pad : 1.12)
+  if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
+  camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+}
 
 // ------------------------------------------------------------ render
 if (LINE) {
@@ -293,7 +371,7 @@ if (LINE) {
   lineMat.resolution.set(FW, FH)
   lineMat.userData.outlineParameters = { visible: false }
   for (const o of meshes) {
-    if (o.userData.noEdges) continue
+    if (o.userData.noEdges || !o.visible) continue
     const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
     const l = new LineSegments2(g, lineMat)
     l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
@@ -307,7 +385,9 @@ if (LINE) {
   scene.environmentIntensity = 0.4
   scene.add(new THREE.HemisphereLight(0xf3ead8, 0x7a6a48, 0.8))
   const sun = new THREE.DirectionalLight(0xffd6a0, 3.0)
-  sun.position.set(-10, 6, 8) // golden hour, low from the front left, as the hero
+  // golden hour, low from the front left, as the hero; straight down for the top view, so no shadow crosses into a
+  // neighbouring piece; higher for a piece on its own
+  sun.position.set(...(TOP ? [0.01, 20, 0.01] : ITEM ? [-6, 9, 7] : [-10, 6, 8]))
   sun.castShadow = true
   sun.shadow.mapSize.set(4096, 4096)
   Object.assign(sun.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5, near: 1, far: 40 })
@@ -316,10 +396,12 @@ if (LINE) {
   const composer = new EffectComposer(renderer)
   composer.setSize(FW, FH)
   composer.addPass(new RenderPass(scene, camera))
-  const ao = new GTAOPass(scene, camera, FW, FH)
-  ao.blendIntensity = 0.8
-  ao.updateGtaoMaterial({ radius: 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
-  composer.addPass(ao)
+  if (!TOP && !ITEM) {
+    const ao = new GTAOPass(scene, camera, FW, FH)
+    ao.blendIntensity = 0.8
+    ao.updateGtaoMaterial({ radius: 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
+    composer.addPass(ao)
+  }
   composer.addPass(new OutputPass())
   composer.render()
 }
