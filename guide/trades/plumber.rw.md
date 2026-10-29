@@ -22,8 +22,7 @@ English: [read this guide in English](plumber.md) · Gucapa: [aya mabwiriza nka 
 |---|---|
 | Itiyo y'amazi meza (supply pipe) | PPR PN20, mm 25 ku muyoboro mukuru (main), mm 20 imbere |
 | Aho umuyoboro mukuru winjirira (main in) | munsi ya hasi kuri end B, ukazamuka muri sink base: stop valve (robine ifunga amazi), Y-filter, check meter (mubazi y'amazi), byose kuri SV |
-| Amazi ashyushye | agasanduku ka water heater ka L {{studio.heater_l}}, 2 kW, IPX4, ku rukuta rwa end B hejuru ya WC; amazi abikwa kuri 60 °C |
-| Valve ivanga amazi (mixing valve, TMV) | inyuma y'urugi ruto rwo kuyigeraho (access panel) rutwikiriwe n'amakaro, mu rukuta rwa end B, hagati ya douche na WC; itanga amazi ya 41 kugeza 44 °C kuri douche no kuri lavabo |
+| Amazi ashyushye | heater ihita ishyushya amazi (instant heater), {{studio.heater_kw}} kW, IPX4, ku rukuta rwa end B imbere muri douche, iruhande rwa douche ifatwa mu ntoki (hand shower); nta kigega ifite. Ishyushya hafi L 4 ku munota kugeza kuri 40 °C, bigenwa kuri ecran yayo, kuri douche gusa. Sink na lavabo bihabwa amazi akonje gusa (D-053) |
 | Imiyoboro y'amazi yanduye (drains) | WC mm 110, douche mm 50, lavabo mm 40, sink y'igikoni mm 50 ku muyoboro wayo wihariye ujya kuri grease trap (ifata amavuta); yose ifite ubuhaname bwa 1:40 cyangwa burenzeho |
 | Umuyoboro w'umwuka (vent) | open vent ya mm 75 izamuka kuri end B, ikarangirira mm 900 hejuru y'uruzitiro rwo ku gisenge (guardrail) |
 | Tray yo kwiyuhagiriramo (shower tray) | {{studio.tray_l}} × {{studio.tray_w}} |
@@ -39,18 +38,17 @@ English: [read this guide in English](plumber.md) · Gucapa: [aya mabwiriza nka 
 
 1. **Ibiti mbere.** Tangira first fix gusa iyo ibiti (S03) byamaze gufatwa kandi impapuro za hasi zamaze gushyirwaho.
 2. **Igerageza rya bar 10.** Uzuza amazi mu matiyo ya PPR, ugumane bar 10 mu gihe cy'isaha imwe nta kugabanuka, ubyandike kandi ubisinyire mbere ya spray foam (S05). Foam ihisha amatiyo burundu.
-3. **Mbere y'abashyitsi.** Imiyoboro y'amazi yanduye yageragejwe yuzuzwa amazi (fill-test), vent yageragejwe n'umwotsi (smoke-test), TMV yapimwe kuri douche, kandi septic system y'ifamu yagenzuwe.
+3. **Mbere y'abashyitsi.** Imiyoboro y'amazi yanduye yageragejwe yuzuzwa amazi (fill-test), vent yageragejwe n'umwotsi (smoke-test), amazi ya douche yapimwe n'igipimabushyuhe, kandi septic system y'ifamu yagenzuwe.
 
 ## S04: first fix
 
 1. Zana umuyoboro mukuru w'amazi akonje (W1, mm 25) unyuze munsi ya hasi kuri end B, uwuzamure muri sink base unyuze kuri stop valve, Y-filter na check meter, aho amazi ashobora gufungwa nta gikoresho.
-2. Nyuza amazi akonje imbere mu tubati no mu nkuta: unyuze muri partition, muri lining y'urukuta rw'inyuma no mu rukuta rwa end B, ugere kuri cistern ya WC (W4), kuri lavabo (W5) no hejuru kuri heater (W2). Amatiyo y'amazi akonje agume mm 300 hejuru ya hasi.
-3. Manura amazi ashyushye (60 °C) uvuye kuri heater ugere kuri mixing valve (H1), hanyuma uyagarure ukurikiye izo nkuta zimwe ugere kuri sink (H2, yanditseho ko ari amazi ashyushye). Amatiyo y'amazi ashyushye agume mm 360 hejuru ya hasi.
-4. Uhereye kuri mixing valve, shyiraho imiyoboro ibiri y'amazi avanze (tempered runs): T1 ijya kuri valve ya douche, T2 ijya kuri lavabo. Buri muyoboro ni hafi m 1.2, munsi ya m 2 zemewe ku itiyo y'amazi avanze ahagararamo (dead leg).
-5. Buri muyoboro ugenda ugororotse: ukurikiye urukuta, hanyuma ukazamuka ugororotse ugera aho usohokera (outlet). Nta gice cy'itiyo kigenda kiberamye (diagonal).
-6. Manika imiyoboro y'amazi yanduye mu mwanya uri munsi ya hasi (kontineri ihagaze hafi mm 700 hejuru y'ubutaka): WC mm 110, douche mm 50, lavabo mm 40, ijya kuri inspection chamber (regard); sink y'igikoni mm 50 ku muyoboro wayo wihariye ujya kuri grease trap. Nyura hagati y'ibyuma byambukiranya (cross-members) bya mm 122, ntuzigere ubinyuramo.
-7. Ubuhaname (fall) bwa 1:40 cyangwa burenzeho; rodding eye (aho basukurira umuyoboro) kuri buri coude (bend); vent ya mm 75 izamuka kuri end B.
-8. Kora igerageza ry'umuvuduko kuri bar 10 mu gihe cy'isaha imwe, ufotore buri rukuta, usinye uruhushya rwo gushyiraho foam (release).
+2. Nyuza amazi akonje imbere mu tubati no mu nkuta: unyuze muri partition, muri lining y'urukuta rw'inyuma no mu rukuta rwa end B, ugere kuri cistern ya WC (W4), kuri lavabo (W5) no hejuru ku kirenge cya heater muri douche (W2). Amatiyo y'amazi akonje agume mm 300 hejuru ya hasi.
+3. Nta matiyo y'amazi ashyushye: amazi ashyushye yonyine ni ayo mu itiyo yoroshye (hose) ya douche ifatwa mu ntoki, ivuye hejuru kuri heater (H1).
+4. Buri muyoboro ugenda ugororotse: ukurikiye urukuta, hanyuma ukazamuka ugororotse ugera aho usohokera (outlet). Nta gice cy'itiyo kigenda kiberamye (diagonal).
+5. Manika imiyoboro y'amazi yanduye mu mwanya uri munsi ya hasi (kontineri ihagaze hafi mm 700 hejuru y'ubutaka): WC mm 110, douche mm 50, lavabo mm 40, ijya kuri inspection chamber (regard); sink y'igikoni mm 50 ku muyoboro wayo wihariye ujya kuri grease trap. Nyura hagati y'ibyuma byambukiranya (cross-members) bya mm 122, ntuzigere ubinyuramo.
+6. Ubuhaname (fall) bwa 1:40 cyangwa burenzeho; rodding eye (aho basukurira umuyoboro) kuri buri coude (bend); vent ya mm 75 izamuka kuri end B.
+7. Kora igerageza ry'umuvuduko kuri bar 10 mu gihe cy'isaha imwe, ufotore buri rukuta, usinye uruhushya rwo gushyiraho foam (release).
 
 [Table: Imiyoboro: ubwoko, ingano, uburebure n'ubuhaname](../../public/designs/studio/data/pipes.csv)
 
@@ -60,17 +58,17 @@ English: [read this guide in English](plumber.md) · Gucapa: [aya mabwiriza nka 
 
 1. S09: shyiraho tray yo kwiyuhagiriramo ({{studio.tray_l}} × {{studio.tray_w}}) ku mwobo wayo usohora amazi (waste) wa mm 90, hamwe na ledge y'umubaji n'ikirahure gihamye (screen).
 2. S10: manika WC ifatwa ku rukuta (wall-hung) kuri cistern yayo yoroheje ihishe mu rukuta (concealed cistern): ikadiri ya mm 80 mu rukuta rwa end B, urukuta rwongerewe mm 30 imbere (build-out), na dual-flush plate.
-3. S10: manika agasanduku ka heater ka L {{studio.heater_l}} (450 × 450 × 300) hejuru ya WC; uyobore hanze itiyo ya valve yayo irekura ubushyuhe n'umuvuduko birenze (temperature-and-pressure relief valve).
-4. S10: shyiraho lavabo (400 × 300) na mixer yayo hamwe na bottle trap (siphon) mu gice cyo gukarabiramo (wash lobby); shyiraho na valve ya douche igenga ubushyuhe (thermostatic shower valve), umutwe wa douche (head) na rail ku rukuta rwa end B.
-5. S13: robine ivanga y'igikoni (kitchen mixer tap) kuri angle valves, n'akayunguruzo k'amazi yo kunywa (drinking-water filter) muri sink base, gafite robine yako bwite iruhande rwa robine ivanga.
+3. S10: manika heater ihita ishyushya amazi ya {{studio.heater_kw}} kW (200 × 330 × 90) ku rukuta rwa end B imbere muri douche, hagati ya rail n'ikirahure, ecran yayo iri hafi m 1.3 hejuru ya hasi; uhuze amazi akonje ku kirenge cyayo na hose ya douche hejuru yayo. Nta kigega ifite, bityo ntikeneye relief valve.
+4. S10: shyiraho lavabo (400 × 300) na robine yayo y'amazi akonje hamwe na bottle trap (siphon) mu gice cyo gukarabiramo (wash lobby); shyiraho na rail na douche ifatwa mu ntoki ku rukuta rwa end B.
+5. S13: robine y'igikoni (amazi akonje) kuri angle valve yayo, n'akayunguruzo k'amazi yo kunywa (drinking-water filter) muri sink base, gafite robine yako bwite iruhande rwa robine y'igikoni.
 
 ## Amagerageza (tests)
 
 1. PPR kuri bar 10 mu gihe cy'isaha imwe, mbere ya foam (S04).
 2. Gerageza buri muyoboro w'amazi yanduye uwuzuza amazi (fill-test), kandi ugenzure ko buri siphon (trap) igumana amazi ayifunga (seal).
 3. Gerageza vent ukoresheje umwotsi (smoke-test).
-4. Pima amazi avanze kuri douche ukoresheje igipimabushyuhe (thermometer): 41 kugeza 44 °C.
-5. Fungura douche y'amazi ashyushye, hanyuma ubare igihe heater imara: hafi iminota 40 kugira ngo yongere gushyushya amazi.
+4. Fungura douche yose, upime amazi ukoresheje igipimabushyuhe (thermometer): hafi 40 °C. Niba ashyushye cyane, gabanya ubushyuhe kuri ecran ya heater.
+5. Fungura douche igihe kirekire: amazi agumana ubushyuhe, kuko heater nta kigega ifite cyashira.
 
 ## Ibyo sitidiyo ikeneye ku ifamu
 

@@ -18,11 +18,11 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](electrician.rw.md) · Print: [t
 
 | What | Design |
 |---|---|
-| Supply | one inlet 32 A, IP67, IEC 60309 blue (2P+E), outside the back wall straight behind the board; any 230 V source |
-| Main | 32 A double-pole breaker (C curve) and a DIN kWh check meter; tails 6 mm² through a gland |
+| Supply | one inlet 63 A, IP67, IEC 60309 blue (2P+E), outside the back wall straight behind the board; any 230 V source |
+| Main | 63 A double-pole breaker (C curve) and a DIN kWh check meter; tails 16 mm² through a gland |
 | Board | 24 modules in two rows of 12: main, check meter, type 2 SPD, priority relay and its contactor, one RCBO (30 mA, type A) per circuit |
 | Circuits | 8, C1 to C8 (table below) |
-| Maximum demand | 30.0 A diversified: lights 0.3 + fans 0.3 + sockets 16.4 + the larger of the hob 11.6 or the heater 8.7 with the AC 4.3 |
+| Maximum demand | 45.3 A diversified: lights 0.3 + fans 0.3 + sockets 16.4 + the larger of the hob 11.6 or the instant shower heater 23.9 with the AC 4.3 (D-053) |
 | Earthing | TT: one earth rod per container; never a combined neutral-earth (PME) supply |
 | Cable route | 20 mm conduit in the batten cavities, buried in spray foam after the first fix |
 
@@ -42,7 +42,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](electrician.rw.md) · Print: [t
 1. Set the board box on the back wall at the galley, and the inlet outside straight behind it: positions DB and PI in the points table.
 2. Drive the earth rod (E1) outside end B and run its conductor to the board's earth bar; measure its resistance later, at the tests.
 3. Run 20 mm conduit up from the board into the ceiling void, along it, then straight down to each box. No diagonal runs; fix every box to a batten.
-4. Pull the cables per circuit: 1.5 mm² for C1 and C6, 2.5 mm² for C2, C3, C5, C7 and C8, 4 mm² for C4.
+4. Pull the cables per circuit: 1.5 mm² for C1 and C6, 2.5 mm² for C2, C3, C7 and C8, 4 mm² for C4, 6 mm² for C5 (the instant shower heater).
 5. Take C6, the outdoor lights, out through one gland in the solid front strip at the bed end, then in UV-stable conduit outside.
 6. Bathroom: an IP65 light and an IPX4 extract fan (zone 1, above the tray and below 2.25 m), no sockets, switched from outside the door.
 7. Write each point's id on the steel beside its box, so the carpenter cuts the lining panels in the right places.
@@ -54,10 +54,10 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](electrician.rw.md) · Print: [t
 
 ## S19: second fix
 
-1. Fit the board: the main breaker and check meter, the SPD, the priority relay and contactor, and the RCBOs (B6 for C1 and C6, B16 for C2, C3, C5, C7 and C8, B20 for C4).
+1. Fit the board: the main breaker and check meter, the SPD, the priority relay and contactor, and the RCBOs (B6 for C1 and C6, B16 for C2, C3, C7 and C8, B20 for C4, B25 for C5).
 2. Fit the devices: lights, fans, sockets, the hob outlet (P9, isolated at its RCBO on the board, in sight), the smoke and heat alarms (AL1, AL2).
 3. Bond the container body, the front deck, the stair and the roof steelwork to the main earthing terminal.
-4. Check the priority relay: with the hob on, the water heater (C5) and the AC (C7) must drop out.
+4. Check the priority relay: with the hob on, the shower heater (C5) and the AC (C7) must drop out. The contactor is 40 A: it carries the heater's 23.9 A.
 
 ## Tests before power-on
 
@@ -71,7 +71,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](electrician.rw.md) · Print: [t
 
 ## Feeding the inlet
 
-- Any 230 V, 50 Hz source can feed the inlet (the site board, a generator or a solar inverter) if it protects its own cable at 32 A or less. Which source the farm uses is the [power guide](power.md)'s question.
+- Any 230 V, 50 Hz source can feed the inlet (the site board, a generator or a solar inverter) if it protects its own cable at 63 A or less. Which source the farm uses is the [power guide](power.md)'s question.
 - The kWh meter in each studio is a check meter for monitoring only: electricity is in the room rate.
 
 ## Drawings

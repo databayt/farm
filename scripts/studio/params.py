@@ -54,8 +54,7 @@ O2_X1 = Param(5510, "mm", "E", "AS-14")
 
 # ----------------------------------------------------------------------------- services
 SUPPLY_V = Param(230, "V", "V", "STU-18")
-HEATER_L = Param(30, "L", "A", "D-024")  # a box in the bathroom; D-015 had 80 L
-HEATER_KW = Param(2.0, "kW", "A", "")
+HEATER_KW = Param(5.5, "kW", "A", "D-053")  # instant box by the shower; D-024 had a 30 L, 2 kW tank
 HOB_KW = Param(3.5, "kW", "A", "")
 GUESTS = Param(2, "persons", "A", "AS-16")
 STUDIO_UNITS = ("U1", "U2")  # two studios; the third box is the office (D-017)

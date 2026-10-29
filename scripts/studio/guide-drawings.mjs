@@ -42,7 +42,7 @@ const T = {
     centres: "batten centres", joint: "panel joint", screws: "winged screws 5.5 × 50: both ends + every 600",
     head: "head battens", sliderGap: "sliding door opening", ceilingB: "CEILING (seen from below)",
     panels: "lining panels, plywood 12 (ids from the cut list)", over: "over the slider", tray: "tray 1000 × 900",
-    glass: "fixed glass", heater: "30 L heater box above the WC", tmv: "mixing valve panel",
+    glass: "fixed glass", heater: "instant heater in the shower",
     worktop: "worktop 38", legs: "legs", overhead: "overhead cabinet", hood: "hood", plinth: "plinth",
     depth: "bases 600 deep · worktop 620 deep", frontView: "seen from the living room, facing the partition",
     fromBackFin: "from the finished back wall", up: "up from the finished floor", ledge: "ledge",
@@ -66,7 +66,7 @@ const T = {
     joint: "aho impapuro zihurira", screws: "vis zifite amababa 5.5 × 50: ku mpera zombi + buri 600",
     head: "ibiti byo hejuru", sliderGap: "umwanya w'urugi runyerera", ceilingB: "IGISENGE (urebye uri hasi)",
     panels: "impapuro za lining, pulayiwudi 12 (nimero zo muri cut list)", over: "hejuru y'urugi runyerera",
-    tray: "tray 1000 × 900", glass: "ikirahure gihamye", heater: "heater ya L 30 hejuru ya WC", tmv: "aho TMV iri",
+    tray: "tray 1000 × 900", glass: "ikirahure gihamye", heater: "heater ihita ishyushya amazi, muri douche",
     worktop: "worktop 38", legs: "amaguru", overhead: "akabati ko hejuru", hood: "hood", plinth: "plinth",
     depth: "ubujyakuzimu: ibice byo hasi 600 · worktop 620", frontView: "urebye uri mu cyumba, ureba partition",
     fromBackFin: "uhereye ku rukuta rurangiye rw'inyuma", up: "uhereye hasi harangiye ujya hejuru", ledge: "ledge",
@@ -389,8 +389,9 @@ function bathroom(t, lang) {
   b(scene.wc, C.fit, t.wc)
   b(scene.basin, C.fit, t.basin, 60)
   s.rect(scene.wall_b, 0, L - scene.wall_b, W, "#d8d2c6", C.ink, 4)
-  s.line(scene.wall_b - 10, 1075, scene.wall_b - 10, 1525, C.cut, 22)
-  s.text(x0 + 40, W + 330, `${t.heater}: 450 × 450 × 300`, { size: 75, anchor: "start", fill: C.cut, weight: 700 })
+  const wh = scene.fittings.find((f) => f.id === "WH"), [hw, hh, hd] = wh.size
+  s.line(scene.wall_b - 10, wh.at[1] - hw / 2, scene.wall_b - 10, wh.at[1] + hw / 2, C.cut, 22)
+  s.text(x0 + 40, W + 330, `${t.heater}: ${hw} × ${hh} × ${hd}`, { size: 75, anchor: "start", fill: C.cut, weight: 700 })
   s.text(x0 + 40, W + 470, `${t.wc}: 520 × 380 · ${t.basin}: 300 × 400 · ${t.glass}: 700`, { size: 75, anchor: "start" })
   s.text((x0 + scene.part_x0) / 2, W / 2, t.kitchen, { size: 75, weight: 700, rotate: -90 })
   s.text(x0, -1000, t.bathroom, { size: 110, weight: 700, anchor: "start" })

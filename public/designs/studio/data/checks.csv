@@ -21,14 +21,12 @@ E-C1,Indoor lights and fans: Ib <= In <= Iz; drop <= 3.0%,pass,"Ib 0.6 A, In 6 A
 E-C2,"Sockets: bed, sofa and deck: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 8.0 A, In 16 A, Iz 18.3 A, drop 1.52%"
 E-C3,"Kitchen sockets, fridge and hood: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 14.0 A, In 16 A, Iz 18.3 A, drop 1.35%"
 E-C4,Induction hob: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 15.2 A, In 20 A, Iz 24.4 A, drop 0.32%"
-E-C5,30 L water heater: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 8.7 A, In 16 A, Iz 18.3 A, drop 0.27%"
+E-C5,Instant shower heater 5.5 kW: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 23.9 A, In 25 A, Iz 32.0 A, drop 0.30%"
 E-C6,"Outdoor lights: deck, stair and roof: Ib <= In <= Iz; drop <= 3.0%",pass,"Ib 0.2 A, In 6 A, Iz 13.6 A, drop 0.03%"
 E-C7,AC provision: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 12.0 A, In 16 A, Iz 18.3 A, drop 0.37%"
-E-MD,Diversified maximum demand within a 32 A inlet (the size any source plugs into),pass,30.0 A
+E-MD,Diversified maximum demand within a 63 A inlet (D-053),pass,45.3 A
 P-D1,DN110 soil fall at least 1:40,pass,steepest-needed 1:38
 P-D2,DN50 waste fall at least 1:40,pass,steepest-needed 1:34
 P-D3,DN40 waste fall at least 1:40,pass,steepest-needed 1:28
 P-D4,DN50 waste fall at least 1:40,pass,steepest-needed 1:26
 P-ROUTE,Every pipe leg along one axis (drains with their fall),pass,
-P-T1,Tempered leg at most 2 m from the TMV,pass,1.21 m
-P-T2,Tempered leg at most 2 m from the TMV,pass,1.20 m

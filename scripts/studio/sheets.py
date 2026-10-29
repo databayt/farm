@@ -43,7 +43,7 @@ def a001_cover(m, index: list[tuple[str, str]]) -> Sheet:
     y = s.note(20, 54, [
         f"Net interior {lo.L:.0f} x {lo.W:.0f} x {lo.H:.0f} mm ({lo.L * lo.W / 1e6:.1f} m2) · Layout B (D-020)",
         f"MALM-style bed up to 1,600 x 2,000 with two storage boxes, bedside table and lamp · sofa, low table, two chairs",
-        f"Galley {lo.sink[1]:.0f} mm on the bathroom wall: fridge, induction, sink; {P.HEATER_L.value:.0f} L heater over the WC",
+        f"Galley {lo.sink[1]:.0f} mm on the bathroom wall: fridge, induction, sink; {P.HEATER_KW.value:g} kW instant heater in the shower",
         f"Bathroom {lo.L - lo.bath_x0:.0f} x {lo.W:.0f} mm · shower tray {lo.tray[1] - lo.tray[0]:.0f} x 900",
         f"Max demand about {m['md']['total_A']:.0f} A per unit (heater + AC shed while the hob runs) · {m['inlet']['rating_A']:.0f} A inlet",
         f"Shared septic {m['site']['septic_m3']:.1f} m3, 2 chambers 2:1 · storage tank {m['site']['tank_m3']:.1f} m3",
@@ -593,8 +593,8 @@ def p201_iso(m) -> Sheet:
     fl = [(0, 0, 0), (lo.L, 0, 0), (lo.L, lo.W, 0), (0, lo.W, 0)]
     s.poly([(ox + iso(*p)[0] * sc, oy + iso(*p)[1] * sc) for p in fl], "none", "#999", 0.2)
     s.note(25, 30, [
-        f"Supply: PPR PN20, 20/25 mm. Hot leaves the {P.HEATER_L.value:.0f} L heater at 60 C; a thermostatic mixer",
-        "(TMV) delivers 41-44 C to the shower and basin; the kitchen sink gets direct hot (labelled).",
+        f"Supply: PPR PN20, 20/25 mm, cold only. A {P.HEATER_KW.value:g} kW instant heater in the shower",
+        "heats the shower alone, set on its own display; the sink and the basin are cold.",
         "Drainage hangs in the void under the raised floor (the container is about 700 mm up),",
         "between cross-members: WC 110, shower and sink 50, basin 40, falls at least 1:40.",
         "Vent: 75 mm open vent up end B to 900 above the guardrail line (or an AAV inside).",

@@ -28,7 +28,7 @@
                 every fitting dark and each run in its system's colour, dashed where a wall or the floor hides it,
                 and sets window.TAGS -> render/plumbing-line.png + render/plumbing-tags.json; real mode shows the
                 finished fittings and every pipe the cuts open -> render/plumbing-real.jpg
-    &item=<meter|heater|tmv|kitchentap|filter|showerset|cistern|basintap>  one fitting where it stands, everything
+    &item=<meter|heater|kitchentap|filter|showerset|cistern|basintap>  one fitting where it stands, everything
                 else dropped; &item=<anglevalve|ppr|upvc|vent> a sample on its own -> render/plumbing/<id>.webp
   A piece on its own renders on a transparent ground (real mode): save the data URL in #out as is. The furniture follows the photos in ~/farm/ikea
   for look (FRIDHULT sofa, MALM bed with storage boxes, LACK tables, a vessel basin on a black
@@ -76,7 +76,7 @@ const DEVICES = new Set(["board", "inlet", "ceiling", "bulkhead", "strip", "swit
   "socket66", "outlet", "timer", "isolator", "wallfan", "extract", "alarm", "earth"])
 const PLUMB = Q.get("view") === "plumbing"
 // plumbing pieces the rail renders one by one: each fitting where it stands (services.py FIT_SIZE), and samples
-const FITS = new Set(["meter", "heater", "tmv", "kitchentap", "filter", "showerset", "cistern", "basintap"])
+const FITS = new Set(["meter", "heater", "kitchentap", "filter", "showerset", "cistern", "basintap"])
 const SAMPLES = new Set(["anglevalve", "ppr", "upvc", "vent"])
 const OPEN = PLUMB && !ITEM // the sink base and the bathroom's wet walls opened, so their pipework shows
 const BEDP = BED || ITEM === "bed" ? await (await fetch(`/public/designs/studio/render/bed/parts.json?${Date.now()}`)).json() : null
@@ -759,7 +759,9 @@ if (!ITEM || ROOM_ITEMS.has(ITEM) || FITS.has(ITEM)) {
 // ------------------------------------------------------------ bathroom: shower, WC, basin (look of the photos)
 if (!ITEM || ROOM_ITEMS.has(ITEM) || FITS.has(ITEM)) {
   TAG = "shower"
-  // shower: low tray with a round drain, frameless glass screen, a bar and a round head on end wall B
+  // shower: low tray with a round drain, frameless glass screen; on end wall B a slide rail with the hand shower and,
+  // between the rail and the glass, the instant heater (D-053, after the founder's photo): a white box with a dark
+  // display low on its front, cold in at its foot, its hose from the top to the hand shower
   const [tx0, , tz0, tx1, ty1, tz1] = L3(S.tray)
   box(tx0, 0, tz0, tx1, ty1, tz1, "ceramic", 0.01)
   cyl((tx0 + tx1) / 2, ty1 + 0.001, (tz0 + tz1) / 2, 0.05, 0.004, "steel")
@@ -768,11 +770,22 @@ if (!ITEM || ROOM_ITEMS.has(ITEM) || FITS.has(ITEM)) {
   box(gx0 - 0.004, gy0, gz0 - 0.002, gx0 + 0.004, gy1, gz1 + 0.002, "steel") // the free edge
   box(gx1 - 0.012, gy0, gz0 - 0.004, gx1, gy1, gz1 + 0.004, "steel") // wall channel
   const barX = wb - 0.035, barZ = (tz0 + tz1) / 2, ns = meshes.length
-  cyl(barX, 1.45, barZ, 0.012, 1.0, "steel")
-  cyl(barX - 0.02, 1.98, barZ, 0.1, 0.015, "steel", "x", 48) // shower head
-  box(wb - 0.06, 1.05, barZ - 0.09, wb, 1.17, barZ + 0.09, "steel", 0.02) // thermostatic valve
-  cyl(wb - 0.075, 1.11, barZ, 0.03, 0.03, "black", "x")
+  cyl(barX, 1.45, barZ, 0.012, 1.0, "steel") // the slide rail
+  box(barX - 0.03, 1.66, barZ - 0.02, barX - 0.005, 1.7, barZ + 0.02, "steel", 0.004) // the holder
+  cyl(barX - 0.045, 1.66, barZ, 0.016, 0.2, "black") // the hand shower: its handle, then the head tipped out
+  const hand = cyl(barX - 0.07, 1.79, barZ, 0.05, 0.022, "black", "x", 48)
+  hand.rotation.z = Math.PI / 2 - 0.35
   fitted(ns, "showerset")
+  const wh = S.fittings.find((f) => f.id === "WH"), nh = meshes.length
+  const [, hcz, hcy] = wh.at, [hw, hh, hd] = wh.size.map(m), hy = m(hcz), hz0 = m(hcy) - hh / 2
+  box(wb - hd, hz0, hy - hw / 2, wb, hz0 + hh, hy + hw / 2, "white", 0.012) // the box
+  box(wb - hd - 0.003, hz0 + 0.04, hy - hw / 2 + 0.025, wb - hd + 0.001, hz0 + 0.11, hy + hw / 2 - 0.025, "black", 0.006)
+  cyl(wb - 0.04, hz0 + hh + 0.025, hy, 0.016, 0.05, "white") // hot out the top, a red ring under it
+  cyl(wb - 0.04, hz0 + hh + 0.004, hy, 0.02, 0.008, "red")
+  cyl(wb - 0.04, hz0 - 0.03, hy, 0.012, 0.06, "steel") // cold in at the foot
+  add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([[wb - 0.04, hz0 + hh + 0.05, hy], [wb - 0.05, hz0 + hh + 0.12, hy - 0.04],
+    [wb - 0.12, 1.42, (hy + barZ) / 2], [barX - 0.045, 1.56, barZ]].map((q) => new THREE.Vector3(...q))), 40, 0.006, 10, false), "steel")
+  fitted(nh, "heater")
 
   TAG = "wc"
   // WC: a wall-hung pan straight off the finished end wall, no box; the flush plate sits on the wall above
@@ -982,28 +995,10 @@ if (PLUMB || FITS.has(ITEM) || SAMPLES.has(ITEM)) {
       pc(px, y, z + 60, 19, 90, "meter"); pc(px - 26, y, z + 60, 36, 30, "meter", "x") // the meter
       pc(px - 42, y, z + 60, 30, 3, "white", "x") // its dial, to the room
     },
-    heater(f) { // a white box on its wall bracket above the WC, a dial on its front; cold in and hot out below, and
-      // the T&P valve between them, its discharge into the wall
-      const [x, y, z] = f.at, [w, h, d] = f.size, z0 = z - h / 2
-      pb(x - 12, y - w / 2 + 70, z - h / 2 + 60, x, y + w / 2 - 70, z + h / 2 - 60, "steel") // the bracket
-      pb(x - d, y - w / 2, z0, x - 12, y + w / 2, z0 + h, "white", 36)
-      pc(x - d - 5, y - w * 0.2, z + h * 0.18, 34, 12, "steel", "x"); pc(x - d - 11, y - w * 0.2, z + h * 0.18, 26, 4, "black", "x")
-      pb(x - d - 3, y + w * 0.08, z + h * 0.14, x - d + 1, y + w * 0.3, z + h * 0.22, "black", 2) // its display
-      for (const dy of [130, 190]) pc(x - 100, y + dy, z0 - 12, 13, 24, "brass")
-      pc(x - 100, y + 60, z0 - 18, 14, 36, "brass"); pb(x - 106, y + 46, z0 - 30, x - 94, y + 54, z0 - 4, "red", 3)
-      pc(x - 50, y + 60, z0 - 40, 10, 100, "ppr", "x")
-    },
-    tmv(f) { // in end wall B (behind an access panel once tiled; the opened wall shows it): hot and cold in at its foot,
-      // mixed water out the top
-      const [, y, z] = f.at
-      pc(xb, y, z, 26, 90, "steel", "z", true) // the body
-      pc(xb - 34, y, z + 12, 21, 26, "steel", "x", true); pc(xb - 50, y, z + 12, 16, 8, "white", "x", true) // its setting cap
-      for (const s of [-1, 1]) pc(xb, y + s * 34, z - 45, 11, 30, "brass", "y", true) // the hot and cold inlets
-      pc(xb, y, z + 52, 11, 16, "brass", "z", true) // mixed out
-    },
-    kitchentap(f) { // the tap is the room's: its two angle valves on the back of the sink base, braided tails up
+    heater() {}, // the room's: the instant heater in the shower, with its hose to the hand shower
+    kitchentap(f) { // the tap is the room's: its cold angle valve on the back of the sink base, a braided tail up
       const [x, y] = f.at, wx = x + 50
-      for (const dy of [45, -45]) {
+      for (const dy of [0]) {
         angleValve(wx, y + dy, 600)
         hose([[wx - 26, y + dy, 625], [wx - 34, y + dy * 0.6, 760], [x, y + dy * 0.2, 862]])
       }
@@ -1019,16 +1014,16 @@ if (PLUMB || FITS.has(ITEM) || SAMPLES.has(ITEM)) {
       hose(ITEM ? [[x + 62, y + 58, z + 170], [x + 150, y + 58, z + 120], [fx, fy, fz]]
         : [[x + 62, y + 58, z + 170], [fx - 30, fy, 760], [fx, fy, fz]], 3)
     },
-    showerset() {}, // all the room's: the thermostatic valve, the rail and the head
+    showerset() {}, // all the room's: the slide rail and the hand shower
     cistern(f) { // the slim frame in end wall B's cavity, the cistern near its top, behind the flush plate
       const [x, y] = f.at, [w, h] = f.size, x0 = x + 6, x1 = x + 74
       for (const dy of [-w / 2 + 20, w / 2 - 20]) pb(x0, y + dy - 20, 0, x1, y + dy + 20, h, "steel", 0, true)
       pb(x0, y - w / 2, h - 40, x1, y + w / 2, h, "steel", 0, true)
       pb(x0 + 4, y - w / 2 + 40, 640, x1 - 4, y + w / 2 - 40, 1060, "white", 6, true)
     },
-    basintap(f) { // the mixer is the room's: its angle valves on the wall under the top, tails up, the bottle trap
+    basintap(f) { // the tap is the room's: its cold angle valve on the wall under the top, a tail up, the bottle trap
       const [x, y] = f.at, wx = S.L
-      for (const dy of [-45, 45]) {
+      for (const dy of [0]) {
         angleValve(wx, y + dy, 600)
         hose([[wx - 26, y + dy, 625], [wx - 40, y + dy * 0.5, 720], [x, y + dy * 0.2, 800]])
       }
@@ -1058,6 +1053,7 @@ if (PLUMB || FITS.has(ITEM) || SAMPLES.has(ITEM)) {
       mk(add(g.translate(A.x, A.y, A.z), pm(name)))
     }
     for (const r of S.pipes) {
+      if (r.system === "hot") continue // the shower hose, drawn with the heater
       const name = ["cold", "hot", "tempered"].includes(r.system) ? "ppr" : "upvc", rad = m(r.dn / 2)
       const s = segs(r.path, 0, S.H, S.L + S.lining)
       for (const q of s) tube(q, rad, name)

@@ -84,7 +84,7 @@ def check(kits: list[Kit], lo, circuits, md, runs) -> tuple[list[str], list[dict
         if not ok1 or vd > lim:
             errors.append(f"circuit {c.id} fails Ib/In/Iz or voltage drop")
     report.append({"id": "E-MD", "rule": f"Diversified maximum demand within a {STANDARD_INLET_A:.0f} A inlet "
-                   "(the size any source plugs into)",
+                   "(D-053)",
                    "result": "pass" if md["total_A"] <= STANDARD_INLET_A else "FAIL", "detail": f"{md['total_A']:.1f} A"})
     if md["total_A"] > STANDARD_INLET_A:
         errors.append(f"maximum demand exceeds the {STANDARD_INLET_A:.0f} A inlet")

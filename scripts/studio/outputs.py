@@ -361,7 +361,7 @@ def write_dims(m, out: Path) -> None:
         "aisle": r(lo.part_x0 - WORKTOP_D - lo.sofa[1]), "aisle_min": AISLE_MIN,
         "part_x0": r(lo.part_x0), "part_t": r(lo.part_t), "bath_x0": r(lo.bath_x0), "wall_b": r(lo.wall_b),
         "tray_l": r(lo.tray[1] - lo.tray[0]), "tray_w": r(lo.tray[3] - lo.tray[2]),
-        "heater_l": r(P.HEATER_L.value),
+        "heater_kw": P.HEATER_KW.value,
         "parts": sum(1 for k in m["kits"] for p in k.parts if p.sheet and p.material in P.SHEETS),
         "sheets": {mat: sum(1 for sl in m["layouts"] if sl.material == mat) for mat in sorted({sl.material for sl in m["layouts"]})},
     }

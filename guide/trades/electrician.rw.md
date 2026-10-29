@@ -20,11 +20,11 @@ English: [read this guide in English](electrician.md) · Gucapa: [aya mabwiriza 
 
 | Iki | Igishushanyo (design) |
 |---|---|
-| Aho umuriro uturuka (supply) | inlet imwe ya 32 A (aho umuriro winjirira), IP67, IEC 60309 y'ubururu (2P+E), hanze ku rukuta rw'inyuma, inyuma neza ya board; isoko y'umuriro iyo ari yo yose ya 230 V |
-| Breaker nkuru (main) | breaker (disjoncteur) double-pole ya 32 A (C curve) na DIN kWh check meter (mubazi yo kugenzura); tails za 6 mm² zinyura muri gland |
+| Aho umuriro uturuka (supply) | inlet imwe ya 63 A (aho umuriro winjirira), IP67, IEC 60309 y'ubururu (2P+E), hanze ku rukuta rw'inyuma, inyuma neza ya board; isoko y'umuriro iyo ari yo yose ya 230 V |
+| Breaker nkuru (main) | breaker (disjoncteur) double-pole ya 63 A (C curve) na DIN kWh check meter (mubazi yo kugenzura); tails za 16 mm² zinyura muri gland |
 | Board (tableau) | imyanya 24 (modules) mu mirongo ibiri ya 12: breaker nkuru, check meter, SPD type 2, priority relay na contactor yayo, RCBO imwe (30 mA, type A) kuri buri muzunguruko (circuit) |
 | Imizunguruko (circuits) | 8, kuva C1 kugeza C8 (imbonerahamwe iri hepfo) |
-| Umuriro ntarengwa ukenewe (maximum demand) | 30.0 A (diversified): amatara 0.3 + fans 0.3 + priza (sockets) 16.4 + ikinini muri ibi bibiri: hob 11.6, cyangwa heater 8.7 hamwe na AC 4.3 |
+| Umuriro ntarengwa ukenewe (maximum demand) | 45.3 A (diversified): amatara 0.3 + fans 0.3 + priza (sockets) 16.4 + ikinini muri ibi bibiri: hob 11.6, cyangwa heater ya douche ihita ishyushya amazi 23.9 hamwe na AC 4.3 (D-053) |
 | Earthing (guhuza n'ubutaka) | TT: earth rod (piquet de terre) imwe kuri buri kontineri; ntuzigere ukoresha umuriro (supply) uhuza neutral na earth (PME) |
 | Inzira y'insinga (cable route) | conduit ya mm 20 mu myanya iri hagati y'ibiti (battens), itwikirwa na spray foam nyuma ya first fix |
 
@@ -44,7 +44,7 @@ English: [read this guide in English](electrician.md) · Gucapa: [aya mabwiriza 
 1. Shyira agasanduku ka board ku rukuta rw'inyuma aho igikoni kiri, n'inlet hanze, inyuma yako neza: ni imyanya DB na PI mu mbonerahamwe ya points.
 2. Shinga earth rod (E1) hanze ya end B, ukurure insinga yayo uyigeze kuri earth bar ya board; resistance yayo uzayipima nyuma, mu gihe cy'igerageza.
 3. Zamura conduit ya mm 20 uhereye kuri board ujya mu mwanya uri mu gisenge (ceiling void), uyinyuze muri uwo mwanya, hanyuma uyimanure ugororotse ujya kuri buri gasanduku. Nta conduit ihengamye (diagonal); fata buri gasanduku ku giti (batten).
-4. Kurura insinga za buri muzunguruko (circuit): 1.5 mm² kuri C1 na C6, 2.5 mm² kuri C2, C3, C5, C7 na C8, 4 mm² kuri C4.
+4. Kurura insinga za buri muzunguruko (circuit): 1.5 mm² kuri C1 na C6, 2.5 mm² kuri C2, C3, C7 na C8, 4 mm² kuri C4, 6 mm² kuri C5 (heater ya douche ihita ishyushya amazi).
 5. Sohora C6 (amatara yo hanze) unyujije muri gland imwe iri ku gice cy'urukuta rw'imbere kidafite ikirahure (solid front strip), ku ruhande rw'igitanda; hanze, ukomeze muri conduit itangizwa n'izuba (UV-stable).
 6. Ubwiherero: itara rya IP65 na fan isohora umwuka (extract fan) ya IPX4 (zone 1, hejuru ya tray kandi munsi ya m 2.25), nta priza, kandi switch yabyo iri hanze y'urugi.
 7. Andika nimero (id) ya buri point ku cyuma iruhande rw'agasanduku kayo, kugira ngo umubaji akate impapuro za lining ahantu nyaho.
@@ -56,10 +56,10 @@ English: [read this guide in English](electrician.md) · Gucapa: [aya mabwiriza 
 
 ## S19: second fix (imirimo ya kabiri)
 
-1. Shyiraho ibigize board: breaker nkuru (main breaker) na check meter, SPD, priority relay na contactor, na RCBO zose (B6 kuri C1 na C6, B16 kuri C2, C3, C5, C7 na C8, B20 kuri C4).
+1. Shyiraho ibigize board: breaker nkuru (main breaker) na check meter, SPD, priority relay na contactor, na RCBO zose (B6 kuri C1 na C6, B16 kuri C2, C3, C7 na C8, B20 kuri C4, B25 kuri C5).
 2. Shyiraho ibikoresho (devices): amatara, fans, priza, aho hob icomekwa (hob outlet P9: umuriro wayo ucibwa kuri RCBO yayo muri board, igaragara uri kuri hob), n'alarms z'umwotsi n'ubushyuhe (AL1, AL2).
 3. Huza (bond) na main earthing terminal: kontineri ubwayo, deck y'imbere, esikariye n'ibyuma byo ku gisenge (roof steelwork).
-4. Genzura priority relay: iyo hob ikora, water heater (C5) na AC (C7) bigomba kuzima.
+4. Genzura priority relay: iyo hob ikora, heater ya douche (C5) na AC (C7) bigomba kuzima. Contactor ni iya 40 A: inyuramo 23.9 A za heater.
 
 ## Igerageza mbere yo guha umuriro
 
@@ -73,7 +73,7 @@ English: [read this guide in English](electrician.md) · Gucapa: [aya mabwiriza 
 
 ## Guha inlet umuriro
 
-- Isoko y'umuriro iyo ari yo yose ya 230 V, 50 Hz ishobora guha inlet umuriro (board yo ku kibanza, generator cyangwa inverter y'imirasire y'izuba), niba irinda insinga yayo kuri 32 A cyangwa munsi yaho. Isoko y'umuriro ifamu izakoresha ni ikibazo gisubizwa mu [mabwiriza y'umuriro (power guide)](power.md).
+- Isoko y'umuriro iyo ari yo yose ya 230 V, 50 Hz ishobora guha inlet umuriro (board yo ku kibanza, generator cyangwa inverter y'imirasire y'izuba), niba irinda insinga yayo kuri 63 A cyangwa munsi yaho. Isoko y'umuriro ifamu izakoresha ni ikibazo gisubizwa mu [mabwiriza y'umuriro (power guide)](power.md).
 - Mubazi ya kWh muri buri sitidiyo ni mubazi yo kugenzura (check meter) gusa, igamije gukurikirana: amashanyarazi abarirwa mu giciro cy'icyumba.
 
 ## Ibishushanyo

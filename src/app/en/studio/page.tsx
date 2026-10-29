@@ -107,7 +107,7 @@ function galleyRail() {
     { id: "hob", title: "Induction hob", size: "590 × 350 mm, two zones side by side, about 3.5 kW", where: "Not sourced yet", cost: est(250_000),
       note: "Black glass with front knobs. No gas indoors." },
     { id: "sink", title: "Sink and tap", size: "Inset bowl about 380 × 420 mm", where: HARDWARE_DISTRICT, cost: est(70_000 + 45_000),
-      note: "Stainless single bowl with a mixer tap. A drinking-water filter goes under it (RWF 80,000 estimate)." },
+      note: "Stainless single bowl with a cold tap. A drinking-water filter goes under it (RWF 80,000 estimate)." },
     { id: "hood", title: "Cooker hood", size: "600 mm wide, slim", where: "Not sourced yet", cost: est(90_000 + boardCost((id) => id === "K3-HS")),
       note: "Black, recirculating with a charcoal filter, on its own shelf under the cabinet." },
     { id: "overhead", title: "Wall cabinet", size: "1.60 × 0.50 m, 0.50 m high", where: "Built in the workshop from 18 mm board (kit K3)",
@@ -117,11 +117,11 @@ function galleyRail() {
 function bathRail() {
   return rail("bath", [
     { id: "shower", title: "Shower", size: "Tray 1,000 × 900 mm, glass screen 700 × 2,000 mm", where: HARDWARE_DISTRICT, cost: est(120_000 + 180_000),
-      note: "A low tray with a 90 mm waste and a fixed 8 mm toughened glass screen." },
+      note: "A low tray with a 90 mm waste, a fixed 8 mm toughened glass screen, and the instant heater on the wall beside the hand shower." },
     { id: "wc", title: "WC", size: "Wall-hung, 520 mm projection", where: HARDWARE_DISTRICT, cost: est(150_000 + 220_000),
       note: "A soft-close seat, on a slim concealed cistern frame with a dual-flush plate." },
     { id: "basin", title: "Basin", size: "400 × 300 mm", where: HARDWARE_DISTRICT, cost: est(90_000),
-      note: "With a mixer and a bottle trap, outside the shower door." },
+      note: "With a cold tap and a bottle trap, outside the shower door." },
     { id: "mirror", title: "Mirror", size: "0.40 × 0.65 m", where: HARDWARE_DISTRICT, cost: est(25_000), note: "4 mm glass over the basin." },
   ])
 }
@@ -136,8 +136,8 @@ const DEVICE_CARDS: { models: string[]; title: string; src?: string }[] = [
   { models: ["strip"], title: "LED strip" }, { models: ["switch"], title: "Switch" },
   { models: ["switch65"], title: "Outdoor switch IP65" }, { models: ["usb"], title: "Socket + USB-C" },
   { models: ["socket2", "socket"], title: "Socket" }, { models: ["socket66"], title: "Deck socket IP66" },
-  { models: ["outlet"], title: "Hob outlet" }, { models: ["timer"], title: "Heater switch + timer" },
-  { models: ["isolator"], title: "AC isolator" }, { models: ["wallfan"], title: "Wall fan" },
+  { models: ["outlet"], title: "Hob outlet" },
+  { models: ["isolator"], title: "Isolator (heater and AC)" }, { models: ["wallfan"], title: "Wall fan" },
   { models: ["extract"], title: "Bathroom extract fan" }, { models: ["alarm"], title: "Smoke and heat alarms" },
   { models: ["earth"], title: "Earth rod" },
 ]
@@ -189,27 +189,25 @@ function plumbingRail(fittings: Record<string, string>[]): RailItem[] {
     note: note ?? `${f[model].point} · ${f[model].description}`,
     details: [{ label: "Dimensions", value: size }, { label: "Where to buy", value: where }, { label: "Cost", value: cost }],
   })
-  const [litres, kw] = f.heater.rating.split(", ")
   const valves = lines(/^Angle valves/)[0]
   return [
     card("meter", "Stop valve, filter and meter", `DN25, in line on the main, about ${f.meter.h_mm} mm`, "Not sourced yet", each("meter")),
-    card("heater", "Water heater", `${litres} box, ${f.heater.w_mm} × ${f.heater.h_mm} × ${f.heater.d_mm} mm, ${kw}, IPX4`,
-      "Not sourced yet; Kanis Retail lists 50 L at RWF 144,000–252,000", each("heater")),
-    card("tmv", "Mixing valve", `${degC(f.tmv.rating)}, behind a ${f.tmv.w_mm} mm access panel`, "Not sourced yet", each("tmv")),
-    card("kitchentap", "Kitchen mixer tap", `${f.kitchentap.rating}, two angle valves under the sink`, HARDWARE_DISTRICT, each("kitchentap")),
+    card("heater", "Instant shower heater", `${f.heater.w_mm} × ${f.heater.h_mm} × ${f.heater.d_mm} mm, ${degC(f.heater.rating)}, IPX4, no tank`,
+      "Not sourced yet", each("heater"), "Heats the water as it flows, set on its own display; hot goes only to the shower, through the hand shower's hose."),
+    card("kitchentap", "Kitchen tap", `Cold, ${f.kitchentap.rating}, one angle valve under the sink`, HARDWARE_DISTRICT, each("kitchentap")),
     card("filter", "Drinking-water filter", `Twin canisters ${f.filter.w_mm} × ${f.filter.h_mm} mm, its own faucet by the tap`,
       "Not sourced yet", each("filter")),
-    card("showerset", "Shower valve, rail and head", `Thermostatic bar valve, ${Number(f.showerset.h_mm) / 1000} m rail, ${degC(f.showerset.rating)} head`,
+    card("showerset", "Slide rail and hand shower", `${Number(f.showerset.h_mm) / 1000} m rail; the hand shower and hose come with the heater`,
       HARDWARE_DISTRICT, each("showerset")),
     card("cistern", "Concealed cistern", `Frame ${f.cistern.w_mm} × ${mm(Number(f.cistern.h_mm))} × ${f.cistern.d_mm} mm, dual-flush plate`,
       HARDWARE_DISTRICT, each("cistern")),
-    card("basintap", "Basin mixer", "A tall mixer for the vessel basin, two angle valves under the console", HARDWARE_DISTRICT,
-      `RWF ${frw(Number(bom.find((r) => r.item === f.basintap.item)?.total_per_unit_rwf ?? 0))} for the basin, its mixer and bottle trap (estimate)`),
-    card("anglevalve", `Angle valves × ${valves.qty_per_unit}`, "With a filter: two under the sink, two under the basin, one at the cistern",
+    card("basintap", "Basin tap", "A tall cold tap for the vessel basin, one angle valve under the console", HARDWARE_DISTRICT,
+      `RWF ${frw(Number(bom.find((r) => r.item === f.basintap.item)?.total_per_unit_rwf ?? 0))} for the basin, its tap and bottle trap (estimate)`),
+    card("anglevalve", `Angle valves × ${valves.qty_per_unit}`, "With a filter: one under the sink, one under the basin, one at the cistern, one at the heater",
       HARDWARE_DISTRICT, `RWF ${frw(Number(valves.unit_price_rwf))} each × ${valves.qty_per_unit} (estimate)`,
       "Each tap and the cistern can be shut off on its own, without the main."),
     card("ppr", "PP-R supply pipe", `${metres(/^PPR/)}, PN20, welded joints`, PIPE_SHOPS, cost(/^PPR/),
-      "Cold, hot and mixed water inside the units and walls, then straight up to each outlet."),
+      "Cold water inside the units and walls, then straight up to each outlet."),
     card("upvc", "uPVC drain pipe", metres(/^uPVC (soil|waste)/), PIPE_SHOPS, cost(/^uPVC (soil|waste)/),
       "Under the floor, each run falling at least 1:40 to IC1 or the grease trap."),
     card("vent", "Vent and air admittance valve", `${metres(/^uPVC vent/)}, a spare 110 mm AAV, rodding eyes`, PIPE_SHOPS,
@@ -282,7 +280,7 @@ function plumbingGroups(rows: Record<string, string>[]) {
   for (const r of rows) {
     const group = r.category === "labour" ? "Labour"
       : r.category === "sanitaryware" ? "Sanitaryware"
-      : /heater|thermostatic/i.test(r.item) ? "Hot water"
+      : /heater|hand-shower/i.test(r.item) ? "Hot water"
       : /^PPR/.test(r.item) ? "Supply pipe"
       : /^uPVC/.test(r.item) ? "Drain and vent pipe"
       : /drinking/i.test(r.item) ? "Drinking water"
@@ -391,8 +389,8 @@ function BomTable({ sections, contingency, total }: { sections: BomSection[]; co
 const mm = (n: number) => n.toLocaleString("en-US")
 const KIND: Record<string, string> = { usb: "socket + USB-C", db: "board", inlet: "power inlet", earth: "earth rod" }
 const FIT_KIND: Record<string, string> = { wc: "WC", site: "on the site" }
-// a fitting's tag takes the colour of the water it gives: mixed over hot over cold, so the mixing valve reads as
-// mixed water and the heater as hot; drains and the vent for the points that only take those
+// a fitting's tag takes the colour of the water it gives: hot over cold, so the heater reads as hot; drains and the
+// vent for the points that only take those
 const WARMTH = ["tempered", "hot", "cold", "soil", "waste", "vent"]
 function fittingColour(f: Record<string, string>, pipes: Record<string, string>[]) {
   const runs = pipes.filter((p) => f.runs.split(" ").includes(p.run))
@@ -567,7 +565,7 @@ export default function StudioPage() {
           <div className="overflow-x-auto">
             <div className="min-w-[960px]">
               <TaggedFigure src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags}
-                alt="Line drawing of the studio from the front with the sink base cut open, the bathroom's wet walls stripped to the foam and every pipe run: the stop valve, filter and meter on the main in the sink base, cold in blue along the back wall and up end wall B, the 30 L heater box above the WC sending hot water in red down to the mixing valve and back to the sink, mixed water in amber to the shower and the basin, and the drains in brown dropping through the floor."
+                alt="Line drawing of the studio from the front with the sink base cut open, the bathroom's wet walls stripped to the foam and every pipe run: the stop valve, filter and meter on the main in the sink base, cold in blue along the back wall and up end wall B to every outlet and to the instant heater in the shower, its hose in red to the hand shower, and the drains in brown dropping through the floor."
                 info={Object.fromEntries(fittings.map((f) => [f.point, { label: f.description, colour: fittingColour(f, pipes) }]))} />
             </div>
           </div>
@@ -583,7 +581,7 @@ export default function StudioPage() {
         <figure className="px-4 pb-10 md:px-10">
           <div className="overflow-hidden">
             <BlurImg src={`${D}/render/plumbing-real.jpg`} width={2400} height={1100} loading="lazy"
-              alt="The same view rendered as finished with the sink base cut open and the bathroom's wet walls stripped to the yellow foam: in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap; in the bathroom the white 30 L heater box above the WC, the pipes along the back wall and up end wall B, the shower valve, the cistern frame behind the flush plate, and the basin's valves and trap under its console."
+              alt="The same view rendered as finished with the sink base cut open and the bathroom's wet walls stripped to the yellow foam: in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap; in the bathroom the small white instant heater in the shower beside the hand shower on its rail, the pipes along the back wall and up end wall B, the cistern frame behind the flush plate, and the basin's valves and trap under its console."
               className="h-auto w-full" />
           </div>
           <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model, the sink base and the bathroom&rsquo;s wet walls opened</figcaption>
@@ -719,7 +717,7 @@ export default function StudioPage() {
           <h2 className="mt-1 text-3xl font-semibold tracking-tight">{pipes.length} pipe runs</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
             Each run is checked by the model: every leg runs along a wall or straight up or down, each drain falls at least
-            1:40, and the mixed water stays within 2 m of its valve.
+            1:40.
           </p>
           <div className="mt-6 overflow-x-auto rounded-xl border">
             <table className="w-full text-sm">

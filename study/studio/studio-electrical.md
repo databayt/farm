@@ -4,9 +4,9 @@ Status: design intent. Every rating is an assumption [A, AS-19] until a RURA-lic
 
 ## The studio plugs in (D-021)
 
-- Each studio is wired as a closed unit with one connection: a 32 A IP67 inlet (IEC 60309 blue, 2P+E) outside the back wall, straight behind the unit board, with 6 mm2 tails through a gland to a 32 A double-pole main breaker (C curve) and a DIN kWh check meter. A matching plug ships with it.
-- 32 A is the IEC 60309 size that site boards, generators and inverters offer [E]. The studio's diversified demand is 30 A [E, AS-19] once the AC joins the priority relay, so it fits.
-- Any 230 V source can feed the inlet (the site board, a generator or a solar inverter) as long as it protects its own cable at 32 A or less. The studio's main breaker protects the inlet and its tails whatever feeds them.
+- Each studio is wired as a closed unit with one connection: a 63 A IP67 inlet (IEC 60309 blue, 2P+E) outside the back wall, straight behind the unit board, with 16 mm2 tails through a gland to a 63 A double-pole main breaker (C curve) and a DIN kWh check meter. A matching plug ships with it.
+- The studio's diversified demand is 45.3 A [E, AS-19], so it takes the 63 A IEC 60309 size. It was 30 A on a 32 A inlet until the 5.5 kW instant shower heater replaced the 2 kW tank (D-053). A 63 A source is rarer than 32 A: a site board can give it, while a portable generator or a small inverter may not.
+- Any 230 V source can feed the inlet (the site board, a generator or a solar inverter) as long as it protects its own cable at 63 A or less. The studio's main breaker protects the inlet and its tails whatever feeds them.
 - The studio keeps its own earth rod (TT), so it never relies on the supply's earth [V STU-37].
 
 ![E-201 Single-line diagram](../../public/designs/studio/drawings/e-201.svg)
@@ -15,7 +15,7 @@ Status: design intent. Every rating is an assumption [A, AS-19] until a RURA-lic
 
 - REG grid at 230 V, 50 Hz [V STU-18]. A new low-voltage connection within 37 m of the network was listed at 56,000 Frw [V STU-P05, undated].
 - REG installs and owns the meters [V STU-16], and re-selling power may need a licence, so the per-unit meters are **check meters for monitoring only**; electricity is included in the room rate.
-- If a site board feeds the studios, give each its own feeder protected at 32 A or less, and ask REG whether the supply covers the studios plus the borehole and booster pumps (about 30 A per studio diversified, plus the pumps) [E]. The supply cable is sized on site, once the source is chosen.
+- If a site board feeds the studios, give each its own feeder protected at 63 A or less, and ask REG whether the supply covers the studios plus the borehole and booster pumps (about 45 A per studio diversified, plus the pumps) [E]. The supply cable is sized on site, once the source is chosen.
 
 ## Unit board and circuits
 
@@ -25,12 +25,12 @@ Status: design intent. Every rating is an assumption [A, AS-19] until a RURA-lic
   - C2: sockets at the bed, the sofa and the deck.
   - C3: kitchen sockets, the fridge and the hood. The socket above the hood also takes the Wi-Fi router.
   - C4: the induction hob.
-  - C5: the 30 L water heater, a box above the WC (D-024); its switch and timer stay outside the bathroom, on the galley side of the partition.
+  - C5: the 5.5 kW instant shower heater in the shower (D-053), on a B25 RCBO and 6 mm2 cable (23.9 A design current); its double-pole isolator stays outside the bathroom, on the galley side of the partition.
   - C6: the outdoor lights (deck, stair and roof), on their own circuit.
   - C7: AC provision.
   - C8: a spare way.
-- **The priority relay** senses the hob (C4). While the hob runs, its contactor pauses the heater (C5) and the AC (C7).
-- **Maximum demand:** lights 0.3 A + fans 0.3 A + sockets 16.4 A + the larger of the hob (11.6 A) or the heater and AC together (8.7 + 4.3 A) = 30.0 A [E].
+- **The priority relay** senses the hob (C4). While the hob runs, its contactor (2-pole, 40 A) pauses the heater (C5) and the AC (C7).
+- **Maximum demand:** lights 0.3 A + fans 0.3 A + sockets 16.4 A + the larger of the hob (11.6 A) or the heater and AC together (23.9 + 4.3 A) = 45.3 A [E].
 
 [Table: Circuits (design current, derated capacity, run length, voltage drop)](../../public/designs/studio/data/circuits.csv)
 

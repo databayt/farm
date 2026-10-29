@@ -208,7 +208,7 @@
     120,
     100
    ],
-   "label": "Power inlet 32 A IP67 (IEC 60309 blue, 2P+E), outside behind the board"
+   "label": "Power inlet 63 A IP67 (IEC 60309 blue, 2P+E), outside behind the board"
   },
   {
    "id": "L1",
@@ -573,7 +573,7 @@
   {
    "id": "P10",
    "kind": "outlet",
-   "model": "timer",
+   "model": "isolator",
    "circuit": "C5",
    "face": "-x",
    "at": [
@@ -582,11 +582,11 @@
     1700
    ],
    "size": [
-    146,
-    86,
-    40
+    90,
+    110,
+    65
    ],
-   "label": "Heater DP switch + timer"
+   "label": "Heater DP isolator, outside the bathroom"
   },
   {
    "id": "L8",
@@ -1377,7 +1377,7 @@
   },
   {
    "id": "C5",
-   "name": "30 L water heater",
+   "name": "Instant shower heater 5.5 kW",
    "group": "fixed",
    "colour": "#1baf7a"
   },
@@ -1424,43 +1424,25 @@
    "kind": "heater",
    "model": "heater",
    "face": "-x",
-   "runs": "W2 H1 H2",
+   "runs": "W2 H1",
    "at": [
     5768,
-    1300.0,
-    1975.0
+    770.0,
+    1415.0
    ],
    "size": [
-    450,
-    450,
-    300
+    200,
+    330,
+    90
    ],
-   "label": "30 L water heater, a box on end wall B above the WC, its T&P valve piped outside"
-  },
-  {
-   "id": "TMV",
-   "kind": "valve",
-   "model": "tmv",
-   "face": "-x",
-   "runs": "H1 W6 T1 T2",
-   "at": [
-    5768,
-    1005.0,
-    410.0
-   ],
-   "size": [
-    150,
-    150,
-    60
-   ],
-   "label": "Mixing valve behind an access panel in end wall B, between the shower and the WC"
+   "label": "Instant heater on end wall B inside the shower, its display at eye height; hot only to the shower"
   },
   {
    "id": "KT",
    "kind": "tap",
    "model": "kitchentap",
    "face": "+z",
-   "runs": "W3 H2 D4",
+   "runs": "W3 D4",
    "at": [
     4528,
     1375.0,
@@ -1471,7 +1453,7 @@
     60,
     300
    ],
-   "label": "Kitchen mixer tap, angle valves under the sink"
+   "label": "Kitchen tap (cold), its angle valve under the sink"
   },
   {
    "id": "DF",
@@ -1496,7 +1478,7 @@
    "kind": "shower",
    "model": "showerset",
    "face": "-x",
-   "runs": "T1 D2",
+   "runs": "H1 D2",
    "at": [
     5768,
     450.0,
@@ -1507,7 +1489,7 @@
     1000,
     100
    ],
-   "label": "Thermostatic shower valve, head and rail on end wall B"
+   "label": "Hand shower on a slide rail on end wall B, fed by the heater's hose"
   },
   {
    "id": "WC",
@@ -1532,7 +1514,7 @@
    "kind": "tap",
    "model": "basintap",
    "face": "+z",
-   "runs": "W5 T2 D3",
+   "runs": "W5 D3",
    "at": [
     5768,
     2020.0,
@@ -1543,7 +1525,7 @@
     40,
     270
    ],
-   "label": "Basin mixer, angle valves under the console"
+   "label": "Basin tap (cold), its angle valve under the console"
   },
   {
    "id": "IC1",
@@ -1775,28 +1757,23 @@
    "path": [
     [
      5829,
-     1600.0,
+     770.0,
      300.0
     ],
     [
      5829,
-     1600.0,
-     1710
+     770.0,
+     1170.0
     ],
     [
-     5668,
-     1600.0,
-     1710
+     5728,
+     770.0,
+     1170.0
     ],
     [
-     5668,
-     1430.0,
-     1710
-    ],
-    [
-     5668,
-     1430.0,
-     1750.0
+     5728,
+     770.0,
+     1250.0
     ]
    ]
   },
@@ -1807,12 +1784,12 @@
    "path": [
     [
      4548,
-     1420.0,
+     1375.0,
      450
     ],
     [
      4548,
-     1420.0,
+     1375.0,
      600
     ]
    ]
@@ -1876,148 +1853,40 @@
     ],
     [
      5829,
-     1975.0,
+     2020.0,
      300.0
     ],
     [
      5829,
-     1975.0,
+     2020.0,
      600
-    ]
-   ]
-  },
-  {
-   "id": "W6",
-   "system": "cold",
-   "dn": 20,
-   "path": [
-    [
-     5829,
-     1045.0,
-     300.0
-    ],
-    [
-     5829,
-     1045.0,
-     360.0
     ]
    ]
   },
   {
    "id": "H1",
    "system": "hot",
-   "dn": 20,
+   "dn": 15,
    "path": [
     [
-     5668,
-     1490.0,
-     1750.0
+     5728,
+     770.0,
+     1580.0
     ],
     [
-     5668,
-     1490.0,
-     1650
+     5728,
+     770.0,
+     1700.0
     ],
     [
-     5668,
-     1650.0,
-     1650
-    ],
-    [
-     5829,
-     1650.0,
-     1650
-    ],
-    [
-     5829,
-     1650.0,
-     360.0
-    ],
-    [
-     5829,
-     965.0,
-     360.0
-    ]
-   ]
-  },
-  {
-   "id": "H2",
-   "system": "hot",
-   "dn": 20,
-   "path": [
-    [
-     5829,
-     965.0,
-     360.0
-    ],
-    [
-     5829,
-     -31,
-     360.0
-    ],
-    [
-     4613.0,
-     -31,
-     360.0
-    ],
-    [
-     4613.0,
-     1330.0,
-     360.0
-    ],
-    [
-     4613.0,
-     1330.0,
-     600
-    ],
-    [
-     4548,
-     1330.0,
-     600
-    ]
-   ]
-  },
-  {
-   "id": "T1",
-   "system": "tempered",
-   "dn": 20,
-   "path": [
-    [
-     5829,
-     1005.0,
-     460.0
-    ],
-    [
-     5829,
-     1005.0,
-     1110
-    ],
-    [
-     5829,
+     5728,
      450.0,
-     1110
-    ]
-   ]
-  },
-  {
-   "id": "T2",
-   "system": "tempered",
-   "dn": 20,
-   "path": [
-    [
-     5829,
-     1005.0,
-     460.0
+     1700.0
     ],
     [
-     5829,
-     2065.0,
-     460.0
-    ],
-    [
-     5829,
-     2065.0,
-     600
+     5728,
+     450.0,
+     1500
     ]
    ]
   }

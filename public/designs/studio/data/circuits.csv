@@ -3,7 +3,7 @@ C1,Indoor lights and fans,B6,1.5,0.6,13.6,34.9,0.25,L1 L2 L3 L4 L5 L7 S1 S2 S3 F
 C2,"Sockets: bed, sofa and deck",B16,2.5,8,18.3,24.3,1.52,P1 P2 P3 P5,sockets,#eb6834,
 C3,"Kitchen sockets, fridge and hood",B16,2.5,14,18.3,12.3,1.35,P6 P7 P8 P12,sockets,#eb6834,
 C4,Induction hob,B20,4,15.2,24.4,4.4,0.32,P9,fixed,#1baf7a,
-C5,30 L water heater,B16,2.5,8.7,18.3,3.9,0.27,P10,fixed,#1baf7a,pauses while the hob runs
+C5,Instant shower heater 5.5 kW,B25,6,23.9,32,3.9,0.3,P10,fixed,#1baf7a,pauses while the hob runs
 C6,"Outdoor lights: deck, stair and roof",B6,1.5,0.2,13.6,16.5,0.03,L8 S5 S4 L10 S6 L9,lights,#2a78d6,
 C7,AC provision,B16,2.5,12,18.3,3.9,0.37,P11,fixed,#1baf7a,pauses while the hob runs
 C8,Spare,B16,2.5,,18.3,,,,spare,#9a9893,

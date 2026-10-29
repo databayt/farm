@@ -3,9 +3,9 @@ lighting,0.3
 fans,0.3
 sockets,16.4
 hob,11.6
-heater,8.7
+heater,23.9
 ac,4.3
-total_A,30
-inlet_A,32
-main_A,32
-tails_mm2,6
+total_A,45.3
+inlet_A,63
+main_A,63
+tails_mm2,16

@@ -14,7 +14,7 @@ Every building, with the energy it uses on a normal day and the most it draws at
 
 | Building | Each day (kWh) | Peak (kW) | Note |
 |---|---|---|---|
-| Studios, two | 16 | 13.8 | 30 A each at 230 V (D-021); hob, 30 L heater, AC provision |
+| Studios, two | 16 | 20.8 | 45 A each at 230 V (D-021, D-053); hob, 5.5 kW instant shower heater, AC provision |
 | Guest rooms, three | 12 | 9 | each with its own shower (D-029): a heater each, or solar hot water |
 | Galley | 25 | 14 | electric cooking; about 8 kWh if it cooks on gas |
 | Bar | 5 | 2 | fridges, lights, music |
@@ -22,7 +22,7 @@ Every building, with the energy it uses on a normal day and the most it draws at
 | Office, public bathroom, guest kitchen | 9 | 5 | |
 | Pumps: borehole and booster | 5 | 2 | run at midday, when the sun is strongest |
 | Outdoor lights, Wi-Fi, CCTV | 5 | 1 | the things that must never stop |
-| **Farm total** | **about 84** | **about 40** | with diversity; about 65 kWh a day if the galley cooks on gas |
+| **Farm total** | **about 84** | **about 45** | with diversity; about 65 kWh a day if the galley cooks on gas |
 
 ## The facts that decide it
 
@@ -59,17 +59,17 @@ What solar saves: every kWp whose power is used on the farm produces about 1,589
 1. **Grid first.** Ask for a three-phase, non-residential connection; the poles already run along the road (photo of 2026-10-28). Ask in writing whether the hotel tariff applies.
 2. **Solar for the day.** About 10 kWp of panels on a hybrid inverter set to zero export: they cover the pumps, the hot water, the study room and lunch in the galley.
 3. **Batteries for the night essentials.** About 15 kWh of LiFePO4 batteries for Wi-Fi, CCTV, fridges and freezers, the pumps and the path lights, so an outage goes unnoticed.
-4. **Sun for hot water.** Solar water heaters on the guest rooms and the public bathroom; the studios keep their 30 L electric boxes (D-024).
+4. **Sun for hot water.** Solar water heaters on the guest rooms and the public bathroom; the studios keep their electric instant heaters at the shower (D-053).
 5. **Generator as a spare only.** A small diesel set for long outages, wired so it can feed the site board; never the main supply.
 6. **Run the big loads at midday.** Pump, heat water and wash in daylight, when the panels make free power.
 
 ## Steps
 
-1. Take ID, the land title and the construction permit to the EUCL Bugesera branch and ask for a written connection quote: three phase, about 40 kW, the distance from the nearest line to the gate.
+1. Take ID, the land title and the construction permit to the EUCL Bugesera branch and ask for a written connection quote: three phase, about 45 kW, the distance from the nearest line to the gate.
 2. Decide the galley's cooking fuel (gas or electric): it moves the daily total by about 17 kWh.
 3. Ask three RURA-licensed installers (class D covers solar) to quote a 10 kWp hybrid system with 15 kWh of LiFePO4 batteries, zero export, under 50 kW, VAT-exempt.
 4. Ask the tax authority (RRA) in writing to confirm that the LiFePO4 batteries count as deep-cycle, so they stay VAT-free.
-5. The electrician designs the site board: one 32 A feeder for each studio, feeders for every other building, the inverter, the generator change-over.
+5. The electrician designs the site board: one 63 A feeder for each studio, feeders for every other building, the inverter, the generator change-over.
 6. Choose with the quotes in hand, using the triggers below, and record the decision in the decision log.
 
 ## What would change the advice

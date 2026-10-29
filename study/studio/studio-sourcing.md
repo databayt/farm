@@ -16,7 +16,7 @@ Status: desk research of 2026-10-26. A listed supplier is not confirmed stock, a
 | Tinted polycarbonate | not found (searched: Kigali suppliers, roofing factories online) | AS-24 | Translucent GRP or opal corrugated sheet |
 | Paint, wood glue | Ameki Color, Gikondo | [V STU-22] | - |
 | PPR, PVC, HDPE pipe, tanks, septic tanks | Pro Water Rwanda (Gatsata); Build Mart (Kicukiro) | [V STU-23, STU-24] | - |
-| Water heater, fridge | Kanis Retail (online): 50 L heaters RWF 144,000-252,000; 90 L fridge RWF 265,000 | [V STU-P01, STU-P02, STU-P03] | 30 L box heater (D-024): ask Build Mart (stocks heaters) |
+| Water heater, fridge | Kanis Retail (online): 50 L heaters RWF 144,000-252,000; 90 L fridge RWF 265,000 | [V STU-P01, STU-P02, STU-P03] | 5.5 kW instant shower heater (D-053): ask Build Mart (stocks heaters) |
 | Sanitaryware, tiles, SPC flooring | not found online (searched: Kigali showrooms, SPC Rwanda) | AS-24 | Visit the hardware district |
 | Cable, breakers | Legend Cables (Kigali, local production) for cable | [V STU-34]; breaker stock not found | Electrician's usual supplier |
 | Mattress | Rwanda Foam Ltd (Kigali) | [V STU-51]; sizes and prices not found | Bed frame takes 1,524 x 1,829 up to 1,600 x 2,000 |

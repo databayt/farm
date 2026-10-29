@@ -64,7 +64,7 @@ K6,furnishing,furnishing,Blackout curtain + track for the 3 m slider,1,set,60000
 K6,glazing,glazier,"Insect screens: slider (sliding), W1, vents",1,set,90000,A,AS-21,90000,
 K7,finishes,painting,Joinery finish: medium-oak stain + clear matte PU varnish over pine (all furniture),6,L,14000,A,AS-21,84000,"medium-oak stain + clear matte PU varnish for pine, per L"
 K8,electrical,electrical,"Unit board, 24 modules (2 x 12), by the galley",1,each,65000,A,AS-21,65000,"enclosure, 24 modules (2 x 12)"
-K8,electrical,electrical,"Power inlet 32 A IP67 (IEC 60309 blue, 2P+E), outside behind the board",1,each,35000,A,AS-21,35000,"surface, IP67"
+K8,electrical,electrical,"Power inlet 63 A IP67 (IEC 60309 blue, 2P+E), outside behind the board",1,each,35000,A,AS-21,35000,"surface, IP67"
 K8,electrical,electrical,"Ceiling light, bed",1,each,15000,A,AS-21,15000,
 K8,electrical,electrical,"Ceiling light, living",1,each,15000,A,AS-21,15000,
 K8,electrical,electrical,"Ceiling light, galley",1,each,15000,A,AS-21,15000,
@@ -85,7 +85,7 @@ K8,electrical,electrical,Worktop double socket 2 (back wall),1,each,9000,A,AS-21
 K8,electrical,electrical,Fridge socket,1,each,5000,A,AS-21,5000,
 K8,electrical,electrical,Double socket above the hood: hood + Wi-Fi router,1,each,9000,A,AS-21,9000,double
 K8,electrical,electrical,"Hob outlet plate, isolated at its RCBO on the board",1,each,9000,A,AS-21,9000,
-K8,electrical,electrical,Heater DP switch + timer,1,each,25000,A,AS-21,25000,DP switch + timer
+K8,electrical,electrical,"Heater DP isolator, outside the bathroom",1,each,9000,A,AS-21,9000,
 K8,electrical,electrical,"Deck light IP65, under the veranda canopy",1,each,18000,A,AS-21,18000,IP65
 K8,electrical,electrical,"Deck light, beside the entry switch",1,each,3500,A,AS-21,3500,
 K8,electrical,electrical,"Stair and roof lights (2-way), IP65 at the stair foot",1,each,8000,A,AS-21,8000,IP65
@@ -100,32 +100,29 @@ K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Indoor lights an
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, Sockets: bed, sofa and deck",26,m,750,A,AS-21,19500,per m
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, Kitchen sockets, fridge and hood",14,m,750,A,AS-21,10500,per m
 K8,electrical,electrical,"Cable 4.0 mm2 T+E/singles in conduit, Induction hob",6,m,1200,A,AS-21,7200,per m
-K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, 30 L water heater",5,m,750,A,AS-21,3750,per m
+K8,electrical,electrical,"Cable 6.0 mm2 T+E/singles in conduit, Instant shower heater 5.5 kW",5,m,1800,A,AS-21,9000,per m
 K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Outdoor lights: deck, stair and roof",21,m,500,A,AS-21,10500,per m
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, AC provision",5,m,750,A,AS-21,3750,per m
-K8,electrical,electrical,"Cable 6 mm2 tails, inlet to main breaker, through a gland in the back wall",2,m,1800,A,AS-21,3600,per m
-K8,electrical,electrical,"Matching 32 A plug (IEC 60309 blue), for whatever supply cable",1,each,20000,A,AS-21,20000,IP67
+K8,electrical,electrical,"Cable 16 mm2 tails, inlet to main breaker, through a gland in the back wall",2,m,4800,A,AS-21,9600,"per m, tails to the 63 A main"
+K8,electrical,electrical,"Matching 63 A plug (IEC 60309 blue), for whatever supply cable",1,each,20000,A,AS-21,20000,IP67
 K8,electrical,electrical,"PVC conduit 20 mm + boxes, in the lining",53,m,600,A,AS-21,31800,per m
 K8,electrical,electrical,"UV-stable conduit 20 mm + IP66 glands, outdoor runs",12,m,900,A,AS-21,10800,"per m, UV-stable"
-K8,electrical,electrical,Main breaker 32 A DP (C curve) + DIN kWh check meter,1,set,45000,A,AS-21,45000,DP breaker + DIN kWh meter
+K8,electrical,electrical,Main breaker 63 A DP (C curve) + DIN kWh check meter,1,set,45000,A,AS-21,45000,DP breaker + DIN kWh meter
 K8,electrical,electrical,Surge protection device type 2,1,each,60000,A,AS-21,60000,
-K8,electrical,electrical,"RCBOs 30 mA type A, 1 module (B6 x2, B16 x4, B20 x1)",7,each,22000,A,AS-21,154000,1 module
+K8,electrical,electrical,"RCBOs 30 mA type A, 1 module (B6 x2, B16 x3, B20 x1, B25 x1)",7,each,22000,A,AS-21,154000,1 module
 K8,electrical,electrical,"Priority relay, DIN: senses the hob (C4) and sheds C5 and C7",1,each,60000,A,AS-21,60000,"load shedding, DIN"
-K8,electrical,electrical,"Contactor 2-pole 25 A, DIN: the C5 and C7 lines",1,each,25000,A,AS-21,25000,DIN
+K8,electrical,electrical,"Contactor 2-pole 40 A, DIN: the C5 and C7 lines",1,each,25000,A,AS-21,25000,DIN
 K8,safety,furnishing,Fire extinguisher 2 kg ABC + fire blanket,1,set,55000,A,AS-21,55000,
-K9,plumbing,plumbing,PPR PN20 pipe DN20,10.2,m,2000,A,AS-21,20400,per m
+K9,plumbing,plumbing,PPR PN20 pipe DN20,9.3,m,2000,A,AS-21,18600,per m
 K9,plumbing,plumbing,PPR PN20 pipe DN25,4.4,m,2800,A,AS-21,12320,per m
-K9,plumbing,plumbing,PPR PN20 pipe (hot) DN20,8.2,m,2000,A,AS-21,16400,per m
 K9,plumbing,plumbing,uPVC soil pipe DN110,3,m,7000,A,AS-21,21000,per m
-K9,plumbing,plumbing,PPR PN20 pipe (tempered) DN20,3.8,m,2000,A,AS-21,7600,per m
 K9,plumbing,plumbing,uPVC vent pipe DN75,8.8,m,4500,A,AS-21,39600,per m
 K9,plumbing,plumbing,uPVC waste pipe DN40,3.4,m,2500,A,AS-21,8500,per m
 K9,plumbing,plumbing,uPVC waste pipe DN50,6.3,m,3000,A,AS-21,18900,per m
 K9,plumbing,plumbing,Pipe fittings and clips (allowance),1,set,120000,A,AS-21,120000,
-K9,plumbing,plumbing,Thermostatic mixing valve (TMV) 41-44 C,1,each,60000,A,AS-21,60000,
-K9,plumbing,plumbing,Thermostatic shower valve + 6-7 L/min head + rail,1,set,90000,A,AS-21,90000,
-K9,plumbing,plumbing,"Electric storage water heater 30 L, 2 kW, IPX4, with T&P valve",1,each,130000,A,AS-21,130000,"30 L box not priced yet; 50 L listed at RWF 144,000-252,000 (STU-P01, STU-P02)"
-K9,plumbing,plumbing,Angle valves with filters,5,each,6000,A,AS-21,30000,
+K9,plumbing,plumbing,Shower slide rail with hand-shower holder,1,set,30000,A,AS-21,30000,
+K9,plumbing,plumbing,"Instant electric shower heater 5.5 kW, IPX4, digital thermostat, hand shower and hose",1,each,90000,A,AS-21,90000,5.5 kW instant shower heater not priced yet (D-053)
+K9,plumbing,plumbing,Angle valves with filters,4,each,6000,A,AS-21,24000,
 K9,plumbing,plumbing,Air admittance valve 110 mm (spare) + rodding eyes,1,set,30000,A,AS-21,30000,
 K9,plumbing,plumbing,Stop valve + Y-filter + check water meter,1,set,45000,A,AS-21,45000,
 K10,steel,welding,"W1 infill: 2 mm steel welded into the old door frame (0-1,150), foamed with the walls",1,each,180000,A,AS-21,180000,incl. welding

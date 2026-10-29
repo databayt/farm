@@ -292,7 +292,7 @@ def k2_bath(lo: Layout) -> Kit:
              [p.id for p in k.parts if p.step == "S07"], {"F": 16}, 2),
         Step("S08", "K2", "Cement board, membrane and tiles on the wet walls; coved vinyl floor", [], {}, 2),
         Step("S09", "K2", "Set the shower tray, ledge and fixed screen", [], {}, 2),
-        Step("S10", "K2", "Hang the WC and the water heater above it, and the basin and mirror cabinet in the wash lobby",
+        Step("S10", "K2", "Hang the WC, the instant heater in the shower and its hand-shower rail, and the basin and mirror cabinet in the wash lobby",
              [p.id for p in k.parts if p.step == "S10"], {"F": 12}, 1),
     ]
     return k

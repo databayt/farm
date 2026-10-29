@@ -16,12 +16,11 @@ Status: design intent; septic siting and soakage depend on the site plan and a p
 ## Inside each studio
 
 - Supply in PPR PN20, 20 and 25 mm (Pro Water makes PP-R in Kigali [V STU-23]).
-- A 30 L electric storage heater, a box about 450 x 450 x 300 mm (2 kW, IPX4), on end wall B above the WC, with a temperature-and-pressure relief valve piped outside (D-024, replacing D-015's 80 L heater in the galley's overhead cabinet). Water is stored at 60 C; a thermostatic mixing valve sends 41-44 C to the shower and basin (guest scald safety); the kitchen sink gets direct hot water, labelled. 30 L gives one shower at a time at 6-7 L/min, then about 40 minutes to heat up again; D-015 sized 80 L for two back-to-back showers (48-64 L) [E, AS-18].
+- A 5.5 kW instant electric shower heater, a box about 200 x 330 x 90 mm (IPX4, no tank), on end wall B inside the shower between the slide rail and the glass screen, its display about 1.3 m up (D-053, replacing D-024's 30 L box above the WC). Cold enters at its foot; hot leaves its top through the hand shower's hose. It heats about 4 L/min by 20 C, so about 40 C from water at about 20 C [E, AS-18]: 5.5 kW / (4.19 kJ/kg K x 20 K) = 3.9 L/min. The shower never runs out of hot water, but a low-flow head is needed for a full warm flow. Only the shower is hot: the kitchen sink and the basin are cold, so there is no mixing valve. The guest sets the temperature on the heater's display; its own thermostat limits the outlet [A, AS-18].
 - Routes (D-023), every run drawn leg by leg in `scripts/studio/services.py`:
   - The main comes in under the floor at end B and rises into the sink base through the stop valve, Y-filter and check meter (SV), where it can be shut off without tools.
-  - From there, the cold runs inside the units and the walls: through the partition, the back wall's lining and end wall B to the WC cistern, the basin and up to the heater. The hot comes down from the heater to the mixing valve and back along the same walls to the sink. Cold runs 300 mm above the floor, hot 360 mm, then each goes straight up to its outlet.
-  - The mixing valve (TMV) sits in end wall B behind a tiled access panel between the shower and the WC. Both mixed-water runs are 1.2 m, under the 2 m the model allows for a mixed-water dead leg.
-- `fittings.csv` lists the 11 plumbing points; /en/studio draws every run in 3D with the sink base cut open and the bathroom's wet walls stripped to the foam, dashed where a wall or the floor still hides it (`scripts/studio/render/room.html?view=plumbing`).
+  - From there, the cold runs inside the units and the walls: through the partition, the back wall's lining and end wall B to the WC cistern, the basin and up to the heater's foot in the shower. Cold runs 300 mm above the floor, then goes straight up to each outlet. The one hot run is the shower hose (H1).
+- `fittings.csv` lists the 10 plumbing points; /en/studio draws every run in 3D with the sink base cut open and the bathroom's wet walls stripped to the foam, dashed where a wall or the floor still hides it (`scripts/studio/render/room.html?view=plumbing`).
 
 ![P-101 Plumbing layout plan](../../public/designs/studio/drawings/p-101.svg)
 
@@ -53,4 +52,4 @@ Sizes and seals follow UK Approved Document H as a reference [V STU-09]. A 75 mm
 
 ## Tests
 
-Pressure-test the PPR at 10 bar for an hour at the first fix (S04), before the spray foam; fill-test every drain; smoke-test the vent; check the TMV setting with a thermometer at the shower.
+Pressure-test the PPR at 10 bar for an hour at the first fix (S04), before the spray foam; fill-test every drain; smoke-test the vent; measure the shower at full flow with a thermometer (about 40 C).

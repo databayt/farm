@@ -16,7 +16,7 @@ Buri nyubako, n'ingufu ikoresha ku munsi usanzwe n'umuriro mwinshi ikurura icyar
 
 | Inyubako | Ku munsi (kWh) | Ntarengwa icyarimwe (peak, kW) | Ibisobanuro |
 |---|---|---|---|
-| Sitidiyo, ebyiri | 16 | 13.8 | 30 A kuri buri sitidiyo, kuri 230 V (D-021); hob, heater ya L 30, n'ibiteganyirijwe AC (AC provision) |
+| Sitidiyo, ebyiri | 16 | 20.8 | 45 A kuri buri sitidiyo, kuri 230 V (D-021, D-053); hob, heater ya douche ihita ishyushya amazi ya 5.5 kW, n'ibiteganyirijwe AC (AC provision) |
 | Ibyumba by'abashyitsi, bitatu | 12 | 9 | buri cyumba gifite douche yacyo (D-029): heater muri buri cyumba, cyangwa amazi ashyushywa n'izuba (solar hot water) |
 | Igikoni gikuru (galley) | 25 | 14 | guteka ku mashanyarazi; hafi 8 kWh niba gitekesha gaz |
 | Akabari (bar) | 5 | 2 | firigo, amatara, umuziki |
@@ -24,7 +24,7 @@ Buri nyubako, n'ingufu ikoresha ku munsi usanzwe n'umuriro mwinshi ikurura icyar
 | Ibiro (office), ubwiherero rusange, igikoni cy'abashyitsi | 9 | 5 | |
 | Pompe: iya borehole n'iyongera umuvuduko (booster) | 5 | 2 | zikora saa sita z'amanywa, igihe izuba riva cyane |
 | Amatara yo hanze, Wi-Fi, CCTV | 5 | 1 | ibintu bitagomba guhagarara na rimwe |
-| **Igiteranyo cy'ifamu yose** | **hafi 84** | **hafi 40** | harimo diversity; hafi 65 kWh ku munsi niba igikoni gikuru gitekesha gaz |
+| **Igiteranyo cy'ifamu yose** | **hafi 84** | **hafi 45** | harimo diversity; hafi 65 kWh ku munsi niba igikoni gikuru gitekesha gaz |
 
 ## Amakuru agena icyemezo
 
@@ -61,17 +61,17 @@ Icyo imirasire y'izuba izigama: buri kWp umuriro wayo ukoreshwa ku ifamu itanga 
 1. **Umuyoboro wa REG mbere.** Saba guhuzwa n'umuyoboro kuri triphasé (three-phase), mu cyiciro kitari icy'ingo (non-residential); amapoto y'amashanyarazi asanzwe anyura ku muhanda (ifoto yo ku wa 2026-10-28). Baza mu nyandiko niba tariff y'amahoteli ireba ifamu.
 2. **Imirasire y'izuba ku manywa.** Panneaux za hafi 10 kWp kuri inverter ya hybrid (onduleur hybride) yashyizwe kuri zero export (nta muriro woherezwa ku muyoboro wa REG): zitanga umuriro ukenerwa na pompe, amazi ashyushye, icyumba cyo kwigiramo n'ifunguro rya saa sita mu gikoni gikuru.
 3. **Bateri z'ibikenerwa by'ingenzi nijoro.** Bateri za LiFePO4 za hafi 15 kWh zigenewe Wi-Fi, CCTV, firigo na congélateurs (freezers), pompe n'amatara y'inzira (path lights), kugira ngo umuriro nubura ntihagire ubimenya.
-4. **Izuba rishyushya amazi.** Ibyuma bishyushya amazi bikoresheje izuba (solar water heaters) ku byumba by'abashyitsi no ku bwiherero rusange; sitidiyo zigumana udusanduku twazo twa water heater twa L 30 dukoresha amashanyarazi (D-024).
+4. **Izuba rishyushya amazi.** Ibyuma bishyushya amazi bikoresheje izuba (solar water heaters) ku byumba by'abashyitsi no ku bwiherero rusange; sitidiyo zigumana heater zazo zihita zishyushya amazi kuri douche, zikoresha amashanyarazi (D-053).
 5. **Moteri y'ingoboka gusa.** Moteri ntoya ya mazutu (diesel) yo gukoresha iyo umuriro ubuze igihe kirekire, ishyiriweho insinga ku buryo ishobora guha umuriro board yo ku kibanza (site board); ntizigere iba isoko nyamukuru y'umuriro (main supply).
 6. **Ibikoresha umuriro mwinshi bikore saa sita z'amanywa.** Vomesha pompe, shyushya amazi kandi umese ku manywa, igihe panneaux zitanga umuriro w'ubuntu.
 
 ## Intambwe
 
-1. Jyana indangamuntu (ID), icyangombwa cy'ubutaka (land title) n'uruhushya rwo kubaka (construction permit) ku ishami rya EUCL ry'i Bugesera, usabe igiciro cyanditse cyo guhuzwa n'umuyoboro (connection quote): triphasé, hafi 40 kW, n'intera kuva ku murongo w'amashanyarazi uri hafi kugeza ku irembo.
+1. Jyana indangamuntu (ID), icyangombwa cy'ubutaka (land title) n'uruhushya rwo kubaka (construction permit) ku ishami rya EUCL ry'i Bugesera, usabe igiciro cyanditse cyo guhuzwa n'umuyoboro (connection quote): triphasé, hafi 45 kW, n'intera kuva ku murongo w'amashanyarazi uri hafi kugeza ku irembo.
 2. Hitamo icyo igikoni gikuru kizatekesha (gaz cyangwa amashanyarazi): bihindura igiteranyo cya buri munsi ho hafi 17 kWh.
 3. Saba abashyiraho sisitemu (installers) batatu bafite uruhushya rwa RURA (class D ni yo irimo imirasire y'izuba) kuguha igiciro (quote) cya sisitemu ya hybrid ya 10 kWp ifite bateri za LiFePO4 za 15 kWh, zero export, iri munsi ya 50 kW, idasoreshwa TVA (VAT-exempt).
 4. Saba Ikigo cy'Imisoro n'Amahoro (RRA), mu nyandiko, kwemeza ko bateri za LiFePO4 zibarwa nka deep-cycle, kugira ngo zikomeze kudasoreshwa TVA.
-5. Umuyagankuba ategura board yo ku kibanza: feeder imwe ya 32 A kuri buri sitidiyo, feeders z'izindi nyubako zose, inverter, na change-over ya moteri (igikoresho gihinduranya umuriro wa REG n'uwa moteri).
+5. Umuyagankuba ategura board yo ku kibanza: feeder imwe ya 63 A kuri buri sitidiyo, feeders z'izindi nyubako zose, inverter, na change-over ya moteri (igikoresho gihinduranya umuriro wa REG n'uwa moteri).
 6. Hitamo ufite ibiciro (quotes) mu ntoki, ukurikije ibyatuma inama ihinduka biri hepfo, kandi wandike icyemezo mu gitabo cy'ibyemezo (decision log).
 
 ## Ibyatuma inama ihinduka

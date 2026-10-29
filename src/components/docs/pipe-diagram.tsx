@@ -1,7 +1,7 @@
 // The studio's water drawn inline (not a paper sheet), in the wiring diagram's pattern, so it runs full width and
-// follows the theme. Top row: the farm's water into the studio's stop valve, filter and meter; below, the cold, hot
-// and mixed supplies on three lines to every outlet, then the drains out to the farm's septic tank and, apart, its
-// grease trap. Every run, size and rating comes from the generator's CSVs (pipes.csv, fittings.csv,
+// follows the theme. Top row: the farm's water into the studio's stop valve, filter and meter; below, the cold line
+// to every outlet and the instant heater, whose hose is the only hot (D-053), then the drains out to the farm's
+// septic tank and, apart, its grease trap. Every run, size and rating comes from the generator's CSVs (pipes.csv, fittings.csv,
 // site-water.csv). A line's colour is what it carries, as in the 3D drawing below it; drains are heavier, the vent
 // dashed, and every line carries its run, so colour never works alone.
 
@@ -9,12 +9,10 @@ type Row = Record<string, string>
 
 const W = 1600
 const TOP = 56 // the supply row
-const COLD = 150 // the three supply lines
-const HOT = 262
-const MIX = 372
+const COLD = 150 // the cold line
 const FIX = 410 // the outlets
 const DRAIN = 548 // the bathroom's drains join here
-const X = { DF: 150, KT: 330, WH: 520, TMV: 720, SH: 900, BT: 1080, WC: 1260, V: 1372, IC: 1480 }
+const X = { DF: 150, KT: 360, SH: 640, BT: 900, WC: 1160, V: 1372, IC: 1480 }
 
 function Unit({ x, y, title, sub, dashed = false, muted = false }: {
   x: number; y: number; title: string; sub?: string; dashed?: boolean; muted?: boolean
@@ -52,14 +50,14 @@ export function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fittings
   const tee = (id: string, x: number, y: number) => (
     <circle key={`${x} ${y}`} cx={x} cy={y} r={5} stroke="none" style={{ fill: run[id]?.colour }} />
   )
-  const [litres, kw, hot] = (fit.WH?.rating ?? "").split(", ")
+  const [kw, , hot] = (fit.WH?.rating ?? "").split(", ")
   // the key, each entry as wide as its label
-  const key: [string, string, number, boolean?][] = [["W1", "Cold", 900], ["H1", `Hot ${deg(hot)}`, 1010],
-    ["T1", `Mixed ${deg(fit.TMV?.rating)}`, 1150], ["D1", "Drain", 1335], ["V1", "Vent", 1450, true]]
+  const key: [string, string, number, boolean?][] = [["W1", "Cold", 1000], ["H1", `Hot ${deg(hot)}`, 1110],
+    ["D1", "Drain", 1275], ["V1", "Vent", 1400, true]]
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="h-auto w-full min-w-[960px] stroke-foreground"
       strokeWidth={2} strokeLinecap="round" fill="none"
-      aria-label={`Water diagram: the farm's water through the studio's stop valve, filter and meter; cold to every outlet and the ${litres} heater, hot to the sink and the mixing valve, mixed water at ${deg(fit.TMV?.rating)} to the shower and the basin; the WC, shower and basin drain to an inspection chamber and the farm's septic tank, the kitchen sink apart to its grease trap`}>
+      aria-label={`Water diagram: the farm's water through the studio's stop valve, filter and meter; cold to every outlet and the ${kw} instant heater, whose hose takes hot water at ${deg(hot)} to the shower alone; the WC, shower and basin drain to an inspection chamber and the farm's septic tank, the kitchen sink apart to its grease trap`}>
       {/* the farm's water: the tank and the booster pump, shared by the studios */}
       <rect x={20} y={TOP - 34} width={140} height={68} rx={12} strokeDasharray="6 6" />
       <text x={90} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">Farm water</text>
@@ -87,42 +85,30 @@ export function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fittings
         </g>
       ))}
 
-      {/* cold, to every outlet, the heater and the mixing valve */}
+      {/* cold, to every outlet and the heater */}
       {pipe("W1", `M${X.DF} ${FIX} V${COLD} H${X.WC} V${FIX}`)}
       {tee("W1", 470, COLD)}
-      {[X.KT - 18, X.WH, X.TMV + 18, X.BT + 18].map((x) => tee("W1", x, COLD))}
-      {pipe("W3", `M${X.KT - 18} ${COLD} V${FIX}`)}
-      {tag("W3", X.KT - 26, 290, "end")}
-      {pipe("W2", `M${X.WH} ${COLD} V172`)}
-      {tag("W2", X.WH + 8, 167)}
-      {pipe("W6", `M${X.TMV + 18} ${COLD} V284`)}
-      {tag("W6", X.TMV + 26, 222)}
-      {pipe("W5", `M${X.BT + 18} ${COLD} V${FIX}`)}
-      {tag("W5", X.BT + 26, 290)}
+      {[X.KT, X.SH, X.BT].map((x) => tee("W1", x, COLD))}
+      {pipe("W3", `M${X.KT} ${COLD} V${FIX}`)}
+      {tag("W3", X.KT + 8, 290)}
+      {pipe("W2", `M${X.SH} ${COLD} V200`)}
+      {tag("W2", X.SH + 8, 185)}
+      {pipe("W5", `M${X.BT} ${COLD} V${FIX}`)}
+      {tag("W5", X.BT + 8, 290)}
       {tag("W4", X.WC + 8, 290)}
 
-      {/* the heater, hot to the sink (H2) and the mixing valve (H1) */}
-      <Unit x={X.WH} y={172} title={`Heater ${litres}`} sub={`${kw} · ${deg(hot)}`} />
-      {pipe("H1", `M${X.WH} 232 V${HOT}`)}
-      {pipe("H2", `M${X.KT + 18} ${FIX} V${HOT} H${X.WH}`)}
-      {pipe("H1", `M${X.WH} ${HOT} H${X.TMV - 18} V284`)}
-      {tee("H1", X.WH, HOT)}
-      {tag("H2", (X.KT + X.WH) / 2 + 9, HOT - 9, "middle")}
-      {tag("H1", (X.WH + X.TMV) / 2 - 9, HOT - 9, "middle")}
-
-      {/* the mixing valve, mixed water to the shower (T1) and the basin (T2) */}
-      <Unit x={X.TMV} y={284} title="Mixing valve" sub={`TMV · ${deg(fit.TMV?.rating)}`} />
-      {pipe("T1", `M${X.TMV} 344 V${MIX} H${X.SH} V${FIX}`)}
-      {pipe("T2", `M${X.SH} ${MIX} H${X.BT - 18} V${FIX}`)}
-      {tee("T1", X.SH, MIX)}
-      {tag("T1", X.SH - 8, 397, "end")}
-      {tag("T2", X.BT - 26, 397, "end")}
+      {/* the instant heater, its hose (H1) the only hot, down to the shower */}
+      <Unit x={X.SH} y={200} title="Instant heater" sub={`WH · ${kw}`} />
+      {pipe("H1", `M${X.SH} 260 V${FIX}`)}
+      <text x={X.SH + 8} y={340} stroke="none" className="fill-muted-foreground text-[13px]">
+        <tspan className="fill-foreground font-semibold">H1</tspan> hose · {deg(hot)}
+      </text>
 
       {/* the outlets */}
       <Unit x={X.DF} y={FIX} title="Drinking water" sub="DF · filter tap" />
-      <Unit x={X.KT} y={FIX} title="Kitchen sink" sub={`KT · ${fit.KT?.rating}`} />
-      <Unit x={X.SH} y={FIX} title="Shower" sub={`SH · ${deg(fit.SH?.rating)}`} />
-      <Unit x={X.BT} y={FIX} title="Basin" sub={`BT · ${fit.BT?.rating}`} />
+      <Unit x={X.KT} y={FIX} title="Kitchen sink" sub={`KT · cold · ${fit.KT?.rating}`} />
+      <Unit x={X.SH} y={FIX} title="Hand shower" sub={`SH · ${deg(fit.SH?.rating)}`} />
+      <Unit x={X.BT} y={FIX} title="Basin" sub={`BT · cold · ${fit.BT?.rating}`} />
       <Unit x={X.WC} y={FIX} title="WC cistern" sub={`WC · ${fit.WC?.rating}`} />
 
       {/* drains: the kitchen sink apart to the grease trap; the rest to the inspection chamber and the septic tank */}

@@ -4,7 +4,7 @@ Design intent only: ratings are [A] until a RURA class A electrician designs and
 installation (RS 565-1:2011, STU-14). Cable data are typical IEC 60364-5-52 values for PVC
 copper; confirm against the cable actually bought.
 
-The studio plugs in (D-021): one 32 A inlet takes any 230 V source, and the studio's own board protects
+The studio plugs in (D-021): one 63 A inlet (D-053; 32 A until the instant heater) takes any 230 V source, and the studio's own board protects
 everything behind it with one RCBO per circuit.
 """
 from __future__ import annotations
@@ -24,7 +24,7 @@ CABLE = {1.5: (17.5, 29.0), 2.5: (24.0, 18.0), 4.0: (32.0, 11.0), 6.0: (41.0, 7.
 # run in the foam-filled batten cavity of the lining (AS-15). IEC 60364-5-52 table B.52.2.
 CABLE_A1 = {1.5: 14.5, 2.5: 19.5, 4.0: 26.0, 6.0: 34.0, 10.0: 46.0, 16.0: 61.0}
 AMBIENT_FACTOR = 0.94  # 35 C ambient inside a warm steel box [A]
-STANDARD_INLET_A = 32.0  # the IEC 60309 size generators, inverters and site boards plug into
+STANDARD_INLET_A = 63.0  # the IEC 60309 size the studio plugs into: 32 A until the 5.5 kW instant heater (D-053)
 VOID = 30.0  # conduit zone in the ceiling lining, above the finished ceiling (60 mm lining, AS-15)
 # circuit colour by what it feeds: the first three slots of the dataviz reference palette, which stay apart for
 # every pair and under colour-blindness; the spare way is grey
@@ -233,8 +233,8 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], list[CableRun], 
               120, "-x", "socket2"),
         Point("P9", "outlet", lo.part_x0, hob_y, 600, "Hob outlet plate, isolated at its RCBO on the board", "C4",
               P.HOB_KW.value * 1000, "-x"),
-        Point("P10", "outlet", lo.part_x0, lo.sink[1] - 60, 1700, "Heater DP switch + timer", "C5",
-              P.HEATER_KW.value * 1000, "-x", "timer"),
+        Point("P10", "outlet", lo.part_x0, lo.sink[1] - 60, 1700, "Heater DP isolator, outside the bathroom", "C5",
+              P.HEATER_KW.value * 1000, "-x", "isolator"),
         Point("L8", "light", 2900, ledger, zr, "Deck light IP65, under the veranda canopy", "C6", 10, "-z",
               "bulkhead"),
         Point("S5", "switch", entry + 195, W, 1100, "Deck light, beside the entry switch", "C6", face="-y"),
@@ -256,7 +256,7 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], list[CableRun], 
         Circuit("C2", "Sockets: bed, sofa and deck", "B16", 2.5, "sockets"),
         Circuit("C3", "Kitchen sockets, fridge and hood", "B16", 2.5, "sockets"),
         Circuit("C4", "Induction hob", "B20", 4.0, "fixed"),
-        Circuit("C5", f"{P.HEATER_L.value:.0f} L water heater", "B16", 2.5, "fixed", relay=True),
+        Circuit("C5", f"Instant shower heater {P.HEATER_KW.value:g} kW", "B25", 6.0, "fixed", relay=True),
         Circuit("C6", "Outdoor lights: deck, stair and roof", "B6", 1.5, "lights"),
         Circuit("C7", "AC provision", "B16", 2.5, "fixed", relay=True),
     ]
@@ -331,13 +331,13 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], list[CableRun], 
                  "electrical", "electrical", 1, "set", "mainsw", step="S19"))
     k.buy(Bought("K8-SPD", "Surge protection device type 2", "K8", "electrical", "electrical", 1, "each", "spd",
                  step="S19"))
-    ways = {b: sum(1 for c in circuits if c.loads and c.breaker == b) for b in ("B6", "B16", "B20")}
+    ways = {b: sum(1 for c in circuits if c.loads and c.breaker == b) for b in ("B6", "B16", "B20", "B25")}
     k.buy(Bought("K8-RCBO", "RCBOs 30 mA type A, 1 module (" + ", ".join(f"{b} x{q}" for b, q in ways.items() if q)
                  + ")", "K8", "electrical", "electrical", sum(ways.values()), "each", "rcbo", step="S19"))
     shed = " and ".join(c.id for c in circuits if c.relay)
     k.buy(Bought("K8-RELAY", f"Priority relay, DIN: senses the hob (C4) and sheds {shed}", "K8", "electrical",
                  "electrical", 1, "each", "relay", step="S19"))
-    k.buy(Bought("K8-CONTACTOR", f"Contactor 2-pole 25 A, DIN: the {shed} lines", "K8", "electrical", "electrical",
+    k.buy(Bought("K8-CONTACTOR", f"Contactor 2-pole 40 A, DIN: the {shed} lines", "K8", "electrical", "electrical",
                  1, "each", "contactor", step="S19"))
     k.buy(Bought("K8-FIRE", "Fire extinguisher 2 kg ABC + fire blanket", "K8", "safety", "furnishing", 1, "set",
                  "extinguisher", step="S19"))
@@ -384,11 +384,12 @@ def inlet(md_a: float) -> dict[str, float]:
 SYSTEM_GROUP = {"cold": "cold", "hot": "hot", "tempered": "tempered", "soil": "drain", "waste": "drain", "vent": "vent"}
 SYSTEM_COLOUR = {"cold": "#2a78d6", "hot": "#e34948", "tempered": "#eda100", "drain": "#8b4a12", "vent": "#9a9893"}
 # typical fitting sizes, w x h x d in mm as SIZE, d out of the face it is fixed to [A]
-FIT_SIZE = {"meter": (90, 260, 80), "heater": (450, 450, 300), "tmv": (150, 150, 60), "kitchentap": (60, 60, 300),
+FIT_SIZE = {"meter": (90, 260, 80), "heater": (200, 330, 90), "kitchentap": (60, 60, 300),
             "filter": (240, 330, 110), "showerset": (180, 1000, 100), "cistern": (500, 1120, 80),
             "basintap": (40, 40, 270), "chamber": (450, 450, 600), "greasetrap": (0, 0, 0), "vent": (75, 150, 75)}
-HEATER_ITEM = f"Electric storage water heater {P.HEATER_L.value:.0f} L, {P.HEATER_KW.value:g} kW, IPX4, with T&P valve"
-TEMPERED_MAX = 2000.0  # mixed water from the TMV to its outlet, at most 2 m, so no long warm dead leg
+HEATER_ITEM = f"Instant electric shower heater {P.HEATER_KW.value:g} kW, IPX4, digital thermostat, hand shower and hose"
+SHOWER_ITEM = "Shower slide rail with hand-shower holder"
+TEMPERED_MAX = 2000.0  # mixed water from a TMV to its outlet, at most 2 m (none since the instant heater, D-053)
 
 
 @dataclass
@@ -408,13 +409,13 @@ class Fitting:
 
 
 def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, float]]:
-    """Every run drawn leg by leg in the layout frame. Supplies run inside the units and the walls, cold 300 mm and
-    hot 360 mm above the floor, then straight up to their outlet; drains drop from each outlet through the floor
-    and hang in the void under it."""
+    """Every run drawn leg by leg in the layout frame. Supplies run inside the units and the walls, 300 mm above
+    the floor, then straight up to their outlet; the one hot run is the shower hose from the instant heater. Drains
+    drop from each outlet through the floor and hang in the void under it."""
     L, W = lo.L, lo.W
     cav = P.LINING_WALL.value - 19  # the middle of the 38 mm batten cavity behind the 12 mm ply
     vz = -260.0  # pipe zone in the void under the floor (cross-members are 122 deep)
-    zc, zh = 300.0, 360.0  # cold and hot runs in the walls
+    zc = 300.0  # cold runs in the walls
     wz = vz - 60  # the main comes in under the drains, clear of the basin waste
     xs = lo.part_x0 - 30  # in the sink base, along its back
     xp = lo.part_x0 + lo.part_t / 2  # in the partition
@@ -426,19 +427,16 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
     basin = ((lo.basin[0] + lo.basin[1]) / 2, (lo.basin[2] + lo.basin[3]) / 2)
     sink = (lo.part_x0 - 260, (lo.sink[0] + lo.sink[1]) / 2)  # the bowl's waste
     ic = (L + 900, W / 2)  # inspection chamber outside end B
-    # the heater is a box on end wall B above the WC (D-024), clear of the flush plate and a guest's head; its pipes
-    # come from below, 100 mm out from the tiles, and rise in the wall past the cistern frame, before the cross wall
+    # the heater is an instant box on end wall B inside the shower (D-053), between the rail and the glass screen, its
+    # display at eye height; cold comes up the wall to its foot, hot leaves its top straight into the hand shower's
+    # hose. Only the shower is hot: the sink and the basin are cold.
     hw, hh, hd = FIT_SIZE["heater"]
-    hz0 = 1750.0
-    hcx = lo.wall_b - 100
-    h_in, h_out = (hcx, lo.wc_cy + 130, hz0), (hcx, lo.wc_cy + 190, hz0)
-    yr_c, yr_h = lo.bath_y1 - 100, lo.bath_y1 - 50
+    hy, hz0 = ty1 - 30 - hw / 2, 1250.0
+    hcx = lo.wall_b - 40  # the inlet stub, 40 mm out from the tiles
     ym = lo.sink[1] - 60  # the main rises at the open end of the sink base, through the stop valve set
-    yk_c, yk_h = sink[1] + 45, sink[1] - 45  # the sink's angle valves on the back of the sink base
-    y_w2, y_h1 = lo.sink[0] + 50, yk_h  # where the bathroom's cold leaves the sink base, and the sink's hot arrives
-    y_tmv = (ty1 + lo.wc_cy - 190) / 2  # the TMV in end wall B, between the shower screen and the WC pan
-    z_tmv = 410.0
-    yb_c, yb_t = basin[1] - 45, basin[1] + 45  # the basin's angle valves under its top
+    yk_c = sink[1]  # the sink's angle valve on the back of the sink base
+    y_w2 = lo.sink[0] + 50  # where the bathroom's cold leaves the sink base
+    yb_c = basin[1]  # the basin's angle valve under its top
     vy = 200.0  # the vent rises outside end B, clear of the back corner post
     runs = [
         PipeRun("D1", "soil", 110, [(wc[0], wc[1], 230), (wc[0], wc[1], vz), (L - 100, wc[1], vz - 16),
@@ -455,43 +453,34 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
                                     (L + 120, vy, 3300 + 1100 + 900)], "Open vent up end B to 900 above the guardrail"),
         PipeRun("W1", "cold", 25, [(L + 900, ym, wz), (xs, ym, wz), (xs, ym, 450)],
                 "Cold main in from the farm, up into the sink base: stop valve, filter, check meter"),
-        PipeRun("W2", "cold", 20, [(xb, yr_c, zc), (xb, yr_c, 1710), (hcx, yr_c, 1710), (hcx, h_in[1], 1710), h_in],
-                "Cold up end wall B to the heater"),
+        PipeRun("W2", "cold", 20, [(xb, hy, zc), (xb, hy, hz0 - 80), (hcx, hy, hz0 - 80), (hcx, hy, hz0)],
+                "Cold up end wall B to the heater's foot"),
         PipeRun("W3", "cold", 20, [(xs, yk_c, 450), (xs, yk_c, 600)], "Cold to the sink's angle valve"),
         PipeRun("W4", "cold", 20, [(xs, ym, 450), (xs, y_w2, 450), (xp, y_w2, 450), (xp, y_w2, zc), (xp, yb, zc),
                                     (xb, yb, zc), (xb, wc[1], zc), (xb, wc[1], 1000)],
                 "Cold through the partition and the walls to the WC cistern"),
         PipeRun("W5", "cold", 20, [(xb, wc[1], zc), (xb, yb_c, zc), (xb, yb_c, 600)], "Cold on to the basin"),
-        PipeRun("W6", "cold", 20, [(xb, y_tmv + 40, zc), (xb, y_tmv + 40, zh)], "Cold to the mixing valve"),
-        PipeRun("H1", "hot", 20, [h_out, (hcx, h_out[1], 1650), (hcx, yr_h, 1650), (xb, yr_h, 1650), (xb, yr_h, zh),
-                                   (xb, y_tmv - 40, zh)], "Hot (60 C) from the heater down to the mixing valve"),
-        PipeRun("H2", "hot", 20, [(xb, y_tmv - 40, zh), (xb, yb, zh), (xp, yb, zh), (xp, y_h1, zh), (xp, y_h1, 600),
-                                   (xs, yk_h, 600)], "Hot back along the walls to the sink (direct 60 C, labelled)"),
-        PipeRun("T1", "tempered", 20, [(xb, y_tmv, z_tmv + 50), (xb, y_tmv, 1110), (xb, shower[1], 1110)],
-                "TMV 41-44 C up to the shower valve"),
-        PipeRun("T2", "tempered", 20, [(xb, y_tmv, z_tmv + 50), (xb, yb_t, z_tmv + 50), (xb, yb_t, 600)],
-                "Tempered to basin"),
+        PipeRun("H1", "hot", 15, [(hcx, hy, hz0 + hh), (hcx, hy, hz0 + hh + 120), (hcx, shower[1], hz0 + hh + 120),
+                                   (hcx, shower[1], 1500)], "Hot from the heater's top to the hand shower: its own hose"),
     ]
     fittings = [
         Fitting("SV", "valve", "meter", lo.part_x0, ym, 320, "Stop valve, Y-filter and check meter on the main, "
                 "in the sink base", "Stop valve + Y-filter + check water meter", "W1", "DN25"),
-        Fitting("WH", "heater", "heater", lo.wall_b, lo.wc_cy, hz0 + hh / 2, f"{P.HEATER_L.value:.0f} L water heater, "
-                "a box on end wall B above the WC, its T&P valve piped outside", HEATER_ITEM, "W2 H1 H2",
-                f"{P.HEATER_L.value:.0f} L, {P.HEATER_KW.value:g} kW, 60 C"),
-        Fitting("TMV", "valve", "tmv", lo.wall_b, y_tmv, z_tmv, "Mixing valve behind an access panel in end wall B, "
-                "between the shower and the WC", "Thermostatic mixing valve (TMV) 41-44 C", "H1 W6 T1 T2", "41-44 C"),
-        Fitting("KT", "tap", "kitchentap", lo.part_x0 - 50, sink[1], 900, "Kitchen mixer tap, angle valves under "
-                "the sink", "Kitchen mixer tap", "W3 H2 D4", "6 L/min", "+z"),
+        Fitting("WH", "heater", "heater", lo.wall_b, hy, hz0 + hh / 2, "Instant heater on end wall B inside the "
+                "shower, its display at eye height; hot only to the shower", HEATER_ITEM, "W2 H1",
+                f"{P.HEATER_KW.value:g} kW, about 4 L/min, 40 C"),
+        Fitting("KT", "tap", "kitchentap", lo.part_x0 - 50, sink[1], 900, "Kitchen tap (cold), its angle valve under "
+                "the sink", "Kitchen tap (cold)", "W3 D4", "6 L/min", "+z"),
         Fitting("DF", "filter", "filter", lo.part_x0 - 300, lo.sink[0] + 18, 350, "Drinking-water filter in the "
                 "sink base, its own faucet by the tap", "Under-sink drinking-water filter + faucet", "W3",
                 "drinking water", "+y"),
-        Fitting("SH", "shower", "showerset", lo.wall_b, shower[1], 1110, "Thermostatic shower valve, head and rail "
-                "on end wall B", "Thermostatic shower valve + 6-7 L/min head + rail", "T1 D2", "6-7 L/min"),
+        Fitting("SH", "shower", "showerset", lo.wall_b, shower[1], 1110, "Hand shower on a slide rail on end wall "
+                "B, fed by the heater's hose", SHOWER_ITEM, "H1 D2", "about 4 L/min"),
         Fitting("WC", "wc", "cistern", lo.wall_b, wc[1], 1010, "Concealed cistern in end wall B, dual-flush plate",
                 "Slim concealed cistern frame (80 mm) with dual-flush plate, in the end-B stud wall and its 30 mm "
                 "build-out", "W4 D1", "dual flush"),
-        Fitting("BT", "tap", "basintap", L - 30, basin[1], 820, "Basin mixer, angle valves under the console",
-                "Wall basin 400 x 300 + mixer + bottle trap (wash lobby)", "W5 T2 D3", "6 L/min", "+z"),
+        Fitting("BT", "tap", "basintap", L - 30, basin[1], 820, "Basin tap (cold), its angle valve under the console",
+                "Wall basin 400 x 300 + cold tap + bottle trap (wash lobby)", "W5 D3", "6 L/min", "+z"),
         Fitting("IC1", "site", "chamber", ic[0], ic[1], vz - 66, "Inspection chamber outside end B, on to the farm's "
                 "septic tank", "Septic tank (2 chambers, about 4 m3) + inspection chambers", "D1 D2 D3", "DN110 in",
                 "+z"),
@@ -503,6 +492,8 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
     k = Kit("K9", "Plumbing", "plumbing", "site")
     by = {}
     for r in runs:
+        if r.system == "hot":  # the shower hose comes with the heater
+            continue
         key = (r.system, r.dn)
         by[key] = by.get(key, 0) + r.length / 1000
     names = {"soil": "uPVC soil pipe", "waste": "uPVC waste pipe", "vent": "uPVC vent pipe", "cold": "PPR PN20 pipe",
@@ -513,16 +504,15 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
                      step="S04"))
     for i, (nm, unit, q, key) in enumerate((
             ("Pipe fittings and clips (allowance)", "set", 1, "fittings"),
-            ("Thermostatic mixing valve (TMV) 41-44 C", "each", 1, "tmv"),
-            ("Thermostatic shower valve + 6-7 L/min head + rail", "set", 1, "showerset"),
-            (HEATER_ITEM, "each", 1, f"heater{P.HEATER_L.value:.0f}"),
-            ("Angle valves with filters", "each", 5, "anglevalve"),
+            (SHOWER_ITEM, "set", 1, "showerrail"),
+            (HEATER_ITEM, "each", 1, "heater_instant"),
+            ("Angle valves with filters", "each", 4, "anglevalve"),
             ("Air admittance valve 110 mm (spare) + rodding eyes", "set", 1, "aav"),
             ("Stop valve + Y-filter + check water meter", "set", 1, "watermeter"),
     )):
         k.buy(Bought(f"K9-X{i + 1}", nm, "K9", "plumbing", "plumbing", q, unit, key, step="S04"))
-    k.buy(Bought("K9-HEATER-BOX", f"{P.HEATER_L.value:.0f} L heater box on end wall B above the WC", "K9", "plumbing",
-                 "plumbing", 0, "each", "", Box(lo.wall_b - hd, lo.wc_cy - hw / 2, hz0, lo.wall_b, lo.wc_cy + hw / 2, hz0 + hh),
+    k.buy(Bought("K9-HEATER-BOX", "Instant heater on end wall B inside the shower", "K9", "plumbing",
+                 "plumbing", 0, "each", "", Box(lo.wall_b - hd, hy - hw / 2, hz0, lo.wall_b, hy + hw / 2, hz0 + hh),
                  step="S10", color="white"))
     site = site_water()
     return runs, fittings, k, site
