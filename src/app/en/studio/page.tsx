@@ -1,11 +1,9 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
 
-import { BlurImg } from "@/components/atom/blur-img"
-import { DrawingSection, ModelSection, PageHero } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"
-import { ItemRail, type RailItem } from "@/components/docs/item-rail"
+import { type RailItem } from "@/components/docs/item-rail"
 import { PipeDiagram } from "@/components/docs/pipe-diagram"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
 import { WiringDiagram } from "@/components/docs/wiring-diagram"
@@ -309,127 +307,63 @@ export default function StudioPage() {
 
       {/* Bed: the bed corner as a rail of product cards (after databayt.org's products rail); the card in focus
           shows its size, source and cost below. */}
-      {[{ id: "bedroom", title: "Bed", items: bedRail() }, { id: "seating", title: "Seating", items: seatingRail() },
-        { id: "galley", title: "Galley", items: galleyRail() }, { id: "bath", title: "Bath", items: bathRail() }].map((r) => (
-        <section key={r.id} id={r.id} className="pt-10 pb-10">
-          <h2 className="px-4 text-3xl font-semibold tracking-tight md:px-10">{r.title}</h2>
-          <div className="mt-6">
-            <ItemRail items={r.items} />
-          </div>
-        </section>
-      ))}
+      <RailSection id="bedroom" title="Bed" items={bedRail()} />
+      <RailSection id="seating" title="Seating" items={seatingRail()} />
+      <RailSection id="galley" title="Galley" items={galleyRail()} />
+      <RailSection id="bath" title="Bath" items={bathRail()} />
 
-      {/* Electric, in the 3D section's pattern: a plain title, then the studio's wiring drawn full width from its
-          inlet to every circuit. Where the power comes from is a site decision; the studio only needs a supply in its inlet.
-          Below it the installation in the 3D view's camera (render/electric-line.png, every run in its circuit's
-          colour and every point tagged), the finished room (render/electric-real.jpg), then each device on its own.
-          All three come from scripts/studio/render/room.html?view=electric, built from render/scene.json. */}
-      <section id="electrical" className="scroll-mt-20 border-t">
-        <div className="px-4 pt-10 pb-10 md:px-10">
-          <h2 className="text-3xl font-semibold tracking-tight">Electric</h2>
-          <div className="mt-6 overflow-x-auto">
-            <WiringDiagram circuits={circuits} demand={demand} />
-          </div>
-        </div>
-        <div className="px-4 pb-6 md:px-10">
-          <div className="overflow-x-auto">
-            <div className="min-w-[960px]">
-              <TaggedFigure table="/docs/studio-circuits" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
-                alt="Line drawing of the studio from the front with every electrical point and conduit run: the unit board on the back wall by the galley with seven circuits leaving its top, cables along the ceiling edge and straight down to each light, switch and socket, in blue for lights, orange for sockets and green for fixed appliances."
-                info={Object.fromEntries(points.map((p) => [p.point, { label: p.description,
-                  colour: circuits.find((c) => c.circuit === p.circuit)?.colour }]))} />
-            </div>
-          </div>
-          <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
-            Every run goes up into the ceiling void, along it and straight down to its device. Each tag opens its row
-            in the <Link href="/docs/studio-circuits#points" className="underline underline-offset-4">points table</Link>.
-            Outside the drawing: C6 leaves through the front wall at the bed end for{" "}
-            {points.filter((p) => p.circuit === "C6" && !electricTags.tags.some((t) => t.id === p.point)).map((p) => p.point).join(", ")}{" "}
-            on the deck, the stair and the roof. The inlet (PI) is behind the board, and the earth rod (E1) is in a pit
-            below it.
-          </p>
-        </div>
-        <figure className="px-4 pb-10 md:px-10">
-          <div className="overflow-hidden">
-            <BlurImg src={`${D}/render/electric-real.jpg`} width={2400} height={1100} loading="lazy"
-              alt="The same view rendered as finished: the white unit board with smoked windows on the back wall by the galley, sockets with USB-C over the headboard, the bedside table and the sofa arm, double sockets on the galley wall, a wall fan and the red AC isolator high on the back wall, and slim ceiling lights and alarms."
-              className="h-auto w-full" />
-          </div>
-          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model</figcaption>
-        </figure>
-        <div className="pb-10">
-          <ItemRail items={electricRail(points)} />
-        </div>
-      </section>
+      {/* Electric: a plain title, then the studio's wiring drawn full width from its inlet to every circuit. Where the
+          power comes from is a site decision; the studio only needs a supply in its inlet. Below it the installation in
+          the 3D view's camera (render/electric-line.png, every run in its circuit's colour and every point tagged), the
+          finished room (render/electric-real.jpg), then each device on its own. All three come from
+          scripts/studio/render/room.html?view=electric, built from render/scene.json. */}
+      <ServiceSection id="electrical" title="Electric"
+        diagram={<WiringDiagram circuits={circuits} demand={demand} />}
+        figure={<TaggedFigure table="/docs/studio-circuits" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
+          alt="Line drawing of the studio from the front with every electrical point and conduit run: the unit board on the back wall by the galley with seven circuits leaving its top, cables along the ceiling edge and straight down to each light, switch and socket, in blue for lights, orange for sockets and green for fixed appliances."
+          info={Object.fromEntries(points.map((p) => [p.point, { label: p.description,
+            colour: circuits.find((c) => c.circuit === p.circuit)?.colour }]))} />}
+        note={<>
+          Every run goes up into the ceiling void, along it and straight down to its device. Each tag opens its row
+          in the <Link href="/docs/studio-circuits#points" className="underline underline-offset-4">points table</Link>.
+          Outside the drawing: C6 leaves through the front wall at the bed end for{" "}
+          {points.filter((p) => p.circuit === "C6" && !electricTags.tags.some((t) => t.id === p.point)).map((p) => p.point).join(", ")}{" "}
+          on the deck, the stair and the roof. The inlet (PI) is behind the board, and the earth rod (E1) is in a pit
+          below it.
+        </>}
+        real={{ src: `${D}/render/electric-real.jpg`, width: 2400, height: 1100, caption: "Rendered from the design model",
+          alt: "The same view rendered as finished: the white unit board with smoked windows on the back wall by the galley, sockets with USB-C over the headboard, the bedside table and the sofa arm, double sockets on the galley wall, a wall fan and the red AC isolator high on the back wall, and slim ceiling lights and alarms." }}
+        rail={electricRail(points)} />
 
-      {/* Plumbing, in the Electric section's pattern: a plain title, then the studio's water drawn full width, from the
-          farm's supply through the stop valve to every outlet and on to the drains. Below it the installation in the 3D
-          view's camera with the sink base cut open and the bathroom's wet walls stripped to the foam
-          (render/plumbing-line.png: every run in its system's colour, dashed where a wall or the floor still hides it,
-          every fitting tagged), the finished room
-          (render/plumbing-real.jpg), then each fitting on its own. All three come from
+      {/* Plumbing, in the Electric section's pattern: the studio's water drawn full width, from the farm's supply
+          through the stop valve to every outlet and on to the drains. Below it the installation in the 3D view's camera
+          with the sink base cut open and the bathroom's wet walls stripped to the foam (render/plumbing-line.png: every
+          run in its system's colour, dashed where a wall or the floor still hides it, every fitting tagged), the
+          finished room (render/plumbing-real.jpg), then each fitting on its own. All three come from
           scripts/studio/render/room.html?view=plumbing, built from render/scene.json. */}
-      <section id="plumbing" className="scroll-mt-20 border-t">
-        <div className="px-4 pt-10 pb-10 md:px-10">
-          <h2 className="text-3xl font-semibold tracking-tight">Plumbing</h2>
-          <div className="mt-6 overflow-x-auto">
-            <PipeDiagram pipes={pipes} fittings={fittings} water={water} />
-          </div>
-        </div>
-        <div className="px-4 pb-6 md:px-10">
-          <div className="overflow-x-auto">
-            <div className="min-w-[960px]">
-              <TaggedFigure table="/docs/studio-pipes" src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags}
-                alt="Line drawing of the studio from the front with the sink base cut open, the bathroom's wet walls stripped to the foam and every pipe run: the stop valve, filter and meter on the main in the sink base, cold in blue along the back wall and up end wall B to every outlet and to the instant heater in the shower, its hose in red to the hand shower, and the drains in brown dropping through the floor."
-                info={Object.fromEntries(fittings.map((f) => [f.point, { label: f.description, colour: fittingColour(f, pipes) }]))} />
-            </div>
-          </div>
-          <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
-            Supplies run inside the units and the walls, then straight up to each outlet; drains drop through the floor and
-            hang under it. The sink base and the bathroom&rsquo;s wet walls are drawn open; a run is dashed where a wall or
-            the floor still hides it. Each tag opens its row in the{" "}
-            <Link href="/docs/studio-pipes#points" className="underline underline-offset-4">points table</Link>. Outside
-            the drawing: the main comes in under end B from the farm; D1, D2 and D3 leave for the inspection chamber (IC1)
-            and the septic tank, D4 for the grease trap (GT); the vent rises up end B to its terminal (VT), 900 mm above
-            the roof guardrail.
-          </p>
-        </div>
-        <figure className="px-4 pb-10 md:px-10">
-          <div className="overflow-hidden">
-            <BlurImg src={`${D}/render/plumbing-real.jpg`} width={2400} height={1100} loading="lazy"
-              alt="The same view rendered as finished with the sink base cut open and the bathroom's wet walls stripped to the yellow foam: in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap; in the bathroom the small white instant heater in the shower beside the hand shower on its rail, the pipes along the back wall and up end wall B, the cistern frame behind the flush plate, and the basin's valves and trap under its console."
-              className="h-auto w-full" />
-          </div>
-          <figcaption className="text-muted-foreground mt-2 text-sm">Rendered from the design model, the sink base and the bathroom&rsquo;s wet walls opened</figcaption>
-        </figure>
-        <div className="pb-10">
-          <ItemRail items={plumbingRail(fittings)} />
-        </div>
-      </section>
+      <ServiceSection id="plumbing" title="Plumbing"
+        diagram={<PipeDiagram pipes={pipes} fittings={fittings} water={water} />}
+        figure={<TaggedFigure table="/docs/studio-pipes" src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags}
+          alt="Line drawing of the studio from the front with the sink base cut open, the bathroom's wet walls stripped to the foam and every pipe run: the stop valve, filter and meter on the main in the sink base, cold in blue along the back wall and up end wall B to every outlet and to the instant heater in the shower, its hose in red to the hand shower, and the drains in brown dropping through the floor."
+          info={Object.fromEntries(fittings.map((f) => [f.point, { label: f.description, colour: fittingColour(f, pipes) }]))} />}
+        note={<>
+          Supplies run inside the units and the walls, then straight up to each outlet; drains drop through the floor and
+          hang under it. The sink base and the bathroom&rsquo;s wet walls are drawn open; a run is dashed where a wall or
+          the floor still hides it. Each tag opens its row in the{" "}
+          <Link href="/docs/studio-pipes#points" className="underline underline-offset-4">points table</Link>. Outside
+          the drawing: the main comes in under end B from the farm; D1, D2 and D3 leave for the inspection chamber (IC1)
+          and the septic tank, D4 for the grease trap (GT); the vent rises up end B to its terminal (VT), 900 mm above
+          the roof guardrail.
+        </>}
+        real={{ src: `${D}/render/plumbing-real.jpg`, width: 2400, height: 1100,
+          caption: <>Rendered from the design model, the sink base and the bathroom&rsquo;s wet walls opened</>,
+          alt: "The same view rendered as finished with the sink base cut open and the bathroom's wet walls stripped to the yellow foam: in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap; in the bathroom the small white instant heater in the shower beside the hand shower on its rail, the pipes along the back wall and up end wall B, the cistern frame behind the flush plate, and the basin's valves and trap under its console." }}
+        rail={plumbingRail(fittings)} />
 
       {/* The reference sections live in the docs (scripts/sync-docs.mjs, src/components/studio/docs-sections.tsx):
           the bill of materials, the circuit and pipe schedules with their points, and the studio's features and
           downloads. A card each, after the execution plan's. */}
-      <section id="docs" className="scroll-mt-20 border-t py-16">
-        <div className="w-full px-4 md:px-10">
-          <h2 className="text-3xl font-semibold tracking-tight">In the docs</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {DOCS.map((d) => (
-              <Link key={d.href} href={d.href} className="group hover:bg-muted/40 rounded-xl border p-5 transition-colors">
-                <h3 className="font-medium">
-                  {/* the arrow keeps to the title's last word, so it never wraps onto a line of its own */}
-                  {d.title.split(" ").slice(0, -1).join(" ")}{" "}
-                  <span className="whitespace-nowrap">
-                    {d.title.split(" ").at(-1)}{" "}
-                    <ArrowRight className="text-muted-foreground inline size-4 align-[-3px] transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
-                  </span>
-                </h3>
-                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{d.text}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <DocsSection cards={DOCS} />
     </main>
   )
 }

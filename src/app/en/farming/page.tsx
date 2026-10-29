@@ -1,14 +1,15 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 
-import { DrawingSection, ModelSection, PageHero } from "@/components/page/sections"
-import { Button } from "@/components/ui/button"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"
-import { ItemRail, type RailItem } from "@/components/docs/item-rail"
+import { type RailItem } from "@/components/docs/item-rail"
+import { TaggedFigure } from "@/components/docs/tagged-figure"
 import { FarmingPlan } from "@/components/farming/farming-plan"
 import { NurseryPlan } from "@/components/farming/nursery-plan"
+import { WATER_COLOUR, WaterDiagram } from "@/components/farming/water-diagram"
 import plan from "../../../../public/designs/farming/data/plan.json"
 import topPieces from "../../../../public/designs/farming/render/top-pieces.json"
+import waterTags from "../../../../public/designs/farming/render/water-tags.json"
 
 // The vegetable field, as /en/studio is the studio: grow every vegetable the galley needs to feed the farm's
 // guests (founder, 2026-10-28). Every number comes from scripts/site/farming.mjs, which sizes the beds to a full
@@ -36,6 +37,52 @@ function cropRail(): RailItem[] {
     note: `Spacing ${c.spacing} cm. Watch for ${c.watch}. Yield: ${c.yieldNote}.`,
   }))
 }
+
+// The Water rail, in the studio's Plumbing rail's pattern: each part of the drip installation rendered on its own
+// (farming.html?part=<id>), its size and length from plan.irrigation, its cost from the field's BOM (placeholders
+// until quoted). Nothing is sourced yet; the guide names Holland Greentech for drip and Davis & Shirtliff for pumps,
+// neither contacted.
+const I = plan.irrigation
+const line = (re: RegExp) => plan.bom.find((l) => re.test(l.item))!
+const NOT_SOURCED = "Not sourced yet"
+function waterRail(): RailItem[] {
+  const card = (id: string, title: string, size: string, where: string, cost: string, note: string): RailItem => ({
+    src: `${D}/render/water/${id}.webp`, alt: title, title, note,
+    details: [{ label: "Dimensions", value: size }, { label: "Where to buy", value: where }, { label: "Cost", value: cost }],
+  })
+  const drip = line(/^Drip tape/), pipe = line(/^Supply and header/), valve = line(/^Valve and fittings/), filter = line(/^Disc filter/), main = line(/^Main pipe/)
+  return [
+    card("tank", "Tank and pump", "Sized to the borehole's tested flow", "The farm's, by the compound", "Not in the field's budget: the farm's water",
+      `T · the farm's tank and booster pump, shared with the compound. The field takes ${plan.water.dryLow} to ${plan.water.dryHigh} m³ a day in the driest months.`),
+    card("filter", "Disc filter", "1 inch, at the tank", "Not sourced yet: Holland Greentech sells drip (not contacted)", `RWF ${frw(filter.total)} (estimate)`,
+      "F · stops the grit that blocks emitters. Open and rinse its discs every week."),
+    card("main", "Main pipe", `${main.qty} m of ${I.main.dn} mm PE`, NOT_SOURCED, `RWF ${frw(main.total)} (estimate)`,
+      "M1 · from the tank down to the garden walk and along it to the field's gate, buried 30 cm."),
+    card("valve", `Block valves × ${valve.qty}`, "A 32 mm ball valve on a tee, in a valve box", NOT_SOURCED, `RWF ${frw(valve.rwf)} each × ${valve.qty} (estimate)`,
+      `${I.valves.map((v) => v.id).join(", ")} · each block waters on its own, so a short flow can run them one after another.`),
+    card("header", "Supply and headers", `${pipe.qty} m of 32 mm PE, with start connectors`, NOT_SOURCED, `RWF ${frw(pipe.total)} (estimate)`,
+      "S1 and H · along the main path and the aisles, then across each block's gate-side end, a start connector for every drip line."),
+    card("drip", "Drip lines", `${frw(drip.qty)} m of 16 mm tape, two lines a bed`, "Not sourced yet: Holland Greentech sells drip (not contacted)", `RWF ${frw(drip.total)} (estimate)`,
+      `DL · ${I.lines} lines, 10 m each, down every planted bed; an end closure on each, flushed open once a month.`),
+  ]
+}
+// the water points, for the tags on the drawing
+const WATER_POINTS = [
+  { id: "T", what: "Tank and booster pump", where: "The farm's, by the compound, off the drawing", size: "To the borehole test", colour: WATER_COLOUR.main },
+  { id: "F", what: "Disc filter", where: "At the tank, off the drawing", size: "1 inch", colour: WATER_COLOUR.main },
+  { id: "M1", what: "Main", where: "From the tank to the gate", size: `${I.main.dn} mm PE, ${I.main.m} m`, colour: WATER_COLOUR.main },
+  { id: "S1", what: "Supply", where: "Along the main path to the middle aisle, then up and down each column's end", size: `32 mm PE`, colour: WATER_COLOUR.supply },
+  ...I.valves.map((v) => ({ id: v.id, what: `Valve, block ${v.block}`, where: `Where block ${v.block}'s header leaves the supply`, size: `32 mm ball valve, ${v.beds} beds on drip`, colour: WATER_COLOUR.valve })),
+  { id: "H", what: "Headers", where: "Across each block's gate-side end", size: "32 mm PE, 16.5 m a block", colour: WATER_COLOUR.supply },
+  { id: "DL", what: "Drip lines", where: "Two down every planted bed", size: `16 mm tape, ${I.lines} lines of 10 m`, colour: WATER_COLOUR.drip },
+]
+
+const DOCS = [
+  { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." },
+  { href: "/docs/vegetables", title: "The field guide", text: "The first month step by step, the crops, water and pests, in English and Kinyarwanda." },
+  { href: "/docs/water-and-soil", title: "Water and soil", text: "The soil and water tests, the borehole's flow and what the field can drink." },
+  { href: "/docs/irrigation-automation", title: "Irrigation control", text: "Manual valves and meters first; what a monitoring kit would add after planting." },
+]
 
 // the bill of materials, a row per section of lines
 function bomSections() {
@@ -113,16 +160,58 @@ export default function FarmingPage() {
       </section>
 
       {/* Crops: one card per crop, the biggest share of the plate first; the card in focus shows what it gives. */}
-      <section id="crops" className="pt-10 pb-10">
-        <h2 className="px-4 text-3xl font-semibold tracking-tight md:px-10">Crops</h2>
-        <div className="mt-6">
-          <ItemRail items={cropRail()} />
-        </div>
-      </section>
+      <RailSection id="crops" title="Crops" items={cropRail()} />
 
-      <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+      {/* Water, in the studio's Plumbing pattern: the drip installation drawn full width from the farm's tank to every
+          drip line (water-diagram.tsx), then the whole field as the 3D sees it with the crops left out, every run in its
+          colour and every point tagged (render/water-line.png, water-tags.json), the same view rendered before
+          planting (render/water-real.webp), then each part on its own. All from farming.html?view=water and ?part=. */}
+      <ServiceSection id="water" title="Water"
+        diagram={<WaterDiagram irrigation={I} perBlock={10} dry={[plan.water.dryLow, plan.water.dryHigh]} />}
+        figure={<TaggedFigure src={`${D}/render/water-line.png`} aspect={waterTags.aspect} tags={waterTags.tags}
+          alt="Line drawing of the whole field from its gate end with the crops left out: the main in dark blue coming in through the gate, the supply in blue along the main path and the aisles, an orange valve where each block's header leaves it, the headers across the bed ends, and two light-blue drip lines down every planted bed."
+          info={Object.fromEntries(WATER_POINTS.map((p) => [p.id, { label: p.what, colour: p.colour }]))} />}
+        note={<>
+          The main comes in through the gate from the farm&rsquo;s tank and pump by the compound (T, with the disc filter F,
+          off the drawing). Inside, the supply runs along the main path and up and down each column&rsquo;s end; every block
+          has its own valve, so a short flow waters one block at a time. Each tag opens its row in the{" "}
+          <a href="#water-points" className="underline underline-offset-4">points table</a>. Water at dawn or dusk, mulch the
+          beds with dry grass, and plant season C only to the flow the borehole test proves. Under 1 ha of irrigation needs no permit.
+        </>}
+        real={{ src: `${D}/render/water-real.webp`, width: 2400, height: 1100,
+          caption: "Rendered from the design model: the beds before planting, so the drip shows",
+          alt: "The same view rendered: dark compost beds on sandy paths, two black drip lines down each planted bed, the black supply along the main path and the bed ends with orange valve boxes, the main coming in at the gate, the fence, and the fruit row behind." }}
+        rail={waterRail()} />
+
+      <TextSection id="water-points" title="Water points">
+        <div className="mt-6 overflow-x-auto rounded-xl border">
+          <table className="w-full text-sm">
+            <thead className="text-muted-foreground bg-muted/40">
+              <tr>
+                <th className="px-3 py-2 text-start font-medium">Point</th>
+                <th className="px-3 py-2 text-start font-medium">What</th>
+                <th className="px-3 py-2 text-start font-medium">Where</th>
+                <th className="px-3 py-2 text-start font-medium">Size</th>
+              </tr>
+            </thead>
+            <tbody>
+              {WATER_POINTS.map((p) => (
+                <tr key={p.id} id={`pt-${p.id}`} className="scroll-mt-24 border-t target:bg-muted/60">
+                  <td className="px-3 py-2 font-medium whitespace-nowrap">
+                    <span className="me-2 inline-block size-2 rounded-full" style={{ background: p.colour }} />{p.id}
+                  </td>
+                  <td className="px-3 py-2">{p.what}</td>
+                  <td className="text-muted-foreground px-3 py-2">{p.where}</td>
+                  <td className="px-3 py-2">{p.size}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </TextSection>
+
         {/* The galley's needs: the plate, the week, the beds */}
-        <section id="demand" className="scroll-mt-20 border-t py-16">
+        <section id="demand" className="scroll-mt-20 border-t px-4 py-16 md:px-10">
           <h2 className="text-3xl font-semibold tracking-tight">What the galley needs</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
             A full house every day is {plan.eaters} people at the galley&rsquo;s table, 22 guests and the team, about{" "}
@@ -174,7 +263,7 @@ export default function FarmingPage() {
         </section>
 
         {/* Planting so the harvest never stops */}
-        <section id="calendar" className="scroll-mt-20 border-t py-16">
+        <section id="calendar" className="scroll-mt-20 border-t px-4 py-16 md:px-10">
           <h2 className="text-3xl font-semibold tracking-tight">Planting so the harvest never stops</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
             A few beds of each crop go in every few weeks, so something is always ready to pick. Each family moves to
@@ -218,18 +307,9 @@ export default function FarmingPage() {
           </div>
         </section>
 
-        <section id="water" className="scroll-mt-20 border-t py-16">
-          <h2 className="text-3xl font-semibold tracking-tight">Water</h2>
-          <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
-            In the driest months the {frw(plan.plantedM2)} m² of beds drink {plan.water.dryLow} to {plan.water.dryHigh} m³ a
-            day, about ten times what the roofs collect, so the borehole or the mains carries the field. Water at dawn or
-            dusk, mulch the beds with dry grass, and plant season C only to the flow the test proves. Under 1 ha of
-            irrigation needs no permit.
-          </p>
-        </section>
 
         {/* The bill of materials to start the field, in the studio's pattern */}
-        <section id="bom" className="scroll-mt-20 border-t py-16">
+        <section id="bom" className="scroll-mt-20 border-t px-4 py-16 md:px-10">
           <h2 className="text-3xl font-semibold tracking-tight">Bill of materials</h2>
           <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">
             Everything to start the {plan.bedsNeeded} beds, the {plan.fenceM} m fence and the nursery: about{" "}
@@ -290,29 +370,13 @@ export default function FarmingPage() {
               <span key={f}>{i ? " · " : ""}<a href={`${D}/data/${f}`} download className="underline underline-offset-4">{f}</a></span>
             ))}
           </p>
+          <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
+            Status: preliminary. The soil, the water and the field&rsquo;s size are not measured yet: the zone follows the
+            provisional master plan, the yields are planning figures and the plate is assumed until the cook writes the menu.
+          </p>
         </section>
 
-        <section className="mb-16 grid gap-6 md:grid-cols-2">
-          <div className="rounded-xl border p-6">
-            <h2 className="text-xl font-semibold tracking-tight">The field guide</h2>
-            <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-              The first month step by step, the crops, water and pests, in English and Kinyarwanda.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Button asChild variant="outline"><Link href="/docs/vegetables">Read the guide</Link></Button>
-              <Button asChild variant="outline"><a href="/guides/vegetables.pdf" download>PDF</a></Button>
-            </div>
-          </div>
-          <div className="rounded-xl border p-6">
-            <h2 className="text-xl font-semibold tracking-tight">Status</h2>
-            <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-              Preliminary. The soil, the water and the field&rsquo;s size are not measured yet: the zone follows the
-              provisional master plan, the yields are planning figures and the plate is assumed until the cook writes the
-              menu. The 3D shows the beds by the gate in one season.
-            </p>
-          </div>
-        </section>
-      </div>
+      <DocsSection cards={DOCS} />
     </main>
   )
 }

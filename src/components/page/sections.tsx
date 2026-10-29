@@ -1,12 +1,15 @@
 import type * as React from "react"
 import Link from "next/link"
+import { ArrowRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { BlurImg } from "@/components/atom/blur-img"
+import { ItemRail, type RailItem } from "@/components/docs/item-rail"
 import { Button } from "@/components/ui/button"
 
-// The three sections every /en page opens on, in /en/studio's pattern: a full-screen hero photo, the 2D and the 3D.
-// One copy here keeps the twelve pages identical in spacing, type and dark-mode handling.
+// The sections of every /en page, in /en/studio's pattern: a full-screen hero photo, the 2D and the 3D, then the
+// rails, the services and the docs cards. One copy here keeps the twelve pages identical in spacing, type and
+// dark-mode handling.
 
 // The first screen. `className` sets the box's colour while the photo loads, `imgClassName` its focus
 // (object-[x_y]); the words sit bottom-left, so the photo keeps its subject centre-right. The sentinel tells the
@@ -46,6 +49,95 @@ export function DrawingSection({ id, title, children, after, full = false }: {
         <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">{children}</div>
       </div>
       {after}
+    </section>
+  )
+}
+
+// A rail of product cards under a plain title (the studio's Bed, Seating, Galley and Bath; the field's Crops):
+// the card in focus shows its size, source and cost below.
+export function RailSection({ id, title, items }: { id: string; title: string; items: RailItem[] }) {
+  return (
+    <section id={id} className="pt-10 pb-10">
+      <h2 className="px-4 text-3xl font-semibold tracking-tight md:px-10">{title}</h2>
+      <div className="mt-6">
+        <ItemRail items={items} />
+      </div>
+    </section>
+  )
+}
+
+// A service in the studio's Electric and Plumbing pattern: a plain title over the system drawn inline full width
+// (`diagram`), then the installation in the 3D view's camera with every point tagged (`figure`, a TaggedFigure,
+// and `note` under it), the finished view rendered (`real`), then each part on its own (`rail`).
+export function ServiceSection({ id, title, diagram, figure, note, real, rail }: {
+  id: string; title: string; diagram: React.ReactNode; figure?: React.ReactNode; note?: React.ReactNode
+  real?: { src: string; width: number; height: number; alt: string; caption: React.ReactNode }; rail?: RailItem[]
+}) {
+  return (
+    <section id={id} className="scroll-mt-20 border-t">
+      <div className="px-4 pt-10 pb-10 md:px-10">
+        <h2 className="text-3xl font-semibold tracking-tight">{title}</h2>
+        <div className="mt-6 overflow-x-auto">{diagram}</div>
+      </div>
+      {figure ? (
+        <div className="px-4 pb-6 md:px-10">
+          <div className="overflow-x-auto">
+            <div className="min-w-[960px]">{figure}</div>
+          </div>
+          {note ? <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">{note}</p> : null}
+        </div>
+      ) : null}
+      {real ? (
+        <figure className="px-4 pb-10 md:px-10">
+          <div className="overflow-hidden">
+            <BlurImg src={real.src} width={real.width} height={real.height} loading="lazy" alt={real.alt} className="h-auto w-full" />
+          </div>
+          <figcaption className="text-muted-foreground mt-2 text-sm">{real.caption}</figcaption>
+        </figure>
+      ) : null}
+      {rail ? (
+        <div className="pb-10">
+          <ItemRail items={rail} />
+        </div>
+      ) : null}
+    </section>
+  )
+}
+
+// A titled section of text and tables in the page's full width (the field's plate, calendar and bill of materials).
+export function TextSection({ id, title, lead, children }: { id: string; title: string; lead?: React.ReactNode; children?: React.ReactNode }) {
+  return (
+    <section id={id} className="scroll-mt-20 border-t px-4 py-16 md:px-10">
+      <h2 className="text-3xl font-semibold tracking-tight">{title}</h2>
+      {lead ? <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">{lead}</p> : null}
+      {children}
+    </section>
+  )
+}
+
+// The page's last section: a card for each docs page that holds the reference behind it.
+export type DocCard = { href: string; title: string; text: string }
+export function DocsSection({ cards }: { cards: DocCard[] }) {
+  return (
+    <section id="docs" className="scroll-mt-20 border-t py-16">
+      <div className="w-full px-4 md:px-10">
+        <h2 className="text-3xl font-semibold tracking-tight">In the docs</h2>
+        <div className={cn("mt-6 grid gap-4 sm:grid-cols-2", cards.length >= 5 ? "lg:grid-cols-5" : cards.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
+          {cards.map((d) => (
+            <Link key={d.href} href={d.href} className="group hover:bg-muted/40 rounded-xl border p-5 transition-colors">
+              <h3 className="font-medium">
+                {/* the arrow keeps to the title's last word, so it never wraps onto a line of its own */}
+                {d.title.split(" ").slice(0, -1).join(" ")}{" "}
+                <span className="whitespace-nowrap">
+                  {d.title.split(" ").at(-1)}{" "}
+                  <ArrowRight className="text-muted-foreground inline size-4 align-[-3px] transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
+                </span>
+              </h3>
+              <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{d.text}</p>
+            </Link>
+          ))}
+        </div>
+      </div>
     </section>
   )
 }

@@ -343,9 +343,9 @@
       },
       {
         "section": "Water",
-        "item": "Header pipe, 32 mm PE",
-        "per": "block",
-        "qty": 18,
+        "item": "Supply and header pipe, 32 mm PE",
+        "per": "pipe32",
+        "qty": 1,
         "unit": "m",
         "rwf": 1500
       },
@@ -368,8 +368,8 @@
       {
         "section": "Water",
         "item": "Main pipe from the tank, 40 mm PE",
-        "per": "once",
-        "qty": 30,
+        "per": "main",
+        "qty": 1,
         "unit": "m",
         "rwf": 2000
       },

@@ -113,8 +113,40 @@ const fruit = Array.from({ length: Math.floor((fy1 - fy0 - F.fruit.spacing) / F.
   return { kind, x: r2(fx0 - F.fruit.offset), y: r2(fy0 + F.fruit.spacing / 2 + k * F.fruit.spacing), r: F.fruit.kinds[kind].r }
 })
 
+// ------------------------------------------------------------ the drip installation
+// The farm's tank and pump (site.json) feed a 40 mm main down to the garden walk and along it to the gate. Inside, a
+// 32 mm supply runs along the main path to the middle aisle, and up and down the gate-side end of each column of
+// blocks; every block has its own valve where its header leaves the supply, and its header runs across the
+// block's end, feeding two drip lines down each planted bed. The disc filter stands at the tank. Positions in
+// site metres; the 3D, the water diagram and the points table all read them from here.
+const [tx, ty] = site.features.find((f) => f.id === "tank").circle
+const colX = [...new Set(blocks.map((b) => b.x))].map((x) => r2(x + blockW + bed.aisle * 0.35)) // each column's end, in the aisle
+const near = (b) => (b.y + b.h <= mainY ? b.y + b.h : b.y) // the block's end toward the main path
+const len = (pts) => pts.slice(1).reduce((n, p, i) => n + Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]), 0)
+const runs = [{ id: "M1", kind: "main", dn: 40, path: [[tx, ty], [tx, mainY], gate] }]
+runs.push({ id: "S1", kind: "supply", dn: 32, path: [gate, [colX[0], mainY]] })
+colX.forEach((x) => {
+  const col = blocks.filter((b) => r2(b.x + blockW + bed.aisle * 0.35) === x)
+  for (const b of col) {
+    const y = near(b), off = Math.abs(y - mainY) > MAIN ? 0.15 : 0 // a block away from the path takes its own line past its neighbour
+    if (y !== mainY) runs.push({ id: `S-${b.id}`, kind: "supply", dn: 32, path: [[x + off, mainY], [x + off, y]] })
+    runs.push({ id: `H-${b.id}`, kind: "header", dn: 32, block: b.id, path: [[x + off, b.y], [x + off, b.y + b.h]] })
+  }
+})
+const metres = (kind) => r1(runs.filter((r) => r.kind === kind).reduce((n, r) => n + len(r.path), 0))
+const drip = beds.filter((b) => b.crop !== "rest")
+const irrigation = {
+  tank: [tx, ty], filter: [tx, ty + 2], main: { dn: 40, m: Math.ceil(metres("main") * 1.05) },
+  pipe32m: Math.ceil((metres("supply") + metres("header")) * 1.05), dripM: drip.length * 2 * bed.l, lines: drip.length * 2,
+  runs: runs.map((r) => ({ ...r, m: r1(len(r.path)) })),
+  valves: blocks.map((b) => {
+    const x = r2(b.x + blockW + bed.aisle * 0.35) + (Math.abs(near(b) - mainY) > MAIN ? 0.15 : 0)
+    return { id: `V${b.id}`, block: b.id, at: [r2(x), r2(near(b))], beds: beds.filter((d) => d.block === b.id && d.crop !== "rest").length }
+  }),
+}
+
 // ------------------------------------------------------------ bill of materials
-const per = { once: 1, bed: needed, block: Math.ceil(needed / bed.perBlock), m: fenceM }
+const per = { once: 1, bed: needed, block: Math.ceil(needed / bed.perBlock), m: fenceM, main: irrigation.main.m, pipe32: irrigation.pipe32m }
 const bom = F.bom.lines.map((l) => {
   const qty = r1(l.qty * per[l.per])
   return { section: l.section, item: l.item, qty, unit: l.unit, rwf: l.rwf, total: Math.round(qty * l.rwf) }
@@ -141,7 +173,7 @@ const plan = {
   bedsNeeded: needed, bedsFull: full, grownKgWeek: r1(grown), coverFull: Math.round((grown / kgWeek) * 100), bedsTotal: beds.length, bedM2, plantedM2, water, fenceM,
   zone, yard, mainY, main: MAIN, gate, fence: [r2(fx0), r2(fy0), r2(fx1), r2(fy1)], nursery,
   walk: [[zone[2], mainY], [walk.points.at(-1)[0], mainY]], fruit,
-  blocks, beds, rotation,
+  blocks, beds, rotation, irrigation,
   crops: crops.map(({ id, name, family, g, spacing, rows, plantM, nursery, firstWeeks, harvestWeeks, yieldKgM2, yieldNote, watch, plantHeight, colour, kgWeek, averageKgWeek, cycleKg, inGround, beds, planted, every, batch, plantsPerBed }) =>
     ({ id, name, family, g, spacing, rows, plantM, nursery, firstWeeks, harvestWeeks, yieldKgM2, yieldNote, watch, plantHeight, colour, kgWeek, averageKgWeek, cycleKg, inGround, beds, planted, every, batch, plantsPerBed })),
   bom, subtotal, contingency, total: subtotal + contingency,

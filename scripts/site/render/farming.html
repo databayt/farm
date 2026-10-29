@@ -11,6 +11,12 @@
                               ground (opaque) | beds | compost | drip | plants (transparent)  -> render/top-<layer>.webp
                               window.PIECES holds each bed's rectangle as fractions of the picture
     ?item=<crop>            3 m of a bed of that crop on its own, transparent, for the Crops rail   -> render/crop/<crop>.webp
+    ?view=water&mode=line   the whole field as the 3D sees it, the crops left out so the drip installation shows:
+                              the main, the supply, the block valves and headers and every drip line in their
+                              colours (plan.irrigation), and window.TAGS                -> render/water-line.png + water-tags.json
+    ?view=water&mode=real   the same view rendered, the beds before planting             -> render/water-real.webp
+    ?part=<tank|filter|main|valve|header|drip>  one part of the drip installation on its own, transparent, for
+                              the Water rail                                             -> render/water/<part>.webp
 
   Serve the repo root on a spare port, open this page at its size (2400 x 1100; the top view sets its own),
   and once body[data-ready] is set save the data URL in #out.
@@ -42,7 +48,8 @@ import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
-const TOP = Q.get("top"), ITEM = Q.get("item"), HERO = Q.get("hero") === "1"
+const TOP = Q.get("top"), PART = Q.get("part"), ITEM = Q.get("item") ?? (PART ? "part" : null), HERO = Q.get("hero") === "1"
+const WATER = Q.get("view") === "water"
 // the 3D on the page: the whole field as the 2D draws it, its fence and gate and the fruit row behind (D-053)
 const FIELD = !TOP && !ITEM && !HERO
 const LINE = Q.get("mode") === "line"
@@ -57,7 +64,7 @@ const block = P.blocks.find((b) => b.id === herbBed.block)
 const towardMain = block.y < P.mainY // the main path below the block on the plan: it is the near side
 let beds = P.beds.filter((b) => b.block === block.id).map((b) => ({ ...b, z0: b.y - block.y, x0: 0 }))
 if (!towardMain) beds = beds.map((b) => ({ ...b, z0: block.h - (b.y - block.y) - b.h }))
-if (ITEM) beds = [{ id: ITEM, crop: ITEM, x0: 0, z0: 0, w: 10, h: 1.2 }]
+if (ITEM) beds = PART ? [] : [{ id: ITEM, crop: ITEM, x0: 0, z0: 0, w: 10, h: 1.2 }]
 // the whole field in fence metres: x along the beds toward the gate, z across them
 const [fx0, fy0, fx1, fy1] = P.fence
 if (FIELD) beds = P.beds.map((b) => ({ ...b, x0: b.x - fx0, z0: b.y - fy0 }))
@@ -121,6 +128,13 @@ function mat(name, colour) {
       grass: () => std({ map: T.grass, roughness: 1 }),
       tape: () => std({ color: "#1d1f22", roughness: 0.5 }),
       pipe: () => std({ color: "#1d1f22", roughness: 0.45 }),
+      tank: () => std({ color: "#2f4a3a", roughness: 0.6 }),
+      pump: () => std({ color: "#2a62a8", roughness: 0.4, metalness: 0.3 }),
+      filterbody: () => std({ color: "#1d1f22", roughness: 0.4 }),
+      filtercap: () => std({ color: "#c43a2a", roughness: 0.35 }),
+      brass: () => std({ color: "#b8913a", roughness: 0.3, metalness: 0.8 }),
+      valve: () => std({ color: "#d9822b", roughness: 0.4 }),
+      valvebox: () => std({ color: "#3a3d40", roughness: 0.8, transparent: true, opacity: 0.35 }),
       stake: () => std({ color: "#9b7a4e", roughness: 0.8 }),
       leaf: () => std({ color: colour, roughness: 0.75, side: THREE.DoubleSide }),
       fruit: () => std({ color: colour, roughness: 0.35 }),
@@ -264,7 +278,8 @@ for (const b of beds) {
   if (!c) continue // a resting bed: compost and no crop
   // two drip lines along the bed, the header at the near end
   for (const k of [1 / 3, 2 / 3]) put(CYL, "tape", { pos: [b.x0 + BW / 2, H + 0.03, b.z0 + b.h * k], rot: [0, 0, Math.PI / 2], scale: [0.012, BW - 0.2, 0.012], layer: "drip" })
-  if (!ITEM) put(CYL, "pipe", { pos: [b.x0 - 0.15, 0.03, zc], rot: [Math.PI / 2, 0, 0], scale: [0.025, b.h + 0.5, 0.025], layer: "drip" })
+  // the block's header at the bed's gate-side end (plan.irrigation); the field draws its own from the plan
+  if (!ITEM && !FIELD) put(CYL, "pipe", { pos: [b.x0 + BW + 0.15, 0.03, zc], rot: [Math.PI / 2, 0, 0], scale: [0.025, b.h + 0.5, 0.025], layer: "drip" })
   // the plants in their rows at their spacing; the densest crops drawn at twice the spacing so they read
   const step = c.plantM < 0.12 ? c.plantM * 2 : c.plantM
   for (let r = 0; r < c.rows; r++) {
@@ -310,7 +325,89 @@ if (FIELD) {
     }
   }
 }
+// ------------------------------------------------------------ the drip installation (plan.irrigation)
+// In line mode each run is a screen-width line in its colour, as the studio's plumbing; in real mode a pipe a little
+// fatter than life so it reads from the gate.
+const WCOL = { main: "#1d4e89", supply: "#2f7ed8", header: "#2f7ed8", drip: "#5fb0ea", valve: "#d9822b" }
+const waterLines = []
+if (FIELD && WATER) {
+  const I = P.irrigation, at = ([x, y], h = 0.05) => [x - fx0, h, y - fy0]
+  const seg = (a, b, kind, r) => {
+    if (LINE) { waterLines.push([kind, ...a, ...b]); return }
+    const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), mid = A.clone().add(B).multiplyScalar(0.5)
+    const g = new THREE.CylinderGeometry(r, r, A.distanceTo(B), 8)
+    const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.clone().sub(A).normalize())
+    g.applyQuaternion(q); g.translate(mid.x, mid.y, mid.z)
+    put(g, "pipe", { layer: "water" })
+  }
+  for (const r of I.runs) {
+    // the main comes in from the tank by the compound, off the drawing: only its last few metres show
+    let pts = r.path.map((p) => at(p))
+    if (r.kind === "main") pts = [[FL + 4, 0.05, pts.at(-1)[2]], pts.at(-1)]
+    for (let i = 1; i < pts.length; i++) seg(pts[i - 1], pts[i], r.kind, r.kind === "main" ? 0.07 : 0.055)
+  }
+  // two drip lines down each planted bed, from the header at its gate-side end
+  for (const b of beds) {
+    if (!CROP[b.crop]) continue
+    const xh = I.valves.find((v) => v.block === b.block).at[0] - fx0
+    for (const k of [1 / 3, 2 / 3]) {
+      const z = b.z0 + b.h * k
+      seg([b.x0 + 0.1, H + 0.03, z], [b.x0 + BW - 0.05, H + 0.03, z], "drip", 0.02)
+      seg([b.x0 + BW - 0.05, H + 0.03, z], [xh, 0.05, z], "drip", 0.02) // the start connector, down to the header
+    }
+  }
+  for (const v of I.valves) {
+    const [x, , z] = at(v.at)
+    if (LINE) waterLines.push(["valve", x - 0.3, 0.05, z, x + 0.3, 0.05, z], ["valve", x, 0.05, z - 0.3, x, 0.05, z + 0.3])
+    else put(BOX, "valve", { pos: [x, 0.12, z], scale: [0.35, 0.24, 0.35], layer: "water" })
+  }
+}
+
+// ------------------------------------------------------------ one part on its own, for the Water rail
+if (PART) {
+  const L = { layer: "part" }
+  const pipeAlong = (len, r, name, pos, rot = [0, 0, Math.PI / 2]) => put(new THREE.CylinderGeometry(r, r, len, 24), name, { pos, rot, ...L })
+  if (PART === "tank") { // a ribbed plastic tank on a stand, the pump beside it under its cover
+    put(new THREE.CylinderGeometry(0.8, 0.8, 1.8, 40), "tank", { pos: [0, 1.3, 0], ...L })
+    for (let k = 0; k < 6; k++) put(new THREE.TorusGeometry(0.805, 0.02, 6, 40), "tank", { pos: [0, 0.6 + k * 0.28, 0], rot: [Math.PI / 2, 0, 0], ...L })
+    put(new THREE.CylinderGeometry(0.25, 0.25, 0.08, 24), "tank", { pos: [0, 2.24, 0], ...L })
+    put(BOX, "stake", { pos: [0, 0.2, 0], scale: [1.8, 0.4, 1.8], ...L })
+    put(BOX, "pump", { pos: [1.35, 0.25, 0.4], scale: [0.45, 0.35, 0.3], ...L })
+    put(new THREE.CylinderGeometry(0.11, 0.11, 0.42, 20), "pump", { pos: [1.35, 0.3, 0.4], rot: [0, 0, Math.PI / 2], ...L })
+    pipeAlong(0.9, 0.025, "pipe", [0.85, 0.3, 0.4])
+    pipeAlong(0.6, 0.025, "pipe", [1.85, 0.3, 0.4])
+  } else if (PART === "filter") { // a 1 inch disc filter: the housing, its coloured cap and the two ports
+    put(new THREE.CylinderGeometry(0.07, 0.07, 0.2, 32), "filterbody", { pos: [0, 0.16, 0], ...L })
+    put(new THREE.CylinderGeometry(0.075, 0.075, 0.07, 32), "filtercap", { pos: [0, 0.29, 0], ...L })
+    pipeAlong(0.34, 0.017, "filterbody", [0, 0.2, 0])
+    for (const s of [-1, 1]) put(new THREE.CylinderGeometry(0.022, 0.022, 0.03, 6), "filterbody", { pos: [s * 0.17, 0.2, 0], rot: [0, 0, Math.PI / 2], ...L })
+  } else if (PART === "main") { // a coil of 40 mm PE
+    for (let k = 0; k < 7; k++) put(new THREE.TorusGeometry(0.55, 0.02, 10, 64), "pipe", { pos: [0, 0.02 + k * 0.04, 0], rot: [Math.PI / 2, 0, 0], ...L })
+    pipeAlong(0.7, 0.02, "pipe", [0.9, 0.02, 0])
+  } else if (PART === "valve") { // a ball valve on the 32 mm supply's tee, in its valve box
+    pipeAlong(0.7, 0.016, "pipe", [0, 0.1, 0])
+    put(new THREE.CylinderGeometry(0.016, 0.016, 0.3, 20), "pipe", { pos: [0, 0.1, 0.15], rot: [Math.PI / 2, 0, 0], ...L })
+    put(new THREE.SphereGeometry(0.035, 20, 12), "brass", { pos: [0, 0.1, 0.18], ...L })
+    put(BOX, "valve", { pos: [0, 0.16, 0.18], scale: [0.12, 0.02, 0.025], ...L })
+    put(BOX, "valvebox", { pos: [0, 0.07, 0.15], scale: [0.36, 0.14, 0.42], ...L })
+  } else if (PART === "header") { // 2 m of the 32 mm header with the start connectors for the drip lines
+    pipeAlong(2, 0.016, "pipe", [0, 0.03, 0], [Math.PI / 2, 0, 0])
+    for (let z = -0.9; z <= 0.9; z += 0.4) put(new THREE.CylinderGeometry(0.008, 0.008, 0.12, 12), "valve", { pos: [0.06, 0.03, z], rot: [0, 0, Math.PI / 2], ...L })
+  } else if (PART === "drip") { // 3 m of a bed before planting, its two drip lines and their emitters
+    const shape = new THREE.Shape([new THREE.Vector2(0, 0), new THREE.Vector2(1.2, 0), new THREE.Vector2(1.14, H), new THREE.Vector2(0.06, H)])
+    const g = new THREE.ExtrudeGeometry(shape, { depth: 3, bevelEnabled: false }); g.rotateY(Math.PI / 2); g.translate(0, 0, 1.2)
+    add(g, "soil", { layer: "part" })
+    add(new THREE.BoxGeometry(2.96, 0.02, 1.06), "compost", { pos: [1.5, H + 0.01, 0.6], layer: "part" })
+    for (const z of [0.4, 0.8]) {
+      put(CYL, "tape", { pos: [1.5, H + 0.03, z], rot: [0, 0, Math.PI / 2], scale: [0.012, 3, 0.012], ...L })
+      for (let x = 0.15; x < 3; x += 0.3) put(SPH, "tape", { pos: [x, H + 0.032, z], scale: [0.02, 0.014, 0.016], ...L })
+    }
+  }
+}
 flush()
+// the water view leaves the crops out, so the drip shows
+// (and the bed's own drip tape, which the plan's runs draw again in their colours)
+if (WATER) for (const m of meshes) if (m.userData.layer === "plants" || m.userData.layer === "drip") m.visible = false
 
 // ------------------------------------------------------------ camera
 let camera
@@ -342,7 +439,7 @@ if (TOP) {
   scene.updateMatrixWorld(true)
   // fit the block (not the lawn) to the picture
   const bb = new THREE.Box3()
-  for (const o of meshes) if (o.material !== MAT.grass && !(o.geometry.type === "PlaneGeometry" && ITEM)) bb.expandByObject(o)
+  for (const o of meshes) if (o.visible && o.material !== MAT.grass && !(o.geometry.type === "PlaneGeometry" && ITEM)) bb.expandByObject(o)
   let px = [Infinity, Infinity, -Infinity, -Infinity]
   for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
     const p = new THREE.Vector3(xx, yy, zz).project(camera)
@@ -366,6 +463,23 @@ if (LINE) {
     const l = new LineSegments2(g, lineMat)
     l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
     scene.add(l)
+  }
+  // the drip installation in its colours, over the ink drawing, and each point's spot in the frame
+  for (const [kind, ...p] of waterLines) {
+    const m = new LineMaterial({ color: WCOL[kind], linewidth: kind === "drip" ? 1.6 : kind === "main" ? 4.2 : kind === "valve" ? 4 : 3.2 })
+    m.resolution.set(FW, FH); m.userData.outlineParameters = { visible: false }
+    scene.add(new LineSegments2(new LineSegmentsGeometry().setPositions(p), m))
+  }
+  if (WATER) {
+    const I = P.irrigation, spot = (id, [x, y], h = 0.05) => {
+      const v = new THREE.Vector3(x - fx0, h, y - fy0).project(camera)
+      return { id, x: +((v.x + 1) / 2).toFixed(4), y: +((1 - v.y) / 2).toFixed(4), edge: "" }
+    }
+    const s1 = I.runs.find((r) => r.id === "S1").path, hb = I.runs.find((r) => r.id === "H-B2").path
+    const bed = beds.find((b) => b.block === "B2" && CROP[b.crop])
+    window.TAGS = [spot("M1", [fx1 + 2, P.gate[1]]), spot("S1", [(s1[0][0] + s1[1][0]) / 2, s1[0][1]]),
+      ...I.valves.map((v) => spot(v.id, v.at)), spot("H", [hb[0][0], (hb[0][1] + hb[1][1]) / 2 - 3]),
+      spot("DL", [bed.x + bed.w / 2, bed.y + bed.h / 3], H + 0.03)]
   }
   const ink = new THREE.Color(INK)
   new OutlineEffect(renderer, { defaultThickness: 0.0025, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
