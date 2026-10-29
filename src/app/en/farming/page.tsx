@@ -51,8 +51,8 @@ export default function FarmingPage() {
     <main className="w-full flex-1">
       {/* First screen: a STAND-IN until the founder's Nano Banana remaster (handoff in ~/Desktop/farming-nano-banana: the
           livestock hero for the place and the light, the 3D, the 2D and a frame of the site footage). For now it is the
-          block by the gate rendered from the main path (scripts/site/render/farming.html?mode=real). */}
-      <PageHero src={`${D}/render/field-real.webp`} width={2400} height={1100} className="bg-[#6f9a4a]" imgClassName="object-[50%_45%]"
+          block by the gate rendered on the lawn from the main path (scripts/site/render/farming.html?mode=real&hero=1). */}
+      <PageHero src={`${D}/render/field-hero.jpg`} width={2400} height={1340} className="bg-[#6f9a4a]" imgClassName="object-[50%_45%]"
         title="Everything on the plate, grown here"
         alt="Ten raised beds of red-brown soil on drip lines: herbs nearest, then amaranth, spinach, kale and staked tomatoes at the back, on a sandy path in the grass." />
 

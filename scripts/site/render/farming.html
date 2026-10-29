@@ -6,6 +6,7 @@
 
     ?mode=line              the block from the main path, line drawing on a transparent ground -> render/field-line.png
     ?mode=real              the same view with soil, plants and low sun, on the white page       -> render/field-real.webp
+    ?mode=real&hero=1       the block on the lawn from the main path's corner, 2400 x 1340: the stand-in hero -> render/field-hero.jpg
     ?top=<layer>            the block from straight above, beds standing up the picture, for the Field build-up:
                               ground (opaque) | beds | compost | drip | plants (transparent)  -> render/top-<layer>.webp
                               window.PIECES holds each bed's rectangle as fractions of the picture
@@ -41,7 +42,7 @@ import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
-const TOP = Q.get("top"), ITEM = Q.get("item")
+const TOP = Q.get("top"), ITEM = Q.get("item"), HERO = Q.get("hero") === "1"
 const LINE = Q.get("mode") === "line"
 const P = await (await fetch(`/public/designs/farming/data/plan.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#ffffff"
@@ -57,7 +58,7 @@ if (!towardMain) beds = beds.map((b) => ({ ...b, z0: block.h - (b.y - block.y) -
 if (ITEM) beds = [{ id: ITEM, crop: ITEM, x0: 0, z0: 0, w: 10, h: 1.2 }]
 const BW = ITEM ? 3 : 10, BH = ITEM ? 1.2 : block.h, H = 0.2 // an item shows 3 m of its bed, close enough to read the plants
 
-const [FW, FH] = TOP ? [2400, Math.round((2400 * (BW + 1.4)) / (BH + 1.4))] : [2400, 1100]
+const [FW, FH] = TOP ? [2400, Math.round((2400 * (BW + 1.4)) / (BH + 1.4))] : HERO ? [2400, 1340] : [2400, 1100]
 document.getElementById("out").style.cssText = `width:${FW}px;height:${FH}px`
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true })
 renderer.setClearColor(0xffffff, 0)
@@ -165,7 +166,12 @@ const M = 0.7 // ground past the block on each side
 if (!ITEM) {
   if (REAL) { T.path.repeat.set((BW + 2 * M) / 3, (BH + 2 * M) / 3) }
   add(new THREE.PlaneGeometry(BW + 2 * M, BH + 2 * M), "path", { pos: [BW / 2, 0, BH / 2], rot: [-Math.PI / 2, 0, 0], edges: false })
-  // no lawn round it: the block stands on the white page, as the studio's and the livestock yard's 3D
+  // no lawn round it: the block stands on the white page, as the studio's and the livestock yard's 3D; the stand-in
+  // hero keeps the lawn
+  if (REAL && HERO) {
+    T.grass.repeat.set(30, 30)
+    add(new THREE.PlaneGeometry(120, 120), "grass", { pos: [BW / 2, -0.01, BH / 2], rot: [-Math.PI / 2, 0, 0], edges: false })
+  }
 }
 
 // ------------------------------------------------------------ plants, one shape per crop
@@ -271,8 +277,8 @@ if (TOP) {
 } else {
   const target = new THREE.Vector3(BW / 2, 0.3, BH / 2)
   // straight on from the main path, as the studio's and the livestock yard's 3D, from far off with a long lens
-  const [el, az, dist] = ITEM ? [THREE.MathUtils.degToRad(30), THREE.MathUtils.degToRad(-30), 9] : [THREE.MathUtils.degToRad(34), 0, 70]
-  camera = new THREE.PerspectiveCamera(ITEM ? 30 : 18, FW / FH, 0.5, 300)
+  const [el, az, dist] = ITEM ? [THREE.MathUtils.degToRad(30), THREE.MathUtils.degToRad(-30), 9] : HERO ? [THREE.MathUtils.degToRad(32), THREE.MathUtils.degToRad(-22), 48] : [THREE.MathUtils.degToRad(34), 0, 70]
+  camera = new THREE.PerspectiveCamera(ITEM ? 30 : HERO ? 24 : 18, FW / FH, 0.5, 300)
   camera.position.set(target.x + dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
   camera.lookAt(target)
   camera.updateMatrixWorld(); camera.updateProjectionMatrix()
@@ -320,7 +326,7 @@ if (LINE) {
   Object.assign(sun.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 80 })
   sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 3
   scene.add(sun)
-  if (!TOP && !ITEM) { // the white page round the block takes only the shadows
+  if (!TOP && !ITEM && !HERO) { // the white page round the block takes only the shadows
     scene.background = new THREE.Color(12, 12, 12) // tone mapping would dim plain white to grey, so it starts brighter
     const ground = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: 0.14 }))
     ground.rotation.x = -Math.PI / 2; ground.position.set(BW / 2, -0.012, BH / 2); ground.receiveShadow = true
