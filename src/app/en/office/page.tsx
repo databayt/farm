@@ -77,7 +77,7 @@ export default function OfficePage() {
 
       {/* 2D, full screen: the office's plan (src/components/office/office-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
-        <OfficePlan title="Plan: a 20 ft container 6,058 by 2,438 mm with a 1,500 mm deck in front and a stair off its corner; inside, two three-seat sofas in an L in the left corner round a low table, and one big programmer's and gamer's desk across the whole far end wall, with three monitors, the PC tower and a gaming chair."
+        <OfficePlan title="Plan: a 20 ft container 6,058 by 2,438 mm with a 1,500 mm deck in front and a stair off its corner; inside, two three-seat sofas in an L in the left corner round a low table, and one big programmer's and gamer's desk across the whole far end wall, with a single Studio Display, a Mac Studio and a gaming chair."
           className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 

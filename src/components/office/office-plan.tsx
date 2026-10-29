@@ -88,19 +88,15 @@ export function OfficePlan({ title, className }: { title: string; className?: st
       <rect {...rect(sx, edge - st.w, 0, edge)} {...thin} />
       {Array.from({ length: steps - 1 }, (_, k) => <line key={k} x1={f(sx + (k + 1) * st.tread)} x2={f(sx + (k + 1) * st.tread)} y1={f(edge - st.w)} y2={f(edge)} {...thin} />)}
 
-      {/* The big desk across the whole far end wall: three monitors, the side two angled in, the keyboard and
-          mouse, the tower on the floor at the desk's front end, the gaming chair facing the wall */}
+      {/* The big desk across the whole far end wall: the Studio Display centred on its stand, the Mac Studio beside
+          it, the keyboard and mouse, the gaming chair facing the wall */}
       <rect {...rect(ix1 - ws.d, iy0, ix1, iy1)} {...thin} />
-      {[-1, 0, 1].map((k) => {
-        // the side two hinge off the centre one's ends and turn in toward the chair
-        const h = ws.monitor / 2, a = (ws.angle * Math.PI) / 180
-        const mx = ix1 - 0.2 - Math.abs(k) * h * Math.sin(a), my = k * (h + h * Math.cos(a))
-        return <rect key={k} {...rect(mx - 0.03, my - h, mx + 0.03, my + h)} {...thin}
-          transform={`rotate(${k * ws.angle} ${f(mx)} ${f(my)})`} />
-      })}
-      <rect {...rect(ix1 - ws.d + 0.12, -0.25, ix1 - ws.d + 0.28, 0.25)} rx={0.02} {...thin} />
-      <rect {...rect(ix1 - ws.d + 0.15, 0.36, ix1 - ws.d + 0.25, 0.42)} rx={0.03} {...thin} />
-      <rect {...rect(ix1 - ws.tower.d - 0.05, iy1 - ws.tower.w - 0.05, ix1 - 0.05, iy1 - 0.05)} {...dashed} />
+      <rect {...rect(ix1 - 0.07 - ws.display.foot, -0.09, ix1 - 0.07, 0.09)} rx={0.02} {...faint} />
+      <rect {...rect(ix1 - 0.12 - ws.display.t, -ws.display.w / 2, ix1 - 0.12, ws.display.w / 2)} rx={0.01} {...thin} />
+      <rect {...rect(ix1 - 0.08 - ws.mac.w, ws.mac.y - ws.mac.w / 2, ix1 - 0.08, ws.mac.y + ws.mac.w / 2)} rx={0.03} {...thin} />
+      <circle cx={f(ix1 - 0.08 - ws.mac.w / 2)} cy={ws.mac.y} r={0.05} {...faint} />
+      <rect {...rect(ix1 - ws.d + 0.12, -0.22, ix1 - ws.d + 0.25, 0.22)} rx={0.02} {...thin} />
+      <rect {...rect(ix1 - ws.d + 0.15, 0.32, ix1 - ws.d + 0.25, 0.38)} rx={0.03} {...thin} />
       <Chair x={ws.chair[0]} y={ws.chair[1]} toward="right" s={0.62} />
 
       {/* The two sofas in an L in the left corner, each with its arms and three seat cushions, the low table in front */}
@@ -120,8 +116,9 @@ export function OfficePlan({ title, className }: { title: string; className?: st
       })}
       <rect {...rect(sofas.table.x0, sofas.table.y0, sofas.table.x1, sofas.table.y1)} rx={0.04} {...thin} />
 
-      <text x={f(ix1 - ws.d / 2)} y={f(iy0 + 0.17)} textAnchor="middle" style={small}>DESK</text>
-      <text x={f(ix1 - ws.tower.d / 2 - 0.05)} y={f(iy1 - ws.tower.w / 2 - 0.015)} textAnchor="middle" style={small}>PC</text>
+      <text x={f(ix1 - ws.d / 2)} y={f(iy1 - 0.15)} textAnchor="middle" style={small}>DESK</text>
+      <text x={f(ix1 - 0.08 - ws.mac.w / 2)} y={f(ws.mac.y - ws.mac.w / 2 - 0.06)} textAnchor="middle" style={small}>MAC STUDIO</text>
+      <text x={f(ix1 - 0.27)} y={0} transform={`rotate(-90 ${f(ix1 - 0.27)} 0)`} textAnchor="middle" style={small}>STUDIO DISPLAY</text>
       {sofas.items.map((so) => so.back === "end"
         ? <text key={so.back} x={f(ix0 + (sofas.rest + sofas.d) / 2 + 0.035)} y={f((so.y0! + so.y1!) / 2)} transform={`rotate(-90 ${f(ix0 + (sofas.rest + sofas.d) / 2 + 0.035)} ${f((so.y0! + so.y1!) / 2)})`} textAnchor="middle" style={small}>SOFA</text>
         : <text key={so.back} x={f((so.x0! + so.x1!) / 2)} y={f(iy0 + (sofas.rest + sofas.d) / 2 + 0.035)} textAnchor="middle" style={small}>SOFA</text>)}

@@ -23,11 +23,10 @@
     "stair": { "w": 1.0, "risers": 5, "tread": 0.28 }
   },
   "workstation": {
-    "about": "The 2D's layout (2026-10-29): one big desk across the whole far end wall for a programmer and gamer, 0.8 m deep and the room's full 2.2 m wide: three monitors, the side two angled in, a keyboard and mouse, the PC tower on the floor at the desk's front end, a gaming chair facing the wall. The 3D and the rail still draw the earlier layout (meeting, reception, desk, shelves, printer).",
+    "about": "The 2D's layout (2026-10-29): one big desk across the whole far end wall for a programmer and gamer, 0.8 m deep and the room's full 2.2 m wide: a single Apple Studio Display (623 mm wide, its stand foot 168 mm deep) centred on it, a Mac Studio (197 x 197 mm) beside it, a keyboard and mouse, a gaming chair facing the wall. The two Apple sizes are Apple's published dimensions from memory, not yet sourced [A]. The 3D and the rail still draw the earlier layout (meeting, reception, desk, shelves, printer).",
     "d": 0.8,
-    "monitor": 0.6,
-    "angle": 30,
-    "tower": { "w": 0.22, "d": 0.48 },
+    "display": { "w": 0.623, "t": 0.03, "foot": 0.168 },
+    "mac": { "w": 0.197, "y": -0.6 },
     "chair": [4.7, 0.0]
   },
   "sofas": {
