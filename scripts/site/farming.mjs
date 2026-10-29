@@ -77,7 +77,7 @@ const beds = blocks.flatMap((b) => Array.from({ length: bed.perBlock }, (_, i) =
 const walkTo = (b) => Math.abs(b.y + b.h / 2 - mainY) + (gate[0] - (b.x + b.w))
 beds.sort((a, b) => walkTo(a) - walkTo(b) || a.id.localeCompare(b.id))
 // the crops picked daily nearest, then the rest by family so a family keeps its beds together
-const ORDER = ["herbs", "amaranth", "kale", "spinach", "tomato", "pepper", "eggplant", "cucumber", "beans", "cabbage", "carrot", "onion"]
+const ORDER = ["herbs", "chilli", "amaranth", "kale", "spinach", "tomato", "pepper", "eggplant", "cucumber", "beans", "cabbage", "carrot", "onion", "potato"]
 // a full house needs `needed` beds; a smaller start gives every crop its share, at least one bed each
 const full = crops.reduce((n, c) => n + c.beds, 0)
 const share = Math.min(1, beds.length / full)
@@ -107,6 +107,11 @@ const fx0 = x0 - bed.aisle / 2, fy0 = Math.min(...blocks.map((b) => b.y)) - bed.
 const fx1 = zone[2], fy1 = Math.max(...blocks.map((b) => b.y + b.h)) + bed.aisle / 2
 const fenceM = r1(2 * (fx1 - fx0 + fy1 - fy0))
 const nursery = { x: r2(yard[0] + 1), y: r2(fy0 + 1), w: F.nursery.w, h: F.nursery.l }
+// the fruit row along the field's back fence, outside it: banana mats and fruit trees in turn, 3 m apart (D-052)
+const fruit = Array.from({ length: Math.floor((fy1 - fy0 - F.fruit.spacing) / F.fruit.spacing) + 1 }, (_, k) => {
+  const kind = F.fruit.pattern[k % F.fruit.pattern.length]
+  return { kind, x: r2(fx0 - F.fruit.offset), y: r2(fy0 + F.fruit.spacing / 2 + k * F.fruit.spacing), r: F.fruit.kinds[kind].r }
+})
 
 // ------------------------------------------------------------ bill of materials
 const per = { once: 1, bed: needed, block: Math.ceil(needed / bed.perBlock), m: fenceM }
@@ -135,7 +140,7 @@ const plan = {
   eaters, kgWeek: r1(kgWeek), averageKgWeek: r1(crops.reduce((n, c) => n + c.averageKgWeek, 0)),
   bedsNeeded: needed, bedsFull: full, grownKgWeek: r1(grown), coverFull: Math.round((grown / kgWeek) * 100), bedsTotal: beds.length, bedM2, plantedM2, water, fenceM,
   zone, yard, mainY, main: MAIN, gate, fence: [r2(fx0), r2(fy0), r2(fx1), r2(fy1)], nursery,
-  walk: [[zone[2], mainY], [walk.points.at(-1)[0], mainY]],
+  walk: [[zone[2], mainY], [walk.points.at(-1)[0], mainY]], fruit,
   blocks, beds, rotation,
   crops: crops.map(({ id, name, family, g, spacing, rows, plantM, nursery, firstWeeks, harvestWeeks, yieldKgM2, yieldNote, watch, plantHeight, colour, kgWeek, averageKgWeek, cycleKg, inGround, beds, planted, every, batch, plantsPerBed }) =>
     ({ id, name, family, g, spacing, rows, plantM, nursery, firstWeeks, harvestWeeks, yieldKgM2, yieldNote, watch, plantHeight, colour, kgWeek, averageKgWeek, cycleKg, inGround, beds, planted, every, batch, plantsPerBed })),

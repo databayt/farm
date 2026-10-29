@@ -9,7 +9,7 @@
     "averageNote": "about 2,700 guest-days a year in the base case (guide/business/model.md)"
   },
   "menu": {
-    "about": "Grams of each vegetable on a guest's plate in a day, breakfast and dinner together [A], about 450 g: a little over the WHO's 400 g of fruit and vegetables, because the galley cooks most of it."
+    "about": "Grams of each vegetable on a guest's plate in a day, breakfast and dinner together [A], about 510 g with potato and chilli (D-052): a little over the WHO's 400 g of fruit and vegetables, because the galley cooks most of it."
   },
   "bed": {
     "about": "Beds as the guide lays them: 1.2 m wide, 10 m long, raised 20 cm; 0.5 m paths between beds, 1 m paths between blocks of 10 beds and round the field.",
@@ -236,6 +236,40 @@
       "plantHeight": 0.3,
       "colour": "#6aa84f",
       "nearGalley": true
+    },
+    {
+      "id": "potato",
+      "name": "Potato",
+      "family": "nightshade",
+      "g": 60,
+      "spacing": "75 × 30",
+      "rows": 2,
+      "plantM": 0.3,
+      "nursery": 0,
+      "firstWeeks": 13,
+      "harvestWeeks": 3,
+      "yieldKgM2": 1.5,
+      "yieldNote": "15 t/ha [A AS-26], a placeholder: no Rwandan potato yield in the registers. Potato does best in the cool highlands; at the site's lower, warmer altitude expect less and more blight [U]",
+      "watch": "late blight, bacterial wilt, tuber moth",
+      "plantHeight": 0.6,
+      "colour": "#7a8f3a"
+    },
+    {
+      "id": "chilli",
+      "name": "Chilli",
+      "family": "nightshade",
+      "g": 3,
+      "spacing": "60 × 45",
+      "rows": 2,
+      "plantM": 0.45,
+      "nursery": 6,
+      "firstWeeks": 12,
+      "harvestWeeks": 20,
+      "yieldKgM2": 1.0,
+      "yieldNote": "10 t/ha fresh [A AS-27], a placeholder: no Rwandan chilli yield in the registers; for the kitchen, not for sale (chilli for sale needs a written buyer [CRP-26])",
+      "watch": "thrips, mites, bacterial wilt",
+      "plantHeight": 0.6,
+      "colour": "#c0362c"
     }
   ],
   "nursery": {
@@ -437,5 +471,47 @@
       }
     ],
     "contingency": 0.15
+  },
+  "fruit": {
+    "about": "The fruit row along the field's back fence, outside it (founder, 2026-10-29; D-052): banana mats (cooking and dessert bananas) and the fruit trees the study chose for this climate, grafted avocado, mango and lemon, and papaya at garden scale (study/design/crop-plan.md). For the galley's table and the guests, not for sale (banana and papaya are not cash lines there). Passion fruit and tree tomato stay out: virus in nearby fields, and too warm [CRP-33, CRP-34]. Spacing 3 m, counts [A AS-28].",
+    "spacing": 3.0,
+    "offset": 2.0,
+    "pattern": [
+      "banana",
+      "avocado",
+      "banana",
+      "mango",
+      "banana",
+      "lemon",
+      "banana",
+      "papaya"
+    ],
+    "kinds": {
+      "banana": {
+        "name": "Banana",
+        "r": 1.3,
+        "note": "a mat of 3 stems; cooking (matoke) and dessert bananas"
+      },
+      "avocado": {
+        "name": "Avocado",
+        "r": 1.5,
+        "note": "grafted, Hass or Fuerte [CRP-01]"
+      },
+      "mango": {
+        "name": "Mango",
+        "r": 1.6,
+        "note": "grafted; the study's drought-hardy line [CRP-34]"
+      },
+      "lemon": {
+        "name": "Lemon",
+        "r": 1.1,
+        "note": "grafted [A]"
+      },
+      "papaya": {
+        "name": "Papaya",
+        "r": 0.9,
+        "note": "garden scale [CRP-17]"
+      }
+    }
   }
 }

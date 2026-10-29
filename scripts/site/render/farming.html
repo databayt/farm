@@ -220,6 +220,19 @@ function plant(c, x, z, y0) {
       put(SPH, "leaf", { pos: [x, y0 + h * 0.45, z], scale: [0.11, h * 0.45, 0.11], colour: col, ...L })
       break
     }
+    case "potato": { // a sprawling leafy bush, a few pale flowers
+      for (let k = 0; k < 4; k++) put(SPH, "leaf", { pos: [x + R() * 0.2, y0 + h * (0.3 + rnd() * 0.3), z + R() * 0.2], scale: [0.16, h * 0.32, 0.16], colour: k % 2 ? col : green, ...L })
+      for (let k = 0; k < 3; k++) put(SPH, "fruit", { pos: [x + R() * 0.25, y0 + h * 0.75, z + R() * 0.25], scale: [0.025, 0.02, 0.025], colour: "#ece6f2", ...L })
+      break
+    }
+    case "chilli": { // a bushy plant hung with small red and green pods
+      put(SPH, "leaf", { pos: [x, y0 + h * 0.5, z], scale: [0.15, h * 0.45, 0.15], colour: green, ...L })
+      for (let k = 0; k < 9; k++) { // the pods hang on the outside of the bush, most of them red
+        const a = (k / 9) * Math.PI * 2 + rnd(), y = y0 + h * (0.3 + rnd() * 0.45), r = 0.15 * Math.sqrt(1 - ((y - y0 - h * 0.5) / (h * 0.45)) ** 2) + 0.02
+        put(CYL, "fruit", { pos: [x + Math.cos(a) * r, y, z + Math.sin(a) * r], scale: [0.016, 0.085, 0.016], rot: [R() * 0.6, 0, R() * 0.6], colour: rnd() > 0.25 ? col : "#4f8a2a", ...L })
+      }
+      break
+    }
     case "cucumber": { // vines up the trellis, leaves and a few fruit
       for (let k = 0; k < 5; k++) put(SPH, "leaf", { pos: [x + R() * 0.3, y0 + 0.2 + k * 0.27, z + R() * 0.05], scale: [0.13, 0.11, 0.05], colour: col, ...L })
       for (let k = 0; k < 2; k++) put(CYL, "fruit", { pos: [x + R() * 0.3, y0 + 0.4 + rnd() * 0.7, z + 0.07], scale: [0.025, 0.18, 0.025], colour: "#2f5a22", ...L })

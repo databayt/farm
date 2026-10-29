@@ -51,11 +51,11 @@ export function DrawingSection({ id, title, children, after, full = false }: {
 }
 
 // The 3D: the model's line drawing full screen, then the same view rendered with materials.
-export function ModelSection({ line, real, width, height, lineAlt, realAlt, caption = "Rendered from the design model" }: {
-  line: string; real: string; width: number; height: number; lineAlt: string; realAlt: string; caption?: React.ReactNode
+export function ModelSection({ id = "model", title = "3D", line, real, width, height, lineAlt, realAlt, caption = "Rendered from the design model" }: {
+  id?: string; title?: string; line: string; real: string; width: number; height: number; lineAlt: string; realAlt: string; caption?: React.ReactNode
 }) {
   return (
-    <DrawingSection id="model" title="3D" after={
+    <DrawingSection id={id} title={title} after={
       <figure className="px-4 pb-10 md:px-10">
         <div className="overflow-hidden">
           <BlurImg src={real} width={width} height={height} loading="lazy" alt={realAlt} className="h-auto w-full" />

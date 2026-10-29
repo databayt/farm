@@ -7,7 +7,7 @@ import plan from "../../../public/designs/farming/data/plan.json"
 // and only the two overall dimensions. Everything comes from the generated plan (scripts/site/farming.mjs), whose
 // metres run x to the galley and y down the master plan; here they are turned a quarter so the gate faces the viewer.
 
-const { beds, fence, gate, main, mainY } = plan
+const { beds, fence, gate, main, mainY, fruit } = plan
 const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEffect: "non-scaling-stroke" } as const
 const dashed = { ...line, strokeDasharray: "4 3" } as const
 const solid = { fill: "currentColor" } as const
@@ -56,9 +56,9 @@ export function FarmingPlan({ title, className }: { title: string; className?: s
   const W = fy1 - fy0, H = fx1 - fx0 // the fenced field, across and down the page
   const gu = U(gate[1]), gw = 1.5 // the gate, its half width
   const pu = U(mainY) // the main path's middle
-  const top = -2.6, bottom = H + 6.1
+  const top = -6.4, bottom = H + 6.1 // room above for the fruit row behind the back fence
   const left = -0.6, right = W + 2.6 // tight round the drawing, so it fills the width
-  const row = -1.1 // the names, in one row above the fence
+  const row = -5.0 // the names, in one row above the fruit row
   return (
     <svg viewBox={`${f(left)} ${f(top)} ${f(right - left)} ${f(bottom - top)}`} role="img" aria-label={title} className={className}>
       {/* The fence, drawn solid as the studio's walls, with the gate in the front toward the galley */}
@@ -73,14 +73,31 @@ export function FarmingPlan({ title, className }: { title: string; className?: s
       {/* The beds: an outline each, solid where planted this season, dashed where resting or grown for sale */}
       {beds.map((b) => <rect key={b.id} {...box(b.x, b.y, b.x + b.w, b.y + b.h)} {...(b.crop === "rest" ? dashed : line)} />)}
 
+      {/* The fruit row behind the back fence: banana mats (a star of leaves) and fruit trees (a crown with its trunk) */}
+      {fruit.map((t, i) => {
+        const cx = U(t.y), cy = V(t.x)
+        return t.kind === "banana" ? (
+          <g key={i}>
+            {Array.from({ length: 6 }, (_, k) => {
+              const a = (k / 6) * Math.PI * 2 + 0.3
+              return <path key={k} d={`M${f(cx)} ${f(cy)}Q${f(cx + Math.cos(a + 0.35) * t.r * 0.6)} ${f(cy + Math.sin(a + 0.35) * t.r * 0.6)} ${f(cx + Math.cos(a) * t.r)} ${f(cy + Math.sin(a) * t.r)}`} {...line} />
+            })}
+            <circle cx={f(cx)} cy={f(cy)} r={0.18} {...solid} />
+          </g>
+        ) : (
+          <g key={i}>
+            <circle cx={f(cx)} cy={f(cy)} r={t.r} {...dashed} />
+            <circle cx={f(cx)} cy={f(cy)} r={0.2} {...solid} />
+          </g>
+        )
+      })}
+
       {/* The garden walk out of the gate to the galley */}
       <line x1={f(pu - main / 2)} x2={f(pu - main / 2)} y1={f(H)} y2={f(H + 2.4)} {...line} />
       <line x1={f(pu + main / 2)} x2={f(pu + main / 2)} y1={f(H)} y2={f(H + 2.4)} {...line} />
 
       {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH; the nursery up the yard */}
-      {([[f(pu / 2), "BEDS"], [f(pu), "MAIN PATH"], [f((pu + W) / 2), "BEDS"]] as const).map(([x, t], i) => (
-        <text key={i} x={x} y={f(row)} textAnchor="middle" style={label}>{t}</text>
-      ))}
+      <text x={0} y={f(row)} style={label}>FRUIT ROW</text>
       <text x={f(W)} y={f(row)} textAnchor="end" style={small}>NURSERY ↑</text>
       <text x={f(pu)} y={f(H + 3.6)} textAnchor="middle" style={small}>GATE · TO THE GALLEY</text>
 

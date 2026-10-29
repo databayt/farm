@@ -69,6 +69,7 @@ export default function FarmingPage() {
           className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 
+
       {/* Livestock: the homepage's 2D shows half the field and sends "the whole farm" here (D-035), so the farm's
           other land use is drawn here too, the house's plan from /en/livestock, with a link to its page. */}
       <section id="livestock">
@@ -91,6 +92,17 @@ export default function FarmingPage() {
         caption={<>Rendered from the design model: the block by the gate, one season</>}
         lineAlt="Line drawing of one block of ten raised beds seen straight on from the main path: two drip lines along each bed, herbs in the nearest bed, then amaranth, spinach and kale, and tomatoes on stakes at the back."
         realAlt="The same block rendered on the white page: red-brown beds with dark compost, black drip tape, herbs, wine-red amaranth, spinach, kale and staked tomatoes with red and yellow fruit, on a sandy path." />
+
+      <ModelSection id="nursery-3d" title="Nursery 3D" line={`${D}/render/nursery-line.png`} real={`${D}/render/nursery-real.webp`} width={2400} height={1100}
+        lineAlt="Line drawing of the seedling nursery from the front with its front net off: eucalyptus poles every 2 m under a flat frame, two waist-high benches of seedling trays, the door frame at the right end and a tap by it."
+        realAlt="The same view rendered: grey-green shade net over the roof and the back, timber benches holding black trays of green seedlings, and a steel tap by the door." />
+
+      {/* The fruit row behind the field's back fence (D-052): banana mats between grafted avocado, mango, lemon and papaya
+          trees, 3 m apart, in the field 2D's pattern (scripts/site/render/farm-extras.html?view=fruit). */}
+      <ModelSection id="fruit" title="Fruit" line={`${D}/render/fruit-line.png`} real={`${D}/render/fruit-real.webp`} width={2400} height={760}
+        caption={<>One turn of the fruit row behind the field&rsquo;s back fence, 3 m apart: banana, avocado, banana, mango, banana, lemon, banana, papaya</>}
+        lineAlt="Line drawing of a stretch of the fruit row in front of the field's wire fence: banana mats of three stems with arching leaves, between a young avocado, a mango, a lemon and a papaya."
+        realAlt="The same view rendered: green banana mats with bunches, round dark-green avocado and mango crowns, a smaller lemon tree with yellow fruit and a papaya with orange fruit under its leaves." />
 
       {/* Field, pinned while one block builds up in fast motion, seen from above: the bare ground, the raised
           beds, the compost, the drip lines, the planting. Renders: farming.html?top=<layer>. */}
@@ -138,7 +150,7 @@ export default function FarmingPage() {
             blocks nearest the gate, {plan.bedsTotal} beds, {plan.bedsNeeded} of them planted, about {frw(plan.plantedM2)} m² of
             growing area with a quarter more than the plate needs for pests and a failed planting. They give about{" "}
             {plan.grownKgWeek} kg a week: {plan.coverFull} % of a full house and more than an average week ({plan.averageKgWeek} kg),
-            whose surplus is sold. On the busiest weeks the galley buys the rest; the other two rows follow the bookings.
+            whose surplus is sold. On the busiest weeks the galley buys the rest; the other two rows follow the bookings. Behind the field a row of bananas and fruit trees (avocado, mango, lemon, papaya) gives the table its fruit.
           </p>
           <div className="mt-6 overflow-x-auto rounded-xl border">
             <table className="w-full text-sm">
