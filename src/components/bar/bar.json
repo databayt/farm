@@ -67,5 +67,66 @@
     },
     "store": { "about": "Tall cupboard: beans, cups, glasses, stock.", "x0": -2.95, "x1": -2.4, "d": 0.6, "h": 2.1 },
     "door": { "about": "The cargo doors at the north end; the right-hand leaf is the way in.", "leaf": 1.16 }
+  },
+  "water": {
+    "about": "The bar's water and drains, a design choice for the plumber to check [A]. One cold supply from the farm's tank and booster pump at 2.5 to 3 bar (guide/trades/plumber.md), in under the south end to a stop valve, Y-filter and check meter in the back bar's cupboard under the coffee machine; from there a scale filter and the machine's own feed, and cold under the floor across the aisle to the sink unit, where a 15 L under-sink heater gives the sink its hot. The sink and the coffee machine's drip tray drain at 1:40 or steeper to a small grease trap outside the south end, then a soak pit (the galley's or its own), never the septic tank. Points at [x, y, h]: plan x and y as the rest of this file, h above the inside floor (the ground is at -0.45). Sizes are design intent; nothing is sourced or priced.",
+    "colours": { "cold": "#2a78d6", "hot": "#e34948", "waste": "#8b4a12", "vent": "#9a9893" },
+    "heater": { "litres": 15, "kw": 1.5 },
+    "points": [
+      { "id": "SV", "what": "Stop valve, Y-filter and check meter on the main", "where": "In the back bar's cupboard under the coffee machine", "size": "DN20", "at": [-1.6, -0.98, 0.25], "item": "meter" },
+      { "id": "SF", "what": "Scale filter for the coffee machine", "where": "Beside the valve set, its own isolating valve", "size": "Cartridge about Ø 120 × 450 mm", "at": [-1.22, -0.98, 0.35], "item": "scalefilter" },
+      { "id": "EM", "what": "Coffee machine: water in and drip-tray drain", "where": "Up through the back counter under the machine", "size": "3/8 inch braided feed, 20 mm drain hose", "at": [-1.4, -0.9, 1.1], "item": "coffeefeed" },
+      { "id": "WH", "what": "Under-sink water heater, 15 L, about 1.5 kW", "where": "In the sink unit", "size": "About 360 × 400 × 360 mm", "at": [0.45, 0.78, 0.3], "item": "heater" },
+      { "id": "ST", "what": "Sink mixer, goose-neck", "where": "At the work counter, under the hatch", "size": "15 mm feeds, hot and cold", "at": [0.45, 1.07, 1.2], "item": "mixer" },
+      { "id": "AV", "what": "Air admittance valve", "where": "On the sink's waste, in the sink unit", "size": "40 mm", "at": [0.66, 0.9, 0.55], "item": "aav" },
+      { "id": "GT", "what": "Small grease trap", "where": "Outside the south end, buried with a lid", "size": "Under-sink size or a small buried chamber, to the plumber", "at": [-3.75, 0.1, -0.45], "item": "greasetrap" },
+      { "id": "SP", "what": "Soak pit", "where": "Downhill of the grease trap, off the drawing; never the septic tank", "size": "After a percolation test", "at": null }
+    ],
+    "runs": [
+      { "id": "W1", "system": "cold", "dn": 20, "note": "The main in from the farm's tank and booster pump, under the plinth to the stop valve", "paths": [[[-4.0, -0.98, -0.7], [-1.6, -0.98, -0.7], [-1.6, -0.98, 0.25]]] },
+      { "id": "W2", "system": "cold", "dn": 20, "note": "Cold under the floor across the aisle to the sink unit: the heater and the mixer", "paths": [
+        [[-1.6, -0.98, 0.25], [-1.6, -0.98, -0.12], [0.39, -0.98, -0.12], [0.39, 1.0, -0.12], [0.39, 1.0, 1.2]],
+        [[0.39, 1.0, 0.15], [0.45, 0.85, 0.15], [0.45, 0.85, 0.2]]
+      ] },
+      { "id": "W3", "system": "cold", "dn": 15, "note": "Through the scale filter to the coffee machine", "paths": [[[-1.6, -0.98, 0.25], [-1.22, -0.98, 0.25], [-1.22, -0.98, 0.6], [-1.4, -0.95, 0.6], [-1.4, -0.95, 1.1]]] },
+      { "id": "H1", "system": "hot", "dn": 15, "note": "Hot from the under-sink heater to the mixer", "paths": [[[0.52, 0.85, 0.45], [0.52, 1.0, 0.45], [0.52, 1.0, 1.2]]] },
+      { "id": "D1", "system": "waste", "dn": 40, "note": "The sink's trap down through the floor and under it to the collector", "paths": [[[0.45, 0.9, 0.55], [0.45, 0.9, -0.3]], [[0.45, 0.9, 0.55], [0.66, 0.9, 0.55]]] },
+      { "id": "D2", "system": "waste", "dn": 32, "note": "The coffee machine's drip-tray drain down to the collector", "paths": [[[-1.4, -0.9, 0.85], [-1.4, -0.9, -0.36]]] },
+      { "id": "D3", "system": "waste", "dn": 50, "note": "The collector under the plinth, falling south at 1:40 to the grease trap", "paths": [[[0.45, 0.9, -0.3], [-1.4, 0.3, -0.36], [-1.4, -0.9, -0.36]], [[-1.4, 0.3, -0.36], [-3.0, 0.1, -0.42], [-3.75, 0.1, -0.44]]] }
+    ]
+  },
+  "electric": {
+    "about": "The bar's power, a design choice for a RURA class A electrician to check and certify [A]. Single-phase 230 V from the farm's site board to a board on the back wall by the way in, one RCBO per circuit; the coffee machine on its own circuit with a switched spur beside it. The power guide gives the bar 5 kWh a day and a 2 kW peak for fridges, lights and music (guide/trades/power.md); a two-group coffee machine draws about 3 to 4 kW on its own, so with it the bar peaks nearer 5 kW [E]. Every rating (kW) is a design value for the chosen model's rating plate. Points at [x, y, h] as the water's; `face`: +y off the back wall, -y off the hatch wall, +x on the north end, down from the ceiling.",
+    "colours": { "lights": "#2a78d6", "sockets": "#eb6834", "fixed": "#1baf7a", "spare": "#9a9893" },
+    "track0": 0.4,
+    "supply": { "title": "Farm site board", "sub": "230 V single-phase, buried cable", "main": "Main switch 40 A DP", "mainSub": "with surge protection" },
+    "board": { "x": 2.3, "y": -1.12, "h": 1.75, "w": 0.3, "hh": 0.4 },
+    "circuits": [
+      { "id": "C1", "serves": "Lights inside", "device": "B6", "cable": 1.5, "kw": 0.15, "group": "lights", "phases": 1 },
+      { "id": "C2", "serves": "Back bar sockets", "device": "B16", "cable": 2.5, "kw": 2.5, "group": "sockets", "phases": 1 },
+      { "id": "C3", "serves": "Coffee machine", "device": "B20", "cable": 4, "kw": 3.5, "group": "fixed", "phases": 1 },
+      { "id": "C4", "serves": "Fridges", "device": "B16", "cable": 2.5, "kw": 0.4, "group": "sockets", "phases": 1 },
+      { "id": "C5", "serves": "Water heater", "device": "B16", "cable": 2.5, "kw": 1.5, "group": "fixed", "phases": 1 },
+      { "id": "C6", "serves": "Outside: flap light and counter socket", "device": "B10", "cable": 1.5, "kw": 0.5, "group": "lights", "phases": 1 },
+      { "id": "C7", "serves": "Spare", "device": "B16", "cable": 2.5, "kw": 0, "group": "spare", "phases": 1 }
+    ],
+    "points": [
+      { "id": "DB", "what": "Distribution board, 12 modules", "circuit": "", "at": [2.3, -1.12, 1.75], "face": "+y", "model": "board", "size": "About 300 × 400 mm, 100 mm deep" },
+      { "id": "L1", "what": "Ceiling light, warm white", "circuit": "C1", "at": [-1.6, -0.05, 2.32], "face": "down", "model": "ceiling", "size": "Ø 200 mm" },
+      { "id": "L2", "what": "Ceiling light, warm white", "circuit": "C1", "at": [0.0, -0.05, 2.32], "face": "down", "model": "ceiling", "size": "Ø 200 mm" },
+      { "id": "L3", "what": "Ceiling light, warm white", "circuit": "C1", "at": [1.6, -0.05, 2.32], "face": "down", "model": "ceiling", "size": "Ø 200 mm" },
+      { "id": "L4", "what": "LED strips under the three shelves, one driver", "circuit": "C1", "at": [-0.35, -1.0, 1.47], "face": "down", "model": "strip", "size": "3 × 4.0 m" },
+      { "id": "S1", "what": "Light switch by the way in", "circuit": "C1", "at": [2.75, -1.12, 1.2], "face": "+y", "model": "switch", "size": "86 × 86 mm" },
+      { "id": "P1", "what": "Double socket, grinder and spare", "circuit": "C2", "at": [-0.84, -1.12, 1.08], "face": "+y", "model": "socket", "size": "146 × 86 mm" },
+      { "id": "P2", "what": "Double socket, juicer and blender", "circuit": "C2", "at": [0.65, -1.12, 1.08], "face": "+y", "model": "socket", "size": "146 × 86 mm" },
+      { "id": "Q1", "what": "Coffee machine switched spur, double-pole", "circuit": "C3", "at": [-2.05, -1.12, 1.08], "face": "+y", "model": "isolator", "size": "86 × 86 mm" },
+      { "id": "P3", "what": "Fridge socket, at the back of the unit", "circuit": "C4", "at": [-0.95, 1.12, 0.5], "face": "-y", "model": "single", "size": "86 × 86 mm" },
+      { "id": "P4", "what": "Fridge socket, at the back of the unit", "circuit": "C4", "at": [-0.35, 1.12, 0.5], "face": "-y", "model": "single", "size": "86 × 86 mm" },
+      { "id": "Q2", "what": "Water heater switched spur, double-pole", "circuit": "C5", "at": [0.88, 1.12, 0.6], "face": "-y", "model": "isolator", "size": "86 × 86 mm" },
+      { "id": "L5", "what": "Light bar under the flap, IP65", "circuit": "C6", "at": [0.0, 2.11, 2.43], "face": "down", "model": "bar", "size": "2.2 m long" },
+      { "id": "P5", "what": "Socket IP66 under the outside counter: music, a card reader", "circuit": "C6", "at": [1.6, 1.24, 0.45], "face": "+y", "model": "socket66", "size": "About 100 × 150 mm" },
+      { "id": "AL", "what": "Smoke alarm, 10-year battery", "circuit": "", "at": [0.8, -0.05, 2.33], "face": "down", "model": "alarm", "size": "Ø 110 mm" },
+      { "id": "E1", "what": "Earth rod in an inspection pit", "circuit": "", "at": null, "face": "", "model": "earth", "size": "1.5 m rod, outside the north end, off the drawing" }
+    ]
   }
 }

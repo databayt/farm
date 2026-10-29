@@ -46,7 +46,7 @@ export function WaterDiagram({ runs, colours, valve, heater, outlets, trap, note
   const collector = waste.reduce((a, r) => (r.dn > a.dn ? r : a))
   const TOP = 56, COLD = 160, HOT = 225, FIX = 300, DRAIN = 470, H = 700
   const hx = 1460
-  const x0 = 150, step = (1290 - x0) / Math.max(1, outlets.length - 1)
+  const x0 = 150, step = Math.min(400, (1290 - x0) / Math.max(1, outlets.length - 1))
   const X = (i: number) => x0 + i * step
   const line = (system: string, d: string, dashed = false) => (
     <path d={d} style={{ stroke: colours[system] }} strokeWidth={system === "waste" ? 5 : 3.5} strokeLinejoin="round"
