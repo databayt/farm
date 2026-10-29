@@ -411,7 +411,7 @@ export default function StudioPage() {
           the bill of materials, the circuit and pipe schedules with their points, and the studio's features and
           downloads. A card each, after the execution plan's. */}
       <section id="docs" className="scroll-mt-20 border-t py-16">
-        <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
+        <div className="w-full px-4 md:px-10">
           <h2 className="text-3xl font-semibold tracking-tight">In the docs</h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {DOCS.map((d) => (
