@@ -11,6 +11,14 @@
     &hero=1     real mode, from eye level on the lawn in late-afternoon sun, the master plan's boundary trees
                 behind (src/components/site/site.json), 2400 x 1340 -> the stand-in volleyball-hero.jpg
 
+    ?top=<layer>  real mode from straight above the playing area, the benches' side at the top, for the page's BuildUp:
+                  ground (opaque: the lawn as it is) | level | footings | grass | lines | net (transparent)
+                  -> render/top-<layer>.webp; window.TAGS holds each piece's rectangle (reshaped into top-pieces.json)
+    ?item=<id>    one part on its own, transparent, 1600 x 1200, for the rails -> render/item/<id>.webp:
+                  post | footing (cut open) | net | antenna | ball | tape (a corner, pegged) | bench | umbrella | store
+    ?view=net     the net system close up from the lawn, the footings and sleeves drawn in colour below the grass:
+                  &mode=line sets window.TAGS -> render/net-line.png + net-tags.json; &mode=real -> render/net-real.webp
+
   Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
   save the data URL in #out.
 -->
@@ -40,10 +48,15 @@ import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
-const LINE = Q.get("mode") !== "real"
+const TOP = Q.get("top"), ITEM = Q.get("item"), NETV = Q.get("view") === "net"
+// the model view draws in line unless asked for real; the build-up and the rail's parts are real unless asked for line
+const LINE = TOP || ITEM ? Q.get("mode") === "line" : Q.get("mode") !== "real"
 const HERO = !LINE && Q.get("hero") === "1"
-const [FW, FH] = HERO ? [2400, 1340] : [2400, 1100]
 const C = await (await fetch(`/src/components/volleyball/volleyball.json?${Date.now()}`)).json()
+// the build-up's frame: the free zone and 1 m round it, x along the court and z toward the open lawn
+const TB = [-(C.court.l / 2 + C.court.free + 1), -(C.court.w / 2 + C.court.free + 1), C.court.l / 2 + C.court.free + 1, C.court.w / 2 + C.court.free + 1]
+const [FW, FH] = HERO ? [2400, 1340] : TOP ? [2400, Math.round((2400 * (TB[3] - TB[1])) / (TB[2] - TB[0]))] : ITEM ? [1600, 1200] : [2400, 1100]
+document.getElementById("out").style.cssText = `width:${FW}px;height:${FH}px`
 const INK = "#2b2a26", PAGE = "#ffffff"
 // plan (x along the court, y toward the viewer) -> three: x = x, y = height, z = y; the camera stands on the open lawn, at +z
 
@@ -101,6 +114,18 @@ const T = LINE ? {} : {
     }
     for (let j = 0; j < 260; j++) { g.fillStyle = `rgba(95,70,45,${0.05 + rnd() * 0.08})`; g.fillRect(rnd() * w, rnd() * h, 30 + rnd() * 160, 1 + rnd()) }
   }),
+  // the lawn as it is: longer grass, worn bare in patches where guests already play
+  rough: tex((g, w, h) => {
+    g.fillStyle = "#6f9a4a"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 26000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(170,200,110,0.35)" : "rgba(40,70,30,0.35)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2) }
+    for (let i = 0; i < 14; i++) { g.fillStyle = `rgba(150,110,70,${0.25 + rnd() * 0.3})`; g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 10 + rnd() * 40, 6 + rnd() * 20, rnd() * 3, 0, Math.PI * 2); g.fill() }
+  }),
+  // sandy topsoil, raked and rolled
+  soil: tex((g, w, h) => {
+    g.fillStyle = "#8b6a4a"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 24000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(200,170,125,0.35)" : "rgba(70,50,30,0.3)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2) }
+    for (let i = 0; i < 40; i++) { g.fillStyle = "rgba(60,42,25,0.12)"; g.fillRect(0, rnd() * h, w, 2) }
+  }),
   concrete: tex((g, w, h) => {
     g.fillStyle = "#a7a39b"; g.fillRect(0, 0, w, h)
     for (let i = 0; i < 9000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.08)" : "rgba(60,55,45,0.1)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2) }
@@ -127,8 +152,8 @@ const T = LINE ? {} : {
   }, 16, 512),
 }
 // metres one tile covers [along, across]
-const TILE = { boards: [1.5, 1.5], concrete: [2, 2], mown: [4, 2] }
-const MAP = { timber: "boards", concrete: "concrete", mown: "mown" }
+const TILE = { boards: [1.5, 1.5], concrete: [2, 2], mown: [4, 2], rough: [6, 6], soil: [3, 3] }
+const MAP = { timber: "boards", concrete: "concrete", mown: "mown", rough: "rough", soil: "soil" }
 
 // ------------------------------------------------------------ materials
 // thin parts get crease lines but no silhouette, so the tape, the cords and the antennae stay fine in the line drawing
@@ -145,6 +170,10 @@ function mat(name) {
     const std = (o) => new THREE.MeshStandardMaterial(o)
     x = {
       lawn: () => std({ map: T.grass, roughness: 1 }),
+      rough: () => std({ map: T.rough, roughness: 1 }),
+      soil: () => std({ map: T.soil, roughness: 1 }),
+      earth: () => std({ color: "#8a5634", roughness: 1 }),
+      pin: () => std({ color: "#55585b", roughness: 0.4, metalness: 0.7 }),
       mown: () => std({ map: T.mown, roughness: 1 }),
       tape: () => std({ color: "#f1efe7", roughness: 0.85 }),
       canvas: () => std({ color: "#f3f1ea", roughness: 0.85 }), // the net's bands
@@ -173,7 +202,12 @@ function mat(name) {
 
 // ------------------------------------------------------------ geometry helpers (metres)
 const meshes = []
-const EXTRA = [] // line mode: segments drawn fine, not from mesh edges (the net's cords, the ball's seams)
+// what each mesh belongs to, for the rail's parts (?item=), the build-up's layers (?top=) and the net view
+let PART = "site", LAYER = null
+// line mode: segments drawn fine, not from mesh edges (the net's cords, the ball's seams), kept by part
+const EXTRAS = {}
+const extra = () => (EXTRAS[PART] ??= [])
+const OTHERS = [] // real mode: lines drawn as they are (the ball's seams)
 function worldUV(geo, [tu, tv]) { // each face takes the texture from its own plane, at true scale
   const pos = geo.attributes.position, nrm = geo.attributes.normal, uv = geo.attributes.uv
   if (!uv) return
@@ -194,6 +228,7 @@ function add(geo, name, opts = {}) {
   if (opts.pos) mesh.position.set(...opts.pos)
   if (opts.rot) mesh.rotation.set(...opts.rot)
   if (opts.noEdges) mesh.userData.noEdges = true
+  mesh.userData.part = PART; mesh.userData.layer = LAYER
   scene.add(mesh)
   meshes.push(mesh)
   return mesh
@@ -218,10 +253,12 @@ const L = K.l / 2, W = K.w / 2, t = K.line
 const FX = L + K.free, FZ = W + K.free // the free zone's edge
 const PZ = W + P.out // the posts, 1 m outside the side lines
 const G = 0.01 // the mown playing area stands this proud of the lawn round it
+PART = "lawn"
 if (!LINE) {
   T.grass.repeat.set(HERO ? 50 : 10, HERO ? 50 : 10)
   add(new THREE.CircleGeometry(HERO ? 140 : 40, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], keepUV: true })
 }
+PART = "court"
 blk(-FX, -FZ, FX, FZ, 0, G, "mown")
 
 // ------------------------------------------------------------ the lines: 50 mm white tape, inside the 18 x 9 m
@@ -238,7 +275,9 @@ blk(-FX, -FZ, FX, FZ, 0, G, "mown")
 // ------------------------------------------------------------ the posts: 1 m outside the side lines, in sleeves, padded
 for (const s of [-1, 1]) {
   const z = s * PZ, f = P.footing.w / 2, r = P.d / 2
+  PART = s > 0 ? "footing-top" : "footing-top2"
   blk(-f, z - f, f, z + f, 0, G + 0.004, "concrete") // the footing's top, flush with the grass
+  PART = s > 0 ? "post" : "post2"
   cyl(0, z, r, 0, P.h, "steel", 20)
   cyl(0, z, r + 0.006, P.h - 0.02, 0.02, "steel", 20) // the cap
   cyl(0, z, r + P.pad.t, G, P.pad.h, "pad", 24)
@@ -251,6 +290,7 @@ for (const s of [-1, 1]) {
 }
 
 // ------------------------------------------------------------ the net over the centre line, at the men's height
+PART = "net"
 {
   const NH = N.men, NL = N.l / 2, nb = NH - N.d, mh = N.d - N.top - N.foot
   // the mesh between the bands, see-through
@@ -258,8 +298,8 @@ for (const s of [-1, 1]) {
   if (!LINE) { T.net.repeat.set(N.l / N.mesh, mh / N.mesh); m.renderOrder = 1 }
   else {
     // the cords: every 20 cm in the drawing so it stays legible (the net's are 10 cm)
-    for (let z = -NL; z <= NL + 1e-6; z += 0.2) EXTRA.push(0, nb + N.foot, z, 0, NH - N.top, z)
-    for (let y = nb + N.foot + 0.2; y < NH - N.top - 0.05; y += 0.2) EXTRA.push(0, y, -NL, 0, y, NL)
+    for (let z = -NL; z <= NL + 1e-6; z += 0.2) extra().push(0, nb + N.foot, z, 0, NH - N.top, z)
+    for (let y = nb + N.foot + 0.2; y < NH - N.top - 0.05; y += 0.2) extra().push(0, y, -NL, 0, y, NL)
   }
   // the bands: white canvas along the top and the foot, a side band over each side line
   blk(-0.008, -NL, 0.008, NL, NH - N.top, NH, "canvas")
@@ -270,6 +310,7 @@ for (const s of [-1, 1]) {
     pipe([0, y, s * (NL - 0.02)], [0, y, s * (PZ - P.d / 2)], 0.005, "cable")
   // an antenna at each side band's outer edge, the two on opposite faces of the net, the top 80 cm striped
   for (const s of [-1, 1]) {
+    PART = s < 0 ? "antenna" : "antenna2"
     const a = N.antenna, x = s * 0.016, z = s * (W + a.d / 2), y0 = NH + a.above - a.l
     cyl(x, z, a.d / 2, y0, NH - y0, "white", 8)
     for (let k = 0; k < Math.round(a.above / a.stripe); k++) cyl(x, z, a.d / 2, NH + k * a.stripe, a.stripe, k % 2 ? "red" : "white", 8)
@@ -277,6 +318,7 @@ for (const s of [-1, 1]) {
 }
 
 // ------------------------------------------------------------ the ball, white, on the grass by the net
+PART = "ball"
 {
   const r = BL.r, c = [BL.x, G + r, BL.y]
   add(new THREE.SphereGeometry(r, 32, 20), "ball", { pos: c, noEdges: true })
@@ -298,17 +340,20 @@ for (const s of [-1, 1]) {
     for (const e of [-1, 1]) { seg((k) => p(e, -1 + 2 * k)); seg((k) => p(-1 + 2 * k, e)) }
     for (const e of [-1 / 3, 1 / 3]) seg((k) => p(e, -1 + 2 * k))
   }
-  if (LINE) EXTRA.push(...seams)
+  if (LINE) extra().push(...seams)
   else {
     const g = new THREE.BufferGeometry()
     g.setAttribute("position", new THREE.Float32BufferAttribute(seams, 3))
-    scene.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: "#a39e93" })))
+    const seamLines = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: "#a39e93" }))
+    seamLines.userData.part = "ball"
+    scene.add(seamLines); OTHERS.push(seamLines)
   }
 }
 
 // ------------------------------------------------------------ beyond the far free zone: the benches, the ball store, the umbrellas
 const BZ = -(FZ + B.gap) // their front edge, toward the court
-for (const x of B.x) {
+for (const [bi, x] of B.x.entries()) {
+  PART = bi ? "bench2" : "bench"
   // three slats on two trestles
   const z0 = BZ - B.d, sw = (B.d - 0.03) / 3
   for (let k = 0; k < 3; k++) blk(x - B.l / 2, z0 + 0.015 + k * sw, x + B.l / 2, z0 + 0.015 + (k + 1) * sw - 0.015, B.h - 0.035, B.h, "timber")
@@ -318,6 +363,7 @@ for (const x of B.x) {
   }
   // the thatched umbrella: its pole behind the bench, a cone of thatch with a fringe at the eave
   const pz = z0 - S.behind
+  PART = bi ? "umbrella2" : "umbrella"
   cyl(x, pz, S.pole / 2, 0, S.top - 0.02, "pole", 12)
   add(new THREE.ConeGeometry(S.r, S.top - S.eave, 48, 1, true), "thatch", { pos: [x, (S.eave + S.top) / 2, pz], keepUV: true })
   cyl(x, pz, S.r + 0.03, S.eave - 0.14, 0.14, "thatch", 48, S.r - 0.02)
@@ -325,10 +371,11 @@ for (const x of B.x) {
   // in the drawing, the thatch's bundles from the top down to the eave
   if (LINE) for (let k = 0; k < 16; k++) {
     const a = (k / 16) * Math.PI * 2
-    EXTRA.push(x, S.top, pz, x + Math.cos(a) * S.r, S.eave, pz + Math.sin(a) * S.r)
+    extra().push(x, S.top, pz, x + Math.cos(a) * S.r, S.eave, pz + Math.sin(a) * S.r)
   }
 }
 if (!LINE) T.thatch.repeat.set(10, 1)
+PART = "store"
 {
   // the ball store: a lidded chest on four feet, a hasp on its front
   const x0 = ST.x - ST.l / 2, x1 = ST.x + ST.l / 2, z0 = BZ - ST.d
@@ -378,28 +425,97 @@ if (HERO) {
   }
 }
 
-// ------------------------------------------------------------ camera
-const camera = new THREE.PerspectiveCamera(HERO ? 38 : 22, FW / FH, 0.3, 400)
-if (HERO) {
-  // eye level on the open lawn beyond the near left corner, the net right of centre and open grass bottom-left for the words
-  camera.position.set(-9.0, 1.65, 12.5)
-  camera.lookAt(new THREE.Vector3(-1.5, 1.25, -2.5))
-  add(new THREE.SphereGeometry(320, 32, 16), "sky", { noEdges: true, keepUV: true })
-  scene.fog = new THREE.Fog(0xecd2ae, 25, 200)
-} else {
-  // from the open lawn, raised and a little to the left so the net shows its face
-  const target = new THREE.Vector3(0, 0.8, -1.5)
-  const [el, dist, az] = [THREE.MathUtils.degToRad(34), 110, 0.3]
-  camera.position.set(-dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
-  camera.lookAt(target)
+// ------------------------------------------------------------ the build-up, from above (?top=): each layer as it goes on
+const PIECES = {}
+const TW = TB[2] - TB[0], TH = TB[3] - TB[1]
+const frac = (x0, z0, x1, z1) => [(x0 - TB[0]) / TW, (z0 - TB[1]) / TH, (x1 - x0) / TW, (z1 - z0) / TH].map((v) => +v.toFixed(5))
+const strips = (n) => Array.from({ length: n }, (_, k) => frac(-FX + (k * 2 * FX) / n, -FZ, -FX + ((k + 1) * 2 * FX) / n, FZ))
+if (TOP) {
+  PART = "top"
+  LAYER = "ground" // the lawn as it is, worn where guests already play
+  blk(TB[0] - 1, TB[1] - 1, TB[2] + 1, TB[3] + 1, -0.03, -0.01, "rough")
+  LAYER = "level" // cut, filled with sandy topsoil, rolled to one plane
+  blk(-FX, -FZ, FX, FZ, -0.008, -0.006, "soil")
+  LAYER = "footings" // the two footings, their sleeves open
+  for (const s of [-1, 1]) {
+    const f = P.footing.w / 2, z = s * PZ
+    blk(-f, z - f, f, z + f, -0.004, -0.002, "concrete")
+    cyl(0, z, P.d / 2 + 0.012, -0.002, 0.001, "black", 24)
+  }
+  LAYER = "grass" // mown short in passes
+  blk(-FX, -FZ, FX, FZ, -0.001, 0, "mown")
+  LAYER = "lines" // the tape, pegged
+  const tape = (x0, z0, x1, z1) => blk(x0, z0, x1, z1, 0.001, 0.003, "tape")
+  tape(-L, -W, L, -W + t); tape(-L, W - t, L, W); tape(-L, -W + t, -L + t, W - t); tape(L - t, -W + t, L, W - t)
+  tape(-t / 2, -W + t, t / 2, W - t)
+  for (const s of [-1, 1]) tape(s * (K.attack - t), -W + t, s * K.attack, W - t)
+  LAYER = "net" // the posts in their sleeves, the net hung between them
+  for (const s of [-1, 1]) { cyl(0, s * PZ, P.d / 2 + P.pad.t, 0, 0.3, "pad", 24); cyl(0, s * PZ, P.d / 2, 0.3, 0.02, "steel", 20) }
+  blk(-0.02, -(N.l / 2), 0.02, N.l / 2, 0.31, 0.32, "canvas")
+  for (const s of [-1, 1]) blk(-0.02, s * (W - N.band.w), 0.02, s * W, 0.32, 0.33, "red")
+  for (const s of [-1, 1]) pipe([0, 0.315, s * N.l / 2], [0, 0.315, s * (PZ - P.d / 2)], 0.008, "cable")
+  LAYER = null
+  const f = P.footing.w / 2 + 0.1
+  const pad = (r) => [r[0] - 0.002, r[1] - 0.002, r[2] + 0.004, r[3] + 0.004].map((v) => +v.toFixed(5))
+  Object.assign(PIECES, {
+    aspect: +(TW / TH).toFixed(5),
+    level: strips(6), grass: strips(6),
+    footings: [-1, 1].map((s) => frac(-f, s * PZ - f, f, s * PZ + f)),
+    lines: [frac(-L, -W, L, -W + t), frac(-L, -W, -L + t, W), frac(-t / 2, -W, t / 2, W), ...[-1, 1].map((s) => frac(s * K.attack - t, -W, s * K.attack + t, W)),
+      frac(L - t, -W, L, W), frac(-L, W - t, L, W)].map(pad),
+    net: [frac(-0.4, -PZ - 0.4, 0.4, PZ + 0.4)],
+  })
 }
-camera.updateMatrixWorld(); camera.updateProjectionMatrix()
-scene.updateMatrixWorld(true)
-if (!HERO) { // fit the frame to the model: each part's box, since one box round a long flat court leaves its corners empty
+
+// ------------------------------------------------------------ the rail's parts the model has no single mesh for (?item=)
+if (ITEM === "footing") { // a post footing cut open: the concrete, the sleeve cast in it, the post's foot in the sleeve
+  PART = "footing"
+  const f = P.footing.w / 2, d = P.footing.depth, r = P.d / 2
+  blk(0, -f, f, f, -d, 0, "concrete"); blk(-f, -f, 0, 0, -d, 0, "concrete") // three quarters, the one toward the camera cut away
+  blk(-f, 0, 0, f, -d, -d + 0.1, "concrete")
+  cyl(0, 0, r + 0.008, -d + 0.1, d - 0.1, "black", 24) // the sleeve
+  cyl(0, 0, r, -d + 0.15, d + 0.6, "steel", 20) // the post's foot, dropped in
+  cyl(0, 0, r + P.pad.t, 0.02, 0.58, "pad", 24)
+}
+if (ITEM === "tape") { // a corner of the court: tape on short grass, held by U-pins
+  PART = "tape"
+  blk(-0.2, -0.2, 1.4, 1.0, -0.02, 0, "mown")
+  blk(0, 0, 1.4, t, 0, 0.003, "tape"); blk(0, t, t, 1.0, 0, 0.003, "tape")
+  const pins = [[0.025, 0.025], [0.7, 0.025], [1.3, 0.025], [0.025, 0.6]]
+  for (const [x, z] of pins) blk(x - 0.024, z - 0.003, x + 0.024, z + 0.003, 0.003, 0.008, "pin")
+}
+// the net view: the footings and their sleeves below the grass, drawn in colour over the line drawing
+const UND = [] // [colour, ...a, ...b]
+const FCOL = "#d9822b"
+if (NETV) {
+  const f = P.footing.w / 2, d = P.footing.depth
+  for (const s of [-1, 1]) {
+    const z = s * PZ, c = [[-f, -f], [f, -f], [f, f], [-f, f]]
+    for (let k = 0; k < 4; k++) {
+      const [a, b] = [c[k], c[(k + 1) % 4]]
+      UND.push([FCOL, a[0], -d, z + a[1], b[0], -d, z + b[1]], [FCOL, a[0], -d, z + a[1], a[0], 0, z + a[1]])
+    }
+    for (const dx of [-1, 1]) UND.push([FCOL, dx * (P.d / 2 + 0.01), -d + 0.1, z, dx * (P.d / 2 + 0.01), 0, z]) // the sleeve
+  }
+}
+
+// ------------------------------------------------------------ what each view shows
+const AWAY = new Set(["bench", "bench2", "umbrella", "umbrella2", "store", "ball", "lawn"]) // left out of the net view
+const shows = (part, layer) => TOP ? layer === TOP
+  : ITEM ? part === ITEM || (ITEM === "post" && part === "footing-top")
+  : part !== "top" && !(NETV && AWAY.has(part))
+for (const o of [...meshes, ...OTHERS]) o.visible = shows(o.userData.part, o.userData.layer)
+
+// ------------------------------------------------------------ camera
+let camera
+const centre = new THREE.Vector3(0, 0, 0)
+const fit = (keep, margin) => { // fit the frame to what keep() picks, each part's box projected on its own
+  camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+  scene.updateMatrixWorld(true)
   const bb = new THREE.Box3()
   let px = [Infinity, Infinity, -Infinity, -Infinity]
   for (const o of meshes) {
-    if (o.geometry.type.startsWith("Circle")) continue
+    if (!o.visible || !keep(o) || o.geometry.type.startsWith("Circle")) continue
     bb.setFromObject(o)
     for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
       const p = new THREE.Vector3(xx, yy, zz).project(camera)
@@ -407,9 +523,64 @@ if (!HERO) { // fit the frame to the model: each part's box, since one box round
       px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
     }
   }
-  let w = (px[2] - px[0]) * 1.05, h = (px[3] - px[1]) * 1.1
+  let w = (px[2] - px[0]) * margin[0], h = (px[3] - px[1]) * margin[1]
   if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
   camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+}
+if (TOP) {
+  // straight down, the benches' side at the top of the picture, the open lawn at the bottom
+  camera = new THREE.OrthographicCamera(-TW / 2, TW / 2, TH / 2, -TH / 2, 0.1, 100)
+  camera.position.set(0, 40, 0); camera.up.set(0, 0, -1); camera.lookAt(0, 0, 0)
+  if (TOP === "ground") renderer.setClearColor(0xffffff, 1)
+} else if (ITEM) {
+  camera = new THREE.PerspectiveCamera(30, FW / FH, 0.02, 200)
+  const bb = new THREE.Box3()
+  for (const o of meshes) if (o.visible) bb.expandByObject(o)
+  bb.getCenter(centre)
+  const size = bb.getSize(new THREE.Vector3()).length()
+  const [el, az] = [THREE.MathUtils.degToRad(["antenna", "net", "post"].includes(ITEM) ? 10 : 24), THREE.MathUtils.degToRad(ITEM === "net" ? -62 : -32)]
+  camera.position.set(centre.x + size * 2 * Math.cos(el) * Math.sin(az), centre.y + size * 2 * Math.sin(el), centre.z + size * 2 * Math.cos(el) * Math.cos(az))
+  camera.lookAt(centre)
+  fit(() => true, [1.12, 1.12])
+} else if (NETV) {
+  // the net system from the open lawn, low and to the left so the net shows its face and the near post stands right
+  centre.set(0, 1.0, 0)
+  const [el, az, dist] = [THREE.MathUtils.degToRad(12), THREE.MathUtils.degToRad(-58), 40]
+  camera = new THREE.PerspectiveCamera(22, FW / FH, 0.3, 400)
+  camera.position.set(dist * Math.cos(el) * Math.sin(az), centre.y + dist * Math.sin(el), dist * Math.cos(el) * Math.cos(az))
+  camera.lookAt(centre)
+  const NETP = new Set(["net", "antenna", "antenna2", "post", "post2"])
+  fit((o) => NETP.has(o.userData.part), [1.15, 1.45])
+} else {
+  camera = new THREE.PerspectiveCamera(HERO ? 38 : 22, FW / FH, 0.3, 400)
+  if (HERO) {
+    // eye level on the open lawn beyond the near left corner, the net right of centre and open grass bottom-left for the words
+    camera.position.set(-9.0, 1.65, 12.5)
+    camera.lookAt(new THREE.Vector3(-1.5, 1.25, -2.5))
+    add(new THREE.SphereGeometry(320, 32, 16), "sky", { noEdges: true, keepUV: true })
+    scene.fog = new THREE.Fog(0xecd2ae, 25, 200)
+  } else {
+    // from the open lawn, raised and a little to the left so the net shows its face
+    const target = new THREE.Vector3(0, 0.8, -1.5)
+    const [el, dist, az] = [THREE.MathUtils.degToRad(34), 110, 0.3]
+    camera.position.set(-dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
+    camera.lookAt(target)
+    fit(() => true, [1.05, 1.1])
+  }
+}
+camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+scene.updateMatrixWorld(true)
+
+// each tag's spot in the frame, for the tagged figure; the build-up's pieces ride the same channel
+if (TOP) window.TAGS = PIECES
+else if (NETV && LINE) {
+  const nb = N.men - N.d
+  const at = { S1: [0, -0.4, PZ], S2: [0, -0.4, -PZ], P1: [0, P.h, PZ], P2: [0, P.h, -PZ], W: [0, P.winch, PZ + P.d / 2 + P.pad.t + 0.04],
+    N: [0, nb + N.d / 2, -1.5], A1: [0, N.men + N.antenna.above, W], A2: [0, N.men + N.antenna.above, -W] }
+  window.TAGS = Object.entries(at).map(([id, [x, y, z]]) => {
+    const v = new THREE.Vector3(x, y, z).project(camera)
+    return { id, x: +((v.x + 1) / 2).toFixed(4), y: +((1 - v.y) / 2).toFixed(4), edge: "" }
+  })
 }
 
 // ------------------------------------------------------------ render
@@ -418,7 +589,7 @@ if (LINE) {
   lineMat.resolution.set(FW, FH)
   lineMat.userData.outlineParameters = { visible: false }
   for (const o of meshes) {
-    if (o.userData.noEdges) continue
+    if (o.userData.noEdges || !o.visible) continue
     const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
     const l = new LineSegments2(g, lineMat)
     l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
@@ -427,7 +598,14 @@ if (LINE) {
   const fine = new LineMaterial({ color: INK, linewidth: 0.8 })
   fine.resolution.set(FW, FH)
   fine.userData.outlineParameters = { visible: false }
-  scene.add(new LineSegments2(new LineSegmentsGeometry().setPositions(EXTRA), fine))
+  const shown = Object.entries(EXTRAS).filter(([part]) => shows(part, null)).flatMap(([, v]) => v)
+  if (shown.length) scene.add(new LineSegments2(new LineSegmentsGeometry().setPositions(shown), fine))
+  for (const [col, ...p] of UND) { // below the grass, drawn through it
+    const m = new LineMaterial({ color: col, linewidth: 3, depthTest: false })
+    m.resolution.set(FW, FH); m.userData.outlineParameters = { visible: false }
+    const l = new LineSegments2(new LineSegmentsGeometry().setPositions(p), m)
+    l.renderOrder = 10; scene.add(l)
+  }
   const ink = new THREE.Color(INK)
   new OutlineEffect(renderer, { defaultThickness: 0.003, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
 } else {
@@ -435,9 +613,11 @@ if (LINE) {
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
   scene.environmentIntensity = HERO ? 0.2 : 0.4
   scene.add(new THREE.HemisphereLight(HERO ? 0xcfdcf0 : 0xeef3ff, HERO ? 0x6a5a3a : 0x8a7a5a, HERO ? 0.3 : 0.9))
-  // low sun from the left; in the hero, late afternoon from a little beyond the court, long shadows toward the viewer
+  // low sun from the left; in the hero, late afternoon from a little beyond the court, long shadows toward the viewer;
+  // straight down for the build-up, so no shadow crosses into a neighbouring piece
   const sun = new THREE.DirectionalLight(HERO ? 0xffbb7a : 0xfff0d8, HERO ? 5.0 : 2.6)
-  sun.position.set(HERO ? -30 : -14, HERO ? 7.5 : 10, HERO ? -7 : 10)
+  sun.position.set(...(HERO ? [-30, 7.5, -7] : TOP ? [0.01, 30, 0.01] : ITEM ? [centre.x - 14, centre.y + 12, centre.z + 10] : [-14, 10, 10]))
+  sun.target.position.copy(centre); scene.add(sun.target)
   sun.castShadow = true
   sun.shadow.mapSize.set(4096, 4096)
   Object.assign(sun.shadow.camera, { left: -17, right: 17, top: 17, bottom: -17, near: 1, far: 90 })
@@ -446,10 +626,12 @@ if (LINE) {
   const composer = new EffectComposer(renderer)
   composer.setSize(FW, FH)
   composer.addPass(new RenderPass(scene, camera))
-  const ao = new GTAOPass(scene, camera, FW, FH)
-  ao.blendIntensity = 0.8
-  ao.updateGtaoMaterial({ radius: 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
-  composer.addPass(ao)
+  if (!TOP) {
+    const ao = new GTAOPass(scene, camera, FW, FH)
+    ao.blendIntensity = 0.8
+    ao.updateGtaoMaterial({ radius: ITEM ? 0.05 : 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
+    composer.addPass(ao)
+  }
   composer.addPass(new OutputPass())
   composer.render()
 }

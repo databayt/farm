@@ -83,5 +83,15 @@
     "server": [-10.4, 3.0],
     "land": [6.9, -1.5],
     "referee": 0.9
+  },
+  "build": {
+    "about": "[A] How the court is made on the lawn, in the order the page's BuildUp shows it, until a groundsman sees the lawn: the 24 x 15 m playing area levelled to one plane falling no more than the rules allow (surface.fall), the bumps cut and the hollows filled with sandy topsoil and rolled; the two post footings cast with their sleeves, tops flush with the grass; the bare patches seeded and the whole mown short in passes; the lines pegged; then the posts dropped into their sleeves and the net hung. The renders read this and the court above (volleyball.html?top=).",
+    "topdress": 0.02,
+    "settle": "a few weeks of growth before the first game on new grass",
+    "pegs": { "about": "[A] the tape is held flat by steel U-pins pushed into the grass about every metre and at each corner and crossing.", "every": 1.0 }
+  },
+  "drainage": {
+    "about": "[A] The court needs no drain of its own: it is a lawn, so the rain soaks in where it falls, and the levelled plane falls 5 mm a metre at most (surface.fall, FIVB rule 1.2.3) the way the lawn already falls, so a heavy shower runs off across the grass instead of lying in a hollow. Which way it falls is read on site; along the court's 24 m that is up to 120 mm, across its 15 m up to 75 mm. The lawn beyond the free zone takes the run-off. If water still lies after the first rains, a gravel trench along the low side is the fallback, not part of the build. No play on wet grass (surface).",
+    "fallback": "a gravel trench along the low side, only if water lies after the first rains"
   }
 }
