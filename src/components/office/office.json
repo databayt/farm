@@ -22,6 +22,27 @@
     "d": 1.5,
     "stair": { "w": 1.0, "risers": 5, "tread": 0.28 }
   },
+  "workstations": {
+    "about": "The 2D's layout (2026-10-29): the whole right half of the room is workstations, an L of desks 0.65 m deep along the back wall from mid-room to the far end and on down the far end wall, four seats, each with a monitor and a mesh chair. The 3D and the rail still draw the earlier layout (meeting, reception, desk, shelves, printer).",
+    "x0": 3.0,
+    "d": 0.65,
+    "seats": [
+      { "at": [3.45, -0.15], "toward": "up" },
+      { "at": [4.35, -0.15], "toward": "up" },
+      { "at": [5.0, 0.15], "toward": "right" },
+      { "at": [5.0, 0.8], "toward": "right" }
+    ]
+  },
+  "sofa": {
+    "about": "The 2D's layout (2026-10-29): a three-seat sofa against the back wall in the left half, a low table in front of it.",
+    "x0": 0.45,
+    "x1": 2.55,
+    "d": 0.9,
+    "arm": 0.2,
+    "back": 0.22,
+    "seats": 3,
+    "table": { "x0": 1.0, "x1": 2.0, "y0": 0.1, "y1": 0.6 }
+  },
   "meeting": {
     "about": "A round timber table for four at the cargo-door end, under the wall screen.",
     "x": 1.25,

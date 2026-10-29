@@ -5,7 +5,7 @@ import office from "./office.json"
 // and the glazing face down the page (north), the stair end to the left. Units are metres, x from the stair
 // end, y toward the deck, the container's centre line at y = 0.
 
-const { container: box, glazing, deck, meeting, reception, desk, shelves, printer, screen, ac, fan, plants } = office
+const { container: box, glazing, deck, workstations: ws, sofa } = office
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
 const medium = { ...thin, strokeWidth: 1.6 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
@@ -88,43 +88,31 @@ export function OfficePlan({ title, className }: { title: string; className?: st
       <rect {...rect(sx, edge - st.w, 0, edge)} {...thin} />
       {Array.from({ length: steps - 1 }, (_, k) => <line key={k} x1={f(sx + (k + 1) * st.tread)} x2={f(sx + (k + 1) * st.tread)} y1={f(edge - st.w)} y2={f(edge)} {...thin} />)}
 
-      {/* The meeting table for four, the screen over it on the end wall, the AC on the back wall, the plant */}
-      <circle cx={meeting.x} cy={meeting.y} r={meeting.r} {...thin} />
-      {meeting.chairs.map(([x, y]) => (
-        <Chair key={`${x}${y}`} x={x} y={y} s={meeting.chair.w}
-          toward={x < meeting.x - 0.1 ? "right" : x > meeting.x + 0.1 ? "left" : y < meeting.y ? "down" : "up"} />
+      {/* The workstations along the whole right side: an L of desks down the back wall to the far end and on
+          down the end wall, a monitor and a chair at each seat */}
+      <path d={`M${ws.x0} ${iy0}V${f(iy0 + ws.d)}H${f(ix1 - ws.d)}V${iy1}`} {...thin} />
+      <line x1={f(ix1 - ws.d)} x2={ix1} y1={f(iy0 + ws.d)} y2={f(iy0 + ws.d)} {...faint} />
+      {ws.seats.map(({ at: [x, y], toward }) => (
+        <g key={`${x}${y}`}>
+          {toward === "up"
+            ? <rect {...rect(x - 0.27, iy0 + 0.12, x + 0.27, iy0 + 0.18)} {...thin} />
+            : <rect {...rect(ix1 - 0.18, y - 0.27, ix1 - 0.12, y + 0.27)} {...thin} />}
+          <Chair x={x} y={y} toward={toward as "up" | "right"} />
+        </g>
       ))}
-      <rect {...rect(ix0, screen.y - screen.w / 2, ix0 + 0.05, screen.y + screen.w / 2)} {...thin} />
-      <rect {...rect(ac.x0, iy0, ac.x1, iy0 + ac.d)} {...dashed} />
-      <circle cx={plants.floor[0]} cy={plants.floor[1]} r={0.17} {...thin} />
-      <circle cx={plants.floor[0]} cy={plants.floor[1]} r={0.1} {...faint} />
 
-      {/* The filing wall along the back, the reception desk facing the glazing with its chair behind */}
-      <rect {...rect(shelves.x0, iy0, shelves.x1, iy0 + shelves.d)} {...thin} />
-      {Array.from({ length: 3 }, (_, k) => {
-        const x = shelves.x0 + ((k + 1) * (shelves.x1 - shelves.x0)) / 4
-        return <line key={k} x1={f(x)} x2={f(x)} y1={iy0} y2={f(iy0 + shelves.d)} {...faint} />
+      {/* The sofa against the back wall on the left side, its arms and three seat cushions, the low table in front */}
+      <rect {...rect(sofa.x0, iy0, sofa.x1, iy0 + sofa.d)} rx={0.05} {...thin} />
+      <path d={`M${f(sofa.x0 + sofa.arm)} ${f(iy0 + sofa.d)}V${f(iy0 + sofa.back)}H${f(sofa.x1 - sofa.arm)}V${f(iy0 + sofa.d)}`} {...thin} />
+      {Array.from({ length: sofa.seats - 1 }, (_, k) => {
+        const x = sofa.x0 + sofa.arm + ((k + 1) * (sofa.x1 - sofa.x0 - 2 * sofa.arm)) / sofa.seats
+        return <line key={k} x1={f(x)} x2={f(x)} y1={f(iy0 + sofa.back)} y2={f(iy0 + sofa.d)} {...faint} />
       })}
-      <rect {...rect(reception.x0, reception.y0, reception.x1, reception.y1)} {...thin} />
-      <line x1={reception.x0} x2={reception.x1} y1={f(reception.y1 - 0.04)} y2={f(reception.y1 - 0.04)} {...faint} />
-      <rect {...rect((reception.x0 + reception.x1) / 2 - 0.27, reception.y0 + 0.1, (reception.x0 + reception.x1) / 2 + 0.27, reception.y0 + 0.16)} {...thin} />
-      <Chair x={reception.chair[0]} y={reception.chair[1]} toward="up" />
+      <rect {...rect(sofa.table.x0, sofa.table.y0, sofa.table.x1, sofa.table.y1)} rx={0.04} {...thin} />
 
-      {/* The second desk on the far end wall, its chair facing the wall, the fan over it; the printer cabinet */}
-      <rect {...rect(desk.x0, desk.y0, desk.x1, desk.y1)} {...thin} />
-      <rect {...rect(desk.x1 - 0.2, (desk.y0 + desk.y1) / 2 - 0.27, desk.x1 - 0.14, (desk.y0 + desk.y1) / 2 + 0.27)} {...thin} />
-      <Chair x={desk.chair[0]} y={desk.chair[1]} toward="right" />
-      <circle cx={f(ix1 - 0.12)} cy={fan.y} r={0.1} {...dashed} />
-      <rect {...rect(printer.x0, printer.y0, printer.x1, printer.y1)} {...thin} />
-      <rect {...rect(printer.x0 + 0.06, printer.y0 + 0.1, printer.x1 - 0.06, printer.y1 - 0.1)} {...faint} />
-
-      <text x={f((shelves.x0 + shelves.x1) / 2)} y={f(iy0 + shelves.d / 2 + 0.035)} textAnchor="middle" style={small}>FILING</text>
-      <text x={f((reception.x0 + reception.x1) / 2)} y={f(reception.y1 - 0.15)} textAnchor="middle" style={small}>RECEPTION</text>
-      <text x={meeting.x} y={f(meeting.y + 0.035)} textAnchor="middle" style={small}>MEETING</text>
-      <text x={f((desk.x0 + desk.x1) / 2)} y={f(desk.y0 + 0.2)} textAnchor="middle" style={small}>DESK</text>
-      <text x={f((printer.x0 + printer.x1) / 2)} y={f((printer.y0 + printer.y1) / 2 + 0.035)} textAnchor="middle" style={small}>PRINT</text>
-      <text x={f(ac.x1 + 0.08)} y={f(iy0 + 0.15)} style={small}>AC</text>
-      <text x={f(ix0 + 0.1)} y={f(screen.y + screen.w / 2 + 0.14)} style={small}>SCREEN</text>
+      <text x={f((ws.x0 + ix1 - ws.d) / 2)} y={f(iy0 + ws.d / 2 + 0.07)} textAnchor="middle" style={small}>WORKSTATIONS</text>
+      <text x={f((sofa.x0 + sofa.x1) / 2)} y={f(iy0 + (sofa.back + sofa.d) / 2 + 0.035)} textAnchor="middle" style={small}>SOFA</text>
+      <text x={f((sofa.table.x0 + sofa.table.x1) / 2)} y={f((sofa.table.y0 + sofa.table.y1) / 2 + 0.035)} textAnchor="middle" style={small}>TABLE</text>
       <text x={f((g0 + g1) / 2)} y={f(front - 0.16)} textAnchor="middle" style={small}>SLIDING GLAZING</text>
       <text x={f(L / 2)} y={f(edge - 0.55)} textAnchor="middle" style={label}>DECK</text>
       <text x={f(sx + (-sx) / 2)} y={f(edge - st.w - 0.1)} textAnchor="middle" style={small}>STAIR</text>
