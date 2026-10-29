@@ -1,55 +1,24 @@
 {
-  "about": "The livestock house, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (founder, 2026-10-28, D-030; the zone D split of study/design/livestock-plan.md), in one raised house with the two species in separate pens (copper in goat minerals is toxic to sheep, and sheep carry more worms [V LVS-26, LVS-46]). The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x along the house to the right as seen from the paddock (west end left), y toward the viewer (the open, sheltered side and the feed passage), the house's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
-  "house": {
-    "about": "7.0 x 3.9 m under one mono-pitch sheet roof, long axis east-west: 3.0 m of pens behind a 0.9 m feed passage. The slatted floor stands 1.0 m above the ground on treated timber posts, so droppings fall through to the manure floor.",
+  "about": "The livestock yard, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (D-030), in one thatched pole shelter with a day yard for each species (D-037, after the founder's reference photo of 2026-10-29: a thatched shed, a pole palisade, lashed post-and-rail yards, stones, fodder baskets). Goats and sheep never share a pen, a yard or a fence: copper in goat minerals is toxic to sheep and sheep carry more worms [V LVS-26, LVS-46], so a keeper's lane runs between the two yards. The yard is part of the farm's loop: litter and manure go to the compost bays and on to the vegetable beds, the beds' residues and cut fodder come back in baskets. The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x to the right as seen from the paddock (west end left), y toward the viewer (the yards and the paddock), the shelter's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
+  "shelter": {
+    "about": "7.0 x 3.6 m, long axis east-west, open to the yards on the south. Back and ends of split eucalyptus poles set upright to the eaves, under a grass-thatched gable roof on pole rafters that overhangs 0.7 m, so the troughs along the front stand in its shade. The floor is rammed earth on a plinth 0.3 m high edged in fieldstone, so rain runs away from the bedding.",
     "l": 7.0,
-    "w": 3.9,
-    "floor": 1.0,
-    "slats": {
-      "about": "50 mm timber or split bamboo slats with 15 mm gaps, running across the house.",
-      "w": 0.05,
-      "gap": 0.015
-    },
-    "posts": {
-      "about": "100 x 100 mm treated posts on concrete pads, at 1.75 m along each row.",
-      "s": 0.1,
-      "x": [
-        -3.45,
-        -1.75,
-        0,
-        1.75,
-        3.45
-      ],
-      "y": [
-        -1.9,
-        -0.45,
-        1.05,
-        1.9
-      ]
-    },
-    "wall": 0.04,
-    "back": {
-      "about": "The windward back wall and the two ends: solid boards to the roof, dry and draught-free.",
-      "h": 2.0
+    "d": 3.6,
+    "wall": 0.1,
+    "plinth": {
+      "h": 0.3,
+      "edge": 0.2
     },
     "roof": {
-      "about": "Iron sheets on purlins, high over the passage (2.4 m above the slats) and falling to 2.0 m at the back, 0.6 m over the edges; the back gutter feeds the tank. Off in the line and real views so the pens show.",
-      "front": 2.4,
-      "back": 2.0,
-      "over": 0.6
-    },
-    "passage": {
-      "about": "The feed passage along the open front, at floor level: the racks and troughs are filled from here without stepping into a pen.",
-      "d": 0.9
-    },
-    "front": {
-      "about": "The pens' front fence on the passage: boards to 0.6 m, then vertical bars to 1.2 m, a gate into each pen. Above it the house is open to the air under the roof.",
-      "h": 1.2,
-      "solid": 0.6
+      "eaves": 2.0,
+      "ridge": 3.6,
+      "over": 0.7,
+      "about": "Grass thatch, about 0.25 m thick, on pole rafters and battens; renewed every few years with grass cut on the farm."
     }
   },
   "pens": {
-    "about": "West to east: goats 3.0 x 3.0 m (6 does at 1.2 m2 each plus kids at 0.3 m2 [A]), sheep 2.0 x 3.0 m (4 ewes, the same allowance), a kidding and sick pen 1.0 x 3.0 m, and the lockable feed store. Partitions are solid boards 1.2 m high, so goats and sheep do not touch or share minerals.",
+    "about": "West to east: goats 3.0 x 3.6 m (6 does at 1.2 m2 each plus kids at 0.3 m2 [A]), a kidding and sick pen 1.0 m wide that opens onto the lane so either species can use it, sheep 2.0 x 3.6 m (4 ewes, the same allowance), and the lockable feed store, boarded, with its door on the east gable. Partitions are pole hurdles 1.2 m high; the store is walled to the roof.",
+    "gate": 0.8,
     "list": [
       {
         "id": "goats",
@@ -58,25 +27,25 @@
         "x1": -0.5,
         "head": 6,
         "rack": 1.5,
-        "trough": 0.6
-      },
-      {
-        "id": "sheep",
-        "label": "SHEEP",
-        "x0": -0.5,
-        "x1": 1.5,
-        "head": 4,
-        "rack": 1.2,
-        "trough": 0.6
+        "trough": 1.0
       },
       {
         "id": "kidding",
         "label": "KIDDING",
-        "x0": 1.5,
-        "x1": 2.5,
+        "x0": -0.5,
+        "x1": 0.5,
         "head": 0,
         "rack": 0.6,
         "trough": 0
+      },
+      {
+        "id": "sheep",
+        "label": "SHEEP",
+        "x0": 0.5,
+        "x1": 2.5,
+        "head": 4,
+        "rack": 1.2,
+        "trough": 1.0
       },
       {
         "id": "store",
@@ -87,42 +56,111 @@
         "rack": 0,
         "trough": 0
       }
-    ],
-    "partition": 1.2,
-    "gate": 0.8
+    ]
+  },
+  "platform": {
+    "about": "A slatted bamboo sleeping platform along the back of each pen, 0.4 m up, so the animals lie dry above the litter: the dry floor of livestock-plan §7 without the 1 m stilts.",
+    "d": 1.0,
+    "h": 0.4
   },
   "fittings": {
-    "about": "On each pen's front fence, filled from the passage: a raised hay rack (feed off the floor lowers worm pick-up), a float trough on the water line, and a mineral box for that species alone. The feed store has shelves, sacks on a pallet and a lockable door onto the passage.",
+    "about": "Inside each pen on its west side, a raised hay rack filled by the keeper (feed off the floor lowers worm pick-up; the hay on the ground in the reference photo is what this avoids), and a mineral box on the east side for that species alone. In each yard, a float trough under the eaves, fed from the tank.",
     "rack": {
       "d": 0.35,
       "y0": 0.5,
       "h": 0.6
     },
     "trough": {
-      "d": 0.3,
-      "h": 0.25
+      "d": 0.35,
+      "h": 0.4
     },
     "mineral": {
       "w": 0.2,
       "d": 0.15
     }
   },
-  "ramp": {
-    "about": "A cleated ramp from the passage's west end down to the paddock, 0.9 m wide and 2.5 m long (about 22 degrees).",
-    "l": 2.5,
-    "cleat": 0.25
+  "yards": {
+    "about": "A day yard in front of each species' pen, fenced with round eucalyptus poles: posts every 1.8 m, three rails lashed with sisal rope, 1.2 m high. Straw over the earth, cleared to the compost with the bedding. Between the yards a 1.0 m keeper's lane runs from the shelter to the paddock gate, so the two herds never touch over a fence and each goes out on its own.",
+    "y1": 7.3,
+    "post": 1.8,
+    "h": 1.2,
+    "lane": [
+      -0.5,
+      0.5
+    ],
+    "goats": {
+      "x0": -6.0,
+      "x1": -0.5
+    },
+    "sheep": {
+      "x0": 0.5,
+      "x1": 4.5
+    },
+    "gate": 1.0
+  },
+  "palisade": {
+    "about": "A windbreak of upright eucalyptus poles behind the shelter, 1.8 m high, against the prevailing wind; climbers grow on it.",
+    "y": -2.3,
+    "x0": -6.5,
+    "x1": 4.5,
+    "h": 1.8
+  },
+  "stones": {
+    "about": "Fieldstones in the goat yard to climb on, which also wears their hooves down.",
+    "list": [
+      {
+        "x": -4.6,
+        "y": 4.0,
+        "r": 0.45
+      },
+      {
+        "x": -3.6,
+        "y": 5.7,
+        "r": 0.35
+      },
+      {
+        "x": -5.2,
+        "y": 6.2,
+        "r": 0.3
+      }
+    ]
+  },
+  "tree": {
+    "about": "A shade tree in the sheep yard, its trunk inside a pole guard so the bark is not stripped.",
+    "x": 3.0,
+    "y": 5.5,
+    "crown": 1.6,
+    "guard": 0.4
   },
   "tank": {
-    "about": "A 1,000 L tank at the back east corner on a 1.2 m block stand, filled from the roof's back gutter and feeding the float troughs by gravity; the farm's water point tops it up.",
+    "about": "A 1,000 L tank behind the feed store on a 1.2 m block stand, filled from the farm's water line (thatch does not collect rain cleanly) and feeding the float troughs by gravity.",
     "x": 4.15,
     "y": -1.35,
     "r": 0.55,
     "h": 1.2,
     "stand": 1.2
   },
-  "manure": {
-    "about": "A concrete floor under the pens, falling to the front, swept each week and carried to the compost pad.",
-    "fall": 0.03
+  "baskets": {
+    "about": "Woven baskets of cut fodder and the field's residues by the feed store door: the vegetable beds feed the herd.",
+    "list": [
+      {
+        "x": 4.15,
+        "y": 1.15,
+        "r": 0.3
+      },
+      {
+        "x": 4.3,
+        "y": -0.35,
+        "r": 0.26
+      }
+    ]
+  },
+  "compost": {
+    "about": "Three pole bays, 1.2 m square, east of the feed store: litter and manure in the first, turning to the second, finished compost in the third, carried to the vegetable beds and the tree pits. Hot-composted (55 C for 3 days, turned) before it touches anything eaten [livestock-plan; DSN-08].",
+    "x0": 4.9,
+    "y0": -1.2,
+    "bay": 1.2,
+    "n": 3
   },
   "animals": {
     "about": "Where the 3D stands the herd: local goats in browns and black, fat-tailed hair sheep with white coats and dark faces. Positions in pen metres, heading in degrees (0 = toward +x).",

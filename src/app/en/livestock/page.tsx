@@ -3,14 +3,14 @@ import type { Metadata } from "next"
 import { DrawingSection, ModelSection, PageHero } from "@/components/page/sections"
 import { LivestockPlan } from "@/components/livestock/livestock-plan"
 
-// The livestock house, as /en/bar is one bar: a full-screen hero, then the 2D and the 3D. Both drawings read
-// src/components/livestock/livestock.json: the starting herd of 6 goats and 4 sheep (D-030) in one raised house,
-// the two species in their own pens, a kidding pen and a lockable feed store behind a feed passage, a ramp down to
-// the paddock and a tank fed from the roof. Every size is an assumption until the farm's vet checks it.
+// The livestock yard, as /en/bar is one bar: a full-screen hero, then the 2D and the 3D. Both drawings read
+// src/components/livestock/livestock.json: the starting herd of 6 goats and 4 sheep (D-030) in a thatched pole
+// shelter with a day yard for each species and a keeper's lane between them (D-037), the feed store, the tank and
+// the compost bays that close the loop to the field. Every size is an assumption until the farm's vet checks it.
 
 export const metadata: Metadata = {
   title: "The livestock · Farm",
-  description: "Six goats and four sheep in a raised timber house on the paddock, at the Digital Farm near Kigali.",
+  description: "Six goats and four sheep in a thatched pole shelter with their own yards, part of the farm’s loop from field to compost, at the Digital Farm near Kigali.",
 }
 
 const D = "/designs/livestock"
@@ -27,7 +27,7 @@ export default function LivestockPage() {
 
       {/* 2D, full screen: the house's plan (src/components/livestock/livestock-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
-        <LivestockPlan title="Plan: a raised house 7,000 by 3,900 mm under an overhanging roof; from west to east a goat pen of 9 m² for 6 goats, a sheep pen of 6 m² for 4 sheep, a kidding pen of 3 m² and a lockable feed store, all on a slatted floor behind a 900 mm feed passage; each pen has a gate, a hay rack, a trough and a mineral box on its front fence; a cleated ramp runs down from the passage's west end and a tank stands at the back east corner."
+        <LivestockPlan title="Plan: a thatched pole shelter 7,000 by 3,600 mm on a fieldstone plinth behind a palisade windbreak; from west to east a goat pen of 10.8 m² for 6 goats, a kidding pen, a sheep pen of 7.2 m² for 4 sheep and a lockable feed store, each pen with a slatted bamboo sleeping platform along the back, a hay rack and a mineral box; in front, a post-and-rail goat yard with climbing stones and a sheep yard with a shade tree, a keeper’s lane between them to the paddock gate, a trough in each yard; behind the store the tank, fodder baskets and three compost bays."
           className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 

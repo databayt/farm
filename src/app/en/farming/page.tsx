@@ -69,9 +69,9 @@ export default function FarmingPage() {
             <h2 className="text-3xl font-semibold tracking-tight">Livestock</h2>
             <Link href="/en/livestock" className="text-sm underline underline-offset-4">The livestock page</Link>
           </div>
-          <p className="text-muted-foreground mt-3 max-w-2xl">Six goats and four sheep in one raised house at the top of its paddock, beyond the field.</p>
+          <p className="text-muted-foreground mt-3 max-w-2xl">Six goats and four sheep in a thatched shelter with their own yards, beyond the field: their litter goes to the compost bays and back to these beds.</p>
           <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
-            <LivestockPlan title="Plan of the livestock house: a raised house 7,000 by 3,900 mm under an overhanging roof; a goat pen for 6 goats, a sheep pen for 4 sheep, a kidding pen and a feed store behind a feed passage, a ramp down at the west end and a tank at the back east corner."
+            <LivestockPlan title="Plan of the livestock yard: a thatched pole shelter 7,000 by 3,600 mm with a goat pen, a kidding pen, a sheep pen and a feed store, a yard for each species with a lane between them to the paddock, and three compost bays behind the store."
               className="h-auto w-full lg:h-full lg:w-auto" />
           </div>
         </div>
