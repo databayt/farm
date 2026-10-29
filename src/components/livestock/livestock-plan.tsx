@@ -95,16 +95,17 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       {[yg.x0, yg.x0 + yg.w].map((x, i) => <Gate key={x} x={x} y={Y} w={yg.w / 2} c={[i ? -1 : 1, 0]} o={[0, -1]} />)}
 
       {/* The shed, as the photo's, on its low fieldstone plinth: the thatch's overhang dashed, the back and the east end
-          boarded, the west side open behind two rails, the front open under its braced posts (dots) */}
+          boarded, the west end open behind one rail, the front open between its two braced corner posts (dots) */}
       <rect {...rect(-L - shelter.roof.over, -W - shelter.roof.over, L + shelter.roof.over, W + shelter.roof.over)} {...dashed} />
       <rect {...rect(-L - E, -W - E, L + E, W + E)} {...fine} />
       <rect {...rect(-L, -W, L, -W + WALL)} {...solid} />
       <rect {...rect(L - WALL, -W, L, W)} {...solid} />
       <rect {...rect(-L + 0.02, -W + WALL, -L + 0.02 + FENCE, W - 0.1)} {...solid} />
-      {[-L + 0.09, 0, L - 0.09].map((x) => <circle key={x} cx={f(x)} cy={f(W - 0.09)} r={0.1} {...solid} />)}
-      <circle cx={f(-L + 0.09)} cy={f(-W + 0.09)} r={0.1} {...solid} />
+      {[-L + 0.09, L - 0.09].map((x) => <circle key={x} cx={f(x)} cy={f(W - 0.09)} r={0.11} {...solid} />)}
+      <circle cx={f(-L + 0.09)} cy={f(-W + 0.09)} r={0.11} {...solid} />
+      <circle cx={pens.basket.x} cy={pens.basket.y} r={pens.basket.r} {...fine} />
 
-      {/* Inside, as the photo's: the straw bale, the slatted feed table, the lockable feed bin; the goats' mineral box
+      {/* Inside, as the photo's: the straw bale, the plank table with its basket over the lidded crate; the goats' mineral box
           high on the back wall and the sheep's low */}
       <rect {...box(pens.bale)} rx={0.08} {...line} />
       <rect {...box(pens.table)} {...line} />

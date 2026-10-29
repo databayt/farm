@@ -3,10 +3,11 @@
   /en/livestock's 3D, in the pattern of the studio's (scripts/studio/render/room.html): the livestock yard (D-039 to
   D-044) seen straight on from the paddock, on the white page. Built from src/components/livestock/livestock.json (the
   numbers the 2D draws): one outline, the palisade at the back and one post-and-rail fence round the rest, its rails
-  thick, crooked and lashed with rope as the founder's photo's; inside it the herd's shed, as the photo's shed: dark
-  weathered boards at the back and the east end, the west side open behind two rails, heavy front posts braced to the
-  eaves beam, the steep gable's rafters standing with the thatch off (as the studio's roof), straw, a straw bale, a
-  slatted feed table, a lockable feed bin and the mineral boxes; the village yard with troughs, climbing stones, the
+  thick, crooked and lashed with rope as the founder's photo's; inside it the herd's shed, copied from the photo's
+  shed (D-045): dark weathered boards at the back and the east end, the west end open behind one rail, two heavy
+  corner posts braced to the eaves beam, a steep shaggy thatch on the gable with its ends open on the rafters, and
+  under it one sheep on the straw, a straw bale, a plank table with a basket over a lidded crate, the mineral boxes.
+  The view is low enough to see under the eaves into the shed, as the photo does; the village yard with troughs, climbing stones, the
   guarded shade tree, the dovecote, the cats' house and a bench; the tank, the fodder baskets, the compost bays and
   the guard dogs' run in the back east corner; shrubs round the outside. 6 goats, 4 sheep, 2 dogs, 3 cats and doves,
   in soft overcast light. The page's hero is the founder's photo (D-042), not a render. Rendered three ways:
@@ -168,7 +169,7 @@ function mat(name) {
       fodder: () => std({ color: "#5d7d3a", roughness: 0.9 }),
       trunk: () => std({ color: "#6d5a48", roughness: 0.9 }),
       leaf: () => std({ color: "#55663f", roughness: 0.95, flatShading: true }),
-      thatch: () => std({ map: T.thatch, color: "#a39684", roughness: 1, side: THREE.DoubleSide }), // grey-brown, weathered, as the photo's
+      thatch: () => std({ map: T.thatch, color: "#cbbca5", roughness: 1, side: THREE.DoubleSide }), // grey-brown, weathered, as the photo's
       lawn: () => std({ map: T.grass, roughness: 1 }),
       face: () => std({ color: "#211c19", roughness: 0.85 }),
       horn: () => std({ color: "#7d6e5e", roughness: 0.6 }),
@@ -262,8 +263,9 @@ if (HERO) {
   blk(-L + 0.02, -W + WALL, L - WALL, W, FL, LIT, "litter")
 }
 
-// ------------------------------------------------------------ the herd's shed, as the founder's photo's: wide dark weathered boards set upright at the back and
-// the east end, the west side open behind two rails, heavy barked posts along the open front braced to the eaves beam
+// ------------------------------------------------------------ the herd's shed, copied from the founder's photo's: wide dark weathered boards set upright at the
+// back and the east end, the west end open behind one rail, two heavy barked corner posts along the open front braced
+// to the eaves beam
 function rails(x0, z0, x1, z1, y0, heights, r = 0.035) {
   for (const h of heights) pipe([x0, y0 + h, z0], [x1, y0 + h, z1], r, "pole", 7)
 }
@@ -273,33 +275,33 @@ function gate(x0, z0, x1, z1, y0, h) { // shut: a frame of thin poles with a dia
   pipe([x0, y0 + 0.12, z0], [x1, y0 + h - 0.04, z1], 0.025, "pole", 6)
 }
 {
-  const plank = (x0, z0, x1, z1) => blk(x0, z0, x1, z1, FL, EAVE - 0.04 + (rnd() - 0.5) * 0.06, "plank")
-  for (let x = -L + 0.18; x < L - 0.05; x += 0.21) plank(x, -W, Math.min(x + 0.19, L), -W + WALL)
-  for (let z = -W + WALL; z < W - 0.15; z += 0.21) plank(L - WALL, z, L, Math.min(z + 0.19, W - 0.15))
-  // the posts: the four corners and the middle of the front, heavy and barked; the eaves beam and the plates
-  const posts = [-L + 0.09, 0, L - 0.09]
-  for (const x of posts) pole(x, W - 0.09, 0.11, FL, EAVE + 0.18, 9)
-  for (const x of [-L + 0.09, L - 0.09]) pole(x, -W + 0.09, 0.1, FL, EAVE + 0.12, 9)
-  pipe([-L - 0.25, EAVE + 0.1, W - 0.09], [L + 0.25, EAVE + 0.1, W - 0.09], 0.1, "pole", 9)
-  pipe([-L - 0.2, EAVE + 0.04, -W + 0.09], [L + 0.2, EAVE + 0.04, -W + 0.09], 0.09, "pole", 9)
-  for (const x of [-L + 0.09, L - 0.09]) pipe([x, EAVE + 0.04, -W], [x, EAVE + 0.04, W], 0.08, "pole", 9)
-  for (const x of posts) for (const s of [-1, 1]) { // a knee brace each side of each front post, as the photo's
-    if ((x === posts[0] && s < 0) || (x === posts.at(-1) && s > 0)) continue
-    pipe([x, EAVE - 0.6, W - 0.09], [x + s * 0.55, EAVE + 0.06, W - 0.09], 0.045, "pole", 6)
-  }
-  // the open west side: two barked rails between the corner posts
-  rails(-L + 0.09, -W + 0.09, -L + 0.09, W - 0.09, FL, P.rails, 0.05)
-  // inside, as the photo's: the straw bale, the slatted feed table with hay, the lockable feed bin, the mineral boxes
+  const plank = (x0, z0, x1, z1) => blk(x0, z0, x1, z1, FL, EAVE - 0.04 + (rnd() - 0.5) * 0.08, "plank")
+  for (let x = -L + 0.2; x < L - 0.05; x += 0.22) plank(x, -W, Math.min(x + 0.2, L), -W + WALL)
+  for (let z = -W + WALL; z < W - 0.2; z += 0.22) plank(L - WALL, z, L, Math.min(z + 0.2, W - 0.2))
+  // the corner posts, heavy and barked; the eaves beam along the front, the plate along the back, the tie beams
+  for (const [x, z] of [[-L + 0.1, W - 0.1], [L - 0.1, W - 0.1], [-L + 0.1, -W + 0.1], [L - 0.1, -W + 0.1]]) pole(x, z, 0.12, FL - 0.05, EAVE + 0.15, 9)
+  pipe([-L - 0.35, EAVE + 0.08, W - 0.1], [L + 0.35, EAVE + 0.08, W - 0.1], 0.11, "pole", 9)
+  pipe([-L - 0.3, EAVE + 0.04, -W + 0.1], [L + 0.3, EAVE + 0.04, -W + 0.1], 0.09, "pole", 9)
+  for (const x of [-L + 0.1, L - 0.1]) pipe([x, EAVE + 0.12, -W - 0.3], [x, EAVE + 0.12, W + 0.3], 0.09, "pole", 9)
+  // a knee brace at each front post, up to the eaves beam, and one up the open west end, as the photo's
+  pipe([-L + 0.1, EAVE - 0.65, W - 0.1], [-L + 0.75, EAVE + 0.04, W - 0.1], 0.05, "pole", 6)
+  pipe([L - 0.1, EAVE - 0.65, W - 0.1], [L - 0.75, EAVE + 0.04, W - 0.1], 0.05, "pole", 6)
+  pipe([-L + 0.1, EAVE - 0.65, W - 0.1], [-L + 0.1, EAVE + 0.04, W - 0.75], 0.05, "pole", 6)
+  // the open west end: one barked rail between the corner posts
+  rails(-L + 0.1, -W + 0.1, -L + 0.1, W - 0.1, FL, P.rails, 0.06)
+  // inside, as the photo's: the straw bale, the plank table with its basket over the lidded crate, the mineral boxes
   const b = P.bale
-  soft(b.x0, b.y0, b.x1, b.y1, LIT, LIT + 0.5, 0.07, "hay")
+  soft(b.x0, b.y0, b.x1, b.y1, LIT, LIT + 0.45, 0.07, "hay")
   const t = P.table
-  for (const x of [t.x0 + 0.06, t.x1 - 0.06]) for (const z of [t.y0 + 0.06, t.y1 - 0.06]) pole(x, z, 0.035, LIT, LIT + t.h)
-  for (let z = t.y0; z < t.y1 - 0.02; z += 0.1) blk(t.x0, z, t.x1, z + 0.08, LIT + t.h - 0.03, LIT + t.h, "plank")
-  if (!LINE) soft(t.x0 + 0.1, t.y0 + 0.05, t.x1 - 0.1, t.y1 - 0.05, LIT + t.h, LIT + t.h + 0.2, 0.06, "hay")
+  for (const x of [t.x0 + 0.06, t.x1 - 0.06]) for (const z of [t.y0 + 0.06, t.y1 - 0.06]) blk(x - 0.035, z - 0.035, x + 0.035, z + 0.035, LIT, LIT + t.h, "plank")
+  for (let z = t.y0; z < t.y1 - 0.02; z += 0.15) blk(t.x0, z, t.x1, z + 0.14, LIT + t.h - 0.04, LIT + t.h, "plank")
   const n = P.bin
-  blk(n.x0, n.y0, n.x1, n.y1, LIT, LIT + 0.8, "plank")
-  blk(n.x0 - 0.02, n.y0 - 0.02, n.x1 + 0.02, n.y1 + 0.02, LIT + 0.8, LIT + 0.84, "plank")
-  if (!LINE) blk(n.x0 + 0.05, n.y1 + 0.02, n.x0 + 0.15, n.y1 + 0.04, LIT + 0.62, LIT + 0.72, "dogblack") // its hasp
+  blk(n.x0, n.y0, n.x1, n.y1, LIT, LIT + 0.42, "plank")
+  blk(n.x0 - 0.02, n.y0 - 0.02, n.x1 + 0.02, n.y1 + 0.02, LIT + 0.42, LIT + 0.46, "plank")
+  if (!LINE) blk(n.x0 + 0.05, n.y1 + 0.02, n.x0 + 0.15, n.y1 + 0.04, LIT + 0.3, LIT + 0.4, "dogblack") // its hasp
+  const k = P.basket
+  cyl(k.x, k.y, k.r * 0.8, LIT + t.h, 0.22, "basket", 20, k.r)
+  if (!LINE) soft(k.x - k.r * 0.7, k.y - k.r * 0.7, k.x + k.r * 0.7, k.y + k.r * 0.7, LIT + t.h + 0.12, LIT + t.h + 0.28, 0.06, "hay")
   for (const m of P.minerals) {
     blk(m.x0, m.y0, m.x1, m.y1, LIT + m.z, LIT + m.z + 0.2, "plank")
     if (!LINE) blk(m.x0 + 0.02, m.y0 + 0.02, m.x1 - 0.02, m.y1 - 0.02, LIT + m.z + 0.18, LIT + m.z + 0.21, "mineral")
@@ -398,16 +400,25 @@ for (const s of ST.list) {
   }
 }
 
-// ------------------------------------------------------------ the roof, as the photo's steep gable: the thatch off in this cutaway (as the studio's roof),
-// its pole rafters and ridge left standing so the shape reads and the shed shows inside
+// ------------------------------------------------------------ the roof, as the photo's: a steep, shaggy grey-brown grass thatch on a pole gable, both slopes
+// on, a ragged fringe along the eaves, the gable ends open on their rafters, a collar and a king post. The view is low
+// enough to see under the eaves into the shed, as the photo does.
 {
   const o = S.roof.over, rise = S.roof.ridge - EAVE, R = S.roof.ridge + 0.05
-  for (const x of [-L + 0.09, L - 0.09]) pole(x, 0, 0.07, EAVE, S.roof.ridge)
-  pipe([-L - o, R, 0], [L + o, R, 0], 0.08, "pole", 8)
-  const n = Math.round((S.l + 2 * o) / 0.8)
-  for (let k = 0; k <= n; k++) {
-    const x = -L - o + ((S.l + 2 * o) * k) / n
-    for (const s of [1, -1]) pipe([x, R, 0], [x, EAVE - (o * rise) / W + 0.1, s * (W + o)], 0.045, "pole", 6)
+  const half = W + o, len = Math.hypot(half, rise), a = Math.atan2(rise, half), drop = EAVE + 0.04 // the eaves' edge
+  for (const s of [1, -1]) {
+    const slope = add(new THREE.BoxGeometry(S.l + 2 * o, 0.3, len), "thatch", { pos: [0, EAVE + rise / 2 + 0.16, (s * half) / 2] })
+    slope.rotation.x = s * a
+    if (!LINE) for (let x = -L - o; x < L + o; x += 0.11) { // the ragged fringe
+      const m = add(new THREE.ConeGeometry(0.07, 0.2 + rnd() * 0.14, 5), "thatch", { pos: [x + rnd() * 0.05, drop, s * (half - 0.04)], noEdges: true })
+      m.rotation.x = Math.PI
+    }
+  }
+  pipe([-L - o, R + 0.12, 0], [L + o, R + 0.12, 0], 0.12, "thatch", 8) // the ridge capping
+  for (const x of [-L + 0.1, L - 0.1]) { // each gable: its end rafters, a collar and a king post
+    for (const s of [1, -1]) pipe([x, R, 0], [x, drop + 0.1, s * (W + o)], 0.06, "pole", 7)
+    pipe([x, EAVE + rise * 0.5, -W * 0.5], [x, EAVE + rise * 0.5, W * 0.5], 0.05, "pole", 6)
+    pole(x, 0, 0.06, EAVE + 0.12, R)
   }
 }
 
@@ -557,7 +568,7 @@ if (HERO) {
   // straight on from the paddock, as the studio's front view, but from far off with a long lens and looking down,
   // so the pens show over the fences and the yards keep their proportions; the view offset frames the model
   const target = new THREE.Vector3((Y.x0 + DG.x1) / 2, 0.6, 2.6)
-  const [el, dist] = [THREE.MathUtils.degToRad(38), 70]
+  const [el, dist] = [THREE.MathUtils.degToRad(26), 70]
   camera.position.set(target.x, target.y + dist * Math.sin(el), target.z + dist * Math.cos(el))
   camera.lookAt(target)
 }

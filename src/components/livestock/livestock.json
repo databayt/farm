@@ -1,9 +1,9 @@
 {
   "about": "The livestock yard, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (D-030), in one thatched pole shelter opening onto one village yard (D-037, D-038, after the founder's reference photo of 2026-10-29: a thatched shed, a pole palisade, lashed post-and-rail fences, stones, fodder baskets). One outline holds it all (D-039): the palisade at the back, one post-and-rail fence round the rest. The goats, the sheep, the doves, the cats and the guests share the yard by day, and the goats and the sheep sleep together in one shed, built as the shed in the founder's photo (D-044). Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high, where sheep cannot reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. Both species carry the same worms [V LVS-46], so the yard is kept dry, the hay stays in racks and the herd is dewormed animal by animal (FAMACHA). The yard is part of the farm's loop: litter and manure go to the compost bays and on to the vegetable beds, the beds' residues and cut fodder come back in baskets. The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x to the right as seen from the paddock (west end left), y toward the viewer (the yards and the paddock), the shelter's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
   "shelter": {
-    "about": "The herd's shed, as the shed in the founder's photo (D-044): 5.0 x 3.6 m (18 m2: 10 head at 1.2 m2 plus kids at 0.3 m2 [A]), long axis east-west. Its back and its east end are wide dark weathered boards set upright; its west side is open behind two rails; its front is open under heavy barked posts braced to the eaves beam. A steep, shaggy grass-thatched gable roof overhangs 0.7 m all round. The floor is rammed earth deep in straw on a low plinth edged in fieldstones, so rain runs off and the herd lies dry.",
-    "l": 5.0,
-    "d": 3.6,
+    "about": "The herd's shed, copied from the shed in the founder's photo (D-044, D-045): 4.4 x 3.0 m (13 m2: 10 head at 1.2 m2 [A]), long axis east-west. Its back and its east end are wide dark weathered boards set upright; its west end is open with one rail between the corner posts; its front is open between two heavy barked corner posts under the eaves beam, each braced to it. A steep, shaggy grey-brown grass-thatched gable overhangs 0.7 m, its gable ends open on the rafters and the tie beam. The floor is rammed earth deep in straw on a low plinth edged in fieldstones, so rain runs off and the herd lies dry.",
+    "l": 4.4,
+    "d": 3.0,
     "wall": 0.1,
     "plinth": {
       "h": 0.2,
@@ -16,49 +16,53 @@
     }
   },
   "pens": {
-    "about": "Inside the shed, as in the photo: a straw bale, a slatted feed table that keeps the hay off the floor (worm pick-up), and a lockable feed bin in the corner, the feed kept from thieves and from the herd. Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high on the back wall, above the sheep's reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. For kidding, two hurdles close off a corner when a doe or a ewe is due.",
+    "about": "Inside the shed, as in the photo: one sheep on the straw, a straw bale in the middle, and on the right a plank table with a basket on it (the hay, off the floor against worm pick-up) over a lidded crate that locks, for the feed. Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high on the back wall, above the sheep's reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. For kidding, two hurdles close off a corner when a doe or a ewe is due.",
     "label": "SHED",
     "head": 10,
     "bale": {
-      "x0": -2.15,
-      "x1": -1.15,
-      "y0": -1.55,
-      "y1": -0.9
+      "x0": -0.35,
+      "x1": 0.65,
+      "y0": -1.15,
+      "y1": -0.5
     },
     "table": {
-      "x0": 0.5,
-      "x1": 2.0,
-      "y0": -1.62,
-      "y1": -0.95,
+      "x0": 0.85,
+      "x1": 2.05,
+      "y0": -1.3,
+      "y1": -0.7,
       "h": 0.8
     },
     "bin": {
-      "x0": 1.65,
-      "x1": 2.32,
-      "y0": 0.3,
-      "y1": 0.85
+      "x0": 1.05,
+      "x1": 1.85,
+      "y0": -1.2,
+      "y1": -0.8
+    },
+    "basket": {
+      "x": 1.65,
+      "y": -1.0,
+      "r": 0.2
     },
     "minerals": [
       {
-        "x0": -0.75,
-        "x1": -0.45,
-        "y0": -1.7,
-        "y1": -1.55,
+        "x0": -1.35,
+        "x1": -1.05,
+        "y0": -1.4,
+        "y1": -1.25,
         "z": 1.2,
         "for": "goats"
       },
       {
-        "x0": -0.2,
-        "x1": 0.1,
-        "y0": -1.7,
-        "y1": -1.55,
+        "x0": -0.85,
+        "x1": -0.55,
+        "y0": -1.4,
+        "y1": -1.25,
         "z": 0.3,
         "for": "sheep"
       }
     ],
     "rails": [
-      0.5,
-      0.95
+      0.9
     ]
   },
   "fittings": {
@@ -127,7 +131,7 @@
   },
   "tank": {
     "about": "A 1,000 L tank by the shed's east end on a 1.2 m block stand, filled from the farm's water line (thatch does not collect rain cleanly) and feeding the float troughs by gravity.",
-    "x": 3.9,
+    "x": 3.6,
     "y": -1.35,
     "r": 0.55,
     "h": 1.2,
@@ -225,17 +229,17 @@
     }
   },
   "animals": {
-    "about": "Where the 3D stands the animals, in plan metres, heading in degrees (0 = toward +x): local goats in browns and black and fat-tailed hair sheep with white coats and dark faces, two in the shelter and the rest mixing in the yard; `on` names a stone a goat stands on, or the cats' house. The dogs stand in their run; the doves sit on the dovecote.",
+    "about": "Where the 3D stands the animals, in plan metres, heading in degrees (0 = toward +x): local goats in browns and black and fat-tailed hair sheep with white coats and dark faces, one sheep in the shed, as in the photo, and the rest mixing in the yard; `on` names a stone a goat stands on, or the cats' house. The dogs stand in their run; the doves sit on the dovecote.",
     "goats": [
       {
-        "x": -1.3,
-        "y": -0.2,
-        "h": 20,
+        "x": -4.1,
+        "y": 2.3,
+        "h": 40,
         "coat": "brown"
       },
       {
-        "x": 0.1,
-        "y": 0.6,
+        "x": 0.9,
+        "y": 4.7,
         "h": 200,
         "coat": "black"
       },
@@ -267,9 +271,9 @@
     ],
     "sheep": [
       {
-        "x": 0.9,
-        "y": 0.2,
-        "h": 170,
+        "x": -1.15,
+        "y": -0.35,
+        "h": 80,
         "coat": "wool"
       },
       {

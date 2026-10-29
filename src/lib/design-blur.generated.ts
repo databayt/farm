@@ -11,7 +11,7 @@ export const DESIGN_BLUR: Record<string, string> = {
   "/designs/guest-room/render/guest-room-hero.jpg": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADQAQCdASoQAAkAAsBMJZgCdAEPPDbmIAD+1RA4ku+Ew2Ub4CFXEApNN0iO8W/9WCrFX+qqeFnyIZM7LZVgI3eD9N4i5K3DLkW/AOjAAAA=",
   "/designs/guest-room/render/guest-room-real.webp": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAQAgCdASoQAAwAAsBMJbACdAEem14oCEUAAP7D/OMDIGIKjV/dIHgEE20dtaZx8xfk4Xd2ZOGR+ZN1//WUjnN2xxVvomAAAAA=",
   "/designs/livestock/render/livestock-hero.jpg": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADwAQCdASoQAAkAAsBMJYwCdAED9XC/lJAA/vXW88OtNciAE2GIWlZRKO3ljgBX1C1RWJQwEmF5hJg8nZxZ5LYr0KVUwAAA",
-  "/designs/livestock/render/livestock-real.webp": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAAAwAgCdASoQAAkAAsBMJQBOgMW03222v/EOwAD+8oZ/YxGZa7i7YTfLyOt2XdtAk/J7IZETsxnTljW92NI7mNCqQNz9r7Om12pAEHqGzUbpcAAA",
+  "/designs/livestock/render/livestock-real.webp": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAACwAQCdASoQAAkAAsBMJQBOgB8wOygAAP73X6lnit/xmXDQ7mZE4nIJQBBRwuatg9DT3/snIVx6MOxQUttL2e6m6kff9gr8y+znfyxLkVPhL99QAAA=",
   "/designs/office/render/office-hero.jpg": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkAAsBMJZgCdAEVLhTVOcAA+6X2Qtp8JlvdLsym8f0G+hv43JfR8ZE8VlZ+Lizg7mXLDJxa4gakkwtKc/dcmAA=",
   "/designs/office/render/office-real.webp": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAADQAQCdASoQAAcAAsBMJbACdAEVz05WwAD+w+FDX2J04o0G4xzQygM4tP8h8Cfr731eVObVE4wh/JH0LgAAAA==",
   "/designs/parking/render/parking-hero.jpg": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAAAQAgCdASoQAAkAAsBMJbACdGuAAsO4OtYAAP7oawrjVd8ORYDnW/cKptEYDob54fiLBkNSJn3Jzjm/NmPzAc/xFyFvmOt0QSgAAA==",
