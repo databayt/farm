@@ -29,16 +29,13 @@
     "mac": { "w": 0.197, "y": -0.6 },
     "chair": [4.7, 0.0]
   },
-  "sofas": {
-    "about": "The 2D's layout (2026-10-29): two three-seat sofas in an L in the left corner, one against the back wall and one against the cargo-door end wall, a low table in front of both. back: the wall each sofa's back stands against.",
+  "sofa": {
+    "about": "The 2D's layout (2026-10-29): one L sofa in a single piece, its short leg across the whole width of the cargo-door end wall, its long leg along the back wall, a corner seat where they meet and a low table in front. x1: where the back-wall leg ends; seats: cushions on each leg beside the corner seat.",
     "d": 0.9,
     "arm": 0.2,
     "rest": 0.22,
-    "seats": 3,
-    "items": [
-      { "back": "wall", "x0": 1.0, "x1": 3.1 },
-      { "back": "end", "y0": -1.1, "y1": 0.9 }
-    ],
+    "x1": 3.1,
+    "seats": { "wall": 2, "end": 1 },
     "table": { "x0": 1.45, "x1": 2.45, "y0": 0.05, "y1": 0.55 }
   },
   "meeting": {
