@@ -1,17 +1,20 @@
 <!doctype html>
 <!--
-  /en/livestock's 3D, in the pattern of the bar's (scripts/site/render/bar.html): the goat and sheep house seen from
-  the paddock, built from src/components/livestock/livestock.json (the numbers the 2D draws). Treated timber on
-  posts, a slatted floor 1.0 m up over a concrete manure floor, the feed passage and its ramp, the 1,000 L tank, and
-  the starting herd standing in their pens: 6 local goats and 4 fat-tailed hair sheep. The roof is off so the pens
-  show. Rendered two ways:
+  /en/livestock's 3D, in the pattern of the studio's (scripts/studio/render/room.html): the livestock yard (D-037) seen
+  straight on from the paddock, verticals straight, the roof off so the pens show, on the white page. Built from
+  src/components/livestock/livestock.json (the numbers the 2D draws): the shelter of upright eucalyptus poles on its
+  fieldstone plinth, straw litter, a slatted bamboo sleeping platform in each pen, hay racks, the boarded feed
+  store, the palisade windbreak behind, the two post-and-rail yards with the lane between them, troughs, climbing
+  stones, the guarded shade tree, the tank, the fodder baskets and the three compost bays, and the starting herd:
+  6 local goats and 4 fat-tailed hair sheep. The tree's crown is cut like the roof: from this height it would hide
+  the sheep pen and the store. Rendered three ways:
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/livestock/render/livestock-line.png
-    ?mode=real  materials, low sun and shadow          -> public/designs/livestock/render/livestock-real.webp
-    &hero=1     real mode, roof on, from eye level in the paddock, 2400 x 1340 -> the stand-in livestock-hero.jpg
+    ?mode=real  materials, daylight and soft shadow    -> public/designs/livestock/render/livestock-real.webp
+    &hero=1     real mode, thatch and crown on, from eye level in the paddock, 2400 x 1340
+                -> public/designs/livestock/render/livestock-hero.jpg, the stand-in hero and the Nano Banana layout reference
 
-  Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
-  save the data URL in #out.
+  node scripts/site/render.mjs scripts/site/render/livestock.html "mode=line" public/designs/livestock/render/livestock-line.png
 -->
 <html>
 <head>
@@ -42,10 +45,10 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 const Q = new URLSearchParams(location.search)
 const LINE = Q.get("mode") !== "real"
 const HERO = !LINE && Q.get("hero") === "1"
-const [FW, FH] = HERO ? [2400, 1340] : [2400, 1100]
+const [FW, FH] = HERO ? [2400, 1340] : [2400, 1400]
 const C = await (await fetch(`/src/components/livestock/livestock.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#ffffff"
-// plan (x right, y toward the passage) -> three: x = x, y = height, z = y; the camera stands in the paddock, at +z
+// plan (x right, y toward the yards) -> three: x = x, y = height, z = y; the camera stands in the paddock, at +z
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true })
 renderer.setClearColor(0xffffff, 0)
@@ -58,6 +61,8 @@ if (!LINE) {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
 }
 const scene = new THREE.Scene()
+// white page ground, as the studio's; in real mode tone mapping would dim plain white to grey, so it starts brighter
+if (!LINE && !HERO) scene.background = new THREE.Color(12, 12, 12)
 
 // ------------------------------------------------------------ procedural textures (real mode)
 let seed = 7
@@ -72,58 +77,54 @@ function tex(draw, w = 512, h = 512) {
   t.anisotropy = 8
   return t
 }
+function strands(g, w, h, n, light, dark, len = 30) {
+  for (let i = 0; i < n; i++) {
+    const x = rnd() * w, y = rnd() * h, a = rnd() * Math.PI, l = 6 + rnd() * len
+    g.strokeStyle = rnd() > 0.5 ? `rgba(${light},${0.3 + rnd() * 0.4})` : `rgba(${dark},${0.2 + rnd() * 0.3})`
+    g.lineWidth = 1 + rnd(); g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke()
+  }
+}
 const T = LINE ? {} : {
-  // treated pine boards, weathered toward grey-brown, 150 mm a board across the tile
+  // the yards: trodden red-brown earth with straw scattered over it
+  earth: tex((g, w, h) => {
+    g.fillStyle = "#8a6a4c"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 14000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(170,135,100,0.25)" : "rgba(70,50,35,0.25)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 3, 1 + rnd() * 3) }
+    strands(g, w, h, 900, "214,186,120", "140,115,60", 22)
+  }),
+  // the litter in the pens: deep straw
+  straw: tex((g, w, h) => { g.fillStyle = "#b99d5c"; g.fillRect(0, 0, w, h); strands(g, w, h, 3000, "232,212,150", "120,100,50") }),
+  // the lane and the plinth's top: packed earth
+  packed: tex((g, w, h) => {
+    g.fillStyle = "#9b7d5e"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 9000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(190,160,125,0.2)" : "rgba(80,60,40,0.2)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2) }
+  }),
+  // eucalyptus poles: grey-brown bark in long streaks
+  bark: tex((g, w, h) => {
+    g.fillStyle = "#7c6650"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 500; i++) { g.fillStyle = `rgba(${rnd() > 0.5 ? "160,140,115" : "60,45,32"},${0.1 + rnd() * 0.2})`; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 3, 20 + rnd() * 120) }
+  }, 256, 512),
+  // the store's boards, weathered
   boards: tex((g, w, h) => {
-    g.fillStyle = "#9c7a55"; g.fillRect(0, 0, w, h)
-    const n = 10
-    for (let i = 0; i < n; i++) {
-      g.fillStyle = `rgba(${rnd() > 0.5 ? "200,170,125" : "80,60,40"},${0.06 + rnd() * 0.12})`
-      g.fillRect(0, (i * h) / n, w, h / n)
-      g.fillStyle = "rgba(45,30,18,0.6)"; g.fillRect(0, ((i + 1) * h) / n - 2, w, 2)
-    }
-    for (let j = 0; j < 260; j++) { g.fillStyle = `rgba(95,70,45,${0.05 + rnd() * 0.08})`; g.fillRect(rnd() * w, rnd() * h, 30 + rnd() * 160, 1 + rnd()) }
+    g.fillStyle = "#94785a"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 10; i++) { g.fillStyle = `rgba(${rnd() > 0.5 ? "190,165,125" : "70,55,40"},${0.08 + rnd() * 0.1})`; g.fillRect(0, (i * h) / 10, w, h / 10); g.fillStyle = "rgba(40,28,18,0.55)"; g.fillRect(0, ((i + 1) * h) / 10 - 2, w, 2) }
   }),
-  concrete: tex((g, w, h) => {
-    g.fillStyle = "#a7a39b"; g.fillRect(0, 0, w, h)
-    for (let i = 0; i < 9000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(255,255,255,0.08)" : "rgba(60,55,45,0.1)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2) }
-    for (let i = 0; i < 40; i++) { g.fillStyle = `rgba(90,75,50,${0.05 + rnd() * 0.08})`; g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 10 + rnd() * 40, 6 + rnd() * 20, rnd() * 3, 0, Math.PI * 2); g.fill() }
+  hay: tex((g, w, h) => { g.fillStyle = "#b9a35a"; g.fillRect(0, 0, w, h); strands(g, w, h, 2600, "230,210,140", "110,105,45") }),
+  compost: tex((g, w, h) => {
+    g.fillStyle = "#4a3626"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 9000; i++) { g.fillStyle = rnd() > 0.6 ? "rgba(120,95,55,0.35)" : "rgba(25,18,12,0.35)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 3, 1 + rnd() * 3) }
   }),
-  hay: tex((g, w, h) => {
-    g.fillStyle = "#b9a35a"; g.fillRect(0, 0, w, h)
-    for (let i = 0; i < 2600; i++) {
-      const x = rnd() * w, y = rnd() * h, a = rnd() * Math.PI, len = 8 + rnd() * 30
-      g.strokeStyle = rnd() > 0.5 ? `rgba(230,210,140,${0.3 + rnd() * 0.4})` : `rgba(110,105,45,${0.2 + rnd() * 0.3})`
-      g.lineWidth = 1 + rnd(); g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * len, y + Math.sin(a) * len); g.stroke()
-    }
-  }),
-  grass: tex((g, w, h) => {
-    g.fillStyle = "#6f9a4a"; g.fillRect(0, 0, w, h)
-    for (let i = 0; i < 26000; i++) {
-      g.fillStyle = rnd() > 0.5 ? "rgba(170,200,110,0.35)" : "rgba(40,70,30,0.35)"
-      g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
-    }
-  }),
-  iron: tex((g, w, h) => { // corrugated iron sheet: one rib's light and shade across
-    for (let x = 0; x < w; x++) {
-      const v = 0.72 + 0.2 * Math.sin((x / w) * Math.PI * 2)
-      g.fillStyle = `rgb(${Math.round(196 * v)},${Math.round(200 * v)},${Math.round(204 * v)})`
-      g.fillRect(x, 0, 1, h)
-    }
-  }, 64, 64),
-  sky: tex((g, w, h) => {
-    const gr = g.createLinearGradient(0, 0, 0, h)
-    gr.addColorStop(0, "#6f9fd0"); gr.addColorStop(0.3, "#a9c4dc"); gr.addColorStop(0.47, "#f2d3ac"); gr.addColorStop(1, "#f2d3ac")
-    g.fillStyle = gr; g.fillRect(0, 0, w, h)
-  }, 16, 512),
+  thatch: tex((g, w, h) => { g.fillStyle = "#8d7550"; g.fillRect(0, 0, w, h); for (let i = 0; i < 4200; i++) { const x = rnd() * w, y = rnd() * h; g.strokeStyle = rnd() > 0.5 ? `rgba(190,165,115,${0.3 + rnd() * 0.3})` : `rgba(70,55,35,${0.3 + rnd() * 0.3})`; g.lineWidth = 1 + rnd(); g.beginPath(); g.moveTo(x, y); g.lineTo(x + (rnd() - 0.5) * 4, y + 20 + rnd() * 30); g.stroke() } }),
+  grass: tex((g, w, h) => { g.fillStyle = "#6f9a4a"; g.fillRect(0, 0, w, h); for (let i = 0; i < 26000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(170,200,110,0.35)" : "rgba(40,70,30,0.35)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2) } }),
+  weave: tex((g, w, h) => { g.fillStyle = "#a07a48"; g.fillRect(0, 0, w, h); for (let y = 0; y < h; y += 8) for (let x = 0; x < w; x += 16) { g.fillStyle = (x / 16 + y / 8) % 2 ? "rgba(60,40,20,0.35)" : "rgba(220,190,140,0.25)"; g.fillRect(x, y, 16, 7) } }, 128, 128),
+  sky: tex((g, w, h) => { const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, "#9bb5c8"); gr.addColorStop(0.45, "#d9dde0"); gr.addColorStop(1, "#d9dde0"); g.fillStyle = gr; g.fillRect(0, 0, w, h) }, 16, 512),
 }
 // metres one tile covers [along, across]
-const TILE = { boards: [1.5, 1.5], concrete: [2, 2], hay: [0.6, 0.6], grass: [9, 9], iron: [0.076, 1] }
-const MAP = { timber: "boards", slat: "boards", deck: "boards", concrete: "concrete", hay: "hay", lawn: "grass", iron: "iron" }
+const TILE = { earth: [2.5, 2.5], straw: [1, 1], packed: [2, 2], bark: [0.4, 2], boards: [1.5, 1.5], hay: [0.6, 0.6], compost: [1, 1], thatch: [1.2, 1.2], grass: [9, 9], weave: [0.3, 0.3] }
+const MAP = { yard: "earth", litter: "straw", packed: "packed", pole: "bark", board: "boards", hay: "hay", compost: "compost", thatch: "thatch", lawn: "grass", basket: "weave" }
 
 // ------------------------------------------------------------ materials
-// thin parts get crease lines but no silhouette, so bars, rails and horns stay fine in the line drawing
-const THIN = new Set(["black", "steel", "horn", "hoof", "slat"])
+// thin parts get crease lines but no silhouette, so slats, rails and horns stay fine in the line drawing
+const THIN = new Set(["horn", "hoof", "bamboo", "rope"])
 const COATS = { brown: "#7a4a2a", black: "#2b2522", tan: "#b48654", white: "#e6dfd2", wool: "#ece5d6" }
 const MAT = {}
 function mat(name) {
@@ -137,22 +138,28 @@ function mat(name) {
     const std = (o) => new THREE.MeshStandardMaterial(o)
     if (COATS[name]) x = std({ color: COATS[name], roughness: name === "wool" ? 1 : 0.85 })
     else x = {
-      timber: () => std({ map: T.boards, roughness: 0.85 }),
-      slat: () => std({ map: T.boards, color: "#d8c4a8", roughness: 0.9 }),
-      deck: () => std({ map: T.boards, color: "#e6d6bf", roughness: 0.85 }),
-      post: () => std({ color: "#6e553b", roughness: 0.85 }),
-      concrete: () => std({ map: T.concrete, roughness: 0.95 }),
-      block: () => std({ color: "#9b958b", roughness: 0.95 }),
-      lawn: () => std({ map: T.grass, roughness: 1 }),
-      iron: () => std({ map: T.iron, color: "#b9bfc4", roughness: 0.4, metalness: 0.6, side: THREE.DoubleSide }),
-      steel: () => std({ color: "#8d9296", roughness: 0.35, metalness: 0.8 }),
-      black: () => std({ color: "#2d2e30", roughness: 0.5, metalness: 0.5 }),
-      trough: () => std({ color: "#3a4a5a", roughness: 0.45 }),
-      tank: () => std({ color: "#33503a", roughness: 0.5 }),
+      yard: () => std({ map: T.earth, roughness: 1 }),
+      litter: () => std({ map: T.straw, roughness: 1 }),
+      packed: () => std({ map: T.packed, roughness: 1 }),
+      pole: () => std({ map: T.bark, roughness: 0.9 }),
+      board: () => std({ map: T.boards, roughness: 0.85 }),
+      bamboo: () => std({ color: "#c9ae6e", roughness: 0.6 }),
+      stone: () => std({ color: "#8d877c", roughness: 0.95, flatShading: true }),
+      rope: () => std({ color: "#c2a874", roughness: 1 }),
+      trough: () => std({ map: T.boards, color: "#c8b9a5", roughness: 0.85 }),
       water: () => new THREE.MeshPhysicalMaterial({ color: "#7aa6b8", roughness: 0.05, transparent: true, opacity: 0.7 }),
+      tank: () => std({ color: "#33503a", roughness: 0.5 }),
+      block: () => std({ color: "#9b958b", roughness: 0.95 }),
       hay: () => std({ map: T.hay, roughness: 1 }),
       sack: () => std({ color: "#e8e1cf", roughness: 0.95 }),
       mineral: () => std({ color: "#b56a4a", roughness: 0.7 }),
+      compost: () => std({ map: T.compost, roughness: 1 }),
+      basket: () => std({ map: T.weave, roughness: 0.95 }),
+      fodder: () => std({ color: "#5d7d3a", roughness: 0.9 }),
+      trunk: () => std({ color: "#6d5a48", roughness: 0.9 }),
+      leaf: () => std({ color: "#4f6f36", roughness: 0.9, flatShading: true }),
+      thatch: () => std({ map: T.thatch, roughness: 1, side: THREE.DoubleSide }),
+      lawn: () => std({ map: T.grass, roughness: 1 }),
       face: () => std({ color: "#211c19", roughness: 0.85 }),
       horn: () => std({ color: "#7d6e5e", roughness: 0.6 }),
       hoof: () => std({ color: "#3a332d", roughness: 0.6 }),
@@ -180,11 +187,12 @@ function worldUV(geo, [tu, tv]) { // each face takes the texture from its own pl
 function add(geo, name, opts = {}) {
   if (!LINE && MAP[name] && !opts.keepUV) worldUV(geo, TILE[MAP[name]])
   const mesh = new THREE.Mesh(geo, mat(name))
-  mesh.castShadow = !LINE && !["glass", "fridgeglass", "lawn", "sky"].includes(name)
+  mesh.castShadow = !LINE && !["lawn", "sky", "yard", "packed"].includes(name)
   mesh.receiveShadow = !LINE && name !== "sky"
   if (opts.pos) mesh.position.set(...opts.pos)
   if (opts.rot) mesh.rotation.set(...opts.rot)
   if (opts.noEdges) mesh.userData.noEdges = true
+  if (opts.noFrame) mesh.userData.noFrame = true
   PARENT.add(mesh)
   meshes.push(mesh)
   return mesh
@@ -205,145 +213,222 @@ function pipe(a, b, r, name, seg = 6) {
   mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.sub(A).normalize())
   return mesh
 }
+// a round pole standing from y0 to y1, its top a little uneven as cut by hand
+const pole = (x, z, r, y0, y1, seg = 7) => cyl(x, z, r, y0, y1 - y0, "pole", seg, r * 0.92)
 
-
-// ------------------------------------------------------------ ground, manure floor, posts
-const { house: K, pens: P, fittings: FT, ramp: R, tank: TK, animals: AN } = C
-const L = K.l / 2, W = K.w / 2, t = K.wall
-const FY = W - K.passage.d // the pens' front fence
-const FL = K.floor + 0.05 // the top of the slats
+// ------------------------------------------------------------ the plan
+const { shelter: S, pens: P, platform: PF, fittings: FT, yards: Y, palisade: PA, stones: ST, tree: TR, tank: TK,
+  baskets: BK, compost: CO, animals: AN } = C
+const L = S.l / 2, W = S.d / 2, WALL = S.wall
+const FL = S.plinth.h // the plinth's top, the pens' floor
+const LIT = FL + 0.05 // the top of the straw litter
+const EAVE = S.roof.eaves
 const STORE = P.list.find((p) => p.id === "store")
 const PENS = P.list.filter((p) => p.id !== "store")
-if (!LINE) {
+const [LANE0, LANE1] = Y.lane
+const RAILS = [0.35, 0.78, 1.18]
+
+// ------------------------------------------------------------ the ground: the yards' earth and straw, the lane, the plinth
+blk(Y.goats.x0, W + S.plinth.edge, LANE0, Y.y1, -0.02, 0.02, "yard")
+blk(LANE1, W + S.plinth.edge, Y.sheep.x1, Y.y1, -0.02, 0.02, "yard")
+blk(Y.goats.x0, W, -L - S.plinth.edge, W + S.plinth.edge, -0.02, 0.02, "yard")
+blk(L + S.plinth.edge, W, Y.sheep.x1, W + S.plinth.edge, -0.02, 0.02, "yard")
+blk(LANE0, W + S.plinth.edge, LANE1, Y.y1 + 0.6, -0.02, 0.015, "packed") // the lane, on out of the gate toward the paddock
+// the path behind the store to the tank, the baskets and the compost bays
+blk(L + S.plinth.edge, -W - 0.4, CO.x0 + CO.bay + 0.3, W, -0.02, 0.015, "packed")
+if (HERO) {
   T.grass.repeat.set(10, 10)
-  add(new THREE.CircleGeometry(40, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], keepUV: true })
+  add(new THREE.CircleGeometry(60, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], keepUV: true, pos: [0, -0.025, 2] })
 }
-blk(-L - 0.1, -W - 0.1, L + 0.1, FY + 0.1, 0, 0.08, "concrete") // the manure floor, swept to the front
-for (const x of K.posts.x) for (const z of K.posts.y) {
-  const top = z === K.posts.y.at(-1) ? (HERO ? K.floor + K.roof.front : FL + 0.9) : z === K.posts.y[0] ? K.floor + K.back.h : K.floor - 0.2
-  blk(x - 0.14, z - 0.14, x + 0.14, z + 0.14, 0, 0.12, "concrete") // its pad
-  blk(x - K.posts.s / 2, z - K.posts.s / 2, x + K.posts.s / 2, z + K.posts.s / 2, 0.12, top, "post")
-}
-// bearers along each row of posts, joists across them
-for (const z of K.posts.y) blk(-L, z - 0.05, L, z + 0.05, K.floor - 0.2, K.floor - 0.05, "post")
-for (let x = -L + 0.05; x <= L; x += 0.6) blk(x - 0.025, -W, x + 0.025, W, K.floor - 0.05, K.floor, "post", { noEdges: LINE })
-
-// ------------------------------------------------------------ the floor: slats over the pens, boards in the store and the passage
+// the plinth: rammed earth edged in fieldstones, the straw litter on top in the pens
 {
-  const pitch = LINE ? 0.13 : K.slats.w + K.slats.gap
-  for (let x = -L + t + 0.01; x + K.slats.w <= STORE.x0; x += pitch)
-    blk(x, -W + t, x + K.slats.w, FY, K.floor, FL, "slat")
-  blk(STORE.x0, -W + t, L - t, FY, K.floor, FL, "deck")
-  blk(-L, FY, L, W, K.floor, FL, "deck")
+  const e = S.plinth.edge
+  blk(-L - e + 0.12, -W - e + 0.12, L + e - 0.12, W + e - 0.12, 0, FL, "packed")
+  seed = 11
+  const ring = (x0, z0, x1, z1) => {
+    const n = Math.round(Math.hypot(x1 - x0, z1 - z0) / 0.3)
+    for (let k = 0; k < n; k++) {
+      const x = x0 + ((x1 - x0) * (k + 0.5)) / n, z = z0 + ((z1 - z0) * (k + 0.5)) / n
+      const s = add(new THREE.DodecahedronGeometry(1, 0), "stone", { pos: [x, FL / 2, z], rot: [rnd() * 3, rnd() * 3, rnd() * 3] })
+      s.scale.set(0.16 + rnd() * 0.04, FL / 2 + 0.01, 0.14 + rnd() * 0.04)
+    }
+  }
+  const [a, b, c, d] = [-L - e + 0.13, L + e - 0.13, -W - e + 0.13, W + e - 0.13]
+  ring(a, d, b, d); ring(a, c, a, d); ring(b, c, b, d)
+  for (const p of PENS) blk(p.x0 === -L ? -L + WALL : p.x0 + 0.02, -W + WALL, p.x1 - 0.02, W, FL, LIT, "litter")
 }
 
-// ------------------------------------------------------------ walls: the back and the two ends solid, the store walled in
-const WH = FL + K.back.h
-blk(-L, -W, L, -W + t, FL, WH, "timber")
-blk(-L, -W, -L + t, FY, FL, WH, "timber")
-blk(L - t, -W, L, FY, FL, WH, "timber")
-blk(STORE.x0 - t / 2, -W + t, STORE.x0 + t / 2, FY, FL, WH, "timber")
+// ------------------------------------------------------------ the shelter: upright split poles at the back and the ends to the eaves
 {
-  // the store's front wall, its door shut on a hasp
-  const d0 = STORE.x1 - 0.85, d1 = STORE.x1 - 0.15
-  blk(STORE.x0, FY - t, d0, FY, FL, WH, "timber")
-  blk(d1, FY - t, L, FY, FL, WH, "timber")
-  blk(d0, FY - t, d1, FY, FL + 1.9, WH, "timber")
-  blk(d0 + 0.01, FY - t + 0.01, d1 - 0.01, FY + 0.005, FL + 0.01, FL + 1.89, "timber")
-  blk(d0 + 0.06, FY + 0.005, d0 + 0.18, FY + 0.02, FL + 1.0, FL + 1.06, "black")
-  blk(d0 + 0.03, FY + 0.01, d0 + 0.07, FY + 0.04, FL + 0.96, FL + 1.04, "steel")
-}
-// partitions between the pens, solid boards to 1.2 m
-for (const p of PENS.slice(1)) blk(p.x0 - t / 2, -W + t, p.x0 + t / 2, FY, FL, FL + P.partition, "timber")
-
-// ------------------------------------------------------------ the front fence on the passage: boards, then bars, a gate into each pen
-function fence(x0, x1) {
-  if (x1 - x0 < 0.05) return
-  blk(x0, FY - 0.03, x1, FY, FL, FL + K.front.solid, "timber")
-  blk(x0, FY - 0.04, x1, FY + 0.01, FL + K.front.h - 0.06, FL + K.front.h, "timber")
-  for (let x = x0 + 0.06; x < x1 - 0.03; x += LINE ? 0.15 : 0.1) cyl(x, FY - 0.015, 0.009, FL + K.front.solid, K.front.h - K.front.solid - 0.06, "black", 6)
-}
-for (const p of PENS) {
-  const g1 = p.x1 - 0.12, w = Math.min(P.gate, p.x1 - p.x0 - 0.24), a = g1 - w
-  fence(p.x0, a); fence(g1, p.x1)
-  // the gate, shut: a steel frame with bars, hinged at g1
-  blk(a + 0.02, FY - 0.01, g1, FY + 0.02, FL + 0.08, FL + 0.12, "black")
-  blk(a + 0.02, FY - 0.01, g1, FY + 0.02, FL + K.front.h - 0.08, FL + K.front.h - 0.04, "black")
-  for (const x of [a + 0.03, g1 - 0.01]) blk(x - 0.015, FY - 0.01, x + 0.015, FY + 0.02, FL + 0.08, FL + K.front.h - 0.04, "black")
-  for (let x = a + 0.12; x < g1 - 0.06; x += LINE ? 0.15 : 0.1) cyl(x, FY + 0.005, 0.008, FL + 0.12, K.front.h - 0.24, "black", 6)
+  const r = WALL / 2
+  for (let x = -L + r; x <= L - r + 1e-6; x += 2 * r * 0.98) pole(x, -W + r, r, FL, EAVE + (rnd() - 0.5) * 0.06)
+  for (let z = -W + 3 * r; z <= W - r + 1e-6; z += 2 * r * 0.98) pole(-L + r, z, r, FL, EAVE + (rnd() - 0.5) * 0.06)
+  // the east end: poles beside the store's door, which opens onto the path behind
+  const door = 0.7
+  for (let z = -W + 3 * r; z <= W - r + 1e-6; z += 2 * r * 0.98) if (z < -0.02 || z > door + 0.02) pole(L - r, z, r, FL, EAVE + (rnd() - 0.5) * 0.06)
+  // the posts along the open front carry the eaves beam; the wall plates along the back and the ends
+  for (const x of [-L + r, PENS[1].x0, PENS[2].x0, STORE.x0, L - r]) pole(x, W - r, 0.07, FL, EAVE + 0.15, 9)
+  pipe([-L, EAVE + 0.1, W - r], [L, EAVE + 0.1, W - r], 0.08, "pole", 9)
+  pipe([-L, EAVE + 0.04, -W + r], [L, EAVE + 0.04, -W + r], 0.07, "pole", 9)
+  for (const x of [-L + r, L - r]) pipe([x, EAVE + 0.04, -W], [x, EAVE + 0.04, W], 0.07, "pole", 9)
+  // the store's boarded walls: its west wall, its front onto the sheep yard, its door shut on a hasp
+  blk(STORE.x0 - 0.03, -W + WALL, STORE.x0 + 0.03, W, FL, EAVE, "board")
+  blk(STORE.x0, W - 0.06, L - WALL, W, FL, EAVE, "board")
+  blk(L - 0.04, 0, L + 0.01, door, FL, FL + 1.9, "board")
+  blk(L + 0.01, 0.06, L + 0.03, 0.18, FL + 1.0, FL + 1.06, "pole")
 }
 
-// ------------------------------------------------------------ fittings, filled from the passage: hay rack, trough, mineral box
+// ------------------------------------------------------------ the pens: pole hurdles between them, a gate onto each yard
+function rails(x0, z0, x1, z1, y0, heights, r = 0.035) {
+  for (const h of heights) pipe([x0, y0 + h, z0], [x1, y0 + h, z1], r, "pole", 7)
+}
+function gate(x0, z0, x1, z1, y0, h) { // shut: a frame of thin poles with a diagonal brace
+  pole(x0, z0, 0.03, y0, y0 + h); pole(x1, z1, 0.03, y0, y0 + h)
+  rails(x0, z0, x1, z1, y0, [0.12, h / 2, h - 0.04], 0.028)
+  pipe([x0, y0 + 0.12, z0], [x1, y0 + h - 0.04, z1], 0.025, "pole", 6)
+}
+for (const p of PENS.slice(1)) { // the hurdles between the pens
+  for (const z of [-W + WALL, 0, W - 0.04]) pole(p.x0, z, 0.045, FL, FL + 1.25)
+  rails(p.x0, -W + WALL, p.x0, W, FL, RAILS)
+}
+for (const [i, p] of PENS.entries()) { // each pen's front, a gate at its east end
+  const a = p.x1 - 0.1 - P.gate, x0 = i ? p.x0 : -L + WALL
+  if (a - x0 > 0.1) { pole(x0 + 0.04, W - 0.04, 0.045, FL, FL + 1.25); rails(x0, W - 0.04, a, W - 0.04, FL, RAILS) }
+  pole(a, W - 0.04, 0.045, FL, FL + 1.25)
+  gate(a + 0.04, W - 0.04, p.x1 - 0.14, W - 0.04, FL + 0.04, 1.1)
+}
+
+// ------------------------------------------------------------ in each pen: the sleeping platform, the hay rack, the mineral box
 for (const p of PENS) {
-  const r0 = p.x0 + 0.15, r1 = r0 + p.rack, z0 = FY - FT.rack.d, y0 = FL + FT.rack.y0, y1 = y0 + FT.rack.h
-  // the rack: a slatted V of steel bars over a timber tray, full of hay
-  blk(r0, z0, r1, FY - 0.03, y0 - 0.06, y0, "timber")
-  for (const x of [r0, r1 - 0.03]) blk(x, z0, x + 0.03, FY - 0.03, y0 - 0.06, y1, "timber")
-  blk(r0, z0 - 0.01, r1, z0 + 0.02, y1 - 0.03, y1, "black")
-  for (let x = r0 + 0.08; x < r1 - 0.05; x += LINE ? 0.15 : 0.1) pipe([x, y0, FY - 0.08], [x, y1 - 0.02, z0], 0.007, "black", 5)
-  if (!LINE) soft(r0 + 0.04, z0 + 0.05, r1 - 0.04, FY - 0.05, y0, y1 - 0.12, 0.08, "hay")
-  if (p.trough) {
-    // the float trough on a stand, then the mineral box beside it
-    const t0 = r1 + 0.1, t1 = t0 + p.trough, tz = FY - FT.trough.d, ty = FL + 0.3
-    for (const x of [t0 + 0.05, t1 - 0.05]) blk(x - 0.02, tz + 0.05, x + 0.02, FY - 0.08, FL, ty, "black")
-    soft(t0, tz, t1, FY - 0.03, ty, ty + FT.trough.h, 0.03, "trough")
-    blk(t0 + 0.03, tz + 0.03, t1 - 0.03, FY - 0.06, ty + FT.trough.h - 0.04, ty + FT.trough.h - 0.02, "water", { noEdges: true })
-    blk(t1 + 0.08, FY - FT.mineral.d, t1 + 0.08 + FT.mineral.w, FY - 0.03, FL + 0.55, FL + 0.75, "timber")
-    if (!LINE) blk(t1 + 0.1, FY - FT.mineral.d + 0.02, t1 + 0.06 + FT.mineral.w, FY - 0.05, FL + 0.72, FL + 0.76, "mineral")
+  const px0 = (p.x0 === -L ? p.x0 + WALL : p.x0 + 0.04) + 0.03, px1 = p.x1 - 0.07
+  const z0 = -W + WALL + 0.02, z1 = -W + WALL + PF.d, top = LIT + PF.h
+  for (const x of [px0 + 0.04, px1 - 0.04]) for (const z of [z0 + 0.04, z1 - 0.04]) pole(x, z, 0.035, LIT - 0.02, top - 0.03)
+  for (const z of [z0 + 0.05, z1 - 0.05]) pipe([px0, top - 0.05, z], [px1, top - 0.05, z], 0.035, "pole", 7)
+  for (let x = px0 + 0.03; x < px1 - 0.02; x += LINE ? 0.11 : 0.065) pipe([x, top - 0.01, z0], [x, top - 0.01, z1], 0.025, "bamboo", 6)
+  // the rack on the west side, off the floor: a pole frame, slanted bars, hay
+  const rx0 = px0, rx1 = px0 + FT.rack.d, rz0 = z1 + 0.15, rz1 = rz0 + p.rack, y0 = LIT + FT.rack.y0, y1 = y0 + FT.rack.h
+  for (const z of [rz0, rz1]) pole(rx0 + 0.04, z, 0.035, LIT, y1)
+  pipe([rx0 + 0.04, y1, rz0], [rx0 + 0.04, y1, rz1], 0.03, "pole", 7)
+  blk(rx0, rz0, rx1, rz1, y0 - 0.05, y0, "board")
+  for (let z = rz0 + 0.08; z < rz1 - 0.04; z += LINE ? 0.15 : 0.1) pipe([rx1, y1 - 0.02, z], [rx0 + 0.06, y0, z], 0.012, "pole", 5)
+  if (!LINE) soft(rx0 + 0.06, rz0 + 0.04, rx1 - 0.02, rz1 - 0.04, y0, y1 - 0.1, 0.08, "hay")
+  if (p.head) { // the mineral box on the east hurdle, for this species alone
+    blk(px1 - FT.mineral.d, rz0, px1, rz0 + FT.mineral.w, LIT + 0.5, LIT + 0.7, "board")
+    if (!LINE) blk(px1 - FT.mineral.d + 0.02, rz0 + 0.02, px1 - 0.02, rz0 + FT.mineral.w - 0.02, LIT + 0.68, LIT + 0.71, "mineral")
   }
 }
 
-// ------------------------------------------------------------ the feed store: a pallet of sacks, a shelf with buckets
+// ------------------------------------------------------------ the feed store: sacks on a pallet, a shelf
 {
-  const [x0, x1] = [STORE.x0 + 0.12, STORE.x1 - 0.12]
-  blk(x0, -0.6, x1, 0.6, FL, FL + 0.12, "timber")
-  for (const [z, k] of [[-0.42, 0], [0, 0], [0.42, 0], [-0.21, 1], [0.21, 1]]) soft(x0 + 0.05, z - 0.19, x1 - 0.05, z + 0.19, FL + 0.12 + k * 0.2, FL + 0.32 + k * 0.2, 0.06, "sack")
-  blk(STORE.x0 + 0.1, -W + t, STORE.x1 - 0.1, -W + t + 0.35, FL + 1.3, FL + 1.33, "timber")
-  for (const x of [STORE.x0 + 0.3, STORE.x0 + 0.65]) cyl(x, -W + t + 0.18, 0.12, FL + 1.33, 0.26, "trough", 16, 0.14)
+  const [x0, x1] = [STORE.x0 + 0.12, STORE.x1 - 0.18]
+  blk(x0, -1.2, x1, 0.2, FL, FL + 0.12, "board")
+  for (const [z, k] of [[-0.95, 0], [-0.5, 0], [-0.05, 0], [-0.72, 1], [-0.27, 1]]) soft(x0 + 0.05, z - 0.19, x1 - 0.05, z + 0.19, FL + 0.12 + k * 0.2, FL + 0.32 + k * 0.2, 0.06, "sack")
+  blk(STORE.x0 + 0.1, -W + WALL, L - WALL, -W + WALL + 0.35, FL + 1.3, FL + 1.33, "board")
 }
 
-// ------------------------------------------------------------ the passage's rail, the ramp, the tank
+// ------------------------------------------------------------ the yards: posts and three lashed rails, the lane, gates, troughs
+function fence(x0, z0, x1, z1, gaps = []) {
+  const len = Math.hypot(x1 - x0, z1 - z0), n = Math.max(1, Math.ceil(len / Y.post))
+  for (let k = 0; k <= n; k++) {
+    const x = x0 + ((x1 - x0) * k) / n, z = z0 + ((z1 - z0) * k) / n
+    pole(x, z, 0.06, 0, Y.h + 0.12 + (rnd() - 0.5) * 0.06, 8)
+    if (!LINE) for (const h of RAILS) cyl(x, z, 0.068, h - 0.05, 0.1, "rope", 8) // the sisal lashing at each rail
+  }
+  rails(x0, z0, x1, z1, 0, RAILS, 0.04)
+}
+const SW = W + S.plinth.edge
+fence(Y.goats.x0, W, -L - S.plinth.edge, W)
+fence(Y.goats.x0, W, Y.goats.x0, Y.y1)
+fence(Y.goats.x0, Y.y1, LANE0, Y.y1)
+fence(L + S.plinth.edge, W, Y.sheep.x1, W)
+fence(Y.sheep.x1, W, Y.sheep.x1, Y.y1)
+fence(Y.sheep.x1, Y.y1, LANE1, Y.y1)
+for (const [i, x] of [LANE0, LANE1].entries()) {
+  fence(x, SW, x, 4)
+  fence(x, 4 + Y.gate, x, Y.y1)
+  gate(x, 4.04, x, 4 + Y.gate - 0.04, 0.02, 1.1)
+  // the lane's two gate leaves to the paddock, shut
+  gate(x + (i ? -0.04 : 0.04), Y.y1, (LANE0 + LANE1) / 2 + (i ? 0.02 : -0.02), Y.y1, 0.02, 1.1)
+}
+for (const p of PENS.filter((p) => p.trough)) { // a float trough in each yard, in the shade of the eaves
+  const t0 = (p.x0 + p.x1) / 2 - p.trough / 2 - 0.4, z0 = W + 0.4, z1 = z0 + FT.trough.d, h = FT.trough.h
+  for (const x of [t0 + 0.1, t0 + p.trough - 0.1]) blk(x - 0.03, z0 + 0.02, x + 0.03, z1 - 0.02, 0, h - 0.18, "pole")
+  blk(t0, z0, t0 + p.trough, z1, h - 0.2, h, "trough")
+  blk(t0 + 0.04, z0 + 0.04, t0 + p.trough - 0.04, z1 - 0.04, h - 0.06, h - 0.03, "water", { noEdges: true })
+}
+
+// ------------------------------------------------------------ the palisade windbreak behind the shelter
+for (let x = PA.x0; x <= PA.x1 + 1e-6; x += 0.14) pole(x, PA.y, 0.06, 0, PA.h + (rnd() - 0.5) * 0.12, 7)
+rails(PA.x0, PA.y - 0.08, PA.x1, PA.y - 0.08, 0, [0.4, PA.h - 0.35], 0.04)
+
+// ------------------------------------------------------------ stones to climb, the shade tree in its guard
+const stoneTop = []
+seed = 23
+for (const s of ST.list) {
+  const h = s.r * 0.85
+  const m = add(new THREE.DodecahedronGeometry(1, 0), "stone", { pos: [s.x, h * 0.45, s.y], rot: [rnd(), rnd() * 3, rnd()] })
+  m.scale.set(s.r, h, s.r * 0.78)
+  stoneTop.push(h * 0.45 + h * 0.8)
+}
 {
-  for (const x of [-L + K.passage.d, -L + 2.2, 0, 1.75]) blk(x - 0.04, W - 0.08, x + 0.04, W, FL, FL + 0.9, "post")
-  for (const y of [0.45, 0.9]) blk(-L + K.passage.d - 0.04, W - 0.07, L, W - 0.02, FL + y - 0.05, FL + y, "timber")
-  blk(L - 0.07, FY, L - 0.02, W, FL + 0.85, FL + 0.9, "timber") // across the passage's east end
-  blk(L - 0.08, FY, L, FY + 0.08, FL, FL + 0.9, "post")
-  // the ramp: cleated boards from the passage down to the paddock, on two stringers
-  const a = Math.atan2(K.floor, R.l), len = Math.hypot(K.floor, R.l), zc = (FY + W) / 2
-  const g = new THREE.Group()
-  g.position.set(-L - R.l / 2, K.floor / 2 + 0.02, zc); g.rotation.z = a
-  scene.add(g); PARENT = g
-  blk(-len / 2, -(W - FY) / 2, len / 2, (W - FY) / 2, -0.02, 0.02, "deck")
-  for (const z of [-(W - FY) / 2 + 0.04, (W - FY) / 2 - 0.04]) blk(-len / 2, z - 0.025, len / 2, z + 0.025, -0.15, -0.02, "post")
-  for (let s = -len / 2 + R.cleat; s < len / 2 - 0.05; s += R.cleat) blk(s - 0.015, -(W - FY) / 2 + 0.04, s + 0.015, (W - FY) / 2 - 0.04, 0.02, 0.045, "timber")
-  PARENT = scene
-  // the tank on its block stand, with a pipe from its foot along the back wall to the troughs
+  cyl(TR.x, TR.y, 0.14, 0, HERO ? 3.2 : 1.6, "trunk", 12, 0.1)
+  for (let k = 0; k < 7; k++) { const a = (k / 7) * Math.PI * 2; pole(TR.x + Math.cos(a) * TR.guard, TR.y + Math.sin(a) * TR.guard, 0.035, 0, 1.3) }
+  for (const h of [0.5, 1.15]) for (let k = 0; k < 7; k++) {
+    const a = (k / 7) * Math.PI * 2, b = ((k + 1) / 7) * Math.PI * 2
+    pipe([TR.x + Math.cos(a) * TR.guard, h, TR.y + Math.sin(a) * TR.guard], [TR.x + Math.cos(b) * TR.guard, h, TR.y + Math.sin(b) * TR.guard], 0.025, "pole", 6)
+  }
+  if (HERO) { // the crown, only at eye level
+    seed = 31
+    for (let k = 0; k < 9; k++) {
+      const m = add(new THREE.IcosahedronGeometry(1, 1), "leaf", { pos: [TR.x + (rnd() - 0.5) * 2.2, 3.4 + rnd() * 1.4, TR.y + (rnd() - 0.5) * 2.2] })
+      m.scale.setScalar(0.8 + rnd() * 0.6)
+    }
+  }
+}
+
+// ------------------------------------------------------------ behind the store: the tank, the fodder baskets, the compost bays
+{
   const sh = TK.stand
   blk(TK.x - TK.r - 0.05, TK.y - TK.r - 0.05, TK.x + TK.r + 0.05, TK.y + TK.r + 0.05, 0, sh, "block")
   cyl(TK.x, TK.y, TK.r, sh, TK.h, "tank", 32, TK.r * 0.96)
   cyl(TK.x, TK.y, 0.16, sh + TK.h, 0.06, "tank", 16)
-  pipe([TK.x - TK.r, sh + 0.1, TK.y], [L + 0.02, sh + 0.1, TK.y], 0.016, "steel")
+  for (const b of BK.list) {
+    cyl(b.x, b.y, b.r * 0.85, 0, 0.5, "basket", 24, b.r)
+    if (!LINE) soft(b.x - b.r * 0.7, b.y - b.r * 0.7, b.x + b.r * 0.7, b.y + b.r * 0.7, 0.36, 0.58, 0.08, "fodder")
+  }
+  const b = CO.bay
+  for (let k = 0; k < CO.n; k++) {
+    const z0 = CO.y0 + k * b, z1 = z0 + b
+    for (const [x, z] of [[CO.x0, z0], [CO.x0 + b, z0], [CO.x0 + b, z1], [CO.x0, z1]]) pole(x, z, 0.05, 0, 1.05)
+    rails(CO.x0, z0, CO.x0 + b, z0, 0, [0.25, 0.55, 0.85], 0.035) // the dividers, open to the path on the west
+    rails(CO.x0 + b, z0, CO.x0 + b, z1, 0, [0.25, 0.55, 0.85], 0.035)
+    if (k === CO.n - 1) rails(CO.x0, z1, CO.x0 + b, z1, 0, [0.25, 0.55, 0.85], 0.035)
+    // fresh litter, a turning heap, finished compost
+    const heap = add(new THREE.SphereGeometry(1, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), k ? "compost" : "litter", { pos: [CO.x0 + b / 2, 0, (z0 + z1) / 2] })
+    heap.scale.set(b * 0.42, [0.6, 0.5, 0.35][k], b * 0.42)
+  }
 }
 
-// ------------------------------------------------------------ the roof, in the hero only: iron sheets falling to the back
+// ------------------------------------------------------------ the roof, at eye level only: grass thatch on a pole gable
 if (HERO) {
-  const over = K.roof.over, hF = K.floor + K.roof.front, hB = K.floor + K.back.h
-  blk(-L - 0.05, W - 0.06, L + 0.05, W + 0.04, hF - 0.15, hF, "post") // the front beam on the tall posts
-  const a = Math.atan2(hF - hB, K.w), len = Math.hypot(hF - hB, K.w) + 2 * over
-  const r = add(new THREE.BoxGeometry(K.l + 2 * over, 0.02, len), "iron", { pos: [0, (hF + hB) / 2 + 0.06, 0] })
-  r.rotation.x = -a
-  // the gutter along the back, a downpipe to the tank
-  pipe([-L - over, hB - 0.05, -W - over * 0.95], [L + over, hB - 0.05, -W - over * 0.95], 0.05, "steel", 10)
-  pipe([TK.x, hB - 0.05, -W - over * 0.95], [TK.x, TK.stand + TK.h + 0.05, TK.y], 0.03, "steel", 8)
+  const o = S.roof.over, rise = S.roof.ridge - EAVE, half = W + o
+  const len = Math.hypot(half, rise), a = Math.atan2(rise, half)
+  for (const s of [1, -1]) {
+    const r = add(new THREE.BoxGeometry(S.l + 2 * o, 0.25, len), "thatch", { pos: [0, EAVE + rise / 2 + 0.1, (s * half) / 2] })
+    r.rotation.x = s * a
+  }
+  for (const s of [1, -1]) pole(s * (L - WALL / 2), 0, 0.07, EAVE, S.roof.ridge)
 }
 
-// ------------------------------------------------------------ the herd: 6 goats and 4 sheep, standing in their pens
+// ------------------------------------------------------------ the herd: 6 goats and 4 sheep
 function ellipsoid(x, y, z, rx, ry, rz, name, rotZ = 0) {
   const m = add(new THREE.SphereGeometry(1, 22, 14), name, { pos: [x, y, z], rot: [0, 0, rotZ] })
   m.scale.set(rx, ry, rz)
   return m
 }
-function animal(a, sheep, base = FL) {
+function animal(a, sheep) {
+  const inside = Math.abs(a.x) < L && Math.abs(a.y) < W
+  const base = a.on !== undefined ? stoneTop[a.on] : inside ? LIT : 0.02
   const g = new THREE.Group()
   g.position.set(a.x, base, a.y); g.rotation.y = THREE.MathUtils.degToRad(-a.h)
   scene.add(g); PARENT = g
@@ -368,46 +453,44 @@ function animal(a, sheep, base = FL) {
   else pipe([-bx * 0.95, cy + 0.06, 0], [-bx * 1.1, cy + 0.15, 0], 0.016, coat, 6)
   PARENT = scene
 }
-// in the hero it is daytime and the herd is out grazing in front of the house, goats and sheep in their own groups
-const OUT = { goats: [[-4.6, 3.2, 200], [-3.4, 4.1, 150], [-2.2, 3.4, 20], [-4.0, 5.3, 300], [-1.4, 4.8, 170], [-2.8, 6.0, 60]],
-  sheep: [[0.6, 4.2, 190], [1.6, 3.6, 160], [1.2, 5.2, 210], [2.4, 4.7, 140]] }
-for (const [k, a] of AN.goats.entries()) animal(HERO ? { ...a, x: OUT.goats[k][0], y: OUT.goats[k][1], h: OUT.goats[k][2] } : a, false, HERO ? 0 : FL)
-for (const [k, a] of AN.sheep.entries()) animal(HERO ? { ...a, x: OUT.sheep[k][0], y: OUT.sheep[k][1], h: OUT.sheep[k][2] } : a, true, HERO ? 0 : FL)
+for (const a of AN.goats) animal(a, false)
+for (const a of AN.sheep) animal(a, true)
 
 // ------------------------------------------------------------ camera
-const camera = new THREE.PerspectiveCamera(HERO ? 38 : 22, FW / FH, 0.3, 300)
+const camera = new THREE.PerspectiveCamera(HERO ? 40 : 20, FW / FH, 0.3, 300)
 if (HERO) {
-  // eye level in the paddock, front-left, the house right of centre and open grass bottom-left for the words
-  camera.position.set(-8.0, 1.4, 11.5)
-  camera.lookAt(new THREE.Vector3(-2.0, 1.2, 1.5))
+  // eye level in the paddock, front-left, the shelter and yards right of centre, open ground bottom-left for the words
+  camera.position.set(-9.5, 1.5, 15.5)
+  camera.lookAt(new THREE.Vector3(-0.5, 1.4, 2.5))
   add(new THREE.SphereGeometry(150, 32, 16), "sky", { noEdges: true, keepUV: true })
-  scene.fog = new THREE.Fog(0xe9dccb, 30, 140)
+  scene.fog = new THREE.Fog(0xdfe2e2, 30, 140)
 } else {
-  // from the paddock, raised so the pens show over the front fence
-  const target = new THREE.Vector3(-0.6, 1.3, 0.2)
-  const [el, dist] = [THREE.MathUtils.degToRad(44), 34]
-  camera.position.set(-dist * Math.cos(el) * Math.sin(0.28), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(0.28))
+  // straight on from the paddock, as the studio's front view, but from far off with a long lens and looking down,
+  // so the pens show over the fences and the yards keep their proportions; the view offset frames the model
+  const target = new THREE.Vector3(-0.4, 0.6, 2.6)
+  const [el, dist] = [THREE.MathUtils.degToRad(38), 48]
+  camera.position.set(target.x, target.y + dist * Math.sin(el), target.z + dist * Math.cos(el))
   camera.lookAt(target)
 }
 camera.updateMatrixWorld(); camera.updateProjectionMatrix()
 scene.updateMatrixWorld(true)
 if (!HERO) { // fit the frame to the model
   const bb = new THREE.Box3()
-  for (const o of meshes) if (!o.geometry.type.startsWith("Circle")) bb.expandByObject(o)
+  for (const o of meshes) if (!o.userData.noFrame) bb.expandByObject(o)
   let px = [Infinity, Infinity, -Infinity, -Infinity]
   for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
     const p = new THREE.Vector3(xx, yy, zz).project(camera)
     const X = ((p.x + 1) / 2) * FW, Yp = ((1 - p.y) / 2) * FH
     px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
   }
-  let w = (px[2] - px[0]) * 1.06, h = (px[3] - px[1]) * 1.1
+  let w = (px[2] - px[0]) * 1.04, h = (px[3] - px[1]) * 1.06
   if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
   camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
 }
 
 // ------------------------------------------------------------ render
 if (LINE) {
-  const lineMat = new LineMaterial({ color: INK, linewidth: 1.3, side: THREE.DoubleSide })
+  const lineMat = new LineMaterial({ color: INK, linewidth: 1.2, side: THREE.DoubleSide })
   lineMat.resolution.set(FW, FH)
   lineMat.userData.outlineParameters = { visible: false }
   for (const o of meshes) {
@@ -422,16 +505,22 @@ if (LINE) {
 } else {
   const pmrem = new THREE.PMREMGenerator(renderer)
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
-  scene.environmentIntensity = 0.4
-  scene.add(new THREE.HemisphereLight(0xeef3ff, 0x8a7a5a, HERO ? 0.6 : 0.9))
-  // low sun from the front left: late afternoon over the paddock
-  const sun = new THREE.DirectionalLight(HERO ? 0xffd9a8 : 0xfff0d8, HERO ? 3.0 : 2.6)
-  sun.position.set(-10, HERO ? 5 : 9, 9)
+  scene.environmentIntensity = 0.45
+  scene.add(new THREE.HemisphereLight(0xeef3ff, 0x8a7a5a, HERO ? 0.7 : 1.0))
+  // soft daylight from the front left, as the studio's; at eye level a lower, warmer sun
+  const sun = new THREE.DirectionalLight(HERO ? 0xffe2bd : 0xfff3e0, HERO ? 2.6 : 2.4)
+  sun.position.set(-8, HERO ? 7 : 12, 10)
+  sun.target.position.set(-0.5, 0, 2.5)
   sun.castShadow = true
   sun.shadow.mapSize.set(4096, 4096)
-  Object.assign(sun.shadow.camera, { left: -7, right: 7, top: 7, bottom: -7, near: 1, far: 50 })
+  Object.assign(sun.shadow.camera, { left: -10, right: 10, top: 10, bottom: -10, near: 1, far: 60 })
   sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
-  scene.add(sun)
+  scene.add(sun, sun.target)
+  if (!HERO) { // the white page around the yard takes only the shadows
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.14 }))
+    ground.rotation.x = -Math.PI / 2; ground.position.y = -0.021; ground.receiveShadow = true
+    scene.add(ground)
+  }
   const composer = new EffectComposer(renderer)
   composer.setSize(FW, FH)
   composer.addPass(new RenderPass(scene, camera))

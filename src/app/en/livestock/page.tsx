@@ -18,12 +18,12 @@ const D = "/designs/livestock"
 export default function LivestockPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster. For now it is the design model rendered
-          from eye level in the paddock (scripts/site/render/livestock.html?mode=real&hero=1, 2400 x 1340), the herd
-          out grazing in front. The house sits right, so the words keep the open grass bottom-left. */}
+      {/* First screen: a STAND-IN until the founder's Nano Banana remaster. For now it is the design model from eye
+          level in the paddock (scripts/site/render/livestock.html?mode=real&hero=1, 2400 x 1340): the thatched shelter,
+          the palisade, the two yards and the shade tree, which is also the remaster's layout reference. */}
       <PageHero src={`${D}/render/livestock-hero.jpg`} width={2400} height={1340} className="bg-[#d9d4c6]" imgClassName="object-[60%_60%]"
         title="Goats and sheep on open pasture"
-        alt="A raised timber animal house under a dark iron roof on posts over a concrete floor, a cleated ramp down to the grass, and in front of it six goats in brown, black and tan and four white sheep with black faces." />
+        alt="A thatched shelter of upright eucalyptus poles behind a pole palisade, two yards in front fenced with lashed round-pole rails, goats and sheep in their own yards, climbing stones, and a shade tree in a pole guard, on open grass." />
 
       {/* 2D, full screen: the house's plan (src/components/livestock/livestock-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
@@ -31,11 +31,11 @@ export default function LivestockPage() {
           className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 
-      {/* 3D, in the 2D section's pattern: a line drawing of the house seen from the paddock with its roof off,
-          then the same view rendered. Both from scripts/site/render/livestock.html. */}
-      <ModelSection line={`${D}/render/livestock-line.png`} real={`${D}/render/livestock-real.webp`} width={2400} height={1100}
-        lineAlt="Line drawing of the house from the paddock with the roof off: posts on concrete pads, the slatted floor, six goats in the west pen and four sheep in the next, the kidding pen, the feed store with its door, hay racks and gates on the front fence, the railed passage, the ramp and the tank."
-        realAlt="The same view rendered on the grass: treated timber boards and posts, a slatted floor, brown, black and tan goats in one pen and white sheep with black faces in the other, hay racks full of hay, blue troughs, black steel gates, sacks in the feed store, a cleated ramp and a green water tank on a block stand." />
+      {/* 3D, in the 2D section's pattern: the yard seen straight on from the paddock with the roof off, as a line
+          drawing, then rendered. Both from scripts/site/render/livestock.html. */}
+      <ModelSection line={`${D}/render/livestock-line.png`} real={`${D}/render/livestock-real.webp`} width={2400} height={1400}
+        lineAlt="Line drawing of the livestock yard from the paddock with the roof off: the palisade behind, the shelter of upright poles on its fieldstone plinth with a bamboo sleeping platform and a hay rack in each pen, two goats in theirs and one sheep, pole hurdles and gates, the boarded feed store, the tank, two fodder baskets and three compost bays; in front the goat yard with climbing stones and four goats, one on a stone, the lane, and the sheep yard with three sheep and a tree in its pole guard, a trough in each yard."
+        realAlt="The same view rendered: grey-brown eucalyptus poles lashed with pale sisal at every rail, golden straw litter in the pens, red-brown earth with straw in the yards, brown, black, tan and white goats and white sheep with black faces, grey fieldstones, a green tank on a block stand, woven baskets of green fodder and the compost bays from fresh litter to dark finished compost." />
     </main>
   )
 }
