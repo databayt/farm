@@ -82,7 +82,7 @@ export function FarmingPlan({ title, className }: { title: string; className?: s
       {([[f(pu / 2), "BEDS"], [f(pu), "MAIN PATH"], [f((pu + W) / 2), "BEDS"]] as const).map(([x, t], i) => (
         <text key={i} x={x} y={f(row)} textAnchor="middle" style={label}>{t}</text>
       ))}
-      <text x={f(W)} y={f(row)} textAnchor="end" style={small}>{`NURSERY ${away} M UP THE YARD ↑`}</text>
+      <text x={f(W)} y={f(row)} textAnchor="end" style={small}>{`SEEDLING NURSERY · IN THE YARD, ${away} M ↑`}</text>
       <text x={f(pu)} y={f(H + 3.6)} textAnchor="middle" style={small}>GATE · TO THE GALLEY</text>
 
       <Dimension x0={0} x1={f(W)} y={f(H + 5.1)} />
