@@ -7,6 +7,10 @@ import { cn } from "@/lib/utils"
 import { Callout } from "@/components/docs/callout"
 import { Figure } from "@/components/docs/figure"
 import { StudioViewer } from "@/components/docs/studio-viewer"
+import {
+  StudioBom, StudioCircuits, StudioDownloads, StudioElectricPoints, StudioFeatures, StudioFittings, StudioPipes,
+  StudioShared, StudioStatus, StudioSteps,
+} from "@/components/studio/docs-sections"
 
 const mdxComponents = {
   // Allows customizing built-in components, e.g. to add styling.
@@ -168,6 +172,9 @@ const mdxComponents = {
   Callout,
   Figure,
   StudioViewer,
+  // the studio's reference sections (scripts/sync-docs.mjs "sections" pages)
+  StudioBom, StudioShared, StudioCircuits, StudioElectricPoints, StudioPipes, StudioFittings,
+  StudioFeatures, StudioSteps, StudioDownloads, StudioStatus,
 } satisfies MDXComponents
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
