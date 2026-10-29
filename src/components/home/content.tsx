@@ -3,9 +3,10 @@ import { Header } from "./header"
 import { Hero } from "./hero"
 import { Model } from "./model"
 import { Plans } from "./plans"
+import { References } from "./references"
 
 // The Digital Farm homepage: the hero, then the compound in 2D and 3D, as /en/studio shows the
-// studio (D-022). data-theme="farm" scopes the palette in globals.css.
+// studio (D-022), and an index of every page and guide. data-theme="farm" scopes the palette in globals.css.
 export function HomeContent() {
   return (
     <div data-theme="farm" className="bg-background text-foreground flex flex-1 flex-col">
@@ -20,6 +21,7 @@ export function HomeContent() {
         <Hero />
         <Plans />
         <Model />
+        <References />
       </main>
     </div>
   )

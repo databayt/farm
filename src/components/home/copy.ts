@@ -3,6 +3,15 @@
 // Kinyarwanda version can follow (study/website/implementation-plan.md §9).
 import type { AssetId } from "./assets"
 
+// The index under the 3D: a design page, and a guide with its Kinyarwanda twin and both printed PDFs.
+const page = (href: string) => ({ label: "Page", href })
+const guide = (slug: string) => [
+  { label: "Guide", href: `/docs/${slug}` },
+  { label: "Kinyarwanda", href: `/docs/${slug}-rw` },
+  { label: "PDF", href: `/guides/${slug}.pdf` },
+  { label: "PDF (RW)", href: `/guides/${slug}-rw.pdf` },
+]
+
 export const copy = {
   meta: {
     title: "Digital Farm · Gashora, Rwanda",
@@ -46,6 +55,60 @@ export const copy = {
     label:
       "Plan of the compound, with the study room at the top and the gates at the bottom. At the top, the 40 ft study room on its deck, and beside it two buildings of their own: a 40 ft galley with a long worktop and two sinks, and a 20 ft public bathroom with two toilet rooms, two hand basins and a urinal. Below it, the row of three 20 ft containers on raised decks facing the courtyard: the farm office next to the bar, then two studios. Down the left, the bar and then the guest-room block in one line, their doors onto the veranda and the courtyard lawn: the stone fire pit with stools round it, a long timber table in front of the middle studio, and six small tents on a camping lawn between the guest rooms and the fire pit, ending at the fire. The study room's end is in line with the guest rooms. At the bottom, the inner gate, a rock road down to the green parking, and the outer gate beside the Digital Farm sign wall. On the lawn to the right, the volleyball court, 18 by 9 metres inside its 3 metre free zone, the net across its middle. To the left, past a break line, the neighbours drawn close: two blocks of the vegetable field's raised beds behind their fence, and below them the livestock house for six goats and four sheep at the top of its paddock. Every name on the plan links to its page.",
     note: "Illustrative plan: containers drawn to size, layout not surveyed. The field and the livestock are drawn close; the master plan has their true distances.",
+  },
+  // Under the 3D: every page the plan links to, with its guide and the printed PDFs (English and Kinyarwanda).
+  references: {
+    title: "Pages and guides",
+    lead: "Every building and piece of land on the plan has its own page of drawings, and every trade its own guide, printed in English and Kinyarwanda.",
+    groups: [
+      {
+        title: "Buildings",
+        rows: [
+          { name: "Studio", links: [page("/en/studio"), { label: "Design package", href: "/docs/studio" }] },
+          { name: "Guest room", links: [page("/en/guest-room")] },
+          { name: "Office", links: [page("/en/office")] },
+          { name: "Study room", links: [page("/en/study-room")] },
+          { name: "Galley", links: [page("/en/galley")] },
+          { name: "Public bathroom", links: [page("/en/public-bathroom")] },
+          { name: "Bar", links: [page("/en/bar")] },
+        ],
+      },
+      {
+        title: "Outside",
+        rows: [
+          { name: "Camping", links: [page("/en/camp")] },
+          { name: "Parking", links: [page("/en/parking")] },
+          { name: "Volleyball", links: [page("/en/volleyball")] },
+          { name: "Master plan", links: [{ label: "Guide", href: "/docs/master-plan" }, { label: "Drawing", href: "/designs/site/master-plan.svg" }] },
+        ],
+      },
+      {
+        title: "Land",
+        rows: [
+          { name: "Vegetable field", links: [page("/en/farming"), ...guide("vegetables")] },
+          { name: "Livestock", links: [page("/en/livestock"), ...guide("livestock")] },
+        ],
+      },
+      {
+        title: "Trades",
+        rows: [
+          { name: "Carpenter", links: guide("carpenter") },
+          { name: "Electrician", links: guide("electrician") },
+          { name: "Plumber", links: guide("plumber") },
+          { name: "Power", links: guide("power") },
+        ],
+      },
+      {
+        title: "The farm",
+        rows: [
+          { name: "Start here", links: [{ label: "Guide", href: "/docs" }] },
+          { name: "The farm today", links: [{ label: "Guide", href: "/docs/farm" }] },
+          { name: "How it runs", links: [{ label: "Guide", href: "/docs/operations" }] },
+          { name: "The film", links: [{ label: "Guide", href: "/docs/film" }] },
+          { name: "Business model", links: [{ label: "Guide", href: "/docs/business-model" }] },
+        ],
+      },
+    ],
   },
   model: {
     title: "3D",
