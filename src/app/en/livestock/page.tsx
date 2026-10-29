@@ -20,7 +20,8 @@ const D = "/designs/livestock"
 export default function LivestockPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster. For now it is the design model from eye
+      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (handoff in ~/Desktop/livestock-nano-banana:
+          the reference photo, this render, the 3D overview and a frame of the site footage). For now it is the design model from eye
           level in the paddock (scripts/site/render/livestock.html?mode=real&hero=1, 2400 x 1340): the thatched shelter,
           the palisade, the village yard with the dovecote and the shade tree, which is also the remaster's layout reference. */}
       <PageHero src={`${D}/render/livestock-hero.jpg`} width={2400} height={1340} className="bg-[#d9d4c6]" imgClassName="object-[60%_60%]"
