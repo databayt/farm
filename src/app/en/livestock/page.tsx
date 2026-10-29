@@ -21,12 +21,12 @@ export default function LivestockPage() {
   return (
     <main className="w-full flex-1">
       {/* First screen: a STAND-IN until the founder's Nano Banana remaster (handoff in ~/Desktop/livestock-nano-banana:
-          the reference photo, this render, the 3D overview and a frame of the site footage). For now it is the design model from eye
-          level in the paddock (scripts/site/render/livestock.html?mode=real&hero=1, 2400 x 1340): the thatched shelter,
-          the palisade, the village yard with the dovecote and the shade tree, which is also the remaster's layout reference. */}
+          the reference photo, this render, the 3D overview and a frame of the site footage). For now it is the design
+          model from low and close across the front fence corner in overcast light, after the reference photo
+          (scripts/site/render/livestock.html?mode=real&hero=1, 2400 x 1340). The words keep the lower left. */}
       <PageHero src={`${D}/render/livestock-hero.jpg`} width={2400} height={1340} className="bg-[#d9d4c6]" imgClassName="object-[60%_60%]"
         title="Goats and sheep on open pasture"
-        alt="A thatched shelter of upright eucalyptus poles behind a pole palisade, a village yard in front fenced with lashed round-pole rails, goats and sheep together on the straw, climbing stones, a dovecote on a pole with doves, and a shade tree in a pole guard, on open grass." />
+        alt="Across a crooked post-and-rail fence of barked poles lashed with rope, two woven baskets of green fodder; behind it goats and black-headed sheep on straw and earth, fieldstones, and a thatched shelter of upright poles on a stone plinth, with leafy trees and shrubs round it under a soft grey sky." />
 
       {/* 2D, full screen: the house's plan (src/components/livestock/livestock-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
@@ -37,7 +37,7 @@ export default function LivestockPage() {
       {/* 3D, in the 2D section's pattern: the yard seen straight on from the paddock with the roof off, as a line
           drawing, then rendered. Both from scripts/site/render/livestock.html. */}
       <ModelSection line={`${D}/render/livestock-line.png`} real={`${D}/render/livestock-real.webp`} width={2400} height={1400}
-        lineAlt="Line drawing of the livestock yard from the paddock with the roofs off: one outline, the palisade behind and a post-and-rail fence round the rest with a two-leaf gate; the shelter of upright poles on its fieldstone plinth with one long bamboo sleeping platform, two hay racks, the kidding hurdles and the front rail with two gates, the boarded feed store; goats and sheep mixing in the yard, one goat on a stone, troughs, a bench, the dovecote and the cats’ house on posts, three cats, the guarded tree; the tank, the baskets, the compost bays and the dogs’ run with two kennels in the back corner."
+        lineAlt="Line drawing of the livestock yard from the paddock with the roofs off: one outline, the palisade behind and a post-and-rail fence round the rest with a two-leaf gate; the shelter of upright poles on its fieldstone plinth with one long bamboo sleeping platform, two hay racks, the kidding hurdles and the front rail with two gates, the boarded feed store; goats and sheep mixing in the yard, one goat on a stone, troughs, a bench, the dovecote and the cats’ house on posts, three cats, the guarded tree, shrubs round the outside; the tank, the baskets, the compost bays and the dogs’ run with two kennels in the back corner."
         realAlt="The same view rendered: grey-brown eucalyptus poles lashed with pale sisal, golden straw litter in the hall, red-brown earth and straw in the yard, brown, black, tan and white goats and white sheep with black faces, a ginger cat on its house and a grey and a black cat in the yard, doves on the dovecote, a green tank, woven baskets of green fodder, the compost bays and a tan and a black dog in their run." />
     </main>
   )

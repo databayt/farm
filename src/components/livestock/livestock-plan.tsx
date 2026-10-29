@@ -6,7 +6,7 @@ import livestock from "./livestock.json"
 // open hall faces down the page onto the village yard, toward the paddock and the viewer of the 3D. Units are
 // metres, the shelter's centre at 0,0, y toward the yard. All in currentColor, so the page sets its colour.
 
-const { shelter, pens, platform, fittings, yards, palisade, stones, tree, tank, baskets, compost, dogs, friends } = livestock
+const { shelter, pens, platform, fittings, yards, palisade, stones, tree, tank, baskets, compost, dogs, friends, planting } = livestock
 const WALL = 0.1 // the pole back wall and the ends, and the feed store's boarded walls
 const FENCE = 0.04 // the rail and gates across the hall's open front
 const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEffect: "non-scaling-stroke" } as const
@@ -77,8 +77,10 @@ export function LivestockPlan({ title, className }: { title: string; className?:
   const door = 0.7
   const { dovecote, cats, bench } = friends
   const yg = yards.gate, dg = dogs.gate
-  const x0 = yards.x0 - 0.3, x1 = yards.x1 + 0.75
-  const top = palisade.y - 0.6, bottom = Y + 1.1
+  const edge = { x0: Math.min(...planting.shrubs.map((b) => b.x - b.r)), x1: Math.max(...planting.shrubs.map((b) => b.x + b.r)),
+    y1: Math.max(...planting.shrubs.map((b) => b.y + b.r)) } // the planting round the outline
+  const x0 = edge.x0 - 0.3, x1 = edge.x1 + 0.75
+  const dimY = edge.y1 + 0.35, top = palisade.y - 0.6, bottom = dimY + 0.6
   const row = palisade.y - 0.25 // the names, in one row above the palisade
   const px0 = hall.x0 + WALL + 0.03, px1 = hall.x1 - WALL / 2 - 0.03 // the sleeping platform
   const py0 = -W + WALL, py1 = -W + WALL + platform.d
@@ -173,6 +175,9 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       ))}
       <circle cx={dogs.bowl.x} cy={dogs.bowl.y} r={dogs.bowl.r} {...line} />
 
+      {/* The planting round the outside of the outline: shrubs, drawn as soft crowns (trees stand behind the palisade) */}
+      {planting.shrubs.map((b) => <circle key={`${b.x}-${b.y}`} cx={b.x} cy={b.y} r={b.r} {...dashed} />)}
+
       {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH; the rest in place */}
       {([
         [cats.house.x, "CATS"], [(hall.x0 + kidding.x0) / 2, hall.label], [(store.x0 + store.x1) / 2, store.label], [tank.x, "TANK"],
@@ -184,8 +189,8 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       <text x={f((bench.x0 + bench.x1) / 2)} y={f(bench.y + 0.4)} textAnchor="middle" style={small}>BENCH</text>
       <text x={f(yg.x0 + yg.w / 2)} y={f(bottom - 0.12)} textAnchor="middle" style={small}>TO THE PADDOCK · GUESTS</text>
 
-      <Dimension x0={yards.x0} x1={yards.x1} y={f(Y + 0.5)} />
-      <DimensionUp y0={yards.y0} y1={Y} x={f(yards.x1 + 0.4)} />
+      <Dimension x0={yards.x0} x1={yards.x1} y={f(dimY)} />
+      <DimensionUp y0={yards.y0} y1={Y} x={f(edge.x1 + 0.4)} />
     </svg>
   )
 }
