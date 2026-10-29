@@ -5,7 +5,7 @@ import office from "./office.json"
 // and the glazing face down the page (north), the stair end to the left. Units are metres, x from the stair
 // end, y toward the deck, the container's centre line at y = 0.
 
-const { container: box, glazing, deck, workstations: ws, sofa } = office
+const { container: box, glazing, deck, workstation: ws, sofas } = office
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
 const medium = { ...thin, strokeWidth: 1.6 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
@@ -88,31 +88,44 @@ export function OfficePlan({ title, className }: { title: string; className?: st
       <rect {...rect(sx, edge - st.w, 0, edge)} {...thin} />
       {Array.from({ length: steps - 1 }, (_, k) => <line key={k} x1={f(sx + (k + 1) * st.tread)} x2={f(sx + (k + 1) * st.tread)} y1={f(edge - st.w)} y2={f(edge)} {...thin} />)}
 
-      {/* The workstations along the whole right side: an L of desks down the back wall to the far end and on
-          down the end wall, a monitor and a chair at each seat */}
-      <path d={`M${ws.x0} ${iy0}V${f(iy0 + ws.d)}H${f(ix1 - ws.d)}V${iy1}`} {...thin} />
-      <line x1={f(ix1 - ws.d)} x2={ix1} y1={f(iy0 + ws.d)} y2={f(iy0 + ws.d)} {...faint} />
-      {ws.seats.map(({ at: [x, y], toward }) => (
-        <g key={`${x}${y}`}>
-          {toward === "up"
-            ? <rect {...rect(x - 0.27, iy0 + 0.12, x + 0.27, iy0 + 0.18)} {...thin} />
-            : <rect {...rect(ix1 - 0.18, y - 0.27, ix1 - 0.12, y + 0.27)} {...thin} />}
-          <Chair x={x} y={y} toward={toward as "up" | "right"} />
-        </g>
-      ))}
-
-      {/* The sofa against the back wall on the left side, its arms and three seat cushions, the low table in front */}
-      <rect {...rect(sofa.x0, iy0, sofa.x1, iy0 + sofa.d)} rx={0.05} {...thin} />
-      <path d={`M${f(sofa.x0 + sofa.arm)} ${f(iy0 + sofa.d)}V${f(iy0 + sofa.back)}H${f(sofa.x1 - sofa.arm)}V${f(iy0 + sofa.d)}`} {...thin} />
-      {Array.from({ length: sofa.seats - 1 }, (_, k) => {
-        const x = sofa.x0 + sofa.arm + ((k + 1) * (sofa.x1 - sofa.x0 - 2 * sofa.arm)) / sofa.seats
-        return <line key={k} x1={f(x)} x2={f(x)} y1={f(iy0 + sofa.back)} y2={f(iy0 + sofa.d)} {...faint} />
+      {/* The big desk across the whole far end wall: three monitors, the side two angled in, the keyboard and
+          mouse, the tower on the floor at the desk's front end, the gaming chair facing the wall */}
+      <rect {...rect(ix1 - ws.d, iy0, ix1, iy1)} {...thin} />
+      {[-1, 0, 1].map((k) => {
+        // the side two hinge off the centre one's ends and turn in toward the chair
+        const h = ws.monitor / 2, a = (ws.angle * Math.PI) / 180
+        const mx = ix1 - 0.2 - Math.abs(k) * h * Math.sin(a), my = k * (h + h * Math.cos(a))
+        return <rect key={k} {...rect(mx - 0.03, my - h, mx + 0.03, my + h)} {...thin}
+          transform={`rotate(${k * ws.angle} ${f(mx)} ${f(my)})`} />
       })}
-      <rect {...rect(sofa.table.x0, sofa.table.y0, sofa.table.x1, sofa.table.y1)} rx={0.04} {...thin} />
+      <rect {...rect(ix1 - ws.d + 0.12, -0.25, ix1 - ws.d + 0.28, 0.25)} rx={0.02} {...thin} />
+      <rect {...rect(ix1 - ws.d + 0.15, 0.36, ix1 - ws.d + 0.25, 0.42)} rx={0.03} {...thin} />
+      <rect {...rect(ix1 - ws.tower.d - 0.05, iy1 - ws.tower.w - 0.05, ix1 - 0.05, iy1 - 0.05)} {...dashed} />
+      <Chair x={ws.chair[0]} y={ws.chair[1]} toward="right" s={0.62} />
 
-      <text x={f((ws.x0 + ix1 - ws.d) / 2)} y={f(iy0 + ws.d / 2 + 0.07)} textAnchor="middle" style={small}>WORKSTATIONS</text>
-      <text x={f((sofa.x0 + sofa.x1) / 2)} y={f(iy0 + (sofa.back + sofa.d) / 2 + 0.035)} textAnchor="middle" style={small}>SOFA</text>
-      <text x={f((sofa.table.x0 + sofa.table.x1) / 2)} y={f((sofa.table.y0 + sofa.table.y1) / 2 + 0.035)} textAnchor="middle" style={small}>TABLE</text>
+      {/* The two sofas in an L in the left corner, each with its arms and three seat cushions, the low table in front */}
+      {sofas.items.map((so) => {
+        const { d, arm, rest, seats } = sofas, end = so.back === "end"
+        // drawn along the back wall (u along x, v down from the wall), turned onto the end wall when it stands there
+        const u0 = end ? so.y0! : so.x0!, u1 = end ? so.y1! : so.x1!
+        const p = (u: number, v: number) => end ? `${f(ix0 + v)} ${f(u)}` : `${f(u)} ${f(iy0 + v)}`
+        const cuts = Array.from({ length: seats - 1 }, (_, k) => u0 + arm + ((k + 1) * (u1 - u0 - 2 * arm)) / seats)
+        return (
+          <g key={so.back}>
+            <path d={`M${p(u0, 0)}L${p(u0, d)}L${p(u1, d)}L${p(u1, 0)}Z`} {...thin} />
+            <path d={`M${p(u0 + arm, d)}L${p(u0 + arm, rest)}L${p(u1 - arm, rest)}L${p(u1 - arm, d)}`} {...thin} />
+            {cuts.map((u) => <path key={u} d={`M${p(u, rest)}L${p(u, d)}`} {...faint} />)}
+          </g>
+        )
+      })}
+      <rect {...rect(sofas.table.x0, sofas.table.y0, sofas.table.x1, sofas.table.y1)} rx={0.04} {...thin} />
+
+      <text x={f(ix1 - ws.d / 2)} y={f(iy0 + 0.17)} textAnchor="middle" style={small}>DESK</text>
+      <text x={f(ix1 - ws.tower.d / 2 - 0.05)} y={f(iy1 - ws.tower.w / 2 - 0.015)} textAnchor="middle" style={small}>PC</text>
+      {sofas.items.map((so) => so.back === "end"
+        ? <text key={so.back} x={f(ix0 + (sofas.rest + sofas.d) / 2 + 0.035)} y={f((so.y0! + so.y1!) / 2)} transform={`rotate(-90 ${f(ix0 + (sofas.rest + sofas.d) / 2 + 0.035)} ${f((so.y0! + so.y1!) / 2)})`} textAnchor="middle" style={small}>SOFA</text>
+        : <text key={so.back} x={f((so.x0! + so.x1!) / 2)} y={f(iy0 + (sofas.rest + sofas.d) / 2 + 0.035)} textAnchor="middle" style={small}>SOFA</text>)}
+      <text x={f((sofas.table.x0 + sofas.table.x1) / 2)} y={f((sofas.table.y0 + sofas.table.y1) / 2 + 0.035)} textAnchor="middle" style={small}>TABLE</text>
       <text x={f((g0 + g1) / 2)} y={f(front - 0.16)} textAnchor="middle" style={small}>SLIDING GLAZING</text>
       <text x={f(L / 2)} y={f(edge - 0.55)} textAnchor="middle" style={label}>DECK</text>
       <text x={f(sx + (-sx) / 2)} y={f(edge - st.w - 0.1)} textAnchor="middle" style={small}>STAIR</text>
