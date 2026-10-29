@@ -3,7 +3,7 @@
   The homepage 3D section, in the pattern of the studio's (scripts/studio/render/room.html): the compound
   seen from the front, from high beyond the gates through a long lens so verticals stay nearly straight, built from
   src/components/home/compound.json (the numbers the 2D plan draws). Like the 2D it leaves out the lake,
-  the road and the trees, and it is mirrored the way the 2D is (study room at the back, guest rooms on the
+  the road and the woods beyond, and it is mirrored the way the 2D is (study room at the back, guest rooms on the
   left, D-022). Details follow the 2026-10-25 footage (assets/library/footage/2026-10-25): corrugated walls, white-framed
   sliding doors, red pipe railings with the deck stairs at their ends, a concrete cap on the fire pit,
   hexagonal pop-up tents. The studios follow the studio's hero (/en/studio, render/studio-hero.jpg), and the
@@ -348,6 +348,10 @@ function mat(name) {
       bed: () => std({ color: "#6e4a32", roughness: 1 }), // raised beds of dark soil
       crop: () => std({ color: "#5d8a3c", roughness: 0.9 }),
       crop2: () => std({ color: "#7aa04a", roughness: 0.9 }),
+      bloom: () => std({ color: "#d4486a", roughness: 0.7 }), // the flower beds, species not chosen: pink
+      bloom2: () => std({ color: "#f0bd3c", roughness: 0.7 }), // yellow
+      bloom3: () => std({ color: "#f5f1e6", roughness: 0.7 }), // white
+      bloom4: () => std({ color: "#8a5bb4", roughness: 0.7 }), // purple
       goat: () => std({ color: "#6b4a33", roughness: 0.95 }),
       sheep: () => std({ color: "#e8e2d2", roughness: 1 }),
 
@@ -453,7 +457,7 @@ function group(build, pos, rotY = 0) {
 }
 
 // ------------------------------------------------------------ the site
-// As the 2D draws it: the compound on its ground, a model base, with no lake, road or trees (D-022).
+// As the 2D draws it: the compound on its ground, a model base, with no lake or road (D-022); its own garden is planted below.
 // the base reaches 2.5 m past the outermost buildings east and west
 // and past the neighbours: the field's cut west; east, the outermost building (the court is inside)
 const FIELD_WEST = N.field.corner[0] - (Math.max(...FP.beds.filter((b) => N.field.blocks.includes(b.block) && Number(b.id.split("-")[1]) <= N.field.beds).map((b) => b.y + b.h)) + N.field.cut - FP.fence[1])
@@ -843,6 +847,49 @@ const G = 0.035 // the lawn's top
   }
   fence(M(west, top), M(east, top))
   fence(M(east, top), M(east, far))
+}
+
+// ------------------------------------------------------------ the garden (compound.json garden)
+// From the outer gate to the backyard, as the 2D plants it: big shade trees (a trunk, three limbs, a crown of rounded
+// masses, as the parking page draws its own) and flower beds in a timber edge, blooming in the real render only.
+let gseed = 5 // the garden's own sequence, so the same crowns and blooms in every view
+const grnd = () => ((gseed = (gseed * 16807) % 2147483647) / 2147483647)
+function ellipsoid(x, h, z, rx, rh, rz, name) {
+  const m = add(new THREE.SphereGeometry(1, 20, 12), name, { pos: [x, h, z] })
+  m.scale.set(rx, rh, rz)
+  return m
+}
+function shadeTree(x, z, r, height, crown) {
+  const rh = (height - crown) / 2, hc = crown + rh, fork = crown - 0.3, trunk = 0.09 + r * 0.03
+  cyl(x, z, trunk, G, fork, "bark", 10, trunk * 0.8)
+  for (let k = 0; k < 3; k++) { // the limbs, from the fork up and out, soon lost in the crown
+    const a = (k / 3) * Math.PI * 2 + grnd()
+    const limb = add(new THREE.CylinderGeometry(trunk * 0.45, trunk * 0.7, r * 0.45, 8), "bark", { pos: [x + Math.cos(a) * r * 0.08, fork + r * 0.2, z + Math.sin(a) * r * 0.08] })
+    limb.rotation.set(Math.sin(a) * 0.4, 0, -Math.cos(a) * 0.4)
+  }
+  ellipsoid(x, hc - 0.05 * rh, z, r * 0.7, rh * 0.85, r * 0.7, "leaf")
+  for (let k = 0; k < 14; k++) { // masses round the core, smaller toward the top
+    const a = (k / 14) * Math.PI * 2 * 2.3 + grnd() * 0.8, up = (k % 3) / 2 - 0.35, d = r * (0.5 + grnd() * 0.15) * (1 - Math.abs(up) * 0.5)
+    const s = (0.32 + grnd() * 0.12) * (1 - up * 0.3)
+    ellipsoid(x + Math.cos(a) * d, hc + up * rh * 0.9, z + Math.sin(a) * d, r * s, r * s * 0.75, r * s, k % 3 ? "leaf" : "leaf2")
+  }
+}
+{
+  const { trees, flowers } = C.garden
+  for (const [x, z, r] of trees.list) shadeTree(x, z, r, trees.h, trees.crown)
+  for (const [x, z, r] of trees.parking) shadeTree(x, z, r, trees.parkingH, trees.parkingCrown)
+  const BLOOMS = ["bloom", "bloom2", "bloom3", "bloom4"]
+  for (const [x0, z0, x1, z1] of flowers.list) {
+    const h = flowers.h, e = 0.06
+    blk(x0, z0, x1, z1, G, G + h, "slat") // the timber edge, the soil inside it
+    blk(x0 + e, z0 + e, x1 - e, z1 - e, G + h - 0.04, G + h + 0.001, "bed", { noEdges: true })
+    if (LINE) continue // at this scale blooms would only clutter the line drawing
+    for (let z = z0 + 0.2; z < z1 - 0.12; z += 0.3) for (let x = x0 + 0.18 + grnd() * 0.1; x < x1 - 0.12; x += 0.28) {
+      const leafy = add(new THREE.IcosahedronGeometry(0.13, 0), "leaf2", { pos: [x, G + h + 0.1, z] })
+      leafy.scale.set(1, 0.7, 1)
+      add(new THREE.IcosahedronGeometry(0.075, 0), BLOOMS[Math.floor(grnd() * BLOOMS.length)], { pos: [x + (grnd() - 0.5) * 0.08, G + h + 0.2, z + (grnd() - 0.5) * 0.08] })
+    }
+  }
 }
 
 // ------------------------------------------------------------ camera: the front view

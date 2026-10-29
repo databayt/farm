@@ -450,6 +450,53 @@ function Continues() {
   )
 }
 
+// The garden (compound.json garden), from the outer gate to the backyard: each big tree a scalloped crown over
+// its trunk, as plans draw trees, and each flower bed its edge with blooms dotted inside. Drawn under everything,
+// so a crown never hides a name.
+function Tree({ at: [cx, cy], r }: { at: Point; r: number }) {
+  const n = Math.max(9, Math.round(r * 5))
+  const p = Array.from({ length: n }, (_, k) => [f(cx + r * Math.cos((2 * Math.PI * k) / n)), f(cy + r * Math.sin((2 * Math.PI * k) / n))])
+  const bump = f(r * Math.sin(Math.PI / n) * 1.15)
+  const d = `M${p[0].join(" ")}${p.map((_, k) => `A${bump} ${bump} 0 0 1 ${p[(k + 1) % n].join(" ")}`).join("")}Z`
+  return (
+    <g>
+      <path d={d} {...thin} />
+      <circle cx={f(cx)} cy={f(cy)} r={0.18} fill="currentColor" />
+    </g>
+  )
+}
+
+function Flowers({ box }: { box: Box }) {
+  const [x0, y0, x1, y1] = box
+  const step = 0.42
+  const blooms: Point[] = []
+  for (let y = y0 + step / 2, row = 0; y < y1; y += step, row++)
+    for (let x = x0 + step / (row % 2 ? 1 : 2); x < x1 - 0.1; x += step) blooms.push([f(x), f(y)])
+  return (
+    <g>
+      <rect {...at(box)} rx={0.15} {...thin} />
+      {blooms.map(([x, y]) => (
+        <circle key={`${x}-${y}`} cx={x} cy={y} r={0.09} fill="currentColor" />
+      ))}
+    </g>
+  )
+}
+
+const garden = compound.garden
+function Garden() {
+  const flip = ([x0, y0, x1, y1]: Box) => [x0, SIZE - y1, x1, SIZE - y0]
+  return (
+    <g>
+      {[...garden.trees.list, ...garden.trees.parking].map(([x, y, r]) => (
+        <Tree key={`${x}-${y}`} at={T([x, y])} r={r} />
+      ))}
+      {garden.flowers.list.map((b) => (
+        <Flowers key={b.join()} box={flip(b)} />
+      ))}
+    </g>
+  )
+}
+
 // A break line, as a drawing shortens what it leaves out: a straight run with one zigzag in its middle.
 function Zigzag({ a: [ax, ay], b: [bx, by] }: { a: Point; b: Point }) {
   const [mx, my] = [(ax + bx) / 2, (ay + by) / 2]
@@ -496,6 +543,9 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
   const [, cy0, cx1] = B(courtyard.box)
   return (
     <svg viewBox={`${VIEW[0]} ${VIEW[1]} ${VIEW[2] - VIEW[0]} ${VIEW[3] - VIEW[1]}`} role="img" aria-label={title} className={className}>
+      {/* The garden first, under the buildings and their names */}
+      <Garden />
+
       {/* The study room, then the row of office and two studios, the bar and the guest rooms */}
       <Study unit={units.study} west={B(units.rooms.box)[0]} />
       <Galley unit={units.galley} />

@@ -183,6 +183,60 @@
     "continues": { "page": "/en/farming", "at": [-34.1, 33.5], "length": 3.5, "text": 6 },
     "break": -21.5
   },
+  "garden": {
+    "about": "The garden the owner asks for (D-029: the containers among trees and flowers), laid out from the outer gate to the backyard behind the study room (founder, 2026-10-29). Positions are in this file's frame AFTER the spread, as the neighbours are, so neither drawing spreads them again. Every tree keeps 4 m off the volleyball court's free zone (site.json trees.clear) and clear of the tents, the fire pit, the decks and the doors; the parking's two shade trees are the parking page's (src/components/parking/parking.json trees), its third, past the west end, left out where the court now stands. Species are not chosen [A]: the site bible names neem and acacia for shade, and the flowers wait for a gardener.",
+    "trees": {
+      "about": "[x, y, crown radius]: big shade trees, drawn 8 m tall with the crown from 3 m [A]. parking: the parking page's two young shade trees behind the bays, at its 4.5 m with the crown from 2.2 m.",
+      "h": 8,
+      "crown": 3,
+      "list": [
+        [14.5, 42.0, 2.6],
+        [40.0, 42.0, 2.6],
+        [-10.5, 42.0, 2.6],
+        [19.7, 37.7, 2.0],
+        [32.9, 37.7, 2.0],
+        [46.8, 37.0, 2.2],
+        [-12, 32.5, 2.4],
+        [-14.5, 22, 2.4],
+        [4, 24.5, 2.2],
+        [46.5, 24, 2.8],
+        [50.5, 17.5, 2.6],
+        [45.5, 11.5, 2.8],
+        [50.5, 5.5, 2.6],
+        [45, -0.5, 2.6],
+        [50.5, -5.5, 2.2],
+        [20, 6.5, 2.2],
+        [34, 5.5, 2.4],
+        [35, 12.5, 2.0]
+      ],
+      "parking": [[13.8, 1.7, 2.1], [30, -1.6, 2.0]],
+      "parkingH": 4.5,
+      "parkingCrown": 2.2
+    },
+    "flowers": {
+      "about": "[x0, y0, x1, y1]: flower beds, 30 cm high with a timber edge [A]: in the backyard between the back row's containers, along the front of each deck (the steps kept open), beside the guest rooms' windows on the veranda, at the bar, either side of the inner gate, along the parking's north edge, behind the sign wall and beside the outer gate.",
+      "h": 0.3,
+      "list": [
+        [8.6, 41.7, 11.2, 43.7],
+        [17.8, 41.7, 20.6, 43.7],
+        [34.6, 41.7, 37.0, 43.7],
+        [43.0, 41.7, 45.4, 43.7],
+        [10.2, 29.5, 12.4, 30.2],
+        [13.9, 29.5, 16.1, 30.2],
+        [25.6, 29.5, 29.3, 30.2],
+        [38.7, 29.5, 42.5, 30.2],
+        [-0.9, 23.28, -0.3, 24.88],
+        [-0.9, 19.22, -0.3, 20.82],
+        [-0.9, 15.15, -0.3, 16.75],
+        [-2.1, 28.5, -1.5, 29.9],
+        [22.6, 10.7, 25.0, 12.1],
+        [30.0, 10.7, 32.4, 12.1],
+        [16.2, 1.6, 21.5, 2.4],
+        [7.2, -6.1, 14.8, -5.4],
+        [24.8, -7.3, 28.5, -6.1]
+      ]
+    }
+  },
   "spread": {
     "about": "The 2D and the 3D set the compound apart sideways for a wide screen, every building at its true size: x' = mid + (x - mid) * factor for each centre. The way in (the gates, the sign wall, the parking and the rock road) keeps the places it had at 1.5, where the founder wants the rock road, while the buildings take 1.8 (2026-10-27).",
     "factor": 1.8,
