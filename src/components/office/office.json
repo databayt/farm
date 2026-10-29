@@ -79,5 +79,49 @@
     "about": "A tall plant in the back corner by the meeting table, a small one on the shelves.",
     "floor": [0.38, -0.82],
     "shelf": [4.25, -0.93]
+  },
+  "electric": {
+    "about": "The office's wiring in the studio's pattern (D-021): a surface unit board on the back wall, a double-pole main switch and type 2 surge protection, one RCBO 30 mA type A per circuit, cables in conduit in the linings; the reception desk, standing free in the room, is fed through a floor box from under the floor. The network cabinet and its UPS get a circuit of their own, so the farm's Wi-Fi and cameras ride through on the battery (the power guide puts Wi-Fi and CCTV on the batteries that never stop). The supply is a cable from the farm's site board; its size is the electrician's. Points in plan metres (x, y as the plan, z above the finished floor) at their centre; size in mm (w, h, d). design_A: lights and the fan from their watts at 230 V; sockets and the AC provision at the studio's design loads (C2 and C7), the network circuit at the UPS's input [A]. rwf: the studio BOM's placeholder unit prices (AS-21), not quotes. existing: drawn by the office's own 3D already.",
+    "main_A": 32,
+    "circuits": [
+      { "id": "C1", "serves": "Lights and the wall fan", "device": "B6", "cable_mm2": 1.5, "group": "lights", "colour": "#2a78d6" },
+      { "id": "C2", "serves": "Sockets: the desks, the printer, the meeting table and the screen", "device": "B16", "cable_mm2": 2.5, "design_A": 8, "group": "sockets", "colour": "#eb6834" },
+      { "id": "C3", "serves": "Network cabinet and UPS", "device": "B10", "cable_mm2": 2.5, "design_A": 3, "group": "sockets", "colour": "#eb6834" },
+      { "id": "C4", "serves": "AC", "device": "B16", "cable_mm2": 2.5, "design_A": 12, "group": "fixed", "colour": "#1baf7a" },
+      { "id": "C5", "serves": "Spare", "device": "B16", "cable_mm2": 2.5, "group": "spare", "colour": "#9a9893" }
+    ],
+    "points": [
+      { "id": "DB", "model": "board", "description": "Unit board, 12 modules, on the back wall between the AC and the filing wall", "at": [2.1, -1.05, 1.55], "face": "+y", "size": [300, 250, 100], "rwf": 65000 },
+      { "id": "L1", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, over the meeting table", "at": [1.25, 0, 2.275], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
+      { "id": "L2", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, over the reception desk", "at": [3.3, 0, 2.275], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
+      { "id": "L3", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, over the second desk", "at": [5.1, 0, 2.275], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
+      { "id": "S1", "model": "switch2", "circuit": "C1", "description": "Two-gang switch inside the glazing at the meeting end: L1, and L2 with L3", "at": [0.105, 0.85, 1.1], "face": "+x", "size": [146, 86, 10], "rwf": 3500 },
+      { "id": "F1", "model": "wallfan", "circuit": "C1", "description": "Wall fan, high on the far end wall over the second desk", "at": [5.83, -0.5, 1.95], "face": "-x", "size": [440, 440, 260], "watts": 45, "rwf": 35000, "existing": true },
+      { "id": "FB", "model": "floorbox", "circuit": "C2", "description": "Floor box under the reception desk: two sockets and two data outlets (D2)", "at": [3.75, 0.25, 0.005], "face": "up", "size": [200, 200, 10] },
+      { "id": "P1", "model": "usb", "circuit": "C2", "description": "Socket + USB-C over the second desk", "at": [5.953, -0.65, 0.95], "face": "-x", "size": [146, 86, 10], "rwf": 15000 },
+      { "id": "P2", "model": "socket2", "circuit": "C2", "description": "Double socket over the printer cabinet", "at": [5.953, 0.78, 1.15], "face": "-x", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P3", "model": "socket2", "circuit": "C2", "description": "Double socket under the wall screen, for the screen and a laptop", "at": [0.105, 0.0, 0.95], "face": "+x", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P4", "model": "socket2", "circuit": "C2", "description": "Double socket on the back wall by the meeting table", "at": [0.75, -1.095, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P5", "model": "socket2", "circuit": "C3", "description": "Double socket for the UPS, under the network cabinet", "at": [5.15, -1.095, 0.55], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P6", "model": "isolator", "circuit": "C4", "description": "AC isolator beside the split unit", "at": [1.75, -1.09, 1.9], "face": "+y", "size": [86, 86, 20], "rwf": 9000 }
+    ]
+  },
+  "network": {
+    "about": "The farm's network starts here, the office taken as the base of the IoT architecture's case A [A]: one 4G router with a second operator's SIM as failover, a PoE switch, the edge gateway (MQTT broker, store-and-forward, local dashboard and the cameras' recorder), all in a small wall cabinet on the office's own circuit and UPS. From the switch: a ceiling access point for the office, the desk and screen outlets, and outdoor cable to the access points and cameras elsewhere on the farm. Signal at the site is [U] until the survey; nothing is sourced or priced yet.",
+    "circuits": [
+      { "id": "N1", "serves": "PoE to the access point", "group": "data", "colour": "#8e5bd6" },
+      { "id": "N2", "serves": "Data to the desks and the screen", "group": "data", "colour": "#c2489b" }
+    ],
+    "points": [
+      { "id": "RK", "model": "rack", "description": "Wall cabinet 9U, open front, on the back wall between the filing wall and the second desk", "at": [4.93, -0.9, 1.85], "face": "+y", "size": [550, 450, 400] },
+      { "id": "R1", "model": "router", "description": "4G router with two SIMs, on top of the cabinet", "at": [4.8, -0.975, 2.095], "face": "+y", "size": [220, 40, 150] },
+      { "id": "SW", "model": "poe", "description": "PoE switch, 8 ports, in the cabinet", "at": [4.93, -0.963, 1.9], "face": "+y", "size": [440, 44, 250] },
+      { "id": "GW", "model": "gateway", "description": "Edge gateway: MQTT broker, store-and-forward, local dashboard, camera recorder", "at": [4.85, -1.028, 1.72], "face": "+y", "size": [180, 60, 120] },
+      { "id": "UPS", "model": "ups", "description": "UPS for the cabinet, on the floor under it", "at": [4.93, -0.92, 0.115], "face": "+y", "size": [145, 225, 360] },
+      { "id": "AP1", "model": "ap", "circuit": "N1", "description": "Wi-Fi access point on the ceiling, powered over its cable", "at": [3.0, -0.45, 2.28], "face": "down", "size": [200, 200, 35] },
+      { "id": "D1", "model": "data", "circuit": "N2", "description": "Data outlet over the second desk", "at": [5.953, -0.35, 0.95], "face": "-x", "size": [86, 86, 10] },
+      { "id": "D2", "model": "floorbox", "circuit": "N2", "description": "Two data outlets in the reception desk's floor box (FB)", "at": [3.75, 0.25, 0.005], "face": "up", "size": [200, 200, 10] },
+      { "id": "D3", "model": "data", "circuit": "N2", "description": "Data outlet under the wall screen, for the screen", "at": [0.105, 0.25, 0.95], "face": "+x", "size": [86, 86, 10] }
+    ]
   }
 }

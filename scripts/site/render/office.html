@@ -9,6 +9,15 @@
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/office/render/office-line.png
     ?mode=real  materials, daylight and shadow         -> public/designs/office/render/office-real.webp
+    &view=electric  the wiring in the same view (office.json `electric`, built by room-services.js): line mode
+                draws the room faint, every device dark and each circuit's run in its colour, dashed under the floor
+                to the reception's floor box, and sets window.TAGS -> render/electric-line.png + electric-tags.json;
+                real mode shows the finished devices -> render/electric-real.webp
+    &view=network   the same for the network (office.json `network`): the cabinet, its router, switch, gateway and
+                UPS, the access point and the data outlets -> render/network-line.png + network-tags.json
+    &item=<id>  one piece on its own, real mode, 1200 x 900 on a transparent ground: the furniture and equipment
+                (table, woodchair, reception, officechair, monitor, desk, shelves, printer, screen, ac)
+                -> render/furniture/<id>.webp; a device by its model -> render/electric/<id>.webp or render/network/<id>.webp
 
   Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
   save the data URL in #out.
@@ -38,10 +47,13 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
 import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+import { services, frameItem, itemGround } from "./room-services.js"
 
 const Q = new URLSearchParams(location.search)
 const LINE = Q.get("mode") !== "real"
-const [FW, FH] = [2400, 1100]
+const ITEM = Q.get("item"), ELEC = Q.get("view") === "electric", NET = Q.get("view") === "network"
+const [FW, FH] = ITEM ? [1200, 900] : [2400, 1100]
+let TAG = "" // the piece being built, for ?item=
 const C = await (await fetch(`/src/components/office/office.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#ffffff"
 // plan (x right from the stair end, y toward the deck) -> three: x = x, y = height, z = y; the camera stands
@@ -249,6 +261,7 @@ function add(geo, name, opts = {}) {
   if (opts.pos) mesh.position.set(...opts.pos)
   if (opts.rot) mesh.rotation.set(...opts.rot)
   if (opts.noEdges) mesh.userData.noEdges = true
+  mesh.userData.tag = TAG
   scene.add(mesh)
   meshes.push(mesh)
   return mesh
@@ -281,7 +294,7 @@ const L = K.l, H = K.w / 2, Y0 = K.raised, HC = K.h
 const FL = Y0 + K.floor, CE = Y0 + K.ceiling // inside: the finished floor, the ceiling
 const { x0: ix0, x1: ix1, y0: iz0, y1: iz1 } = K.inner
 const front = H, edge = H + deck.d
-if (!LINE) {
+if (!LINE && !ITEM) {
   T.grass.repeat.set(10, 10)
   add(new THREE.CircleGeometry(30, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], pos: [L / 2, 0, 1] })
 }
@@ -404,19 +417,24 @@ function plant(x, z, y0, s) {
 // the meeting table for four, its chairs, the screen with the farm's map over it, the AC, the tall plant
 {
   const { x, y, r, h } = meeting
+  TAG = "table"
   cyl(x, y, r, FL + h - 0.03, 0.03, "oak", 48)
   cyl(x, y, 0.04, FL + 0.02, h - 0.05, "oak", 12)
   cyl(x, y, 0.26, FL, 0.025, "oak", 32)
-  for (const [cx, cz] of meeting.chairs) woodChair(cx, cz, Math.atan2(x - cx, y - cz))
+  for (const [k, [cx, cz]] of meeting.chairs.entries()) { TAG = k ? `woodchair#${k}` : "woodchair"; woodChair(cx, cz, Math.atan2(x - cx, y - cz)) }
+  TAG = "screen"
   const sy = screen.y, sb = FL + screen.bottom
   blk(ix0, sy - screen.w / 2, ix0 + 0.04, sy + screen.w / 2, sb, sb + screen.h, "black")
   blk(ix0 + 0.04, sy - screen.w / 2 + 0.02, ix0 + 0.045, sy + screen.w / 2 - 0.02, sb + 0.02, sb + screen.h - 0.02, "screen", { noShadow: true })
+  TAG = "ac"
   soft(ac.x0, iz0, ac.x1, iz0 + ac.d, FL + ac.y0, FL + ac.y1, 0.03, "white")
   blk(ac.x0 + 0.05, iz0 + ac.d, ac.x1 - 0.05, iz0 + ac.d + 0.005, FL + ac.y0 + 0.03, FL + ac.y0 + 0.06, "black")
+  TAG = ""
   plant(plants.floor[0], plants.floor[1], FL, 1.6)
 }
 // the filing wall: closed cupboards below, open shelves with box files above, a small plant
 {
+  TAG = "shelves"
   const { x0, x1, d, h, base, rows } = shelves, z0 = iz0, z1 = iz0 + d
   blk(x0, z0, x1, z1, FL, FL + 0.06, "oak")
   for (const x of [x0, x0 + (x1 - x0) / 2 - 0.009, x1 - 0.018]) blk(x, z0, x + 0.018, z1, FL, FL + h, "oak")
@@ -432,25 +450,34 @@ function plant(x, z, y0, s) {
     const spans = gap ? [[x0 + 0.02, gap[0]], [gap[1], x1 - 0.02]] : [[x0 + 0.02, x1 - 0.02]]
     for (const [a, b] of spans) blk(a, z0 + 0.02, b, z0 + d - 0.04, y, y + pitch * 0.72, "files")
   }
+  TAG = ""
   plant(plants.shelf[0], plants.shelf[1] + 0.08, FL + base, 0.6)
 }
 // the reception desk facing the glazing, its chair behind, a monitor
 {
   const r = reception
+  TAG = "reception"
   panelDesk(r.x0, r.y0, r.x1, r.y1, r.h, "front")
+  TAG = "officechair"
   officeChair(r.chair[0], r.chair[1], 0)
+  TAG = "monitor"
   monitor((r.x0 + r.x1) / 2, r.y0 + 0.2, FL + r.h, 0)
 }
 // the second desk on the far end wall, chair facing the wall, monitor; the printer cabinet; the wall fan
 {
+  TAG = "desk"
   panelDesk(desk.x0, desk.y0, desk.x1, desk.y1, desk.h)
+  TAG = "officechair#2"
   officeChair(desk.chair[0], desk.chair[1], Math.PI / 2)
+  TAG = "monitor#2"
   monitor(desk.x1 - 0.2, (desk.y0 + desk.y1) / 2, FL + desk.h, -Math.PI / 2)
+  TAG = "printer"
   const p = printer
   blk(p.x0, p.y0, p.x1, p.y1, FL, FL + p.h, "oak")
   blk(p.x0 - 0.012, p.y0 + 0.02, p.x0, p.y1 - 0.02, FL + 0.05, FL + p.h - 0.03, "oak")
   soft(p.x0 + 0.05, p.y0 + 0.08, p.x1 - 0.06, p.y1 - 0.08, FL + p.h, FL + p.h + 0.26, 0.02, "white")
   blk(p.x0 + 0.02, p.y0 + 0.12, p.x0 + 0.05, p.y1 - 0.12, FL + p.h + 0.08, FL + p.h + 0.11, "black")
+  TAG = "wallfan"
   const fy = FL + fan.at, fz = fan.y
   blk(ix1 - 0.06, fz - 0.06, ix1, fz + 0.06, fy - 0.08, fy + 0.08, "white")
   cyl(ix1 - 0.15, fz, 0.07, fy - 0.07, 0.14, "white", 16).rotation.z = Math.PI / 2
@@ -461,11 +488,27 @@ function plant(x, z, y0, s) {
   if (!LINE) { disc.material = disc.material.clone(); disc.material.transparent = true; disc.material.opacity = 0.35 }
 }
 
+TAG = ""
+
+// ------------------------------------------------------------ the electrical and network installations (office.json)
+const S = services({ scene, meshes, LINE, floor: FL, ceiling: K.ceiling - K.floor })
+const SYS = NET ? C.network : C.electric
+const existing = new Set(C.electric.points.filter((p) => p.existing).map((p) => p.model))
+for (const o of meshes) if (existing.has(o.userData.tag) && (ELEC || ITEM)) o.userData.elec = true // the 3D's own fan
+if (ELEC || NET) S.build(SYS.points, existing)
+if (ITEM) { S.build(C.electric.points, existing); S.build(C.network.points) }
+
 // ------------------------------------------------------------ camera: the front view, a little from the stair end
 scene.updateMatrixWorld(true)
+const ITEM_VIEW = { shelves: [0.6, 0.55, 1], desk: [-1, 0.6, 0.6], "officechair": [0.6, 0.6, -1], printer: [-1, 0.6, 0.75], screen: [1, 0.4, 0.6], ac: [0.5, 0.2, 1], wallfan: [-1, 0.3, 0.7] }
+const camera = new THREE.PerspectiveCamera(22, FW / FH, 0.5, 200)
+let itemBox = null
+if (ITEM) {
+  const view = (existing.has(ITEM) ? null : S.viewOf([...C.electric.points, ...C.network.points], ITEM)) ?? new THREE.Vector3(...(ITEM_VIEW[ITEM] ?? [0.75, 0.6, 1]))
+  itemBox = frameItem({ camera, meshes, item: ITEM, view, FW, FH }).bb
+} else {
 const target = new THREE.Vector3(L / 2 - 0.2, Y0 + 0.9, 0.4)
 const [el, az, dist] = [THREE.MathUtils.degToRad(27), THREE.MathUtils.degToRad(-14), 32]
-const camera = new THREE.PerspectiveCamera(22, FW / FH, 0.5, 200)
 camera.position.set(target.x + dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
 camera.lookAt(target)
 camera.updateMatrixWorld(); camera.updateProjectionMatrix()
@@ -480,19 +523,35 @@ for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) fo
 let w = (px[2] - px[0]) * 1.06, h = (px[3] - px[1]) * 1.08
 if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
 camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+}
 
 // ------------------------------------------------------------ render
 if (LINE) {
-  const lineMat = new LineMaterial({ color: INK, linewidth: 1.3, side: THREE.DoubleSide })
-  lineMat.resolution.set(FW, FH)
-  lineMat.userData.outlineParameters = { visible: false }
+  // the services views draw the room faint, so the devices and the runs read first
+  const FAINT = ELEC || NET
+  const lines = (color, linewidth) => {
+    const x = new LineMaterial({ color, linewidth, side: THREE.DoubleSide })
+    x.resolution.set(FW, FH)
+    x.userData.outlineParameters = { visible: false }
+    return x
+  }
+  const lineMat = FAINT ? lines(0xbdbdbd, 1.2) : lines(INK, 1.3), devMat = lines(0x141414, 1.6)
   for (const o of meshes) {
-    if (o.userData.noEdges) continue
+    if (o.userData.noEdges || !o.visible) continue
     o.updateMatrixWorld(true)
     const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
-    const l = new LineSegments2(g, lineMat)
+    const l = new LineSegments2(g, o.userData.elec ? devMat : lineMat)
     l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
     scene.add(l)
+  }
+  if (FAINT) {
+    // the room's materials outline grey, except the 3D's own fan in the electric view, which stays dark
+    for (const [k, m] of Object.entries(MAT)) m.userData.outlineParameters = { ...m.userData.outlineParameters, color: [0.74, 0.74, 0.74] }
+    if (ELEC) for (const o of meshes) if (o.userData.elec && Object.values(MAT).includes(o.material)) {
+      o.material = o.material.clone(); o.material.userData.outlineParameters = { ...o.material.userData.outlineParameters, color: [0.08, 0.08, 0.08] }
+    }
+    S.runs(SYS.points, SYS.circuits, NET ? "SW" : "DB", camera, FW, FH)
+    window.TAGS = S.tags(SYS.points, camera)
   }
   const ink = new THREE.Color(INK)
   new OutlineEffect(renderer, { defaultThickness: 0.0025, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
@@ -509,6 +568,7 @@ if (LINE) {
   Object.assign(sun.shadow.camera, { left: -6, right: 6, top: 6, bottom: -6, near: 1, far: 40 })
   sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
   scene.add(sun)
+  if (ITEM) itemGround(scene, itemBox)
   const fill = new THREE.PointLight(0xfff4e0, 1.4, 6, 2) // the room's own light, so the back wall isn't dim
   fill.position.set(L / 2, CE - 0.1, 0.2); scene.add(fill)
   const composer = new EffectComposer(renderer)
