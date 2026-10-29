@@ -1,94 +1,96 @@
 import plan from "../../../public/designs/farming/data/plan.json"
 
-// The vegetable field drawn in the pattern of the bar and livestock plans: thin lines, no colour, bold capitals
-// and dimensions in millimetres. Everything comes from the generated plan (scripts/site/farming.mjs), in the
-// master plan's metres: x to the right, y down the page, the galley off to the right along the garden walk.
-// Each bed carries the crop it grows this season; dashed beds rest, or grow for sale.
+// The vegetable field drawn in the pattern of the studio's plan (public/designs/studio/render/plan.svg) and seen from
+// the front: the gate and the garden walk to the galley at the bottom, toward the viewer, as the studio's and the
+// livestock yard's. Abstract: the fence a solid band, each bed only its outline, solid where it is planted this season
+// and dashed where it rests or grows for sale (the crops are in the Crops section); the zones named in one row above
+// and only the two overall dimensions. Everything comes from the generated plan (scripts/site/farming.mjs), whose
+// metres run x to the galley and y down the master plan; here they are turned a quarter so the gate faces the viewer.
 
-const { beds, blocks, fence, gate, main, mainY, nursery, walk, crops } = plan
-const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
-const medium = { ...thin, strokeWidth: 1.6 } as const
-const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
-const dashed = { ...thin, strokeDasharray: "4 3" } as const
-const label = {
-  fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif",
-  fontSize: 1.1,
-  fontWeight: 700,
-  letterSpacing: "0.04em",
-  fill: "currentColor",
-} as const
-const small = { ...label, fontSize: 0.62, fontWeight: 600 } as const
+const { beds, fence, gate, main, mainY, nursery } = plan
+const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEffect: "non-scaling-stroke" } as const
+const dashed = { ...line, strokeDasharray: "4 3" } as const
+const solid = { fill: "currentColor" } as const
+const font = { fontFamily: "Helvetica, Arial, sans-serif", fill: "currentColor" } as const
+const label = { ...font, fontSize: 1.25, fontWeight: 700, letterSpacing: "0.03em" } as const
+const small = { ...font, fontSize: 0.95 } as const
 
 const f = (n: number) => +n.toFixed(3)
 const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
-const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
-const NAME: Record<string, string> = Object.fromEntries(crops.map((c) => [c.id, c.name.replace(/ \(.*\)/, "").toUpperCase()]))
+const [fx0, fy0, fx1, fy1] = fence
+// a quarter turn: the master plan's y becomes across the page (its bottom edge on the left), its x down the page,
+// so the fence's galley side, with the gate, is at the bottom
+const U = (y: number) => fy1 - y
+const V = (x: number) => x - fx0
+const box = (x0: number, y0: number, x1: number, y1: number) => {
+  const [u0, u1] = [U(y1), U(y0)], [v0, v1] = [V(x0), V(x1)]
+  return { x: f(u0), y: f(v0), width: f(u1 - u0), height: f(v1 - v0) }
+}
+const FENCE = 0.35 // the fence drawn as the studio draws a wall
 
 function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.4
+  const tick = 0.45, cx = f((x0 + x1) / 2)
   return (
     <g>
-      <line x1={x0} x2={x1} y1={y} y2={y} {...thin} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f((x0 + x1) / 2)} y={f(y - 0.45)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
+      <line x1={x0} x2={x1} y1={y} y2={y} {...line} />
+      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...line} />)}
+      <rect x={f(cx - 2.6)} y={f(y - 0.75)} width={5.2} height={1.5} className="fill-background" />
+      <text x={cx} y={f(y + 0.33)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
     </g>
   )
 }
+// the same, standing: the text turned to read down the page, as the studio's
 function DimensionUp({ y0, y1, x }: { y0: number; y1: number; x: number }) {
-  const tick = 0.4
-  const cy = f((y0 + y1) / 2)
+  const tick = 0.45, cy = f((y0 + y1) / 2)
   return (
     <g>
-      <line x1={x} x2={x} y1={y0} y2={y1} {...thin} />
-      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f(x - 0.45)} y={cy} textAnchor="middle" transform={`rotate(-90 ${f(x - 0.45)} ${cy})`} style={small}>{mm(y1 - y0)}</text>
+      <line x1={x} x2={x} y1={y0} y2={y1} {...line} />
+      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...line} />)}
+      <rect x={f(x - 0.75)} y={f(cy - 2.6)} width={1.5} height={5.2} className="fill-background" />
+      <text x={f(x + 0.33)} y={cy} textAnchor="middle" transform={`rotate(90 ${f(x + 0.33)} ${cy})`} style={small}>{mm(y1 - y0)}</text>
     </g>
   )
 }
 
 export function FarmingPlan({ title, className }: { title: string; className?: string }) {
-  const [fx0, fy0, fx1, fy1] = fence
-  const gw = 1.5 // half the gate
-  const end = walk[1][0]
-  const first = blocks[0]
-  const b0 = beds.find((b) => b.block === first.id)!
+  const W = fy1 - fy0, H = fx1 - fx0 // the fenced field, across and down the page
+  const gu = U(gate[1]), gw = 1.5 // the gate, its half width
+  const pu = U(mainY) // the main path's middle
+  const n = nursery
+  const top = Math.min(0, V(n.x)) - 1.5, bottom = H + 7.5
+  const left = -1.5, right = Math.max(W, U(n.y)) + 4
+  const row = -1.1 // the names, in one row above the fence
   return (
-    <svg viewBox={`${nursery.x - 3} ${fy0 - 5} ${end - nursery.x + 6} ${fy1 - fy0 + 10}`} role="img" aria-label={title} className={className}>
-      {/* The fence round the beds, its gate on the garden walk (the swing dashed) */}
-      <path d={`M${fx1} ${f(gate[1] - gw)}L${fx1} ${fy0}L${fx0} ${fy0}L${fx0} ${fy1}L${fx1} ${fy1}L${fx1} ${f(gate[1] + gw)}`} {...medium} />
-      <line x1={fx1} x2={f(fx1 - 2 * gw)} y1={f(gate[1] - gw)} y2={f(gate[1] - gw)} {...thin} />
-      <path d={`M${fx1} ${f(gate[1] + gw)}A${2 * gw} ${2 * gw} 0 0 1 ${f(fx1 - 2 * gw)} ${f(gate[1] - gw)}`} {...faint} />
+    <svg viewBox={`${f(left)} ${f(top)} ${f(right - left)} ${f(bottom - top)}`} role="img" aria-label={title} className={className}>
+      {/* The fence, drawn solid as the studio's walls, with the gate in the front toward the galley */}
+      <rect x={0} y={0} width={f(W)} height={FENCE} {...solid} />
+      <rect x={0} y={0} width={FENCE} height={f(H)} {...solid} />
+      <rect x={f(W - FENCE)} y={0} width={FENCE} height={f(H)} {...solid} />
+      <rect x={0} y={f(H - FENCE)} width={f(gu - gw)} height={FENCE} {...solid} />
+      <rect x={f(gu + gw)} y={f(H - FENCE)} width={f(W - gu - gw)} height={FENCE} {...solid} />
+      <path d={`M${f(gu - gw)} ${f(H)}A${2 * gw} ${2 * gw} 0 0 0 ${f(gu + gw)} ${f(H - 2 * gw)}`} {...dashed} />
+      <line x1={f(gu + gw)} x2={f(gu + gw)} y1={f(H)} y2={f(H - 2 * gw)} {...line} />
 
-      {/* The garden walk to the galley, and the main path across the field */}
-      <line x1={fx1} x2={end} y1={f(mainY - main / 2)} y2={f(mainY - main / 2)} {...thin} />
-      <line x1={fx1} x2={end} y1={f(mainY + main / 2)} y2={f(mainY + main / 2)} {...thin} />
-      <text x={f((fx1 + end) / 2)} y={f(mainY + 0.22)} textAnchor="middle" style={small}>TO THE GALLEY →</text>
-      <text x={f(fx0 + 6)} y={f(mainY + 0.22)} textAnchor="middle" style={small}>MAIN PATH</text>
+      {/* The beds: an outline each, solid where planted this season, dashed where resting or grown for sale */}
+      {beds.map((b) => <rect key={b.id} {...box(b.x, b.y, b.x + b.w, b.y + b.h)} {...(b.crop === "rest" ? dashed : line)} />)}
 
-      {/* The beds, each with this season's crop; two drip lines along each planted bed */}
-      {beds.map((b) => (
-        <g key={b.id}>
-          <rect {...rect(b.x, b.y, b.x + b.w, b.y + b.h)} {...(b.crop === "rest" ? dashed : thin)} />
-          {b.crop === "rest" ? null : [1 / 3, 2 / 3].map((k) => (
-            <line key={k} x1={f(b.x + 0.3)} x2={f(b.x + b.w - 0.3)} y1={f(b.y + b.h * k)} y2={f(b.y + b.h * k)} {...faint} />
-          ))}
-          <text x={f(b.x + b.w / 2)} y={f(b.y + b.h / 2 + 0.22)} textAnchor="middle" style={small}>
-            {b.crop === "rest" ? "REST · SALE" : NAME[b.crop]}
-          </text>
-        </g>
+      {/* The garden walk out of the gate to the galley */}
+      <line x1={f(pu - main / 2)} x2={f(pu - main / 2)} y1={f(H)} y2={f(H + 3.2)} {...line} />
+      <line x1={f(pu + main / 2)} x2={f(pu + main / 2)} y1={f(H)} y2={f(H + 3.2)} {...line} />
+
+      {/* The nursery's shade house above the field, trays on its benches */}
+      <rect {...box(n.x, n.y, n.x + n.w, n.y + n.h)} {...line} />
+      {[0.25, 0.75].map((k) => <rect key={k} {...box(n.x + n.w * k - 0.45, n.y + 0.6, n.x + n.w * k + 0.45, n.y + n.h - 0.6)} {...line} />)}
+
+      {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH */}
+      {([[f(pu / 2), "BEDS"], [f(pu), "MAIN PATH"], [f((pu + W) / 2), "BEDS"]] as const).map(([x, t], i) => (
+        <text key={i} x={x} y={f(row)} textAnchor="middle" style={label}>{t}</text>
       ))}
+      <text x={f(U(n.y + n.h) - 1)} y={f(V(n.x + n.w / 2) + 0.45)} textAnchor="end" style={label}>NURSERY</text>
+      <text x={f(pu)} y={f(H + 4.6)} textAnchor="middle" style={small}>GATE · TO THE GALLEY</text>
 
-      {/* The nursery's shade house in the yard strip, trays on four benches */}
-      <rect {...rect(nursery.x, nursery.y, nursery.x + nursery.w, nursery.y + nursery.h)} {...medium} />
-      {[0.25, 0.75].map((k) => (
-        <rect key={k} {...rect(nursery.x + nursery.w * k - 0.45, nursery.y + 0.6, nursery.x + nursery.w * k + 0.45, nursery.y + nursery.h - 0.6)} {...faint} />
-      ))}
-      <text x={f(nursery.x + nursery.w / 2)} y={f(nursery.y + nursery.h + 1.3)} textAnchor="middle" style={label}>NURSERY</text>
-
-      <Dimension x0={first.x} x1={f(first.x + first.w)} y={f(fy0 - 1.8)} />
-      <Dimension x0={fx0} x1={fx1} y={f(fy1 + 2.6)} />
-      <DimensionUp y0={b0.y} y1={f(b0.y + b0.h)} x={f(fx1 + 1.2)} />
-      <DimensionUp y0={fy0} y1={fy1} x={f(fx1 + 3.2)} />
+      <Dimension x0={0} x1={f(W)} y={f(H + 6.3)} />
+      <DimensionUp y0={0} y1={f(H)} x={f(right - 1.6)} />
     </svg>
   )
 }

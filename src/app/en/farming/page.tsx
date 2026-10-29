@@ -58,7 +58,7 @@ export default function FarmingPage() {
 
       {/* 2D, full screen: the field's plan (src/components/farming/farming-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
-        <FarmingPlan title={`Plan: ${bedsWide} raised beds 1.2 by 10 m in blocks of ten inside a fence, ${plan.bedsNeeded} of them planted for the galley and the rest resting or grown for sale, a 2 m main path from the gate on the garden walk to the galley, and the nursery's shade house beside the field.`}
+        <FarmingPlan title={`Plan, seen from the gate: a fenced field 53,500 by 44,500 mm of ${bedsWide} raised beds 1.2 by 10 m in blocks of ten either side of a 2 m main path, ${plan.bedsNeeded} planted this season (solid) and the rest resting or grown for sale (dashed); the gate at the front onto the garden walk to the galley, and the nursery’s shade house beyond the field.`}
           className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 
