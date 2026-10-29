@@ -9,8 +9,9 @@
   hexagonal pop-up tents. The studios follow the studio's hero (/en/studio, render/studio-hero.jpg), and the
   sign wall carries DIGITAL FARM in LED letters. Its neighbours stand beside it as the 2D draws them
   (compound.json neighbours), from their own pages' data: the volleyball court (volleyball.json) on the lawn between the guest rooms and the
-  parking, and, on a separate piece of ground past the 2D's break, in one band beside the study room, the vegetable
-  field's nearest beds turned to run west (farming plan.json) and beyond them the livestock house and paddock (livestock.json). Rendered two ways:
+  parking, and, on a separate piece of ground past the 2D's break, in one band beside the study room, the first half
+  of the vegetable field's nearest beds turned to run west (farming plan.json), cut there: the rest of the field,
+  the nursery and the livestock are on /en/farming. Rendered two ways:
 
     ?mode=line  line drawing in the page's ink        -> public/designs/compound/render/compound-line.png
     ?mode=real  paint, timber, stone, sun and shadow  -> public/designs/compound/render/compound-real.webp
@@ -50,8 +51,7 @@ const LINE = Q.get("mode") !== "real"
 const [FW, FH] = [2400, 1260]
 const C = await (await fetch(`/src/components/home/compound.json?${Date.now()}`)).json()
 // the neighbours the 2D draws beside the compound, from their own pages' data (compound.json neighbours)
-const [VB, LV, FP] = await Promise.all(["/src/components/volleyball/volleyball.json", "/src/components/livestock/livestock.json",
-  "/public/designs/farming/data/plan.json"].map(async (u) => (await fetch(`${u}?${Date.now()}`)).json()))
+const [VB, FP] = await Promise.all(["/src/components/volleyball/volleyball.json", "/public/designs/farming/data/plan.json"].map(async (u) => (await fetch(`${u}?${Date.now()}`)).json()))
 const N = C.neighbours
 const INK = "#2b2a26", PAGE = "#f7f5ef" // the farm theme's soil and chalk
 const HC = 2.591 // a container's height
@@ -455,12 +455,13 @@ function group(build, pos, rotY = 0) {
 // ------------------------------------------------------------ the site
 // As the 2D draws it: the compound on its ground, a model base, with no lake, road or trees (D-022).
 // the base reaches 2.5 m past the outermost buildings east and west
-// and past the neighbours: the livestock paddock west; east, the outermost building (the court is inside)
-const MX0 = N.livestock.paddock[0] - 2.5
+// and past the neighbours: the field's cut west; east, the outermost building (the court is inside)
+const FIELD_WEST = N.field.corner[0] - (Math.max(...FP.beds.filter((b) => N.field.blocks.includes(b.block) && Number(b.id.split("-")[1]) <= N.field.beds).map((b) => b.y + b.h)) + N.field.cut - FP.fence[1])
+const MX0 = FIELD_WEST - 2.5
 const MX1 = Math.max(...C.units.map((u) => u.box[2])) + 2.5
 const [MZ0, MZ1] = [-8.4, 45.6]
 // one lawn over the whole base, its top level with the old courtyard lawn: no courtyard outline, as the 2D;
-// the base splits at the 2D's break, where the field and the livestock are drawn close
+// the base splits at the 2D's break, where the field is drawn close
 slab([MX0, MZ0, N.break - 0.8, MZ1], 0.01, -1.0, 1.035, "lawn", { sides: "soil" })
 slab([N.break + 0.8, MZ0, MX1, MZ1], 0.01, -1.0, 1.035, "lawn", { sides: "soil" })
 
@@ -820,44 +821,6 @@ const G = 0.035 // the lawn's top
   }
 }
 
-// The livestock house (/en/livestock), its open side toward the gates: x_c = x + local x, z = y - local y.
-{
-  const [ax, az] = N.livestock.at, h = LV.house, [L, W] = [h.l / 2, h.w / 2], F = h.floor
-  const X = (x) => ax + x, Z = (y) => az - y
-  for (const x of h.posts.x) for (const y of h.posts.y) blk(X(x) - 0.05, Z(y) - 0.05, X(x) + 0.05, Z(y) + 0.05, G, F, "slat")
-  blk(X(-L), Z(-W), X(L), Z(W), F - 0.05, F, "timber")
-  blk(X(-L), Z(-W), X(L), Z(-W) - 0.04, F, F + h.back.h, "timber") // the boarded back wall
-  for (const x of [-L, L - 0.04]) blk(X(x), Z(-W), X(x + 0.04), Z(W), F, F + h.back.h, "timber")
-  const fy = W - h.passage.d
-  blk(X(-L), Z(fy) - 0.02, X(L), Z(fy) + 0.02, F, F + 0.6, "slat") // the pens' front fence: boards, then a rail
-  blk(X(-L), Z(fy) - 0.03, X(L), Z(fy) + 0.03, F + h.front.h - 0.06, F + h.front.h, "slat")
-  for (const p of LV.pens.list.slice(1)) blk(X(p.x0) - 0.02, Z(-W), X(p.x0) + 0.02, Z(fy), F, F + h.front.h, "slat")
-  // the mono-pitch roof, high over the passage and falling to the back
-  const [rf, rb, o] = [F + h.roof.front, F + h.roof.back, h.roof.over], a = Math.atan2(rf - rb, 2 * W)
-  add(new THREE.BoxGeometry(2 * (L + o), 0.04, (2 * (W + o)) / Math.cos(a)), "roofsheet", { pos: [ax, (rf + rb) / 2, az], rot: [a, 0, 0] })
-  const rl = Math.hypot(LV.ramp.l, F)
-  add(new THREE.BoxGeometry(1.0, 0.05, rl), "timber", { pos: [ax, F / 2, Z(W) - LV.ramp.l / 2], rot: [-Math.atan2(F, LV.ramp.l), 0, 0] })
-  cyl(X(LV.tank.x), Z(LV.tank.y), LV.tank.r * 0.8, G, LV.tank.stand, "slat", 8)
-  cyl(X(LV.tank.x), Z(LV.tank.y), LV.tank.r, LV.tank.stand, LV.tank.h, "black", 20)
-  // the herd in their pens (real mode only: at this scale they would only clutter the line drawing)
-  if (!LINE) for (const [kind, list] of [["goat", LV.animals.goats], ["sheep", LV.animals.sheep]]) for (const b of list) {
-    group(() => {
-      blk(-0.32, -0.13, 0.32, 0.13, 0.35, 0.68, kind)
-      blk(0.3, -0.07, 0.48, 0.07, 0.6, 0.82, kind)
-      for (const [lx, lz] of [[-0.25, -0.08], [-0.25, 0.08], [0.22, -0.08], [0.22, 0.08]]) blk(lx - 0.03, lz - 0.03, lx + 0.03, lz + 0.03, 0, 0.36, kind)
-    }, [X(b.x), F, Z(b.y)], THREE.MathUtils.degToRad(b.h))
-  }
-  // the paddock's post-and-wire fence
-  const [p0, q0, p1, q1] = N.livestock.paddock
-  const side = (a, b) => {
-    const len = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.ceil(len / 2.5)
-    for (let k = 0; k <= n; k++) cyl(a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n, 0.05, G, 1.2, "slat", 6)
-    for (const y of [0.5, 1.1]) pipe([a[0], y, a[1]], [b[0], y, b[1]], 0.012, "wire")
-  }
-  side([p0, q0], [p1, q0]); side([p1, q0], [p1, q1]); side([p0, q0], [p0, q1])
-  side([p0, q1], [X(-L), q1]); side([X(L), q1], [p1, q1])
-}
-
 // The vegetable field (/en/farming): its blocks nearest the compound, each bed 1.2 x 10 m and 20 cm high, crop rows
 // on the beds that grow this season. Turned a quarter as on the 2D (compound.json): plan.json's y runs west, its x
 // toward the gates. The fence on the two sides toward the compound; the field goes on past the far ones.
@@ -865,14 +828,14 @@ const G = 0.035 // the lawn's top
   const [cx, cz] = N.field.corner, [, top, east] = FP.fence
   const M = (x, y) => [cx - (y - top), cz - (east - x)]
   const box = (xa, ya, xb, yb, y0, y1, name) => blk(...M(xa, ya), ...M(xb, yb), y0, y1, name)
-  const beds = FP.beds.filter((b) => N.field.blocks.includes(b.block))
+  const beds = FP.beds.filter((b) => N.field.blocks.includes(b.block) && Number(b.id.split("-")[1]) <= N.field.beds)
   beds.forEach((b, k) => {
     box(b.x, b.y, b.x + b.w, b.y + b.h, G, G + 0.2, "bed")
     if (b.crop === "rest") return
     for (const r of [0.3, 0.6, 0.9]) box(b.x + 0.25, b.y + r - 0.11, b.x + b.w - 0.25, b.y + r + 0.11, G + 0.2, G + 0.42, k % 3 ? "crop" : "crop2")
   })
   const shown = FP.blocks.filter((b) => N.field.blocks.includes(b.id))
-  const far = Math.max(...shown.map((b) => b.y + b.h)) + N.field.cut, west = Math.min(...shown.map((b) => b.x)) - 0.5
+  const far = Math.max(...beds.map((b) => b.y + b.h)) + N.field.cut, west = Math.min(...shown.map((b) => b.x)) - 0.5
   const fence = (a, b) => {
     const len = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(1, Math.ceil(len / 2.5))
     for (let k = 0; k <= n; k++) cyl(a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n, 0.05, G, 1.5, "slat", 6)

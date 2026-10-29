@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { BuildUp } from "@/components/docs/build-up"
 import { ItemRail, type RailItem } from "@/components/docs/item-rail"
 import { FarmingPlan } from "@/components/farming/farming-plan"
+import { LivestockPlan } from "@/components/livestock/livestock-plan"
 import plan from "../../../../public/designs/farming/data/plan.json"
 import topPieces from "../../../../public/designs/farming/render/top-pieces.json"
 
@@ -73,6 +74,22 @@ export default function FarmingPage() {
           <h2 className="text-3xl font-semibold tracking-tight">2D</h2>
           <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
             <FarmingPlan title={`Plan: ${bedsWide} raised beds 1.2 by 10 m in blocks of ten inside a fence, ${plan.bedsNeeded} of them planted for the galley and the rest resting or grown for sale, a 2 m main path from the gate on the garden walk to the galley, and the nursery's shade house beside the field.`}
+              className="h-auto w-full lg:h-full lg:w-auto" />
+          </div>
+        </div>
+      </section>
+
+      {/* Livestock: the homepage's 2D shows half the field and sends "the whole farm" here (D-035), so the farm's
+          other land use is drawn here too, the house's plan from /en/livestock, with a link to its page. */}
+      <section id="livestock">
+        <div className="flex flex-col px-4 pt-10 pb-6 md:px-10 lg:h-svh lg:min-h-[560px]">
+          <div className="flex flex-wrap items-baseline justify-between gap-4">
+            <h2 className="text-3xl font-semibold tracking-tight">Livestock</h2>
+            <Link href="/en/livestock" className="text-sm underline underline-offset-4">The livestock page</Link>
+          </div>
+          <p className="text-muted-foreground mt-3 max-w-2xl">Six goats and four sheep in one raised house at the top of its paddock, beyond the field.</p>
+          <div className="mt-6 flex min-h-0 flex-1 items-center justify-center">
+            <LivestockPlan title="Plan of the livestock house: a raised house 7,000 by 3,900 mm under an overhanging roof; a goat pen for 6 goats, a sheep pen for 4 sheep, a kidding pen and a feed store behind a feed passage, a ramp down at the west end and a tank at the back east corner."
               className="h-auto w-full lg:h-full lg:w-auto" />
           </div>
         </div>

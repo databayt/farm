@@ -1,7 +1,6 @@
 import type { ReactNode } from "react"
 
 import plan from "../../../public/designs/farming/data/plan.json"
-import livestock from "../livestock/livestock.json"
 import site from "../site/site.json"
 import volleyball from "../volleyball/volleyball.json"
 import compound from "./compound.json"
@@ -34,7 +33,7 @@ const WAY = spreadBy(compound.spread.wayIn)
 // The neighbours are placed after the spread already (compound.json neighbours): only turned top to bottom.
 const N = compound.neighbours
 const T = ([x, y]: Point) => [x, SIZE - y]
-// The frame follows the spread and the neighbours: from the arrow that carries the land on westward to past
+// The frame follows the spread and the neighbours: from the arrow that carries the land on to /en/farming to past
 // the public bathroom, the outermost building east.
 const court = volleyball.court
 const VIEW = [
@@ -402,7 +401,7 @@ function Volleyball() {
 }
 
 // West of the compound, past the break, in the band of land from the study room to the first guest room: the
-// vegetable field's blocks nearest it (/en/farming), each bed 1.2 x 10 m as plan.json lays them, turned a quarter
+// first half of the vegetable field's two blocks nearest it (/en/farming), cut there; each bed 1.2 x 10 m as plan.json lays them, turned a quarter
 // so the field runs west: plan.json's y (toward its far end) runs left, its x (its fence's east side at the top)
 // runs down the page. Its fence on the two sides toward the compound; the field goes on past both break lines.
 function Field() {
@@ -410,8 +409,8 @@ function Field() {
   const [, top, east] = plan.fence
   const F = (x: number, y: number) => [f(fx - (y - top)), f(fy + (east - x))]
   const shown = plan.blocks.filter((b) => N.field.blocks.includes(b.id))
-  const beds = plan.beds.filter((b) => N.field.blocks.includes(b.block))
-  const far = Math.max(...shown.map((b) => b.y + b.h)) + N.field.cut
+  const beds = plan.beds.filter((b) => N.field.blocks.includes(b.block) && Number(b.id.split("-")[1]) <= N.field.beds)
+  const far = Math.max(...beds.map((b) => b.y + b.h)) + N.field.cut
   const west = Math.min(...shown.map((b) => b.x)) - 0.5
   const [ex, ey0] = F(east, top)
   const [wx, ey1] = F(west, far)
@@ -433,8 +432,8 @@ function Field() {
   )
 }
 
-// At the drawing's west edge, the land going on: an arrow pointing out of the drawing, to the master plan,
-// which draws all of it (founder, 2026-10-29).
+// At the field's cut, the land going on: an arrow pointing out of the drawing to /en/farming, which draws the
+// whole field, the nursery and the livestock (founder, 2026-10-29).
 function Continues() {
   const [x, y] = T(N.continues.at)
   const end = x - N.continues.length
@@ -442,45 +441,12 @@ function Continues() {
     <Page href={N.continues.page}>
       <path d={`M${f(x)} ${f(y)}H${f(end)}M${f(end + 0.6)} ${f(y - 0.4)}L${f(end)} ${f(y)}L${f(end + 0.6)} ${f(y + 0.4)}`} {...medium} />
       <text x={f(end)} y={f(y - 1)} style={small}>
-        CONTINUED
+        SEE THE WHOLE FARM
       </text>
       <text x={f(end)} y={f(y + 1.5)} style={{ ...small, fontWeight: 500 }}>
-        MASTER PLAN
+        FIELD · NURSERY · LIVESTOCK
       </text>
     </Page>
-  )
-}
-
-// The livestock house (/en/livestock) at the paddock's top fence: 7.0 x 3.9 m, the pens behind the feed passage,
-// its open side toward the gates, the ramp down into the paddock and the tank at its east end.
-function Livestock() {
-  const { house, pens, ramp, tank, animals } = livestock
-  const [cx, cy] = T(N.livestock.at)
-  const [L, W] = [house.l / 2, house.w / 2]
-  const fence = cy + W - house.passage.d
-  const [px0, py1, px1, py0] = N.livestock.paddock
-  const [, ty] = T([0, py0])
-  const [, by] = T([0, py1])
-  return (
-    <g>
-      <rect {...at([px0, ty, px1, by])} {...thin} strokeDasharray="6 3" />
-      <rect {...at([cx - L - house.roof.over, cy - W - house.roof.over, cx + L + house.roof.over, cy + W + house.roof.over])} {...thin} strokeDasharray="3 3" />
-      <path d={`M${f(cx - L)} ${f(cy + W)}V${f(cy - W)}H${f(cx + L)}V${f(cy + W)}`} {...wall} />
-      <line x1={f(cx - L)} x2={f(cx + L)} y1={f(fence)} y2={f(fence)} {...thin} />
-      {pens.list.slice(1).map((p) => (
-        <line key={p.id} x1={f(cx + p.x0)} x2={f(cx + p.x0)} y1={f(cy - W)} y2={f(fence)} {...thin} />
-      ))}
-      <rect {...at([cx - 0.5, cy + W, cx + 0.5, cy + W + ramp.l])} {...thin} />
-      <circle cx={f(cx + tank.x)} cy={f(cy + tank.y)} r={tank.r} {...thin} />
-      <Page href={N.livestock.page}>
-        <text x={f(cx)} y={f(by + 1.0)} textAnchor="middle" style={label}>
-          LIVESTOCK · {animals.goats.length} GOATS, {animals.sheep.length} SHEEP
-        </text>
-      </Page>
-      <text x={f(px0 + 0.5)} y={f(by - 0.6)} style={small}>
-        PADDOCK
-      </text>
-    </g>
   )
 }
 
@@ -540,11 +506,10 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       <Bar unit={units.bar} east={B(units.rooms.box)[2]} />
       <GuestRooms unit={units.rooms} />
 
-      {/* The neighbours, drawn close: the volleyball court on the lawn; past the break, the field and the livestock */}
+      {/* The neighbours, drawn close: the volleyball court on the lawn; past the break, half the field and the way to the rest */}
       <Volleyball />
       <Break />
       <Field />
-      <Livestock />
       <Continues />
 
       {/* The courtyard: no outline, only its name and the stone fire pit */}
