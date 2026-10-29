@@ -19,8 +19,9 @@ import wallPieces from "../../../../public/designs/studio/render/wall-pieces.jso
 // Public showcase of the container-studio design package (study/studio, D-014..D-016).
 // Every number here comes from the generated package; the docs hold the evidence.
 
-// The docs pages the reference sections moved to, linked from the end of this page.
+// The execution plan, then the docs pages the reference sections moved to, linked from the end of this page.
 const DOCS = [
+  { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." },
   { href: "/docs/studio-materials", title: "Bill of materials", text: "Every line one studio needs, section by section, and what the studios share with the farm." },
   { href: "/docs/studio-circuits", title: "Circuits and points", text: "The eight circuits, checked against breaker, cable and voltage drop, and every light, switch and socket." },
   { href: "/docs/studio-pipes", title: "Pipe runs and points", text: "Every run with its size, length and fall, and every valve, tap and drain." },
@@ -408,16 +409,20 @@ export default function StudioPage() {
 
       {/* The reference sections live in the docs (scripts/sync-docs.mjs, src/components/studio/docs-sections.tsx):
           the bill of materials, the circuit and pipe schedules with their points, and the studio's features and
-          downloads. A card each. */}
+          downloads. A card each, after the execution plan's. */}
       <section id="docs" className="scroll-mt-20 border-t py-16">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
           <h2 className="text-3xl font-semibold tracking-tight">In the docs</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {DOCS.map((d) => (
               <Link key={d.href} href={d.href} className="group hover:bg-muted/40 rounded-xl border p-5 transition-colors">
-                <h3 className="flex items-center gap-2 font-medium">
-                  {d.title}
-                  <ArrowRight className="text-muted-foreground size-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
+                <h3 className="font-medium">
+                  {/* the arrow keeps to the title's last word, so it never wraps onto a line of its own */}
+                  {d.title.split(" ").slice(0, -1).join(" ")}{" "}
+                  <span className="whitespace-nowrap">
+                    {d.title.split(" ").at(-1)}{" "}
+                    <ArrowRight className="text-muted-foreground inline size-4 align-[-3px] transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" />
+                  </span>
                 </h3>
                 <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{d.text}</p>
               </Link>
