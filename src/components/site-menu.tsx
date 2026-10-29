@@ -55,7 +55,7 @@ export function SiteMenu({
         className={cn("inline-grid size-10 place-items-center rounded-full", className)}
       >
         {full ? (
-          <span aria-hidden className="flex w-5 flex-col gap-1.5">
+          <span aria-hidden className="flex w-4 flex-col gap-1.5">
             <span className="h-0.5 rounded-full bg-current" />
             <span className="h-0.5 rounded-full bg-current" />
           </span>
