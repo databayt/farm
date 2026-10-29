@@ -75,7 +75,7 @@ export function LivestockPlan({ title, className }: { title: string; className?:
   const { hall, kidding, store } = pens
   const Y = yards.y1
   const door = 0.7
-  const { ducks, rabbits, dovecote, cats, bench } = friends
+  const { dovecote, cats, bench } = friends
   const yg = yards.gate, dg = dogs.gate
   const x0 = yards.x0 - 0.3, x1 = yards.x1 + 0.75
   const top = palisade.y - 0.6, bottom = Y + 1.1
@@ -131,16 +131,7 @@ export function LivestockPlan({ title, className }: { title: string; className?:
       <circle cx={tree.x} cy={tree.y} r={tree.guard} {...line} />
       <circle cx={tree.x} cy={tree.y} r={0.13} {...solid} />
 
-      {/* The farm friends: the duck house and the pond on its gravel apron, the rabbits' hutch with its run built on,
-          the dovecote on its pole, the cats' house on a post, a log bench */}
-      <rect {...box(ducks.house)} {...line} />
-      <line x1={ducks.house.x0} x2={ducks.house.x1} y1={f((ducks.house.y0 + ducks.house.y1) / 2)} y2={f((ducks.house.y0 + ducks.house.y1) / 2)} {...fine} />
-      <ellipse cx={ducks.pond.x} cy={ducks.pond.y} rx={f(ducks.pond.rx + ducks.pond.apron)} ry={f(ducks.pond.ry + ducks.pond.apron)} {...dashed} />
-      <ellipse cx={ducks.pond.x} cy={ducks.pond.y} rx={ducks.pond.rx} ry={ducks.pond.ry} {...line} />
-      <ellipse cx={ducks.pond.x} cy={ducks.pond.y} rx={f(ducks.pond.rx - 0.12)} ry={f(ducks.pond.ry - 0.12)} {...fine} />
-      <rect {...box(rabbits.hutch)} {...line} />
-      <line x1={f((rabbits.hutch.x0 + rabbits.hutch.x1) / 2)} x2={f((rabbits.hutch.x0 + rabbits.hutch.x1) / 2)} y1={rabbits.hutch.y0} y2={rabbits.hutch.y1} {...fine} />
-      <rect {...box(rabbits.run)} {...fine} />
+      {/* The farm friends: the dovecote on its pole, the cats' house on a post by the palisade, a log bench */}
       <rect {...rect(dovecote.x - dovecote.s / 2, dovecote.y - dovecote.s / 2, dovecote.x + dovecote.s / 2, dovecote.y + dovecote.s / 2)} {...line} />
       <circle cx={dovecote.x} cy={dovecote.y} r={0.07} {...solid} />
       <rect {...rect(cats.house.x - cats.house.s / 2, cats.house.y - cats.house.s / 2, cats.house.x + cats.house.s / 2, cats.house.y + cats.house.s / 2)} {...line} />
@@ -184,15 +175,12 @@ export function LivestockPlan({ title, className }: { title: string; className?:
 
       {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH; the rest in place */}
       {([
-        [(ducks.house.x0 + ducks.house.x1) / 2, "DUCKS"], [(rabbits.hutch.x0 + rabbits.hutch.x1) / 2, "RABBITS"],
-        [(hall.x0 + kidding.x0) / 2, hall.label], [(store.x0 + store.x1) / 2, store.label], [tank.x, "TANK"],
+        [cats.house.x, "CATS"], [(hall.x0 + kidding.x0) / 2, hall.label], [(store.x0 + store.x1) / 2, store.label], [tank.x, "TANK"],
         [compost.x0 + compost.bay / 2, "COMPOST"], [(dogs.x0 + dogs.x1) / 2, "DOGS"],
       ] as const).map(([x, t]) => <text key={t} x={f(x)} y={f(row)} textAnchor="middle" style={label}>{t}</text>)}
       <text x={f((kidding.x0 + kidding.x1) / 2)} y={f(W - 0.35)} textAnchor="middle" style={small}>{kidding.label}</text>
       <text x={-1.0} y={3.4} textAnchor="middle" style={label}>VILLAGE YARD</text>
-      <text x={ducks.pond.x} y={f(ducks.pond.y + 0.05)} textAnchor="middle" style={small}>POND</text>
       <text x={dovecote.x} y={f(dovecote.y + dovecote.s / 2 + 0.22)} textAnchor="middle" style={small}>DOVES</text>
-      <text x={cats.house.x} y={f(cats.house.y + cats.house.s / 2 + 0.22)} textAnchor="middle" style={small}>CATS</text>
       <text x={f((bench.x0 + bench.x1) / 2)} y={f(bench.y + 0.4)} textAnchor="middle" style={small}>BENCH</text>
       <text x={f(yg.x0 + yg.w / 2)} y={f(bottom - 0.12)} textAnchor="middle" style={small}>TO THE PADDOCK · GUESTS</text>
 
