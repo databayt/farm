@@ -85,5 +85,52 @@
     "x": -0.3,
     "w": 0.9,
     "fan": {"x": 4.4}
+  },
+  "electric": {
+    "about": "The study room's wiring in the studio's pattern (D-021): a surface unit board on the back wall, a double-pole main switch and type 2 surge protection, one RCBO 30 mA type A per circuit, cables in conduit in the linings. A double socket over every desk, so each of the twelve seats has its own; the screen wall and the reading corner on a circuit of their own; the AC behind an isolator. The supply is a cable from the farm's site board; its size is the electrician's. Points in plan metres (x, y as the plan, z above the finished floor) at their centre; size in mm (w, h, d). design_A: lights and the fan from their watts at 230 V; the desks at twelve laptops of about 65 W each [A]; the screen and the corner at a 65-inch screen and a lamp [A]; the AC provision at the studio's (C7). rwf: the studio BOM's placeholder unit prices (AS-21), not quotes. existing: drawn by the room's own 3D already (the pendants, the wall fan).",
+    "main_A": 32,
+    "circuits": [
+      { "id": "C1", "serves": "Pendants and the wall fan", "device": "B6", "cable_mm2": 1.5, "group": "lights", "colour": "#2a78d6" },
+      { "id": "C2", "serves": "Desk sockets, all twelve seats", "device": "B16", "cable_mm2": 2.5, "design_A": 4, "group": "sockets", "colour": "#eb6834" },
+      { "id": "C3", "serves": "Screen wall and reading corner", "device": "B16", "cable_mm2": 2.5, "design_A": 2, "group": "sockets", "colour": "#eb6834" },
+      { "id": "C4", "serves": "AC", "device": "B16", "cable_mm2": 2.5, "design_A": 12, "group": "fixed", "colour": "#1baf7a" },
+      { "id": "C5", "serves": "Spare", "device": "B16", "cable_mm2": 2.5, "group": "spare", "colour": "#9a9893" }
+    ],
+    "points": [
+      { "id": "DB", "model": "board", "description": "Unit board, 12 modules, on the back wall between the last desk and the reading corner", "at": [3.15, -1.08, 1.65], "face": "+y", "size": [300, 250, 100], "rwf": 65000 },
+      { "id": "L1", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 1", "at": [-4.6, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L2", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 2", "at": [-3.3, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L3", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 3", "at": [-2.0, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L4", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 4", "at": [-0.7, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L5", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 5", "at": [0.6, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L6", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 6", "at": [1.9, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L7", "model": "pendant", "circuit": "C1", "description": "Pendant, over the reading corner, left", "at": [3.75, -0.2, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L8", "model": "pendant", "circuit": "C1", "description": "Pendant, over the reading corner, right", "at": [5.0, -0.2, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "S1", "model": "switch2", "circuit": "C1", "description": "Two-gang switch by the screen end of the glazing: the desk rows, L1 to L3 and L4 to L6", "at": [-5.965, 0.88, 1.1], "face": "+x", "size": [146, 86, 10], "rwf": 3500 },
+      { "id": "S2", "model": "switch", "circuit": "C1", "description": "Switch under the board: the reading corner, L7 and L8", "at": [3.15, -1.125, 1.1], "face": "+y", "size": [86, 86, 10], "rwf": 3500 },
+      { "id": "F1", "model": "wallfan", "circuit": "C1", "description": "Wall fan, high on the back wall over the reading corner", "at": [4.4, -0.91, 1.8], "face": "+y", "size": [400, 400, 260], "watts": 45, "rwf": 35000, "existing": true },
+      { "id": "P1", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 1, one for each seat", "at": [-4.6, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P2", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 2, one for each seat", "at": [-3.3, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P3", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 3, one for each seat", "at": [-2.0, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P4", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 4, one for each seat", "at": [-0.7, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P5", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 5, one for each seat", "at": [0.6, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P6", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 6, one for each seat", "at": [1.9, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P7", "model": "socket2", "circuit": "C3", "description": "Double socket behind the screen cabinet, for the screen and a laptop", "at": [-5.965, -0.15, 0.75], "face": "+x", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P8", "model": "usb", "circuit": "C3", "description": "Socket + USB-C in the reading corner, for the floor lamp and phones", "at": [4.85, -1.125, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 15000 },
+      { "id": "P9", "model": "isolator", "circuit": "C4", "description": "AC isolator beside the split unit", "at": [0.4, -1.12, 1.95], "face": "+y", "size": [86, 86, 20], "rwf": 9000 },
+      { "id": "A1", "model": "alarm", "description": "Smoke alarm, 10-year battery, on the ceiling mid-room", "at": [-2.6, 0.5, 2.28], "face": "down", "size": [100, 100, 40], "rwf": 20000 }
+    ]
+  },
+  "network": {
+    "about": "Wi-Fi for twelve laptops and the screen: one ceiling access point, powered over its cable from the office's PoE switch, which the outdoor cable reaches through an entry box low on the back wall (the office's network, office.json). The screen casts over the Wi-Fi and has a data outlet as a fallback. Nothing is sourced or priced yet.",
+    "circuits": [
+      { "id": "N1", "serves": "PoE to the access point", "group": "data", "colour": "#8e5bd6" },
+      { "id": "N2", "serves": "Data to the screen", "group": "data", "colour": "#c2489b" }
+    ],
+    "points": [
+      { "id": "NE", "model": "data", "description": "Entry box: the outdoor cable from the office's switch comes in here", "at": [2.75, -1.125, 0.3], "face": "+y", "size": [86, 86, 10] },
+      { "id": "AP1", "model": "ap", "circuit": "N1", "description": "Wi-Fi access point on the ceiling, mid-room", "at": [-1.35, 0.2, 2.28], "face": "down", "size": [200, 200, 35] },
+      { "id": "D1", "model": "data", "circuit": "N2", "description": "Data outlet behind the screen cabinet, for the screen", "at": [-5.965, 0.15, 0.75], "face": "+x", "size": [86, 86, 10] }
+    ]
   }
 }

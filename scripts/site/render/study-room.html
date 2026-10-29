@@ -10,6 +10,14 @@
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/study-room/render/study-room-line.png
     ?mode=real  materials, daylight and shadow         -> public/designs/study-room/render/study-room-real.webp
+    &view=electric  the wiring and the Wi-Fi in the same view (study-room.json `electric` and `network`, built by
+                room-services.js): line mode draws the room faint, every device dark and each circuit's run in its
+                colour, and sets window.TAGS -> render/electric-line.png + render/electric-tags.json; real mode
+                shows the finished devices -> render/electric-real.webp
+    &item=<id>  one piece on its own, real mode, 1200 x 900 on a transparent ground: the furniture (desk, chair,
+                screen, cabinet, whiteboard, lectern, shelves, armchair, sidetable, floorlamp, rug, ac)
+                -> render/furniture/<id>.webp, or a device by its model (board, pendant, switch2, switch, wallfan,
+                socket2, usb, isolator, alarm, ap, data) -> render/electric/<id>.webp
 
   Serve the repo root on a spare port, open this page at 2400 x 1000, and once body[data-ready] is set
   save the data URL in #out.
@@ -39,10 +47,13 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
 import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+import { services, frameItem, itemGround } from "./room-services.js"
 
 const Q = new URLSearchParams(location.search)
 const LINE = Q.get("mode") !== "real"
-const [FW, FH] = [2400, 1000]
+const ITEM = Q.get("item"), ELEC = Q.get("view") === "electric"
+const [FW, FH] = ITEM ? [1200, 900] : [2400, 1000]
+let TAG = "" // the piece being built, for ?item=
 const C = await (await fetch(`/src/components/study-room/study-room.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#ffffff"
 // plan (x right, y toward the glazing) -> three: x = x, y = height, z = y; the camera stands on the deck side, at +z
@@ -254,6 +265,7 @@ function add(geo, name, opts = {}) {
   if (opts.rot) mesh.rotation.set(...opts.rot)
   if (opts.scale) mesh.scale.set(...opts.scale)
   if (opts.noEdges) mesh.userData.noEdges = true
+  mesh.userData.tag = TAG
   ;(opts.parent ?? scene).add(mesh)
   meshes.push(mesh)
   return mesh
@@ -290,7 +302,7 @@ function plant(x, z, y, height) {
 const { container: K, room: R, deck, desks, screen, shelves, reading, plants, lights, ac } = C
 const [L, W] = [K.l / 2, K.w / 2]
 const Y0 = K.plinth, FL = Y0 + R.floor, Y1 = Y0 + K.h
-if (!LINE) add(new THREE.CircleGeometry(30, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], noShadow: true })
+if (!LINE && !ITEM) add(new THREE.CircleGeometry(30, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], noShadow: true })
 blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
 {
   const front = W + deck.d, st = deck.step
@@ -344,11 +356,13 @@ blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
   const { w, l, h, chair: ch } = desks
   desks.x.forEach((x, row) => {
     const [x0, x1, z0, z1] = [x - w / 2, x + w / 2, R.back, R.back + l]
+    TAG = row ? `desk#${row}` : "desk"
     blk(x0, z0, x1, z1, FL + h - 0.03, FL + h, "pine", { r: 0.006 })
     for (const lx of [x0 + 0.04, x1 - 0.04]) for (const lz of [z0 + 0.05, z1 - 0.05]) blk(lx - 0.02, lz - 0.02, lx + 0.02, lz + 0.02, FL, FL + h - 0.03, "leg")
     blk(x0 + 0.02, z0 + 0.05, x0 + 0.04, z1 - 0.05, FL + h - 0.2, FL + h - 0.03, "pine") // the modesty rail on the screen side
     for (const [k, y] of desks.seats.entries()) {
       // the chair faces the screen (-x), its back toward the next row
+      TAG = row || k ? `chair#${row}-${k}` : "chair"
       const cx = x1 + ch.gap + ch.d / 2, [a0, a1, b0, b1] = [cx - ch.d / 2, cx + ch.d / 2, y - ch.w / 2, y + ch.w / 2]
       for (const lx of [a0 + 0.03, a1 - 0.03]) for (const lz of [b0 + 0.03, b1 - 0.03]) blk(lx - 0.016, lz - 0.016, lx + 0.016, lz + 0.016, FL, FL + ch.seat - 0.03, "leg")
       blk(a0, b0, a1, b1, FL + ch.seat - 0.03, FL + ch.seat, "pine", { r: 0.008 })
@@ -357,6 +371,7 @@ blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
       blk(a1 - 0.05, b0 + 0.01, a1 - 0.01, b1 - 0.01, FL + ch.back - 0.16, FL + ch.back, "pine", { r: 0.008 })
       // on the desk: a laptop at some seats, a notebook at others
       const dz = y, dx = x
+      TAG = ""
       if ((row + k) % 3 === 0) {
         blk(dx - 0.12, dz - 0.16, dx + 0.12, dz + 0.16, FL + h, FL + h + 0.012, "laptop")
         const lid = add(new THREE.BoxGeometry(0.008, 0.22, 0.32), "laptop", { pos: [dx - 0.12, FL + h + 0.11, dz] })
@@ -371,20 +386,26 @@ blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
 // ------------------------------------------------------------ the screen wall (east, -x)
 {
   const [p0, p1] = screen.panel, mz = (p0 + p1) / 2, x = R.x0
+  TAG = "slats"
   blk(x, p0, x + 0.03, p1, FL, Y0 + R.ceiling - 0.05, "slats")
+  TAG = "screen"
   blk(x + 0.03, mz - screen.w / 2, x + 0.07, mz + screen.w / 2, FL + screen.y0, FL + screen.y0 + screen.h, "screen", { r: 0.008 })
   const c = screen.cabinet
+  TAG = "cabinet"
   blk(x + 0.03, mz - c.l / 2, x + 0.03 + c.d, mz + c.l / 2, FL + 0.1, FL + c.h, "pine", { r: 0.006 })
   for (const z of [mz - c.l / 2 + 0.06, mz + c.l / 2 - 0.06]) blk(x + 0.08, z - 0.02, x + c.d - 0.02, z + 0.02, FL, FL + 0.1, "leg")
   for (let k = 1; k < 4; k++) { const z = mz - c.l / 2 + (c.l * k) / 4; blk(x + 0.03 + c.d, z - 0.002, x + 0.035 + c.d, z + 0.002, FL + 0.12, FL + c.h - 0.02, "black", { noEdges: true }) }
+  TAG = ""
   plant(x + 0.2, mz + c.l / 2 - 0.2, FL + c.h, 0.32)
   // the whiteboard on the back wall
   const wb = screen.whiteboard
+  TAG = "whiteboard"
   blk(wb.x[0], R.back, wb.x[1], R.back + 0.02, FL + wb.y0, FL + wb.y0 + wb.h, "alu")
   blk(wb.x[0] + 0.015, R.back + 0.02, wb.x[1] - 0.015, R.back + 0.024, FL + wb.y0 + 0.015, FL + wb.y0 + wb.h - 0.015, "board", { noEdges: true })
   blk(wb.x[0] + 0.1, R.back, wb.x[1] - 0.1, R.back + 0.06, FL + wb.y0 - 0.03, FL + wb.y0, "alu") // the pen tray
   // the lectern: a small oak table, standing height
   const lc = screen.lectern
+  TAG = "lectern"
   const [a0, a1, b0, b1] = [lc.x - lc.w / 2, lc.x + lc.w / 2, lc.y - lc.d / 2, lc.y + lc.d / 2]
   blk(a0, b0, a1, b1, FL + lc.h - 0.03, FL + lc.h, "pine", { r: 0.006 })
   for (const lx of [a0 + 0.04, a1 - 0.04]) for (const lz of [b0 + 0.04, b1 - 0.04]) blk(lx - 0.02, lz - 0.02, lx + 0.02, lz + 0.02, FL, FL + lc.h - 0.03, "leg")
@@ -393,6 +414,7 @@ blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
 
 // ------------------------------------------------------------ the bookshelf wall (west, +x)
 {
+  TAG = "shelves"
   const x1 = R.x1, x0 = x1 - shelves.d, top = Y0 + R.ceiling - 0.04
   const bay = (R.front - R.back) / shelves.bays, t = 0.022
   const rows = shelves.rows, rh = (top - FL - 0.08) / rows
@@ -425,10 +447,12 @@ blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
 
 // ------------------------------------------------------------ the reading corner
 {
+  TAG = "rug"
   const rg = reading.rug
   blk(rg.x[0], rg.y[0], rg.x[1], rg.y[1], FL, FL + 0.01, "rug", { noShadow: true })
   const { w, d, seat, back } = reading.chair
-  for (const [cx, cz, a] of reading.chairs) {
+  for (const [k, [cx, cz, a]] of reading.chairs.entries()) {
+    TAG = k ? "armchair#2" : "armchair"
     // a positive turn swings the chair's front (+z) toward +x, as the plan draws it
     turned(cx, cz, a, (g) => {
       const o = { parent: g, r: 0.05 }
@@ -441,11 +465,14 @@ blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
     })
   }
   const tb = reading.table
+  TAG = "sidetable"
   cyl(tb.x, tb.y, tb.r, FL + tb.h - 0.03, 0.03, "pine", 40)
   cyl(tb.x, tb.y, 0.03, FL + 0.02, tb.h - 0.05, "leg", 12)
   cyl(tb.x, tb.y, 0.16, FL, 0.02, "pine", 32)
+  TAG = ""
   plant(tb.x + 0.06, tb.y - 0.05, FL + tb.h, 0.2)
   const lp = reading.lamp
+  TAG = "floorlamp"
   cyl(lp.x, lp.y, 0.14, FL, 0.02, "black", 24)
   cyl(lp.x, lp.y, 0.012, FL + 0.02, lp.h - 0.3, "black", 8)
   add(new THREE.CylinderGeometry(0.15, 0.19, 0.28, 32, 1, true), "shade", { pos: [lp.x, FL + lp.h - 0.14, lp.y] })
@@ -453,8 +480,10 @@ blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
 }
 
 // ------------------------------------------------------------ plants, pendants, the air conditioner, the fan
+TAG = ""
 for (const [x, z, h] of plants.floor) plant(x, z, FL, h)
-for (const [x, z] of lights.pendants) {
+for (const [k, [x, z]] of lights.pendants.entries()) {
+  TAG = k ? `pendant#L${k + 1}` : "pendant"
   const y = FL + lights.drop
   cyl(x, z, 0.004, y + 0.17, Y0 + R.ceiling - y - 0.17, "cord", 6)
   add(new THREE.SphereGeometry(0.19, 32, 12, 0, Math.PI * 2, 0, Math.PI / 2.4), "rattan", { pos: [x, y, z] })
@@ -462,15 +491,27 @@ for (const [x, z] of lights.pendants) {
   if (!LINE) { const l = new THREE.PointLight(0xffd29a, 0.55, 2.6, 2); l.position.set(x, y - 0.05, z); scene.add(l) }
 }
 {
+  TAG = "ac"
   const y = Y0 + R.ceiling - 0.42
   blk(ac.x - ac.w / 2, R.back, ac.x + ac.w / 2, R.back + 0.22, y, y + 0.3, "white", { r: 0.03 })
   blk(ac.x - ac.w / 2 + 0.06, R.back + 0.2, ac.x + ac.w / 2 - 0.06, R.back + 0.225, y + 0.03, y + 0.06, "black", { noEdges: true })
   // the wall fan over the reading corner: a round cage on a short arm
+  TAG = "wallfan"
   const fx = ac.fan.x, fy = Y0 + R.ceiling - 0.5
   blk(fx - 0.05, R.back, fx + 0.05, R.back + 0.02, fy - 0.08, fy + 0.08, "white")
   cyl(fx, R.back + 0.1, 0.025, fy - 0.025, 0.18, "white", 12, 0.025, { rot: [Math.PI / 2, 0, 0], pos: [fx, fy, R.back + 0.1] })
   cyl(fx, R.back + 0.2, 0.2, fy, 0.08, "white", 32, 0.2, { rot: [Math.PI / 2, 0, 0], pos: [fx, fy, R.back + 0.22] })
 }
+
+TAG = ""
+
+// ------------------------------------------------------------ the electrical installation and the Wi-Fi (study-room.json)
+const S = services({ scene, meshes, LINE, floor: FL, ceiling: R.ceiling - R.floor })
+const E = C.electric, NW = C.network
+const existing = new Set(E.points.filter((p) => p.existing).map((p) => p.model))
+const builtIn = (o) => existing.has(o.userData.tag?.split("#")[0])
+for (const o of meshes) if (builtIn(o) && (ELEC || ITEM)) o.userData.elec = true // the 3D's own pendants and fan
+if (ELEC || ITEM) { S.build(E.points, existing); S.build(NW.points) }
 
 // ------------------------------------------------------------ camera: the front view
 // centred on the room, from beyond the step and above, a long lens so the verticals stay near upright and
@@ -478,6 +519,13 @@ for (const [x, z] of lights.pendants) {
 const target = new THREE.Vector3(0, 1.0, 0.4)
 const [el, dist] = [THREE.MathUtils.degToRad(36), 13.5]
 const camera = new THREE.PerspectiveCamera(50, FW / FH, 0.5, 200)
+const ITEM_VIEW = { shelves: [-1, 0.5, 0.7], screen: [1, 0.4, 0.7], cabinet: [1, 0.5, 0.7], whiteboard: [0.3, 0.3, 1], chair: [1, 0.6, 0.6], pendant: [0.6, 0.35, 1], wallfan: [1, 0.3, 0.55], ac: [0.4, 0.2, 1] }
+let itemBox = null
+if (ITEM) {
+  scene.updateMatrixWorld(true)
+  const view = (existing.has(ITEM) ? null : S.viewOf([...E.points, ...NW.points], ITEM)) ?? new THREE.Vector3(...(ITEM_VIEW[ITEM] ?? [0.75, 0.6, 1]))
+  itemBox = frameItem({ camera, meshes, item: ITEM, view, FW, FH }).bb
+} else {
 camera.position.set(0, target.y + dist * Math.sin(el), target.z + dist * Math.cos(el))
 camera.lookAt(target)
 camera.updateMatrixWorld(); camera.updateProjectionMatrix()
@@ -493,19 +541,36 @@ for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) fo
 let w = (px[2] - px[0]) * 1.04, h = (px[3] - px[1]) * 1.08
 if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
 camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+}
 
 // ------------------------------------------------------------ render
 if (LINE) {
-  const lineMat = new LineMaterial({ color: INK, linewidth: 1.3, side: THREE.DoubleSide })
-  lineMat.resolution.set(FW, FH)
-  lineMat.userData.outlineParameters = { visible: false }
+  // the electric view draws the room faint, so the devices and the runs read first
+  const lines = (color, linewidth) => {
+    const x = new LineMaterial({ color, linewidth, side: THREE.DoubleSide })
+    x.resolution.set(FW, FH)
+    x.userData.outlineParameters = { visible: false }
+    return x
+  }
+  const lineMat = ELEC ? lines(0xbdbdbd, 1.2) : lines(INK, 1.3), devMat = lines(0x141414, 1.6)
   for (const o of meshes) {
-    if (o.userData.noEdges || o.material === MAT.cut) continue
+    if (o.userData.noEdges || o.material === MAT.cut || !o.visible) continue
     o.updateMatrixWorld()
     const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
-    const l = new LineSegments2(g, lineMat)
+    const l = new LineSegments2(g, o.userData.elec ? devMat : lineMat)
     l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
     scene.add(l)
+  }
+  if (ELEC) {
+    // the room's materials outline grey, except the 3D's own pendants and fan, which stay dark
+    for (const m of Object.values(MAT)) m.userData.outlineParameters = { ...m.userData.outlineParameters, color: [0.74, 0.74, 0.74] }
+    for (const m of bookMat ?? []) m.userData.outlineParameters = { color: [0.74, 0.74, 0.74] }
+    for (const o of meshes) if (o.userData.elec && Object.values(MAT).includes(o.material)) {
+      o.material = o.material.clone(); o.material.userData.outlineParameters = { ...o.material.userData.outlineParameters, color: [0.08, 0.08, 0.08] }
+    }
+    S.runs(E.points, E.circuits, "DB", camera, FW, FH)
+    S.runs(NW.points, NW.circuits, "NE", camera, FW, FH)
+    window.TAGS = [...S.tags(E.points, camera), ...S.tags(NW.points, camera)]
   }
   if (MAT.cut) MAT.cut.userData.outlineParameters = { visible: false }
   const ink = new THREE.Color(INK)
@@ -522,6 +587,7 @@ if (LINE) {
   Object.assign(sun.shadow.camera, { left: -8, right: 8, top: 6, bottom: -6, near: 1, far: 40 })
   sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
   scene.add(sun)
+  if (ITEM) itemGround(scene, itemBox)
   const composer = new EffectComposer(renderer)
   composer.setSize(FW, FH)
   composer.addPass(new RenderPass(scene, camera))
