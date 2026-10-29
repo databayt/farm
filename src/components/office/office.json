@@ -23,7 +23,7 @@
     "stair": { "w": 1.0, "risers": 5, "tread": 0.28 }
   },
   "cafe": {
-    "about": "The 2D's and 3D's layout (2026-10-29): a traditional Egyptian ahwa set on the deck, in front of the solid wall at the far end, clear of the glazing and the stair: a small round marble-topped table on a cast-iron pedestal, two dark wooden chairs with woven rush seats facing each other across it. Plan metres; sizes are design choices.",
+    "about": "The 2D's and 3D's layout (2026-10-29): a traditional Egyptian ahwa set on the deck, in front of the solid wall at the far end, clear of the glazing and the stair: a small round marble-topped table on a cast-iron pedestal, two dark wooden chairs with woven rush seats either side of it, both looking out over the front garden. Plan metres; sizes are design choices.",
     "table": { "x": 5.2, "y": 1.97, "r": 0.3, "h": 0.7 },
     "chairs": [[4.62, 1.97], [5.78, 1.97]],
     "chair": { "w": 0.42, "d": 0.42, "seat": 0.45, "back": 0.9 }

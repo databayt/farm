@@ -23,7 +23,7 @@ export const DESIGN_BLUR: Record<string, string> = {
   "/designs/livestock/render/water-real.webp": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAQCdASoQAAkAAsBMJZgCdAEN+FD0RKgA/u3vQ+2nmFM6+nToRmKhfHF2O49MQDcyzA2EtT8+wFXlYpcoFKBPdrb0DmLJNMtfrnW/hfkfNm0yL1RSiAAA",
   "/designs/office/render/electric-real.webp": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAADQAQCdASoQAAcAAsBMJbACdAEVz05o2AD+w+FDX2J04o0G4xzQygM4tP8h8Cfr731eVObVE4wh/JH0LgAAAA==",
   "/designs/office/render/office-hero.jpg": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkAAsBMJZgCdAEVLhTVOcAA+6X2Qtp8JlvdLsym8f0G+hv43JfR8ZE8VlZ+Lizg7mXLDJxa4gakkwtKc/dcmAA=",
-  "/designs/office/render/office-real.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAQCdASoQAAcAAsBMJbACdAEUiZw+gHAA/sP6W1CHjz94ijHeHueXwem4s91nyq/KnNqicYQ/kj6FwAA=",
+  "/designs/office/render/office-real.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAcAAsBMJbACdAEUiZoiiAD+w/pbUIePP3iKMd4e55fCIuplH1QO447hnSi3SHrUCWiAAAA=",
   "/designs/parking/render/drain-real.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAcAAsBMJbACdAEQCu6c8AD+jfv3/uOAiXe/CRjCFVMjJ0gpGExop9gSlymYPQNJ1nWAAAA=",
   "/designs/parking/render/light-real.webp": "data:image/webp;base64,UklGRjYAAABXRUJQVlA4ICoAAADwAQCdASoQAAcAAsBMJQBOgCHgWZlaZgAA/vVwiutr8BQaf5vB1kySeAA=",
   "/designs/parking/render/parking-hero.jpg": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAAAQAgCdASoQAAkAAsBMJbACdGuAAsO4OtYAAP7oawrjVd8ORYDnW/cKptEYDob54fiLBkNSJn3Jzjm/NmPzAc/xFyFvmOt0QSgAAA==",

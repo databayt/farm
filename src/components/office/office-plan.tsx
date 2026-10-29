@@ -120,10 +120,10 @@ export function OfficePlan({ title, className }: { title: string; className?: st
       <text x={f(ix1 - 0.27)} y={0} transform={`rotate(-90 ${f(ix1 - 0.27)} 0)`} textAnchor="middle" style={small}>STUDIO DISPLAY</text>
       <text x={f((ix0 + sofa.d + sofa.x1 - sofa.arm) / 2)} y={f(iy0 + (sofa.rest + sofa.d) / 2 + 0.035)} textAnchor="middle" style={small}>SOFA</text>
       <text x={f((sofa.table.x0 + sofa.table.x1) / 2)} y={f((sofa.table.y0 + sofa.table.y1) / 2 + 0.035)} textAnchor="middle" style={small}>TABLE</text>
-      {/* The ahwa set on the deck: the round marble table on its pedestal, a chair either side facing it */}
+      {/* The ahwa set on the deck: the round marble table on its pedestal, a chair either side, both looking out over the garden */}
       <circle cx={cafe.table.x} cy={cafe.table.y} r={cafe.table.r} {...thin} />
       <circle cx={cafe.table.x} cy={cafe.table.y} r={0.08} {...faint} />
-      {cafe.chairs.map(([x, y]) => <Chair key={x} x={x} y={y} s={cafe.chair.w} toward={x < cafe.table.x ? "right" : "left"} />)}
+      {cafe.chairs.map(([x, y]) => <Chair key={x} x={x} y={y} s={cafe.chair.w} toward="down" />)}
       <text x={cafe.table.x} y={f(cafe.table.y + cafe.table.r + 0.16)} textAnchor="middle" style={small}>CAFE</text>
       <text x={f((g0 + g1) / 2)} y={f(front - 0.16)} textAnchor="middle" style={small}>SLIDING GLAZING</text>
       <text x={f(L / 2)} y={f(edge - 0.55)} textAnchor="middle" style={label}>DECK</text>
