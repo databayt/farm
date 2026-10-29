@@ -17,6 +17,18 @@
     &hero=1     real mode, thatch and crowns on, low and close across the front fence corner, 2400 x 1340
                 -> a layout reference only: the page's hero is now the founder's photo (D-042); never write it over livestock-hero.jpg
 
+    ?build=<layer>  the shed alone, low from the front, for the Shed build-up (always real): base (opaque, the plinth on
+                the white page) | posts | beams | boards | rafters | thatch | litter | fit (transparent)
+                -> render/build-<layer>.webp; window.TAGS holds each layer's pieces as [x, y, w, h] fractions of the
+                picture (-> render/build-pieces.json, flattened)
+    ?item=<id>  one thing on its own, transparent, 1600 x 1200, for the rails (always real): the animals goat | sheep |
+                dog | cat | doves; the equipment trough | minerals | table | bale | basket | kennel | cathouse | compost;
+                the water parts tank | float | pipe | valve | tap | buckets | bowl  -> render/item/<id>.webp
+    ?view=water&mode=line  the yard's water drawn over the 3D, closer in on the shed, the tank and the troughs: the
+                farm line, the yard line and its risers in their colours (C.water), and window.TAGS -> render/water-line.png
+                + render/water-tags.json
+    ?view=water&mode=real  the same view rendered, the yard line drawn on the ground as it runs buried -> render/water-real.webp
+
   node scripts/site/render.mjs scripts/site/render/livestock.html "mode=line" public/designs/livestock/render/livestock-line.png
 -->
 <html>
@@ -46,9 +58,13 @@ import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
-const LINE = Q.get("mode") !== "real"
+const ITEM = Q.get("item"), BUILD = Q.get("build"), WATER = Q.get("view") === "water"
+const LINE = Q.get("mode") !== "real" && !ITEM && !BUILD // items and build layers are always rendered
 const HERO = !LINE && Q.get("hero") === "1"
-const [FW, FH] = HERO ? [2400, 1340] : [2400, 1400]
+const [FW, FH] = HERO ? [2400, 1340] : ITEM ? [1600, 1200] : BUILD ? [2400, 1500] : [2400, 1400]
+// the build-up's layers, in the order the shed goes up: each is rendered alone, the ones before it hiding what they
+// stand in front of (depth only), the ones after it left out
+const LAYERS = ["base", "posts", "beams", "boards", "rafters", "thatch", "litter", "fit"]
 const C = await (await fetch(`/src/components/livestock/livestock.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#ffffff"
 // plan (x right, y toward the yards) -> three: x = x, y = height, z = y; the camera stands in the paddock, at +z
@@ -65,7 +81,7 @@ if (!LINE) {
 }
 const scene = new THREE.Scene()
 // white page ground, as the studio's; in real mode tone mapping would dim plain white to grey, so it starts brighter
-if (!LINE && !HERO) scene.background = new THREE.Color(12, 12, 12)
+if (!LINE && !HERO && !ITEM && (!BUILD || BUILD === "base")) scene.background = new THREE.Color(12, 12, 12)
 
 // ------------------------------------------------------------ procedural textures (real mode)
 let seed = 7
@@ -176,6 +192,10 @@ function mat(name) {
       face: () => std({ color: "#211c19", roughness: 0.85 }),
       horn: () => std({ color: "#7d6e5e", roughness: 0.6 }),
       hoof: () => std({ color: "#3a332d", roughness: 0.6 }),
+      brass: () => std({ color: "#b8933f", roughness: 0.35, metalness: 0.8 }),
+      pe: () => std({ color: "#1f1f1f", roughness: 0.55 }), // black PE pipe
+      lever: () => std({ color: "#c0392b", roughness: 0.5 }),
+      float: () => std({ color: "#e8e4dc", roughness: 0.4 }),
       sky: () => new THREE.MeshBasicMaterial({ map: T.sky, side: THREE.BackSide, fog: false, toneMapped: false }),
     }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
   }
@@ -185,6 +205,8 @@ function mat(name) {
 // ------------------------------------------------------------ geometry helpers (metres)
 const meshes = []
 let PARENT = scene
+// what the meshes being made belong to: an item of the rails (?item=), a layer and a piece of the build-up (?build=)
+let OF = null, LAYER = null, PIECE = null
 function worldUV(geo, [tu, tv]) { // each face takes the texture from its own plane, at true scale
   const pos = geo.attributes.position, nrm = geo.attributes.normal, uv = geo.attributes.uv
   if (!uv) return
@@ -206,6 +228,8 @@ function add(geo, name, opts = {}) {
   if (opts.rot) mesh.rotation.set(...opts.rot)
   if (opts.noEdges) mesh.userData.noEdges = true
   if (opts.noFrame) mesh.userData.noFrame = true
+  mesh.userData.item = opts.item ?? OF
+  mesh.userData.layer = LAYER; mesh.userData.piece = PIECE
   PARENT.add(mesh)
   meshes.push(mesh)
   return mesh
@@ -250,6 +274,7 @@ if (HERO) {
 // the plinth: rammed earth edged in fieldstones, the straw litter on top in the pens
 {
   const e = S.plinth.edge
+  LAYER = "base"; OF = "shed"
   blk(-L - e + 0.12, -W - e + 0.12, L + e - 0.12, W + e - 0.12, 0, FL, "packed")
   seed = 11
   const ring = (x0, z0, x1, z1) => {
@@ -262,7 +287,9 @@ if (HERO) {
   }
   const [a, b, c, d] = [-L - e + 0.13, L + e - 0.13, -W - e + 0.13, W + e - 0.13]
   ring(a, d, b, d); ring(a, c, a, d); ring(b, c, b, d)
+  LAYER = "litter"; PIECE = "litter"
   blk(-L + 0.02, -W + WALL, L - WALL, W, FL, LIT, "litter")
+  LAYER = PIECE = null
 }
 
 // ------------------------------------------------------------ the herd's shed, copied from the founder's photo's: wide dark weathered boards set upright at the
@@ -277,23 +304,34 @@ function gate(x0, z0, x1, z1, y0, h) { // shut: a frame of thin poles with a dia
   pipe([x0, y0 + 0.12, z0], [x1, y0 + h - 0.04, z1], 0.025, "pole", 6)
 }
 {
-  const plank = (x0, z0, x1, z1) => blk(x0, z0, x1, z1, FL, EAVE - 0.04 + (rnd() - 0.5) * 0.08, "plank")
+  let n0 = 0
+  const plank = (x0, z0, x1, z1) => { PIECE = `board${n0++}`; return blk(x0, z0, x1, z1, FL, EAVE - 0.04 + (rnd() - 0.5) * 0.08, "plank") }
+  LAYER = "boards"
   for (let x = -L + 0.2; x < L - 0.05; x += 0.22) plank(x, -W, Math.min(x + 0.2, L), -W + WALL)
   for (let z = -W + WALL; z < W - 0.2; z += 0.22) plank(L - WALL, z, L, Math.min(z + 0.2, W - 0.2))
+  LAYER = "posts"
   // the corner posts, heavy and barked; the eaves beam along the front, the plate along the back, the tie beams
-  for (const [x, z] of [[-L + 0.1, W - 0.1], [L - 0.1, W - 0.1], [-L + 0.1, -W + 0.1], [L - 0.1, -W + 0.1]]) pole(x, z, 0.12, FL - 0.05, EAVE + 0.15, 9)
+  for (const [x, z] of [[-L + 0.1, -W + 0.1], [L - 0.1, -W + 0.1], [-L + 0.1, W - 0.1], [L - 0.1, W - 0.1]]) { PIECE = `post${x}${z}`; pole(x, z, 0.12, FL - 0.05, EAVE + 0.15, 9) }
+  LAYER = "beams"; PIECE = "eaves"
   pipe([-L - 0.35, EAVE + 0.08, W - 0.1], [L + 0.35, EAVE + 0.08, W - 0.1], 0.11, "pole", 9)
+  PIECE = "plate"
   pipe([-L - 0.3, EAVE + 0.04, -W + 0.1], [L + 0.3, EAVE + 0.04, -W + 0.1], 0.09, "pole", 9)
-  for (const x of [-L + 0.1, L - 0.1]) pipe([x, EAVE + 0.12, -W - 0.3], [x, EAVE + 0.12, W + 0.3], 0.09, "pole", 9)
+  for (const x of [-L + 0.1, L - 0.1]) { PIECE = `tie${x}`; pipe([x, EAVE + 0.12, -W - 0.3], [x, EAVE + 0.12, W + 0.3], 0.09, "pole", 9) }
   // a knee brace at each front post, up to the eaves beam, and one up the open west end, as the photo's
+  PIECE = "braceW"
   pipe([-L + 0.1, EAVE - 0.65, W - 0.1], [-L + 0.75, EAVE + 0.04, W - 0.1], 0.05, "pole", 6)
+  PIECE = "braceE"
   pipe([L - 0.1, EAVE - 0.65, W - 0.1], [L - 0.75, EAVE + 0.04, W - 0.1], 0.05, "pole", 6)
+  PIECE = "braceS"
   pipe([-L + 0.1, EAVE - 0.65, W - 0.1], [-L + 0.1, EAVE + 0.04, W - 0.75], 0.05, "pole", 6)
   // the open west end: one barked rail between the corner posts
+  PIECE = "rail"
   rails(-L + 0.1, -W + 0.1, -L + 0.1, W - 0.1, FL, P.rails, 0.06)
   // inside, as the photo's: the straw bale, the plank table with its basket over the lidded crate, the mineral boxes
+  LAYER = "fit"; PIECE = "bale"; OF = "bale"
   const b = P.bale
   soft(b.x0, b.y0, b.x1, b.y1, LIT, LIT + 0.45, 0.07, "hay")
+  PIECE = OF = "table"
   const t = P.table
   for (const x of [t.x0 + 0.06, t.x1 - 0.06]) for (const z of [t.y0 + 0.06, t.y1 - 0.06]) blk(x - 0.035, z - 0.035, x + 0.035, z + 0.035, LIT, LIT + t.h, "plank")
   for (let z = t.y0; z < t.y1 - 0.02; z += 0.15) blk(t.x0, z, t.x1, z + 0.14, LIT + t.h - 0.04, LIT + t.h, "plank")
@@ -304,10 +342,15 @@ function gate(x0, z0, x1, z1, y0, h) { // shut: a frame of thin poles with a dia
   const k = P.basket
   cyl(k.x, k.y, k.r * 0.8, LIT + t.h, 0.22, "basket", 20, k.r)
   if (!LINE) soft(k.x - k.r * 0.7, k.y - k.r * 0.7, k.x + k.r * 0.7, k.y + k.r * 0.7, LIT + t.h + 0.12, LIT + t.h + 0.28, 0.06, "hay")
+  OF = "minerals"
   for (const m of P.minerals) {
+    PIECE = `mineral${m.for}`
     blk(m.x0, m.y0, m.x1, m.y1, LIT + m.z, LIT + m.z + 0.2, "plank")
     if (!LINE) blk(m.x0 + 0.02, m.y0 + 0.02, m.x1 - 0.02, m.y1 - 0.02, LIT + m.z + 0.18, LIT + m.z + 0.21, "mineral")
   }
+  // on its own, the boxes hang on three of the back wall's boards
+  if (ITEM === "minerals") for (let x = P.minerals[0].x0 - 0.2; x < P.minerals[1].x1 + 0.2; x += 0.22) blk(x, -W - 0.02, x + 0.2, -W + WALL - 0.02, LIT, LIT + 1.7, "plank")
+  LAYER = PIECE = OF = null
 }
 
 // ------------------------------------------------------------ the outline and the yard: posts and three lashed rails, the gate, troughs
@@ -344,11 +387,17 @@ function fence(x0, z0, x1, z1) {
   gate(G.x0 + G.w - 0.04, Y.y1, G.x0 + G.w / 2 + 0.02, Y.y1, 0.02, 1.1)
 }
 for (const t of FT.troughs) { // the float troughs in the shade of the eaves
+  OF = t === FT.troughs[1] ? "trough" : null
   const z0 = W + 0.4, z1 = z0 + FT.trough.d, h = FT.trough.h
   for (const x of [t.x0 + 0.1, t.x1 - 0.1]) blk(x - 0.03, z0 + 0.02, x + 0.03, z1 - 0.02, 0, h - 0.18, "pole")
-  blk(t.x0, z0, t.x1, z1, h - 0.2, h, "trough")
-  blk(t.x0 + 0.04, z0 + 0.04, t.x1 - 0.04, z1 - 0.04, h - 0.06, h - 0.03, "water", { noEdges: true })
+  // a plank box open at the top: its bottom, two sides and two ends, the water in it
+  const sd = 0.035
+  blk(t.x0, z0, t.x1, z1, h - 0.2, h - 0.16, "trough")
+  blk(t.x0, z0, t.x1, z0 + sd, h - 0.16, h, "trough"); blk(t.x0, z1 - sd, t.x1, z1, h - 0.16, h, "trough")
+  blk(t.x0, z0 + sd, t.x0 + sd, z1 - sd, h - 0.16, h, "trough"); blk(t.x1 - sd, z0 + sd, t.x1, z1 - sd, h - 0.16, h, "trough")
+  blk(t.x0 + sd, z0 + sd, t.x1 - sd, z1 - sd, h - 0.16, h - 0.04, "water", { noEdges: true })
 }
+OF = null
 
 // ------------------------------------------------------------ stones to climb, the shade tree in its guard
 const stoneTop = []
@@ -378,15 +427,19 @@ for (const s of ST.list) {
 // ------------------------------------------------------------ behind the store: the tank, the fodder baskets, the compost bays
 {
   const sh = TK.stand
+  OF = "tank"
   blk(TK.x - TK.r - 0.08, TK.y - TK.r - 0.08, TK.x + TK.r + 0.08, TK.y + TK.r + 0.08, 0, sh, "stone") // a fieldstone base, as the hero's
   cyl(TK.x, TK.y, TK.r, sh, TK.h, "tank", 32, TK.r * 0.96)
   cyl(TK.x, TK.y, 0.16, sh + TK.h, 0.06, "tank", 16)
+  OF = "buckets"
   for (const b of TK.buckets) cyl(b.x, b.y, b.r, 0, 0.32, "dogblack", 18, b.r * 1.15) // the black buckets
   for (const b of BK.list) {
+    OF = b === BK.list[0] ? "basket" : null
     cyl(b.x, b.y, b.r * 0.85, 0, 0.5, "basket", 24, b.r)
     if (!LINE) soft(b.x - b.r * 0.7, b.y - b.r * 0.7, b.x + b.r * 0.7, b.y + b.r * 0.7, 0.36, 0.58, 0.08, "fodder")
   }
   const b = CO.bay
+  OF = "compost"
   for (let k = 0; k < CO.n; k++) {
     const z0 = CO.y0 + k * b, z1 = z0 + b
     for (const [x, z] of [[CO.x0, z0], [CO.x0 + b, z0], [CO.x0 + b, z1], [CO.x0, z1]]) pole(x, z, 0.05, 0, 1.05)
@@ -398,6 +451,7 @@ for (const s of ST.list) {
     const heap = add(new THREE.SphereGeometry(1, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2), k ? "compost" : "litter", { pos: [CO.x0 + b / 2, 0, (z0 + z1) / 2] })
     heap.scale.set(b * 0.42, [0.6, 0.5, 0.35][k], b * 0.42)
   }
+  OF = null
 }
 
 // ------------------------------------------------------------ the roof, as the photo's: a steep, shaggy grey-brown grass thatch on a pole gable, both slopes
@@ -406,6 +460,7 @@ for (const s of ST.list) {
 {
   const o = S.roof.over, rise = S.roof.ridge - EAVE, R = S.roof.ridge + 0.05
   const half = W + o, len = Math.hypot(half, rise), a = Math.atan2(rise, half), drop = EAVE + 0.04 // the eaves' edge
+  OF = "shed"; LAYER = "thatch"; PIECE = "thatch"
   for (const s of [1, -1]) {
     const slope = add(new THREE.BoxGeometry(S.l + 2 * o, 0.3, len), "thatch", { pos: [0, EAVE + rise / 2 + 0.16, (s * half) / 2] })
     slope.rotation.x = s * a
@@ -415,11 +470,14 @@ for (const s of ST.list) {
     }
   }
   pipe([-L - o, R + 0.12, 0], [L + o, R + 0.12, 0], 0.12, "thatch", 8) // the ridge capping
+  LAYER = "rafters"
   for (const x of [-L + 0.1, L - 0.1]) { // each gable: its end rafters, a collar and a king post
+    PIECE = `gable${x}`
     for (const s of [1, -1]) pipe([x, R, 0], [x, drop + 0.1, s * (W + o)], 0.06, "pole", 7)
     pipe([x, EAVE + rise * 0.5, -W * 0.5], [x, EAVE + rise * 0.5, W * 0.5], 0.05, "pole", 6)
     pole(x, 0, 0.06, EAVE + 0.12, R)
   }
+  OF = LAYER = PIECE = null
 }
 
 // ------------------------------------------------------------ the herd: 6 goats and 4 sheep
@@ -429,6 +487,7 @@ function ellipsoid(x, y, z, rx, ry, rz, name, rotZ = 0) {
   return m
 }
 function animal(a, sheep) {
+  OF = a === AN.goats[0] ? "goat" : a === AN.sheep[2] ? "sheep" : null
   const inside = Math.abs(a.x) < L && Math.abs(a.y) < W
   const base = a.on !== undefined ? stoneTop[a.on] : inside ? LIT : 0.02
   const g = new THREE.Group()
@@ -453,7 +512,7 @@ function animal(a, sheep) {
   }
   if (sheep) ellipsoid(-bx * 1.02, cy - 0.08, 0, 0.07, 0.12, 0.09, "wool") // the fat tail
   else pipe([-bx * 0.95, cy + 0.06, 0], [-bx * 1.1, cy + 0.15, 0], 0.016, coat, 6)
-  PARENT = scene
+  PARENT = scene; OF = null
 }
 for (const a of AN.goats) animal(a, false)
 for (const a of AN.sheep) animal(a, true)
@@ -472,6 +531,7 @@ for (const a of AN.sheep) animal(a, true)
   }
   gate(DG.gate.x0 + 0.04, DG.y1, DG.gate.x0 + DG.gate.w - 0.04, DG.y1, 0.02, h - 0.1)
   for (const k of DG.kennels) { // a raised kennel: a box on bearers, a pitched roof, a round door to the run
+    OF = k === DG.kennels[0] ? "kennel" : null
     blk(k.x0, k.y0, k.x1, k.y1, 0.1, 0.75, "board")
     for (const s of [1, -1]) {
       const r = add(new THREE.BoxGeometry(k.x1 - k.x0 + 0.12, 0.03, (k.y1 - k.y0) / 2 / Math.cos(0.5) + 0.06), "roofing",
@@ -481,7 +541,9 @@ for (const a of AN.sheep) animal(a, true)
     if (!LINE) cyl((k.x0 + k.x1) / 2, k.y1 + 0.001, 0.18, 0.2, 0.001, "dogblack", 20).rotation.x = Math.PI / 2
   }
   if (HERO) blk(DG.x0, DG.shade.y0, DG.x1, DG.shade.y1, h + 0.15, h + 0.2, "roofing")
+  OF = "bowl"
   cyl(DG.bowl.x, DG.bowl.y, DG.bowl.r, 0, 0.1, "block", 16, DG.bowl.r * 1.1)
+  OF = null
 }
 
 // ------------------------------------------------------------ the farm friends in the yard: the dovecote, the cats' house, a log bench
@@ -489,6 +551,7 @@ const FRT = {}
 {
   // the dovecote: a little house with a pitched roof on a pole, doves on its roof and ledge
   const V = FR.dovecote
+  OF = "doves"
   pole(V.x, V.y, 0.06, 0, V.h)
   blk(V.x - V.s / 2, V.y - V.s / 2, V.x + V.s / 2, V.y + V.s / 2, V.h, V.h + 0.5, "board")
   blk(V.x - V.s / 2 - 0.08, V.y - V.s / 2, V.x + V.s / 2 + 0.08, V.y + V.s / 2 + 0.1, V.h + 0.02, V.h + 0.05, "board")
@@ -499,11 +562,13 @@ const FRT = {}
   FRT.dove = V.h
   // the cats' house on a post, out of the dogs' reach, a ledge to sit on
   const K = FR.cats.house
+  OF = "cathouse"
   pole(K.x, K.y, 0.05, 0, K.h)
   blk(K.x - K.s / 2, K.y - K.s / 2, K.x + K.s / 2, K.y + K.s / 2, K.h, K.h + 0.4, "board")
   blk(K.x - K.s / 2 - 0.05, K.y - K.s / 2 - 0.05, K.x + K.s / 2 + 0.05, K.y + K.s / 2 + 0.05, K.h + 0.4, K.h + 0.44, "roofing")
   blk(K.x - K.s / 2, K.y + K.s / 2, K.x + K.s / 2, K.y + K.s / 2 + 0.2, K.h - 0.03, K.h, "board")
   FRT.house = K.h
+  OF = null
   // the log bench for the guests
   const B = FR.bench
   pipe([B.x0, 0.4, B.y], [B.x1, 0.4, B.y], 0.13, "pole", 12)
@@ -512,6 +577,7 @@ const FRT = {}
 
 // ------------------------------------------------------------ the farm friends and the dogs
 function friend(a, kind) {
+  OF = a === AN.dogs[0] ? "dog" : a === AN.cats[1] ? "cat" : null
   const base = a.on === "house" ? FRT.house + 0.2 : 0.02
   const g = new THREE.Group()
   g.position.set(a.x, base, a.y); g.rotation.y = THREE.MathUtils.degToRad(-a.h)
@@ -533,16 +599,18 @@ function friend(a, kind) {
     for (const s of [1, -1]) { const e = add(new THREE.ConeGeometry(0.02, 0.05, 5), c, { pos: [0.2, 0.35, s * 0.035] }); e.userData.noEdges = LINE }
     pipe([-0.16, 0.22, 0], [-0.26, 0.4, 0], 0.012, c, 5)
   }
-  PARENT = scene
+  PARENT = scene; OF = null
 }
 for (const a of AN.dogs) friend(a, "dog")
 for (const a of AN.cats) friend(a, "cat")
 // doves on the dovecote's ledge
+OF = "doves"
 for (const [dx, dz] of [[-0.25, 0.4], [0.05, 0.42], [0.3, 0.38]]) {
   const V = FR.dovecote
   ellipsoid(V.x + dx, FRT.dove + 0.09, V.y + dz, 0.07, 0.045, 0.04, "dove")
   ellipsoid(V.x + dx + 0.06, FRT.dove + 0.14, V.y + dz, 0.03, 0.03, 0.03, "dove")
 }
+OF = null
 
 // ------------------------------------------------------------ the planting round the outline, as the hero's: shrubs, banana clumps, the vegetable beds outside the front
 seed = 41
@@ -573,8 +641,94 @@ for (const b of PL.beds) { // a raised bed of soil, two rows of cabbages and gre
 }
 if (HERO) for (const t of PL.trees) { cyl(t.x, t.y, 0.12, 0, 2.6, "trunk", 10, 0.09); bush(t.x, t.y, t.r, 2.2) } // at eye level only, as the crown
 
+// ------------------------------------------------------------ the yard's water (C.water): the farm line to the tank's float valve, the
+// outlet valve and the bucket tap at its foot, the 20 mm yard line buried along the front of the eaves and a riser to
+// each trough. In line mode each run is a line in its colour over the drawing; in real mode a black pipe on the ground,
+// a little fatter than life so it reads, where in truth it runs 30 cm down.
+const WCOL = { farm: "#1d4e89", supply: "#2f7ed8", riser: "#5fb0ea", valve: "#d9822b" }
+const waterLines = []
+const WV = C.water
+const tankTop = TK.stand + TK.h + 0.06, zBack = TK.y - TK.r - 0.08 - 0.05, zFront = TK.y + TK.r + 0.08 + 0.04
+if (WATER) {
+  const g = 0.03
+  const runs = {
+    // the farm line up the tank's east side to the float valve under its lid, clear of the outlet on its face
+    F1: [[TK.x + 0.4, g, -3.2], [TK.x + 0.4, g, TK.y - 0.45], [TK.x + 0.4, tankTop + 0.05, TK.y - 0.45], [TK.x, tankTop + 0.05, TK.y]],
+    S1: [[3.6, TK.stand, zFront], [3.6, g, zFront], ...WV.runs.find((r) => r.id === "S1").path.slice(1).map(([x, y]) => [x, g, y])],
+    R1: [[1.5, g, 2.55], [1.5, FT.trough.h + 0.05, 2.55], [1.5, FT.trough.h + 0.05, W + 0.4 + FT.trough.d - 0.08]],
+    R2: [[-2.1, g, 2.55], [-2.1, FT.trough.h + 0.05, 2.55], [-2.1, FT.trough.h + 0.05, W + 0.4 + FT.trough.d - 0.08]],
+  }
+  for (const [id, pts] of Object.entries(runs)) {
+    const kind = WV.runs.find((r) => r.id === id).kind
+    for (let k = 1; k < pts.length; k++) {
+      if (LINE) waterLines.push([kind, ...pts[k - 1], ...pts[k]])
+      else pipe(pts[k - 1], pts[k], kind === "farm" ? 0.035 : 0.03, "pe", 10)
+    }
+  }
+  if (LINE) for (const [x, h, z] of [[3.6, TK.stand - 0.05, zFront], [3.6, 0.5, zFront]]) waterLines.push(["valve", x - 0.12, h, z, x + 0.12, h, z])
+  else { // the outlet valve and the bucket tap on the riser down the stand's face
+    add(new THREE.SphereGeometry(0.05, 16, 10), "brass", { pos: [3.6, TK.stand - 0.05, zFront] })
+    blk(3.6, zFront + 0.03, 3.78, zFront + 0.06, TK.stand - 0.06, TK.stand - 0.03, "lever")
+    add(new THREE.SphereGeometry(0.045, 16, 10), "brass", { pos: [3.6, 0.5, zFront] })
+    pipe([3.6, 0.5, zFront], [3.6, 0.5, zFront + 0.12], 0.018, "brass", 10)
+    pipe([3.6, 0.5, zFront + 0.12], [3.6, 0.42, zFront + 0.14], 0.016, "brass", 10)
+  }
+}
+
+// ------------------------------------------------------------ the water parts on their own, for the Water rail
+if (ITEM === "float") { // a low-pressure float valve: the brass body on its tail, the arm and the float
+  OF = "float"
+  pipe([0, 0.3, 0], [0, 0.3, 0.1], 0.03, "brass", 20)
+  pipe([0, 0.3, -0.12], [0, 0.3, 0], 0.016, "brass", 16)
+  pipe([0, 0.3, 0.1], [0, 0.22, 0.42], 0.007, "brass", 8)
+  add(new THREE.SphereGeometry(0.08, 24, 16), "float", { pos: [0, 0.2, 0.48] })
+  blk(-0.06, -0.15, 0.06, -0.13, 0.22, 0.38, "pe") // the backnut against the trough's or the tank's wall
+} else if (ITEM === "pipe") { // a coil of 20 mm PE
+  OF = "pipe"
+  for (let k = 0; k < 8; k++) { const m = add(new THREE.TorusGeometry(0.45, 0.011, 10, 72), "pe", { pos: [0, 0.012 + k * 0.022, 0] }); m.rotation.x = Math.PI / 2 }
+  pipe([0.45, 0.012, 0], [0.8, 0.012, 0.15], 0.011, "pe", 10)
+} else if (ITEM === "valve") { // a 20 mm ball valve, its red lever, the pipe either side
+  OF = "valve"
+  pipe([-0.16, 0.05, 0], [-0.04, 0.05, 0], 0.012, "pe", 12); pipe([0.04, 0.05, 0], [0.16, 0.05, 0], 0.012, "pe", 12)
+  add(new THREE.SphereGeometry(0.03, 20, 14), "brass", { pos: [0, 0.05, 0] })
+  pipe([-0.05, 0.05, 0], [0.05, 0.05, 0], 0.018, "brass", 6)
+  pipe([0, 0.05, 0], [0, 0.095, 0], 0.006, "brass", 8)
+  blk(-0.01, -0.012, 0.11, 0.012, 0.09, 0.1, "lever")
+} else if (ITEM === "tap") { // a ½ inch brass bib tap
+  OF = "tap"
+  pipe([0, 0.1, -0.05], [0, 0.1, 0.04], 0.012, "brass", 16)
+  add(new THREE.SphereGeometry(0.022, 18, 12), "brass", { pos: [0, 0.1, 0.05] })
+  pipe([0, 0.1, 0.05], [0, 0.06, 0.08], 0.009, "brass", 12)
+  pipe([0, 0.1, 0.05], [0, 0.135, 0.05], 0.006, "brass", 8)
+  blk(-0.03, 0.04, 0.03, 0.06, 0.135, 0.145, "lever")
+  blk(-0.05, -0.06, 0.05, -0.05, 0.05, 0.15, "plank") // the board it is screwed to
+}
+OF = null
+
+// ------------------------------------------------------------ what this render shows
+const LAYER_AT = BUILD ? LAYERS.indexOf(BUILD) : -1
+if (BUILD && LAYER_AT < 0) throw new Error(`unknown layer ${BUILD}`)
+const hide = new THREE.MeshBasicMaterial({ colorWrite: false }) // stands in front of the layer, but is not drawn
+if (ITEM) {
+  if (!meshes.some((m) => m.userData.item === ITEM)) throw new Error(`unknown item ${ITEM}`)
+  for (const m of meshes) m.visible = m.userData.item === ITEM
+} else if (BUILD) {
+  for (const m of meshes) {
+    const k = LAYERS.indexOf(m.userData.layer)
+    m.visible = k >= 0 && k <= LAYER_AT
+    if (k >= 0 && k < LAYER_AT) { m.material = hide; m.renderOrder = -1 } // drawn first, so their depth is in before the layer
+  }
+}
+// the frame: the whole model, an item, the shed, or the corner of the yard the water runs in
+const framed = (o) => !o.userData.noFrame && (ITEM ? o.userData.item === ITEM : BUILD ? LAYERS.includes(o.userData.layer) : true)
+const box = new THREE.Box3()
+scene.updateMatrixWorld(true)
+if (WATER) box.set(new THREE.Vector3(-3.3, 0, -3.3), new THREE.Vector3(5.2, S.roof.ridge + 0.2, 3.1))
+else for (const o of meshes) if (framed(o)) box.expandByObject(o)
+const centre = box.getCenter(new THREE.Vector3())
+
 // ------------------------------------------------------------ camera
-const camera = new THREE.PerspectiveCamera(HERO ? 40 : 20, FW / FH, 0.3, 300)
+const camera = new THREE.PerspectiveCamera(HERO ? 40 : ITEM ? 28 : 20, FW / FH, 0.05, 300)
 if (HERO) {
   // eye level in the paddock, front-left, the shelter and yards right of centre, open ground bottom-left for the words
   // low and close across the front fence, the fodder baskets in front, as the reference photo's corner
@@ -582,6 +736,13 @@ if (HERO) {
   camera.lookAt(new THREE.Vector3(1.0, 0.9, 2.6))
   add(new THREE.SphereGeometry(150, 32, 16), "sky", { noEdges: true, keepUV: true })
   scene.fog = new THREE.Fog(0xcfd5d2, 18, 90)
+} else if (ITEM || BUILD) {
+  // an item from the front right and a little above; the shed straight on and low, to see under its eaves
+  const r = box.getSize(new THREE.Vector3()).length()
+  const [el, az, dist] = ITEM ? [22, -30, r * 4 + 1] : [9, 0, 40]
+  const e = THREE.MathUtils.degToRad(el), a = THREE.MathUtils.degToRad(az)
+  camera.position.set(centre.x + dist * Math.cos(e) * Math.sin(a), centre.y + dist * Math.sin(e), centre.z + dist * Math.cos(e) * Math.cos(a))
+  camera.lookAt(centre)
 } else {
   // straight on from the paddock, as the studio's front view, but from far off with a long lens and looking down,
   // so the pens show over the fences and the yards keep their proportions; the view offset frames the model
@@ -591,19 +752,40 @@ if (HERO) {
   camera.lookAt(target)
 }
 camera.updateMatrixWorld(); camera.updateProjectionMatrix()
-scene.updateMatrixWorld(true)
-if (!HERO) { // fit the frame to the model
-  const bb = new THREE.Box3()
-  for (const o of meshes) if (!o.userData.noFrame) bb.expandByObject(o)
-  let px = [Infinity, Infinity, -Infinity, -Infinity]
+// a box's corners on the picture, in pixels
+const onPicture = (bb) => {
+  const px = [Infinity, Infinity, -Infinity, -Infinity]
   for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
     const p = new THREE.Vector3(xx, yy, zz).project(camera)
     const X = ((p.x + 1) / 2) * FW, Yp = ((1 - p.y) / 2) * FH
-    px = [Math.min(px[0], X), Math.min(px[1], Yp), Math.max(px[2], X), Math.max(px[3], Yp)]
+    px[0] = Math.min(px[0], X); px[1] = Math.min(px[1], Yp); px[2] = Math.max(px[2], X); px[3] = Math.max(px[3], Yp)
   }
-  let w = (px[2] - px[0]) * 1.04, h = (px[3] - px[1]) * 1.06
+  return px
+}
+if (!HERO) { // fit the frame to the model
+  const px = onPicture(box)
+  const m = ITEM ? 1.06 : BUILD ? 1.08 : 1.04
+  let w = (px[2] - px[0]) * m, h = (px[3] - px[1]) * (m + 0.02)
   if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
   camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+  camera.updateProjectionMatrix()
+}
+// the build-up's pieces: each layer's pieces as rectangles in fractions of the picture, in the order they go up
+if (BUILD) {
+  const out = { aspect: FW / FH }
+  const f = (v) => +Math.min(1, Math.max(0, v)).toFixed(5)
+  for (const layer of LAYERS.slice(1)) {
+    const by = new Map()
+    for (const m of meshes) if (m.userData.layer === layer) {
+      const b = by.get(m.userData.piece) ?? new THREE.Box3()
+      by.set(m.userData.piece, b.expandByObject(m))
+    }
+    out[layer] = [...by.values()].map((b) => {
+      const [x0, y0, x1, y1] = onPicture(b)
+      return [f(x0 / FW), f(y0 / FH), f((x1 - x0) / FW), f((y1 - y0) / FH)]
+    })
+  }
+  window.TAGS = out
 }
 
 // ------------------------------------------------------------ render
@@ -618,6 +800,21 @@ if (LINE) {
     l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
     scene.add(l)
   }
+  // the water in its colours, over the ink drawing and through what stands in front of it, and each point's spot
+  for (const [kind, ...p] of waterLines) {
+    const m = new LineMaterial({ color: WCOL[kind], linewidth: kind === "farm" ? 4.2 : kind === "valve" ? 5 : 3.4, depthTest: false })
+    m.resolution.set(FW, FH); m.userData.outlineParameters = { visible: false }
+    const l = new LineSegments2(new LineSegmentsGeometry().setPositions(p), m)
+    l.renderOrder = 10
+    scene.add(l)
+  }
+  if (WATER) {
+    const spot = (id, [x, z], h = 0.03) => {
+      const v = new THREE.Vector3(x, h, z).project(camera)
+      return { id, x: +((v.x + 1) / 2).toFixed(4), y: +((1 - v.y) / 2).toFixed(4), edge: "" }
+    }
+    window.TAGS = WV.points.map((p) => spot(p.id, p.at, p.h)).filter((t) => t.x > 0 && t.x < 1 && t.y > 0 && t.y < 1) // off the drawing: no tag
+  }
   const ink = new THREE.Color(INK)
   new OutlineEffect(renderer, { defaultThickness: 0.003, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
 } else {
@@ -627,25 +824,30 @@ if (LINE) {
   scene.add(new THREE.HemisphereLight(0xe6ecef, 0x7a6e58, 1.6))
   // soft overcast daylight, as the reference photo: a high sky, a weak sun through cloud, soft shadows
   const sun = new THREE.DirectionalLight(0xf2f1ea, 1.3)
-  sun.position.set(-6, 14, 8)
-  sun.target.position.set(-0.5, 0, 2.5)
+  const near = ITEM || BUILD // an item and the shed take the sun from the same side, a shadow box around them alone
+  const c = near ? centre : new THREE.Vector3(-0.5, 0, 2.5)
+  sun.position.set(c.x - 6, c.y + 14, c.z + 8)
+  sun.target.position.copy(c)
   sun.castShadow = true
   sun.shadow.mapSize.set(4096, 4096)
-  Object.assign(sun.shadow.camera, { left: -10, right: 10, top: 10, bottom: -10, near: 1, far: 60 })
-  sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 12
+  const sb = near ? Math.max(2, box.getSize(new THREE.Vector3()).length()) : 10
+  Object.assign(sun.shadow.camera, { left: -sb, right: sb, top: sb, bottom: -sb, near: 1, far: 60 })
+  sun.shadow.bias = -0.0003; sun.shadow.normalBias = near ? 0.005 : 0.02; sun.shadow.radius = 12
   scene.add(sun, sun.target)
-  if (!HERO) { // the white page around the yard takes only the shadows
+  if (!HERO && (!BUILD || BUILD === "base")) { // the white page around the yard takes only the shadows
     const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.14 }))
-    ground.rotation.x = -Math.PI / 2; ground.position.y = -0.021; ground.receiveShadow = true
+    ground.rotation.x = -Math.PI / 2; ground.position.set(centre.x, ITEM ? box.min.y - 0.001 : -0.021, centre.z); ground.receiveShadow = true
     scene.add(ground)
   }
   const composer = new EffectComposer(renderer)
   composer.setSize(FW, FH)
   composer.addPass(new RenderPass(scene, camera))
-  const ao = new GTAOPass(scene, camera, FW, FH)
-  ao.blendIntensity = 0.8
-  ao.updateGtaoMaterial({ radius: 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
-  composer.addPass(ao)
+  if (!BUILD) { // the build-up's layers skip the AO: the parts that only hide would darken what they hide
+    const ao = new GTAOPass(scene, camera, FW, FH)
+    ao.blendIntensity = 0.8
+    ao.updateGtaoMaterial({ radius: ITEM ? 0.08 : 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
+    composer.addPass(ao)
+  }
   composer.addPass(new OutputPass())
   composer.render()
 }
