@@ -1,14 +1,15 @@
 <!doctype html>
 <!--
-  /en/livestock's 3D, in the pattern of the studio's (scripts/studio/render/room.html): the livestock yard (D-037,
-  D-038) seen straight on from the paddock, the roofs off so the pens show, on the white page. Built from
-  src/components/livestock/livestock.json (the numbers the 2D draws): the shelter of upright eucalyptus poles on its
-  fieldstone plinth, straw litter, a slatted bamboo sleeping platform in each pen, hay racks, the boarded feed
-  store, the palisade windbreak behind, the one village yard the herd, the farm friends and the guests share, with
-  troughs, climbing stones, the guarded shade tree, the ducks' house and pond, the rabbits' hutch and run, the
-  dovecote, the cats' house and a bench; the tank, the fodder baskets, the compost bays and the guard dogs' run.
-  6 goats, 4 sheep, 2 dogs, 2 cats, 4 ducks, 3 rabbits and doves. The tree's crown is cut like the roof: from this
-  height it would hide the sheep pen and the store. Rendered three ways:
+  /en/livestock's 3D, in the pattern of the studio's (scripts/studio/render/room.html): the livestock yard (D-037 to
+  D-039) seen straight on from the paddock, the roofs off so the hall shows, on the white page. Built from
+  src/components/livestock/livestock.json (the numbers the 2D draws): one outline, the palisade at the back and one
+  post-and-rail fence round the rest; inside it the shelter of upright eucalyptus poles on its fieldstone plinth, the
+  open hall with straw litter, one slatted bamboo sleeping platform, two hay racks and the movable kidding hurdles,
+  the boarded feed store; the village yard the herd, the farm friends and the guests share, with troughs, climbing
+  stones, the guarded shade tree, the ducks' house and pond, the rabbits' hutch, the dovecote, the cats' house and
+  a bench; the tank, the fodder baskets, the compost bays and the guard dogs' run in the back east corner. 6 goats,
+  4 sheep, 2 dogs, 2 cats, 4 ducks, 3 rabbits and doves. The tree's crown is cut like the roof: from this height it
+  would hide the hall and the store. Rendered three ways:
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/livestock/render/livestock-line.png
     ?mode=real  materials, daylight and soft shadow    -> public/designs/livestock/render/livestock-real.webp
@@ -235,18 +236,12 @@ const L = S.l / 2, W = S.d / 2, WALL = S.wall
 const FL = S.plinth.h // the plinth's top, the pens' floor
 const LIT = FL + 0.05 // the top of the straw litter
 const EAVE = S.roof.eaves
-const STORE = P.list.find((p) => p.id === "store")
-const PENS = P.list.filter((p) => p.id !== "store")
+const { hall: HALL, kidding: KID, store: STORE } = P
 const RAILS = [0.35, 0.78, 1.18]
 
-// ------------------------------------------------------------ the ground: the village yard's earth and straw, the plinth
-{
-  const E = S.plinth.edge, WG = Y.wing
-  blk(Y.x0, W + E, Y.x1, Y.y1, -0.02, 0.02, "yard") // in front of the shelter
-  blk(Y.x0, WG.y0, -L - E, W + E, -0.02, 0.02, "yard") // the west wing, back to the palisade
-  blk(L + E, W, Y.x1, W + E, -0.02, 0.02, "yard")
-  blk(Y.gate.x0, Y.y1, Y.gate.x0 + Y.gate.w, Y.y1 + 0.6, -0.02, 0.015, "packed") // the track out of the gate to the paddock
-}
+// ------------------------------------------------------------ the ground: the village yard's earth and straw inside the outline, the plinth
+blk(Y.x0, Y.y0, Y.x1, Y.y1, -0.02, 0.02, "yard")
+blk(Y.gate.x0, Y.y1, Y.gate.x0 + Y.gate.w, Y.y1 + 0.6, -0.02, 0.015, "packed") // the track out of the gate to the paddock
 // the path behind the store to the tank, the baskets and the compost bays
 blk(L + S.plinth.edge, -W - 0.4, CO.x0 + CO.bay + 0.3, W, -0.02, 0.015, "packed")
 if (HERO) {
@@ -268,7 +263,7 @@ if (HERO) {
   }
   const [a, b, c, d] = [-L - e + 0.13, L + e - 0.13, -W - e + 0.13, W + e - 0.13]
   ring(a, d, b, d); ring(a, c, a, d); ring(b, c, b, d)
-  for (const p of PENS) blk(p.x0 === -L ? -L + WALL : p.x0 + 0.02, -W + WALL, p.x1 - 0.02, W, FL, LIT, "litter")
+  blk(-L + WALL, -W + WALL, HALL.x1 - 0.03, W, FL, LIT, "litter")
 }
 
 // ------------------------------------------------------------ the shelter: upright split poles at the back and the ends to the eaves
@@ -280,7 +275,7 @@ if (HERO) {
   const door = 0.7
   for (let z = -W + 3 * r; z <= W - r + 1e-6; z += 2 * r * 0.98) if (z < -0.02 || z > door + 0.02) pole(L - r, z, r, FL, EAVE + (rnd() - 0.5) * 0.06)
   // the posts along the open front carry the eaves beam; the wall plates along the back and the ends
-  for (const x of [-L + r, PENS[1].x0, PENS[2].x0, STORE.x0, L - r]) pole(x, W - r, 0.07, FL, EAVE + 0.15, 9)
+  for (const x of [-L + r, (HALL.x0 + HALL.x1) / 2, STORE.x0, L - r]) pole(x, W - r, 0.07, FL, EAVE + 0.15, 9)
   pipe([-L, EAVE + 0.1, W - r], [L, EAVE + 0.1, W - r], 0.08, "pole", 9)
   pipe([-L, EAVE + 0.04, -W + r], [L, EAVE + 0.04, -W + r], 0.07, "pole", 9)
   for (const x of [-L + r, L - r]) pipe([x, EAVE + 0.04, -W], [x, EAVE + 0.04, W], 0.07, "pole", 9)
@@ -291,7 +286,7 @@ if (HERO) {
   blk(L + 0.01, 0.06, L + 0.03, 0.18, FL + 1.0, FL + 1.06, "pole")
 }
 
-// ------------------------------------------------------------ the pens: pole hurdles between them, a gate onto each yard
+// ------------------------------------------------------------ the hall: one open space; its front a rail and two gates, shut at night
 function rails(x0, z0, x1, z1, y0, heights, r = 0.035) {
   for (const h of heights) pipe([x0, y0 + h, z0], [x1, y0 + h, z1], r, "pole", 7)
 }
@@ -300,34 +295,43 @@ function gate(x0, z0, x1, z1, y0, h) { // shut: a frame of thin poles with a dia
   rails(x0, z0, x1, z1, y0, [0.12, h / 2, h - 0.04], 0.028)
   pipe([x0, y0 + 0.12, z0], [x1, y0 + h - 0.04, z1], 0.025, "pole", 6)
 }
-for (const p of PENS.slice(1)) { // the hurdles between the pens
-  for (const z of [-W + WALL, 0, W - 0.04]) pole(p.x0, z, 0.045, FL, FL + 1.25)
-  rails(p.x0, -W + WALL, p.x0, W, FL, RAILS)
-}
-for (const [i, p] of PENS.entries()) { // each pen's front, a gate at its east end
-  const a = p.x1 - 0.1 - P.gate, x0 = i ? p.x0 : -L + WALL
-  if (a - x0 > 0.1) { pole(x0 + 0.04, W - 0.04, 0.045, FL, FL + 1.25); rails(x0, W - 0.04, a, W - 0.04, FL, RAILS) }
-  pole(a, W - 0.04, 0.045, FL, FL + 1.25)
-  gate(a + 0.04, W - 0.04, p.x1 - 0.14, W - 0.04, FL + 0.04, 1.1)
+{
+  const ends = [HALL.x0 + WALL, ...P.gates.flatMap((g) => [g, g + P.gate]), HALL.x1 - 0.03]
+  for (let i = 0; i < ends.length; i += 2) {
+    pole(ends[i] + 0.04, W - 0.04, 0.045, FL, FL + 1.25); pole(ends[i + 1] - 0.04, W - 0.04, 0.045, FL, FL + 1.25)
+    rails(ends[i], W - 0.04, ends[i + 1], W - 0.04, FL, RAILS)
+  }
+  for (const g of P.gates) gate(g + 0.04, W - 0.04, g + P.gate - 0.04, W - 0.04, FL + 0.04, 1.1)
+  // the movable kidding hurdles, standing across the hall's east end
+  const kz0 = -W + WALL + PF.d + 0.05, kz1 = W - 0.2
+  for (const z of [kz0, (kz0 + kz1) / 2, kz1]) pole(KID.x0, z, 0.035, LIT, LIT + 1.0)
+  rails(KID.x0, kz0, KID.x0, kz1, LIT, [0.25, 0.6, 0.95], 0.028)
 }
 
-// ------------------------------------------------------------ in each pen: the sleeping platform, the hay rack, the mineral box
-for (const p of PENS) {
-  const px0 = (p.x0 === -L ? p.x0 + WALL : p.x0 + 0.04) + 0.03, px1 = p.x1 - 0.07
+// ------------------------------------------------------------ in the hall: the sleeping platform, the hay racks, the mineral boxes
+{
+  const px0 = HALL.x0 + WALL + 0.03, px1 = HALL.x1 - 0.07
   const z0 = -W + WALL + 0.02, z1 = -W + WALL + PF.d, top = LIT + PF.h
-  for (const x of [px0 + 0.04, px1 - 0.04]) for (const z of [z0 + 0.04, z1 - 0.04]) pole(x, z, 0.035, LIT - 0.02, top - 0.03)
+  for (let x = px0 + 0.04; x <= px1 - 0.03; x += Math.min(1.2, (px1 - px0) / Math.ceil((px1 - px0) / 1.2)))
+    for (const z of [z0 + 0.04, z1 - 0.04]) pole(x, z, 0.035, LIT - 0.02, top - 0.03)
   for (const z of [z0 + 0.05, z1 - 0.05]) pipe([px0, top - 0.05, z], [px1, top - 0.05, z], 0.035, "pole", 7)
   for (let x = px0 + 0.03; x < px1 - 0.02; x += LINE ? 0.11 : 0.065) pipe([x, top - 0.01, z0], [x, top - 0.01, z1], 0.025, "bamboo", 6)
-  // the rack on the west side, off the floor: a pole frame, slanted bars, hay
-  const rx0 = px0, rx1 = px0 + FT.rack.d, rz0 = z1 + 0.15, rz1 = rz0 + p.rack, y0 = LIT + FT.rack.y0, y1 = y0 + FT.rack.h
-  for (const z of [rz0, rz1]) pole(rx0 + 0.04, z, 0.035, LIT, y1)
-  pipe([rx0 + 0.04, y1, rz0], [rx0 + 0.04, y1, rz1], 0.03, "pole", 7)
-  blk(rx0, rz0, rx1, rz1, y0 - 0.05, y0, "board")
-  for (let z = rz0 + 0.08; z < rz1 - 0.04; z += LINE ? 0.15 : 0.1) pipe([rx1, y1 - 0.02, z], [rx0 + 0.06, y0, z], 0.012, "pole", 5)
-  if (!LINE) soft(rx0 + 0.06, rz0 + 0.04, rx1 - 0.02, rz1 - 0.04, y0, y1 - 0.1, 0.08, "hay")
-  if (p.head) { // the mineral box on the east hurdle, for this species alone
-    blk(px1 - FT.mineral.d, rz0, px1, rz0 + FT.mineral.w, LIT + 0.5, LIT + 0.7, "board")
-    if (!LINE) blk(px1 - FT.mineral.d + 0.02, rz0 + 0.02, px1 - 0.02, rz0 + FT.mineral.w - 0.02, LIT + 0.68, LIT + 0.71, "mineral")
+  // the racks, off the floor: a pole frame, slanted bars, a tray, hay; the west one on the wall, the middle one fed from both sides
+  const y0 = LIT + FT.rack.y0, y1 = y0 + FT.rack.h
+  for (const r of FT.racks) {
+    const alongZ = r.y1 - r.y0 > r.x1 - r.x0
+    for (const [x, z] of alongZ ? [[r.x0 + 0.04, r.y0], [r.x0 + 0.04, r.y1]] : [[r.x0, (r.y0 + r.y1) / 2], [r.x1, (r.y0 + r.y1) / 2]]) pole(x, z, 0.035, LIT, y1)
+    blk(r.x0, r.y0, r.x1, r.y1, y0 - 0.05, y0, "board")
+    if (alongZ) for (let z = r.y0 + 0.08; z < r.y1 - 0.04; z += LINE ? 0.15 : 0.1) pipe([r.x1, y1 - 0.02, z], [r.x0 + 0.06, y0, z], 0.012, "pole", 5)
+    else for (let x = r.x0 + 0.08; x < r.x1 - 0.04; x += LINE ? 0.15 : 0.1) for (const s of [-1, 1]) pipe([x, y1 - 0.02, (r.y0 + r.y1) / 2 + s * 0.17], [x, y0, (r.y0 + r.y1) / 2], 0.012, "pole", 5)
+    pipe(alongZ ? [r.x0 + 0.04, y1, r.y0] : [r.x0, y1, (r.y0 + r.y1) / 2], alongZ ? [r.x0 + 0.04, y1, r.y1] : [r.x1, y1, (r.y0 + r.y1) / 2], 0.03, "pole", 7)
+    if (!LINE) soft(r.x0 + 0.04, r.y0 + 0.04, r.x1 - 0.04, r.y1 - 0.04, y0, y1 - 0.1, 0.08, "hay")
+  }
+  // the goats' mineral box high on the west wall, the sheep's low by the middle rack
+  for (const m of FT.minerals) {
+    if (m.for === "sheep") pole((m.x0 + m.x1) / 2, (m.y0 + m.y1) / 2, 0.03, LIT, LIT + m.z)
+    blk(m.x0, m.y0, m.x1, m.y1, LIT + m.z, LIT + m.z + 0.2, "board")
+    if (!LINE) blk(m.x0 + 0.02, m.y0 + 0.02, m.x1 - 0.02, m.y1 - 0.02, LIT + m.z + 0.18, LIT + m.z + 0.21, "mineral")
   }
 }
 
@@ -339,7 +343,7 @@ for (const p of PENS) {
   blk(STORE.x0 + 0.1, -W + WALL, L - WALL, -W + WALL + 0.35, FL + 1.3, FL + 1.33, "board")
 }
 
-// ------------------------------------------------------------ the yard: posts and three lashed rails, the gate, troughs
+// ------------------------------------------------------------ the outline and the yard: posts and three lashed rails, the gate, troughs
 function fence(x0, z0, x1, z1, gaps = []) {
   const len = Math.hypot(x1 - x0, z1 - z0), n = Math.max(1, Math.ceil(len / Y.post))
   for (let k = 0; k <= n; k++) {
@@ -349,23 +353,21 @@ function fence(x0, z0, x1, z1, gaps = []) {
   }
   rails(x0, z0, x1, z1, 0, RAILS, 0.04)
 }
-{ // the village yard's fence: from the plinth's back west corner round the wing, the front with its gate, to the east end
-  const E = S.plinth.edge, G = Y.gate
-  fence(-L - E, Y.wing.y0, Y.x0, Y.wing.y0)
-  fence(Y.x0, Y.wing.y0, Y.x0, Y.y1)
+{ // the outline: the palisade is its back; the post-and-rail round the west, the front with its gate, the east
+  const G = Y.gate
+  fence(Y.x0, Y.y0, Y.x0, Y.y1)
   fence(Y.x0, Y.y1, G.x0, Y.y1)
   fence(G.x0 + G.w, Y.y1, Y.x1, Y.y1)
-  fence(Y.x1, Y.y1, Y.x1, W)
-  fence(Y.x1, W, L + E, W)
+  fence(Y.x1, Y.y1, Y.x1, Y.y0)
   // the gate's two leaves to the paddock, shut
   gate(G.x0 + 0.04, Y.y1, G.x0 + G.w / 2 - 0.02, Y.y1, 0.02, 1.1)
   gate(G.x0 + G.w - 0.04, Y.y1, G.x0 + G.w / 2 + 0.02, Y.y1, 0.02, 1.1)
 }
-for (const p of PENS.filter((p) => p.trough)) { // a float trough by each pen, in the shade of the eaves
-  const t0 = (p.x0 + p.x1) / 2 - p.trough / 2 - 0.4, z0 = W + 0.4, z1 = z0 + FT.trough.d, h = FT.trough.h
-  for (const x of [t0 + 0.1, t0 + p.trough - 0.1]) blk(x - 0.03, z0 + 0.02, x + 0.03, z1 - 0.02, 0, h - 0.18, "pole")
-  blk(t0, z0, t0 + p.trough, z1, h - 0.2, h, "trough")
-  blk(t0 + 0.04, z0 + 0.04, t0 + p.trough - 0.04, z1 - 0.04, h - 0.06, h - 0.03, "water", { noEdges: true })
+for (const t of FT.troughs) { // the float troughs in the shade of the eaves
+  const z0 = W + 0.4, z1 = z0 + FT.trough.d, h = FT.trough.h
+  for (const x of [t.x0 + 0.1, t.x1 - 0.1]) blk(x - 0.03, z0 + 0.02, x + 0.03, z1 - 0.02, 0, h - 0.18, "pole")
+  blk(t.x0, z0, t.x1, z1, h - 0.2, h, "trough")
+  blk(t.x0 + 0.04, z0 + 0.04, t.x1 - 0.04, z1 - 0.04, h - 0.06, h - 0.03, "water", { noEdges: true })
 }
 
 // ------------------------------------------------------------ the palisade windbreak behind the shelter
@@ -411,7 +413,8 @@ for (const s of ST.list) {
   for (let k = 0; k < CO.n; k++) {
     const z0 = CO.y0 + k * b, z1 = z0 + b
     for (const [x, z] of [[CO.x0, z0], [CO.x0 + b, z0], [CO.x0 + b, z1], [CO.x0, z1]]) pole(x, z, 0.05, 0, 1.05)
-    rails(CO.x0, z0, CO.x0 + b, z0, 0, [0.25, 0.55, 0.85], 0.035) // the dividers, open to the path on the west
+    rails(CO.x0, z0, CO.x0 + b, z0, 0, [0.25, 0.55, 0.85], 0.035) // the dividers
+    rails(CO.x0, z0 + 0.05, CO.x0, z1 - 0.05, 0, [0.7], 0.03) // the removable front rail, against the goats
     rails(CO.x0 + b, z0, CO.x0 + b, z1, 0, [0.25, 0.55, 0.85], 0.035)
     if (k === CO.n - 1) rails(CO.x0, z1, CO.x0 + b, z1, 0, [0.25, 0.55, 0.85], 0.035)
     // fresh litter, a turning heap, finished compost
@@ -470,16 +473,16 @@ for (const a of AN.sheep) animal(a, true)
 // ------------------------------------------------------------ the guard dogs' run: kennels, a shade roof (at eye level only), a bowl
 {
   const h = DG.h
-  const ring = [[DG.x0, DG.y0, DG.x1, DG.y0], [DG.x1, DG.y0, DG.x1, DG.y1], [DG.x1, DG.y1, DG.x0, DG.y1],
-    [DG.x0, DG.y0, DG.x0, DG.gate.y0], [DG.x0, DG.gate.y0 + DG.gate.w, DG.x0, DG.y1]]
-  blk(DG.x0, DG.y0, DG.x1, DG.y1, -0.02, 0.015, "packed")
+  // the outline is its back and its east side; its own fence closes the west and the front, a gate onto the yard
+  const ring = [[DG.x0, DG.y0, DG.x0, DG.y1], [DG.x0, DG.y1, DG.gate.x0, DG.y1], [DG.gate.x0 + DG.gate.w, DG.y1, DG.x1, DG.y1]]
+  blk(DG.x0, DG.y0, DG.x1, DG.y1, -0.02, 0.025, "packed")
   for (const [x0, z0, x1, z1] of ring) {
     const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, z1 - z0) / Y.post))
     for (let k = 0; k <= n; k++) pole(x0 + ((x1 - x0) * k) / n, z0 + ((z1 - z0) * k) / n, 0.06, 0, h + 0.1, 8)
     rails(x0, z0, x1, z1, 0, [0.1, h / 2, h], 0.035)
     if (!LINE) { const g = add(new THREE.PlaneGeometry(Math.hypot(x1 - x0, z1 - z0), h - 0.1), "mesh", { pos: [(x0 + x1) / 2, 0.1 + (h - 0.1) / 2, (z0 + z1) / 2], noEdges: true }); g.rotation.y = -Math.atan2(z1 - z0, x1 - x0) }
   }
-  gate(DG.x0, DG.gate.y0 + 0.04, DG.x0, DG.gate.y0 + DG.gate.w - 0.04, 0.02, h - 0.1)
+  gate(DG.gate.x0 + 0.04, DG.y1, DG.gate.x0 + DG.gate.w - 0.04, DG.y1, 0.02, h - 0.1)
   for (const k of DG.kennels) { // a raised kennel: a box on bearers, a pitched roof, a round door to the run
     blk(k.x0, k.y0, k.x1, k.y1, 0.1, 0.75, "board")
     for (const s of [1, -1]) {

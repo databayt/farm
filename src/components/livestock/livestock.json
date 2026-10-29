@@ -1,7 +1,7 @@
 {
-  "about": "The livestock yard, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (D-030), in one thatched pole shelter opening onto one village yard (D-037, D-038, after the founder's reference photo of 2026-10-29: a thatched shed, a pole palisade, lashed post-and-rail fences, stones, fodder baskets). By day the goats, the sheep, the ducks, the doves, the cats and the guests share the yard; at night the goats and the sheep sleep in their own pens, and each species has its own mineral box in its pen, because copper in goat minerals is toxic to sheep [V LVS-26]. Both species carry the same worms [V LVS-46], so the yard is kept dry, the hay stays in racks and the herd is dewormed animal by animal (FAMACHA). The yard is part of the farm's loop: litter and manure go to the compost bays and on to the vegetable beds, the beds' residues and cut fodder come back in baskets. The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x to the right as seen from the paddock (west end left), y toward the viewer (the yards and the paddock), the shelter's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
+  "about": "The livestock yard, as /en/bar is one bar: the farm starts with 10 animals, 6 goats and 4 sheep (D-030), in one thatched pole shelter opening onto one village yard (D-037, D-038, after the founder's reference photo of 2026-10-29: a thatched shed, a pole palisade, lashed post-and-rail fences, stones, fodder baskets). One outline holds it all (D-039): the palisade at the back, one post-and-rail fence round the rest. The goats, the sheep, the ducks, the doves, the cats and the guests share the yard by day, and the goats and the sheep sleep together in one open hall. Copper in goat minerals is toxic to sheep [V LVS-26], so the goats' mineral box hangs high, where sheep cannot reach, and the sheep's sits low; goats eating sheep minerals does no harm [A]. Both species carry the same worms [V LVS-46], so the yard is kept dry, the hay stays in racks and the herd is dewormed animal by animal (FAMACHA). The yard is part of the farm's loop: litter and manure go to the compost bays and on to the vegetable beds, the beds' residues and cut fodder come back in baskets. The 2D (livestock-plan.tsx) and the 3D (scripts/site/render/livestock.html) both read this file. Plan in metres: x to the right as seen from the paddock (west end left), y toward the viewer (the yards and the paddock), the shelter's centre at 0,0; heights from the ground. Every size is [A], after the guide's goat house and livestock-plan §5, until the farm's vet or an animal-housing adviser checks it. The site waits for the 200 m lake measurement.",
   "shelter": {
-    "about": "7.0 x 3.6 m, long axis east-west, open to the yards on the south. Back and ends of split eucalyptus poles set upright to the eaves, under a grass-thatched gable roof on pole rafters that overhangs 0.7 m, so the troughs along the front stand in its shade. The floor is rammed earth on a plinth 0.3 m high edged in fieldstone, so rain runs away from the bedding.",
+    "about": "7.0 x 3.6 m, long axis east-west, open to the yard on the south. Back and ends of split eucalyptus poles set upright to the eaves, under a grass-thatched gable roof on pole rafters that overhangs 0.7 m, so the troughs along the front stand in its shade. The floor is rammed earth on a plinth 0.3 m high edged in fieldstone, so rain runs away from the bedding.",
     "l": 7.0,
     "d": 3.6,
     "wall": 0.1,
@@ -17,89 +17,110 @@
     }
   },
   "pens": {
-    "about": "West to east: goats 3.0 x 3.6 m (6 does at 1.2 m2 each plus kids at 0.3 m2 [A]), a kidding and sick pen 1.0 m wide that opens onto the lane so either species can use it, sheep 2.0 x 3.6 m (4 ewes, the same allowance), and the lockable feed store, boarded, with its door on the east gable. Partitions are pole hurdles 1.2 m high; the store is walled to the roof.",
-    "gate": 0.8,
-    "list": [
-      {
-        "id": "goats",
-        "label": "GOATS",
-        "x0": -3.5,
-        "x1": -0.5,
-        "head": 6,
-        "rack": 1.5,
-        "trough": 1.0
-      },
-      {
-        "id": "kidding",
-        "label": "KIDDING",
-        "x0": -0.5,
-        "x1": 0.5,
-        "head": 0,
-        "rack": 0.6,
-        "trough": 0
-      },
-      {
-        "id": "sheep",
-        "label": "SHEEP",
-        "x0": 0.5,
-        "x1": 2.5,
-        "head": 4,
-        "rack": 1.2,
-        "trough": 1.0
-      },
-      {
-        "id": "store",
-        "label": "FEED",
-        "x0": 2.5,
-        "x1": 3.5,
-        "head": 0,
-        "rack": 0,
-        "trough": 0
-      }
+    "about": "Inside the shelter, one open sleeping hall for the whole herd, 6.0 x 3.6 m (10 head at 1.2 m2 plus kids at 0.3 m2 [A]), and the lockable feed store at the east end, boarded to the roof, its door on the east gable. The kidding pen is a set of movable pole hurdles at the hall's east end, put up when a doe or a ewe is due and taken down after. The open front has a rail and two gates, shut at night against theft.",
+    "hall": {
+      "x0": -3.5,
+      "x1": 2.5,
+      "label": "HERD",
+      "head": 10
+    },
+    "kidding": {
+      "x0": 1.5,
+      "x1": 2.5,
+      "label": "KIDDING"
+    },
+    "store": {
+      "x0": 2.5,
+      "x1": 3.5,
+      "label": "FEED"
+    },
+    "gate": 0.9,
+    "gates": [
+      -2.2,
+      0.6
     ]
   },
   "platform": {
-    "about": "A slatted bamboo sleeping platform along the back of each pen, 0.4 m up, so the animals lie dry above the litter: the dry floor of livestock-plan §7 without the 1 m stilts.",
+    "about": "A slatted bamboo sleeping platform along the whole back of the hall, 0.4 m up, so the herd lies dry above the litter: the dry floor of livestock-plan §7 without the 1 m stilts.",
     "d": 1.0,
     "h": 0.4
   },
   "fittings": {
-    "about": "Inside each pen on its west side, a raised hay rack filled by the keeper (feed off the floor lowers worm pick-up; the hay on the ground in the reference photo is what this avoids), and a mineral box on the east side for that species alone. In each yard, a float trough under the eaves, fed from the tank.",
+    "about": "Two raised hay racks filled by the keeper (feed off the floor lowers worm pick-up; the hay on the ground in the reference photo is what this avoids): one on the hall's west wall, one free-standing and fed from both sides in the middle. The goats' mineral box hangs on the west wall at 1.2 m, above the sheep's reach; the sheep's sits low on the middle rack. Two float troughs in the yard under the eaves, fed from the tank.",
     "rack": {
       "d": 0.35,
       "y0": 0.5,
       "h": 0.6
     },
+    "racks": [
+      {
+        "x0": -3.4,
+        "x1": -3.05,
+        "y0": -0.5,
+        "y1": 1.0
+      },
+      {
+        "x0": -0.75,
+        "x1": 0.75,
+        "y0": 0.05,
+        "y1": 0.45
+      }
+    ],
+    "mineral": {
+      "w": 0.2,
+      "d": 0.15
+    },
+    "minerals": [
+      {
+        "x0": -3.4,
+        "x1": -3.25,
+        "y0": 1.15,
+        "y1": 1.35,
+        "z": 1.2,
+        "for": "goats"
+      },
+      {
+        "x0": 0.8,
+        "x1": 1.0,
+        "y0": 0.15,
+        "y1": 0.35,
+        "z": 0.3,
+        "for": "sheep"
+      }
+    ],
     "trough": {
       "d": 0.35,
       "h": 0.4
     },
-    "mineral": {
-      "w": 0.2,
-      "d": 0.15
-    }
+    "troughs": [
+      {
+        "x0": -3.35,
+        "x1": -2.35
+      },
+      {
+        "x0": 1.6,
+        "x1": 2.45
+      }
+    ]
   },
   "yards": {
-    "about": "One village yard, fenced with round eucalyptus poles: posts every 1.8 m, three rails lashed with sisal rope, 1.2 m high, mesh low down where the ducks and the rabbits are. In front of the shelter it runs 13.5 x 5.5 m; west of the shelter a wing runs back to the palisade, for the ducks' pond and house and the rabbits. Straw over the earth, cleared to the compost with the bedding. One gate, two leaves, onto the paddock, for the herd and the guests.",
+    "about": "One outline round everything: the palisade is its back; round the west, the front and the east, round eucalyptus poles, posts every 1.8 m, three rails lashed with sisal rope, 1.2 m high, mesh low down where the ducks and the rabbits are. Inside, one village yard: straw over the earth, cleared to the compost with the bedding. One gate, two leaves, onto the paddock, for the herd and the guests. The compost bays close with a removable rail so the goats stay out of them.",
     "x0": -9.0,
-    "x1": 4.5,
+    "x1": 9.7,
+    "y0": -2.3,
     "y1": 7.3,
     "post": 1.8,
     "h": 1.2,
-    "wing": {
-      "y0": -2.0,
-      "x1": -3.7
-    },
     "gate": {
       "x0": -0.5,
       "w": 1.0
     }
   },
   "palisade": {
-    "about": "A windbreak of upright eucalyptus poles behind the shelter, 1.8 m high, against the prevailing wind; climbers grow on it.",
+    "about": "The outline's back: a windbreak of upright eucalyptus poles, 1.8 m high, against the prevailing wind; climbers grow on it.",
     "y": -2.3,
-    "x0": -9.5,
-    "x1": 4.5,
+    "x0": -9.0,
+    "x1": 9.7,
     "h": 1.8
   },
   "stones": {
@@ -160,49 +181,49 @@
     "n": 3
   },
   "dogs": {
-    "about": "The farm's two guard dogs (livestock-plan §5 names a dog or a night watch against theft [V LVS-01]), in a run east of the compost bays on the path by the feed store, where they watch the store, the yards and the way in. Two raised kennels with pitched roofs at the back, a shade roof over half the run, a water bowl, a gate onto the path. The run is fenced apart from the farm friends; the dogs are vaccinated against rabies and walked on the lead past the small animals. Sizes [A].",
+    "about": "The farm's two guard dogs (livestock-plan §5 names a dog or a night watch against theft [V LVS-01]), in a run in the outline's back east corner, past the compost bays, where they watch the store, the yards and the way in. Two raised kennels with pitched roofs at the back, a shade roof over half the run, a water bowl, a gate onto the yard. The run is the one fenced place inside the outline, apart from the small animals; the dogs are vaccinated against rabies and walked on the lead past the small animals. Sizes [A].",
     "x0": 6.7,
     "x1": 9.7,
-    "y0": -1.4,
-    "y1": 2.4,
+    "y0": -2.3,
+    "y1": 1.8,
     "h": 1.5,
     "head": 2,
     "kennels": [
       {
         "x0": 6.95,
         "x1": 7.95,
-        "y0": -1.2,
-        "y1": -0.4
+        "y0": -2.1,
+        "y1": -1.3
       },
       {
         "x0": 8.45,
         "x1": 9.45,
-        "y0": -1.2,
-        "y1": -0.4
+        "y0": -2.1,
+        "y1": -1.3
       }
     ],
     "shade": {
-      "y0": -1.4,
-      "y1": 0.6
+      "y0": -2.3,
+      "y1": -0.3
     },
     "gate": {
-      "y0": 1.2,
+      "x0": 7.6,
       "w": 1.0
     },
     "bowl": {
       "x": 7.3,
-      "y": 0.2,
+      "y": -0.6,
       "r": 0.15
     }
   },
   "friends": {
-    "about": "The farm friends: animals for the guests to meet, not for sale (founder, 2026-10-29; D-038). They live in the village yard with the herd: 4 ducks with a low duck house and a lined pond on a gravel apron at the yard's west edge, away from the troughs so the ground by the water stays dry [A]; free-flying doves in a dovecote on a pole; 2 neutered cats with a raised house on a post. 3 rabbits are the exception: a raised hutch and a fenced grass run inside the yard, because hooves trample them and they dig out. A log bench for the guests. The cats keep off the hay and the feed, which are covered: cat droppings can carry toxoplasmosis, which makes ewes and does abort [A, to check with the vet]. Sizes and numbers [A].",
+    "about": "The farm friends: animals for the guests to meet, not for sale (founder, 2026-10-29; D-038). They live in the village yard with the herd: 4 ducks with a low duck house and a lined pond on a gravel apron at the yard's west edge, away from the troughs so the ground by the water stays dry [A]; free-flying doves in a dovecote on a pole; 2 neutered cats with a raised house on a post. 3 rabbits are the exception: a raised hutch with its wire run built on, one unit, because hooves trample them and they dig out. A log bench for the guests. The cats keep off the hay and the feed, which are covered: cat droppings can carry toxoplasmosis, which makes ewes and does abort [A, to check with the vet]. Sizes and numbers [A].",
     "ducks": {
       "house": {
         "x0": -8.75,
         "x1": -7.55,
-        "y0": -1.85,
-        "y1": -0.85
+        "y0": -1.95,
+        "y1": -0.95
       },
       "pond": {
         "x": -7.5,
@@ -217,15 +238,16 @@
       "hutch": {
         "x0": -6.0,
         "x1": -4.2,
-        "y0": -1.85,
-        "y1": -1.15,
+        "y0": -1.95,
+        "y1": -1.25,
         "h": 0.6
       },
       "run": {
         "x0": -6.0,
-        "x1": -3.9,
-        "y0": -0.85,
-        "y1": 0.95
+        "x1": -4.2,
+        "y0": -1.25,
+        "y1": 0.15,
+        "h": 0.5
       },
       "head": 3
     },
@@ -260,8 +282,8 @@
         "coat": "brown"
       },
       {
-        "x": -1.5,
-        "y": 0.7,
+        "x": -1.2,
+        "y": 0.9,
         "h": 200,
         "coat": "black"
       },
@@ -293,8 +315,8 @@
     ],
     "sheep": [
       {
-        "x": 1.5,
-        "y": 0.4,
+        "x": 0.9,
+        "y": 0.9,
         "h": 170,
         "coat": "wool"
       },
@@ -320,12 +342,12 @@
     "dogs": [
       {
         "x": 7.6,
-        "y": 0.9,
+        "y": 0.5,
         "h": 200
       },
       {
         "x": 9.0,
-        "y": 1.5,
+        "y": 0.9,
         "h": 120
       }
     ],
@@ -367,17 +389,17 @@
     "rabbits": [
       {
         "x": -5.5,
-        "y": -0.3,
+        "y": -0.6,
         "h": 0
       },
       {
-        "x": -4.6,
-        "y": 0.4,
+        "x": -4.7,
+        "y": -0.2,
         "h": 160
       },
       {
-        "x": -5.0,
-        "y": 0.1,
+        "x": -5.1,
+        "y": -0.9,
         "h": 250
       }
     ]
