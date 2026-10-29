@@ -49,8 +49,9 @@ export default function FarmingPage() {
   const bedsWide = plan.beds.length
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until a photo of the planted field or the founder's remaster: the block by
-          the gate rendered from the main path (scripts/site/render/farming.html?mode=real). */}
+      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (handoff in ~/Desktop/farming-nano-banana: the
+          livestock hero for the place and the light, the 3D, the 2D and a frame of the site footage). For now it is the
+          block by the gate rendered from the main path (scripts/site/render/farming.html?mode=real). */}
       <PageHero src={`${D}/render/field-real.webp`} width={2400} height={1100} className="bg-[#6f9a4a]" imgClassName="object-[50%_45%]"
         title="Everything on the plate, grown here"
         alt="Ten raised beds of red-brown soil on drip lines: herbs nearest, then amaranth, spinach, kale and staked tomatoes at the back, on a sandy path in the grass." />
@@ -81,8 +82,8 @@ export default function FarmingPage() {
           rendered. Both from scripts/site/render/farming.html. */}
       <ModelSection line={`${D}/render/field-line.png`} real={`${D}/render/field-real.webp`} width={2400} height={1100}
         caption={<>Rendered from the design model: the block by the gate, one season</>}
-        lineAlt="Line drawing of one block of ten raised beds seen from the main path: two drip lines along each bed, herbs in the nearest bed, then amaranth, spinach and kale, and tomatoes on stakes at the back."
-        realAlt="The same block rendered: red-brown beds with dark compost, black drip tape, herbs, wine-red amaranth, spinach, kale and staked tomatoes with red and yellow fruit, on a sandy path in the grass." />
+        lineAlt="Line drawing of one block of ten raised beds seen straight on from the main path: two drip lines along each bed, herbs in the nearest bed, then amaranth, spinach and kale, and tomatoes on stakes at the back."
+        realAlt="The same block rendered on the white page: red-brown beds with dark compost, black drip tape, herbs, wine-red amaranth, spinach, kale and staked tomatoes with red and yellow fruit, on a sandy path." />
 
       {/* Field, pinned while one block builds up in fast motion, seen from above: the bare ground, the raised
           beds, the compost, the drip lines, the planting. Renders: farming.html?top=<layer>. */}
