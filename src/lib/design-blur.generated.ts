@@ -20,6 +20,8 @@ export const DESIGN_BLUR: Record<string, string> = {
   "/designs/office/render/office-real.webp": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAADQAQCdASoQAAcAAsBMJbACdAEVz05WwAD+w+FDX2J04o0G4xzQygM4tP8h8Cfr731eVObVE4wh/JH0LgAAAA==",
   "/designs/parking/render/parking-hero.jpg": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAAAQAgCdASoQAAkAAsBMJbACdGuAAsO4OtYAAP7oawrjVd8ORYDnW/cKptEYDob54fiLBkNSJn3Jzjm/NmPzAc/xFyFvmOt0QSgAAA==",
   "/designs/parking/render/parking-real.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAcAAsBMJbACdAEQCu6c8AD+jfv3/uOAiXe/CRjCFVMjJ0gpGExop9gSlymYPQNJ1nWAAAA=",
+  "/designs/public-bathroom/render/electric-real.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADwAQCdASoQAAcAAsBMJZACdAEX5euyQgAA/vDcXxvDbGEylkKtb448jFoy602SFA5XhdmfH1Udqbg4xAA=",
+  "/designs/public-bathroom/render/plumbing-real.webp": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4WAoAAAAQAAAADwAABgAAQUxQSFEAAAABcBoAAJrMk1td852y5Apkml9glUaicQKVD3jA5Qp3m5wQERMA/BeNpAakV0ez8+v1kNL2h/l6PJi20ybusG+bdTOt0ulElkLDaTiDoYYAFAwAVlA4ID4AAACQAQCdASoQAAcAAsBMJaQAAiB813AA/lR0ZZNMAD7VBBPRQx+GiI9+sUgvaDslPDdjA90jWG4GeoyJ3gAAAA==",
   "/designs/public-bathroom/render/public-bathroom-hero.jpg": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADQAQCdASoQAAkAAsBMJbACdAD1iNlgAAD+8Ap8Y0IDXfdqddu06fAteCN0erQcagKUcmEvYVs6KYd/q+K9N5U9fB8MQAAA",
   "/designs/public-bathroom/render/public-bathroom-real.webp": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAACwAQCdASoQAAcAAsBMJbACdADHlijEAP7D/wn/RLl7hLJvVbSdUOfm9Hp918a7B2+VPUClBAA=",
   "/designs/studio/render/electric-real.jpg": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAADwAQCdASoQAAcAAsBMJagCdADSR5ll94AA/vI02TclverYV3VoCz6TddnEbsHwje2TeAKthMqwjGrEo8zazb1pXntoVvynUjMzo3bP6uybuOGI4OxpQAAA",
