@@ -1,13 +1,13 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 
-import { DOCS, SiteMenu } from "@/components/site-menu"
+import { SiteMenu } from "@/components/site-menu"
 
-// Fixed over the hero: light text on the film while it fills the screen, a solid bar once the
-// hero has mostly scrolled away (#hero-sentinel). The wordmark left; the docs and the site menu
-// right, the same menu as on every other page (components/site-menu.tsx).
+// Fixed over the hero, and nothing in it but a two-line hamburger that opens the site menu full
+// screen (components/site-menu.tsx; the docs link lives inside it). Light on the film while it fills
+// the screen; once the hero has mostly scrolled away (#hero-sentinel) the button gets a chalk disc
+// so it stays legible over the page, with no bar behind it.
 export function Header({ title, menu }: { title: string; menu: { open: string; close: string } }) {
   const ref = React.useRef<HTMLElement>(null)
 
@@ -25,19 +25,15 @@ export function Header({ title, menu }: { title: string; menu: { open: string; c
   return (
     <header
       ref={ref}
-      className="group/header text-chalk fixed inset-x-0 top-0 z-50 h-(--header-height) transition-[background-color,color] duration-300 data-[solid]:bg-chalk/90 data-[solid]:text-soil data-[solid]:backdrop-blur-md"
+      className="group/header text-chalk pointer-events-none fixed inset-x-0 top-0 z-50 h-(--header-height) transition-colors duration-300 data-[solid]:text-soil"
     >
-      <div className="flex h-full w-full items-center gap-2 px-4 md:px-10">
-        <a href="#top" className="font-display me-auto text-2xl leading-none">
-          {title}
-        </a>
-        <Link
-          href={DOCS.href}
-          className="px-2 text-[13px] tracking-[0.08em] uppercase opacity-85 transition-opacity hover:opacity-100"
-        >
-          {DOCS.label}
-        </Link>
-        <SiteMenu title={title} menu={menu} className="-me-2" />
+      <div className="flex h-full w-full items-center justify-end px-4 md:px-10">
+        <SiteMenu
+          title={title}
+          menu={menu}
+          full
+          className="pointer-events-auto -me-2 size-11 transition-colors duration-300 group-data-[solid]/header:bg-chalk/90 group-data-[solid]/header:backdrop-blur-md"
+        />
       </div>
     </header>
   )
