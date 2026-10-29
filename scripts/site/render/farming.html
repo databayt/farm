@@ -43,6 +43,8 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
 const TOP = Q.get("top"), ITEM = Q.get("item"), HERO = Q.get("hero") === "1"
+// the 3D on the page: the whole field as the 2D draws it, its fence and gate and the fruit row behind (D-053)
+const FIELD = !TOP && !ITEM && !HERO
 const LINE = Q.get("mode") === "line"
 const P = await (await fetch(`/public/designs/farming/data/plan.json?${Date.now()}`)).json()
 const INK = "#2b2a26", PAGE = "#ffffff"
@@ -56,6 +58,10 @@ const towardMain = block.y < P.mainY // the main path below the block on the pla
 let beds = P.beds.filter((b) => b.block === block.id).map((b) => ({ ...b, z0: b.y - block.y, x0: 0 }))
 if (!towardMain) beds = beds.map((b) => ({ ...b, z0: block.h - (b.y - block.y) - b.h }))
 if (ITEM) beds = [{ id: ITEM, crop: ITEM, x0: 0, z0: 0, w: 10, h: 1.2 }]
+// the whole field in fence metres: x along the beds toward the gate, z across them
+const [fx0, fy0, fx1, fy1] = P.fence
+if (FIELD) beds = P.beds.map((b) => ({ ...b, x0: b.x - fx0, z0: b.y - fy0 }))
+const FL = fx1 - fx0, FWD = fy1 - fy0 // the fenced field: its length along the beds and its width
 const BW = ITEM ? 3 : 10, BH = ITEM ? 1.2 : block.h, H = 0.2 // an item shows 3 m of its bed, close enough to read the plants
 
 const [FW, FH] = TOP ? [2400, Math.round((2400 * (BW + 1.4)) / (BH + 1.4))] : HERO ? [2400, 1340] : [2400, 1100]
@@ -163,7 +169,10 @@ const BOX = new THREE.BoxGeometry(1, 1, 1)
 
 // ------------------------------------------------------------ the ground
 const M = 0.7 // ground past the block on each side
-if (!ITEM) {
+if (FIELD) { // the field's ground, from behind the fruit row to past the gate
+  if (REAL) T.path.repeat.set((FL + 5) / 3, (FWD + 1.4) / 3)
+  add(new THREE.PlaneGeometry(FL + 5, FWD + 1.4), "path", { pos: [FL / 2 - 1.8, 0, FWD / 2], rot: [-Math.PI / 2, 0, 0], edges: false })
+} else if (!ITEM) {
   if (REAL) { T.path.repeat.set((BW + 2 * M) / 3, (BH + 2 * M) / 3) }
   add(new THREE.PlaneGeometry(BW + 2 * M, BH + 2 * M), "path", { pos: [BW / 2, 0, BH / 2], rot: [-Math.PI / 2, 0, 0], edges: false })
   // no lawn round it: the block stands on the white page, as the studio's and the livestock yard's 3D; the stand-in
@@ -267,6 +276,40 @@ for (const b of beds) {
     put(BOX, "net", { pos: [b.x0 + BW / 2, H + 1.0, zc - 0.02], scale: [BW - 0.2, 1.2, 0.004], layer: "plants" })
   }
 }
+if (FIELD) {
+  // the fence: barked posts every 3 m and three wires, 1.5 m, the gate in the end toward the galley
+  const gz = P.gate[1] - fy0, gw = 1.5
+  const run = (x0, z0, x1, z1) => {
+    const len = Math.hypot(x1 - x0, z1 - z0), n = Math.max(1, Math.round(len / 3))
+    for (let k = 0; k <= n; k++) put(CYL, "stake", { pos: [x0 + ((x1 - x0) * k) / n, 0.75, z0 + ((z1 - z0) * k) / n], scale: [0.05, 1.5, 0.05], layer: "fence" })
+    const a = Math.atan2(z1 - z0, x1 - x0)
+    for (const y of [0.4, 0.9, 1.4]) put(CYL, "tape", { pos: [(x0 + x1) / 2, y, (z0 + z1) / 2], rot: [0, -a, Math.PI / 2], scale: [0.008, len, 0.008], layer: "fence" })
+  }
+  run(0, 0, FL, 0); run(0, FWD, FL, FWD); run(0, 0, 0, FWD)
+  run(FL, 0, FL, gz - gw); run(FL, gz + gw, FL, FWD)
+  // the fruit row behind the back fence: banana mats and trees, from the plan
+  for (const t of P.fruit) {
+    const x = t.x - fx0, z = t.y - fy0
+    if (t.kind === "banana") {
+      for (let s = 0; s < 3; s++) {
+        const sx = x + R() * 0.6, sz = z + R() * 0.6, h = 2.2 + rnd() * 0.8
+        put(CYL, "leaf", { pos: [sx, h / 2, sz], scale: [0.1, h, 0.1], colour: "#7d8a52", layer: "fruit" })
+        for (let l = 0; l < 6; l++) {
+          const a = (l / 6) * Math.PI * 2 + rnd(), ln = t.r * (0.9 + rnd() * 0.4)
+          put(BOX, "leaf", { pos: [sx + Math.cos(a) * ln * 0.45, h + 0.15, sz + Math.sin(a) * ln * 0.45], rot: [0, -a, -0.5], scale: [ln, 0.02, 0.34], colour: "#5f8f3a", layer: "fruit" })
+        }
+      }
+    } else if (t.kind === "papaya") {
+      put(CYL, "leaf", { pos: [x, 1.3, z], scale: [0.09, 2.6, 0.09], colour: "#6d5a48", layer: "fruit" })
+      for (let l = 0; l < 7; l++) { const a = (l / 7) * Math.PI * 2; put(BOX, "leaf", { pos: [x + Math.cos(a) * 0.55, 2.7, z + Math.sin(a) * 0.55], rot: [0, -a, -0.35], scale: [1.1, 0.02, 0.6], colour: "#6a9a3e", layer: "fruit" }) }
+      for (let f = 0; f < 5; f++) { const a = (f / 5) * Math.PI * 2; put(SPH, "fruit", { pos: [x + Math.cos(a) * 0.12, 2.35, z + Math.sin(a) * 0.12], scale: [0.13, 0.19, 0.13], colour: "#e09a3a", layer: "fruit" }) }
+    } else {
+      const col = { avocado: "#3f6b2e", mango: "#4a7a34", lemon: "#5b8a3a" }[t.kind]
+      put(CYL, "leaf", { pos: [x, 0.7, z], scale: [0.07, 1.4, 0.07], colour: "#6d5a48", layer: "fruit" })
+      for (let k = 0; k < 5; k++) put(SPH, "leaf", { pos: [x + R() * t.r, 1.1 + t.r * (0.5 + rnd() * 0.35), z + R() * t.r], scale: [t.r * 0.6, t.r * 0.5, t.r * 0.6], colour: col, layer: "fruit" })
+    }
+  }
+}
 flush()
 
 // ------------------------------------------------------------ camera
@@ -288,10 +331,11 @@ if (TOP) {
     beds: [...beds].sort((a, b) => b.z0 - a.z0).map((b) => [+((b.z0 + pad) / W).toFixed(5), +(pad / Hh).toFixed(5), +(b.h / W).toFixed(5), +(BW / Hh).toFixed(5)]),
   }
 } else {
-  const target = new THREE.Vector3(BW / 2, 0.3, BH / 2)
+  const target = FIELD ? new THREE.Vector3(FL / 2 - 1, 0.6, FWD / 2) : new THREE.Vector3(BW / 2, 0.3, BH / 2)
   // straight on from the main path, as the studio's and the livestock yard's 3D, from far off with a long lens
-  const [el, az, dist] = ITEM ? [THREE.MathUtils.degToRad(30), THREE.MathUtils.degToRad(-30), 9] : HERO ? [THREE.MathUtils.degToRad(32), THREE.MathUtils.degToRad(-22), 48] : [THREE.MathUtils.degToRad(34), 0, 70]
-  camera = new THREE.PerspectiveCamera(ITEM ? 30 : HERO ? 24 : 18, FW / FH, 0.5, 300)
+  // the whole field from its gate end, as the 2D sees it (the gate toward the viewer, the fruit row behind)
+  const [el, az, dist] = FIELD ? [THREE.MathUtils.degToRad(34), Math.PI / 2, 120] : ITEM ? [THREE.MathUtils.degToRad(30), THREE.MathUtils.degToRad(-30), 9] : HERO ? [THREE.MathUtils.degToRad(32), THREE.MathUtils.degToRad(-22), 48] : [THREE.MathUtils.degToRad(34), 0, 70]
+  camera = new THREE.PerspectiveCamera(ITEM ? 30 : HERO ? 24 : FIELD ? 16 : 18, FW / FH, 0.5, 400)
   camera.position.set(target.x + dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
   camera.lookAt(target)
   camera.updateMatrixWorld(); camera.updateProjectionMatrix()
@@ -333,16 +377,16 @@ if (LINE) {
   const sun = new THREE.DirectionalLight(0xffe2b8, 3.0)
   // morning sun from the front left; straight down for the top view so no shadow crosses into a neighbour's piece
   sun.position.set(...(TOP ? [BW / 2 + 0.01, 30, BH / 2 + 0.01] : [-12, 10, BH + 10]))
-  sun.target.position.set(BW / 2, 0, BH / 2); scene.add(sun.target)
+  sun.target.position.set(FIELD ? FL / 2 : BW / 2, 0, FIELD ? FWD / 2 : BH / 2); scene.add(sun.target)
   sun.castShadow = true
   sun.shadow.mapSize.set(4096, 4096)
-  Object.assign(sun.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 80 })
+  Object.assign(sun.shadow.camera, FIELD ? { left: -34, right: 34, top: 34, bottom: -34, near: 1, far: 160 } : { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 80 })
   sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 3
   scene.add(sun)
-  if (!TOP && !ITEM && !HERO) { // the white page round the block takes only the shadows
+  if (FIELD) { // the white page round the field takes only the shadows
     scene.background = new THREE.Color(12, 12, 12) // tone mapping would dim plain white to grey, so it starts brighter
     const ground = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: 0.14 }))
-    ground.rotation.x = -Math.PI / 2; ground.position.set(BW / 2, -0.012, BH / 2); ground.receiveShadow = true
+    ground.rotation.x = -Math.PI / 2; ground.position.set(FL / 2, -0.012, FWD / 2); ground.receiveShadow = true
     scene.add(ground)
   }
   const composer = new EffectComposer(renderer)

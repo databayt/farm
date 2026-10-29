@@ -12,7 +12,6 @@ const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEff
 const dashed = { ...line, strokeDasharray: "4 3" } as const
 const solid = { fill: "currentColor" } as const
 const font = { fontFamily: "Helvetica, Arial, sans-serif", fill: "currentColor" } as const
-const label = { ...font, fontSize: 1.25, fontWeight: 700, letterSpacing: "0.03em" } as const
 const small = { ...font, fontSize: 0.95 } as const
 
 const f = (n: number) => +n.toFixed(3)
@@ -97,7 +96,6 @@ export function FarmingPlan({ title, className }: { title: string; className?: s
       <line x1={f(pu + main / 2)} x2={f(pu + main / 2)} y1={f(H)} y2={f(H + 2.4)} {...line} />
 
       {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH; the nursery up the yard */}
-      <text x={0} y={f(row)} style={label}>FRUIT ROW</text>
       <text x={f(W)} y={f(row)} textAnchor="end" style={small}>NURSERY ↑</text>
       <text x={f(pu)} y={f(H + 3.6)} textAnchor="middle" style={small}>GATE · TO THE GALLEY</text>
 
