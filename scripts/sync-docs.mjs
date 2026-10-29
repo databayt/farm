@@ -159,8 +159,10 @@ const PAGES = [
   { slug: "decision-matrix", src: "study/feasibility/decision-matrix.md" },
   { slug: "financial-model", src: "study/feasibility/financial-model-notes.md" },
   { slug: "risk-register", src: "study/feasibility/risk-register.md" },
-  { slug: "first-90-days", src: "study/execution/first-90-days.md" },
-  { slug: "five-year-roadmap", src: "study/execution/five-year-roadmap.md" },
+  { slug: "first-90-days", src: "study/execution/first-90-days.md", title: "First 90 days",
+    description: "2026-10-19 to 2027-01-17: the decision gates, the work week by week, the tasks and the risks." },
+  { slug: "five-year-roadmap", src: "study/execution/five-year-roadmap.md", title: "Five-year roadmap",
+    description: "2026-10 to 2031-10: the phases on the calendar, the decision gates, the critical path and the milestones year by year." },
   { slug: "buyer-strategy", src: "study/go-to-market/buyer-strategy.md" },
   { slug: "sales-plan", src: "study/go-to-market/sales-plan.md" },
   { slug: "outreach-templates", src: "study/go-to-market/outreach-templates.md" },
@@ -195,6 +197,9 @@ const SIDEBAR = [
   "---The land---",
   "farm",
   "master-plan",
+  "---Execution plan---",
+  "first-90-days",
+  "five-year-roadmap",
 ]
 const fail = (slug) => { throw new Error(`sync-docs: SIDEBAR lists "${slug}", which is not in PAGES`) }
 
