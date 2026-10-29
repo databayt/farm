@@ -16,7 +16,7 @@
     &view=network   the same for the network (office.json `network`): the cabinet, its router, switch, gateway and
                 UPS, the access point and the data outlets -> render/network-line.png + network-tags.json
     &item=<id>  one piece on its own, real mode, 1200 x 900 on a transparent ground: the furniture and equipment
-                (sofa, sofatable, bigdesk, display, macstudio, keyboard, gamingchair)
+                (sofa, sofatable, bigdesk, display, macstudio, keyboard, gamingchair, cafetable, cafechair)
                 -> render/furniture/<id>.webp; a device by its model -> render/electric/<id>.webp or render/network/<id>.webp
 
   Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
@@ -223,6 +223,9 @@ function mat(name) {
       monitor: () => std({ color: "#1d2a35", roughness: 0.2, emissive: "#4d6a80", emissiveIntensity: 0.25 }),
       alu: () => std({ color: "#c7c9cc", roughness: 0.32, metalness: 0.75 }), // the Studio Display and the Mac Studio
       fabric: () => std({ color: "#a59d90", roughness: 0.95 }), // the sofa, a warm stone weave
+      beech: () => std({ color: "#5e3b22", roughness: 0.55 }), // the ahwa chairs, dark-stained wood
+      rush: () => std({ color: "#c7a467", roughness: 0.95 }), // their woven rush seats
+      marble: () => std({ color: "#ece8e1", roughness: 0.22 }), // the ahwa table's top
       files: () => std({ map: T.files, roughness: 0.8 }),
       pot: () => std({ color: "#d9d4c8", roughness: 0.8 }),
       soil: () => std({ color: "#4a3626", roughness: 1 }),
@@ -291,7 +294,7 @@ function pipe(a, b, r, name) {
 }
 
 // ------------------------------------------------------------ the box on its frame, the deck, the stair
-const { container: K, glazing, deck, workstation: ws, sofa } = C
+const { container: K, glazing, deck, workstation: ws, sofa, cafe } = C
 const L = K.l, H = K.w / 2, Y0 = K.raised, HC = K.h
 const FL = Y0 + K.floor, CE = Y0 + K.ceiling // inside: the finished floor, the ceiling
 const { x0: ix0, x1: ix1, y0: iz0, y1: iz1 } = K.inner
@@ -424,6 +427,36 @@ function panelDesk(x0, z0, x1, z1, h) {
   soft(dx + 0.15, 0.32, dx + 0.25, 0.38, top, top + 0.025, 0.01, "white")
   TAG = "gamingchair"
   gamingChair(ws.chair[0], ws.chair[1], Math.PI / 2)
+}
+
+// the ahwa set on the deck, as in a traditional Egyptian cafe: a round marble top on a cast-iron pedestal, two
+// dark wooden chairs with woven rush seats and a two-rail back, facing each other across it
+function cafeChair(x, z, rot) {
+  const { w, d, seat, back } = cafe.chair
+  const g = new THREE.Group(); g.position.set(x, Y0, z); g.rotation.y = rot
+  const put = (geo, name, pos) => { const m = add(geo, name, { pos }); scene.remove(m); g.add(m) }
+  for (const [lx, lz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    const top = lz < 0 ? back : seat
+    put(new THREE.CylinderGeometry(0.016, 0.014, top, 8), "beech", [lx * (w / 2 - 0.025), top / 2, lz * (d / 2 - 0.025)])
+  }
+  for (const s of [-1, 1]) {
+    put(new THREE.BoxGeometry(w - 0.04, 0.03, 0.025), "beech", [0, seat - 0.015, s * (d / 2 - 0.025)])
+    put(new THREE.BoxGeometry(0.025, 0.03, d - 0.04), "beech", [s * (w / 2 - 0.025), seat - 0.015, 0])
+    put(new THREE.BoxGeometry(0.018, 0.018, d - 0.04), "beech", [s * (w / 2 - 0.025), 0.16, 0]) // the stretchers
+  }
+  put(new THREE.BoxGeometry(w - 0.06, 0.02, d - 0.06), "rush", [0, seat - 0.005, 0])
+  for (const y of [seat + 0.22, back - 0.06]) put(new THREE.BoxGeometry(w - 0.04, 0.06, 0.02), "beech", [0, y, -d / 2 + 0.025])
+  scene.add(g)
+  g.updateMatrixWorld(true)
+}
+{
+  const { x, y, r, h } = cafe.table
+  TAG = "cafetable"
+  cyl(x, y, 0.2, Y0, 0.03, "black", 24)
+  cyl(x, y, 0.025, Y0 + 0.03, h - 0.06, "black", 10)
+  cyl(x, y, r + 0.01, Y0 + h - 0.035, 0.012, "black", 40)
+  cyl(x, y, r, Y0 + h - 0.025, 0.025, "marble", 40)
+  for (const [k, [cx, cz]] of cafe.chairs.entries()) { TAG = k ? `cafechair#${k}` : "cafechair"; cafeChair(cx, cz, cx < x ? Math.PI / 2 : -Math.PI / 2) }
 }
 
 TAG = ""

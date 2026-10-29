@@ -77,15 +77,15 @@ export default function OfficePage() {
 
       {/* 2D, full screen: the office's plan (src/components/office/office-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
-        <OfficePlan title="Plan: a 20 ft container 6,058 by 2,438 mm with a 1,500 mm deck in front and a stair off its corner; inside, one L sofa across the whole cargo-door end and along the back wall, round a low table, and one big programmer's and gamer's desk across the whole far end wall, with a single Studio Display, a Mac Studio and a gaming chair."
+        <OfficePlan title="Plan: a 20 ft container 6,058 by 2,438 mm with a 1,500 mm deck in front and a stair off its corner; inside, one L sofa across the whole cargo-door end and along the back wall, round a low table, and one big programmer's and gamer's desk across the whole far end wall, with a single Studio Display, a Mac Studio and a gaming chair; on the deck, a round ahwa table with two chairs, as in an Egyptian cafe."
           className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 
       {/* 3D, in the 2D section's pattern: a line drawing of the office seen from the front with its front wall
           and roof off, then the same view rendered. Both from scripts/site/render/office.html. */}
       <ModelSection line={`${D}/render/office-line.png`} real={`${D}/render/office-real.webp`} width={2400} height={1100}
-        lineAlt="Line drawing of the office from the front with the front wall off: the container raised on its frame, the deck with railings and the stair, an L sofa across the cargo-door end and along the back wall with a low table, and a big desk across the far end wall with a Studio Display, a Mac Studio and a gaming chair."
-        realAlt="The same view rendered: saffron corrugated steel, off-white walls and an oak floor, a stone-grey L sofa and a Medium Oak table, a Medium Oak desk with a silver Studio Display and Mac Studio, a black gaming chair, on red steel posts with a eucalyptus deck and red railings over the lawn." />
+        lineAlt="Line drawing of the office from the front with the front wall off: the container raised on its frame, the deck with railings and the stair, an L sofa across the cargo-door end and along the back wall with a low table, and a big desk across the far end wall with a Studio Display, a Mac Studio and a gaming chair, and on the deck, an Egyptian ahwa table with two chairs."
+        realAlt="The same view rendered: saffron corrugated steel, off-white walls and an oak floor, a stone-grey L sofa and a Medium Oak table, a Medium Oak desk with a silver Studio Display and Mac Studio, a black gaming chair, a marble-topped ahwa table with two rush-seated wooden chairs on the deck, on red steel posts with a eucalyptus deck and red railings over the lawn." />
 
       {/* The rail, in the studio's pattern: each piece on its own (office.html?item=<id>), the card in focus showing its
           size, source and cost below. */}
