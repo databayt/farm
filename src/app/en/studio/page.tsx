@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"
 import { type RailItem } from "@/components/docs/item-rail"
 import { PipeDiagram } from "@/components/docs/pipe-diagram"
@@ -17,9 +17,8 @@ import wallPieces from "../../../../public/designs/studio/render/wall-pieces.jso
 // Public showcase of the container-studio design package (study/studio, D-014..D-016).
 // Every number here comes from the generated package; the docs hold the evidence.
 
-// The execution plan, then the docs pages the reference sections moved to, linked from the end of this page.
+// The docs pages the reference sections moved to, linked from the end of this page after the execution plan.
 const DOCS = [
-  { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." },
   { href: "/docs/studio-materials", title: "Bill of materials", text: "Every line one studio needs, section by section, and what the studios share with the farm." },
   { href: "/docs/studio-circuits", title: "Circuits and points", text: "The eight circuits, checked against breaker, cable and voltage drop, and every light, switch and socket." },
   { href: "/docs/studio-pipes", title: "Pipe runs and points", text: "Every run with its size, length and fall, and every valve, tap and drain." },
@@ -56,15 +55,7 @@ function bedRail() {
     { id: "walllamp", title: "Wall reading lamp", size: "Arm 0.24 m from the wall", where: "With the electrical kit (K8)",
       cost: `RWF ${frw(15_000)} estimate`, note: "Over the wall-side pillow." },
   ]
-  return rail("bedroom", items)
-}
-
-type RailRow = { id: string; title: string; size: string; where: string; cost: string; note?: string }
-function rail(dir: string, items: RailRow[]) {
-  return items.map((x) => ({
-    src: `${D}/render/${dir}/${x.id}.webp`, alt: x.title, title: x.title, note: x.note,
-    details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: x.where }, { label: "Cost", value: x.cost }],
-  }))
+  return railCards(`${D}/render/bedroom`, items)
 }
 
 // board for the pieces the workshop cuts (cut-list.csv), priced by the share of each sheet they take
@@ -80,7 +71,7 @@ const HARDWARE_DISTRICT = "Not found online yet: the hardware district"
 // The Seating, Galley and Bath rails, in the Bed rail's pattern: renders from room.html?item=<id> (the room's
 // own meshes, so the picture is the piece in the 3D view); sizes from render/scene.json and the BOM
 function seatingRail() {
-  return rail("seating", [
+  return railCards(`${D}/render/seating`, [
     { id: "sofa", title: "Sofa", size: "1.30 × 0.75 m, 0.70 m high", where: "Not sourced yet", cost: est(450_000),
       note: "A low two-seat sofa in soft dark grey, with washable covers." },
     { id: "table", title: "Table", size: "0.86 × 0.50 m, 0.55 m high", where: "Built in the workshop from 18 mm board (kit K6)",
@@ -90,7 +81,7 @@ function seatingRail() {
   ])
 }
 function galleyRail() {
-  return rail("galley", [
+  return railCards(`${D}/render/galley`, [
     { id: "units", title: "Base units", size: "1.60 m run, 0.62 m deep, worktop at 0.90 m",
       where: "Built in the workshop from 18 mm board, 38 mm worktop (kit K3)",
       cost: built(boardCost((id) => /^K3-(0|H-|S-|PL|WT)/.test(id)) + 8 * 1_500, "of board, worktop and legs"),
@@ -108,7 +99,7 @@ function galleyRail() {
   ])
 }
 function bathRail() {
-  return rail("bath", [
+  return railCards(`${D}/render/bath`, [
     { id: "shower", title: "Shower", size: "Tray 1,000 × 900 mm, glass screen 700 × 2,000 mm", where: HARDWARE_DISTRICT, cost: est(120_000 + 180_000),
       note: "A low tray with a 90 mm waste, a fixed 8 mm toughened glass screen, and the instant heater on the wall beside the hand shower." },
     { id: "wc", title: "WC", size: "Wall-hung, 520 mm projection", where: HARDWARE_DISTRICT, cost: est(150_000 + 220_000),

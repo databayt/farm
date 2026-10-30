@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection } from "@/components/page/sections"
-import { type RailItem } from "@/components/docs/item-rail"
-import { PointsTable, type RoomPoint, deviceRail, tagInfo, withLoads } from "@/components/docs/room-points"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
+import { RoomPointsTable, type RoomPoint, deviceRail, tagInfo, withLoads } from "@/components/docs/room-points"
 import { RoomWiring } from "@/components/docs/room-wiring"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
 import { StudyRoomPlan } from "@/components/study-room/study-room-plan"
@@ -24,15 +23,8 @@ const m2 = (n: number) => +n.toFixed(2)
 
 // The rails: each piece rendered on its own by scripts/site/render/study-room.html?item=<id>, sized from
 // study-room.json. Nothing is sourced or priced yet.
-type Row = { id: string; title: string; size: string; note?: string }
-function rail(rows: Row[]): RailItem[] {
-  return rows.map((x) => ({
-    src: `${D}/render/furniture/${x.id}.webp`, alt: x.title, title: x.title, note: x.note,
-    details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: "Not sourced yet" }, { label: "Cost", value: "Not priced yet" }],
-  }))
-}
 const { table, screen, shelves, reading, room: inner } = room
-const tableRail = rail([
+const tableRail = railCards(`${D}/render/furniture`, [
   { id: "table", title: "Long table", size: `${m2(table.l)} × ${m2(table.w)} m, ${m2(table.h)} m high`,
     note: `Down the middle of the room, ${table.seats.length} seats along each side; a double socket on the back wall behind each pair.` },
   { id: "chair", title: `Chairs × ${table.seats.length * 2}`, size: `${m2(table.chair.w)} × ${m2(table.chair.d)} m, seat ${m2(table.chair.seat)} m, back ${m2(table.chair.back)} m`,
@@ -42,7 +34,7 @@ const tableRail = rail([
   { id: "cabinet", title: "Screen cabinet", size: `${m2(screen.cabinet.l)} × ${m2(screen.cabinet.d)} m, ${m2(screen.cabinet.h)} m high` },
   { id: "lectern", title: "Lectern", size: `${m2(screen.lectern.w)} × ${m2(screen.lectern.d)} m, ${m2(screen.lectern.h)} m high`, note: "A standing table for whoever is presenting or teaching." },
 ])
-const cornerRail = rail([
+const cornerRail = railCards(`${D}/render/furniture`, [
   { id: "shelves", title: "Bookshelf wall", size: `${m2(inner.front - inner.back)} m wide, ${m2(shelves.d)} m deep, full height`,
     note: `${shelves.bays} bays of ${shelves.rows} shelves across the west end wall.` },
   { id: "armchair", title: "Armchairs × 2", size: `${m2(reading.chair.w)} × ${m2(reading.chair.d)} m, seat ${m2(reading.chair.seat)} m`, note: "Upholstered, angled toward the glazing." },
@@ -61,7 +53,6 @@ const allLinks = [...circuits, ...N.circuits.map((c) => ({ ...c, device: "", cab
 const designA = Math.round(circuits.reduce((n, c) => n + (c.design_A ?? 0), 0) * 10) / 10
 
 const DOCS = [
-  { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both: what the farm uses, building by building, and what each option costs." },
   { href: "/docs/studio-circuits", title: "Circuits and points", text: "The studio's circuits, checked against breaker, cable and voltage drop: the conventions this room follows." },
   { href: "/docs/digital", title: "The digital farm", text: "Bookings, payments, the gate and the books on simple digital tools, and the farm's network." },
@@ -120,7 +111,7 @@ export default function StudyRoomPage() {
         rail={deviceRail(points, (m) => `${D}/render/electric/${m}.webp`, { pendant: { size: "Ø 380 mm dome on a cord, 1.95 m above the floor" }, wallfan: { size: "Ø 400 mm, on a short arm" } })} />
 
       <TextSection id="electric-points" title="Electric points">
-        <PointsTable points={points} circuits={allLinks} />
+        <RoomPointsTable points={points} circuits={allLinks} />
         <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
           Status: design intent. Places, sizes and loads come from study-room.json; electrical costs are the studio&rsquo;s
           placeholder prices (AS-21) until three quotes come in, and the Wi-Fi gear is neither sourced nor priced.

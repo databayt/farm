@@ -1,12 +1,12 @@
 import type { Metadata } from "next"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
 import { type RailItem } from "@/components/docs/item-rail"
+import { PointsTable } from "@/components/docs/points-table"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
 import { GalleyPlan } from "@/components/galley/galley-plan"
 import G from "@/components/galley/galley.json"
-import { PointsTable } from "@/components/galley/points-table"
-import { type Circuit, type ElectricPoint, PowerDiagram, runLength, type WaterPoint, type WaterRun, WaterDiagram } from "@/components/galley/service-diagrams"
+import { type Circuit, type ElectricPoint, metres, PowerDiagram, runLength, type WaterPoint, type WaterRun, WaterDiagram } from "@/components/galley/service-diagrams"
 import electricTags from "../../../../public/designs/galley/render/electric-tags.json"
 import waterTags from "../../../../public/designs/galley/render/water-tags.json"
 
@@ -27,25 +27,15 @@ const D = "/designs/galley"
 // sourced or priced yet, so no card names a shop or a price.
 const WATER = G.water as unknown as { points: WaterPoint[]; runs: WaterRun[]; colours: Record<string, string>; heater: { litres: number; kw: number } }
 const ELECTRIC = G.electric as unknown as { points: ElectricPoint[]; circuits: Circuit[]; colours: Record<string, string>; supply: { title: string; sub: string; main: string; mainSub: string } }
-const NOT_SOURCED = "Not sourced yet"
-const NOT_PRICED = "Not priced yet"
 const m = (n: number) => `${+n.toFixed(2)} m`
 const span = (u: { x0: number; x1: number }) => u.x1 - u.x0
-
-type Card = { id: string; title: string; size: string; note: string }
-function cards(dir: string, items: Card[]): RailItem[] {
-  return items.map((x) => ({
-    src: `${D}/render/${dir}/${x.id}.webp`, alt: x.title, title: x.title, note: x.note,
-    details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: NOT_SOURCED }, { label: "Cost", value: NOT_PRICED }],
-  }))
-}
 
 // The Equipment rail: each piece rendered on its own by galley.html?item=<id>, from the 3D's own meshes
 function equipmentRail() {
   const unit = (id: string) => [...G.cold.units, ...G.line.units].find((u) => u.id === id)!
   const sinks = Object.fromEntries(G.worktop.sinks.map((s) => [s.id, s]))
   const kw = (id: string) => ELECTRIC.circuits.find((c) => c.serves.toLowerCase().startsWith(id))?.kw
-  return cards("equipment", [
+  return railCards(`${D}/render/equipment`, [
     { id: "range", title: "Range and oven", size: `${m(span(unit("range")))} × ${m(G.line.d)}, ${m(G.line.h)} high`, note: `Six rings over an oven, about ${kw("range")} kW if electric (a design value: gas or electric is still open).` },
     { id: "griddle", title: "Griddle", size: `${m(span(unit("griddle")))} × ${m(G.line.d)}, ${m(G.line.h)} high`, note: `A steel plate behind a grease channel, about ${kw("griddle")} kW if electric.` },
     { id: "fryer", title: "Fryer", size: `${m(span(unit("fryer")))} × ${m(G.line.d)}, ${m(G.line.h)} high`, note: `One tank, two baskets, about ${kw("fryer")} kW if electric.` },
@@ -70,15 +60,13 @@ const WATER_PARTS: { item: string; title: string }[] = [
   { item: "prerinse", title: "Pre-rinse spray" }, { item: "basintap", title: "Hands-free basin tap" }, { item: "filter", title: "Drinking-water filter" },
   { item: "aav", title: "Air admittance valve" }, { item: "gully", title: "Floor gully" }, { item: "greasetrap", title: "Grease trap" },
 ]
-const metres = (rs: WaterRun[]) => [...rs.reduce((a, r) => a.set(r.dn, (a.get(r.dn) ?? 0) + runLength(r)), new Map<number, number>())]
-  .map(([dn, n]) => `${+n.toFixed(1)} m of ${dn} mm`).join(", ")
 function waterRail(): RailItem[] {
   const parts = WATER_PARTS.map(({ item, title }) => {
     const pts = WATER.points.filter((p) => p.item === item)
     return { id: item, title: pts.length > 1 ? `${title} × ${pts.length}` : title, size: pts[0].size, note: `${pts.map((p) => p.id).join(", ")} · ${pts[0].where}.` }
   })
   const of = (...sys: string[]) => WATER.runs.filter((r) => sys.includes(r.system))
-  return cards("water", [...parts,
+  return railCards(`${D}/render/water`, [...parts,
     { id: "ppr", title: "PP-R supply pipe", size: metres(of("cold", "hot")), note: "Cold and hot, PN20, welded joints, along the front wall under the worktop and up to each outlet." },
     { id: "upvc", title: "uPVC drain pipe", size: metres(of("waste")), note: "Each waste down through the floor to the collector under the plinth, at 1:40 or steeper." },
   ])
@@ -92,7 +80,7 @@ const DEVICES: { model: string; title: string }[] = [
   { model: "switch", title: "Light switch" }, { model: "alarm", title: "Heat alarm" }, { model: "earth", title: "Earth rod" },
 ]
 function electricRail(): RailItem[] {
-  return cards("electric", DEVICES.map(({ model, title }) => {
+  return railCards(`${D}/render/electric`, DEVICES.map(({ model, title }) => {
     const pts = ELECTRIC.points.filter((p) => p.model === model)
     const on = [...new Set(pts.map((p) => p.circuit).filter(Boolean))]
     return { id: model, title: pts.length > 1 ? `${title} × ${pts.length}` : title, size: pts[0].size,
@@ -106,7 +94,6 @@ const waterColour = (p: WaterPoint) => WATER.colours[WARMTH[p.item ?? ""] ?? "wa
 const circuitColour = (p: ElectricPoint) => ELECTRIC.colours[ELECTRIC.circuits.find((c) => c.id === p.circuit)?.group ?? "spare"]
 
 const DOCS = [
-  { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." },
   { href: "/docs/operations", title: "Operations", text: "How the galley works day by day: breakfast and dinner, the beds and the hens, the scraps and the stock." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both, what the galley draws, and why gas or electric cooking moves the farm's day by about 17 kWh." },
   { href: "/docs/plumber", title: "Plumber", text: "The supply pressure, the pipe sizes, the drains and the grease trap, and the tests before anyone moves in." },
@@ -177,7 +164,7 @@ export default function GalleyPage() {
 
       <TextSection id="water-points" title="Water points"
         lead={<>The runs: {WATER.runs.map((r) => `${r.id} ${r.dn} mm, ${runLength(r)} m`).join(" · ")}.</>}>
-        <PointsTable head={["What", "Where", "Size"]}
+        <PointsTable columns={[{ label: "What" }, { label: "Where", muted: true }, { label: "Size" }]}
           rows={WATER.points.map((p) => ({ id: p.id, colour: waterColour(p), cells: [p.what, p.where, p.size] }))} />
       </TextSection>
 
@@ -205,7 +192,7 @@ export default function GalleyPage() {
         rail={electricRail()} />
 
       <TextSection id="electric-points" title="Electric points">
-        <PointsTable head={["What", "Circuit", "Size"]}
+        <PointsTable columns={[{ label: "What" }, { label: "Circuit", muted: true }, { label: "Size" }]}
           rows={ELECTRIC.points.map((p) => ({ id: p.id, colour: circuitColour(p), cells: [p.what, p.circuit || "—", p.size] }))} />
       </TextSection>
 

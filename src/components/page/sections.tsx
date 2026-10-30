@@ -53,6 +53,21 @@ export function DrawingSection({ id, title, children, after, full = false }: {
   )
 }
 
+// A rail card's placeholders, in the studio's words, until the piece is sourced or quoted.
+export const NOT_SOURCED = "Not sourced yet"
+export const NOT_BUDGETED = "Not in the budget yet"
+
+// A rail's cards in the studio's Bed rail pattern: each piece rendered on its own (`dir`/<id>.webp), with its size,
+// where to buy it and what it costs.
+export type RailCard = { id: string; title: string; size: string; where?: string; cost?: string; note?: string; alt?: string }
+export function railCards(dir: string, rows: RailCard[]): RailItem[] {
+  return rows.map((x) => ({
+    src: `${dir}/${x.id}.webp`, alt: x.alt ?? x.title, title: x.title, note: x.note,
+    details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: x.where ?? NOT_SOURCED },
+      { label: "Cost", value: x.cost ?? NOT_BUDGETED }],
+  }))
+}
+
 // A rail of product cards under a plain title (the studio's Bed, Seating, Galley and Bath; the field's Crops):
 // the card in focus shows its size, source and cost below.
 export function RailSection({ id, title, items }: { id: string; title: string; items: RailItem[] }) {
@@ -115,9 +130,12 @@ export function TextSection({ id, title, lead, children }: { id: string; title: 
   )
 }
 
-// The page's last section: a card for each docs page that holds the reference behind it.
+// The page's last section: the execution plan, then a card for each docs page that holds the reference behind it,
+// the place's own first. Five at most, so they keep to one row.
 export type DocCard = { href: string; title: string; text: string }
-export function DocsSection({ cards }: { cards: DocCard[] }) {
+const PLAN: DocCard = { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." }
+export function DocsSection({ cards: own }: { cards: DocCard[] }) {
+  const cards = [PLAN, ...own]
   return (
     <section id="docs" className="scroll-mt-20 border-t py-16">
       <div className="w-full px-4 md:px-10">

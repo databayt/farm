@@ -4,9 +4,8 @@ import { join } from "node:path"
 // The studio generator's outputs (public/designs/studio, scripts/studio), read on the server by /en/studio and by
 // the studio's docs pages alike.
 
+export { frw, rwf } from "@/lib/format"
 export const D = "/designs/studio"
-export const rwf = (n: number) => `RWF ${(n / 1e6).toFixed(1)}M`
-export const frw = (n: number) => n.toLocaleString("en-US")
 export const mm = (n: number) => n.toLocaleString("en-US")
 export const degC = (s = "") => s.replace(/(\d) C\b/g, "$1 °C").replace(/(\d)-(\d)/g, "$1–$2")
 

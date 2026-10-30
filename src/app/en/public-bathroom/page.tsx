@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"
-import { type RailItem } from "@/components/docs/item-rail"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
 import { PublicBathroomPlan } from "@/components/public-bathroom/public-bathroom-plan"
 import bath from "@/components/public-bathroom/public-bathroom.json"
@@ -23,24 +22,13 @@ export const metadata: Metadata = {
 }
 
 const D = "/designs/public-bathroom"
-const NOT_SOURCED = "Not sourced yet"
-const NOT_PRICED = "Not priced yet"
 const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 const { toilets: TO, basins: BA, urinal: UR, cupboard: CU, passage: PA, towels: TW, plumbing: PL, electric: EL } = bath
-
-type Row = { id: string; title: string; size: string; note?: string; where?: string; cost?: string }
-function rail(dir: string, rows: Row[]): RailItem[] {
-  return rows.map((x) => ({
-    src: `${D}/render/${dir}/${x.id}.webp`, alt: x.title, title: x.title, note: x.note,
-    details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: x.where ?? NOT_SOURCED },
-      { label: "Cost", value: x.cost ?? NOT_PRICED }],
-  }))
-}
 
 // The Fixtures rail: each piece rendered on its own by public-bathroom.html?item=<id> (the 3D view's own meshes)
 function fixturesRail() {
   const c = TO.wc.cistern
-  return rail("fixtures", [
+  return railCards(`${D}/render/fixtures`, [
     { id: "wc", title: "WCs × 2", size: `Floor-standing, close-coupled cistern ${mm(c.w)} × ${mm(c.d)} mm, ${mm(c.h)} mm high; ${mm(TO.wc.out)} mm into the room, seat at ${mm(TO.wc.seat)} mm`,
       note: "One on each toilet room's west wall, under its window, with a soft-close seat and a dual-flush button." },
     { id: "basin", title: "Basin counter", size: `${(BA.x1 - BA.x0).toFixed(2)} × ${BA.d.toFixed(2)} m, top at ${BA.top.toFixed(2)} m; two bowls`,
@@ -66,7 +54,7 @@ function plumbingRail() {
     return [...by].sort((a, b) => b[0] - a[0]).map(([dn, m]) => `${m.toFixed(1)} m of DN${dn}`).join(", ")
   }
   const f = Object.fromEntries(PL.fittings.map((x) => [x.point, x]))
-  return rail("plumbing", [
+  return railCards(`${D}/render/plumbing`, [
     { id: "meter", title: "Stop valve, filter and meter", size: `${f.SV.size}, on the main`, note: `SV · ${f.SV.what}.` },
     { id: "pushtap", title: "Push taps × 2", size: "Cold, a push button that closes itself", note: "BT1, BT2 · so no tap is left running." },
     { id: "flushvalve", title: "Urinal flush valve", size: "A timed push button on a 15 mm feed", note: `UV · ${f.UV.what}.` },
@@ -81,7 +69,7 @@ function plumbingRail() {
 // The Electric rail: each device on its own (public-bathroom.html?item=<id>)
 function electricRail() {
   const n = EL.points.filter((p) => p.model === "light").length
-  return rail("electric", [
+  return railCards(`${D}/render/electric`, [
     { id: "board", title: "Unit board", size: EL.board.size, note: `DB · ${EL.board.what}.` },
     { id: "light", title: `Ceiling lights × ${n}`, size: "Ø 300 mm, a motion sensor in the middle", note: "L1–L5 · each room lights when someone walks in and goes dark a few minutes after." },
     { id: "fan", title: "Extract fan", size: `Ø ${mm(UR.fan.r * 2)} mm grille`, note: "F1 · in the urinal room, which has no window; it runs with the light and 15 minutes after." },
@@ -91,7 +79,6 @@ function electricRail() {
 }
 
 const DOCS = [
-  { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." },
   { href: "/docs/plumber", title: "Plumber's guide", text: "The farm's pipe conventions, the tests before the walls close, and the septic tank's rules." },
   { href: "/docs/electrician", title: "Electrician's guide", text: "Boards, RCBOs, earthing and the tests, in the studio's pattern." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both: the site board this bathroom is fed from, and sun for hot water." },

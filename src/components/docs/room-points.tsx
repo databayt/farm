@@ -1,16 +1,20 @@
+import type * as React from "react"
+
+import { frw } from "@/lib/format"
 import { type RailItem } from "@/components/docs/item-rail"
+import { PointsTable } from "@/components/docs/points-table"
 import { type RoomCircuit } from "@/components/docs/room-wiring"
+import { NOT_BUDGETED, NOT_SOURCED } from "@/components/page/sections"
 
 // The services of a room page (guest room, office, study room), in the studio's Electric pattern: the circuits with
-// their design currents, a rail card for each kind of device and the points table the tagged figure links to. The
-// numbers come from the page's JSON (`electric`, `network`); rwf is the studio BOM's placeholder (AS-21), never a quote.
+// their design currents, a rail card for each kind of device and the points table on the room's docs page, where the
+// tagged figure links. The numbers come from the page's JSON (`electric`, `network`); rwf is the studio BOM's
+// placeholder (AS-21), never a quote.
 
 export type RoomPoint = {
   id: string; model: string; circuit?: string; description: string
   at: number[]; face: string; size: number[]; watts?: number; rwf?: number; untagged?: boolean
 }
-
-const frw = (n: number) => n.toLocaleString("en-US")
 
 // a lighting circuit's design current is its watts at 230 V; the others carry the JSON's design load
 export function withLoads(circuits: RoomCircuit[], points: RoomPoint[]): RoomCircuit[] {
@@ -37,7 +41,7 @@ export function deviceRail(points: RoomPoint[], src: (model: string) => string, 
     const [w, h, d] = pts[0].size
     const size = ROUND.has(m) ? `Ø ${w} mm, ${d} mm deep` : `${frw(w)} × ${frw(h)} mm, ${d} mm deep`
     const prices = pts.map((p) => p.rwf).filter((n): n is number => !!n)
-    const cost = !prices.length ? "Not priced yet"
+    const cost = !prices.length ? NOT_BUDGETED
       : pts.length === 1 ? `RWF ${frw(prices[0])} (estimate)`
       : prices.every((n) => n === prices[0]) ? `RWF ${frw(prices[0])} each × ${pts.length} (estimate)`
       : `RWF ${frw(prices.reduce((a, b) => a + b, 0))} for ${pts.length} (estimate)`
@@ -49,7 +53,7 @@ export function deviceRail(points: RoomPoint[], src: (model: string) => string, 
       note: `${pts.map((p) => p.id).join(", ")}${on.length ? ` · ${on.join(", ")}` : ""} · ${pts.map((p) => p.description).join("; ")}`,
       details: [
         { label: "Dimensions", value: x.size ?? size },
-        { label: "Where to buy", value: x.where ?? "Not sourced yet" },
+        { label: "Where to buy", value: x.where ?? NOT_SOURCED },
         { label: "Cost", value: x.cost ?? cost },
       ],
     }
@@ -62,36 +66,14 @@ export function tagInfo(points: RoomPoint[], circuits: RoomCircuit[]) {
 }
 
 // every point, its circuit and where it stands; each row is the target of its tag (#pt-<id>)
-export function PointsTable({ points, circuits }: { points: RoomPoint[]; circuits: RoomCircuit[] }) {
+export function RoomPointsTable({ points, circuits }: { points: RoomPoint[]; circuits: RoomCircuit[] }): React.JSX.Element {
   return (
-    <div className="mt-6 overflow-x-auto rounded-xl border">
-      <table className="w-full text-sm">
-        <thead className="text-muted-foreground bg-muted/40">
-          <tr>
-            <th className="px-3 py-2 text-start font-medium">Point</th>
-            <th className="px-3 py-2 text-start font-medium">What and where</th>
-            <th className="px-3 py-2 text-start font-medium">Circuit</th>
-            <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Centre height</th>
-            <th className="px-3 py-2 text-end font-medium">Load</th>
-          </tr>
-        </thead>
-        <tbody>
-          {points.map((p) => {
-            const c = circuits.find((x) => x.id === p.circuit)
-            return (
-              <tr key={p.id} id={`pt-${p.id}`} className="scroll-mt-24 border-t target:bg-muted/60">
-                <td className="px-3 py-2 font-medium whitespace-nowrap">
-                  <span className="me-2 inline-block size-2 rounded-full" style={{ background: c?.colour ?? "currentColor" }} />{p.id}
-                </td>
-                <td className="px-3 py-2">{p.description}</td>
-                <td className="text-muted-foreground px-3 py-2">{c ? `${c.id} · ${c.serves}` : "Not wired"}</td>
-                <td className="px-3 py-2 text-end tabular-nums whitespace-nowrap">{p.face === "down" ? "Ceiling" : p.face === "up" ? "Floor" : `${frw(Math.round(p.at[2] * 1000))} mm`}</td>
-                <td className="px-3 py-2 text-end tabular-nums">{p.watts ? `${p.watts} W` : ""}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+    <PointsTable
+      columns={[{ label: "What and where" }, { label: "Circuit", muted: true }, { label: "Centre height", end: true }, { label: "Load", end: true }]}
+      rows={points.map((p) => {
+        const c = circuits.find((x) => x.id === p.circuit)
+        const height = p.face === "down" ? "Ceiling" : p.face === "up" ? "Floor" : `${frw(Math.round(p.at[2] * 1000))} mm`
+        return { id: p.id, colour: c?.colour, cells: [p.description, c ? `${c.id} · ${c.serves}` : "Not wired", height, p.watts ? `${p.watts} W` : ""] }
+      })} />
   )
 }

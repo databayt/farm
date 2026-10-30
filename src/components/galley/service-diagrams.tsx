@@ -17,6 +17,12 @@ export function runLength(run: { paths: Pt[][] }) {
   return Math.round(m * 10) / 10
 }
 
+// the pipe a set of runs takes, by size, for a rail card: "6.2 m of 20 mm, 3.1 m of 40 mm"
+export function metres(runs: WaterRun[]): string {
+  return [...runs.reduce((a, r) => a.set(r.dn, (a.get(r.dn) ?? 0) + runLength(r)), new Map<number, number>())]
+    .map(([dn, n]) => `${+n.toFixed(1)} m of ${dn} mm`).join(", ")
+}
+
 const W = 1600
 
 function Unit({ x, y, title, sub, dashed = false, muted = false, w = 150 }: {

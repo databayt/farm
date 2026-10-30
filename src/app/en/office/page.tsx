@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection } from "@/components/page/sections"
-import { type RailItem } from "@/components/docs/item-rail"
-import { PointsTable, type RoomPoint, deviceRail, tagInfo, withLoads } from "@/components/docs/room-points"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
+import { RoomPointsTable, type RoomPoint, deviceRail, tagInfo, withLoads } from "@/components/docs/room-points"
 import { RoomWiring } from "@/components/docs/room-wiring"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
 import { NetworkDiagram } from "@/components/office/network-diagram"
@@ -26,15 +25,8 @@ const m2 = (n: number) => +n.toFixed(2)
 
 // The Furniture and equipment rail: each piece rendered on its own by scripts/site/render/office.html?item=<id>,
 // sized from office.json. Nothing is sourced or priced yet.
-type Row = { id: string; title: string; size: string; note?: string }
-function rail(rows: Row[]): RailItem[] {
-  return rows.map((x) => ({
-    src: `${D}/render/furniture/${x.id}.webp`, alt: x.title, title: x.title, note: x.note,
-    details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: "Not sourced yet" }, { label: "Cost", value: "Not priced yet" }],
-  }))
-}
 const { sofa, workstation: ws, cafe } = office
-const furnitureRail = rail([
+const furnitureRail = railCards(`${D}/render/furniture`, [
   { id: "sofa", title: "L sofa", size: `${m2(sofa.x1 - office.container.inner.x0)} × ${m2(office.container.inner.y1 - office.container.inner.y0)} m, ${m2(sofa.d)} m deep`,
     note: "One piece: its short leg across the whole cargo-door end, its long leg along the back wall, a corner seat between." },
   { id: "sofatable", title: "Low table", size: `${m2(sofa.table.x1 - sofa.table.x0)} × ${m2(sofa.table.y1 - sofa.table.y0)} m, 0.41 m high`, note: "Medium Oak, in front of the sofa." },
@@ -58,7 +50,6 @@ const netLinks = N.circuits.map((c) => ({ ...c, device: "", cable_mm2: 0 }))
 const designA = Math.round(circuits.reduce((n, c) => n + (c.design_A ?? 0), 0) * 10) / 10
 
 const DOCS = [
-  { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." },
   { href: "/docs/digital", title: "The digital farm", text: "Bookings, payments, the gate, water, power and the books on simple digital tools, and in what order." },
   { href: "/docs/iot-architecture", title: "IoT architecture", text: "One gateway, one uplink: connectivity, hardware, monitoring, security and working offline." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both, and the batteries that keep the Wi-Fi and the cameras up." },
@@ -113,7 +104,7 @@ export default function OfficePage() {
         rail={deviceRail(points, (m) => `${D}/render/electric/${m}.webp`)} />
 
       <TextSection id="electric-points" title="Electric points">
-        <PointsTable points={points} circuits={circuits} />
+        <RoomPointsTable points={points} circuits={circuits} />
       </TextSection>
 
       {/* Network, in the Electric section's pattern: the farm's network from the office (the IoT architecture's base,
@@ -133,7 +124,7 @@ export default function OfficePage() {
         rail={deviceRail(netPoints, (m) => `${D}/render/network/${m}.webp`)} />
 
       <TextSection id="network-points" title="Network points">
-        <PointsTable points={netPoints} circuits={netLinks} />
+        <RoomPointsTable points={netPoints} circuits={netLinks} />
         <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
           Status: design intent. Places and sizes come from office.json; the electrical costs are the studio&rsquo;s placeholder
           prices (AS-21) until three quotes come in, and the network gear is neither sourced nor priced.

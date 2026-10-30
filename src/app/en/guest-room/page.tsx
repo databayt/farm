@@ -1,10 +1,9 @@
 import type { Metadata } from "next"
-
 import Link from "next/link"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection } from "@/components/page/sections"
-import { type RailItem } from "@/components/docs/item-rail"
-import { PointsTable, type RoomPoint, deviceRail, tagInfo, withLoads } from "@/components/docs/room-points"
+import { frw } from "@/lib/format"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
+import { RoomPointsTable, type RoomPoint, deviceRail, tagInfo, withLoads } from "@/components/docs/room-points"
 import { RoomWiring } from "@/components/docs/room-wiring"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
 import { GuestRoomPlan } from "@/components/guest-room/guest-room-plan"
@@ -22,22 +21,13 @@ export const metadata: Metadata = {
 }
 
 const D = "/designs/guest-room"
-const frw = (n: number) => n.toLocaleString("en-US")
 const m2 = (n: number) => +n.toFixed(2)
 
 // The furniture rails: each piece rendered on its own by scripts/site/render/guest-room.html?item=<id>, sized from
 // guest-room.json. Nothing is sourced or quoted yet; where the studio already carries a placeholder price for the
 // same piece (AS-21), the card repeats it as an estimate.
-type Row = { id: string; title: string; size: string; where?: string; cost?: string; note?: string }
-function rail(rows: Row[]): RailItem[] {
-  return rows.map((x) => ({
-    src: `${D}/render/furniture/${x.id}.webp`, alt: x.title, title: x.title, note: x.note,
-    details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: x.where ?? "Not sourced yet" },
-      { label: "Cost", value: x.cost ?? "Not priced yet" }],
-  }))
-}
 const { bed, bedsides: bs, bench, wardrobe, desk, hooks, rug, veranda } = room
-const bedRail = rail([
+const bedRail = railCards(`${D}/render/furniture`, [
   { id: "bed", title: "Bed frame", size: `${m2(bed.w)} × ${m2(bed.l)} m mattress, frame ${m2(bed.frame)} m high, headboard ${m2(bed.headboard)} m`,
     note: "A solid Medium Oak frame with its headboard on the back wall, under the barred window." },
   { id: "mattress", title: "Mattress", size: `${bed.w * 100} × ${bed.l * 100} × ${Math.round(bed.mattress * 100)} cm`,
@@ -49,7 +39,7 @@ const bedRail = rail([
   { id: "bench", title: "Luggage bench", size: `${m2(bench.w)} × ${m2(bench.d)} m, ${m2(bench.h)} m high`, note: "Slatted, across the foot of the bed." },
   { id: "rug", title: "Rug", size: `${m2(rug.w)} × ${m2(rug.d)} m`, note: "A flat-woven rug under the lower two thirds of the bed." },
 ])
-const roomRail = rail([
+const roomRail = railCards(`${D}/render/furniture`, [
   { id: "wardrobe", title: "Wardrobe", size: `${m2(wardrobe.w)} × ${m2(wardrobe.d)} m, ${m2(wardrobe.h)} m high`, note: "Two doors, on the left wall between the joint's post and the desk." },
   { id: "desk", title: "Desk", size: `${m2(desk.x1 - desk.x0)} × ${m2(desk.d)} m, ${m2(desk.h)} m high`, note: "Under the front window, with a reading lamp and the socket P3 beside it." },
   { id: "chair", title: "Desk chair", size: `${m2(desk.chair.w)} × ${m2(desk.chair.d)} m, seat ${m2(desk.chair.seat)} m, back ${m2(desk.chair.back)} m` },
@@ -66,7 +56,6 @@ const circuits = withLoads(E.circuits, points)
 const designA = Math.round(circuits.reduce((n, c) => n + (c.design_A ?? 0), 0) * 10) / 10
 
 const DOCS = [
-  { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both: what the farm uses, building by building, and what each option costs." },
   { href: "/docs/studio-circuits", title: "Circuits and points", text: "The studio's circuits, checked against breaker, cable and voltage drop: the conventions this room follows." },
   { href: "/docs/electrician", title: "Electrician's guide", text: "The first fix before the linings close, the second fix, the tests and the certificate." },
@@ -126,7 +115,7 @@ export default function GuestRoomPage() {
         rail={deviceRail(points, (m) => `${D}/render/electric/${m}.webp`)} />
 
       <TextSection id="electric-points" title="Electric points">
-        <PointsTable points={points} circuits={circuits} />
+        <RoomPointsTable points={points} circuits={circuits} />
         <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
           Status: design intent. Places, sizes and loads come from guest-room.json; costs are the studio&rsquo;s placeholder
           prices (AS-21) until three quotes come in, and nothing is sourced yet.

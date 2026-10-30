@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection } from "@/components/page/sections"
+import { frw, rwf } from "@/lib/format"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"
 import { type RailItem } from "@/components/docs/item-rail"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
@@ -21,8 +22,6 @@ export const metadata: Metadata = {
 }
 
 const D = "/designs/farming"
-const frw = (n: number) => n.toLocaleString("en-US")
-const rwf = (n: number) => `RWF ${(n / 1e6).toFixed(1)}M`
 const crops = [...plan.crops].sort((a, b) => b.kgWeek - a.kgWeek)
 
 // The Crops rail: one bed of each crop rendered on its own (scripts/site/render/farming.html?item=<id>)
@@ -44,27 +43,22 @@ function cropRail(): RailItem[] {
 // neither contacted.
 const I = plan.irrigation
 const line = (re: RegExp) => plan.bom.find((l) => re.test(l.item))!
-const NOT_SOURCED = "Not sourced yet"
 function waterRail(): RailItem[] {
-  const card = (id: string, title: string, size: string, where: string, cost: string, note: string): RailItem => ({
-    src: `${D}/render/water/${id}.webp`, alt: title, title, note,
-    details: [{ label: "Dimensions", value: size }, { label: "Where to buy", value: where }, { label: "Cost", value: cost }],
-  })
   const drip = line(/^Drip tape/), pipe = line(/^Supply and header/), valve = line(/^Valve and fittings/), filter = line(/^Disc filter/), main = line(/^Main pipe/)
-  return [
-    card("tank", "Tank and pump", "Sized to the borehole's tested flow", "The farm's, by the compound", "Not in the field's budget: the farm's water",
-      `T · the farm's tank and booster pump, shared with the compound. The field takes ${plan.water.dryLow} to ${plan.water.dryHigh} m³ a day in the driest months.`),
-    card("filter", "Disc filter", "1 inch, at the tank", "Not sourced yet: Holland Greentech sells drip (not contacted)", `RWF ${frw(filter.total)} (estimate)`,
-      "F · stops the grit that blocks emitters. Open and rinse its discs every week."),
-    card("main", "Main pipe", `${main.qty} m of ${I.main.dn} mm PE`, NOT_SOURCED, `RWF ${frw(main.total)} (estimate)`,
-      "M1 · from the tank down to the garden walk and along it to the field's gate, buried 30 cm."),
-    card("valve", `Block valves × ${valve.qty}`, "A 32 mm ball valve on a tee, in a valve box", NOT_SOURCED, `RWF ${frw(valve.rwf)} each × ${valve.qty} (estimate)`,
-      `${I.valves.map((v) => v.id).join(", ")} · each block waters on its own, so a short flow can run them one after another.`),
-    card("header", "Supply and headers", `${pipe.qty} m of 32 mm PE, with start connectors`, NOT_SOURCED, `RWF ${frw(pipe.total)} (estimate)`,
-      "S1 and H · along the main path and the aisles, then across each block's gate-side end, a start connector for every drip line."),
-    card("drip", "Drip lines", `${frw(drip.qty)} m of 16 mm tape, two lines a bed`, "Not sourced yet: Holland Greentech sells drip (not contacted)", `RWF ${frw(drip.total)} (estimate)`,
-      `DL · ${I.lines} lines, 10 m each, down every planted bed; an end closure on each, flushed open once a month.`),
-  ]
+  return railCards(`${D}/render/water`, [
+    { id: "tank", title: "Tank and pump", size: "Sized to the borehole's tested flow", where: "The farm's, by the compound", cost: "Not in the field's budget: the farm's water",
+      note: `T · the farm's tank and booster pump, shared with the compound. The field takes ${plan.water.dryLow} to ${plan.water.dryHigh} m³ a day in the driest months.` },
+    { id: "filter", title: "Disc filter", size: "1 inch, at the tank", where: "Not sourced yet: Holland Greentech sells drip (not contacted)", cost: `RWF ${frw(filter.total)} (estimate)`,
+      note: "F · stops the grit that blocks emitters. Open and rinse its discs every week." },
+    { id: "main", title: "Main pipe", size: `${main.qty} m of ${I.main.dn} mm PE`, cost: `RWF ${frw(main.total)} (estimate)`,
+      note: "M1 · from the tank down to the garden walk and along it to the field's gate, buried 30 cm." },
+    { id: "valve", title: `Block valves × ${valve.qty}`, size: "A 32 mm ball valve on a tee, in a valve box", cost: `RWF ${frw(valve.rwf)} each × ${valve.qty} (estimate)`,
+      note: `${I.valves.map((v) => v.id).join(", ")} · each block waters on its own, so a short flow can run them one after another.` },
+    { id: "header", title: "Supply and headers", size: `${pipe.qty} m of 32 mm PE, with start connectors`, cost: `RWF ${frw(pipe.total)} (estimate)`,
+      note: "S1 and H · along the main path and the aisles, then across each block's gate-side end, a start connector for every drip line." },
+    { id: "drip", title: "Drip lines", size: `${frw(drip.qty)} m of 16 mm tape, two lines a bed`, where: "Not sourced yet: Holland Greentech sells drip (not contacted)", cost: `RWF ${frw(drip.total)} (estimate)`,
+      note: `DL · ${I.lines} lines, 10 m each, down every planted bed; an end closure on each, flushed open once a month.` },
+  ])
 }
 // the water points, for the tags on the drawing
 const WATER_POINTS = [
@@ -78,7 +72,6 @@ const WATER_POINTS = [
 ]
 
 const DOCS = [
-  { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." },
   { href: "/docs/vegetables", title: "The field guide", text: "The first month step by step, the crops, water and pests, in English and Kinyarwanda." },
   { href: "/docs/water-and-soil", title: "Water and soil", text: "The soil and water tests, the borehole's flow and what the field can drink." },
   { href: "/docs/irrigation-automation", title: "Irrigation control", text: "Manual valves and meters first; what a monitoring kit would add after planting." },

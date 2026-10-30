@@ -1,12 +1,12 @@
 import type { Metadata } from "next"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
 import { type RailItem } from "@/components/docs/item-rail"
+import { PointsTable } from "@/components/docs/points-table"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
 import B from "@/components/bar/bar.json"
 import { BarPlan } from "@/components/bar/bar-plan"
-import { PointsTable } from "@/components/galley/points-table"
-import { type Circuit, type ElectricPoint, PowerDiagram, runLength, type WaterPoint, type WaterRun, WaterDiagram } from "@/components/galley/service-diagrams"
+import { type Circuit, type ElectricPoint, metres, PowerDiagram, runLength, type WaterPoint, type WaterRun, WaterDiagram } from "@/components/galley/service-diagrams"
 import electricTags from "../../../../public/designs/bar/render/electric-tags.json"
 import waterTags from "../../../../public/designs/bar/render/water-tags.json"
 
@@ -30,20 +30,12 @@ const I = B.inside
 const m = (n: number) => `${+n.toFixed(2)} m`
 const span = (u: { x0: number; x1: number }) => u.x1 - u.x0
 
-type Card = { id: string; title: string; size: string; note: string }
-function cards(dir: string, items: Card[]): RailItem[] {
-  return items.map((x) => ({
-    src: `${D}/render/${dir}/${x.id}.webp`, alt: x.title, title: x.title, note: x.note,
-    details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: "Not sourced yet" }, { label: "Cost", value: "Not priced yet" }],
-  }))
-}
-
 // The Equipment rail: each piece rendered on its own by bar.html?item=<id>, from the 3D's own meshes
 function equipmentRail() {
   const kw = (id: string) => ELECTRIC.circuits.find((c) => c.id === id)?.kw
   const fridges = I.front.units.filter((u) => u.id === "fridge")
   const sink = I.front.units.find((u) => u.id === "sink")!
-  return cards("equipment", [
+  return railCards(`${D}/render/equipment`, [
     { id: "coffee", title: "Coffee machine", size: `${m(span(I.back.coffee))} wide, two groups, on the back bar`, note: `Plumbed in, through a scale filter, its drip tray drained; about ${kw("C3")} kW on its own circuit (a design value).` },
     { id: "grinder", title: "Grinder", size: `${m(span(I.back.grinder))} wide, beside the machine`, note: "Beans in the hopper, ground to order." },
     { id: "juicer", title: "Juicer", size: `About Ø 0.24 m, on the back bar`, note: "For the passion fruit, pineapple and tree tomato in the crates beside it." },
@@ -61,15 +53,13 @@ const WATER_PARTS: { item: string; title: string }[] = [
   { item: "meter", title: "Stop valve, filter and meter" }, { item: "scalefilter", title: "Scale filter" }, { item: "heater", title: "Under-sink heater" },
   { item: "mixer", title: "Sink mixer" }, { item: "aav", title: "Air admittance valve" }, { item: "greasetrap", title: "Grease trap" },
 ]
-const metres = (rs: WaterRun[]) => [...rs.reduce((a, r) => a.set(r.dn, (a.get(r.dn) ?? 0) + runLength(r)), new Map<number, number>())]
-  .map(([dn, n]) => `${+n.toFixed(1)} m of ${dn} mm`).join(", ")
 function waterRail(): RailItem[] {
   const parts = WATER_PARTS.map(({ item, title }) => {
     const p = WATER.points.find((q) => q.item === item)!
     return { id: item, title, size: p.size, note: `${p.id} · ${p.where}.` }
   })
   const of = (...sys: string[]) => WATER.runs.filter((r) => sys.includes(r.system))
-  return cards("water", [...parts,
+  return railCards(`${D}/render/water`, [...parts,
     { id: "ppr", title: "PP-R supply pipe", size: metres(of("cold", "hot")), note: "Under the floor across the aisle, then straight up into the units; PN20, welded joints." },
     { id: "upvc", title: "uPVC drain pipe", size: metres(of("waste")), note: "The sink and the machine's drip tray down through the floor to the collector, at 1:40 or steeper." },
   ])
@@ -82,7 +72,7 @@ const DEVICES: { model: string; title: string }[] = [
   { model: "alarm", title: "Smoke alarm" }, { model: "earth", title: "Earth rod" },
 ]
 function electricRail(): RailItem[] {
-  return cards("electric", DEVICES.map(({ model, title }) => {
+  return railCards(`${D}/render/electric`, DEVICES.map(({ model, title }) => {
     const pts = ELECTRIC.points.filter((p) => p.model === model)
     const on = [...new Set(pts.map((p) => p.circuit).filter(Boolean))]
     return { id: model, title: pts.length > 1 ? `${title} × ${pts.length}` : title, size: pts[0].size,
@@ -97,7 +87,6 @@ const OUTSIDE = ["L5", "P5"]
 const circuitColour = (p: ElectricPoint) => ELECTRIC.colours[ELECTRIC.circuits.find((c) => c.id === p.circuit)?.group ?? "spare"]
 
 const DOCS = [
-  { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." },
   { href: "/docs/operations", title: "Operations", text: "The bar lounge in the evening, the galley's food for it, and settling the bar at check-out." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both, and what the bar draws: fridges, lights, music and the coffee machine." },
   { href: "/docs/plumber", title: "Plumber", text: "The supply pressure, the pipe sizes, the drains and the grease trap, and the tests before it opens." },
@@ -163,7 +152,7 @@ export default function BarPage() {
 
       <TextSection id="water-points" title="Water points"
         lead={<>The runs: {WATER.runs.map((r) => `${r.id} ${r.dn} mm, ${runLength(r)} m`).join(" · ")}.</>}>
-        <PointsTable head={["What", "Where", "Size"]}
+        <PointsTable columns={[{ label: "What" }, { label: "Where", muted: true }, { label: "Size" }]}
           rows={WATER.points.map((p) => ({ id: p.id, colour: waterColour(p), cells: [p.what, p.where, p.size] }))} />
       </TextSection>
 
@@ -191,7 +180,7 @@ export default function BarPage() {
         rail={electricRail()} />
 
       <TextSection id="electric-points" title="Electric points">
-        <PointsTable head={["What", "Circuit", "Size"]}
+        <PointsTable columns={[{ label: "What" }, { label: "Circuit", muted: true }, { label: "Size" }]}
           rows={ELECTRIC.points.map((p) => ({ id: p.id, colour: circuitColour(p), cells: [p.what, p.circuit || "—", p.size] }))} />
       </TextSection>
 
