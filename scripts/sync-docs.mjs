@@ -142,6 +142,11 @@ const PAGES = [
     description: "Every socket, light, tap and drain in the bar, the pipe runs, and where the design stands.",
     sections: [["Electric points", "BarElectricPoints"], ["Plumbing points", "BarPlumbingPoints"], ["Status", "BarStatus"]],
   },
+  {
+    slug: "livestock-points", title: "Livestock: water points and needs",
+    description: "Every valve, line and trough in the yard, what the herd and the farm friends drink a day, and where the design stands.",
+    sections: [["Water points", "LivestockWaterPoints"], ["What the yard drinks", "LivestockWaterNeed"], ["Status", "LivestockStatus"]],
+  },
   "---Reference---",
   { slug: "decision-log", src: "study/execution/decision-log.md" },
   { slug: "assumptions", src: "study/registers/assumptions.md", description: "The assumptions that shape the study and the model, with how each will be validated." },

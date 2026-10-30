@@ -14,6 +14,7 @@ import {
 import { BarElectricPoints, BarPlumbingPoints, BarStatus } from "@/components/bar/docs-sections"
 import { GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus } from "@/components/galley/docs-sections"
 import { GuestRoomElectricPoints, GuestRoomStatus } from "@/components/guest-room/docs-sections"
+import { LivestockStatus, LivestockWaterNeed, LivestockWaterPoints } from "@/components/livestock/docs-sections"
 import { OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus } from "@/components/office/docs-sections"
 import { ParkingDrainagePoints, ParkingLightingPoints, ParkingStatus } from "@/components/parking/docs-sections"
 import { PublicBathroomElectricPoints, PublicBathroomPlumbingPoints, PublicBathroomStatus } from "@/components/public-bathroom/docs-sections"
@@ -192,6 +193,7 @@ const mdxComponents = {
   VolleyballNetPoints, VolleyballStatus,
   ParkingLightingPoints, ParkingDrainagePoints, ParkingStatus,
   BarElectricPoints, BarPlumbingPoints, BarStatus,
+  LivestockWaterPoints, LivestockWaterNeed, LivestockStatus,
 } satisfies MDXComponents
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {

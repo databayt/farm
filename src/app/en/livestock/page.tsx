@@ -1,19 +1,22 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
 import { frw } from "@/lib/format"
-import { DocsSection, DrawingSection, ModelSection, NOT_BUDGETED, NOT_SOURCED, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, NOT_BUDGETED, NOT_SOURCED, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"
 import { type RailItem } from "@/components/docs/item-rail"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
+import { D, days, high, low, peak, POINT_COLOUR, tank, yardM } from "@/components/livestock/data"
 import livestock from "@/components/livestock/livestock.json"
 import { LivestockPlan } from "@/components/livestock/livestock-plan"
 import { ManureDiagram } from "@/components/livestock/manure-diagram"
-import { WATER_COLOUR, WaterDiagram } from "@/components/livestock/water-diagram"
+import { WaterDiagram } from "@/components/livestock/water-diagram"
 import buildPieces from "../../../../public/designs/livestock/render/build-pieces.json"
 import waterTags from "../../../../public/designs/livestock/render/water-tags.json"
 
-// The livestock yard, as /en/bar is one bar: a full-screen hero, then the 2D and the 3D. Both drawings read
-// src/components/livestock/livestock.json: the starting herd of 6 goats and 4 sheep (D-030) in a thatched pole
+// The livestock yard, in /en/studio's pattern: the hero, the 2D and the 3D, the shed's build-up, the animal and yard
+// rails, Water and Manure, then the docs cards; the water points, what the yard drinks and the status are on
+// /docs/livestock-points. Both drawings read src/components/livestock/livestock.json: the starting herd of 6 goats and 4 sheep (D-030) in a thatched pole
 // shelter's open hall (D-037) inside one outline (D-039), opening onto the village yard they share by day with the
 // farm friends, 3 cats and the doves, and with the guests (D-038, D-040); the 2 guard dogs' run, the feed store, the
 // tank and the compost bays that close the loop to the field. Every size is an assumption until the farm's vet
@@ -24,7 +27,6 @@ export const metadata: Metadata = {
   description: "Goats and sheep in one village yard by a thatched shelter, with three cats, free-flying doves and two guard dogs, part of the farm’s loop from field to compost, at the Digital Farm near Kigali.",
 }
 
-const D = "/designs/livestock"
 const ITEM = `${D}/render/item`
 const { animals: AN, pens: PN, tank: TK, fittings: FT, compost: CO, dogs: DG, friends: FR, shelter: SH, water: WV } = livestock
 
@@ -71,27 +73,6 @@ function yardRail(): RailItem[] {
   ])
 }
 
-// The water: every run and point in livestock.json's water section; the litres a day from its need block [E]
-const len = (path: number[][]) => path.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - path[i][0], p[1] - path[i][1]), 0)
-const yardM = Math.round(len(WV.runs.find((r) => r.id === "S1")!.path) + TK.stand + 2 * (FT.trough.h + 0.3))
-const NEED = WV.need
-const herd = AN.goats.length + AN.sheep.length
-const ROWS = [
-  { what: "Goats", head: AN.goats.length, per: NEED.goat, basis: "[V LVS-27]: 2 to 3 times dry-matter intake at maintenance" },
-  { what: "Sheep", head: AN.sheep.length, per: NEED.sheep, basis: "[A AS-29]: as goats" },
-  { what: "Guard dogs", head: AN.dogs.length, per: NEED.dog, basis: "[A AS-29]" },
-]
-const low = ROWS.reduce((s, r) => s + r.head * r.per[0], 0) + NEED.small[0]
-const high = ROWS.reduce((s, r) => s + r.head * r.per[1], 0) + NEED.small[1]
-// does and ewes in milk drink 4 to 5 times dry matter instead of 2 to 3 [V LVS-27]: up to 5/3 of the top figure [E]
-const peak = herd * NEED.goat[1] * NEED.lactating + AN.dogs.length * NEED.dog[1] + NEED.small[1]
-const tank = 1000
-const days: [number, number] = [Math.floor(tank / high), Math.floor(tank / low)]
-const r0 = (n: number) => frw(Math.round(n))
-
-const POINT_COLOUR: Record<string, string> = { F1: WATER_COLOUR.farm, FV: WATER_COLOUR.farm, T: WATER_COLOUR.farm, V1: WATER_COLOUR.valve,
-  TP: WATER_COLOUR.valve, S1: WATER_COLOUR.supply, W1: WATER_COLOUR.riser, W2: WATER_COLOUR.riser, B: WATER_COLOUR.riser }
-
 // The Water rail, in the studio's Plumbing rail's pattern: each part on its own (livestock.html?item=<id>); nothing is
 // sourced or priced yet
 function waterRail(): RailItem[] {
@@ -124,10 +105,11 @@ function manureRail(): RailItem[] {
   ])
 }
 
+// The yard's own docs page first, as the studio's are, then the guides behind the page.
 const DOCS = [
+  { href: "/docs/livestock-points", title: "Water points and needs", text: "Every valve, line and trough on the drawing above, what the yard drinks a day, and where the design stands." },
   { href: "/docs/livestock-plan", title: "Livestock plan", text: "A small goat herd, staged and gated: the house, the biosecurity, the herd’s money." },
   { href: "/docs/livestock-management", title: "Livestock management", text: "Daily care, health, records and the vet’s calendar for the herd." },
-  { href: "/docs/feed-and-pasture", title: "Feed and pasture", text: "What the paddock and the fodder carry, and why feed caps the herd." },
   { href: "/docs/livestock-suppliers", title: "Animals and vets", text: "Where animals, vets, vaccines and forage seed can come from, and how to qualify them." },
 ]
 
@@ -197,13 +179,13 @@ export default function LivestockPage() {
           its own. All from livestock.html?view=water and ?item=, built from livestock.json's water section. */}
       <ServiceSection id="water" title="Water"
         diagram={<WaterDiagram tank={tank} yardM={yardM} need={[Math.round(low), Math.round(high)]} peak={Math.round(peak)} days={days} />}
-        figure={<TaggedFigure src={`${D}/render/water-line.png`} aspect={waterTags.aspect} tags={waterTags.tags}
+        figure={<TaggedFigure table="/docs/livestock-points" src={`${D}/render/water-line.png`} aspect={waterTags.aspect} tags={waterTags.tags}
           alt="Line drawing of the shed, the tank and the troughs from the paddock: the farm's line in dark blue up the tank's side to the float valve under its lid, the outlet valve and the bucket tap in orange on the riser down the tank's stone base, the yard line in blue past the shed's east end and along the front of the eaves, and a light-blue riser up to each trough."
           info={Object.fromEntries(WV.points.map((p) => [p.id, { label: p.what, colour: POINT_COLOUR[p.id] }]))} />}
         note={<>
           The farm&rsquo;s line fills the tank through a float valve; from the tank&rsquo;s foot one buried line feeds a float
           valve in each trough, so the troughs stay full without anyone carrying water. Each tag opens its row in the{" "}
-          <a href="#water-points" className="underline underline-offset-4">points table</a>. Off the drawing: the dogs&rsquo;
+          <Link href="/docs/livestock-points#water-points" className="underline underline-offset-4">points table</Link>. Off the drawing: the dogs&rsquo;
           bowl (B), filled by bucket from the tap. Where the farm&rsquo;s line comes from waits for the farm&rsquo;s water plan and
           the borehole test, and water for livestock on a farm needs a water use permit (LOC-04).
         </>}
@@ -211,87 +193,6 @@ export default function LivestockPage() {
           caption: "Rendered from the design model: the yard line drawn on the ground where it runs buried",
           alt: "The same view rendered: the thatched shed with sheep on the straw, the earth-brown tank on its stone base with a black pipe up its side, a brass valve with a red lever and a tap on the riser, the black yard line past the buckets and along the front of the eaves to the two plank troughs of water, goats and sheep in the yard." }}
         rail={waterRail()} />
-
-      <TextSection id="water-points" title="Water points">
-        <div className="mt-6 overflow-x-auto rounded-xl border">
-          <table className="w-full text-sm">
-            <thead className="text-muted-foreground bg-muted/40">
-              <tr>
-                <th className="px-3 py-2 text-start font-medium">Point</th>
-                <th className="px-3 py-2 text-start font-medium">What</th>
-                <th className="px-3 py-2 text-start font-medium">Where</th>
-                <th className="px-3 py-2 text-start font-medium">Size</th>
-              </tr>
-            </thead>
-            <tbody>
-              {WV.points.map((p) => (
-                <tr key={p.id} id={`pt-${p.id}`} className="scroll-mt-24 border-t target:bg-muted/60">
-                  <td className="px-3 py-2 font-medium whitespace-nowrap">
-                    <span className="me-2 inline-block size-2 rounded-full" style={{ background: POINT_COLOUR[p.id] }} />{p.id}
-                  </td>
-                  <td className="px-3 py-2">{p.what}</td>
-                  <td className="text-muted-foreground px-3 py-2">{p.where}</td>
-                  <td className="px-3 py-2">{p.size}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </TextSection>
-
-      {/* What the yard drinks a day, from the herd in livestock.json: an estimate, its method under the table */}
-      <TextSection id="water-need" title="What the yard drinks"
-        lead={<>About {r0(low)} to {r0(high)} litres a day for the {herd} goats and sheep, the dogs, the cats and the doves, and up
-          to about {r0(peak)} when the does and the ewes are in milk in the dry season. A full {frw(tank)} L tank holds{" "}
-          {days[0]} to {days[1]} days of it if the farm&rsquo;s line stops.</>}>
-        <div className="mt-6 overflow-x-auto rounded-xl border">
-          <table className="w-full text-sm">
-            <thead className="text-muted-foreground bg-muted/40">
-              <tr>
-                <th className="px-3 py-2 text-start font-medium">Animals</th>
-                <th className="px-3 py-2 text-end font-medium">Head</th>
-                <th className="px-3 py-2 text-end font-medium whitespace-nowrap">L a head a day</th>
-                <th className="px-3 py-2 text-end font-medium whitespace-nowrap">L a day</th>
-                <th className="px-3 py-2 text-start font-medium">Basis</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ROWS.map((r) => (
-                <tr key={r.what} className="border-t">
-                  <td className="px-3 py-2">{r.what}</td>
-                  <td className="px-3 py-2 text-end tabular-nums">{r.head}</td>
-                  <td className="px-3 py-2 text-end tabular-nums whitespace-nowrap">{r.per[0]} to {r.per[1]}</td>
-                  <td className="px-3 py-2 text-end tabular-nums whitespace-nowrap">{r0(r.head * r.per[0])} to {r0(r.head * r.per[1])}</td>
-                  <td className="text-muted-foreground px-3 py-2">{r.basis}</td>
-                </tr>
-              ))}
-              <tr className="border-t">
-                <td className="px-3 py-2">Cats and doves</td>
-                <td className="px-3 py-2 text-end tabular-nums">{FR.cats.head} + doves</td>
-                <td className="px-3 py-2 text-end">–</td>
-                <td className="px-3 py-2 text-end tabular-nums whitespace-nowrap">under {NEED.small[1]}</td>
-                <td className="text-muted-foreground px-3 py-2">[A AS-29]</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr className="border-t-2 font-semibold">
-                <td className="px-3 py-3">The yard</td>
-                <td className="px-3 py-3" />
-                <td className="px-3 py-3" />
-                <td className="px-3 py-3 text-end tabular-nums whitespace-nowrap">{r0(low)} to {r0(high)}</td>
-                <td className="text-muted-foreground px-3 py-3 font-normal">[E] the sum; up to {r0(peak)} in milk</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-        <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
-          Method [E]: head counts from the yard&rsquo;s design (D-030) times litres a head a day. A goat drinks 2 to 3 times
-          its dry-matter intake at maintenance, about 1.5 to 3.3 L a day, and 4 to 5 times when lactating (LVS-27), so a doe
-          or a ewe in milk is taken at 5/3 of the top figure. The sheep, the dogs, the cats and the doves are assumptions
-          (AS-29) until the vet checks them. Heat and the dry season push every figure to the top of its range; the feed, not
-          the water, caps the herd at about 20 does on 5 ha.
-        </p>
-      </TextSection>
 
       {/* Manure, in the services' pattern: the loop from the shed's litter through the compost bays to the beds and back,
           drawn full width (manure-diagram.tsx), then the bays and the baskets on their own. */}
