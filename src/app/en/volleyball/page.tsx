@@ -1,19 +1,22 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
 import { TennisPlan } from "@/components/tennis/tennis-plan"
 import { CourtSwitch } from "@/components/volleyball/court-switch"
+import { D, m, NET_POINTS } from "@/components/volleyball/data"
 import { CourtDrainageDiagram } from "@/components/volleyball/drainage-diagram"
-import { FOOTING_COLOUR, NetDiagram } from "@/components/volleyball/net-diagram"
+import { NetDiagram } from "@/components/volleyball/net-diagram"
 import { VolleyballPlan } from "@/components/volleyball/volleyball-plan"
 import volleyball from "@/components/volleyball/volleyball.json"
 import netTags from "../../../../public/designs/volleyball/render/net-tags.json"
 import topPieces from "../../../../public/designs/volleyball/render/top-pieces.json"
 
-// The volleyball court, as /en/camp is one camp: a full-screen hero, then the 2D and the 3D. Both drawings read
-// src/components/volleyball/volleyball.json: the master plan's court on the lawn, 18 x 9 m inside a 3 m free zone to
+// The volleyball court, in /en/studio's pattern: the hero, the 2D and the 3D, the court's build-up, the kit, Net and
+// posts and Drainage, then the docs cards; the net's points table and the status are on /docs/volleyball-points. Both
+// drawings read src/components/volleyball/volleyball.json: the master plan's court on the lawn, 18 x 9 m inside a 3 m free zone to
 // the FIVB Official Volleyball Rules, on the lawn's own grass mown short, the net on padded posts, and beyond the far
 // free zone two benches under thatched umbrellas and a ball store. Everything past the rules is an assumption.
 
@@ -22,9 +25,7 @@ export const metadata: Metadata = {
   description: "A full-size volleyball court on the lawn, with benches in the shade, at the Digital Farm near Kigali.",
 }
 
-const D = "/designs/volleyball"
 const { court: K, net: N, posts: P, benches: B, shade: SH, store: ST, surface: SF, build: BU } = volleyball
-const m = (n: number) => Math.round(n * 1000).toLocaleString("en-US")
 const FL = K.l + 2 * K.free, FW = K.w + 2 * K.free // the playing area, court and free zone
 
 // The rails: each part rendered on its own by scripts/site/render/volleyball.html?item=<id>, from the model's own
@@ -44,21 +45,13 @@ const netRail = () => railCards(`${D}/render/item`, [
   { id: "net", title: "Net", size: `${m(N.l)} × ${m(N.d)} mm, ${m(N.mesh)} mm square mesh`, note: `N · black mesh with a ${m(N.top)} mm white band along its top over the cable, a ${m(N.foot)} mm band at its foot, and a white side band over each side line.` },
   { id: "antenna", title: "Antennae × 2", size: `${m(N.antenna.l)} mm long, ${m(N.antenna.d)} mm thick, the top ${m(N.antenna.above)} mm striped`, note: "A1, A2 · flexible rods at the side bands' outer edges, on opposite faces of the net, in 100 mm stripes of red and white (rule 2.4)." },
 ])
-const NET_POINTS = [
-  { id: "S1", what: "Footing and sleeve, near post", where: `${m(P.out)} mm outside the near side line, on the centre line`, size: `${m(P.footing.w)} mm square, ${m(P.footing.depth)} mm deep` },
-  { id: "S2", what: "Footing and sleeve, far post", where: "The same outside the far side line", size: `${m(P.footing.w)} mm square, ${m(P.footing.depth)} mm deep` },
-  { id: "P1", what: "Near post", where: "In S1, toward the open lawn", size: `${m(P.h)} mm, padded to ${m(P.pad.h)} mm` },
-  { id: "P2", what: "Far post", where: "In S2, toward the benches", size: `${m(P.h)} mm, padded to ${m(P.pad.h)} mm` },
-  { id: "W", what: "Winch", where: "On P1's outer face", size: `At ${m(P.winch)} mm; tensions the top cable` },
-  { id: "N", what: "Net", where: "Over the centre line", size: `${m(N.l)} × ${m(N.d)} mm, top at ${m(N.men)} mm (men) or ${m(N.women)} mm (women)` },
-  { id: "A1", what: "Antenna, near side line", where: "At the side band's outer edge", size: `${m(N.antenna.l)} mm, ${m(N.antenna.above)} mm above the net` },
-  { id: "A2", what: "Antenna, far side line", where: "On the net's other face", size: `${m(N.antenna.l)} mm, ${m(N.antenna.above)} mm above the net` },
-]
 
+// The court's own docs page first, as the studio's are, then the guides behind the page.
 const DOCS = [
+  { href: "/docs/volleyball-points", title: "Net points", text: "The footings, the posts, the winch, the net and the antennae on the drawing above, with where each is and its size." },
   { href: "/docs/master-plan", title: "Master plan", text: "Where the court sits on the lawn, the 24 × 15 m it takes and the trees kept clear of it." },
   { href: "/docs/site-inspection", title: "Site inspection", text: "The one structured site visit that measures the lawn the court is levelled on." },
-  { href: "/docs/operations", title: "Operations", text: "How guests spend a day at the farm, volleyball among what they do." },
+  { href: "/docs/operations", title: "How the farm runs", text: "How guests spend a day at the farm, volleyball among what they do." },
 ]
 
 export default function VolleyballPage() {
@@ -131,43 +124,18 @@ export default function VolleyballPage() {
           (render/net-real.webp), then each part on its own. All from volleyball.html?view=net and ?item=. */}
       <ServiceSection id="net" title="Net and posts"
         diagram={<NetDiagram net={N} posts={P} courtW={K.w} />}
-        figure={<TaggedFigure src={`${D}/render/net-line.png`} aspect={netTags.aspect} tags={netTags.tags}
+        figure={<TaggedFigure table="/docs/volleyball-points" src={`${D}/render/net-line.png`} aspect={netTags.aspect} tags={netTags.tags}
           alt="Line drawing of the net close up from the open lawn: the two padded posts with the net between them, an antenna over each side line, the winch on the near post, the court lines on the grass, and under each post its footing and sleeve drawn through the grass in orange."
-          info={Object.fromEntries(NET_POINTS.map((p) => [p.id, { label: p.what, colour: p.id.startsWith("S") ? FOOTING_COLOUR : undefined }]))} />}
+          info={Object.fromEntries(NET_POINTS.map((p) => [p.id, { label: p.what, colour: p.colour }]))} />}
         note={<>
           Each post drops into a steel sleeve cast in its footing, so it stands without guy wires and lifts out to mow or for
           the rains. The footings are drawn through the grass. Each tag opens its row in the{" "}
-          <a href="#net-points" className="underline underline-offset-4">points table</a>. The footings&rsquo; size waits
+          <Link href="/docs/volleyball-points#net-points" className="underline underline-offset-4">points table</Link>. The footings&rsquo; size waits
           for a builder to see the soil.
         </>}
         real={{ src: `${D}/render/net-real.webp`, width: 2400, height: 1100, caption: "Rendered from the design model",
           alt: "The same view rendered: the black net with its white top band between two dark green padded posts, red and white antennae, the white tape lines on grass mown in stripes, and the footings' concrete tops flush with the grass." }}
         rail={netRail()} />
-
-      <TextSection id="net-points" title="Net points">
-        <div className="mt-6 overflow-x-auto rounded-xl border">
-          <table className="w-full text-sm">
-            <thead className="text-muted-foreground bg-muted/40">
-              <tr>
-                <th className="px-3 py-2 text-start font-medium">Point</th>
-                <th className="px-3 py-2 text-start font-medium">What</th>
-                <th className="px-3 py-2 text-start font-medium">Where</th>
-                <th className="px-3 py-2 text-start font-medium">Size</th>
-              </tr>
-            </thead>
-            <tbody>
-              {NET_POINTS.map((p) => (
-                <tr key={p.id} id={`pt-${p.id}`} className="scroll-mt-24 border-t target:bg-muted/60">
-                  <td className="px-3 py-2 font-medium whitespace-nowrap">{p.id}</td>
-                  <td className="px-3 py-2">{p.what}</td>
-                  <td className="text-muted-foreground px-3 py-2">{p.where}</td>
-                  <td className="px-3 py-2">{p.size}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </TextSection>
 
       {/* Drainage: the court is a lawn and needs no drain of its own, so this service is its diagram alone: the
           levelled plane's fall along and across the playing area (volleyball.json drainage). No lights: play stops at

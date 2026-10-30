@@ -15,8 +15,10 @@ import { BarElectricPoints, BarPlumbingPoints, BarStatus } from "@/components/ba
 import { GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus } from "@/components/galley/docs-sections"
 import { GuestRoomElectricPoints, GuestRoomStatus } from "@/components/guest-room/docs-sections"
 import { OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus } from "@/components/office/docs-sections"
+import { ParkingDrainagePoints, ParkingLightingPoints, ParkingStatus } from "@/components/parking/docs-sections"
 import { PublicBathroomElectricPoints, PublicBathroomPlumbingPoints, PublicBathroomStatus } from "@/components/public-bathroom/docs-sections"
 import { StudyRoomElectricPoints, StudyRoomStatus } from "@/components/study-room/docs-sections"
+import { VolleyballNetPoints, VolleyballStatus } from "@/components/volleyball/docs-sections"
 
 const mdxComponents = {
   // Allows customizing built-in components, e.g. to add styling.
@@ -187,6 +189,8 @@ const mdxComponents = {
   StudyRoomElectricPoints, StudyRoomStatus,
   GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus,
   PublicBathroomElectricPoints, PublicBathroomPlumbingPoints, PublicBathroomStatus,
+  VolleyballNetPoints, VolleyballStatus,
+  ParkingLightingPoints, ParkingDrainagePoints, ParkingStatus,
   BarElectricPoints, BarPlumbingPoints, BarStatus,
 } satisfies MDXComponents
 

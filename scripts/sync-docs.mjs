@@ -128,6 +128,16 @@ const PAGES = [
     sections: [["Electric points", "PublicBathroomElectricPoints"], ["Plumbing points", "PublicBathroomPlumbingPoints"], ["Status", "PublicBathroomStatus"]],
   },
   {
+    slug: "volleyball-points", title: "Volleyball: net points",
+    description: "The footings, the posts, the winch, the net and the antennae, where each is and its size, and where the design stands.",
+    sections: [["Net points", "VolleyballNetPoints"], ["Status", "VolleyballStatus"]],
+  },
+  {
+    slug: "parking-points", title: "Parking: lighting and drainage points",
+    description: "Every lamp, duct, fall, trench and pit at the way in, where each is and its size, and where the design stands.",
+    sections: [["Lighting points", "ParkingLightingPoints"], ["Drainage points", "ParkingDrainagePoints"], ["Status", "ParkingStatus"]],
+  },
+  {
     slug: "bar-points", title: "Bar: electric and plumbing points",
     description: "Every socket, light, tap and drain in the bar, the pipe runs, and where the design stands.",
     sections: [["Electric points", "BarElectricPoints"], ["Plumbing points", "BarPlumbingPoints"], ["Status", "BarStatus"]],
