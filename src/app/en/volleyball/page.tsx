@@ -72,13 +72,12 @@ const DOCS = [
 export default function VolleyballPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (brief: ~/Desktop/volleyball-nano-banana). For now it is the design model rendered
-          from eye level on the lawn in late-afternoon sun (scripts/site/render/volleyball.html?mode=real&hero=1,
-          2400 x 1340), the master plan's boundary trees behind. The net sits right, so the words keep the open
-          grass bottom-left. */}
-      <PageHero src={`${D}/render/volleyball-hero.jpg`} width={2400} height={1340} className="bg-[#bbc0b9]" imgClassName="object-[70%_60%]"
+      {/* First screen: the founder's Nano Banana render of the court (2026-10-30), made from the brief in
+          ~/Desktop/volleyball-nano-banana; master kept at assets/volleyball/hero-gemini.png (1672 x 941), upscaled to
+          2400 x 1340. The net sits right, so the words keep the open grass bottom-left. */}
+      <PageHero src={`${D}/render/volleyball-hero.jpg`} width={2400} height={1340} className="bg-[#c9a46a]" imgClassName="object-[60%_55%]"
         title="Volleyball on the lawn until sunset"
-        alt="A volleyball court on a lawn mown in stripes, in low late-afternoon sun: white lines on the grass, a black net with white bands between two padded posts, red and white antennae, a white ball on the grass by the net, timber benches under two thatched umbrellas and a timber chest beyond it, and a row of trees behind." />
+        alt="A grass volleyball court on a lakeside lawn at sunset: white lines on short green grass, a net with a white top band and red-and-white antennae between two dark-green padded posts, a white ball on the grass by the net; beyond it two timber benches under thatched umbrellas and a timber chest, young trees, and the lake shining under low hills." />
 
       {/* 2D, full screen, with a switch between the two games the lawn can take: the volleyball court
           (src/components/volleyball/volleyball-plan.tsx) and a tennis court on the same net line

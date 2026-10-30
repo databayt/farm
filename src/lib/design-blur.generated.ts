@@ -40,6 +40,6 @@ export const DESIGN_BLUR: Record<string, string> = {
   "/designs/study-room/render/study-room-hero.jpg": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADQAQCdASoQAAkAAsBMJQBOgCHZqsf5gADeZ8QbUQGOwbzyFvCCB57BDHIXhwlN7evZG3TISxKorxn8TyuijabvK4YlYaD8KqSrrjTEAAA=",
   "/designs/study-room/render/study-room-real.webp": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAcAAsBMJbACdAENPRjYQAD+j28dDzFltp0gyzdO/HL8ClBf//F2dBF5U7jUkivyuOYAAAA=",
   "/designs/volleyball/render/net-real.webp": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4WAoAAAAQAAAADwAABgAAQUxQSDoAAAAFYFNbe5ovJ1NW3rKlDDZqpEaqsCoYJhaADiJiAvAho+uL0L94apemabpmAnTpCoPbo6kzguc5/m0rVlA4IEgAAACwAQCdASoQAAcAAsBMJbACdADanIqwAP7Ca1EnYUvJo+Q+eIXPtYgqk6nb3WRosZyul9XZ8QT09vu9UIdmt/QGinfSLMbnWAA=",
-  "/designs/volleyball/render/volleyball-hero.jpg": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADQAQCdASoQAAkAAsBMJagC7AD5hT7QAAD+3/dItDYZnw2uHQRtH3UJgx+/BG1VgPVy6VLF+uAA765b74s6+Ltu0wj5U6fLAAA=",
+  "/designs/volleyball/render/volleyball-hero.jpg": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAADQAQCdASoQAAkAAsBMJbACdAEO4nugAAD+65DaKNSBC+dpIGVitchUzXG0EbSn4sSegnvx92V51Mdfg1FYQi2xtAAAAA==",
   "/designs/volleyball/render/volleyball-real.webp": "data:image/webp;base64,UklGRjAAAABXRUJQVlA4ICQAAABwAQCdASoQAAcAAsBMJaACdAFAAAD+50Tz8V/df6s/raRBAAA=",
 }
