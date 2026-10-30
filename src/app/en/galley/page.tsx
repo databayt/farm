@@ -116,12 +116,13 @@ const DOCS = [
 export default function GalleyPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (brief: ~/Desktop/galley-nano-banana). For now it is the design model rendered
-          from eye level in the courtyard (scripts/site/render/galley.html?mode=real&hero=1, 2400 x 1340), in
-          daylight. The galley sits right, so the words keep the open lawn bottom-left. */}
-      <PageHero src={`${D}/render/galley-hero.jpg`} width={2400} height={1340} className="bg-[#c4d3dc]" imgClassName="object-[68%_55%]"
+      {/* First screen: the founder's Nano Banana render of the galley (2026-10-30), made from the brief in
+          ~/Desktop/galley-nano-banana; master kept at assets/galley/hero-gemini.png (1774 x 887), upscaled to 2400 x 1200
+          and kept 2:1 so the whole 40 ft box stays in frame. It departs from the drawings in one thing: the doors are
+          cream, not red. The galley fills the width, so the words sit on the lawn bottom-left. */}
+      <PageHero src={`${D}/render/galley-hero.jpg`} width={2400} height={1200} className="bg-[#8a9a52]" imgClassName="object-[50%_60%]"
         title="Breakfast and dinner, cooked from the field"
-        alt="A long teal shipping container on a fieldstone plinth on a green lawn under a blue sky: two red doors with glazed panels near its ends, each up two stone steps, two white-framed windows between them with steel taps and shelves inside, and a steel extract fan on the roof." />
+        alt="A long teal shipping container on a low fieldstone plinth at golden hour, its two cream doors up stone steps near each end and two white-framed windows between them showing stainless shelves and a fridge; the left door stands open onto a bright stainless kitchen with a range under a canopy hood, and crates of fresh vegetables and a basket of eggs sit on its steps, herbs in terracotta pots along the plinth, on a mown lawn among fruit trees and banana plants." />
 
       {/* 2D, full screen: the galley's plan (src/components/galley/galley-plan.tsx), in the text colour. It is
           long, so it takes the full width. */}
