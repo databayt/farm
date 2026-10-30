@@ -12,6 +12,7 @@ import {
   StudioShared, StudioStatus, StudioSteps,
 } from "@/components/studio/docs-sections"
 import { BarElectricPoints, BarPlumbingPoints, BarStatus } from "@/components/bar/docs-sections"
+import { FarmingBom, FarmingCalendar, FarmingPlate, FarmingStatus, FarmingWaterPoints } from "@/components/farming/docs-sections"
 import { GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus } from "@/components/galley/docs-sections"
 import { GuestRoomElectricPoints, GuestRoomStatus } from "@/components/guest-room/docs-sections"
 import { LivestockStatus, LivestockWaterNeed, LivestockWaterPoints } from "@/components/livestock/docs-sections"
@@ -193,6 +194,7 @@ const mdxComponents = {
   VolleyballNetPoints, VolleyballStatus,
   ParkingLightingPoints, ParkingDrainagePoints, ParkingStatus,
   BarElectricPoints, BarPlumbingPoints, BarStatus,
+  FarmingWaterPoints, FarmingPlate, FarmingCalendar, FarmingBom, FarmingStatus,
   LivestockWaterPoints, LivestockWaterNeed, LivestockStatus,
 } satisfies MDXComponents
 

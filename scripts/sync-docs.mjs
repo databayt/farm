@@ -143,6 +143,12 @@ const PAGES = [
     sections: [["Electric points", "BarElectricPoints"], ["Plumbing points", "BarPlumbingPoints"], ["Status", "BarStatus"]],
   },
   {
+    slug: "farming-plan", title: "Farming: plate, calendar, water and materials",
+    description: "What the galley needs from the field, the planting calendar, the drip's water points, the bill of materials to start, and where the plan stands.",
+    sections: [["Water points", "FarmingWaterPoints"], ["What the galley needs", "FarmingPlate"],
+      ["Planting so the harvest never stops", "FarmingCalendar"], ["Bill of materials", "FarmingBom"], ["Status", "FarmingStatus"]],
+  },
+  {
     slug: "livestock-points", title: "Livestock: water points and needs",
     description: "Every valve, line and trough in the yard, what the herd and the farm friends drink a day, and where the design stands.",
     sections: [["Water points", "LivestockWaterPoints"], ["What the yard drinks", "LivestockWaterNeed"], ["Status", "LivestockStatus"]],

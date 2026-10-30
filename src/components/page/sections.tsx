@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button"
 
 // The sections of every /en page, in /en/studio's pattern: a full-screen hero photo, the 2D and the 3D, then the
 // rails, the services and the docs cards. One copy here keeps the twelve pages identical in spacing, type and
-// dark-mode handling.
+// dark-mode handling. No page carries a table: each place's points, schedules and status live on its docs pages
+// (src/components/<place>/docs-sections.tsx), linked from its tags and its docs cards.
 
 // The first screen. `className` sets the box's colour while the photo loads, `imgClassName` its focus
 // (object-[x_y]); the words sit bottom-left, so the photo keeps its subject centre-right. The sentinel tells the
@@ -115,17 +116,6 @@ export function ServiceSection({ id, title, diagram, figure, note, real, rail }:
           <ItemRail items={rail} />
         </div>
       ) : null}
-    </section>
-  )
-}
-
-// A titled section of text and tables in the page's full width (the field's plate, calendar and bill of materials).
-export function TextSection({ id, title, lead, children }: { id: string; title: string; lead?: React.ReactNode; children?: React.ReactNode }) {
-  return (
-    <section id={id} className="scroll-mt-20 border-t px-4 py-16 md:px-10">
-      <h2 className="text-3xl font-semibold tracking-tight">{title}</h2>
-      {lead ? <p className="text-muted-foreground mt-3 max-w-3xl text-lg text-balance">{lead}</p> : null}
-      {children}
     </section>
   )
 }
