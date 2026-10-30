@@ -68,12 +68,13 @@ const DOCS = [
 export default function OfficePage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the Nano Banana remaster (brief: ~/Desktop/office-nano-banana). Today's
-          saffron container on its raised deck from the 2026-10-25 footage (assets/library/footage/2026-10-25/IMG_3165), cut to
-          2400 x 1340. The container sits centre-right, so the words keep the lawn bottom-left. */}
-      <PageHero src={`${D}/render/office-hero.jpg`} width={2400} height={1340} className="bg-[#c9d3dc]" imgClassName="object-[60%_50%]"
+      {/* First screen: the founder's Nano Banana render of the office (2026-10-30), made from the brief in
+          ~/Desktop/office-nano-banana; master kept at assets/office/hero-gemini.jpg (1024 px), upscaled to 2400 x 1340.
+          It departs from the drawings: a navy container, glass across the whole front, a low deck with no railings or
+          stair. The container sits centre, so the words keep the lawn bottom-left. */}
+      <PageHero src={`${D}/render/office-hero.jpg`} width={2400} height={1340} className="bg-[#7d8f5a]" imgClassName="object-[50%_55%]"
         title="An office on the deck, by the courtyard"
-        alt="A saffron shipping container raised on a red steel frame, its white-framed glazed doors open onto a timber deck with red pipe railings, on a green lawn with young trees behind under a cloudy sky." />
+        alt="A navy-blue shipping container on a low red steel frame with a timber deck in front, its front a wall of white-framed glass doors: inside, a grey L sofa with an oak coffee table and a desk with a monitor and a black gaming chair, lit warm; on the deck, a marble-topped bistro table with a glass of tea and two rush-seated wooden chairs, on a mown lawn before a eucalyptus wood at golden hour." />
 
       {/* 2D, full screen: the office's plan (src/components/office/office-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
