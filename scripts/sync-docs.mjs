@@ -117,6 +117,16 @@ const PAGES = [
     description: "Every light, socket and Wi-Fi point in the study room, with its circuit, height and load, and where the design stands.",
     sections: [["Electric points", "StudyRoomElectricPoints"], ["Status", "StudyRoomStatus"]],
   },
+  {
+    slug: "galley-points", title: "Galley: electric and plumbing points",
+    description: "Every socket, light, tap and drain in the galley, the pipe runs, and where the design stands.",
+    sections: [["Electric points", "GalleyElectricPoints"], ["Plumbing points", "GalleyPlumbingPoints"], ["Status", "GalleyStatus"]],
+  },
+  {
+    slug: "bar-points", title: "Bar: electric and plumbing points",
+    description: "Every socket, light, tap and drain in the bar, the pipe runs, and where the design stands.",
+    sections: [["Electric points", "BarElectricPoints"], ["Plumbing points", "BarPlumbingPoints"], ["Status", "BarStatus"]],
+  },
   "---Reference---",
   { slug: "decision-log", src: "study/execution/decision-log.md" },
   { slug: "assumptions", src: "study/registers/assumptions.md", description: "The assumptions that shape the study and the model, with how each will be validated." },

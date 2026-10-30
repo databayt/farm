@@ -7,14 +7,15 @@ import { cn } from "@/lib/utils"
 // (#pt-<id>) the target of the tag on the page's drawing, its dot the colour of the circuit or the run that feeds it.
 // `end` right-aligns a column of numbers; `muted` greys a column of context (where it is, which circuit).
 
-// The line over a points table: how many points, and the drawing on the place's page that tags them (`href`).
+// The line over a points table: how many points, and the drawing on the place's page whose tags open these rows
+// (`href`). Points off the drawing (a soak pit, a feed from the farm) have a row but no tag.
 export function PointsLead({ count, href, drawing, children }: {
   count: number; href: string; drawing: string; children?: React.ReactNode
 }): React.JSX.Element {
   return (
     <p className="text-muted-foreground">
-      {count} points, each tagged on the <Link href={href} className="underline underline-offset-4">{drawing}</Link>.
-      {children ? <> {children}</> : null}
+      {count} points. Each tag on the <Link href={href} className="underline underline-offset-4">{drawing}</Link> opens
+      its row here.{children ? <> {children}</> : null}
     </p>
   )
 }

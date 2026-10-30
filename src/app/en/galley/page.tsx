@@ -1,16 +1,18 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
 import { type RailItem } from "@/components/docs/item-rail"
-import { PointsTable } from "@/components/docs/points-table"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
+import { circuitColour, D, ELECTRIC, WATER, waterColour } from "@/components/galley/data"
 import { GalleyPlan } from "@/components/galley/galley-plan"
 import G from "@/components/galley/galley.json"
-import { type Circuit, type ElectricPoint, metres, PowerDiagram, runLength, type WaterPoint, type WaterRun, WaterDiagram } from "@/components/galley/service-diagrams"
+import { metres, PowerDiagram, WaterDiagram } from "@/components/galley/service-diagrams"
 import electricTags from "../../../../public/designs/galley/render/electric-tags.json"
 import waterTags from "../../../../public/designs/galley/render/water-tags.json"
 
-// The galley, as /en/office is one office: a full-screen hero, then the 2D and the 3D. Both drawings read
+// The galley, in /en/studio's pattern: the hero, the 2D and the 3D, the Equipment rail, Electric and Plumbing, then the
+// docs cards; the points tables and the status are on /docs/galley-points. Both drawings read
 // src/components/galley/galley.json: the teal 40 ft container on its stone plinth beside the study room, two doors
 // and two windows on the courtyard side, fitted as the staff kitchen that cooks breakfast and dinner for a full
 // house (D-028, D-031): the founder's long worktop with two sinks under the windows, the stores by the staff door,
@@ -21,12 +23,8 @@ export const metadata: Metadata = {
   description: "The farm's staff kitchen: a teal container with a long worktop and two sinks, cooking breakfast and dinner from the field for the guests, at the Digital Farm near Kigali.",
 }
 
-const D = "/designs/galley"
-
-// The equipment, the water and the power, in the studio's pattern. Every size comes from galley.json; nothing is
-// sourced or priced yet, so no card names a shop or a price.
-const WATER = G.water as unknown as { points: WaterPoint[]; runs: WaterRun[]; colours: Record<string, string>; heater: { litres: number; kw: number } }
-const ELECTRIC = G.electric as unknown as { points: ElectricPoint[]; circuits: Circuit[]; colours: Record<string, string>; supply: { title: string; sub: string; main: string; mainSub: string } }
+// The equipment, the power and the water, in the studio's pattern (the water and the power read in data.ts). Every
+// size comes from galley.json; nothing is sourced or priced yet, so no card names a shop or a price.
 const m = (n: number) => `${+n.toFixed(2)} m`
 const span = (u: { x0: number; x1: number }) => u.x1 - u.x0
 
@@ -88,16 +86,12 @@ function electricRail(): RailItem[] {
   }))
 }
 
-// a water point's dot: the warmest water it takes (hot over cold), or the drain or the vent for the points that only take those
-const WARMTH: Record<string, string> = { meter: "cold", filter: "cold", heater: "hot", mixer: "hot", prerinse: "hot", basintap: "hot", aav: "vent" }
-const waterColour = (p: WaterPoint) => WATER.colours[WARMTH[p.item ?? ""] ?? "waste"]
-const circuitColour = (p: ElectricPoint) => ELECTRIC.colours[ELECTRIC.circuits.find((c) => c.id === p.circuit)?.group ?? "spare"]
-
+// The galley's own docs page first, as the studio's are, then the guides behind its services.
 const DOCS = [
-  { href: "/docs/operations", title: "Operations", text: "How the galley works day by day: breakfast and dinner, the beds and the hens, the scraps and the stock." },
+  { href: "/docs/galley-points", title: "Electric and plumbing points", text: "Every socket, light, tap and drain on the drawings above, the pipe runs, and where the design stands." },
+  { href: "/docs/electrician", title: "Electrician's guide", text: "The board, the circuits and the tests, to a RURA class A electrician's certificate." },
+  { href: "/docs/plumber", title: "Plumber's guide", text: "The supply pressure, the pipe sizes, the drains and the grease trap, and the tests before anyone moves in." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both, what the galley draws, and why gas or electric cooking moves the farm's day by about 17 kWh." },
-  { href: "/docs/plumber", title: "Plumber", text: "The supply pressure, the pipe sizes, the drains and the grease trap, and the tests before anyone moves in." },
-  { href: "/docs/electrician", title: "Electrician", text: "The board, the circuits and the tests, to a RURA class A electrician's certificate." },
 ]
 
 export default function GalleyPage() {
@@ -127,11 +121,34 @@ export default function GalleyPage() {
       {/* Equipment: one card per piece, rendered on its own from the 3D's meshes (galley.html?item=<id>) */}
       <RailSection id="equipment" title="Equipment" items={equipmentRail()} />
 
-      {/* Water, in the studio's Plumbing pattern: the galley's water drawn full width, then the installation in the 3D
+      {/* Electric, in the studio's pattern: the galley's single line drawn full width, then the installation in the 3D
+          view's camera (render/electric-line.png: every circuit up from the board into the ceiling, along its own track
+          and down to its points, every point tagged), the same view rendered, then each device on its own. All from
+          galley.html?view=electric, built from galley.json's electric. */}
+      <ServiceSection id="electrical" title="Electric"
+        diagram={<PowerDiagram supply={ELECTRIC.supply} circuits={ELECTRIC.circuits} colours={ELECTRIC.colours}
+          notes={[`About ${Math.round(ELECTRIC.circuits.reduce((n, c) => n + c.kw, 0))} kW connected; the power guide's peak is 14 kW with diversity, about 25 kWh a day · the emergency stop (ES) drops K on the cooking line`,
+            "Drawn for electric cooking: on gas the line needs only its ignition and the day falls to about 8 kWh · ratings are design intent until a RURA class A electrician certifies"]}
+          label={`Single-line diagram: the farm's site board at 400 volts three-phase into a main switch with surge protection, then one RCBO for each of ${ELECTRIC.circuits.length} circuits: lights, two worktop socket circuits, the freezer and fridge, the cold bench and the pass, the range, the griddle and the fryer on three-phase circuits dropped together by the emergency stop, the extract fan, the water heater and a spare.`} />}
+        figure={<TaggedFigure table="/docs/galley-points" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
+          alt="Line drawing of the galley from the courtyard with the fit-out in grey: the board on the front wall by the staff door with every circuit rising from it into the ceiling, along its own track and down to its points: LED battens in blue, worktop and appliance sockets in orange, the cooking line's isolators and connection boxes, the hood control, the roof fan and the water heater in green."
+          info={Object.fromEntries(ELECTRIC.points.filter((p) => p.at).map((p) => [p.id, { label: p.what, colour: circuitColour(p) }]))} />}
+        note={<>
+          Every circuit rises from the board into the ceiling, runs along its own track and drops straight to its device;
+          in a kitchen the conduit stays on the surface, where it can be wiped. Each tag opens its row in the{" "}
+          <Link href="/docs/galley-points#electric-points" className="underline underline-offset-4">points table</Link>. Outside the drawing: the
+          supply comes in buried from the farm&rsquo;s site board, and the earth rod (E1) is in a pit outside the staff
+          door end.
+        </>}
+        real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1000, caption: "Rendered from the design model",
+          alt: "The same view rendered: white surface conduit along the ceiling and down the walls to the board by the staff door, the sockets over the worktop, the yellow isolators beside the range, the hood control, the heat alarms and the fan on the roof over the hood." }}
+        rail={electricRail()} />
+
+      {/* Plumbing, in the studio's pattern: the galley's water drawn full width, then the installation in the 3D
           view's camera (render/water-line.png: the fit-out in grey, every run in its colour, dashed under the floor,
           every point tagged), the same view rendered (render/water-real.webp), then each part on its own. All from
           galley.html?view=water, built from galley.json's water. */}
-      <ServiceSection id="water" title="Water"
+      <ServiceSection id="plumbing" title="Plumbing"
         diagram={<WaterDiagram runs={WATER.runs} colours={WATER.colours}
           valve={{ id: "SV", title: "Stop valve", sub: "filter · meter" }}
           heater={{ id: "WH", title: `Heater ${WATER.heater.litres} L`, sub: `${WATER.heater.kw} kW, east end` }}
@@ -148,53 +165,19 @@ export default function GalleyPage() {
           notes={["Pressure 2.5 to 3 bar from the farm's booster pump · every drain at 1:40 or steeper · the kitchen's water never reaches the septic tank",
             "Sizes are design intent until the plumber checks them · nothing sourced or priced yet"]}
           label="Water diagram: the farm's water through the galley's stop valve, filter and meter; cold along the front wall to the hand basin, the drinking filter, both sinks, the pre-rinse spray and a capped tee for a dishwasher, and on to the 100 litre heater, whose hot comes back to the basin, the sinks and the spray; the basin, the sinks and the floor gully drain to one collector under the plinth, the grease trap and a soak pit." />}
-        figure={<TaggedFigure src={`${D}/render/water-line.png`} aspect={waterTags.aspect} tags={waterTags.tags}
+        figure={<TaggedFigure table="/docs/galley-points" src={`${D}/render/water-line.png`} aspect={waterTags.aspect} tags={waterTags.tags}
           alt="Line drawing of the galley from the courtyard with the fit-out in grey: the main coming in dashed under the staff door end to the stop valve by the basin, cold in blue and hot in red along the front wall under the worktop and up to the basin, both sinks and the pre-rinse spray, the 100 litre heater on the east end wall above the bins, and the drains in brown dashed under the plinth to the grease trap outside the east end."
           info={Object.fromEntries(WATER.points.filter((p) => p.at).map((p) => [p.id, { label: p.what, colour: waterColour(p) }]))} />}
         note={<>
           Supplies run along the front wall under the open worktop, then straight up to each outlet; drains drop through
           the floor to one collector under the plinth, dashed where the floor hides them. Each tag opens its row in the{" "}
-          <a href="#water-points" className="underline underline-offset-4">points table</a>. Outside the drawing: the main
+          <Link href="/docs/galley-points#plumbing-points" className="underline underline-offset-4">points table</Link>. Outside the drawing: the main
           comes in from the farm&rsquo;s tank and booster pump, and the grease trap (GT) empties to the kitchen&rsquo;s own
           soak pit (SP), never the septic tank. The front wall is drawn as a faint outline.
         </>}
         real={{ src: `${D}/render/water-real.webp`, width: 2400, height: 1000, caption: "Rendered from the design model, the pipes drawn as they run",
           alt: "The same view rendered: green supply pipes along the front wall under the stainless worktop and up to the sinks and the basin, the blue meter by the basin, the white heater on the east end wall over the green bins, and the grease trap's lid on the lawn outside the east end." }}
         rail={waterRail()} />
-
-      <TextSection id="water-points" title="Water points"
-        lead={<>The runs: {WATER.runs.map((r) => `${r.id} ${r.dn} mm, ${runLength(r)} m`).join(" · ")}.</>}>
-        <PointsTable columns={[{ label: "What" }, { label: "Where", muted: true }, { label: "Size" }]}
-          rows={WATER.points.map((p) => ({ id: p.id, colour: waterColour(p), cells: [p.what, p.where, p.size] }))} />
-      </TextSection>
-
-      {/* Electric, in the studio's pattern: the galley's single line drawn full width, then the installation in the 3D
-          view's camera (render/electric-line.png: every circuit up from the board into the ceiling, along its own track
-          and down to its points, every point tagged), the same view rendered, then each device on its own. All from
-          galley.html?view=electric, built from galley.json's electric. */}
-      <ServiceSection id="electric" title="Electric"
-        diagram={<PowerDiagram supply={ELECTRIC.supply} circuits={ELECTRIC.circuits} colours={ELECTRIC.colours}
-          notes={[`About ${Math.round(ELECTRIC.circuits.reduce((n, c) => n + c.kw, 0))} kW connected; the power guide's peak is 14 kW with diversity, about 25 kWh a day · the emergency stop (ES) drops K on the cooking line`,
-            "Drawn for electric cooking: on gas the line needs only its ignition and the day falls to about 8 kWh · ratings are design intent until a RURA class A electrician certifies"]}
-          label={`Single-line diagram: the farm's site board at 400 volts three-phase into a main switch with surge protection, then one RCBO for each of ${ELECTRIC.circuits.length} circuits: lights, two worktop socket circuits, the freezer and fridge, the cold bench and the pass, the range, the griddle and the fryer on three-phase circuits dropped together by the emergency stop, the extract fan, the water heater and a spare.`} />}
-        figure={<TaggedFigure src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
-          alt="Line drawing of the galley from the courtyard with the fit-out in grey: the board on the front wall by the staff door with every circuit rising from it into the ceiling, along its own track and down to its points: LED battens in blue, worktop and appliance sockets in orange, the cooking line's isolators and connection boxes, the hood control, the roof fan and the water heater in green."
-          info={Object.fromEntries(ELECTRIC.points.filter((p) => p.at).map((p) => [p.id, { label: p.what, colour: circuitColour(p) }]))} />}
-        note={<>
-          Every circuit rises from the board into the ceiling, runs along its own track and drops straight to its device;
-          in a kitchen the conduit stays on the surface, where it can be wiped. Each tag opens its row in the{" "}
-          <a href="#electric-points" className="underline underline-offset-4">points table</a>. Outside the drawing: the
-          supply comes in buried from the farm&rsquo;s site board, and the earth rod (E1) is in a pit outside the staff
-          door end.
-        </>}
-        real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1000, caption: "Rendered from the design model",
-          alt: "The same view rendered: white surface conduit along the ceiling and down the walls to the board by the staff door, the sockets over the worktop, the yellow isolators beside the range, the hood control, the heat alarms and the fan on the roof over the hood." }}
-        rail={electricRail()} />
-
-      <TextSection id="electric-points" title="Electric points">
-        <PointsTable columns={[{ label: "What" }, { label: "Circuit", muted: true }, { label: "Size" }]}
-          rows={ELECTRIC.points.map((p) => ({ id: p.id, colour: circuitColour(p), cells: [p.what, p.circuit || "—", p.size] }))} />
-      </TextSection>
 
       <DocsSection cards={DOCS} />
     </main>

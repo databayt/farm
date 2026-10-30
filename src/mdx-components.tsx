@@ -11,6 +11,8 @@ import {
   StudioBom, StudioCircuits, StudioDownloads, StudioElectricPoints, StudioFeatures, StudioFittings, StudioPipes,
   StudioShared, StudioStatus, StudioSteps,
 } from "@/components/studio/docs-sections"
+import { BarElectricPoints, BarPlumbingPoints, BarStatus } from "@/components/bar/docs-sections"
+import { GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus } from "@/components/galley/docs-sections"
 import { GuestRoomElectricPoints, GuestRoomStatus } from "@/components/guest-room/docs-sections"
 import { OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus } from "@/components/office/docs-sections"
 import { StudyRoomElectricPoints, StudyRoomStatus } from "@/components/study-room/docs-sections"
@@ -182,6 +184,8 @@ const mdxComponents = {
   GuestRoomElectricPoints, GuestRoomStatus,
   OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus,
   StudyRoomElectricPoints, StudyRoomStatus,
+  GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus,
+  BarElectricPoints, BarPlumbingPoints, BarStatus,
 } satisfies MDXComponents
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {

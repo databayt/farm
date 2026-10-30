@@ -1,17 +1,18 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
 import { type RailItem } from "@/components/docs/item-rail"
-import { PointsTable } from "@/components/docs/points-table"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
 import B from "@/components/bar/bar.json"
 import { BarPlan } from "@/components/bar/bar-plan"
-import { type Circuit, type ElectricPoint, metres, PowerDiagram, runLength, type WaterPoint, type WaterRun, WaterDiagram } from "@/components/galley/service-diagrams"
+import { circuitColour, D, ELECTRIC, WATER, waterColour } from "@/components/bar/data"
+import { metres, PowerDiagram, WaterDiagram } from "@/components/galley/service-diagrams"
 import electricTags from "../../../../public/designs/bar/render/electric-tags.json"
 import waterTags from "../../../../public/designs/bar/render/water-tags.json"
 
-// The bar, as /en/camp is one camp: a full-screen hero, then the 2D and the 3D. Both drawings read
-// src/components/bar/bar.json: the red 20 ft container on its stone plinth, the long hatch open onto the
+// The bar, in /en/studio's pattern: the hero, the 2D and the 3D, the Equipment rail, Electric and Plumbing, then the
+// docs cards; the points tables and the status are on /docs/bar-points. Both drawings read src/components/bar/bar.json: the red 20 ft container on its stone plinth, the long hatch open onto the
 // courtyard under a propped flap, a timber counter with five stools on a deck, and inside a work counter with
 // fridges and a sink, a back bar with the coffee machine and the juice station, a door at the north end.
 
@@ -20,12 +21,8 @@ export const metadata: Metadata = {
   description: "Coffee, fresh juice and cold drinks from a red container bar on the courtyard, at the Digital Farm near Kigali.",
 }
 
-const D = "/designs/bar"
-
-// The equipment, the water and the power, in the studio's pattern (the galley's diagrams and points table). Every
-// size comes from bar.json; nothing is sourced or priced yet, so no card names a shop or a price.
-const WATER = B.water as unknown as { points: WaterPoint[]; runs: WaterRun[]; colours: Record<string, string>; heater: { litres: number; kw: number } }
-const ELECTRIC = B.electric as unknown as { points: ElectricPoint[]; circuits: Circuit[]; colours: Record<string, string>; supply: { title: string; sub: string; main: string; mainSub: string } }
+// The equipment, the power and the water, in the studio's pattern (the galley's diagrams; the water and the power read
+// in data.ts). Every size comes from bar.json; nothing is sourced or priced yet, so no card names a shop or a price.
 const I = B.inside
 const m = (n: number) => `${+n.toFixed(2)} m`
 const span = (u: { x0: number; x1: number }) => u.x1 - u.x0
@@ -80,17 +77,15 @@ function electricRail(): RailItem[] {
   }))
 }
 
-const WARMTH: Record<string, string> = { meter: "cold", scalefilter: "cold", coffeefeed: "cold", heater: "hot", mixer: "hot", aav: "vent" }
-const waterColour = (p: WaterPoint) => WATER.colours[WARMTH[p.item ?? ""] ?? "waste"]
 // on the flap and under the outside counter: left out of the view with the hatch wall, so untagged on it
 const OUTSIDE = ["L5", "P5"]
-const circuitColour = (p: ElectricPoint) => ELECTRIC.colours[ELECTRIC.circuits.find((c) => c.id === p.circuit)?.group ?? "spare"]
 
+// The bar's own docs page first, as the studio's are, then the guides behind its services.
 const DOCS = [
-  { href: "/docs/operations", title: "Operations", text: "The bar lounge in the evening, the galley's food for it, and settling the bar at check-out." },
+  { href: "/docs/bar-points", title: "Electric and plumbing points", text: "Every socket, light, tap and drain on the drawings above, the pipe runs, and where the design stands." },
+  { href: "/docs/electrician", title: "Electrician's guide", text: "The board, the circuits and the tests, to a RURA class A electrician's certificate." },
+  { href: "/docs/plumber", title: "Plumber's guide", text: "The supply pressure, the pipe sizes, the drains and the grease trap, and the tests before it opens." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both, and what the bar draws: fridges, lights, music and the coffee machine." },
-  { href: "/docs/plumber", title: "Plumber", text: "The supply pressure, the pipe sizes, the drains and the grease trap, and the tests before it opens." },
-  { href: "/docs/electrician", title: "Electrician", text: "The board, the circuits and the tests, to a RURA class A electrician's certificate." },
 ]
 
 export default function BarPage() {
@@ -118,11 +113,34 @@ export default function BarPage() {
       {/* Equipment: one card per piece, rendered on its own from the 3D's meshes (bar.html?item=<id>) */}
       <RailSection id="equipment" title="Equipment" items={equipmentRail()} />
 
-      {/* Water, in the studio's Plumbing pattern: the bar's water drawn full width, then the installation in the 3D
-          view's camera, lower, with the hatch wall, the deck and the stools left out and the units opened
-          (render/water-line.png: the fit-out in grey, every run in its colour, dashed under the floor, every point
+      {/* Electric, in the studio's pattern: the single line drawn full width, then the installation in the 3D view's
+          camera, lower, with the hatch wall, the deck and the stools left out (every circuit up from the board to the
+          ceiling, along its own track and down to its points, every point tagged), the same view rendered, then each
+          device on its own. All from bar.html?view=electric. */}
+      <ServiceSection id="electrical" title="Electric"
+        diagram={<PowerDiagram supply={ELECTRIC.supply} circuits={ELECTRIC.circuits} colours={ELECTRIC.colours}
+          notes={[`About ${Math.round(ELECTRIC.circuits.reduce((n, c) => n + c.kw, 0) * 10) / 10} kW connected; the power guide gives the bar 5 kWh a day, but its 2 kW peak leaves out the coffee machine: with it, nearer 5 kW`,
+            "TT earthing on the bar's own rod (E1) · ratings are design intent until a RURA class A electrician certifies"]}
+          label={`Single-line diagram: the farm's site board at 230 volts into a 40 amp main switch with surge protection, then one RCBO for each of ${ELECTRIC.circuits.length} circuits: the lights inside, the back bar's sockets, the coffee machine, the fridges, the water heater, the outside light and socket, and a spare.`} />}
+        figure={<TaggedFigure table="/docs/bar-points" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags.filter((t) => !OUTSIDE.includes(t.id))}
+          alt="Line drawing of the bar from the courtyard, lower, with the hatch wall, the deck and the stools left out: the board on the back wall by the way in, every circuit rising into the ceiling along its own track and down to the ceiling lights and shelf strips in blue, the sockets in orange, and the coffee machine's and the heater's spurs in green."
+          info={Object.fromEntries(ELECTRIC.points.filter((p) => p.at).map((p) => [p.id, { label: p.what, colour: circuitColour(p) }]))} />}
+        note={<>
+          Every circuit rises from the board into the ceiling, runs along its own track and drops straight to its device.
+          Each tag opens its row in the <Link href="/docs/bar-points#electric-points" className="underline underline-offset-4">points table</Link>.
+          Outside the drawing: the supply comes in buried from the farm&rsquo;s site board, the light bar (L5) is under the
+          flap and the outside socket (P5) under the counter, both left out with the hatch wall, and the earth rod (E1) is in
+          a pit outside the north end.
+        </>}
+        real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1100,
+          caption: <>Rendered from the design model, the hatch wall left out and the units opened</>,
+          alt: "The same view rendered with the hatch wall left out: white conduit along the ceiling and down the walls to the board by the way in, the ceiling lights, the sockets over the back bar, and the spurs beside the coffee machine and in the sink unit." }}
+        rail={electricRail()} />
+
+      {/* Plumbing, in the studio's pattern: the bar's water drawn full width, then the installation in the same lower
+          camera with the units opened too (render/water-line.png: the fit-out in grey, every run in its colour, dashed under the floor, every point
           tagged), the same view rendered, then each part on its own. All from bar.html?view=water. */}
-      <ServiceSection id="water" title="Water"
+      <ServiceSection id="plumbing" title="Plumbing"
         diagram={<WaterDiagram runs={WATER.runs} colours={WATER.colours}
           valve={{ id: "SV", title: "Stop valve", sub: "filter · meter" }}
           heater={{ id: "WH", title: `Heater ${WATER.heater.litres} L`, sub: "under the sink" }}
@@ -135,54 +153,20 @@ export default function BarPage() {
           notes={["Pressure 2.5 to 3 bar from the farm's booster pump · every drain at 1:40 or steeper · the bar's water never reaches the septic tank",
             "Sizes are design intent until the plumber checks them · nothing sourced or priced yet"]}
           label="Water diagram: the farm's water through the bar's stop valve, filter and meter in the back bar's cupboard; cold through a scale filter to the coffee machine and under the floor to the sink unit, where a 15 litre heater gives the sink its hot; the sink and the machine's drip tray drain to a collector, a small grease trap and a soak pit." />}
-        figure={<TaggedFigure src={`${D}/render/water-line.png`} aspect={waterTags.aspect} tags={waterTags.tags}
+        figure={<TaggedFigure table="/docs/bar-points" src={`${D}/render/water-line.png`} aspect={waterTags.aspect} tags={waterTags.tags}
           alt="Line drawing of the bar from the courtyard, lower, with the hatch wall, the deck and the stools left out and the units opened, the fit-out in grey: the main dashed under the south end to the valve set under the coffee machine, the scale filter beside it, cold dashed under the floor across the aisle to the sink unit with its small heater, hot in red up to the mixer, and the drains dashed under the floor to the grease trap outside the south end."
           info={Object.fromEntries(WATER.points.filter((p) => p.at).map((p) => [p.id, { label: p.what, colour: waterColour(p) }]))} />}
         note={<>
           Supplies cross the aisle under the floor and rise straight into the units; drains drop through the floor and fall
           to the grease trap, dashed where the floor hides them. The hatch wall, the deck and the stools are left out and
           the units drawn open, so the pipes show. Each tag opens its row in the{" "}
-          <a href="#water-points" className="underline underline-offset-4">points table</a>. Outside the drawing: the main
+          <Link href="/docs/bar-points#plumbing-points" className="underline underline-offset-4">points table</Link>. Outside the drawing: the main
           comes in from the farm&rsquo;s tank and booster pump, and the grease trap (GT) empties to a soak pit (SP).
         </>}
         real={{ src: `${D}/render/water-real.webp`, width: 2400, height: 1100,
           caption: <>Rendered from the design model, the hatch wall left out and the units opened</>,
           alt: "The same view rendered with the hatch wall left out and the units opened: the blue meter and the white scale filter under the coffee machine, green pipes up into the sink unit, the white under-sink heater, and the grease trap's lid on the lawn by the south end." }}
         rail={waterRail()} />
-
-      <TextSection id="water-points" title="Water points"
-        lead={<>The runs: {WATER.runs.map((r) => `${r.id} ${r.dn} mm, ${runLength(r)} m`).join(" · ")}.</>}>
-        <PointsTable columns={[{ label: "What" }, { label: "Where", muted: true }, { label: "Size" }]}
-          rows={WATER.points.map((p) => ({ id: p.id, colour: waterColour(p), cells: [p.what, p.where, p.size] }))} />
-      </TextSection>
-
-      {/* Electric, in the studio's pattern: the single line drawn full width, then the installation in the same lower
-          camera (every circuit up from the board to the ceiling, along its own track and down to its points, every point
-          tagged), the same view rendered, then each device on its own. All from bar.html?view=electric. */}
-      <ServiceSection id="electric" title="Electric"
-        diagram={<PowerDiagram supply={ELECTRIC.supply} circuits={ELECTRIC.circuits} colours={ELECTRIC.colours}
-          notes={[`About ${Math.round(ELECTRIC.circuits.reduce((n, c) => n + c.kw, 0) * 10) / 10} kW connected; the power guide gives the bar 5 kWh a day, but its 2 kW peak leaves out the coffee machine: with it, nearer 5 kW`,
-            "TT earthing on the bar's own rod (E1) · ratings are design intent until a RURA class A electrician certifies"]}
-          label={`Single-line diagram: the farm's site board at 230 volts into a 40 amp main switch with surge protection, then one RCBO for each of ${ELECTRIC.circuits.length} circuits: the lights inside, the back bar's sockets, the coffee machine, the fridges, the water heater, the outside light and socket, and a spare.`} />}
-        figure={<TaggedFigure src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags.filter((t) => !OUTSIDE.includes(t.id))}
-          alt="Line drawing of the bar from the courtyard, lower, with the hatch wall, the deck and the stools left out: the board on the back wall by the way in, every circuit rising into the ceiling along its own track and down to the ceiling lights and shelf strips in blue, the sockets in orange, and the coffee machine's and the heater's spurs in green."
-          info={Object.fromEntries(ELECTRIC.points.filter((p) => p.at).map((p) => [p.id, { label: p.what, colour: circuitColour(p) }]))} />}
-        note={<>
-          Every circuit rises from the board into the ceiling, runs along its own track and drops straight to its device.
-          Each tag opens its row in the <a href="#electric-points" className="underline underline-offset-4">points table</a>.
-          Outside the drawing: the supply comes in buried from the farm&rsquo;s site board, the light bar (L5) is under the
-          flap and the outside socket (P5) under the counter, both left out with the hatch wall, and the earth rod (E1) is in
-          a pit outside the north end.
-        </>}
-        real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1100,
-          caption: <>Rendered from the design model, the hatch wall left out and the units opened</>,
-          alt: "The same view rendered with the hatch wall left out: white conduit along the ceiling and down the walls to the board by the way in, the ceiling lights, the sockets over the back bar, and the spurs beside the coffee machine and in the sink unit." }}
-        rail={electricRail()} />
-
-      <TextSection id="electric-points" title="Electric points">
-        <PointsTable columns={[{ label: "What" }, { label: "Circuit", muted: true }, { label: "Size" }]}
-          rows={ELECTRIC.points.map((p) => ({ id: p.id, colour: circuitColour(p), cells: [p.what, p.circuit || "—", p.size] }))} />
-      </TextSection>
 
       <DocsSection cards={DOCS} />
     </main>
