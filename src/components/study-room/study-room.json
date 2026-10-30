@@ -1,5 +1,5 @@
 {
-  "about": "The study room, as /en/camp is one camp: the 40 ft teal container of the compound (src/components/home/compound.json, unit \"study\") on a 300 mm stone plinth, a band of glazed sliding doors behind timber louvres along its north side onto a 2 m deck with a broad step, the courtyard in front and the lake behind. Furnished as a quiet study, co-working room and small classroom for the Digital Farm: twelve seats at six timber desks facing a screen wall, a bookshelf wall and a reading corner at the far end. The 2D (study-room-plan.tsx) and the 3D (scripts/site/render/study-room.html) both read this file. Plan in metres: x to the right as seen from the deck (east on the left, west on the right), y toward the front (the glazing, north), the container's centre at 0,0. Sizes past the container and the compound's openings are design choices, not yet sourced; furniture colour is the studio's Medium Oak.",
+  "about": "The study room, as /en/camp is one camp: the 40 ft teal container of the compound (src/components/home/compound.json, unit \"study\") on a 300 mm stone plinth, a band of glazed sliding doors behind timber louvres along its north side onto a 2 m deck with a broad step, the courtyard in front and the lake behind. Furnished as a working room for startups and small businesses, to hold a discussion, run a training or work on a project together: eight seats round one long timber table in the middle, a screen and a whiteboard wall at one end, a bookshelf wall and a reading corner at the far end. The 2D (study-room-plan.tsx) and the 3D (scripts/site/render/study-room.html) both read this file. Plan in metres: x to the right as seen from the deck (east on the left, west on the right), y toward the front (the glazing, north), the container's centre at 0,0. Sizes past the container and the compound's openings are design choices, not yet sourced; furniture colour is the studio's Medium Oak.",
   "container": {
     "about": "A standard 40 ft box (not a high cube), outside 12.192 x 2.438 x 2.591 m, painted teal as in the footage (IMG_3196). Cargo doors at the west end stay shut.",
     "l": 12.192,
@@ -29,23 +29,23 @@
     "d": 2.0,
     "step": {"d": 0.4, "h": 0.14, "inset": 2.0}
   },
-  "desks": {
-    "about": "Six timber desks in rows across the room against the back wall, 1.4 x 0.55 m, two chairs each facing the screen wall (east): twelve seats. The 0.73 m aisle runs along the glazing so every sliding door stays clear. 1.3 m from row to row; x is each desk's centre.",
-    "x": [-4.6, -3.3, -2.0, -0.7, 0.6, 1.9],
-    "w": 0.55,
-    "l": 1.4,
+  "table": {
+    "about": "One long oak table down the middle of the room, between the screen wall and the reading corner, 3.6 x 0.75 m, four chairs along each side facing across it: eight seats. It takes most of the room's width: with the chairs pushed in about 0.27 m stays behind each, so seats are reached round the table's ends. x is the table's centre, seats each chair's x from it.",
+    "x": -0.9,
+    "l": 3.6,
+    "w": 0.75,
     "h": 0.74,
-    "seats": [-0.78, -0.12],
-    "chair": {"w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.82, "gap": 0.08}
+    "seats": [-1.275, -0.425, 0.425, 1.275],
+    "chair": {"w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.82, "gap": 0.02}
   },
   "screen": {
-    "about": "The east end wall: a 65-inch screen on a slatted oak panel, a whiteboard on the back wall beside it, a low cabinet under the screen and a small lectern table for whoever is teaching.",
+    "about": "The east end wall, the room's front for workshops and training: a 65-inch screen on a slatted oak panel, a low cabinet under it, a whiteboard wall 2.8 m wide on the back wall beside it, from the corner to the table's end, for sketching a plan or a project board, and a small lectern table for whoever is presenting.",
     "w": 1.45,
     "h": 0.82,
     "y0": 1.0,
     "panel": [-0.95, 0.65],
     "cabinet": {"l": 1.6, "d": 0.4, "h": 0.55},
-    "whiteboard": {"x": [-5.85, -4.95], "y0": 0.9, "h": 0.9},
+    "whiteboard": {"x": [-5.85, -3.05], "y0": 0.85, "h": 1.2},
     "lectern": {"x": -5.2, "y": 0.7, "w": 0.6, "d": 0.45, "h": 0.95}
   },
   "shelves": {
@@ -63,61 +63,50 @@
     "rug": {"x": [3.1, 5.5], "y": [-1.0, 0.6]}
   },
   "plants": {
-    "about": "Large floor plants in pots (x, y, height): a low one in the screen corner by the glazing, two between the desks and the reading corner, kept clear of the screen and the shelves. Small ones on the shelves are drawn in the 3D only.",
+    "about": "Large floor plants in pots (x, y, height): a low one in the screen corner by the glazing, two between the table and the reading corner, kept clear of the screen and the shelves. Small ones on the shelves are drawn in the 3D only.",
     "floor": [[-5.72, 0.92, 0.7], [3.05, 0.85, 1.2], [2.55, -0.85, 1.1]]
   },
   "lights": {
-    "about": "Pendants: one dome shade over each desk row, about 1.95 m above the floor; two over the reading corner.",
+    "about": "Pendants: three dome shades in a line over the long table, about 1.95 m above the floor; two over the reading corner.",
     "pendants": [
-      [-4.6, -0.45],
-      [-3.3, -0.45],
-      [-2.0, -0.45],
-      [-0.7, -0.45],
-      [0.6, -0.45],
-      [1.9, -0.45],
+      [-2.1, 0],
+      [-0.9, 0],
+      [0.3, 0],
       [3.75, -0.2],
       [5.0, -0.2]
     ],
     "drop": 1.95
   },
-  "ac": {
-    "about": "A wall-mounted split air conditioner high on the back wall, mid-room, its outdoor unit on the south (lake) side; a wall fan over the reading corner.",
-    "x": -0.3,
-    "w": 0.9,
-    "fan": {"x": 4.4}
+  "fans": {
+    "about": "No air conditioning: the room is cooled by the glazed doors opened to the deck and the louvres' shade, with two wall fans high on the back wall, one over the table and one over the reading corner. x is each fan's centre.",
+    "x": [-1.5, 4.4]
   },
   "electric": {
-    "about": "The study room's wiring in the studio's pattern (D-021): a surface unit board on the back wall, a double-pole main switch and type 2 surge protection, one RCBO 30 mA type A per circuit, cables in conduit in the linings. A double socket over every desk, so each of the twelve seats has its own; the screen wall and the reading corner on a circuit of their own; the AC behind an isolator. The supply is a cable from the farm's site board; its size is the electrician's. Points in plan metres (x, y as the plan, z above the finished floor) at their centre; size in mm (w, h, d). design_A: lights and the fan from their watts at 230 V; the desks at twelve laptops of about 65 W each [A]; the screen and the corner at a 65-inch screen and a lamp [A]; the AC provision at the studio's (C7). rwf: the studio BOM's placeholder unit prices (AS-21), not quotes. existing: drawn by the room's own 3D already (the pendants, the wall fan).",
+    "about": "The study room's wiring in the studio's pattern (D-021): a surface unit board on the back wall, a double-pole main switch and type 2 surge protection, one RCBO 30 mA type A per circuit, cables in conduit in the linings. A double socket on the back wall behind each pair of seats, so each of the eight seats has its own; the screen wall and the reading corner on a circuit of their own; no air conditioning, two wall fans instead. The supply is a cable from the farm's site board; its size is the electrician's. Points in plan metres (x, y as the plan, z above the finished floor) at their centre; size in mm (w, h, d). design_A: lights and the fan from their watts at 230 V; the table at eight laptops of about 65 W each [A]; the screen and the corner at a 65-inch screen and a lamp [A]; rwf: the studio BOM's placeholder unit prices (AS-21), not quotes. existing: drawn by the room's own 3D already (the pendants, the wall fans).",
     "main_A": 32,
     "circuits": [
-      { "id": "C1", "serves": "Pendants and the wall fan", "device": "B6", "cable_mm2": 1.5, "group": "lights", "colour": "#2a78d6" },
-      { "id": "C2", "serves": "Desk sockets, all twelve seats", "device": "B16", "cable_mm2": 2.5, "design_A": 4, "group": "sockets", "colour": "#eb6834" },
+      { "id": "C1", "serves": "Pendants and the wall fans", "device": "B6", "cable_mm2": 1.5, "group": "lights", "colour": "#2a78d6" },
+      { "id": "C2", "serves": "Table sockets, all eight seats", "device": "B16", "cable_mm2": 2.5, "design_A": 2.3, "group": "sockets", "colour": "#eb6834" },
       { "id": "C3", "serves": "Screen wall and reading corner", "device": "B16", "cable_mm2": 2.5, "design_A": 2, "group": "sockets", "colour": "#eb6834" },
-      { "id": "C4", "serves": "AC", "device": "B16", "cable_mm2": 2.5, "design_A": 12, "group": "fixed", "colour": "#1baf7a" },
-      { "id": "C5", "serves": "Spare", "device": "B16", "cable_mm2": 2.5, "group": "spare", "colour": "#9a9893" }
+      { "id": "C4", "serves": "Spare", "device": "B16", "cable_mm2": 2.5, "group": "spare", "colour": "#9a9893" }
     ],
     "points": [
-      { "id": "DB", "model": "board", "description": "Unit board, 12 modules, on the back wall between the last desk and the reading corner", "at": [3.15, -1.08, 1.65], "face": "+y", "size": [300, 250, 100], "rwf": 65000 },
-      { "id": "L1", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 1", "at": [-4.6, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
-      { "id": "L2", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 2", "at": [-3.3, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
-      { "id": "L3", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 3", "at": [-2.0, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
-      { "id": "L4", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 4", "at": [-0.7, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
-      { "id": "L5", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 5", "at": [0.6, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
-      { "id": "L6", "model": "pendant", "circuit": "C1", "description": "Pendant, over desk row 6", "at": [1.9, -0.45, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
-      { "id": "L7", "model": "pendant", "circuit": "C1", "description": "Pendant, over the reading corner, left", "at": [3.75, -0.2, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
-      { "id": "L8", "model": "pendant", "circuit": "C1", "description": "Pendant, over the reading corner, right", "at": [5.0, -0.2, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
-      { "id": "S1", "model": "switch2", "circuit": "C1", "description": "Two-gang switch by the screen end of the glazing: the desk rows, L1 to L3 and L4 to L6", "at": [-5.965, 0.88, 1.1], "face": "+x", "size": [146, 86, 10], "rwf": 3500 },
-      { "id": "S2", "model": "switch", "circuit": "C1", "description": "Switch under the board: the reading corner, L7 and L8", "at": [3.15, -1.125, 1.1], "face": "+y", "size": [86, 86, 10], "rwf": 3500 },
+      { "id": "DB", "model": "board", "description": "Unit board, 12 modules, on the back wall between the table and the reading corner", "at": [3.15, -1.08, 1.65], "face": "+y", "size": [300, 250, 100], "rwf": 65000 },
+      { "id": "L1", "model": "pendant", "circuit": "C1", "description": "Pendant, over the table, screen end", "at": [-2.1, 0, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L2", "model": "pendant", "circuit": "C1", "description": "Pendant, over the table", "at": [-1.5, 0, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L3", "model": "pendant", "circuit": "C1", "description": "Pendant, over the table, reading end", "at": [0.3, 0, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L4", "model": "pendant", "circuit": "C1", "description": "Pendant, over the reading corner, left", "at": [3.75, -0.2, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "L5", "model": "pendant", "circuit": "C1", "description": "Pendant, over the reading corner, right", "at": [5.0, -0.2, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
+      { "id": "S1", "model": "switch", "circuit": "C1", "description": "Switch by the screen end of the glazing: the table, L1 to L3", "at": [-5.965, 0.88, 1.1], "face": "+x", "size": [86, 86, 10], "rwf": 3500 },
+      { "id": "S2", "model": "switch", "circuit": "C1", "description": "Switch under the board: the reading corner, L4 and L5", "at": [3.15, -1.125, 1.1], "face": "+y", "size": [86, 86, 10], "rwf": 3500 },
       { "id": "F1", "model": "wallfan", "circuit": "C1", "description": "Wall fan, high on the back wall over the reading corner", "at": [4.4, -0.91, 1.8], "face": "+y", "size": [400, 400, 260], "watts": 45, "rwf": 35000, "existing": true },
-      { "id": "P1", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 1, one for each seat", "at": [-4.6, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P2", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 2, one for each seat", "at": [-3.3, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P3", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 3, one for each seat", "at": [-2.0, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P4", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 4, one for each seat", "at": [-0.7, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P5", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 5, one for each seat", "at": [0.6, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P6", "model": "socket2", "circuit": "C2", "description": "Double socket over desk 6, one for each seat", "at": [1.9, -1.125, 0.9], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P7", "model": "socket2", "circuit": "C3", "description": "Double socket behind the screen cabinet, for the screen and a laptop", "at": [-5.965, -0.15, 0.75], "face": "+x", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P8", "model": "usb", "circuit": "C3", "description": "Socket + USB-C in the reading corner, for the floor lamp and phones", "at": [4.85, -1.125, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 15000 },
-      { "id": "P9", "model": "isolator", "circuit": "C4", "description": "AC isolator beside the split unit", "at": [0.4, -1.12, 1.95], "face": "+y", "size": [86, 86, 20], "rwf": 9000 },
+      { "id": "F2", "model": "wallfan", "circuit": "C1", "description": "Wall fan, high on the back wall over the table", "at": [-1.5, -0.91, 1.8], "face": "+y", "size": [400, 400, 260], "watts": 45, "rwf": 35000, "existing": true },
+      { "id": "P1", "model": "socket2", "circuit": "C2", "description": "Double socket on the back wall behind seat pair 1: the seat in front of it and the one across the table", "at": [-2.175, -1.125, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P2", "model": "socket2", "circuit": "C2", "description": "Double socket on the back wall behind seat pair 2: the seat in front of it and the one across the table", "at": [-1.325, -1.125, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P3", "model": "socket2", "circuit": "C2", "description": "Double socket on the back wall behind seat pair 3: the seat in front of it and the one across the table", "at": [-0.475, -1.125, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P4", "model": "socket2", "circuit": "C2", "description": "Double socket on the back wall behind seat pair 4: the seat in front of it and the one across the table", "at": [0.375, -1.125, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P5", "model": "socket2", "circuit": "C3", "description": "Double socket behind the screen cabinet, for the screen and a laptop", "at": [-5.965, -0.15, 0.75], "face": "+x", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P6", "model": "usb", "circuit": "C3", "description": "Socket + USB-C in the reading corner, for the floor lamp and phones", "at": [4.85, -1.125, 0.3], "face": "+y", "size": [146, 86, 10], "rwf": 15000 },
       { "id": "A1", "model": "alarm", "description": "Smoke alarm, 10-year battery, on the ceiling mid-room", "at": [-2.6, 0.5, 2.28], "face": "down", "size": [100, 100, 40], "rwf": 20000 }
     ]
   },

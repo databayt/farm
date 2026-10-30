@@ -14,10 +14,10 @@
                 room-services.js): line mode draws the room faint, every device dark and each circuit's run in its
                 colour, and sets window.TAGS -> render/electric-line.png + render/electric-tags.json; real mode
                 shows the finished devices -> render/electric-real.webp
-    &item=<id>  one piece on its own, real mode, 1200 x 900 on a transparent ground: the furniture (desk, chair,
-                screen, cabinet, whiteboard, lectern, shelves, armchair, sidetable, floorlamp, rug, ac)
-                -> render/furniture/<id>.webp, or a device by its model (board, pendant, switch2, switch, wallfan,
-                socket2, usb, isolator, alarm, ap, data) -> render/electric/<id>.webp
+    &item=<id>  one piece on its own, real mode, 1200 x 900 on a transparent ground: the furniture (table, chair,
+                screen, cabinet, whiteboard, lectern, shelves, armchair, sidetable, floorlamp, rug)
+                -> render/furniture/<id>.webp, or a device by its model (board, pendant, switch, wallfan,
+                socket2, usb, alarm, ap, data) -> render/electric/<id>.webp
 
   Serve the repo root on a spare port, open this page at 2400 x 1000, and once body[data-ready] is set
   save the data URL in #out.
@@ -299,7 +299,7 @@ function plant(x, z, y, height) {
 }
 
 // ------------------------------------------------------------ the ground, the plinth and the deck
-const { container: K, room: R, deck, desks, screen, shelves, reading, plants, lights, ac } = C
+const { container: K, room: R, deck, table, screen, shelves, reading, plants, lights, fans } = C
 const [L, W] = [K.l / 2, K.w / 2]
 const Y0 = K.plinth, FL = Y0 + R.floor, Y1 = Y0 + K.h
 if (!LINE && !ITEM) add(new THREE.CircleGeometry(30, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], noShadow: true })
@@ -351,36 +351,36 @@ blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
   blk(-L + g, W - 0.12, L - g, W - 0.02, FL, FL + 0.02, "white")
 }
 
-// ------------------------------------------------------------ the desks and chairs
+// ------------------------------------------------------------ the long table and its chairs
 {
-  const { w, l, h, chair: ch } = desks
-  desks.x.forEach((x, row) => {
-    const [x0, x1, z0, z1] = [x - w / 2, x + w / 2, R.back, R.back + l]
-    TAG = row ? `desk#${row}` : "desk"
-    blk(x0, z0, x1, z1, FL + h - 0.03, FL + h, "pine", { r: 0.006 })
-    for (const lx of [x0 + 0.04, x1 - 0.04]) for (const lz of [z0 + 0.05, z1 - 0.05]) blk(lx - 0.02, lz - 0.02, lx + 0.02, lz + 0.02, FL, FL + h - 0.03, "leg")
-    blk(x0 + 0.02, z0 + 0.05, x0 + 0.04, z1 - 0.05, FL + h - 0.2, FL + h - 0.03, "pine") // the modesty rail on the screen side
-    for (const [k, y] of desks.seats.entries()) {
-      // the chair faces the screen (-x), its back toward the next row
-      TAG = row || k ? `chair#${row}-${k}` : "chair"
-      const cx = x1 + ch.gap + ch.d / 2, [a0, a1, b0, b1] = [cx - ch.d / 2, cx + ch.d / 2, y - ch.w / 2, y + ch.w / 2]
-      for (const lx of [a0 + 0.03, a1 - 0.03]) for (const lz of [b0 + 0.03, b1 - 0.03]) blk(lx - 0.016, lz - 0.016, lx + 0.016, lz + 0.016, FL, FL + ch.seat - 0.03, "leg")
-      blk(a0, b0, a1, b1, FL + ch.seat - 0.03, FL + ch.seat, "pine", { r: 0.008 })
-      blk(a0 + 0.03, b0 + 0.03, a1 - 0.05, b1 - 0.03, FL + ch.seat, FL + ch.seat + 0.025, "seat", { r: 0.012 })
-      for (const lz of [b0 + 0.03, b1 - 0.03]) blk(a1 - 0.046, lz - 0.016, a1 - 0.014, lz + 0.016, FL + ch.seat, FL + ch.back, "leg")
-      blk(a1 - 0.05, b0 + 0.01, a1 - 0.01, b1 - 0.01, FL + ch.back - 0.16, FL + ch.back, "pine", { r: 0.008 })
-      // on the desk: a laptop at some seats, a notebook at others
-      const dz = y, dx = x
-      TAG = ""
-      if ((row + k) % 3 === 0) {
-        blk(dx - 0.12, dz - 0.16, dx + 0.12, dz + 0.16, FL + h, FL + h + 0.012, "laptop")
-        const lid = add(new THREE.BoxGeometry(0.008, 0.22, 0.32), "laptop", { pos: [dx - 0.12, FL + h + 0.11, dz] })
-        lid.rotation.z = -0.25
-      } else if ((row + k) % 3 === 1) {
-        blk(dx - 0.08, dz - 0.11, dx + 0.08, dz + 0.11, FL + h, FL + h + 0.012, "white")
-      }
+  const { l, w, h, chair: ch } = table
+  const [x0, x1, z0, z1] = [table.x - l / 2, table.x + l / 2, -w / 2, w / 2]
+  TAG = "table"
+  blk(x0, z0, x1, z1, FL + h - 0.035, FL + h, "pine", { r: 0.006 })
+  for (const lx of [x0 + 0.08, x1 - 0.08]) for (const lz of [z0 + 0.06, z1 - 0.06]) blk(lx - 0.025, lz - 0.025, lx + 0.025, lz + 0.025, FL, FL + h - 0.035, "leg")
+  for (const lz of [z0 + 0.05, z1 - 0.05]) blk(x0 + 0.1, lz - 0.01, x1 - 0.1, lz + 0.01, FL + h - 0.12, FL + h - 0.035, "pine") // the aprons
+  blk(table.x - 0.01, z0 + 0.06, table.x + 0.01, z1 - 0.06, FL + h - 0.12, FL + h - 0.035, "pine")
+  for (const [k, dx] of table.seats.entries()) for (const [j, s] of [-1, 1].entries()) {
+    // s: the side of the table; the chair faces across it (-s), its back toward the wall behind it
+    TAG = k || j ? `chair#${k}-${j}` : "chair"
+    const x = table.x + dx, cz = s * (w / 2 + ch.gap + ch.d / 2)
+    const [a0, a1, b0, b1] = [x - ch.w / 2, x + ch.w / 2, cz - ch.d / 2, cz + ch.d / 2], bz = s > 0 ? b1 : b0
+    for (const lx of [a0 + 0.03, a1 - 0.03]) for (const lz of [b0 + 0.03, b1 - 0.03]) blk(lx - 0.016, lz - 0.016, lx + 0.016, lz + 0.016, FL, FL + ch.seat - 0.03, "leg")
+    blk(a0, b0, a1, b1, FL + ch.seat - 0.03, FL + ch.seat, "pine", { r: 0.008 })
+    blk(a0 + 0.03, b0 + (s > 0 ? 0.03 : 0.05), a1 - 0.03, b1 - (s > 0 ? 0.05 : 0.03), FL + ch.seat, FL + ch.seat + 0.025, "seat", { r: 0.012 })
+    for (const lx of [a0 + 0.03, a1 - 0.03]) blk(lx - 0.016, bz - s * 0.046, lx + 0.016, bz - s * 0.014, FL + ch.seat, FL + ch.back, "leg")
+    blk(a0 + 0.01, bz - s * 0.05, a1 - 0.01, bz - s * 0.01, FL + ch.back - 0.16, FL + ch.back, "pine", { r: 0.008 })
+    // on the table: a laptop at some places, a notebook at others, each turned to its seat
+    TAG = ""
+    const pz = s * (w / 2 - 0.2)
+    if ((k + j) % 3 === 0) {
+      blk(x - 0.16, pz - 0.12, x + 0.16, pz + 0.12, FL + h, FL + h + 0.012, "laptop")
+      const lid = add(new THREE.BoxGeometry(0.32, 0.22, 0.008), "laptop", { pos: [x, FL + h + 0.11, pz - s * 0.12] })
+      lid.rotation.x = -s * 0.25
+    } else if ((k + j) % 3 === 1) {
+      blk(x - 0.11, pz - 0.08, x + 0.11, pz + 0.08, FL + h, FL + h + 0.012, "white")
     }
-  })
+  }
 }
 
 // ------------------------------------------------------------ the screen wall (east, -x)
@@ -479,7 +479,7 @@ blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
   if (!LINE) { const l = new THREE.PointLight(0xffc77a, 1.0, 3, 2); l.position.set(lp.x, FL + lp.h - 0.2, lp.y); scene.add(l) }
 }
 
-// ------------------------------------------------------------ plants, pendants, the air conditioner, the fan
+// ------------------------------------------------------------ plants, pendants, the fans
 TAG = ""
 for (const [x, z, h] of plants.floor) plant(x, z, FL, h)
 for (const [k, [x, z]] of lights.pendants.entries()) {
@@ -490,14 +490,10 @@ for (const [k, [x, z]] of lights.pendants.entries()) {
   add(new THREE.SphereGeometry(0.045, 16, 12), "lamp", { pos: [x, y + 0.02, z] })
   if (!LINE) { const l = new THREE.PointLight(0xffd29a, 0.55, 2.6, 2); l.position.set(x, y - 0.05, z); scene.add(l) }
 }
-{
-  TAG = "ac"
-  const y = Y0 + R.ceiling - 0.42
-  blk(ac.x - ac.w / 2, R.back, ac.x + ac.w / 2, R.back + 0.22, y, y + 0.3, "white", { r: 0.03 })
-  blk(ac.x - ac.w / 2 + 0.06, R.back + 0.2, ac.x + ac.w / 2 - 0.06, R.back + 0.225, y + 0.03, y + 0.06, "black", { noEdges: true })
-  // the wall fan over the reading corner: a round cage on a short arm
-  TAG = "wallfan"
-  const fx = ac.fan.x, fy = Y0 + R.ceiling - 0.5
+// the wall fans, one over the table and one over the reading corner: a round cage on a short arm
+for (const [k, fx] of fans.x.entries()) {
+  TAG = k ? `wallfan#${k + 1}` : "wallfan"
+  const fy = Y0 + R.ceiling - 0.5
   blk(fx - 0.05, R.back, fx + 0.05, R.back + 0.02, fy - 0.08, fy + 0.08, "white")
   cyl(fx, R.back + 0.1, 0.025, fy - 0.025, 0.18, "white", 12, 0.025, { rot: [Math.PI / 2, 0, 0], pos: [fx, fy, R.back + 0.1] })
   cyl(fx, R.back + 0.2, 0.2, fy, 0.08, "white", 32, 0.2, { rot: [Math.PI / 2, 0, 0], pos: [fx, fy, R.back + 0.22] })
@@ -519,7 +515,7 @@ if (ELEC || ITEM) { S.build(E.points, existing); S.build(NW.points) }
 const target = new THREE.Vector3(0, 1.0, 0.4)
 const [el, dist] = [THREE.MathUtils.degToRad(36), 13.5]
 const camera = new THREE.PerspectiveCamera(50, FW / FH, 0.5, 200)
-const ITEM_VIEW = { shelves: [-1, 0.5, 0.7], screen: [1, 0.4, 0.7], cabinet: [1, 0.5, 0.7], whiteboard: [0.3, 0.3, 1], chair: [1, 0.6, 0.6], pendant: [0.6, 0.35, 1], wallfan: [1, 0.3, 0.55], ac: [0.4, 0.2, 1] }
+const ITEM_VIEW = { table: [0.8, 0.7, 1], shelves: [-1, 0.5, 0.7], screen: [1, 0.4, 0.7], cabinet: [1, 0.5, 0.7], whiteboard: [0.25, 0.25, 1], chair: [0.6, 0.6, 1], pendant: [0.6, 0.35, 1], wallfan: [1, 0.3, 0.55] }
 let itemBox = null
 if (ITEM) {
   scene.updateMatrixWorld(true)

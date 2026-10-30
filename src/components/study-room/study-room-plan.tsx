@@ -5,7 +5,7 @@ import room from "./study-room.json"
 // the 3D's front view, so the screen wall (east) is on the left and the bookshelf wall (west) on the right.
 // Units are metres, the container's centre at 0,0, y toward the glazing. It is long: the viewBox is wide.
 
-const { container: box, room: r, glazing, deck, desks, screen, shelves, reading, plants, lights, ac } = room
+const { container: box, room: r, glazing, deck, table, screen, shelves, reading, plants, lights, fans } = room
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
 const medium = { ...thin, strokeWidth: 1.6 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
@@ -55,7 +55,8 @@ export function StudyRoomPlan({ title, className }: { title: string; className?:
   // the deck's boards run along the room, 140 mm a board
   const boards = Array.from({ length: Math.floor(deck.d / 0.14) }, (_, k) => f(W + (k + 1) * 0.14))
   const st = deck.step
-  const { chair } = desks
+  const { chair } = table
+  const [t0, t1] = [table.x - table.l / 2, table.x + table.l / 2]
   const sx0 = r.x1 - shelves.d, bay = (r.front - r.back) / shelves.bays
   const scr = screen.panel
   return (
@@ -85,21 +86,17 @@ export function StudyRoomPlan({ title, className }: { title: string; className?:
       <line x1={screen.whiteboard.x[0]} x2={screen.whiteboard.x[1]} y1={f(r.back + 0.03)} y2={f(r.back + 0.03)} {...medium} />
       <rect {...rect(screen.lectern.x - screen.lectern.w / 2, screen.lectern.y - screen.lectern.d / 2, screen.lectern.x + screen.lectern.w / 2, screen.lectern.y + screen.lectern.d / 2)} {...thin} />
 
-      {/* Six desks against the back wall, two chairs at each facing the screen; the aisle runs along the glass */}
-      {desks.x.map((x) => (
-        <g key={x}>
-          <rect {...rect(x - desks.w / 2, r.back, x + desks.w / 2, r.back + desks.l)} {...thin} />
-          {desks.seats.map((y) => {
-            const cx = x + desks.w / 2 + chair.gap + chair.d / 2
-            return (
-              <g key={y}>
-                <rect {...rect(cx - chair.d / 2, y - chair.w / 2, cx + chair.d / 2, y + chair.w / 2)} rx={0.04} {...thin} />
-                <line x1={f(cx + chair.d / 2 - 0.07)} x2={f(cx + chair.d / 2 - 0.07)} y1={f(y - chair.w / 2)} y2={f(y + chair.w / 2)} {...thin} />
-              </g>
-            )
-          })}
-        </g>
-      ))}
+      {/* The long table down the middle, four chairs along each side facing across it */}
+      <rect {...rect(t0, -table.w / 2, t1, table.w / 2)} {...thin} />
+      {table.seats.map((dx) => [-1, 1].map((s) => {
+        const x = table.x + dx, cy = s * (table.w / 2 + chair.gap + chair.d / 2), back = cy + s * (chair.d / 2 - 0.07)
+        return (
+          <g key={`${dx}${s}`}>
+            <rect {...rect(x - chair.w / 2, cy - chair.d / 2, x + chair.w / 2, cy + chair.d / 2)} rx={0.04} {...thin} />
+            <line x1={f(x - chair.w / 2)} x2={f(x + chair.w / 2)} y1={f(back)} y2={f(back)} {...thin} />
+          </g>
+        )
+      }))}
 
       {/* The bookshelf wall across the west end, its bays */}
       <rect {...rect(sx0, r.back, r.x1, r.front)} {...thin} />
@@ -124,7 +121,7 @@ export function StudyRoomPlan({ title, className }: { title: string; className?:
       <circle cx={reading.lamp.x} cy={reading.lamp.y} r={0.17} {...thin} />
       <circle cx={reading.lamp.x} cy={reading.lamp.y} r={0.04} {...thin} />
 
-      {/* The plants, and overhead (dashed): the pendants, the air conditioner high on the back wall, the fan */}
+      {/* The plants, and overhead (dashed): the pendants and the two wall fans high on the back wall */}
       {plants.floor.map(([x, y]) => (
         <g key={x}>
           <circle cx={x} cy={y} r={0.2} {...thin} />
@@ -132,11 +129,10 @@ export function StudyRoomPlan({ title, className }: { title: string; className?:
         </g>
       ))}
       {lights.pendants.map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r={0.15} {...dashed} />)}
-      <rect {...rect(ac.x - ac.w / 2, r.back, ac.x + ac.w / 2, r.back + 0.22)} {...dashed} />
-      <circle cx={ac.fan.x} cy={f(r.back + 0.15)} r={0.18} {...dashed} />
+      {fans.x.map((x) => <circle key={x} cx={x} cy={f(r.back + 0.15)} r={0.18} {...dashed} />)}
 
       <text x={f(r.x0 + 0.62)} y={f((scr[0] + scr[1]) / 2)} textAnchor="middle" transform={`rotate(-90 ${f(r.x0 + 0.62)} ${f((scr[0] + scr[1]) / 2)})`} style={small}>SCREEN</text>
-      <text x={f((desks.x[2] + desks.x[3]) / 2 + 0.3)} y={f(r.front - 0.25)} textAnchor="middle" style={small}>12 SEATS</text>
+      <text x={f(table.x)} y={0.05} textAnchor="middle" style={small}>8 SEATS</text>
       <text x={f(reading.table.x)} y={f(reading.rug.y[1] + 0.27)} textAnchor="middle" style={small}>READING</text>
       <text x={f(sx0 - 0.08)} y={f(r.front - 0.1)} textAnchor="end" style={small}>BOOKS</text>
       <text x={0} y={-1.45} textAnchor="middle" style={label}>STUDY ROOM</text>
