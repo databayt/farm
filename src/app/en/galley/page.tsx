@@ -116,13 +116,13 @@ const DOCS = [
 export default function GalleyPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: the founder's Nano Banana render of the galley (2026-10-30), made from the brief in
-          ~/Desktop/galley-nano-banana; master kept at assets/galley/hero-gemini.png (1774 x 887), upscaled to 2400 x 1200
-          and kept 2:1 so the whole 40 ft box stays in frame. It departs from the drawings in one thing: the doors are
-          cream, not red. The galley fills the width, so the words sit on the lawn bottom-left. */}
-      <PageHero src={`${D}/render/galley-hero.jpg`} width={2400} height={1200} className="bg-[#8a9a52]" imgClassName="object-[50%_60%]"
+      {/* First screen: the founder's Nano Banana render of the galley (2026-10-30, second version), made from the
+          brief in ~/Desktop/galley-nano-banana; master kept at assets/galley/hero-gemini.png (1536 x 1024, the first
+          version beside it as hero-gemini-1.png), cut to 2400 x 1340. It departs from the drawings in one thing: the
+          doors are cream, not red. The galley sits centre, so the words keep the lawn bottom-left. */}
+      <PageHero src={`${D}/render/galley-hero.jpg`} width={2400} height={1340} className="bg-[#8a9a52]" imgClassName="object-[55%_50%]"
         title="Breakfast and dinner, cooked from the field"
-        alt="A long teal shipping container on a low fieldstone plinth at golden hour, its two cream doors up stone steps near each end and two white-framed windows between them showing stainless shelves and a fridge; the left door stands open onto a bright stainless kitchen with a range under a canopy hood, and crates of fresh vegetables and a basket of eggs sit on its steps, herbs in terracotta pots along the plinth, on a mown lawn among fruit trees and banana plants." />
+        alt="A long teal shipping container on a low fieldstone plinth at sunset, seen three-quarter from the left: two cream doors with small windows up stone steps near each end and two white-framed windows between them, glowing warm onto stainless shelves, sinks and a fridge; crates of fresh vegetables and a basket of eggs on the left steps, herbs in terracotta pots along the plinth, on a mown lawn among avocado trees and banana plants." />
 
       {/* 2D, full screen: the galley's plan (src/components/galley/galley-plan.tsx), in the text colour. It is
           long, so it takes the full width. */}
