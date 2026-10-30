@@ -15,7 +15,7 @@
                 colour, and sets window.TAGS -> render/electric-line.png + render/electric-tags.json; real mode
                 shows the finished devices -> render/electric-real.webp
     &item=<id>  one piece on its own, real mode, 1200 x 900 on a transparent ground: the furniture (table, chair,
-                screen, cabinet, whiteboard, lectern, shelves, armchair, sidetable, floorlamp, rug)
+                screen, cabinet, lectern, shelves, armchair, sidetable, floorlamp, rug)
                 -> render/furniture/<id>.webp, or a device by its model (board, pendant, switch, wallfan,
                 socket2, usb, alarm, ap, data) -> render/electric/<id>.webp
 
@@ -167,11 +167,6 @@ const T = LINE ? {} : {
     const bands = ["#b5523a", "#e6d8bd", "#2f4f5a", "#e6d8bd", "#c9973a"]
     for (let i = 0; i < 20; i++) { g.fillStyle = bands[i % bands.length]; g.fillRect(0, (i * h) / 20, w, h / 20 + 1) }
   }, 256, 256),
-  // the slatted panel behind the screen: dark gaps between oak slats
-  slats: tex((g, w, h) => {
-    g.fillStyle = "#3a2a1c"; g.fillRect(0, 0, w, h)
-    for (let x = 0; x < w; x += 16) { g.fillStyle = rnd() > 0.5 ? "#c08a55" : "#b47f4c"; g.fillRect(x, 0, 11, h) }
-  }, 256, 64),
 }
 // metres one tile covers [along, across]
 const TILE = { corr: [0.278, 2.6], boards: [1.4, 1.4], pine: [1.2, 0.6], planks: [4.8, 2.4], grass: [6, 6], stone: [1.2, 0.6] }
@@ -209,10 +204,7 @@ function mat(name) {
       fabric: () => std({ color: "#b8863a", roughness: 0.95 }), // the armchairs, a warm ochre weave
       cushion: () => std({ color: "#e9e3d6", roughness: 0.95 }),
       rug: () => std({ map: T.rug, roughness: 1 }),
-      slats: () => std({ map: T.slats, roughness: 0.7 }),
       screen: () => std({ color: "#101114", roughness: 0.15, metalness: 0.4 }),
-      board: () => std({ color: "#f7f7f5", roughness: 0.25 }),
-      alu: () => std({ color: "#b9bcc0", roughness: 0.35, metalness: 0.8 }),
       white: () => std({ color: "#f3f2ee", roughness: 0.5 }),
       black: () => std({ color: "#26272b", roughness: 0.45, metalness: 0.5 }),
       cord: () => std({ color: "#26272b", roughness: 0.6 }),
@@ -385,24 +377,18 @@ blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
 
 // ------------------------------------------------------------ the screen wall (east, -x)
 {
-  const [p0, p1] = screen.panel, mz = (p0 + p1) / 2, x = R.x0
-  TAG = "slats"
-  blk(x, p0, x + 0.03, p1, FL, Y0 + R.ceiling - 0.05, "slats")
+  const mz = screen.y, x = R.x0
+  // the screen flat on the wall, on a low-profile bracket
   TAG = "screen"
-  blk(x + 0.03, mz - screen.w / 2, x + 0.07, mz + screen.w / 2, FL + screen.y0, FL + screen.y0 + screen.h, "screen", { r: 0.008 })
+  blk(x, mz - 0.3, x + 0.012, mz + 0.3, FL + screen.y0 + 0.3, FL + screen.y0 + screen.h - 0.3, "black", { noEdges: true })
+  blk(x + 0.012, mz - screen.w / 2, x + 0.045, mz + screen.w / 2, FL + screen.y0, FL + screen.y0 + screen.h, "screen", { r: 0.006 })
   const c = screen.cabinet
   TAG = "cabinet"
-  blk(x + 0.03, mz - c.l / 2, x + 0.03 + c.d, mz + c.l / 2, FL + 0.1, FL + c.h, "pine", { r: 0.006 })
+  blk(x, mz - c.l / 2, x + c.d, mz + c.l / 2, FL + 0.1, FL + c.h, "pine", { r: 0.006 })
   for (const z of [mz - c.l / 2 + 0.06, mz + c.l / 2 - 0.06]) blk(x + 0.08, z - 0.02, x + c.d - 0.02, z + 0.02, FL, FL + 0.1, "leg")
-  for (let k = 1; k < 4; k++) { const z = mz - c.l / 2 + (c.l * k) / 4; blk(x + 0.03 + c.d, z - 0.002, x + 0.035 + c.d, z + 0.002, FL + 0.12, FL + c.h - 0.02, "black", { noEdges: true }) }
+  for (let k = 1; k < 4; k++) { const z = mz - c.l / 2 + (c.l * k) / 4; blk(x + c.d, z - 0.002, x + 0.005 + c.d, z + 0.002, FL + 0.12, FL + c.h - 0.02, "black", { noEdges: true }) }
   TAG = ""
   plant(x + 0.2, mz + c.l / 2 - 0.2, FL + c.h, 0.32)
-  // the whiteboard on the back wall
-  const wb = screen.whiteboard
-  TAG = "whiteboard"
-  blk(wb.x[0], R.back, wb.x[1], R.back + 0.02, FL + wb.y0, FL + wb.y0 + wb.h, "alu")
-  blk(wb.x[0] + 0.015, R.back + 0.02, wb.x[1] - 0.015, R.back + 0.024, FL + wb.y0 + 0.015, FL + wb.y0 + wb.h - 0.015, "board", { noEdges: true })
-  blk(wb.x[0] + 0.1, R.back, wb.x[1] - 0.1, R.back + 0.06, FL + wb.y0 - 0.03, FL + wb.y0, "alu") // the pen tray
   // the lectern: a small oak table, standing height
   const lc = screen.lectern
   TAG = "lectern"
@@ -515,7 +501,7 @@ if (ELEC || ITEM) { S.build(E.points, existing); S.build(NW.points) }
 const target = new THREE.Vector3(0, 1.0, 0.4)
 const [el, dist] = [THREE.MathUtils.degToRad(36), 13.5]
 const camera = new THREE.PerspectiveCamera(50, FW / FH, 0.5, 200)
-const ITEM_VIEW = { table: [0.8, 0.7, 1], shelves: [-1, 0.5, 0.7], screen: [1, 0.4, 0.7], cabinet: [1, 0.5, 0.7], whiteboard: [0.25, 0.25, 1], chair: [0.6, 0.6, 1], pendant: [0.6, 0.35, 1], wallfan: [1, 0.3, 0.55] }
+const ITEM_VIEW = { table: [0.8, 0.7, 1], shelves: [-1, 0.5, 0.7], screen: [1, 0.4, 0.7], cabinet: [1, 0.5, 0.7], chair: [0.6, 0.6, 1], pendant: [0.6, 0.35, 1], wallfan: [1, 0.3, 0.55] }
 let itemBox = null
 if (ITEM) {
   scene.updateMatrixWorld(true)

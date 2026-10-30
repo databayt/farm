@@ -37,10 +37,9 @@ const tableRail = rail([
     note: `Down the middle of the room, ${table.seats.length} seats along each side; a double socket on the back wall behind each pair.` },
   { id: "chair", title: `Chairs × ${table.seats.length * 2}`, size: `${m2(table.chair.w)} × ${m2(table.chair.d)} m, seat ${m2(table.chair.seat)} m, back ${m2(table.chair.back)} m`,
     note: "Oak with an oat seat pad, facing each other across the table." },
-  { id: "screen", title: "Screen", size: `65 inch, ${m2(screen.w)} × ${m2(screen.h)} m, its foot at ${m2(screen.y0)} m`,
-    note: "On a slatted oak panel on the east end wall; it casts over the Wi-Fi, with P5 and the data outlet D1 behind its cabinet." },
+  { id: "screen", title: "Screen", size: `86 inch, ${m2(screen.w)} × ${m2(screen.h)} m, its foot at ${m2(screen.y0)} m`,
+    note: "Flat on the east end wall on a low-profile bracket; it casts over the Wi-Fi, with P5 and the data outlet D1 behind its cabinet." },
   { id: "cabinet", title: "Screen cabinet", size: `${m2(screen.cabinet.l)} × ${m2(screen.cabinet.d)} m, ${m2(screen.cabinet.h)} m high` },
-  { id: "whiteboard", title: "Whiteboard wall", size: `${m2(screen.whiteboard.x[1] - screen.whiteboard.x[0])} × ${m2(screen.whiteboard.h)} m`, note: "On the back wall from the screen corner to the table's end, with a pen tray: room for a plan, a sprint board or a lesson." },
   { id: "lectern", title: "Lectern", size: `${m2(screen.lectern.w)} × ${m2(screen.lectern.d)} m, ${m2(screen.lectern.h)} m high`, note: "A standing table for whoever is presenting or teaching." },
 ])
 const cornerRail = rail([
@@ -83,15 +82,15 @@ export default function StudyRoomPage() {
       {/* 2D, full screen: the study room's plan (src/components/study-room/study-room-plan.tsx), in the text
           colour. It is long, so it takes the full width. */}
       <DrawingSection id="plans" title="2D">
-        <StudyRoomPlan title="Plan: a 40 ft container 12.2 m long and 2.4 m wide, glazed doors behind timber louvres along its front onto a 2 m deck with a broad step; inside, a screen wall at the left end with a cabinet, a whiteboard wall along the back beside it and a lectern, one long table down the middle with four chairs along each side, then a reading corner with two armchairs, a side table, a lamp and a rug, and a bookshelf wall across the right end."
+        <StudyRoomPlan title="Plan: a 40 ft container 12.2 m long and 2.4 m wide, glazed doors behind timber louvres along its front onto a 2 m deck with a broad step; inside, a big screen on the left end wall with a cabinet under it and a lectern, one long table down the middle with four chairs along each side, then a reading corner with two armchairs, a side table, a lamp and a rug, and a bookshelf wall across the right end."
           className="h-auto w-full lg:h-full lg:w-auto lg:max-w-full" />
       </DrawingSection>
 
       {/* 3D, in the 2D section's pattern: a line drawing of the study room seen from the deck with its front
           wall off, then the same view rendered. Both from scripts/site/render/study-room.html. */}
       <ModelSection line={`${D}/render/study-room-line.png`} real={`${D}/render/study-room-real.webp`} width={2400} height={1000}
-        lineAlt="Line drawing of the study room from the deck with the front wall off: a screen on a slatted panel at the left end, a long whiteboard on the back wall, a long table in the middle with eight chairs, three pendant lights over it, two wall fans, two armchairs on a rug by a floor lamp, and a full-height bookshelf at the right end, the wide deck and its step in front."
-        realAlt="The same view rendered: a teal container with an oak plank floor and off-white walls, a long oak table with eight oak chairs on oat seat pads and a few laptops, rattan pendants, a black screen on oak slats, ochre armchairs on a striped rug, shelves full of books, green plants, and a honey-coloured eucalyptus deck on the lawn." />
+        lineAlt="Line drawing of the study room from the deck with the front wall off: a big screen on the left end wall, a long table in the middle with eight chairs, three pendant lights over it, two wall fans, two armchairs on a rug by a floor lamp, and a full-height bookshelf at the right end, the wide deck and its step in front."
+        realAlt="The same view rendered: a teal container with an oak plank floor and off-white walls, a long oak table with eight oak chairs on oat seat pads and a few laptops, rattan pendants, a big black screen on the end wall, ochre armchairs on a striped rug, shelves full of books, green plants, and a honey-coloured eucalyptus deck on the lawn." />
 
       {/* The rails, in the studio's pattern: each piece on its own (study-room.html?item=<id>), the card in focus
           showing its size, source and cost below. */}

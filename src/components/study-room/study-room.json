@@ -1,5 +1,5 @@
 {
-  "about": "The study room, as /en/camp is one camp: the 40 ft teal container of the compound (src/components/home/compound.json, unit \"study\") on a 300 mm stone plinth, a band of glazed sliding doors behind timber louvres along its north side onto a 2 m deck with a broad step, the courtyard in front and the lake behind. Furnished as a working room for startups and small businesses, to hold a discussion, run a training or work on a project together: eight seats round one long timber table in the middle, a screen and a whiteboard wall at one end, a bookshelf wall and a reading corner at the far end. The 2D (study-room-plan.tsx) and the 3D (scripts/site/render/study-room.html) both read this file. Plan in metres: x to the right as seen from the deck (east on the left, west on the right), y toward the front (the glazing, north), the container's centre at 0,0. Sizes past the container and the compound's openings are design choices, not yet sourced; furniture colour is the studio's Medium Oak.",
+  "about": "The study room, as /en/camp is one camp: the 40 ft teal container of the compound (src/components/home/compound.json, unit \"study\") on a 300 mm stone plinth, a band of glazed sliding doors behind timber louvres along its north side onto a 2 m deck with a broad step, the courtyard in front and the lake behind. Furnished as a working room for startups and small businesses, to hold a discussion, run a training or work on a project together: eight seats round one long timber table in the middle, one big screen at one end, a bookshelf wall and a reading corner at the far end. The 2D (study-room-plan.tsx) and the 3D (scripts/site/render/study-room.html) both read this file. Plan in metres: x to the right as seen from the deck (east on the left, west on the right), y toward the front (the glazing, north), the container's centre at 0,0. Sizes past the container and the compound's openings are design choices, not yet sourced; furniture colour is the studio's Medium Oak.",
   "container": {
     "about": "A standard 40 ft box (not a high cube), outside 12.192 x 2.438 x 2.591 m, painted teal as in the footage (IMG_3196). Cargo doors at the west end stay shut.",
     "l": 12.192,
@@ -39,13 +39,12 @@
     "chair": {"w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.82, "gap": 0.02}
   },
   "screen": {
-    "about": "The east end wall, the room's front for workshops and training: a 65-inch screen on a slatted oak panel, a low cabinet under it, a whiteboard wall 2.8 m wide on the back wall beside it, from the corner to the table's end, for sketching a plan or a project board, and a small lectern table for whoever is presenting.",
-    "w": 1.45,
-    "h": 0.82,
-    "y0": 1.0,
-    "panel": [-0.95, 0.65],
+    "about": "The east end wall, the room's front for workshops and training: one big 86-inch screen mounted flat on the painted wall on a low-profile bracket, centred on y, a low cabinet under it, and a small lectern table for whoever is presenting.",
+    "w": 1.92,
+    "h": 1.1,
+    "y0": 0.85,
+    "y": -0.1,
     "cabinet": {"l": 1.6, "d": 0.4, "h": 0.55},
-    "whiteboard": {"x": [-5.85, -3.05], "y0": 0.85, "h": 1.2},
     "lectern": {"x": -5.2, "y": 0.7, "w": 0.6, "d": 0.45, "h": 0.95}
   },
   "shelves": {
@@ -97,7 +96,7 @@
       { "id": "L3", "model": "pendant", "circuit": "C1", "description": "Pendant, over the table, reading end", "at": [0.3, 0, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
       { "id": "L4", "model": "pendant", "circuit": "C1", "description": "Pendant, over the reading corner, left", "at": [3.75, -0.2, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
       { "id": "L5", "model": "pendant", "circuit": "C1", "description": "Pendant, over the reading corner, right", "at": [5.0, -0.2, 1.95], "face": "down", "size": [380, 380, 20], "watts": 10, "rwf": 15000, "existing": true },
-      { "id": "S1", "model": "switch", "circuit": "C1", "description": "Switch by the screen end of the glazing: the table, L1 to L3", "at": [-5.965, 0.88, 1.1], "face": "+x", "size": [86, 86, 10], "rwf": 3500 },
+      { "id": "S1", "model": "switch", "circuit": "C1", "description": "Switch by the screen end of the glazing: the table, L1 to L3", "at": [-5.965, 1.02, 1.1], "face": "+x", "size": [86, 86, 10], "rwf": 3500 },
       { "id": "S2", "model": "switch", "circuit": "C1", "description": "Switch under the board: the reading corner, L4 and L5", "at": [3.15, -1.125, 1.1], "face": "+y", "size": [86, 86, 10], "rwf": 3500 },
       { "id": "F1", "model": "wallfan", "circuit": "C1", "description": "Wall fan, high on the back wall over the reading corner", "at": [4.4, -0.91, 1.8], "face": "+y", "size": [400, 400, 260], "watts": 45, "rwf": 35000, "existing": true },
       { "id": "F2", "model": "wallfan", "circuit": "C1", "description": "Wall fan, high on the back wall over the table", "at": [-1.5, -0.91, 1.8], "face": "+y", "size": [400, 400, 260], "watts": 45, "rwf": 35000, "existing": true },

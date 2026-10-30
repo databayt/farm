@@ -58,7 +58,6 @@ export function StudyRoomPlan({ title, className }: { title: string; className?:
   const { chair } = table
   const [t0, t1] = [table.x - table.l / 2, table.x + table.l / 2]
   const sx0 = r.x1 - shelves.d, bay = (r.front - r.back) / shelves.bays
-  const scr = screen.panel
   return (
     <svg viewBox="-6.75 -2.05 13.5 6.55" role="img" aria-label={title} className={className}>
       {/* The stone plinth, the container's steel skin and the lined room inside it; along the front, the
@@ -78,12 +77,9 @@ export function StudyRoomPlan({ title, className }: { title: string; className?:
       {boards.map((y) => <line key={y} x1={-L} x2={L} y1={y} y2={y} {...faint} />)}
       <rect {...rect(-L + st.inset, front, L - st.inset, front + st.d)} {...thin} />
 
-      {/* The screen wall: the screen on its slatted panel, the cabinet under it, the whiteboard on the back
-          wall, the lectern by the aisle */}
-      <rect {...rect(r.x0, scr[0], r.x0 + 0.04, scr[1])} {...thin} />
-      <line x1={f(r.x0 + 0.07)} x2={f(r.x0 + 0.07)} y1={f((scr[0] + scr[1]) / 2 - screen.w / 2)} y2={f((scr[0] + scr[1]) / 2 + screen.w / 2)} {...medium} />
-      <rect {...rect(r.x0, (scr[0] + scr[1]) / 2 - screen.cabinet.l / 2, r.x0 + screen.cabinet.d, (scr[0] + scr[1]) / 2 + screen.cabinet.l / 2)} {...thin} />
-      <line x1={screen.whiteboard.x[0]} x2={screen.whiteboard.x[1]} y1={f(r.back + 0.03)} y2={f(r.back + 0.03)} {...medium} />
+      {/* The screen wall: the big screen flat on the wall, the cabinet under it, the lectern by the aisle */}
+      <line x1={f(r.x0 + 0.03)} x2={f(r.x0 + 0.03)} y1={f(screen.y - screen.w / 2)} y2={f(screen.y + screen.w / 2)} {...medium} />
+      <rect {...rect(r.x0, screen.y - screen.cabinet.l / 2, r.x0 + screen.cabinet.d, screen.y + screen.cabinet.l / 2)} {...thin} />
       <rect {...rect(screen.lectern.x - screen.lectern.w / 2, screen.lectern.y - screen.lectern.d / 2, screen.lectern.x + screen.lectern.w / 2, screen.lectern.y + screen.lectern.d / 2)} {...thin} />
 
       {/* The long table down the middle, four chairs along each side facing across it */}
@@ -131,7 +127,7 @@ export function StudyRoomPlan({ title, className }: { title: string; className?:
       {lights.pendants.map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r={0.15} {...dashed} />)}
       {fans.x.map((x) => <circle key={x} cx={x} cy={f(r.back + 0.15)} r={0.18} {...dashed} />)}
 
-      <text x={f(r.x0 + 0.62)} y={f((scr[0] + scr[1]) / 2)} textAnchor="middle" transform={`rotate(-90 ${f(r.x0 + 0.62)} ${f((scr[0] + scr[1]) / 2)})`} style={small}>SCREEN</text>
+      <text x={f(r.x0 + 0.62)} y={f(screen.y)} textAnchor="middle" transform={`rotate(-90 ${f(r.x0 + 0.62)} ${f(screen.y)})`} style={small}>SCREEN</text>
       <text x={f(table.x)} y={0.05} textAnchor="middle" style={small}>8 SEATS</text>
       <text x={f(reading.table.x)} y={f(reading.rug.y[1] + 0.27)} textAnchor="middle" style={small}>READING</text>
       <text x={f(sx0 - 0.08)} y={f(r.front - 0.1)} textAnchor="end" style={small}>BOOKS</text>
