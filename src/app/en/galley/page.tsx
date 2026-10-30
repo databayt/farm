@@ -116,7 +116,7 @@ const DOCS = [
 export default function GalleyPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster. For now it is the design model rendered
+      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (brief: ~/Desktop/galley-nano-banana). For now it is the design model rendered
           from eye level in the courtyard (scripts/site/render/galley.html?mode=real&hero=1, 2400 x 1340), in
           daylight. The galley sits right, so the words keep the open lawn bottom-left. */}
       <PageHero src={`${D}/render/galley-hero.jpg`} width={2400} height={1340} className="bg-[#c4d3dc]" imgClassName="object-[68%_55%]"
