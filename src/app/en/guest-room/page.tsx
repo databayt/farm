@@ -76,13 +76,14 @@ const DOCS = [
 export default function GuestRoomPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the Nano Banana remaster (handoff in ~/Desktop/guest-room-nano-banana).
-          It is the guest-room block as it stands today, cut from the 2026-10-25 footage (assets/library/footage/2026-10-25/IMG_3171,
-          people- and umbrella-free) to 2400 x 1340. The block sits right, so the words keep the open lawn
-          bottom-left. */}
-      <PageHero src={`${D}/render/guest-room-hero.jpg`} width={2400} height={1340} className="bg-[#c9d3dc]" imgClassName="object-[65%_60%]"
+      {/* First screen: the founder's Nano Banana render of the guest-room block (2026-10-30), made from the brief in
+          ~/Desktop/guest-room-nano-banana; master kept at assets/guest-room/hero-gemini.png (1671 x 941, the barred-window
+          variant beside it), upscaled to 2400 x 1340. It departs from the drawings: a teal block, not saffron; cream
+          doors and plain windows, not red barred ones; a timber pergola over the veranda, a step to each room. The
+          block fills the middle, so the words sit on the lawn bottom-left. */}
+      <PageHero src={`${D}/render/guest-room-hero.jpg`} width={2400} height={1340} className="bg-[#8a9a52]" imgClassName="object-[50%_55%]"
         title="A quiet room, with the veranda for mornings"
-        alt="The guest-room block today: two saffron-yellow shipping containers joined into one long building, red-framed barred windows each beside a red door, on a green lawn with a pop-up tent to the left, trees and a cloudy sky behind." />
+        alt="The guest-room block at sunset: two teal shipping containers joined into one long building on a fieldstone plinth, three rooms each with a cream door and a white-framed window lit warm onto a bed and lamps inside, a timber veranda under a slatted timber pergola along the front with two slatted chairs, a small table with a lantern and potted plants at each room, a step down to the lawn at each door, among avocado trees." />
 
       {/* 2D, full screen: the room's plan (src/components/guest-room/guest-room-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
