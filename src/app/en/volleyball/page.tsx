@@ -72,7 +72,7 @@ const DOCS = [
 export default function VolleyballPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster. For now it is the design model rendered
+      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (brief: ~/Desktop/volleyball-nano-banana). For now it is the design model rendered
           from eye level on the lawn in late-afternoon sun (scripts/site/render/volleyball.html?mode=real&hero=1,
           2400 x 1340), the master plan's boundary trees behind. The net sits right, so the words keep the open
           grass bottom-left. */}
