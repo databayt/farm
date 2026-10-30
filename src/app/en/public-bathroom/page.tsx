@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
+import { D, info } from "@/components/public-bathroom/data"
 import { PublicBathroomPlan } from "@/components/public-bathroom/public-bathroom-plan"
 import bath from "@/components/public-bathroom/public-bathroom.json"
 import { BathPipeDiagram, BathWiringDiagram, runs } from "@/components/public-bathroom/services"
@@ -10,8 +12,9 @@ import electricTags from "../../../../public/designs/public-bathroom/render/elec
 import plumbingTags from "../../../../public/designs/public-bathroom/render/plumbing-tags.json"
 import topPieces from "../../../../public/designs/public-bathroom/render/top-pieces.json"
 
-// The public bathroom, in /en/studio's pattern: the hero, the 2D and the 3D, then how it is built, its fixtures, and
-// its two services, Plumbing and Electric. Every drawing reads src/components/public-bathroom/public-bathroom.json:
+// The public bathroom, in /en/studio's pattern: the hero, the 2D and the 3D, then how it is built, its fixtures, its two
+// services, Electric and Plumbing, and the docs cards; the points tables and the status are on
+// /docs/public-bathroom-points. Every drawing reads src/components/public-bathroom/public-bathroom.json:
 // the teal 20 ft container on its stone plinth beside the galley, one door and two high windows toward the courtyard;
 // inside, the founder's two toilet rooms, two hand basins and a urinal (D-022). Every size, run and device is an
 // assumption [A]; nothing is sourced or priced yet, so no card names a shop or a price.
@@ -21,7 +24,6 @@ export const metadata: Metadata = {
   description: "Two toilet rooms, a urinal and two hand basins in a teal container by the courtyard, for the camp, the bar lounge and the fire pit, at the Digital Farm near Kigali.",
 }
 
-const D = "/designs/public-bathroom"
 const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 const { toilets: TO, basins: BA, urinal: UR, cupboard: CU, passage: PA, towels: TW, plumbing: PL, electric: EL } = bath
 
@@ -78,26 +80,15 @@ function electricRail() {
   ])
 }
 
+// The bathroom's own docs page first, as the studio's are, then the guides behind its services.
 const DOCS = [
-  { href: "/docs/plumber", title: "Plumber's guide", text: "The farm's pipe conventions, the tests before the walls close, and the septic tank's rules." },
+  { href: "/docs/public-bathroom-points", title: "Electric and plumbing points", text: "Every light, socket, tap and drain on the drawings above, with its circuit or its pipes, and where the design stands." },
   { href: "/docs/electrician", title: "Electrician's guide", text: "Boards, RCBOs, earthing and the tests, in the studio's pattern." },
+  { href: "/docs/plumber", title: "Plumber's guide", text: "The farm's pipe conventions, the tests before the walls close, and the septic tank's rules." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both: the site board this bathroom is fed from, and sun for hot water." },
-  { href: "/docs/operations", title: "Operations", text: "Who uses the bathroom and when, and the housekeeping that keeps it clean." },
 ]
 
 export default function PublicBathroomPage() {
-  const wet = Object.fromEntries(Object.entries(PL.colours))
-  const fitColour = (runsOf: string) => {
-    const first = runsOf.split(" ")[0]
-    return wet[PL.runs.find((r) => r.run === first)?.system ?? "cold"]
-  }
-  const circuitColour = (id: string) => EL.colours[(EL.circuits.find((c) => c.circuit === id)?.group ?? "spare") as keyof typeof EL.colours]
-  const points = [
-    ...PL.fittings.map((f) => ({ id: f.point, service: "Plumbing", what: f.what, size: f.size, colour: fitColour(f.runs) })),
-    { id: EL.board.point, service: "Electric", what: EL.board.what, size: EL.board.size, colour: undefined },
-    ...EL.points.map((p) => ({ id: p.point, service: "Electric", what: p.what, size: p.circuit || "Earth", colour: p.circuit ? circuitColour(p.circuit) : undefined })),
-  ]
-  const info = Object.fromEntries(points.map((p) => [p.id, { label: p.what, colour: p.colour }]))
   return (
     <main className="w-full flex-1">
       {/* First screen: a STAND-IN until the founder's Nano Banana remaster. For now it is the design model rendered
@@ -152,19 +143,36 @@ export default function PublicBathroomPage() {
       {/* Fixtures: one card per piece, the card in focus shows its size, source and cost below. */}
       <RailSection id="fixtures" title="Fixtures" items={fixturesRail()} />
 
-      {/* Plumbing, in the studio's pattern: the water drawn full width from the farm's tank to every outlet and on to the
+      {/* Electric, in the studio's pattern: the bathroom's board and circuits (services.tsx), the 3D's view with every cable
+          route in its circuit's colour and every device tagged (render/electric-line.png), the same view rendered at
+          dusk with the lights on (render/electric-real.webp), then each device. public-bathroom.html?view=electric. */}
+      <ServiceSection id="electrical" title="Electric"
+        diagram={<BathWiringDiagram />}
+        figure={<TaggedFigure table="/docs/public-bathroom-points" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags} info={info}
+          alt="Line drawing of the bathroom from the courtyard, faint, with every device dark and every cable route: the unit board on the passage's back wall, blue runs up into the ceiling and across to a round light in each toilet room, the passage, the lobby and the urinal room, and down to the extract fan; another blue run to the front wall over the door; an orange run down to the cleaner's socket." />}
+        note={<>
+          Every run goes up into the ceiling void, along it and straight down to its device. Each tag opens its row in the{" "}
+          <Link href="/docs/public-bathroom-points#electric-points" className="underline underline-offset-4">points table</Link>. Outside the drawing: the light over
+          the door (L6) on the front wall, which the drawing leaves off, and the earth rod (E1) in a pit behind the back
+          wall below the board. The board&rsquo;s feeder comes from the farm&rsquo;s site board, sized when that is designed.
+        </>}
+        real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1100, caption: "Rendered from the design model, at dusk with the lights on",
+          alt: "The same view rendered at dusk: a round ceiling light glowing over each toilet room, the passage, the lobby and the urinal room, the white unit board on the passage's back wall and the extract fan's grille on the east end wall." }}
+        rail={electricRail()} />
+
+      {/* Plumbing, in the same pattern: the water drawn full width from the farm's tank to every outlet and on to the
           septic tank (services.tsx), then the 3D's view with every run in its colour, dashed where a wall, the floor or
           the plinth hides it, every fitting tagged (render/plumbing-line.png), the same view rendered with the floor,
           the tiles and the plinth see-through (render/plumbing-real.webp), then each part on its own. All from
           public-bathroom.html?view=plumbing and ?item=. */}
       <ServiceSection id="plumbing" title="Plumbing"
         diagram={<BathPipeDiagram />}
-        figure={<TaggedFigure src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags} info={info}
+        figure={<TaggedFigure table="/docs/public-bathroom-points" src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags} info={info}
           alt="Line drawing of the bathroom from the courtyard, faint, with its fittings dark and every pipe run: cold in blue from the stop valve in the cleaner's cupboard along the back wall and up to the two WC cisterns, the two basin taps and the urinal's flush valve; the drains in brown under the floor, the WCs' soil run and the lobby's waste run leaving through the back of the plinth for the inspection chamber; the vent in grey up the back wall." />}
         note={<>
           Supplies run in the linings, then straight up to each outlet; drains run under the floor in the plinth. A run is
           dashed where a wall, the floor or the plinth hides it. Each tag opens its row in the{" "}
-          <a href="#points" className="underline underline-offset-4">points table</a>. Behind the back wall, off the
+          <Link href="/docs/public-bathroom-points#plumbing-points" className="underline underline-offset-4">points table</Link>. Behind the back wall, off the
           floor: IC1 takes both runs, and S1 carries them to the farm&rsquo;s septic tank and soakaway, at least 50 m from
           the borehole. That tank was sized for the two studios; the campers, the bar and the fire pit must be added
           before it is built. Cold only: a shower, should the founder add one, would bring the solar water heater the
@@ -174,50 +182,6 @@ export default function PublicBathroomPage() {
           caption: <>Rendered from the design model, the floor, the tiles and the plinth see-through, the pipes in the diagram&rsquo;s colours</>,
           alt: "The same view rendered with the floor, the wall tiles and the plinth see-through: the brown drains under the toilet rooms and the lobby, from each WC, the basins, the floor drain and the urinal, out through the back; the blue supply along the back wall and up to the cisterns, the taps and the urinal's valve; the grey vent rising behind the back wall." }}
         rail={plumbingRail()} />
-
-      {/* Electric, in the same pattern: the bathroom's board and circuits (services.tsx), the 3D's view with every cable
-          route in its circuit's colour and every device tagged (render/electric-line.png), the same view rendered at
-          dusk with the lights on (render/electric-real.webp), then each device. public-bathroom.html?view=electric. */}
-      <ServiceSection id="electric" title="Electric"
-        diagram={<BathWiringDiagram />}
-        figure={<TaggedFigure src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags} info={info}
-          alt="Line drawing of the bathroom from the courtyard, faint, with every device dark and every cable route: the unit board on the passage's back wall, blue runs up into the ceiling and across to a round light in each toilet room, the passage, the lobby and the urinal room, and down to the extract fan; another blue run to the front wall over the door; an orange run down to the cleaner's socket." />}
-        note={<>
-          Every run goes up into the ceiling void, along it and straight down to its device. Each tag opens its row in the{" "}
-          <a href="#points" className="underline underline-offset-4">points table</a>. Outside the drawing: the light over
-          the door (L6) on the front wall, which the drawing leaves off, and the earth rod (E1) in a pit behind the back
-          wall below the board. The board&rsquo;s feeder comes from the farm&rsquo;s site board, sized when that is designed.
-        </>}
-        real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1100, caption: "Rendered from the design model, at dusk with the lights on",
-          alt: "The same view rendered at dusk: a round ceiling light glowing over each toilet room, the passage, the lobby and the urinal room, the white unit board on the passage's back wall and the extract fan's grille on the east end wall." }}
-        rail={electricRail()} />
-
-      <TextSection id="points" title="Points" lead="Every fitting and device on the drawings above, with what it is and its size or circuit. All are design choices for the plumber and the electrician to confirm.">
-        <div className="mt-6 overflow-x-auto rounded-xl border">
-          <table className="w-full text-sm">
-            <thead className="text-muted-foreground bg-muted/40">
-              <tr>
-                <th className="px-3 py-2 text-start font-medium">Point</th>
-                <th className="px-3 py-2 text-start font-medium">Service</th>
-                <th className="px-3 py-2 text-start font-medium">What</th>
-                <th className="px-3 py-2 text-start font-medium">Size or circuit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {points.map((p) => (
-                <tr key={p.id} id={`pt-${p.id}`} className="target:bg-muted/60 scroll-mt-24 border-t">
-                  <td className="px-3 py-2 font-medium whitespace-nowrap">
-                    <span className="me-2 inline-block size-2 rounded-full" style={{ background: p.colour ?? "currentColor" }} />{p.id}
-                  </td>
-                  <td className="text-muted-foreground px-3 py-2">{p.service}</td>
-                  <td className="px-3 py-2">{p.what}</td>
-                  <td className="px-3 py-2">{p.size}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </TextSection>
 
       <DocsSection cards={DOCS} />
     </main>

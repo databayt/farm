@@ -15,6 +15,7 @@ import { BarElectricPoints, BarPlumbingPoints, BarStatus } from "@/components/ba
 import { GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus } from "@/components/galley/docs-sections"
 import { GuestRoomElectricPoints, GuestRoomStatus } from "@/components/guest-room/docs-sections"
 import { OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus } from "@/components/office/docs-sections"
+import { PublicBathroomElectricPoints, PublicBathroomPlumbingPoints, PublicBathroomStatus } from "@/components/public-bathroom/docs-sections"
 import { StudyRoomElectricPoints, StudyRoomStatus } from "@/components/study-room/docs-sections"
 
 const mdxComponents = {
@@ -185,6 +186,7 @@ const mdxComponents = {
   OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus,
   StudyRoomElectricPoints, StudyRoomStatus,
   GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus,
+  PublicBathroomElectricPoints, PublicBathroomPlumbingPoints, PublicBathroomStatus,
   BarElectricPoints, BarPlumbingPoints, BarStatus,
 } satisfies MDXComponents
 

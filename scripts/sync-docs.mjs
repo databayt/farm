@@ -123,6 +123,11 @@ const PAGES = [
     sections: [["Electric points", "GalleyElectricPoints"], ["Plumbing points", "GalleyPlumbingPoints"], ["Status", "GalleyStatus"]],
   },
   {
+    slug: "public-bathroom-points", title: "Public bathroom: electric and plumbing points",
+    description: "Every light, socket, tap and drain in the public bathroom, with its circuit or its pipes, and where the design stands.",
+    sections: [["Electric points", "PublicBathroomElectricPoints"], ["Plumbing points", "PublicBathroomPlumbingPoints"], ["Status", "PublicBathroomStatus"]],
+  },
+  {
     slug: "bar-points", title: "Bar: electric and plumbing points",
     description: "Every socket, light, tap and drain in the bar, the pipe runs, and where the design stands.",
     sections: [["Electric points", "BarElectricPoints"], ["Plumbing points", "BarPlumbingPoints"], ["Status", "BarStatus"]],
