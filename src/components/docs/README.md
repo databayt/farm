@@ -22,6 +22,13 @@ script:
 To add a page, add the study file to `PAGES` in `scripts/sync-docs.mjs`. A
 `"---Label---"` entry starts a sidebar group.
 
+A page of React sections takes `sections` in place of `src`: each
+`[heading, component]` becomes an MDX heading (so the table of contents lists
+it) and the component, registered in `src/mdx-components.tsx`. The studio's
+live in `src/components/studio/docs-sections.tsx`; every other place's points
+tables and status in `src/components/<place>/docs-sections.tsx`, reading the
+same `data.ts` as its /en page, whose tags link to their rows (D-057).
+
 ## Files
 
 | File | Purpose |

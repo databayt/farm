@@ -8,7 +8,7 @@ import { CampPlan } from "@/components/camp/camp-plan"
 import camp from "@/components/camp/camp.json"
 import topPieces from "../../../../public/designs/camp/render/top-pieces.json"
 
-// One camp, as /en/studio is one studio: a full-screen hero, then the 2D and the 3D. Both drawings read
+// One camp, in /en/studio's pattern: a full-screen hero, then the 2D and the 3D. Both drawings read
 // src/components/camp/camp.json, after the hero (the Nano Banana render): the footage's hexagonal pop-up on the
 // grass, its door rolled up, furnished as a floor lounge. Then the studio's later sections, with what a pitch has:
 // the pitch made from above, the kit piece by piece, and the lawn with what serves it. The design brings no power
