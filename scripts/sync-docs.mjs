@@ -99,6 +99,24 @@ const PAGES = [
     description: "Every line of one studio's bill of materials, with the price label and source.",
     columns: ["kit", "category", "item", "qty_per_unit", "unit", "unit_price_rwf", "label", "source", "total_per_unit_rwf"],
   },
+  // Every other place's reference, moved off its /en page as the studio's was: its points tables and status (the
+  // components in src/components/<place>/docs-sections.tsx). Off the sidebar; each page's docs cards and tags link here.
+  "---The places---",
+  {
+    slug: "guest-room-points", title: "Guest room: circuits and points",
+    description: "Every light, switch and socket in the guest room, with its circuit, height and load, and where the design stands.",
+    sections: [["Electric points", "GuestRoomElectricPoints"], ["Status", "GuestRoomStatus"]],
+  },
+  {
+    slug: "office-points", title: "Office: electric and network points",
+    description: "Every light, socket and network point in the office, with its circuit or cable, and where the design stands.",
+    sections: [["Electric points", "OfficeElectricPoints"], ["Network points", "OfficeNetworkPoints"], ["Status", "OfficeStatus"]],
+  },
+  {
+    slug: "study-room-points", title: "Study room: circuits and points",
+    description: "Every light, socket and Wi-Fi point in the study room, with its circuit, height and load, and where the design stands.",
+    sections: [["Electric points", "StudyRoomElectricPoints"], ["Status", "StudyRoomStatus"]],
+  },
   "---Reference---",
   { slug: "decision-log", src: "study/execution/decision-log.md" },
   { slug: "assumptions", src: "study/registers/assumptions.md", description: "The assumptions that shape the study and the model, with how each will be validated." },

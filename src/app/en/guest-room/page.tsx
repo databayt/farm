@@ -2,16 +2,17 @@ import type { Metadata } from "next"
 import Link from "next/link"
 
 import { frw } from "@/lib/format"
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
-import { RoomPointsTable, type RoomPoint, deviceRail, tagInfo, withLoads } from "@/components/docs/room-points"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
+import { deviceRail, tagInfo } from "@/components/docs/room-points"
 import { RoomWiring } from "@/components/docs/room-wiring"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
+import { circuits, D, E, points } from "@/components/guest-room/data"
 import { GuestRoomPlan } from "@/components/guest-room/guest-room-plan"
 import room from "@/components/guest-room/guest-room.json"
 import electricTags from "../../../../public/designs/guest-room/render/electric-tags.json"
 
-// One guest room, as /en/camp is one camp: a full-screen hero, then the 2D and the 3D. Both drawings read
-// src/components/guest-room/guest-room.json: a third of the saffron container block from the footage, a
+// One guest room, in /en/studio's pattern: the hero, the 2D and the 3D, the rails, Electric, then the docs cards; the
+// points table and the status are on /docs/guest-room-points. Both drawings read src/components/guest-room/guest-room.json: a third of the saffron container block from the footage, a
 // barred window and a red door onto the timber veranda, a double bed under the back window, a wardrobe, a
 // desk under the front window, two chairs and a table outside.
 
@@ -20,7 +21,6 @@ export const metadata: Metadata = {
   description: "A room for two in the container block, with a double bed, its own shower and WC, and a timber veranda with lake views, at the Digital Farm near Kigali.",
 }
 
-const D = "/designs/guest-room"
 const m2 = (n: number) => +n.toFixed(2)
 
 // The furniture rails: each piece rendered on its own by scripts/site/render/guest-room.html?item=<id>, sized from
@@ -49,15 +49,14 @@ const roomRail = railCards(`${D}/render/furniture`, [
   { id: "verandatable", title: "Veranda table", size: `Ø ${m2(veranda.table.r * 2)} m, ${m2(veranda.table.h)} m high`, note: "A pedestal table between the chairs, with a lantern." },
 ])
 
-// The Electric section: room.electric (guest-room.json), drawn by RoomWiring, rendered by guest-room.html?view=electric
-const E = room.electric
-const points = E.points as RoomPoint[]
-const circuits = withLoads(E.circuits, points)
+// The Electric section: room.electric (guest-room.json, read in data.ts), drawn by RoomWiring, rendered by
+// guest-room.html?view=electric
 const designA = Math.round(circuits.reduce((n, c) => n + (c.design_A ?? 0), 0) * 10) / 10
 
+// The room's own docs page first, as the studio's are, then the guides behind the page.
 const DOCS = [
+  { href: "/docs/guest-room-points", title: "Circuits and points", text: "Every light, switch and socket on the drawing above, with its circuit, height and load, and where the design stands." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both: what the farm uses, building by building, and what each option costs." },
-  { href: "/docs/studio-circuits", title: "Circuits and points", text: "The studio's circuits, checked against breaker, cable and voltage drop: the conventions this room follows." },
   { href: "/docs/electrician", title: "Electrician's guide", text: "The first fix before the linings close, the second fix, the tests and the certificate." },
   { href: "/docs/master-plan", title: "Master plan", text: "The whole farm on one sheet: where the guest rooms stand, the paths and the services." },
 ]
@@ -100,12 +99,12 @@ export default function GuestRoomPage() {
           supply={{ title: "Site board", sub: "the farm's, off the drawing", cable: "armoured cable, sized to its run" }}
           notes={[`Design ${designA} A on a ${E.main_A} A main switch · one RCBO 30 mA type A per circuit · the studio's conventions (D-021)`,
             "Ratings are design intent until a RURA class A electrician designs the supply and certifies the room"]} />}
-        figure={<TaggedFigure src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
+        figure={<TaggedFigure table="/docs/guest-room-points" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
           alt="Line drawing of the guest room from the front with the ceiling and the joint's beam off: the unit board on the right wall by the bed, the circuits rising from its top along the ceiling edge and down to each point, in blue for the lights and the wall fan, orange for the sockets beside the bedside tables, by the desk and on the right wall, and green for the AC isolator high on the back wall."
           info={tagInfo(points, circuits)} />}
         note={<>
           Every run goes up into the ceiling, along it and straight down to its device, in conduit inside the linings.
-          Each tag opens its row in the <a href="#electric-points" className="underline underline-offset-4">points table</a>.
+          Each tag opens its row in the <Link href="/docs/guest-room-points#electric-points" className="underline underline-offset-4">points table</Link>.
           The bedside lamps plug into P1 and P2, so the bed has a lamp on each side (D-029). The room has no bathroom of
           its own in this drawing, so it has no water-heater circuit; the en-suite of{" "}
           <Link href="/docs/decision-log" className="underline underline-offset-4">D-029</Link> would add one, and its plumbing.
@@ -113,14 +112,6 @@ export default function GuestRoomPage() {
         real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1800, caption: "Rendered from the design model",
           alt: "The same view rendered as finished: the white unit board on the right wall, sockets with USB-C beside both bedside tables, a double socket by the desk and on the right wall, a two-gang switch by the door, the wall fan high on the left wall, the red AC isolator high on the back wall, and slim ceiling lights and a smoke alarm." }}
         rail={deviceRail(points, (m) => `${D}/render/electric/${m}.webp`)} />
-
-      <TextSection id="electric-points" title="Electric points">
-        <RoomPointsTable points={points} circuits={circuits} />
-        <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
-          Status: design intent. Places, sizes and loads come from guest-room.json; costs are the studio&rsquo;s placeholder
-          prices (AS-21) until three quotes come in, and nothing is sourced yet.
-        </p>
-      </TextSection>
 
       <DocsSection cards={DOCS} />
     </main>

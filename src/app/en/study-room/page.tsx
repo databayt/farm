@@ -1,14 +1,17 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
-import { RoomPointsTable, type RoomPoint, deviceRail, tagInfo, withLoads } from "@/components/docs/room-points"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
+import { deviceRail, tagInfo } from "@/components/docs/room-points"
 import { RoomWiring } from "@/components/docs/room-wiring"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
+import { allLinks, circuits, D, E, points } from "@/components/study-room/data"
 import { StudyRoomPlan } from "@/components/study-room/study-room-plan"
 import room from "@/components/study-room/study-room.json"
 import electricTags from "../../../../public/designs/study-room/render/electric-tags.json"
 
-// The study room, as /en/camp is one camp: a full-screen hero, then the 2D and the 3D. Both drawings read
+// The study room, in /en/studio's pattern: the hero, the 2D and the 3D, the rails, Electric with the Wi-Fi, then the
+// docs cards; the points table and the status are on /docs/study-room-points. Both drawings read
 // src/components/study-room/study-room.json: the compound's teal 40 ft container on a stone plinth, glazed
 // doors behind timber louvres onto a 2 m deck, furnished with one long table for eight, a screen wall, a bookshelf
 // wall and a reading corner. The hero is a stand-in until the Nano Banana remaster.
@@ -18,7 +21,6 @@ export const metadata: Metadata = {
   description: "A room for eight to meet, train or work on a project together, glazed onto a deck with lake views, at the Digital Farm near Kigali.",
 }
 
-const D = "/designs/study-room"
 const m2 = (n: number) => +n.toFixed(2)
 
 // The rails: each piece rendered on its own by scripts/site/render/study-room.html?item=<id>, sized from
@@ -43,18 +45,14 @@ const cornerRail = railCards(`${D}/render/furniture`, [
   { id: "rug", title: "Rug", size: `${m2(reading.rug.x[1] - reading.rug.x[0])} × ${m2(reading.rug.y[1] - reading.rug.y[0])} m`, note: "Woven, under the reading corner." },
 ])
 
-// The Electric section: study-room.json `electric` and `network` (the Wi-Fi), drawn by RoomWiring, rendered by
-// study-room.html?view=electric
-const E = room.electric, N = room.network
-const powerPoints = E.points as RoomPoint[], dataPoints = N.points as RoomPoint[]
-const points = [...powerPoints, ...dataPoints]
-const circuits = withLoads(E.circuits, powerPoints)
-const allLinks = [...circuits, ...N.circuits.map((c) => ({ ...c, device: "", cable_mm2: 0 }))]
+// The Electric section: study-room.json `electric` and `network` (the Wi-Fi; read in data.ts), drawn by RoomWiring,
+// rendered by study-room.html?view=electric
 const designA = Math.round(circuits.reduce((n, c) => n + (c.design_A ?? 0), 0) * 10) / 10
 
+// The room's own docs page first, as the studio's are, then the guides behind the page.
 const DOCS = [
+  { href: "/docs/study-room-points", title: "Circuits and points", text: "Every light, socket and Wi-Fi point on the drawing above, with its circuit, height and load, and where the design stands." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both: what the farm uses, building by building, and what each option costs." },
-  { href: "/docs/studio-circuits", title: "Circuits and points", text: "The studio's circuits, checked against breaker, cable and voltage drop: the conventions this room follows." },
   { href: "/docs/digital", title: "The digital farm", text: "Bookings, payments, the gate and the books on simple digital tools, and the farm's network." },
   { href: "/docs/master-plan", title: "Master plan", text: "The whole farm on one sheet: where the study room stands, the paths and the services." },
 ]
@@ -97,26 +95,18 @@ export default function StudyRoomPage() {
           supply={{ title: "Site board", sub: "the farm's, off the drawing", cable: "armoured cable, sized to its run" }}
           notes={[`Design ${designA} A on a ${E.main_A} A main switch · one RCBO 30 mA type A per circuit · the studio's conventions (D-021)`,
             "Ratings are design intent until a RURA class A electrician designs the supply and certifies the room"]} />}
-        figure={<TaggedFigure src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
+        figure={<TaggedFigure table="/docs/study-room-points" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
           alt="Line drawing of the study room from the deck: the unit board on the back wall by the reading corner, the circuits running along the ceiling edge, in blue down to the five pendants, the switches and the two wall fans, orange to a double socket low on the back wall behind each pair of seats, the screen wall and the reading corner, the Wi-Fi's cable in purple from the entry box to the ceiling access point, and magenta to the screen's data outlet."
           info={tagInfo(points, allLinks)} />}
         note={<>
           Every run goes up into the ceiling, along it and straight down to its device, in conduit inside the linings. A double
           socket sits low on the back wall behind each pair of seats, so each of the eight has its own. The Wi-Fi comes from the office&rsquo;s
           switch: the outdoor cable enters at NE and powers the access point AP1 over its cable. Each tag opens its row in
-          the <a href="#electric-points" className="underline underline-offset-4">points table</a>.
+          the <Link href="/docs/study-room-points#electric-points" className="underline underline-offset-4">points table</Link>.
         </>}
         real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1000, caption: "Rendered from the design model",
           alt: "The same view rendered as finished: the white unit board on the back wall by the reading corner, a double socket behind each pair of seats, the rattan pendants in a row, the two wall fans, and the access point and smoke alarm on the ceiling line." }}
         rail={deviceRail(points, (m) => `${D}/render/electric/${m}.webp`, { pendant: { size: "Ø 380 mm dome on a cord, 1.95 m above the floor" }, wallfan: { size: "Ø 400 mm, on a short arm" } })} />
-
-      <TextSection id="electric-points" title="Electric points">
-        <RoomPointsTable points={points} circuits={allLinks} />
-        <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
-          Status: design intent. Places, sizes and loads come from study-room.json; electrical costs are the studio&rsquo;s
-          placeholder prices (AS-21) until three quotes come in, and the Wi-Fi gear is neither sourced nor priced.
-        </p>
-      </TextSection>
 
       <DocsSection cards={DOCS} />
     </main>

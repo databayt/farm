@@ -1,17 +1,19 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, TextSection, railCards } from "@/components/page/sections"
-import { RoomPointsTable, type RoomPoint, deviceRail, tagInfo, withLoads } from "@/components/docs/room-points"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
+import { deviceRail, tagInfo } from "@/components/docs/room-points"
 import { RoomWiring } from "@/components/docs/room-wiring"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
+import { circuits, D, E, N, netLinks, netPoints, points } from "@/components/office/data"
 import { NetworkDiagram } from "@/components/office/network-diagram"
 import { OfficePlan } from "@/components/office/office-plan"
 import office from "@/components/office/office.json"
 import electricTags from "../../../../public/designs/office/render/electric-tags.json"
 import networkTags from "../../../../public/designs/office/render/network-tags.json"
 
-// The office, as /en/camp is one camp: a full-screen hero, then the 2D and the 3D. Both drawings read
-// src/components/office/office.json: the saffron 20 ft container raised on its steel frame, first in the
+// The office, in /en/studio's pattern: the hero, the 2D and the 3D, the rail, Electric and Network, then the docs
+// cards; the points tables and the status are on /docs/office-points. Both drawings read src/components/office/office.json: the saffron 20 ft container raised on its steel frame, first in the
 // south row beside the studios, with a deck, railings and a stair in front, furnished as the farm's
 // reception and work office.
 
@@ -20,7 +22,6 @@ export const metadata: Metadata = {
   description: "The farm's office, a lounge and a programmer's workroom: a saffron container on a raised deck by the courtyard, at the Digital Farm near Kigali.",
 }
 
-const D = "/designs/office"
 const m2 = (n: number) => +n.toFixed(2)
 
 // The Furniture and equipment rail: each piece rendered on its own by scripts/site/render/office.html?item=<id>,
@@ -41,19 +42,16 @@ const furnitureRail = railCards(`${D}/render/furniture`, [
     note: "Dark wood with woven rush seats, either side of the table, looking out over the garden." },
 ])
 
-// The Electric and Network sections: office.json `electric` and `network`, drawn by RoomWiring and NetworkDiagram,
-// rendered by office.html?view=electric|network
-const E = office.electric, N = office.network
-const points = E.points as RoomPoint[], netPoints = N.points as RoomPoint[]
-const circuits = withLoads(E.circuits, points)
-const netLinks = N.circuits.map((c) => ({ ...c, device: "", cable_mm2: 0 }))
+// The Electric and Network sections: office.json `electric` and `network` (read in data.ts), drawn by RoomWiring and
+// NetworkDiagram, rendered by office.html?view=electric|network
 const designA = Math.round(circuits.reduce((n, c) => n + (c.design_A ?? 0), 0) * 10) / 10
 
+// The office's own docs page first, as the studio's are, then the guides behind the page.
 const DOCS = [
+  { href: "/docs/office-points", title: "Electric and network points", text: "Every light, socket, cable and network point on the drawings above, with its circuit, and where the design stands." },
   { href: "/docs/digital", title: "The digital farm", text: "Bookings, payments, the gate, water, power and the books on simple digital tools, and in what order." },
   { href: "/docs/iot-architecture", title: "IoT architecture", text: "One gateway, one uplink: connectivity, hardware, monitoring, security and working offline." },
   { href: "/docs/power", title: "Power", text: "Grid, solar or both, and the batteries that keep the Wi-Fi and the cameras up." },
-  { href: "/docs/studio-circuits", title: "Circuits and points", text: "The studio's circuits, checked against breaker, cable and voltage drop: the conventions the office follows." },
 ]
 
 export default function OfficePage() {
@@ -92,44 +90,32 @@ export default function OfficePage() {
           supply={{ title: "Site board", sub: "the farm's, off the drawing", cable: "armoured cable, sized to its run" }}
           notes={[`Design ${designA} A on a ${E.main_A} A main switch · one RCBO 30 mA type A per circuit · the studio's conventions (D-021)`,
             "C3 feeds only the network cabinet's UPS · ratings are design intent until a RURA class A electrician designs the supply and certifies"]} />}
-        figure={<TaggedFigure src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
+        figure={<TaggedFigure table="/docs/office-points" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
           alt="Line drawing of the office from the front: the unit board on the back wall over the sofa, its circuits rising along the ceiling edge and down to each point, in blue for the three ceiling lights and the switch, orange for the sockets at the big desk, over the sofa, on the back wall and for the network cabinet's UPS."
           info={tagInfo(points, circuits)} />}
         note={<>
           Every run goes up into the ceiling, along it and straight down to its device, in conduit inside the linings.
-          Each tag opens its row in the <a href="#electric-points" className="underline underline-offset-4">points table</a>.
+          Each tag opens its row in the <Link href="/docs/office-points#electric-points" className="underline underline-offset-4">points table</Link>.
         </>}
         real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1100, caption: "Rendered from the design model",
           alt: "The same view rendered as finished: the white unit board on the back wall over the sofa, three slim ceiling lights, a two-gang switch by the glazing, sockets over the big desk, over the sofa's end and on the back wall, and the UPS socket under the network cabinet." }}
         rail={deviceRail(points, (m) => `${D}/render/electric/${m}.webp`)} />
-
-      <TextSection id="electric-points" title="Electric points">
-        <RoomPointsTable points={points} circuits={circuits} />
-      </TextSection>
 
       {/* Network, in the Electric section's pattern: the farm's network from the office (the IoT architecture's base,
           taken as the office [A]) drawn full width, then the installation in the 3D view's camera (render/network-line.png,
           every cable in its colour, every point tagged), then each part on its own (office.html?item=<model>). */}
       <ServiceSection id="network" title="Network"
         diagram={<NetworkDiagram links={N.circuits} points={netPoints} />}
-        figure={<TaggedFigure src={`${D}/render/network-line.png`} aspect={networkTags.aspect} tags={networkTags.tags}
+        figure={<TaggedFigure table="/docs/office-points" src={`${D}/render/network-line.png`} aspect={networkTags.aspect} tags={networkTags.tags}
           alt="Line drawing of the office from the front: the black wall cabinet on the back wall beside the big desk with the router on top, the PoE switch and the gateway inside and the UPS on the floor under it; a purple cable along the ceiling to the access point, and a magenta cable to the data outlet over the big desk."
           info={tagInfo(netPoints, netLinks)} />}
         note={<>
           The router, the switch and the gateway sit in one small cabinet on their own circuit (C3) and UPS, so the farm&rsquo;s
           Wi-Fi, its cameras and its sensors keep working through a cut. Cables run with the power, along the ceiling and
-          down to each outlet. Each tag opens its row in the <a href="#network-points" className="underline underline-offset-4">points table</a>.
+          down to each outlet. Each tag opens its row in the <Link href="/docs/office-points#network-points" className="underline underline-offset-4">points table</Link>.
           Signal at the site is unknown until a survey of both networks; buy no radio hardware before it.
         </>}
         rail={deviceRail(netPoints, (m) => `${D}/render/network/${m}.webp`)} />
-
-      <TextSection id="network-points" title="Network points">
-        <RoomPointsTable points={netPoints} circuits={netLinks} />
-        <p className="text-muted-foreground mt-3 max-w-4xl text-sm text-balance">
-          Status: design intent. Places and sizes come from office.json; the electrical costs are the studio&rsquo;s placeholder
-          prices (AS-21) until three quotes come in, and the network gear is neither sourced nor priced.
-        </p>
-      </TextSection>
 
       <DocsSection cards={DOCS} />
     </main>

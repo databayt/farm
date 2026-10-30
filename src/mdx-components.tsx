@@ -11,6 +11,9 @@ import {
   StudioBom, StudioCircuits, StudioDownloads, StudioElectricPoints, StudioFeatures, StudioFittings, StudioPipes,
   StudioShared, StudioStatus, StudioSteps,
 } from "@/components/studio/docs-sections"
+import { GuestRoomElectricPoints, GuestRoomStatus } from "@/components/guest-room/docs-sections"
+import { OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus } from "@/components/office/docs-sections"
+import { StudyRoomElectricPoints, StudyRoomStatus } from "@/components/study-room/docs-sections"
 
 const mdxComponents = {
   // Allows customizing built-in components, e.g. to add styling.
@@ -175,6 +178,10 @@ const mdxComponents = {
   // the studio's reference sections (scripts/sync-docs.mjs "sections" pages)
   StudioBom, StudioShared, StudioCircuits, StudioElectricPoints, StudioPipes, StudioFittings,
   StudioFeatures, StudioSteps, StudioDownloads, StudioStatus,
+  // every other place's (the "---The places---" pages), in the site menu's order
+  GuestRoomElectricPoints, GuestRoomStatus,
+  OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus,
+  StudyRoomElectricPoints, StudyRoomStatus,
 } satisfies MDXComponents
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
