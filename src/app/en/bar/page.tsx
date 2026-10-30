@@ -107,12 +107,12 @@ const DOCS = [
 export default function BarPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (handoff in ~/Desktop/bar-nano-banana).
-          For now it is the design model rendered from eye level on the lawn (scripts/site/render/bar.html
-          ?mode=real&hero=1, 2400 x 1340). The bar sits right, so the words keep the open lawn bottom-left. */}
-      <PageHero src={`${D}/render/bar-hero.jpg`} width={2400} height={1340} className="bg-[#e3d6c4]" imgClassName="object-[70%_60%]"
+      {/* First screen: the founder's Nano Banana render of the bar (2026-10-30), made from the brief in
+          ~/Desktop/bar-nano-banana; master kept at assets/bar/hero-gemini.png (1672 x 941), upscaled to 2400 x 1340.
+          Seen square on, the bar centred; the words sit on the deck and the lawn bottom-left. */}
+      <PageHero src={`${D}/render/bar-hero.jpg`} width={2400} height={1340} className="bg-[#8a9a52]" imgClassName="object-[50%_55%]"
         title="Coffee, fresh juice and a stool at the hatch"
-        alt="The bar: an oxide-red shipping container on a stone plinth, its long hatch open under a flap propped on two black struts, a timber counter with five high stools on a timber deck, shelves and a warm light inside." />
+        alt="An oxide-red shipping container on a fieldstone plinth at golden hour, its long hatch open under a timber canopy on black steel struts: inside, lit shelves of cups, glasses, jars and plain bottles, an espresso machine and grinder, a juicer and crates of oranges, pineapples and tree tomatoes; outside, a timber counter on black brackets with five high stools on a timber deck with one step down to the lawn, among avocado and banana trees." />
 
       {/* 2D, full screen: the bar's plan (src/components/bar/bar-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
