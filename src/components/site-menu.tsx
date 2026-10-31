@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Menu, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { LanguageSwitch } from "@/components/internationalization/language-switch"
 import type { Nav } from "@/components/site/nav"
 
 // Every page of the site, in the founder's order (2026-10-28, src/components/site/places.json), then the docs, in
@@ -100,6 +101,8 @@ export function SiteMenu({
           >
             {docs.label}
           </Link>
+          <LanguageSwitch to={nav.language.to} label={nav.language.label}
+            className={cn(row, "text-muted-foreground text-base", full && "md:col-span-2 md:text-lg")} />
         </nav>
       </div>
     </>

@@ -1,6 +1,6 @@
 "use client"
 
-// Ported from hogwarts src/components/docs/docs-copy-page.tsx. English-only, and no
+// Ported from hogwarts src/components/docs/docs-copy-page.tsx, its words from the dictionaries (D-058). No
 // "View as Markdown" entry: the farm site serves no .md route.
 import {
   Check as IconCheck,
@@ -33,7 +33,7 @@ Help me understand how to use it. Be ready to explain concepts, give examples, o
 }
 
 const menuItems = {
-  chatgpt: (url: string) => (
+  chatgpt: (url: string, label: string) => (
     <a
       href={getPromptUrl("https://chatgpt.com", url)}
       target="_blank"
@@ -49,10 +49,10 @@ const menuItems = {
           fill="currentColor"
         />
       </svg>
-      Open in ChatGPT
+      {label}
     </a>
   ),
-  claude: (url: string) => (
+  claude: (url: string, label: string) => (
     <a
       href={getPromptUrl("https://claude.ai/new", url)}
       target="_blank"
@@ -68,7 +68,7 @@ const menuItems = {
           fill="currentColor"
         />
       </svg>
-      Open in Claude
+      {label}
     </a>
   ),
 }
@@ -76,12 +76,14 @@ const menuItems = {
 export function DocsCopyPage({
   page,
   url,
+  labels,
 }: {
   page: string
   url: string
+  labels: { copy: string; chatgpt: string; claude: string }
 }) {
   const { copyToClipboard, isCopied } = useCopyToClipboard()
-  const copyPageText = "Copy Page"
+  const copyPageText = labels.copy
 
   const trigger = (
     <Button
@@ -113,7 +115,7 @@ export function DocsCopyPage({
           <DropdownMenuContent align="end" className="shadow-none">
             {Object.entries(menuItems).map(([key, value]) => (
               <DropdownMenuItem key={key} asChild>
-                {value(url)}
+                {value(url, labels[key as keyof typeof menuItems])}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -137,7 +139,7 @@ export function DocsCopyPage({
               key={key}
               className="*:[svg]:text-muted-foreground w-full justify-start text-base font-normal"
             >
-              {value(url)}
+              {value(url, labels[key as keyof typeof menuItems])}
             </Button>
           ))}
         </PopoverContent>

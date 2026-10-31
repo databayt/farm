@@ -2,6 +2,8 @@ import { getImageProps } from "next/image"
 import { Cormorant_Garamond } from "next/font/google"
 import { ArrowDown } from "lucide-react"
 
+import { NotTranslated } from "@/components/internationalization/not-translated"
+
 import { copy } from "./copy"
 import { HERO } from "./hero.generated"
 import { WatchFilm } from "./watch-film"
@@ -68,6 +70,7 @@ export function Hero() {
         <div className="farm-intro-3 mt-8 flex flex-wrap items-center gap-x-10 gap-y-5 text-[15px] tracking-[0.02em] uppercase">
           <WatchFilm className="text-soil inline-flex h-14 cursor-pointer items-center gap-5 bg-[rgb(214_207_190/0.92)] px-7 uppercase backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]" />
         </div>
+        <NotTranslated className="farm-intro-3 text-chalk/80 mt-6" />
       </div>
 
       <a

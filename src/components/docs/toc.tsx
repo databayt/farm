@@ -50,9 +50,12 @@ function useActiveItem(itemIds: string[]) {
 
 export function DocsTableOfContents({
   toc,
+  label,
   variant = "list",
   className,
 }: {
+  // "On This Page", in the reader's language (D-058)
+  label: string
   toc?: {
     title?: React.ReactNode
     url: string
@@ -67,7 +70,7 @@ export function DocsTableOfContents({
     [toc]
   )
   const activeHeading = useActiveItem(itemIds)
-  const onThisPageText = "On This Page"
+  const onThisPageText = label
 
   if (!toc?.length) {
     return null

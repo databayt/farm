@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 
 import { cn } from "@/lib/utils"
+import { LanguageSwitch } from "@/components/internationalization/language-switch"
 import { SiteMenu } from "@/components/site-menu"
 import type { Nav } from "@/components/site/nav"
 
@@ -55,6 +56,8 @@ export function SiteHeader({ nav, overlay = false }: { nav: Nav; overlay?: boole
       <Link href={nav.docs.href} className="px-2 text-sm font-medium transition-opacity hover:opacity-70">
         {nav.docs.label}
       </Link>
+      <LanguageSwitch to={nav.language.to} label={nav.language.label}
+        className="px-2 text-sm font-medium transition-opacity hover:opacity-70" />
       <SiteMenu nav={nav} className="-me-2" />
     </header>
   )

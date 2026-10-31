@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { BlurImg } from "@/components/atom/blur-img"
 import { ItemRail, type RailItem } from "@/components/docs/item-rail"
 import { LocaleLink as Link } from "@/components/internationalization/locale-link"
+import { NotTranslated } from "@/components/internationalization/not-translated"
 import { Button } from "@/components/ui/button"
 
 // The sections of every /en page, in /en/studio's pattern: a full-screen hero photo, the 2D and the 3D, then the
@@ -31,6 +32,7 @@ export function PageHero({ src, width, height, alt, title, className, imgClassNa
           <Button asChild className="mt-6">
             <Link href="/#enquire">Book it now</Link>
           </Button>
+          <NotTranslated className="mt-4 text-white/80" />
         </div>
       </div>
     </section>

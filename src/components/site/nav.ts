@@ -1,4 +1,4 @@
-import type { Locale } from "@/components/internationalization/config"
+import { i18n, localeConfig, type Locale } from "@/components/internationalization/config"
 import { getDictionary } from "@/components/internationalization/dictionaries"
 import site from "@/components/site/places.json"
 
@@ -10,15 +10,19 @@ export type Nav = {
   menu: { open: string; close: string; pages: string }
   pages: { href: string; label: string }[]
   docs: { href: string; label: string }
+  // the other language, named in itself
+  language: { to: Locale; label: string }
 }
 
 export async function getNav(lang: Locale): Promise<Nav> {
   const t = await getDictionary(lang)
+  const other = i18n.locales.find((l) => l !== lang) ?? i18n.defaultLocale
   return {
     lang,
     title: t.site.name,
     menu: t.menu,
     pages: site.places.map((id) => ({ href: `/${lang}/${id}`, label: t.places?.[id as keyof typeof t.places] ?? id })),
     docs: { href: `/${lang}/docs`, label: t.site.docs },
+    language: { to: other, label: localeConfig[other].nativeName },
   }
 }

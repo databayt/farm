@@ -75,7 +75,8 @@ async function DocsArticle({ params }: Pick<PageProps<"/[lang]/docs/[[...slug]]"
             <div className="flex items-start justify-between gap-4">
               <h1 className="scroll-m-24 text-3xl font-semibold tracking-tight">{doc.title}</h1>
               <div className="docs-nav print:hidden bg-background/80 border-border/50 fixed inset-x-0 bottom-0 isolate z-50 flex items-center gap-2 border-t px-6 py-4 backdrop-blur-sm sm:static sm:z-0 sm:border-t-0 sm:bg-transparent sm:px-0 sm:pt-1.5 sm:backdrop-blur-none">
-                <DocsCopyPage page={raw} url={`${ORIGIN}${page.url}`} />
+                <DocsCopyPage page={raw} url={`${ORIGIN}${page.url}`}
+                  labels={{ copy: t.docs.copyPage, chatgpt: t.docs.openInChatGPT, claude: t.docs.openInClaude }} />
                 {neighbours.previous && (
                   <Button variant="secondary" size="icon" className="extend-touch-target ms-auto size-8 shadow-none md:size-7" asChild>
                     <Link href={neighbours.previous.url}>
@@ -128,7 +129,7 @@ async function DocsArticle({ params }: Pick<PageProps<"/[lang]/docs/[[...slug]]"
         <div className="h-(--top-spacing) shrink-0" />
         {doc.toc?.length ? (
           <div className="no-scrollbar overflow-y-auto px-8">
-            <DocsTableOfContents toc={doc.toc} />
+            <DocsTableOfContents toc={doc.toc} label={t.docs.onThisPage} />
             <div className="h-12" />
           </div>
         ) : null}
