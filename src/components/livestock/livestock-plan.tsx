@@ -1,10 +1,14 @@
 import { getWords } from "@/components/internationalization/words"
+import { Chain, Dim, Name, Note } from "@/components/drawing/dims"
+import { frame, tier } from "@/components/drawing/geometry"
 
 import livestock from "./livestock.json"
 import { words } from "./words"
 
 // The livestock yard drawn in the pattern of the studio's plan (public/designs/studio/render/plan.svg): solid walls
-// in black, fittings in thin outline, what is where named in one row above and only the two overall dimensions.
+// in black, fittings in thin outline, and its dimensions as the studio's plan sets them (src/components/drawing),
+// past the planting round the outline: the back's zones named (cats, shed, tank, compost, dogs), the gate in the
+// front then the width, the dogs' run down the east side then the depth, and the shed's depth outside its eaves.
 // One outline holds it all (D-039, D-047): one post-and-rail fence all round, as in the hero. The herd's shed,
 // as the founder's photo's (D-044), opens down the page onto the village yard, toward the paddock and the viewer of
 // the 3D. Units are
@@ -17,12 +21,8 @@ const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEff
 const fine = { ...line, strokeWidth: 0.6 } as const
 const dashed = { ...line, strokeDasharray: "4 3" } as const
 const solid = { fill: "currentColor" } as const
-const font = { fontFamily: "Helvetica, Arial, sans-serif", fill: "currentColor" } as const
-const label = { ...font, fontSize: 0.17, fontWeight: 700, letterSpacing: "0.03em" } as const
-const small = { ...font, fontSize: 0.13 } as const
 
 const f = (n: number) => +n.toFixed(3)
-const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
 type Box = { x0: number; x1: number; y0: number; y1: number }
 const box = (b: Box) => rect(b.x0, b.y0, b.x1, b.y1)
@@ -50,30 +50,6 @@ function Gate({ x, y, w, c, o }: { x: number; y: number; w: number; c: [number, 
   )
 }
 
-function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.07, cx = f((x0 + x1) / 2)
-  return (
-    <g>
-      <line x1={x0} x2={x1} y1={y} y2={y} {...line} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...line} />)}
-      <rect {...rect(cx - 0.32, y - 0.1, cx + 0.32, y + 0.1)} className="fill-background" />
-      <text x={cx} y={f(y + 0.045)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
-    </g>
-  )
-}
-// the same, standing: the text turned to read down the page, as the studio's
-function DimensionUp({ y0, y1, x }: { y0: number; y1: number; x: number }) {
-  const tick = 0.07, cy = f((y0 + y1) / 2)
-  return (
-    <g>
-      <line x1={x} x2={x} y1={y0} y2={y1} {...line} />
-      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...line} />)}
-      <rect {...rect(x - 0.1, cy - 0.32, x + 0.1, cy + 0.32)} className="fill-background" />
-      <text x={f(x + 0.045)} y={cy} textAnchor="middle" transform={`rotate(90 ${f(x + 0.045)} ${cy})`} style={small}>{mm(y1 - y0)}</text>
-    </g>
-  )
-}
-
 // `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
 export async function LivestockPlan({ title, className }: { title?: string; className?: string }) {
   const w = (await getWords(words)).plan
@@ -86,11 +62,12 @@ export async function LivestockPlan({ title, className }: { title?: string; clas
   const green = [...planting.shrubs, ...planting.bananas] // the planting round the outline
   const edge = { x0: Math.min(...green.map((b) => b.x - b.r)), x1: Math.max(...green.map((b) => b.x + b.r)),
     y0: Math.min(...green.map((b) => b.y - b.r)), y1: Math.max(...planting.beds.map((b) => b.y1)) }
-  const x0 = edge.x0 - 0.3, x1 = edge.x1 + 0.75
-  const dimY = edge.y1 + 0.75, top = edge.y0 - 0.3, bottom = dimY + 0.6
-  const row = yards.y0 - 0.3 // the names, in one row above the back fence
+  // the drawing to the planting's edge, then its dimensions' reach (studio mm): the names over the back's chain, the
+  // name and the overall past the front's, two tiers down the east side; each chain starts past the planting
+  const { k, viewBox } = frame(edge, { top: 14, right: 13, bottom: 19, left: 2 })
+  const past = { top: (yards.y0 - edge.y0) / k, bottom: (edge.y1 - Y) / k, right: (edge.x1 - yards.x1) / k }
   return (
-    <svg viewBox={`${f(x0)} ${f(top)} ${f(x1 - x0)} ${f(bottom - top)}`} role="img" aria-label={title} className={className}>
+    <svg viewBox={viewBox} role="img" aria-label={title} className={className}>
       {/* The outline: one post-and-rail fence all round, open on the planting as in the hero, one gate of two leaves
           to the paddock */}
       <Fence x0={yards.x0} y0={yards.y0} x1={yards.x1} y1={yards.y0} />
@@ -195,19 +172,21 @@ export async function LivestockPlan({ title, className }: { title?: string; clas
         </g>
       ))}
 
-      {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH; the rest in place */}
-      {([
-        [cats.house.x, name.cats], [0, name.shed], [tank.x, name.tank],
-        [compost.x0 + compost.bay / 2, name.compost], [(dogs.x0 + dogs.x1) / 2, name.dogs],
-      ] as const).map(([x, t]) => <text key={t} x={f(x)} y={f(row)} textAnchor="middle" style={label}>{t}</text>)}
-      <text x={-1.0} y={3.4} textAnchor="middle" style={label}>{name.yard}</text>
-      <text x={dovecote.x} y={f(dovecote.y + dovecote.s / 2 + 0.22)} textAnchor="middle" style={small}>{name.doves}</text>
-      <text x={f((bench.x0 + bench.x1) / 2)} y={f(bench.y + 0.4)} textAnchor="middle" style={small}>{name.bench}</text>
-      <text x={f(yg.x0 + yg.w / 2)} y={f(bottom - 0.12)} textAnchor="middle" style={small}>{name.paddock}</text>
-      <text x={f((planting.beds[1].x0 + planting.beds[1].x1) / 2)} y={f(planting.beds[1].y1 + 0.3)} textAnchor="middle" style={small}>{name.vegetables}</text>
+      <Name k={k} x={-1.0} y={3.4}>{name.yard}</Name>
+      <Note k={k} x={dovecote.x} y={dovecote.y + dovecote.s / 2 + 0.2}>{name.doves}</Note>
+      <Note k={k} x={(bench.x0 + bench.x1) / 2} y={bench.y + 0.36}>{name.bench}</Note>
+      <Note k={k} x={(planting.beds[1].x0 + planting.beds[1].x1) / 2} y={(Y + planting.beds[1].y0) / 2}>{name.vegetables}</Note>
 
-      <Dimension x0={yards.x0} x1={yards.x1} y={f(dimY)} />
-      <DimensionUp y0={yards.y0} y1={Y} x={f(edge.x1 + 0.4)} />
+      {/* The back: what is where along it, named as the studio's zones */}
+      <Chain k={k} along="x" at={[yards.x0, -L, L, compost.x0, dogs.x0, yards.x1]} edge={yards.y0} side="top" base={past.top}
+        names={[name.cats, name.shed, name.tank, name.compost, name.dogs]} />
+      {/* The front: the gate to the paddock, then the outline's width */}
+      <Chain k={k} along="x" at={[yards.x0, yg.x0, yg.x0 + yg.w, yards.x1]} edge={Y} side="bottom" base={past.bottom}
+        names={[null, name.paddock, null]} overall />
+      {/* The east side: the dogs' run, then the outline's depth */}
+      <Chain k={k} along="y" at={[yards.y0, dogs.y1, Y]} edge={yards.x1} side="right" base={past.right} overall />
+      {/* The shed's depth, outside its thatch */}
+      <Dim k={k} a={[-L, -W]} b={[-L, W]} off={shelter.roof.over / k + tier(1)} />
     </svg>
   )
 }

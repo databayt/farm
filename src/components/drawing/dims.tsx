@@ -39,22 +39,23 @@ export function Dim({ k, a, b, off, label, size = STUDIO.figure }: {
   return <Drawn g={dimension(a, b, off, k, text, size)} label={text} value={value} />
 }
 
-/** A horizontal dimension of the edge at y from x0 to x1, drawn above or below it at a tier (1, 2, 3 …). */
-export function HDim({ k, x0, x1, y, side = "bottom", at = 1, label, prefix, size = STUDIO.figure }: {
-  k: number; x0: number; x1: number; y: number; side?: "top" | "bottom"; at?: number; label?: string; prefix?: string; size?: number
+/** A horizontal dimension of the edge at y from x0 to x1, drawn above or below it at a tier (1, 2, 3 …), `base` studio
+ *  millimetres further out when something stands in front of the edge (a deck, planting). */
+export function HDim({ k, x0, x1, y, side = "bottom", at = 1, base = 0, label, prefix, size = STUDIO.figure }: {
+  k: number; x0: number; x1: number; y: number; side?: "top" | "bottom"; at?: number; base?: number; label?: string; prefix?: string; size?: number
 }): React.JSX.Element {
   const [a, b] = x0 < x1 ? [x0, x1] : [x1, x0]
-  const off = (side === "bottom" ? 1 : -1) * tier(at)
+  const off = (side === "bottom" ? 1 : -1) * (base + tier(at))
   const text = label ?? `${prefix ? `${prefix} ` : ""}${mm(b - a)}`
   return <Drawn g={dimension([a, y], [b, y], off, k, text, size)} label={text} value={b - a} />
 }
 
 /** A vertical dimension of the edge at x from y0 to y1, drawn left or right of it at a tier; it reads down the page. */
-export function VDim({ k, y0, y1, x, side = "left", at = 1, label, prefix, size = STUDIO.figure }: {
-  k: number; y0: number; y1: number; x: number; side?: "left" | "right"; at?: number; label?: string; prefix?: string; size?: number
+export function VDim({ k, y0, y1, x, side = "left", at = 1, base = 0, label, prefix, size = STUDIO.figure }: {
+  k: number; y0: number; y1: number; x: number; side?: "left" | "right"; at?: number; base?: number; label?: string; prefix?: string; size?: number
 }): React.JSX.Element {
   const [a, b] = y0 < y1 ? [y0, y1] : [y1, y0]
-  const off = (side === "left" ? 1 : -1) * tier(at)
+  const off = (side === "left" ? 1 : -1) * (base + tier(at))
   const text = label ?? `${prefix ? `${prefix} ` : ""}${mm(b - a)}`
   return <Drawn g={dimension([x, a], [x, b], off, k, text, size)} label={text} value={b - a} />
 }
@@ -64,19 +65,19 @@ export function VDim({ k, y0, y1, x, side = "left", at = 1, label, prefix, size 
  * line over each piece, then the overall when `overall` is set (the next tier, or past the names), as the studio's zone chain on its
  * back wall. `along` is the axis the chain runs on; `edge` the other coordinate of the measured edge.
  */
-export function Chain({ k, along, at, edge, side, tier: t = 1, names, overall = false, size = STUDIO.figure }: {
-  k: number; along: "x" | "y"; at: readonly number[]; edge: number; side: Side; tier?: number
+export function Chain({ k, along, at, edge, side, tier: t = 1, base = 0, names, overall = false, size = STUDIO.figure }: {
+  k: number; along: "x" | "y"; at: readonly number[]; edge: number; side: Side; tier?: number; base?: number
   names?: readonly (string | null)[]; overall?: boolean | number; size?: number
 }): React.JSX.Element {
   const pieces = at.slice(1).map((v, i) => [at[i], v] as const)
   // the overall: the next tier, or the one past the names when the chain has them (a number sets the tier)
   const ot = typeof overall === "number" ? overall : names?.some(Boolean) ? t + 2 : t + 1
-  const nameOff = (tier(t) + STUDIO.names) * k * (side === "top" || side === "left" ? -1 : 1)
+  const nameOff = (base + tier(t) + STUDIO.names) * k * (side === "top" || side === "left" ? -1 : 1)
   return (
     <g>
       {pieces.map(([p, q], i) => along === "x"
-        ? <HDim key={i} k={k} x0={p} x1={q} y={edge} side={side === "top" ? "top" : "bottom"} at={t} size={size} />
-        : <VDim key={i} k={k} y0={p} y1={q} x={edge} side={side === "right" ? "right" : "left"} at={t} size={size} />)}
+        ? <HDim key={i} k={k} x0={p} x1={q} y={edge} side={side === "top" ? "top" : "bottom"} at={t} base={base} size={size} />
+        : <VDim key={i} k={k} y0={p} y1={q} x={edge} side={side === "right" ? "right" : "left"} at={t} base={base} size={size} />)}
       {names?.map((n, i) => {
         if (!n || !pieces[i]) return null
         const mid = (pieces[i][0] + pieces[i][1]) / 2
@@ -85,8 +86,8 @@ export function Chain({ k, along, at, edge, side, tier: t = 1, names, overall = 
           : <Name key={`n${i}`} k={k} x={edge + nameOff} y={mid} rotate={90}>{n}</Name>
       })}
       {overall !== false && (along === "x"
-        ? <HDim k={k} x0={at[0]} x1={at[at.length - 1]} y={edge} side={side === "top" ? "top" : "bottom"} at={ot} size={size} />
-        : <VDim k={k} y0={at[0]} y1={at[at.length - 1]} x={edge} side={side === "right" ? "right" : "left"} at={ot} size={size} />)}
+        ? <HDim k={k} x0={at[0]} x1={at[at.length - 1]} y={edge} side={side === "top" ? "top" : "bottom"} at={ot} base={base} size={size} />
+        : <VDim k={k} y0={at[0]} y1={at[at.length - 1]} x={edge} side={side === "right" ? "right" : "left"} at={ot} base={base} size={size} />)}
     </g>
   )
 }
