@@ -1,7 +1,10 @@
 // The net system drawn inline, in the studio's service diagrams' pattern so it runs full width and follows the theme:
 // an elevation along the net line, seen from behind one end line, with the ground cut away under the two posts to show
 // their footings and sleeves. Every size comes from volleyball.json (net, posts, court); the footings in the 3D drawing
-// below are the same orange.
+// below are the same orange. Its words are in words.tsx, in `lang`.
+
+import type { Locale } from "@/components/internationalization/config"
+import { words } from "@/components/volleyball/words"
 
 export const FOOTING_COLOUR = "#d9822b"
 
@@ -11,7 +14,8 @@ type Posts = { out: number; h: number; d: number; pad: { t: number; h: number };
 const W = 1600
 const H = 640
 
-export function NetDiagram({ net, posts, courtW }: { net: Net; posts: Posts; courtW: number }) {
+export function NetDiagram({ net, posts, courtW, lang = "en" }: { net: Net; posts: Posts; courtW: number; lang?: Locale }) {
+  const w = words[lang].netDiagram
   const S = 100 // px a metre
   const cx = W / 2, g = 430 // the centre line and the grass, in px
   const X = (m: number) => cx + m * S, Y = (m: number) => g - m * S
@@ -32,7 +36,7 @@ export function NetDiagram({ net, posts, courtW }: { net: Net; posts: Posts; cou
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="stroke-foreground h-auto w-full min-w-[960px]"
       strokeWidth={2} strokeLinecap="round" fill="none"
-      aria-label={`Net system, seen along the net line: two steel posts ${mm(posts.h)} mm high, ${mm(posts.out)} mm outside the side lines, padded to ${mm(posts.pad.h)} mm, each dropped into a steel sleeve cast in a concrete footing ${mm(posts.footing.w)} mm square and ${mm(posts.footing.depth)} mm deep, its top flush with the grass; the net ${mm(net.l)} mm long and ${mm(net.d)} mm deep, its top ${mm(net.men)} mm above the court for men and ${mm(net.women)} mm for women, a side band and an antenna over each side line, the top cable to a winch on the near post at ${mm(posts.winch)} mm.`}>
+      aria-label={w.aria({ men: mm(net.men), women: mm(net.women), fw: mm(posts.footing.w), fd: mm(posts.footing.depth), h: mm(posts.h), d: mm(posts.d), out: mm(posts.out), pad: mm(posts.pad.h), winch: mm(posts.winch), nl: mm(net.l), nd: mm(net.d), mesh: "", top: "", foot: "", al: mm(net.antenna.l), ad: "", above: mm(net.antenna.above) })}>
       {/* the grass, and the ground cut open under each post */}
       <path d={`M60 ${g} H${W - 60}`} strokeWidth={2.5} />
       {[-1, 1].map((s) => {
@@ -79,22 +83,22 @@ export function NetDiagram({ net, posts, courtW }: { net: Net; posts: Posts; cou
 
       {/* heights and widths */}
       <path d={`M${X(-net.l / 2) - 30} ${Y(net.women)} H${X(net.l / 2) + 30}`} strokeDasharray="6 6" strokeWidth={1.2} className="stroke-muted-foreground" />
-      {dim(X(-pz) - 60, 0, posts.h, `${mm(posts.h)} post`, -1)}
-      {dim(X(-1.2), 0, net.men, `${mm(net.men)} men`, 1)}
-      {dim(X(1.2), 0, net.women, `${mm(net.women)} women`, 1)}
-      {dim(X(pz) - 40, 0, posts.pad.h, `${mm(posts.pad.h)} pad`, -1)}
-      {dim(X(pz) + 70, -posts.footing.depth, 0, `${mm(posts.footing.depth)} deep`, 1)}
+      {dim(X(-pz) - 60, 0, posts.h, w.post(mm(posts.h)), -1)}
+      {dim(X(-1.2), 0, net.men, w.men(mm(net.men)), 1)}
+      {dim(X(1.2), 0, net.women, w.women(mm(net.women)), 1)}
+      {dim(X(pz) - 40, 0, posts.pad.h, w.pad(mm(posts.pad.h)), -1)}
+      {dim(X(pz) + 70, -posts.footing.depth, 0, w.deep(mm(posts.footing.depth)), 1)}
       <path d={`M${X(-half)} ${g + 30} H${X(half)} M${X(-half)} ${g + 22} V${g + 38} M${X(half)} ${g + 22} V${g + 38}`} strokeWidth={1.2} className="stroke-muted-foreground" />
-      <text x={cx} y={g + 54} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">{mm(courtW)} between the side lines · posts {mm(posts.out)} outside them</text>
+      <text x={cx} y={g + 54} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">{w.between(mm(courtW), mm(posts.out))}</text>
 
-      {label("N", `net ${mm(net.l)} × ${mm(net.d)}, 100 mm mesh`, X(-3.2), Y(net.men) - 22, "middle")}
-      {label("A1, A2", `antennae ${mm(net.antenna.l)}, ${mm(net.antenna.above)} above the net`, X(half) + 16, Y(net.men + net.antenna.above) + 10)}
-      {label("W", "winch, near post", X(pz) + 40, Y(posts.winch) + 5)}
-      {label("P1, P2", "steel posts in sleeves", X(-pz) - 10, Y(posts.h) - 16)}
-      {label("S1, S2", `footing ${mm(posts.footing.w)} square, sleeve cast in, top flush`, X(-pz) - posts.footing.w * S, g + posts.footing.depth * S + 30)}
+      {label("N", w.N(mm(net.l), mm(net.d)), X(-3.2), Y(net.men) - 22, "middle")}
+      {label("A1, A2", w.A(mm(net.antenna.l), mm(net.antenna.above)), X(half) + 16, Y(net.men + net.antenna.above) + 10)}
+      {label("W", w.W, X(pz) + 40, Y(posts.winch) + 5)}
+      {label("P1, P2", w.P, X(-pz) - 10, Y(posts.h) - 16)}
+      {label("S1, S2", w.S(mm(posts.footing.w)), X(-pz) - posts.footing.w * S, g + posts.footing.depth * S + 30)}
 
       <text x={60} y={H - 22} stroke="none" className="fill-muted-foreground text-[14px]">
-        No guy wires: the posts stand in their sleeves and lift out to mow or for the rains, a cap closing each sleeve · design intent until a builder sees the soil
+        {w.footer}
       </text>
     </svg>
   )

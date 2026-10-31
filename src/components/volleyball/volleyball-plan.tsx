@@ -1,5 +1,8 @@
 import { Dimension, DimensionUp, Player, Serve, dashed, f, faint, label, medium, mm, rect, small, thin, tone } from "./court-drawing"
+import { getWords } from "@/components/internationalization/words"
+
 import volleyball from "./volleyball.json"
+import { words } from "./words"
 
 // The court drawn in the pattern of the livestock plan (src/components/livestock/livestock-plan.tsx): thin lines, no
 // colour, bold capitals and dimensions in millimetres. As on the master plan, the court's length runs across the
@@ -12,7 +15,11 @@ const { court, net, posts, benches, shade, store, match } = volleyball
 // rotation positions as a team faces the net, front row 4 3 2 from left to right, back row 5 6 1
 const rows = [[4, 3, 2], [5, 6, 1]] as const
 
-export function VolleyballPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function VolleyballPlan({ title, className }: { title?: string; className?: string }) {
+  const w = await getWords(words)
+  const name = w.plan.labels
+  title ??= w.plan.title
   const L = court.l / 2, W = court.w / 2, t = court.line
   const FX = L + court.free, FY = W + court.free // the free zone's edge
   const py = W + posts.out // the posts, 1 m outside the side lines
@@ -92,26 +99,26 @@ export function VolleyballPlan({ title, className }: { title: string; className?
 
       {[-1, 1].map((s) => (
         <g key={s}>
-          <text x={f(s * court.attack / 2)} y={f(-W + 0.65)} textAnchor="middle" style={{ ...small, fontSize: 0.34 }}>FRONT ZONE</text>
-          <text x={f(s * (court.attack + L) / 2)} y={f(-W + 0.65)} textAnchor="middle" style={{ ...small, fontSize: 0.34 }}>BACK ZONE</text>
-          <text x={f(s * (L + court.free / 2))} y={-0.95} textAnchor="middle" style={small}>SERVICE</text>
-          <text x={f(s * (L + court.free / 2))} y={-0.38} textAnchor="middle" style={small}>ZONE</text>
+          <text x={f(s * court.attack / 2)} y={f(-W + 0.65)} textAnchor="middle" style={{ ...small, fontSize: 0.34 }}>{name.frontZone}</text>
+          <text x={f(s * (court.attack + L) / 2)} y={f(-W + 0.65)} textAnchor="middle" style={{ ...small, fontSize: 0.34 }}>{name.backZone}</text>
+          <text x={f(s * (L + court.free / 2))} y={-0.95} textAnchor="middle" style={small}>{name.service}</text>
+          <text x={f(s * (L + court.free / 2))} y={-0.38} textAnchor="middle" style={small}>{name.zone}</text>
         </g>
       ))}
-      <text x={-6} y={f(W + court.free / 2 + 0.15)} textAnchor="middle" style={small}>FREE ZONE</text>
-      <text x={0.3} y={f(-W - 0.45)} style={small}>{`NET ${mm(net.men)} MEN · ${mm(net.women)} WOMEN`}</text>
-      <text x={0.3} y={f(W + 0.45)} style={small}>ANTENNA</text>
-      <text x={0.3} y={f(py + 0.15)} style={small}>POST</text>
-      <text x={0.5} y={f(py + match.referee + 0.15)} style={small}>1ST REFEREE, ON A STAND</text>
-      <text x={0.45} y={f(-(py + match.referee) + 0.15)} style={small}>2ND REFEREE</text>
-      <text x={f(match.server[0])} y={f(match.server[1] + 0.95)} textAnchor="middle" style={small}>SERVER</text>
-      <text x={-6} y={f(-W - 1.1)} textAnchor="middle" style={label}>SERVING</text>
-      <text x={6} y={f(-W - 1.1)} textAnchor="middle" style={label}>RECEIVING</text>
-      {benches.x.map((x) => <text key={x} x={f(x + shade.r + 0.25)} y={f(by - 0.02)} style={small}>BENCH</text>)}
-      {benches.x.map((x) => <text key={x} x={x} y={f(by - benches.d - shade.behind - 0.5)} textAnchor="middle" style={small}>SHADE</text>)}
-      <text x={store.x} y={f(by + 0.5)} textAnchor="middle" style={small}>BALL STORE</text>
-      <text x={0} y={10.75} textAnchor="middle" style={small}>LINES 50 mm, INSIDE THE COURT · POSTS 1,000 OUTSIDE THE SIDE LINES · TOWARD THE OPEN LAWN</text>
-      <text x={0} y={11.55} textAnchor="middle" style={small}>ROTATION AT THE SERVE: 4 3 2 AT THE NET, 5 6 1 BEHIND · PLAYERS LARGER THAN LIFE</text>
+      <text x={-6} y={f(W + court.free / 2 + 0.15)} textAnchor="middle" style={small}>{name.freeZone}</text>
+      <text x={0.3} y={f(-W - 0.45)} style={small}>{name.net(mm(net.men), mm(net.women))}</text>
+      <text x={0.3} y={f(W + 0.45)} style={small}>{name.antenna}</text>
+      <text x={0.3} y={f(py + 0.15)} style={small}>{name.post}</text>
+      <text x={0.5} y={f(py + match.referee + 0.15)} style={small}>{name.referee1}</text>
+      <text x={0.45} y={f(-(py + match.referee) + 0.15)} style={small}>{name.referee2}</text>
+      <text x={f(match.server[0])} y={f(match.server[1] + 0.95)} textAnchor="middle" style={small}>{name.server}</text>
+      <text x={-6} y={f(-W - 1.1)} textAnchor="middle" style={label}>{name.serving}</text>
+      <text x={6} y={f(-W - 1.1)} textAnchor="middle" style={label}>{name.receiving}</text>
+      {benches.x.map((x) => <text key={x} x={f(x + shade.r + 0.25)} y={f(by - 0.02)} style={small}>{name.bench}</text>)}
+      {benches.x.map((x) => <text key={x} x={x} y={f(by - benches.d - shade.behind - 0.5)} textAnchor="middle" style={small}>{name.shade}</text>)}
+      <text x={store.x} y={f(by + 0.5)} textAnchor="middle" style={small}>{name.ballStore}</text>
+      <text x={0} y={10.75} textAnchor="middle" style={small}>{name.foot1}</text>
+      <text x={0} y={11.55} textAnchor="middle" style={small}>{name.foot2}</text>
       {[[-FX, -L], [-L, -court.attack], [-court.attack, 0], [0, court.attack], [court.attack, L], [L, FX]].map(([x0, x1]) => (
         <Dimension key={x0} x0={x0} x1={x1} y={f(FY + 0.85)} />
       ))}
