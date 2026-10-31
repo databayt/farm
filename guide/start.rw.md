@@ -53,7 +53,7 @@ Buri hantu harayakurikiza; [gahunda y'imirimo y'ifamu](farm/plan.md) iyafite ku 
 | [Ubworozi](livestock/plan.md) | Uku kwezi witegure gusa: iyandikishe, shaka umuganga w'amatungo, pima intera uvuye ku kiyaga, ubake uruzitiro n'amazi. |
 | [Ifamu](farm/plan.md) | Pin cyangwa icyangombwa cy'ubutaka mbere; hanyuma ibigerageza, umuriro, amazi na septic buri hantu hashingiraho. |
 
-Paji umunani ziri no mu Kinyarwanda, zahinduwe na mudasobwa kugeza zisuzumwe n'umuntu uvuga Ikinyarwanda kavukire: gahunda, ibikoresho, amashanyarazi n'imiyoboro y'amazi bya sitidiyo, gahunda y'icyumba cy'abashyitsi, gahunda z'ubuhinzi n'ubworozi, n'amashanyarazi y'ifamu. Zose uretse ibikoresho bya sitidiyo na gahunda y'icyumba cy'abashyitsi zicapwa kuri A4 uhereye ku murongo uri hejuru yazo, kugira ngo zisangizwe kuri WhatsApp.
+Buri paji iri ku rutonde rw'uruhande (sidebar) iri no mu Kinyarwanda, yahinduwe na mudasobwa kugeza isuzumwe n'umuntu uvuga Ikinyarwanda kavukire. Esheshatu muri zo zicapwa kuri A4 uhereye ku murongo uri hejuru yazo, kugira ngo zisangizwe kuri WhatsApp: gahunda, amashanyarazi n'imiyoboro y'amazi bya sitidiyo, gahunda z'ubuhinzi n'ubworozi, n'amashanyarazi y'ifamu.
 
 ## Ibyo dukeneye kuri nyir'ifamu
 
@@ -62,6 +62,6 @@ Paji umunani ziri no mu Kinyarwanda, zahinduwe na mudasobwa kugeza zisuzumwe n'u
 3. **Guteka kuri gaz cyangwa ku mashanyarazi mu gikoni gikuru?** Bihindura ingano ya sisitemu y'imirasire y'izuba.
 4. **Video z'umwimerere,** zoherejwe kuri WhatsApp nka "Document", zigenewe filime.
 
-## Ibitari iby'uku kwezi
+## Ibitari kuri uru rubuga
 
-Izi paji ntiziri ku rutonde rw'uruhande (sidebar) ariko ziracyafunguka uhereye ku mirongo yazo: [uko ifamu ikora](operations.md), [filime](film.md), [uburyo bw'ubucuruzi](business/model.md), [kwamamaza](business/marketing.md), [ifamu y'ikoranabuhanga](business/digital.md), paki yose ya sitidiyo ([studio package](../study/studio/studio.md)), [igitabo cy'ibyemezo](../study/execution/decision-log.md), [iminsi 90 ya mbere](../study/execution/first-90-days.md) y'inyigo n'inyigo y'ubushakashatsi ([incamake y'inyigo](../PROJECT_STATUS.md)).
+Inyigo iri inyuma y'izi gahunda iguma muri repo, ntiri ku rubuga: [igitabo cy'ibyemezo](../study/execution/decision-log.md), ubushakashatsi ([incamake y'inyigo](../PROJECT_STATUS.md)), [uburyo bw'ubucuruzi](business/model.md), [uko ifamu ikora](operations.md) na [filime](film.md). Buri murongo uyifungurira kuri GitHub.
