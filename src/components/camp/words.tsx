@@ -127,8 +127,8 @@ const rw: typeof en = {
   lawn: {
     title: "Ibyatsi byo gukambika",
     text: (l) => <>
-      Amahema {l.tents} ari ku byatsi byo gukambika hagati y'ibyumba by'abashyitsi n'aho bacana umuriro, kuri m {l.pitNear} kugeza
-      kuri {l.pitFar} uvuye ku nkombe yaho. Abakambitse bakoresha ubwiherero bubiri, aho kunyarira n'aho gukarabira by'ubwiherero
+      Amahema {l.tents} ari ku byatsi byo gukambika hagati y&rsquo;ibyumba by&rsquo;abashyitsi n&rsquo;aho bacana umuriro, kuri m {l.pitNear} kugeza
+      kuri {l.pitFar} uvuye ku nkombe yaho. Abakambitse bakoresha ubwiherero bubiri, aho kunyarira n&rsquo;aho gukarabira by&rsquo;ubwiherero
       rusange, kuri m {l.bathNear} kugeza kuri {l.bathFar} uvuye ku mahema ujya ku rugi rwabwo mu murongo ugororotse. Igishushanyo
       ntikigeza amashanyarazi cyangwa amazi aho amahema ashingwa: urumuri ni itara, kandi nta douche irahaba (niba ubwiherero
       rusange buzashyirwamo imwe ni ikibazo kitarasubizwa). Igikoni cy&rsquo;abashyitsi n&rsquo;aho kotsa inyama (D-028) biri ku

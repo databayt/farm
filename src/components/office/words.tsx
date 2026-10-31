@@ -150,10 +150,10 @@ const rw: typeof en = {
     figureAlt: "Igishushanyo cy'imirongo cy'ibiro kirebwa uturutse imbere: akabati k'umukara ku rukuta rw'inyuma iruhande rw'ameza manini, router hejuru yako, switch ya PoE na gateway imbere muri ko na UPS hasi munsi yako; umugozi w'ibara rya move ukurikira igisenge ugana kuri access point, n'umugozi wa magenta ugana kuri priza ya data hejuru y'ameza manini.",
     note: (link) => <>
       Router, switch na gateway biri mu kabati gato kamwe, ku muzunguruko wabyo bwite (C3) no kuri UPS, kugira ngo Wi-Fi
-      y'ifamu, kamera zayo na sensori zayo bikomeze gukora n'iyo umuriro wabuze. Imigozi ijyana n'iy'amashanyarazi, ku
+      y&rsquo;ifamu, kamera zayo na sensori zayo bikomeze gukora n&rsquo;iyo umuriro wabuze. Imigozi ijyana n&rsquo;iy&rsquo;amashanyarazi, ku
       gisenge ikamanuka kuri buri priza. Buri kimenyetso gifungura umurongo wacyo mu{" "}
       {link("/docs/office/electric#network-points", "mbonerahamwe y'ahantu")}. Uko itumanaho rigera aho hantu ntiharamenyekana
-      kugeza hakozwe isuzuma ry'imiyoboro yombi; ntimugure ibikoresho bya radiyo mbere yaryo.
+      kugeza hakozwe isuzuma ry&rsquo;imiyoboro yombi; ntimugure ibikoresho bya radiyo mbere yaryo.
     </>,
     diagram: {
       label: (n) => `Igishushanyo cy'urusobe: imiyoboro ibiri ya 4G ijya kuri router, router ijya kuri switch ya PoE y'imyanya 8 mu kabati k'ibiro, hamwe na edge gateway na UPS, hanyuma umugozi umwe kuri buri kimwe muri ${n}: access points, priza na kamera`,

@@ -16,8 +16,6 @@ const line = { fill: "none", stroke: "currentColor", strokeWidth: 0.9, vectorEff
 const fine = { ...line, strokeWidth: 0.5 } as const
 const dashed = { ...line, strokeDasharray: "4 3" } as const
 const solid = { fill: "currentColor" } as const
-const font = { fontFamily: "Helvetica, Arial, sans-serif", fill: "currentColor" } as const
-const small = { ...font, fontSize: 0.095 } as const
 
 const f = (n: number) => +n.toFixed(3)
 // the drawing with the door swung open, then its dimensions' reach (studio mm): the names over the top chain, two

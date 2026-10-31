@@ -175,8 +175,8 @@ const rw: typeof en = {
     title: "Urushundura n'inkingi",
     figureAlt: "Igishushanyo cy'imirongo cy'urushundura kirebwa hafi uturutse ku byatsi bifunguye: inkingi ebyiri zipfundikiye n'urushundura hagati yazo, antene hejuru ya buri murongo w'uruhande, winch ku nkingi ya hafi, imirongo y'ikibuga ku byatsi, kandi munsi ya buri nkingi fondasiyo yayo n'igituba cyayo bishushanyije binyuze mu byatsi mu ibara rya oranje.",
     note: (link) => <>
-      Buri nkingi yinjira mu gituba cy'icyuma cyasutswe muri fondasiyo yayo, bityo igahagarara nta migozi iyifashe kandi
-      ikavanwamo kugira ngo ibyatsi bikatwe cyangwa mu gihe cy'imvura. Fondasiyo zishushanyije zinyuze mu byatsi. Buri
+      Buri nkingi yinjira mu gituba cy&rsquo;icyuma cyasutswe muri fondasiyo yayo, bityo igahagarara nta migozi iyifashe kandi
+      ikavanwamo kugira ngo ibyatsi bikatwe cyangwa mu gihe cy&rsquo;imvura. Fondasiyo zishushanyije zinyuze mu byatsi. Buri
       kimenyetso gifungura umurongo wacyo mu {link("/docs/volleyball/net#points", "mbonerahamwe y'ahantu")}. Ingano ya
       fondasiyo itegereje ko umwubatsi abona ubutaka.
     </>,

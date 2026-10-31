@@ -222,12 +222,12 @@ const rw: typeof en = {
     title: "Amazi",
     figureAlt: "Igishushanyo cy'imirongo cy'umurima wose kirebwa uturutse ku ruhande rw'irembo, ibihingwa byakuweho: umuyoboro mukuru mu bururu bwijimye winjira unyuze mu irembo, umuyoboro ugabura mu bururu ku nzira nkuru no mu nzira zo hagati, valve y'icunga aho itiyo nkuru ya buri tsinda ivira, amatiyo makuru y'amatsinda atambitse ku mpera z'uturima, n'amatiyo abiri y'ibitonyanga y'ubururu bworoshye muri buri karima kateyemo.",
     note: (link) => <>
-      Umuyoboro mukuru winjira unyuze mu irembo uvuye ku kigega cy'ifamu no kuri pompe biri hafi y'ikigo (T, hamwe
-      n'akayunguruzo F, hanze y'igishushanyo). Imbere, umuyoboro ugabura ukurikira inzira nkuru ukazamuka ukamanuka ku
+      Umuyoboro mukuru winjira unyuze mu irembo uvuye ku kigega cy&rsquo;ifamu no kuri pompe biri hafi y&rsquo;ikigo (T, hamwe
+      n&rsquo;akayunguruzo F, hanze y&rsquo;igishushanyo). Imbere, umuyoboro ugabura ukurikira inzira nkuru ukazamuka ukamanuka ku
       mpera ya buri nkingi; buri tsinda rifite valve yaryo, ku buryo amazi make yuhira itsinda rimwe icyarimwe. Buri
       kimenyetso gifungura umurongo wacyo mu {link("/docs/farming/water#points", "mbonerahamwe y'ahantu")}. Uhire mu
       museke cyangwa nimugoroba, usasire uturima ibyatsi byumye, kandi mu gihembwe C utere gusa ibyo amazi yemejwe
-      n'igerageza rya borehole ashobora kuhira. Kuhira ubuso buri munsi ya ha 1 ntibisaba uruhushya.
+      n&rsquo;igerageza rya borehole ashobora kuhira. Kuhira ubuso buri munsi ya ha 1 ntibisaba uruhushya.
     </>,
     caption: "Byakozwe uhereye ku gishushanyo mbonera: uturima mbere yo gutera, kugira ngo ibitonyanga bigaragare",
     realAlt: "Ishusho imwe yakozwe nk'ifoto: uturima twijimye tw'ifumbire ku nzira z'umucanga, amatiyo abiri y'umukara y'ibitonyanga muri buri karima kateyemo, umuyoboro ugabura w'umukara ku nzira nkuru no ku mpera z'uturima ufite udusanduku twa valve tw'icunga, umuyoboro mukuru winjira ku irembo, uruzitiro, n'umurongo w'ibiti by'imbuto inyuma.",
