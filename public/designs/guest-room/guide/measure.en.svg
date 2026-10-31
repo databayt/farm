@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1300 -1450 14540 12400" width="2423" height="2067" font-family="Helvetica, Arial, sans-serif">
+<rect x="-1300" y="-1450" width="14540" height="12400" fill="#ffffff"/>
+<rect x="0" y="0" width="11940" height="4700" fill="#f4efe6" stroke="#9aa1a9" stroke-width="50"/>
+<rect x="-150" y="-150" width="300" height="300" fill="#9aa1a9" stroke="#1f2328" stroke-width="10"/>
+<rect x="11790" y="-150" width="300" height="300" fill="#9aa1a9" stroke="#1f2328" stroke-width="10"/>
+<rect x="-150" y="4550" width="300" height="300" fill="#9aa1a9" stroke="#1f2328" stroke-width="10"/>
+<rect x="11790" y="4550" width="300" height="300" fill="#9aa1a9" stroke="#1f2328" stroke-width="10"/>
+<text x="-750" y="2350" font-size="300" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -750 2350)">END A</text>
+<text x="12690" y="2350" font-size="300" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 12690 2350)">END B</text>
+<circle cx="-450" cy="-450" r="150" fill="#1d4ed8"/>
+<text x="-450" y="-446" font-size="187.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">11</text>
+<circle cx="12390" cy="-450" r="150" fill="#1d4ed8"/>
+<text x="12390" y="-446" font-size="187.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">11</text>
+<circle cx="-450" cy="5150" r="150" fill="#1d4ed8"/>
+<text x="-450" y="5154" font-size="187.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">11</text>
+<circle cx="12390" cy="5150" r="150" fill="#1d4ed8"/>
+<text x="12390" y="5154" font-size="187.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">11</text>
+<circle cx="5155" cy="-620" r="200" fill="#1d4ed8"/>
+<text x="5155" y="-616" font-size="250" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">6</text>
+<text x="5455" y="-620" font-size="250" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">BACK WALL</text>
+<text x="5970" y="-300" font-size="220" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">every window: B1, B2…</text>
+<line x1="0" y1="2350" x2="11940" y2="2350" stroke="#9aa1a9" stroke-width="40" stroke-dasharray="200 140"/>
+<text x="450" y="2090" font-size="240" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">JOINT</text>
+<circle cx="7402.8" cy="2350" r="200" fill="#1d4ed8"/>
+<text x="7402.8" y="2354" font-size="250" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">7</text>
+<line x1="2985" y1="0" x2="2985" y2="4700" stroke="#1f2328" stroke-width="14" stroke-dasharray="90 90"/>
+<line x1="5970" y1="0" x2="5970" y2="4700" stroke="#1f2328" stroke-width="14" stroke-dasharray="90 90"/>
+<line x1="8955" y1="0" x2="8955" y2="4700" stroke="#1f2328" stroke-width="14" stroke-dasharray="90 90"/>
+<circle cx="5970" cy="1269" r="200" fill="#1d4ed8"/>
+<text x="5970" y="1273" font-size="250" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">8</text>
+<line x1="0" y1="650" x2="11940" y2="650" stroke="#1d4ed8" stroke-width="18"/>
+<circle cx="2388" cy="650" r="200" fill="#1d4ed8"/>
+<text x="2388" y="654" font-size="250" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">1</text>
+<line x1="0" y1="4050" x2="11940" y2="4050" stroke="#1d4ed8" stroke-width="18"/>
+<circle cx="2388" cy="4050" r="200" fill="#1d4ed8"/>
+<text x="2388" y="4054" font-size="250" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">1</text>
+<line x1="400" y1="0" x2="400" y2="4700" stroke="#1d4ed8" stroke-width="18"/>
+<line x1="6420" y1="0" x2="6420" y2="4700" stroke="#1d4ed8" stroke-width="18"/>
+<line x1="11540" y1="0" x2="11540" y2="4700" stroke="#1d4ed8" stroke-width="18"/>
+<circle cx="6420" cy="3525" r="200" fill="#1d4ed8"/>
+<text x="6420" y="3529" font-size="250" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">2</text>
+<circle cx="5373" cy="300" r="200" fill="#1d4ed8"/>
+<text x="5373" y="304" font-size="250" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">9</text>
+<line x1="8955" y1="0" x2="11940" y2="4700" stroke="#1d4ed8" stroke-width="12" stroke-dasharray="120 90"/>
+<line x1="8955" y1="4700" x2="11940" y2="0" stroke="#1d4ed8" stroke-width="12" stroke-dasharray="120 90"/>
+<circle cx="10447.5" cy="2350" r="200" fill="#1d4ed8"/>
+<text x="10447.5" y="2354" font-size="250" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">10</text>
+<text x="5970" y="5350" font-size="270" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">FRONT WALL</text>
+<rect x="0" y="5950" width="11940" height="2350" fill="#f4efe6" stroke="#9aa1a9" stroke-width="30"/>
+<rect x="5330" y="6750" width="440" height="600" fill="#b91c1c" stroke="#1f2328" stroke-width="10"/>
+<text x="5550" y="7600" font-size="150" font-weight="400" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">red box</text>
+<rect x="840" y="6450" width="490" height="1050" fill="#cfe3f2" stroke="#1f2328" stroke-width="12"/>
+<circle cx="1085" cy="6975" r="170" fill="#1d4ed8"/>
+<text x="1085" y="6979" font-size="212.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">5</text>
+<text x="1085" y="8630" font-size="240" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">W1</text>
+<rect x="1420" y="6300" width="760" height="2000" fill="#cfe3f2" stroke="#1f2328" stroke-width="12"/>
+<circle cx="1800" cy="7300" r="170" fill="#1d4ed8"/>
+<text x="1800" y="7304" font-size="212.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">4</text>
+<text x="1800" y="8630" font-size="240" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">D1</text>
+<rect x="3660" y="6450" width="590" height="1050" fill="#cfe3f2" stroke="#b91c1c" stroke-width="40"/>
+<circle cx="3955" cy="6975" r="170" fill="#1d4ed8"/>
+<text x="3955" y="6979" font-size="212.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">5</text>
+<text x="3955" y="8630" font-size="240" font-weight="700" fill="#b91c1c" text-anchor="middle" dominant-baseline="middle">W2</text>
+<circle cx="3955" cy="8630" r="260" fill="none" stroke="#b91c1c" stroke-width="22"/>
+<rect x="4270" y="6300" width="810" height="2000" fill="#cfe3f2" stroke="#1f2328" stroke-width="12"/>
+<circle cx="4675" cy="7300" r="170" fill="#1d4ed8"/>
+<text x="4675" y="7304" font-size="212.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">4</text>
+<text x="4675" y="8630" font-size="240" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">D2</text>
+<rect x="6650" y="6450" width="620" height="1050" fill="#cfe3f2" stroke="#1f2328" stroke-width="12"/>
+<circle cx="6960" cy="6975" r="170" fill="#1d4ed8"/>
+<text x="6960" y="6979" font-size="212.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">5</text>
+<text x="6960" y="8630" font-size="240" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">W3</text>
+<rect x="7320" y="6300" width="790" height="2000" fill="#cfe3f2" stroke="#b91c1c" stroke-width="40"/>
+<circle cx="7715" cy="7300" r="170" fill="#1d4ed8"/>
+<text x="7715" y="7304" font-size="212.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">4</text>
+<text x="7715" y="8630" font-size="240" font-weight="700" fill="#b91c1c" text-anchor="middle" dominant-baseline="middle">D3</text>
+<circle cx="7715" cy="8630" r="260" fill="none" stroke="#b91c1c" stroke-width="22"/>
+<rect x="9840" y="6450" width="600" height="1050" fill="#cfe3f2" stroke="#1f2328" stroke-width="12"/>
+<circle cx="10140" cy="6975" r="170" fill="#1d4ed8"/>
+<text x="10140" y="6979" font-size="212.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">5</text>
+<text x="10140" y="8630" font-size="240" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">W4</text>
+<rect x="10510" y="6300" width="940" height="2000" fill="#cfe3f2" stroke="#1f2328" stroke-width="12"/>
+<circle cx="10980" cy="7300" r="170" fill="#1d4ed8"/>
+<text x="10980" y="7304" font-size="212.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">4</text>
+<text x="10980" y="8630" font-size="240" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">D4</text>
+<line x1="300" y1="5950" x2="300" y2="8300" stroke="#1d4ed8" stroke-width="18"/>
+<circle cx="300" cy="7125" r="170" fill="#1d4ed8"/>
+<text x="300" y="7129" font-size="212.5" font-weight="700" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">3</text>
+<line x1="3980" y1="-950" x2="3980" y2="8300" stroke="#c2410c" stroke-width="34" stroke-dasharray="220 140"/>
+<text x="3980" y="-1150" font-size="230" font-weight="700" fill="#c2410c" text-anchor="middle" dominant-baseline="middle">NEW WALL</text>
+<line x1="7960" y1="-950" x2="7960" y2="8300" stroke="#c2410c" stroke-width="34" stroke-dasharray="220 140"/>
+<text x="7960" y="-1150" font-size="230" font-weight="700" fill="#c2410c" text-anchor="middle" dominant-baseline="middle">NEW WALL</text>
+<text x="0" y="9150" font-size="205" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">End A is the left end, as you stand outside facing the doors.</text>
+<text x="0" y="9530" font-size="205" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">The doors and windows are placed from the photo of 2026-10-28; the survey gives their true places.</text>
+<text x="0" y="9910" font-size="205" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">Red dashes: the new walls for three rooms alike.</text>
+<text x="0" y="10290" font-size="205" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">A door or window they cross is closed or moved (circled red).</text>
+<text x="0" y="10670" font-size="205" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">Every number in mm, from the finished face of end A.</text>
+</svg>

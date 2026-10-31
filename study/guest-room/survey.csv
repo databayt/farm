@@ -1,0 +1,61 @@
+unit,item,value_mm,measured_by,date,note
+BLOCK,length_front,,,,"1: inside length along the front wall, end A to end B, 1 m above the floor"
+BLOCK,length_back,,,,1: the same along the back wall
+BLOCK,depth_a,,,,"2: front wall to back wall, 1 m above the floor, at end A"
+BLOCK,depth_mid,,,,2: the same in the middle
+BLOCK,depth_b,,,,2: the same at end B
+BLOCK,height_mid,,,,3: floor to ceiling in the middle of a room
+BLOCK,height_cove,,,,3: floor to the underside of the cove or the beam
+D1,start,,,,4: door opening start from end A
+D1,end,,,,4: door opening end from end A
+D1,height,,,,4: floor to the top of the opening
+D2,start,,,,4: door opening start from end A
+D2,end,,,,4: door opening end from end A
+D2,height,,,,4: floor to the top of the opening
+D3,start,,,,4: door opening start from end A
+D3,end,,,,4: door opening end from end A
+D3,height,,,,4: floor to the top of the opening
+D4,start,,,,4: door opening start from end A
+D4,end,,,,4: door opening end from end A
+D4,height,,,,4: floor to the top of the opening
+W1,start,,,,5: front window start from end A
+W1,end,,,,5: front window end from end A
+W1,sill,,,,5: floor to sill
+W1,head,,,,5: floor to head
+W2,start,,,,5: front window start from end A
+W2,end,,,,5: front window end from end A
+W2,sill,,,,5: floor to sill
+W2,head,,,,5: floor to head
+W3,start,,,,5: front window start from end A
+W3,end,,,,5: front window end from end A
+W3,sill,,,,5: floor to sill
+W3,head,,,,5: floor to head
+W4,start,,,,5: front window start from end A
+W4,end,,,,5: front window end from end A
+W4,sill,,,,5: floor to sill
+W4,head,,,,5: floor to head
+B1,start,,,,"6: back window start from end A; add B2, B3 and so on as found"
+B1,end,,,,6: back window end from end A
+B1,sill,,,,6: floor to sill
+B1,head,,,,6: floor to head
+JOINT,beam_height,,,,7: floor to the underside of the beam over the joint
+JOINT,rail_width,,,,7: the width of the steel rail across the floor
+JOINT,rail_step,,,,7: how far the rail stands above the floor
+P1,start,,,,7: a joint post's start from end A; add P2 and so on as found
+P1,end,,,,7: the same post's end from end A
+X1,position,,,,"8: a partition standing, its face nearest end A; add X2 and so on as found"
+X1,thickness,,,,8: the same partition's thickness
+LINING,wall,,,,9: steel to finished face where a wall board is broken
+LINING,ceiling,,,,9: the same in the ceiling
+BAY1,diag_diff,,,,10: the room behind D1: difference of the floor diagonals
+BAY1,level_diff,,,,10: highest minus lowest corner; soft spots on the sheet
+BAY2,diag_diff,,,,10: the room behind D2: difference of the floor diagonals
+BAY2,level_diff,,,,10: highest minus lowest corner; soft spots on the sheet
+BAY3,diag_diff,,,,10: the room behind D3: difference of the floor diagonals
+BAY3,level_diff,,,,10: highest minus lowest corner; soft spots on the sheet
+BAY4,diag_diff,,,,10: the room behind D4: difference of the floor diagonals
+BAY4,level_diff,,,,10: highest minus lowest corner; soft spots on the sheet
+CORNER,a_back,,,,"11: floor above the ground, end A, back corner"
+CORNER,a_front,,,,"11: end A, front corner"
+CORNER,b_back,,,,"11: end B, back corner"
+CORNER,b_front,,,,"11: end B, front corner"
