@@ -1,9 +1,9 @@
 import type * as React from "react"
 
 import { PointsLead, PointsTable } from "@/components/docs/points-table"
-import { RailTable } from "@/components/docs/rail-table"
+import { PlaceBom } from "@/components/docs/place-bom"
 import { drainPoints, lightPoints } from "@/components/parking/data"
-import { rails } from "@/components/parking/rails"
+import { parkingBom } from "@/components/parking/bom"
 import { words } from "@/components/parking/words"
 import { dictionary } from "@/components/internationalization/dictionaries"
 import type { Locale } from "@/components/internationalization/config"
@@ -40,7 +40,8 @@ export async function ParkingDrainagePoints(): Promise<React.JSX.Element> {
   )
 }
 
-// What to buy: every rail on the page, as one table (the Materials page)
+// What to buy: the way in's bill of materials (bom.ts), on the Materials page
 export async function ParkingMaterials(): Promise<React.JSX.Element> {
-  return <RailTable rails={rails(await getLocale())} />
+  const lang = await getLocale()
+  return <PlaceBom lines={parkingBom(lang)} lang={lang} />
 }

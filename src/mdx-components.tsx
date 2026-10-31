@@ -13,6 +13,7 @@ import {
 } from "@/components/studio/docs-sections"
 import { BarCircuits, BarElectricPoints, BarMaterials, BarPlumbingPoints, BarRuns } from "@/components/bar/docs-sections"
 import { FarmingBom, FarmingCalendar, FarmingPlate, FarmingWaterPoints } from "@/components/farming/docs-sections"
+import { FarmBom } from "@/components/farm/docs-sections"
 import { GalleyCircuits, GalleyElectricPoints, GalleyMaterials, GalleyPlumbingPoints, GalleyRuns } from "@/components/galley/docs-sections"
 import { GuestRoomCircuits, GuestRoomElectricPoints, GuestRoomMaterials } from "@/components/guest-room/docs-sections"
 import { LivestockMaterials, LivestockWaterNeed, LivestockWaterPoints } from "@/components/livestock/docs-sections"
@@ -235,6 +236,7 @@ const mdxComponents = {
   BarCircuits, BarElectricPoints, BarMaterials, BarPlumbingPoints, BarRuns,
   FarmingWaterPoints, FarmingPlate, FarmingCalendar, FarmingBom,
   LivestockWaterPoints, LivestockWaterNeed, LivestockMaterials,
+  FarmBom,
   // each place's 2D, for its execution plan
   GuestRoomPlan: sheet(GuestRoomPlan),
   OfficePlan: sheet(OfficePlan),
