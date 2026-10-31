@@ -1,4 +1,4 @@
-# Power: grid, solar or both
+# The farm: electric
 
 Status: advice of 2026-10-28. Loads are estimates [E] until the galley's cooking fuel and the guest-room heaters are chosen; prices are as published on the dates given.
 
@@ -6,9 +6,11 @@ How the farm should get its electricity, what each option costs, and the steps t
 
 Recommendation, in one line: connect to the grid, add a solar system of about 10 kWp with about 15 kWh of batteries for the things that must never stop, heat water with the sun, and keep a generator only as an emergency backup.
 
-Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](power.rw.md) · Print: [this guide as a PDF](../../public/guides/power.pdf)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](electric.rw.md) · Print: [this guide as a PDF](../../public/guides/farm-electric.pdf) · When it happens: [the farm's execution plan](plan.md)
 
-## What the farm uses
+## At a glance
+
+### What the farm uses
 
 Every building, with the energy it uses on a normal day and the most it draws at once. The method: each appliance's power times the hours it runs, then a diversity factor for things that never all run together [E].
 
@@ -24,7 +26,7 @@ Every building, with the energy it uses on a normal day and the most it draws at
 | Outdoor lights, Wi-Fi, CCTV | 5 | 1 | the things that must never stop |
 | **Farm total** | **about 84** | **about 45** | with diversity; about 65 kWh a day if the galley cooks on gas |
 
-## The facts that decide it
+### The facts that decide it
 
 | Fact | Value | Source |
 |---|---|---|
@@ -42,7 +44,7 @@ Every building, with the energy it uses on a normal day and the most it draws at
 | Selling surplus to the grid | not possible yet: net metering is only being explored | [V ENG-27] |
 | Diesel | about 2,927 RWF a litre | June 2026 [V ENG-28, secondary] |
 
-## The three options
+### The three options
 
 | | Grid only | Solar only (off-grid) | Grid with solar (hybrid) |
 |---|---|---|---|
@@ -54,7 +56,7 @@ Every building, with the energy it uses on a normal day and the most it draws at
 
 What solar saves: every kWp whose power is used on the farm produces about 1,589 kWh a year, worth about 705,000 RWF at the business price, or about 448,000 at the hotel price [E, from ENG-20, ENG-24]. With no net metering, size the panels to what the farm uses in daylight, not more.
 
-## The recommendation
+### The recommendation
 
 1. **Grid first.** Ask for a three-phase, non-residential connection; the poles already run along the road (photo of 2026-10-28). Ask in writing whether the hotel tariff applies.
 2. **Solar for the day.** About 10 kWp of panels on a hybrid inverter set to zero export: they cover the pumps, the hot water, the study room and lunch in the galley.
@@ -62,6 +64,12 @@ What solar saves: every kWp whose power is used on the farm produces about 1,589
 4. **Sun for hot water.** Solar water heaters on the guest rooms and the public bathroom; the studios keep their electric instant heaters at the shower (D-053).
 5. **Generator as a spare only.** A small diesel set for long outages, wired so it can feed the site board; never the main supply.
 6. **Run the big loads at midday.** Pump, heat water and wash in daylight, when the panels make free power.
+
+## Hold points
+
+1. **Every building tested and certified first.** No building's supply is switched on before its tests pass and a RURA-licensed electrician signs its certificate, as for the studios.
+2. **The generator only through a change-over.** It feeds the site board when the grid is off, never alongside it.
+3. **Zero export.** The inverter sells nothing to the grid until net metering is in force.
 
 ## Steps
 
@@ -72,7 +80,9 @@ What solar saves: every kWp whose power is used on the farm produces about 1,589
 5. The electrician designs the site board: one 63 A feeder for each studio, feeders for every other building, the inverter, the generator change-over.
 6. Choose with the quotes in hand, using the triggers below, and record the decision in the decision log.
 
-## What would change the advice
+## Open questions
+
+Each of these, once known, changes the advice:
 
 - The connection quote is far higher than the cost of the extra panels and batteries for going off-grid: choose solar only.
 - Net metering comes into force: add more panels and sell the surplus.

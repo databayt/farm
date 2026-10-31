@@ -11,7 +11,7 @@ A 60 to 90 second film of the farm today, the build and the farm to come, cut fr
 | 23 iPhone clips and 23 photos, 2026-10-25 (1920 × 1080, 10-bit HDR) | `assets/library/footage/2026-10-25/` (private) | The farm today: gate, road, containers, lawn, tents at dusk |
 | The owner's and SIDA's WhatsApp photos and clips | `assets/library/whatsapp/` (private) | References only: WhatsApp shrinks video to about 368 × 656 |
 | The studio's build-up animations (floor, wall) | `/en/studio` | The build, piece by piece |
-| The 3D compound and the master plan | `/`, the [master plan](master-plan.md) | The plan from above |
+| The 3D compound and the master plan | `/`, the [master plan](farm/master-plan.md) | The plan from above |
 | Concept renders of each building | `/en/studio`, `/en/camp`, `/en/bar` … | The farm to come |
 
 Ask the owner and SIDA to resend their best clips as a WhatsApp "Document" (or by Google Drive): that keeps the original quality.

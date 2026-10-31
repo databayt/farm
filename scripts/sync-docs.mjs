@@ -42,14 +42,10 @@ const LANGS = ["en", "rw"]
 // shows only SIDEBAR, below; the rest render off the sidebar, like the Kinyarwanda twins.
 const PAGES = [
   { slug: "index", src: "guide/start.md", title: "Start here" },
-  "---Trades---",
-  { slug: "power", src: "guide/trades/power.md" },
   "---Grow---",
   { slug: "vegetables", src: "guide/grow/vegetables.md" },
   { slug: "livestock", src: "guide/grow/livestock.md" },
-  "---The farm---",
-  { slug: "farm-today", src: "guide/farm.md" },
-  { slug: "master-plan", src: "guide/master-plan.md" },
+  "---How the farm runs---",
   { slug: "operations", src: "guide/operations.md" },
   { slug: "film", src: "guide/film.md" },
   "---Business---",
@@ -221,13 +217,6 @@ const SIDEBAR = [
   "---Start the field---",
   "vegetables",
   "livestock",
-  "---The land---",
-  "farm-today",
-  "master-plan",
-  "power",
-  "---Execution plan---",
-  "first-90-days",
-  "five-year-roadmap",
 ]
 const fail = (slug) => { throw new Error(`sync-docs: SIDEBAR lists "${slug}", which is not in PAGES`) }
 
@@ -548,14 +537,15 @@ function parity(enSrc, rwSrc) {
 // /rw/docs/<slug>), and a renamed page keeps its old link. One map, so a redirect can't point at a page that is
 // gone: each old slug and the page it became.
 const MOVED = {
-  farm: "farm-today",
+  // the farm as a whole is now a group of its own (D-059): its today, master plan and electric pages
+  "farm-today": "farm/today", "master-plan": "farm/master-plan", power: "farm/electric",
   // the studio's trade guides and reference pages, now its execution plan, materials, electric and plumbing (D-059)
   carpenter: "studio", "studio-features": "studio", "studio-materials": "studio/materials",
   electrician: "studio/electric", "studio-circuits": "studio/electric",
   plumber: "studio/plumbing", "studio-pipes": "studio/plumbing",
 }
 // printed guides renamed with their pages: public/guides/<old>[-rw].pdf is now <new>[-rw].pdf
-const MOVED_PDFS = { carpenter: "studio-plan", electrician: "studio-electric", plumber: "studio-plumbing" }
+const MOVED_PDFS = { carpenter: "studio-plan", electrician: "studio-electric", plumber: "studio-plumbing", power: "farm-electric" }
 
 /** public/_redirects for Cloudflare: static rules first, the catch-all last (the first matching rule wins). */
 function redirects() {

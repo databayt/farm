@@ -21,7 +21,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](livestock.rw.md) · Print: [thi
 1. **Register as a keeper** under the new animal law, in force since its publication on 2026-09-11: keepers register, only a vet treats animals, and every move needs a movement certificate [V REG-24].
 2. **Measure the distances:** every animal house at least 200 m from the lake's furthest flood line and 20 m from any swamp; a breach costs RWF 500,000 and demolition [V LOC-01, LOC-02].
 3. **Name a vet:** the sector or district veterinary officer, or a private vet from the mandated companies [V LOC-48].
-4. **Fence and water first:** the paddock fence, a water point at each house, shade trees at the paddock corners ([master plan](../master-plan.md)).
+4. **Fence and water first:** the paddock fence, a water point at each house, shade trees at the paddock corners ([master plan](../farm/master-plan.md)).
 5. **Buy from a known hatchery:** chicks come vaccinated there against Newcastle disease, Gumboro, Marek's disease, infectious bronchitis and avian influenza [V LVS-68].
 
 ## The hen house, for 100 hens

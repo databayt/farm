@@ -1,4 +1,4 @@
-# Amashanyarazi: umuyoboro wa leta, imirasire y'izuba, cyangwa byombi
+# Ifamu: amashanyarazi
 
 > **Ubusobanuro:** iyi nyandiko yahinduwe na mudasobwa (machine draft). Igomba gusuzumwa n'umuntu uvuga Ikinyarwanda kavukire mbere yo kuyiha abakozi. Iyo hari itandukaniro, kurikiza iy'Icyongereza.
 
@@ -8,9 +8,11 @@ Uko ifamu ikwiye kubona amashanyarazi, icyo buri buryo butwara, n'intambwe zo ku
 
 Inama mu murongo umwe: huza ifamu n'umuyoboro wa REG (grid / réseau), wongereho sisitemu y'imirasire y'izuba ya hafi 10 kWp ifite bateri (batteries) za hafi 15 kWh zigenewe ibintu bitagomba guhagarara na rimwe, ushyushye amazi ukoresheje izuba, kandi ugumane moteri itanga umuriro (générateur) nk'ingoboka gusa (emergency backup).
 
-English: [read this guide in English](power.md) · Gucapa: [aya mabwiriza nka PDF](../../public/guides/power-rw.pdf)
+English: [read this guide in English](electric.md) · Gucapa: [aya mabwiriza nka PDF](../../public/guides/farm-electric-rw.pdf) · Igihe bikorwa: [gahunda y'imirimo y'ifamu](plan.md)
 
-## Ibyo ifamu ikoresha
+## Mu ncamake
+
+### Ibyo ifamu ikoresha
 
 Buri nyubako, n'ingufu ikoresha ku munsi usanzwe n'umuriro mwinshi ikurura icyarimwe. Uburyo: ingufu (power) za buri gikoresho zikubwe n'amasaha gikora, hanyuma hagakoreshwa diversity factor ku bikoresho bitajya bikorera rimwe byose [E].
 
@@ -26,7 +28,7 @@ Buri nyubako, n'ingufu ikoresha ku munsi usanzwe n'umuriro mwinshi ikurura icyar
 | Amatara yo hanze, Wi-Fi, CCTV | 5 | 1 | ibintu bitagomba guhagarara na rimwe |
 | **Igiteranyo cy'ifamu yose** | **hafi 84** | **hafi 45** | harimo diversity; hafi 65 kWh ku munsi niba igikoni gikuru gitekesha gaz |
 
-## Amakuru agena icyemezo
+### Amakuru agena icyemezo
 
 | Ingingo | Agaciro | Aho byakuwe (source) |
 |---|---|---|
@@ -44,7 +46,7 @@ Buri nyubako, n'ingufu ikoresha ku munsi usanzwe n'umuriro mwinshi ikurura icyar
 | Kugurisha umuriro usagutse ku muyoboro wa REG | ntibirashoboka: net metering iracyigwa gusa | [V ENG-27] |
 | Mazutu (diesel) | hafi 2,927 RWF kuri litiro | Kamena 2026 [V ENG-28, secondary] |
 
-## Uburyo butatu
+### Uburyo butatu
 
 | | Umuyoboro wa REG wonyine | Imirasire y'izuba yonyine (off-grid) | Umuyoboro wa REG n'imirasire y'izuba (hybrid) |
 |---|---|---|---|
@@ -56,7 +58,7 @@ Buri nyubako, n'ingufu ikoresha ku munsi usanzwe n'umuriro mwinshi ikurura icyar
 
 Icyo imirasire y'izuba izigama: buri kWp umuriro wayo ukoreshwa ku ifamu itanga hafi 1,589 kWh ku mwaka, zifite agaciro ka hafi 705,000 RWF ku giciro cy'ubucuruzi, cyangwa hafi 448,000 ku giciro cy'amahoteli [E, from ENG-20, ENG-24]. Kubera ko nta net metering ihari, hitamo ingano ya panneaux ihwanye n'ibyo ifamu ikoresha ku manywa, ntirenge aho.
 
-## Inama yacu
+### Inama yacu
 
 1. **Umuyoboro wa REG mbere.** Saba guhuzwa n'umuyoboro kuri triphasé (three-phase), mu cyiciro kitari icy'ingo (non-residential); amapoto y'amashanyarazi asanzwe anyura ku muhanda (ifoto yo ku wa 2026-10-28). Baza mu nyandiko niba tariff y'amahoteli ireba ifamu.
 2. **Imirasire y'izuba ku manywa.** Panneaux za hafi 10 kWp kuri inverter ya hybrid (onduleur hybride) yashyizwe kuri zero export (nta muriro woherezwa ku muyoboro wa REG): zitanga umuriro ukenerwa na pompe, amazi ashyushye, icyumba cyo kwigiramo n'ifunguro rya saa sita mu gikoni gikuru.
@@ -64,6 +66,12 @@ Icyo imirasire y'izuba izigama: buri kWp umuriro wayo ukoreshwa ku ifamu itanga 
 4. **Izuba rishyushya amazi.** Ibyuma bishyushya amazi bikoresheje izuba (solar water heaters) ku byumba by'abashyitsi no ku bwiherero rusange; sitidiyo zigumana heater zazo zihita zishyushya amazi kuri douche, zikoresha amashanyarazi (D-053).
 5. **Moteri y'ingoboka gusa.** Moteri ntoya ya mazutu (diesel) yo gukoresha iyo umuriro ubuze igihe kirekire, ishyiriweho insinga ku buryo ishobora guha umuriro board yo ku kibanza (site board); ntizigere iba isoko nyamukuru y'umuriro (main supply).
 6. **Ibikoresha umuriro mwinshi bikore saa sita z'amanywa.** Vomesha pompe, shyushya amazi kandi umese ku manywa, igihe panneaux zitanga umuriro w'ubuntu.
+
+## Ingingo zo guhagarara ukagenzura (hold points)
+
+1. **Buri nyubako ibanza kugeragezwa no guhabwa icyemezo.** Nta nyubako ihabwa umuriro mbere y'uko igerageza ryayo ritsinda kandi umuyagankuba ufite uruhushya rwa RURA agasinya icyemezo cyayo (certificate), nk'uko bigenda kuri sitidiyo.
+2. **Moteri inyuzwa kuri change-over gusa.** Iha board yo ku kibanza umuriro iyo uwa REG ubuze, ntizigere ikorana na wo icyarimwe.
+3. **Zero export.** Inverter ntigurisha umuriro ku muyoboro wa REG kugeza igihe net metering itangiye gukurikizwa.
 
 ## Intambwe
 
@@ -74,7 +82,9 @@ Icyo imirasire y'izuba izigama: buri kWp umuriro wayo ukoreshwa ku ifamu itanga 
 5. Umuyagankuba ategura board yo ku kibanza: feeder imwe ya 63 A kuri buri sitidiyo, feeders z'izindi nyubako zose, inverter, na change-over ya moteri (igikoresho gihinduranya umuriro wa REG n'uwa moteri).
 6. Hitamo ufite ibiciro (quotes) mu ntoki, ukurikije ibyatuma inama ihinduka biri hepfo, kandi wandike icyemezo mu gitabo cy'ibyemezo (decision log).
 
-## Ibyatuma inama ihinduka
+## Ibibazo bitarasubizwa
+
+Buri kimwe muri ibi, nikimara kumenyekana, gihindura inama:
 
 - Igiciro cyo guhuzwa n'umuyoboro (connection quote) kirenze cyane ikiguzi cya panneaux na bateri z'inyongera zakenerwa kugira ngo ifamu ibe off-grid: hitamo imirasire y'izuba yonyine.
 - Net metering itangiye gukurikizwa: ongeraho panneaux, ugurishe umuriro usagutse.

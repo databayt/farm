@@ -12,7 +12,7 @@ English: [read this guide in English](vegetables.md) · Gucapa: [aya mabwiriza n
 
 | Iki | Ingano |
 |---|---|
-| Igice cy'imboga (vegetable zone) | {{site.veg_m2}} m², iruhande rw'igikoni gikuru ([igishushanyo mbonera](../master-plan.md)) |
+| Igice cy'imboga (vegetable zone) | {{site.veg_m2}} m², iruhande rw'igikoni gikuru ([igishushanyo mbonera](../farm/master-plan.md)) |
 | Uturima (beds) | ubugari bwa m 1.2, tuzamuye cm 20, uburebure bwa m 10: hafi uturima 200, hafi 2,440 m² z'ubuso buhingwa [E] |
 | Inzira (paths) | m 0.5 hagati y'uturima, m 1 hagati y'amatsinda y'uturima |
 | Amazi | amatiyo y'ibitonyanga (drip lines), 2 kuri buri karima, ahabwa amazi n'ikigega cy'amazi (tank); 10 kugeza 13 m³ ku munsi mu mezi y'izuba ryinshi [E] |

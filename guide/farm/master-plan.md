@@ -13,7 +13,7 @@ The whole farm on one sheet: where each part goes, the trees, the paths and the 
 | The block, for the compound and the woodland | about {{site.block_w_m}} m wide |
 | The arm, for the field | about {{site.arm_depth_m}} m deep |
 
-![Master plan, provisional: the compound, the field, the woodland and the trees](../public/designs/site/master-plan.svg)
+![Master plan, provisional: the compound, the field, the woodland and the trees](../../public/designs/site/master-plan.svg)
 
 ## The zones
 
@@ -29,7 +29,7 @@ The whole farm on one sheet: where each part goes, the trees, the paths and the 
 
 The homepage draws the compound with its nearest neighbours: the volleyball court on the lawn, and the vegetable field and the livestock house drawn close, their true distances being the ones on this sheet. See [the farm plan](/#plans) and [its 3D model](/#model).
 
-![The compound with the volleyball court, the field's nearest beds and the livestock house, drawn close](../public/designs/compound/render/compound-real.webp)
+![The compound with the volleyball court, the field's nearest beds and the livestock house, drawn close](../../public/designs/compound/render/compound-real.webp)
 
 ## The trees: an even forest
 
@@ -38,7 +38,7 @@ The homepage draws the compound with its nearest neighbours: the volleyball cour
 3. **In the field:** a few big shade trees at the paddock corners and the bed edges, never over the beds: {{site.trees_field}} trees.
 4. **On the boundary:** a row every 8 m, 2 m in from the line: {{site.trees_boundary}} trees.
 5. **Clearance:** every tree stays 4 m from the containers, beds, houses, the court, the septic, the solar, paths and roads.
-6. **Species:** boundary and field trees follow the study's [crop plan](../study/design/crop-plan.md): Grevillea and Markhamia, Gliricidia as a live fence, mango as the fruit tree where water is unproven, and no eucalyptus near crops or the lake. Woodland canopy species are to confirm with the district forester or an RAB nursery [A].
+6. **Species:** boundary and field trees follow the study's [crop plan](../../study/design/crop-plan.md): Grevillea and Markhamia, Gliricidia as a live fence, mango as the fruit tree where water is unproven, and no eucalyptus near crops or the lake. Woodland canopy species are to confirm with the district forester or an RAB nursery [A].
 
 In all, {{site.trees}} trees on the provisional plan.
 
@@ -55,10 +55,10 @@ In all, {{site.trees}} trees on the provisional plan.
 
 | Rule | Distance | Source |
 |---|---|---|
-| No structure within 50 m of the lake's flood line | 50 m | [location research](../study/research/location.md) |
-| No livestock house within 200 m of the lake | 200 m | [location research](../study/research/location.md) |
-| No building within 20 m of a swamp | 20 m | [location research](../study/research/location.md) |
-| The septic tank at least 50 m from the borehole | 50 m | [studio plumbing](../study/studio/studio-plumbing.md) |
+| No structure within 50 m of the lake's flood line | 50 m | [location research](../../study/research/location.md) |
+| No livestock house within 200 m of the lake | 200 m | [location research](../../study/research/location.md) |
+| No building within 20 m of a swamp | 20 m | [location research](../../study/research/location.md) |
+| The septic tank at least 50 m from the borehole | 50 m | [studio plumbing](../../study/studio/studio-plumbing.md) |
 | A volleyball court 18 × 9 m with a 3 m free zone all round | 24 × 15 m | FIVB official rules |
 
 ## What happens next

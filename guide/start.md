@@ -36,7 +36,7 @@ Dates are a target, not a promise. The order matters more than the dates.
 | [Carpenter](studio/plan.md) | the carpenter | Measure 7 numbers on day 1. Then floor, battens, wall panels, bathroom, kitchen and bed, in that order. |
 | [Electrician](studio/electric.md) | the electrician | Cables go in after the battens and before the foam. The board and sockets come at the end. |
 | [Plumber](studio/plumbing.md) | the plumber | Pipes go in with the cables, then the 10 bar test. No guest stays until the septic tank passes inspection. |
-| [Power](trades/power.md) | the owner | Connect to the grid, add solar with batteries, and keep a generator as a spare. This month: ask EUCL for a written quote. |
+| [Power](farm/electric.md) | the owner | Connect to the grid, add solar with batteries, and keep a generator as a spare. This month: ask EUCL for a written quote. |
 
 ### Start the field
 
@@ -49,8 +49,8 @@ Dates are a target, not a promise. The order matters more than the dates.
 
 | Guide | What it says, simply |
 |---|---|
-| [The farm today](farm.md) | What is on the land now: the buildings, the water, the power. |
-| [Master plan](master-plan.md) | Where everything goes: the compound on the right, the field on the top-left arm, trees everywhere. |
+| [The farm today](farm/today.md) | What is on the land now: the buildings, the water, the power. |
+| [Master plan](farm/master-plan.md) | Where everything goes: the compound on the right, the field on the top-left arm, trees everywhere. |
 
 Every guide is in English and Kinyarwanda, and prints to A4 from the link at its top to share on WhatsApp.
 

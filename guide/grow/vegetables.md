@@ -10,7 +10,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](vegetables.rw.md) · Print: [th
 
 | What | Size |
 |---|---|
-| The vegetable zone | {{site.veg_m2}} m², next to the galley ([master plan](../master-plan.md)) |
+| The vegetable zone | {{site.veg_m2}} m², next to the galley ([master plan](../farm/master-plan.md)) |
 | Beds | 1.2 m wide, raised 20 cm, 10 m long: about 200 beds, about 2,440 m² of growing area [E] |
 | Paths | 0.5 m between beds, 1 m between blocks of beds |
 | Water | drip lines, 2 per bed, fed from the tank; 10 to 13 m³ a day in the driest months [E] |

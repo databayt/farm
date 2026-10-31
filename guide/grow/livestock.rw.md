@@ -23,7 +23,7 @@ English: [read this guide in English](livestock.md) · Gucapa: [aya mabwiriza nk
 1. **Iyandikishe nk'umworozi** ukurikije itegeko rishya rigenga amatungo, rikurikizwa kuva ryatangazwa ku wa 2026-09-11: aborozi bariyandikisha, umuganga w'amatungo wenyine ni we uvura amatungo, kandi buri rugendo rw'itungo rusaba icyemezo cyo kwimura amatungo (movement certificate) [V REG-24].
 2. **Pima intera:** buri nzu y'amatungo igomba kuba nibura kuri m 200 uvuye ku murongo wa kure cyane amazi y'ikiyaga yagezeho mu gihe cy'imyuzure (flood line), na m 20 uvuye ku gishanga icyo ari cyo cyose; utabyubahirije acibwa ihazabu ya RWF 500,000 kandi inzu igasenywa [V LOC-01, LOC-02].
 3. **Hitamo umuganga w'amatungo:** umuganga w'amatungo w'umurenge cyangwa w'akarere, cyangwa umuganga w'amatungo wigenga ukorera kimwe mu bigo byahawe ububasha na Leta (mandated companies) [V LOC-48].
-4. **Banza uruzitiro n'amazi:** uruzitiro rw'urwuri, amazi ageze kuri buri nzu, n'ibiti bitanga igicucu mu nguni z'urwuri ([igishushanyo mbonera](../master-plan.md)).
+4. **Banza uruzitiro n'amazi:** uruzitiro rw'urwuri, amazi ageze kuri buri nzu, n'ibiti bitanga igicucu mu nguni z'urwuri ([igishushanyo mbonera](../farm/master-plan.md)).
 5. **Gura ku ituragiro rizwi (hatchery):** imishwi yaho iba yarakingiwe indwara z'inkoko zitwa Newcastle disease, Gumboro, Marek's disease, infectious bronchitis na avian influenza (ibicurane by'ibiguruka) [V LVS-68].
 
 ## Inzu y'inkoko, ijyamo inkoko 100

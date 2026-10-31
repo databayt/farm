@@ -28,7 +28,7 @@ What the farm sells, what drives each line, where it breaks even, and why it can
 | Field surplus | eggs, vegetables, live goats | about 2M |
 | **Total** | | **about 84M** |
 
-Method [E]: each line is units × rate × days × occupancy; guest-days count 2 guests per studio, room and tent at their occupancy. Costs to set against it [A]: the team of about 7 at about 150,000 a month each (about 12.6M a year), food at about 35% of food sales (about 9.6M), power (about 13.6M a year from the grid alone, about half that with the [solar system](../trades/power.md)), listing fees, upkeep and the septic desludging.
+Method [E]: each line is units × rate × days × occupancy; guest-days count 2 guests per studio, room and tent at their occupancy. Costs to set against it [A]: the team of about 7 at about 150,000 a month each (about 12.6M a year), food at about 35% of food sales (about 9.6M), power (about 13.6M a year from the grid alone, about half that with the [solar system](../farm/electric.md)), listing fees, upkeep and the septic desludging.
 
 ## When it breaks even
 

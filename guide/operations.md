@@ -10,7 +10,7 @@ How a guest's stay, the kitchen, the field, water, power and waste work together
 |---|---|
 | Food | The beds and the hens feed the galley; the galley feeds the guests; scraps go to the hens and the compost; the compost and the manure feed the beds. |
 | Water | Mains water, the borehole and the roof rain fill one tank through an air gap; the booster pump feeds every building; rain from the canopies waters the beds by drip. |
-| Energy | The grid and the panels feed the site board; pumping, water heating and laundry run at midday on solar; the batteries keep Wi-Fi, CCTV, fridges and the path lights on at night ([power guide](trades/power.md)). |
+| Energy | The grid and the panels feed the site board; pumping, water heating and laundry run at midday on solar; the batteries keep Wi-Fi, CCTV, fridges and the path lights on at night ([power guide](farm/electric.md)). |
 | Waste | WCs, showers and basins drain to the septic tank, desludged at least every 3 years; the kitchen drains to its grease trap; dry waste is sorted; food waste and manure become compost. |
 | Money | Guests book and pay online or by mobile money; the galley, the bar and the field record what they sell; surplus eggs, vegetables and animals are sold. |
 
@@ -50,7 +50,7 @@ Every week: plan the menu from what the beds and the hens will give, turn the co
 
 ## Where each part sits, and why
 
-- **The beds next to the galley** (the garden walk on the [master plan](master-plan.md)): the cook picks what the menu needs every morning.
+- **The beds next to the galley** (the garden walk on the [master plan](farm/master-plan.md)): the cook picks what the menu needs every morning.
 - **The animals behind the beds:** close enough to carry scraps and manure, far enough that guests don't smell them; the houses wait for the 200 m lake check.
 - **The compost and the tanks between the beds and the animals:** scraps go one way, compost comes back.
 - **The office at the gate:** every guest and every delivery passes it.
