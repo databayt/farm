@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Every device, rating and size is a design c
 
 Everything the electrician needs to wire the public bathroom: the board and its circuits, the first fix, the second fix, the tests and every point.
 
-The wiring drawn: [the public bathroom page](/en/public-bathroom#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
+Kinyarwanda: [soma iyi paji mu Kinyarwanda](electric.rw.md) · The wiring drawn: [the public bathroom page](/en/public-bathroom#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
 
 ## At a glance
 

@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. The way in is drawn from compound.json and 
 
 Every step of building the way in: the green parking inside the outer gate, its edging, strips and stops, the lights and where the rain goes.
 
-The way in drawn: [the parking page](/en/parking) · Its other pages: [materials](materials.md), [lighting](lighting.md), [drainage](drainage.md) · Where it sits: [the master plan](../farm/master-plan.md)
+Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The way in drawn: [the parking page](/en/parking) · Its other pages: [materials](materials.md), [lighting](lighting.md), [drainage](drainage.md) · Where it sits: [the master plan](../farm/master-plan.md)
 
 ## At a glance
 

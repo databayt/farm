@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Nothing is sourced; the circuit's protectio
 
 Everything the electrician needs to light the way in after dark: the feed, the box on the sign wall, the letters and the lanterns, and every point.
 
-The lighting drawn: [the parking page](/en/parking#lighting) · When it happens: [the execution plan](plan.md) · The farm's supply: [the farm's electric](../farm/electric.md)
+Kinyarwanda: [soma iyi paji mu Kinyarwanda](lighting.rw.md) · The lighting drawn: [the parking page](/en/parking#lighting) · When it happens: [the execution plan](plan.md) · The farm's supply: [the farm's electric](../farm/electric.md)
 
 ## At a glance
 

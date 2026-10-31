@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Every run and size is a design choice for t
 
 Everything the plumber needs for the public bathroom: the supply, the drains and the vent to the septic tank, the tests and every point.
 
-The pipes drawn: [the public bathroom page](/en/public-bathroom#plumbing) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's plumbing](../studio/plumbing.md)
+Kinyarwanda: [soma iyi paji mu Kinyarwanda](plumbing.rw.md) · The pipes drawn: [the public bathroom page](/en/public-bathroom#plumbing) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's plumbing](../studio/plumbing.md)
 
 ## At a glance
 

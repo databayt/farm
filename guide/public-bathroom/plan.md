@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. The founder's brief gives the fittings, not
 
 Every step of building the bathroom that everyone without a bathroom of their own uses, in the order the page's build-up draws, from the septic's size to the first guest.
 
-The bathroom drawn: [the public bathroom page](/en/public-bathroom) · Its other pages: [materials](materials.md), [electric](electric.md), [plumbing](plumbing.md) · Each step done in full: [the studio's plan](../studio/plan.md)
+Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The bathroom drawn: [the public bathroom page](/en/public-bathroom) · Its other pages: [materials](materials.md), [electric](electric.md), [plumbing](plumbing.md) · Each step done in full: [the studio's plan](../studio/plan.md)
 
 ## At a glance
 

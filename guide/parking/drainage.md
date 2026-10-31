@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. The soakaway is sized after a percolation t
 
 Where the rain goes at the way in: through the grass into the stone, the falls that keep the road water out, the trench and the soakaway, and every point.
 
-The drainage drawn: [the parking page](/en/parking#drainage) · When it happens: [the execution plan](plan.md)
+Kinyarwanda: [soma iyi paji mu Kinyarwanda](drainage.rw.md) · The drainage drawn: [the parking page](/en/parking#drainage) · When it happens: [the execution plan](plan.md)
 
 ## At a glance
 

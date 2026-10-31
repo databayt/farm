@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Sizes and quantities come from parking.json
 
 What the way in needs: its parts (the gate, the sign, the pavers, the setts, the stops and the trees), its lighting and its drainage, as its page shows them.
 
-The way in drawn: [the parking page](/en/parking) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The way in drawn: [the parking page](/en/parking) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 

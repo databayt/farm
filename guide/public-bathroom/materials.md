@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Sizes come from public-bathroom.json, for t
 
 What the bathroom needs: its fixtures, its electric devices and its plumbing parts with their pipe, as its page shows them.
 
-The bathroom drawn: [the public bathroom page](/en/public-bathroom) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The bathroom drawn: [the public bathroom page](/en/public-bathroom) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 
