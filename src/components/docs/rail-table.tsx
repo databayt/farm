@@ -9,8 +9,11 @@ import { getLocale } from "@/components/internationalization/locale"
 // words ("Not sourced yet", "Not in the budget yet" until a quote).
 export type Rail = { title: string; items: RailItem[] }
 
-// a card's detail by its key (size, where, cost), whatever language labels it
-const value = (item: RailItem, key: string) => item.details.find((d) => d.key === key)?.value ?? ""
+// a card's detail by its key (size, where, cost), whatever language labels it; a card built without keys lists them
+// in that order
+const KEYS = ["size", "where", "cost"]
+const value = (item: RailItem, key: string) =>
+  (item.details.find((d) => d.key === key) ?? (item.details.some((d) => d.key) ? undefined : item.details[KEYS.indexOf(key)]))?.value ?? ""
 
 export async function RailTable({ rails }: { rails: Rail[] }): Promise<React.JSX.Element> {
   const t = (await getDictionary(await getLocale())).rail
