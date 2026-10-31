@@ -1,10 +1,14 @@
 import { getWords } from "@/components/internationalization/words"
+import { Chain, Dim, HDim, Name, VDim } from "@/components/drawing/dims"
+import { frame, tier, STUDIO } from "@/components/drawing/geometry"
 
 import galley from "./galley.json"
 import { words } from "./words"
 
-// The galley drawn in the pattern of the office plan (src/components/office/office-plan.tsx): thin lines, no
-// colour, bold capitals and dimensions in millimetres. Seen from the courtyard, as the 3D's front view: the
+// The galley drawn in the pattern of the office plan (src/components/office/office-plan.tsx): thin lines, no colour,
+// and its dimensions as the studio's plan sets them (src/components/drawing): the back wall's zones named one by one,
+// as the studio's BED, SEATING, GALLEY, BATH, then the length; the doors and windows along the front past the steps,
+// then the worktop; the cooking line, the aisle and the worktop across the room; the width at the west end. Seen from the courtyard, as the 3D's front view: the
 // doors and the windows face down the page (north), the staff door's end (west, the study room's side) to the
 // left. Units are metres, x from the west end, y toward the front, the container's centre line at y = 0. It is
 // long: the viewBox is wide.
@@ -24,30 +28,13 @@ const label = {
 const small = { ...label, fontSize: 0.12, fontWeight: 600 } as const
 
 const f = (n: number) => +n.toFixed(3)
-const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
 
-function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.08
-  return (
-    <g>
-      <line x1={x0} x2={x1} y1={y} y2={y} {...thin} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f((x0 + x1) / 2)} y={f(y - 0.09)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
-    </g>
-  )
-}
-// the same, standing: the figure reads up the page beside the line
-function Rise({ y0, y1, x }: { y0: number; y1: number; x: number }) {
-  const tick = 0.08, my = f((y0 + y1) / 2)
-  return (
-    <g>
-      <line x1={x} x2={x} y1={y0} y2={y1} {...thin} />
-      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f(x + 0.1)} y={my} transform={`rotate(-90 ${f(x + 0.1)} ${my})`} textAnchor="middle" style={small}>{mm(y1 - y0)}</text>
-    </g>
-  )
-}
+const H0 = box.w / 2, steps = 0.1 + 2 * fr.steps.d // the stone steps' reach past the front wall
+// the drawing, then its dimensions' reach (studio mm): the zones' names and the length over the back wall, the
+// openings' names and the worktop past the steps, one tier at the west end
+const { k, viewBox } = frame({ x0: -0.1, y0: -H0 - 0.1, x1: box.l + 0.1, y1: H0 + steps }, { top: 19, right: 2, bottom: 19, left: 7 })
+const pastSteps = steps / k
 
 // a window across the wall's thickness: the wall's lines knocked out, the reveal's lines and the glass between
 function Window({ x0, x1, y0, y1 }: { x0: number; x1: number; y0: number; y1: number }) {
@@ -85,7 +72,7 @@ export async function GalleyPlan({ title, className }: { title?: string; classNa
   const rings = [1, 3, 5].flatMap((k) => [0.2, 0.44].map((dz) => [f(range.x0 + ((range.x1 - range.x0) * k) / 6), f(iy0 + dz)]))
   const bx0 = ix1 - bins.off - bins.d
   return (
-    <svg viewBox="-0.75 -2.15 13.7 4.8" role="img" aria-label={title} className={className}>
+    <svg viewBox={viewBox} role="img" aria-label={title} className={className}>
       {/* The stone plinth, the steel box and its lining, cut for the two doors; the two windows across the
           front wall; a pair of stone steps up to each door */}
       <rect {...rect(-0.1, -H - 0.1, L + 0.1, H + 0.1)} {...faint} />
@@ -170,13 +157,24 @@ export async function GalleyPlan({ title, className }: { title?: string; classNa
       <text x={f((cleaning.x0 + cleaning.x1) / 2)} y={f(iy0 + cleaning.d / 2 + 0.04)} textAnchor="middle" style={small}>{name.cleaning}</text>
       {bins.y.map((y) => <text key={y} x={f(bx0 + bins.d / 2)} y={f(y + 0.04)} textAnchor="middle" style={small}>{name.bin}</text>)}
       <text x={f((plates.x0 + ix1) / 2)} y={f((plates.y0 + iy1) / 2 + 0.04)} textAnchor="middle" style={small}>{name.plates}</text>
-      <text x={f((s0 + s1) / 2)} y={f(H + 0.1 + 2 * sd + 0.2)} textAnchor="middle" style={small}>{name.staffDoor}</text>
-      <text x={f((e0 + e1) / 2)} y={f(H + 0.1 + 2 * sd + 0.2)} textAnchor="middle" style={small}>{name.serviceDoor}</text>
-      <text x={f(L / 2)} y={f(-H - 0.2)} textAnchor="middle" style={label}>{name.galley}</text>
-      <Dimension x0={0} x1={L} y={f(-H - 0.6)} />
-      <Dimension x0={wt.x0} x1={wt.x1} y={f(H + 0.1 + 2 * sd + 0.55)} />
-      <Rise y0={f(-H)} y1={f(H)} x={f(L + 0.4)} />
-      <Rise y0={f(lz)} y1={f(wz)} x={f(range.x0 + 0.22)} />
+
+      {/* The back wall: each zone measured and named on its own, as the studio's; then the length */}
+      {([[ix0, cold.units[1].x1, name.cold], [dry.x0, dry.x1, name.dry], [line.units[0].x0, line.units[2].x1, name.line],
+        [bench.x0, bench.x1, name.bench], [pass.x0, pass.x1, name.pass], [cleaning.x0, cleaning.x1, name.cleaning]] as const).map(([a, b, n]) => (
+        <g key={a}>
+          <HDim k={k} x0={a} x1={b} y={-H} side="top" />
+          <Name k={k} x={(a + b) / 2} y={-H - (tier(1) + STUDIO.names) * k}>{n}</Name>
+        </g>
+      ))}
+      <HDim k={k} x0={0} x1={L} y={-H} side="top" at={3} />
+      {/* The front, past the steps: the doors and the windows, named; then the worktop under the windows */}
+      <Chain k={k} along="x" at={[0, s0, s1, ...fr.windows.flat(), e0, e1, L]} edge={H} side="bottom" base={pastSteps}
+        names={[null, name.staffDoor, null, name.window, null, name.window, null, name.serviceDoor, null]} />
+      <HDim k={k} x0={wt.x0} x1={wt.x1} y={iy1} side="bottom" base={(H + steps - iy1) / k} at={3} prefix={name.worktop} />
+      {/* Across the room by the range: the cooking line, the aisle, the worktop */}
+      {[[iy0, lz], [lz, wz], [wz, iy1]].map(([a, b]) => <Dim key={a} k={k} a={[range.x0 - 0.12, a]} b={[range.x0 - 0.12, b]} off={0} size={2.2} />)}
+      {/* The west end: the width */}
+      <VDim k={k} y0={-H} y1={H} x={0} side="left" />
     </svg>
   )
 }

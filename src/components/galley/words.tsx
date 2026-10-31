@@ -22,7 +22,7 @@ const en = {
     labels: {
       handWash: "HAND WASH", harvest: "HARVEST", prepSink: ["PREP", "SINK"], prepBench: "PREP BENCH", washSink: ["WASH-UP", "SINK"],
       dishDrop: "DISH DROP", dry: "DRY STORE", hood: "HOOD", bench: "COLD BENCH", pass: "PASS", cleaning: "CLEANING", bin: "BIN",
-      plates: "PLATES", staffDoor: "STAFF DOOR", serviceDoor: "SERVICE DOOR", galley: "GALLEY",
+      plates: "PLATES", staffDoor: "STAFF DOOR", serviceDoor: "SERVICE DOOR", galley: "GALLEY", cold: "COLD", line: "COOKING LINE", window: "WINDOW", worktop: "worktop",
       units: { freezer: "FREEZER", fridge: "FRIDGE", range: "RANGE", griddle: "GRIDDLE", fryer: "FRYER" } as Record<string, string>,
     },
   },
@@ -141,7 +141,7 @@ const rw: typeof en = {
     labels: {
       handWash: "GUKARABA", harvest: "UMUSARURO", prepSink: ["LAVABO", "GUTEGURA"], prepBench: "AHO GUTEGURIRA", washSink: ["LAVABO", "KOZA"],
       dishDrop: "IBYOMBO BYANDUYE", dry: "UBUBIKO", hood: "IGIKURURA UMWOTSI", bench: "KAWUNTA IKONJE", pass: "AHO BATANGIRA", cleaning: "ISUKU", bin: "IMYANDA",
-      plates: "AMASAHANI", staffDoor: "URUGI RW'ABAKOZI", serviceDoor: "URUGI RWO KUGABURIRA", galley: "IGIKONI",
+      plates: "AMASAHANI", staffDoor: "URUGI RW'ABAKOZI", serviceDoor: "URUGI RWO KUGABURIRA", galley: "IGIKONI", cold: "IBIKONJESHA", line: "AHO GUTEKERA", window: "IDIRISHYA", worktop: "kawunta",
       units: { freezer: "FIRIZERI", fridge: "FIRIGO", range: "AMASHYIGA", griddle: "ISAHANI", fryer: "IKARANGIRO" },
     },
   },
