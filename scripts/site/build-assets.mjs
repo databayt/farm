@@ -107,7 +107,10 @@ rmSync(OUT_IMG, { recursive: true, force: true })
 mkdirSync(OUT_IMG, { recursive: true })
 const stills = collect(ASSETS, IMAGE_EXT)
 const images = {}
-for (const [name, { file, source }] of [...stills].sort(([a], [b]) => a.localeCompare(b))) {
+// Only the stills a clip falls back to are published: the homepage's picture sections are gone (the founder's cut,
+// 2026-10-31), so the rest would ship unused. `stills` keeps them all for the render-wins rule below.
+const fallbacks = new Set(Object.values(CLIPS).map((c) => c.still))
+for (const [name, { file, source }] of [...stills].filter(([name]) => fallbacks.has(name)).sort(([a], [b]) => a.localeCompare(b))) {
   images[name] = await writeImage(name, file, source)
   console.log(`image ${name} (${source}) ${images[name].width}×${images[name].height}`)
 }
