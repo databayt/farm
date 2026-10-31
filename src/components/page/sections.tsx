@@ -123,12 +123,9 @@ export function ServiceSection({ id, title, diagram, figure, note, real, rail }:
 }
 
 // The page's last section: a card for each of the place's docs pages, its execution plan first, as the docs sidebar
-// groups them (D-059). Five at most, so they keep to one row. `ownPlan` is false while a place's docs are still to
-// be grouped: its cards then open on the farm-wide plan of 2026-10-19.
+// groups them (D-059). Five at most, so they keep to one row.
 export type DocCard = { href: string; title: string; text: string }
-const PLAN: DocCard = { href: "/docs/first-90-days", title: "Execution plan", text: "The first 90 days, gate by gate and week by week, then the five-year roadmap." }
-export function DocsSection({ cards: own, ownPlan = false }: { cards: DocCard[]; ownPlan?: boolean }) {
-  const cards = ownPlan ? own : [PLAN, ...own]
+export function DocsSection({ cards }: { cards: DocCard[] }) {
   return (
     <section id="docs" className="scroll-mt-20 border-t py-16">
       <div className="w-full px-4 md:px-10">

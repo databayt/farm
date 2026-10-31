@@ -125,7 +125,7 @@ export default function VolleyballPage() {
       <ServiceSection id="drainage" title="Drainage"
         diagram={<CourtDrainageDiagram length={FL} width={FW} fall={SF.fall} />} />
 
-      <DocsSection cards={DOCS} ownPlan />
+      <DocsSection cards={DOCS} />
     </main>
   )
 }

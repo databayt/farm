@@ -354,7 +354,7 @@ export default function StudioPage() {
       {/* The reference sections live in the docs (scripts/sync-docs.mjs, src/components/studio/docs-sections.tsx):
           the bill of materials, the circuit and pipe schedules with their points, and the studio's features and
           downloads. A card each, after the execution plan's. */}
-      <DocsSection cards={DOCS} ownPlan />
+      <DocsSection cards={DOCS} />
     </main>
   )
 }

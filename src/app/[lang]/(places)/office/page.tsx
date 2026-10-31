@@ -96,7 +96,7 @@ export default function OfficePage() {
         </>}
         rail={networkRail} />
 
-      <DocsSection cards={DOCS} ownPlan />
+      <DocsSection cards={DOCS} />
     </main>
   )
 }

@@ -99,7 +99,7 @@ export default function CampPage() {
           className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 
-      <DocsSection cards={DOCS} ownPlan />
+      <DocsSection cards={DOCS} />
     </main>
   )
 }

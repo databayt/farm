@@ -136,7 +136,7 @@ export default function ParkingPage() {
           alt: "The same view rendered in daylight: the grass-paver parking in its fieldstone edging, a strip of grey stone across the lawn at its west end and a square concrete cover by the hedge, the sign wall, the gate and the start of the rock road." }}
         rail={drainRail()} />
 
-      <DocsSection cards={DOCS} ownPlan />
+      <DocsSection cards={DOCS} />
     </main>
   )
 }

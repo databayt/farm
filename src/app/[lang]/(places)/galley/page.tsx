@@ -115,7 +115,7 @@ export default function GalleyPage() {
           alt: "The same view rendered: green supply pipes along the front wall under the stainless worktop and up to the sinks and the basin, the blue meter by the basin, the white heater on the east end wall over the green bins, and the grease trap's lid on the lawn outside the east end." }}
         rail={waterRail()} />
 
-      <DocsSection cards={DOCS} ownPlan />
+      <DocsSection cards={DOCS} />
     </main>
   )
 }

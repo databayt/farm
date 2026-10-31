@@ -123,7 +123,7 @@ export default function LivestockPage() {
         diagram={<ManureDiagram bay={CO.bay} bays={CO.n} />}
         rail={manureRail()} />
 
-      <DocsSection cards={DOCS} ownPlan />
+      <DocsSection cards={DOCS} />
     </main>
   )
 }

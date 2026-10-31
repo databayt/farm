@@ -110,7 +110,7 @@ export default function BarPage() {
           alt: "The same view rendered with the hatch wall left out and the units opened: the blue meter and the white scale filter under the coffee machine, green pipes up into the sink unit, the white under-sink heater, and the grease trap's lid on the lawn by the south end." }}
         rail={waterRail()} />
 
-      <DocsSection cards={DOCS} ownPlan />
+      <DocsSection cards={DOCS} />
     </main>
   )
 }
