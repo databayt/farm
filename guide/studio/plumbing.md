@@ -1,20 +1,18 @@
-# Plumber's guide: the studio
+# Studio: plumbing
 
 Status: revision {{studio.rev}}, {{studio.rev_date}}, {{studio.status}}. No guest stays before the septic system passes its inspection (D-016).
 
 Everything the plumber needs for one container studio: supply, hot water, drains, the tests, and what the studio needs from the farm.
 
-The two studios are piped the same, so one guide serves both.
+The two studios are piped the same, so one page serves both.
 
-Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumber.rw.md) · Print: [this guide as a PDF](../../public/guides/plumber.pdf)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumbing.rw.md) · Print: [this page as a PDF](../../public/guides/studio-plumbing.pdf) · The pipes drawn: [the studio page](/en/studio#plumbing) · When it happens: [the execution plan](plan.md)
 
-## Words used here
+## At a glance
 
 - **End A**: the closed end wall, by the bed. **End B**: the cargo-door end, by the bathroom.
 - **Back wall**: the long wall with no openings. **Front wall**: the long wall with the sliding glass door.
 - Positions in the fittings table are millimetres from the finished end-A wall (x), from the finished back wall (y) and up from the finished floor (z).
-
-## The studio at a glance
 
 | What | Design |
 |---|---|
@@ -32,13 +30,23 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumber.rw.md) · Print: [this 
 | With the bathroom | Tray (S09), WC, heater and basin (S10) | S09, S10 |
 | With the kitchen | Sink, tap and filter | S13 |
 
-## Three hold points
+### From the farm
+
+- One cold supply at 2.5 to 3 bar from the farm's storage tank and booster pump. Mains water enters that tank through an air gap, so private water never flows back into the main (D-016).
+- A soil connection from the inspection chamber outside end B to the farm's septic tank, and the kitchen line to a grease trap with its own soak pit.
+- The septic tank sits at least 50 m from the borehole, 3 to 7 m from buildings and the boundary, downhill of the borehole, within 30 m of tanker access, and only after a percolation test.
+
+[Table: Site water and septic sizing for the two studios](../../public/designs/studio/data/site-water.csv)
+
+## Hold points
 
 1. **Battens first.** Start the first fix only when the battens (S03) are fixed and the floor sheets are down.
 2. **The 10 bar test.** Fill the PPR, hold 10 bar for one hour with no drop, write it down and sign it before the spray foam (S05). The foam buries the pipes.
 3. **Before guests.** The drains are fill-tested, the vent smoke-tested, the shower measured with a thermometer, and the farm's septic system inspected.
 
-## S04: first fix
+## Steps
+
+### S04: first fix
 
 1. Bring the cold main (W1, 25 mm) in under the floor at end B and up into the sink base through the stop valve, Y-filter and check meter, where it can be shut off without tools.
 2. Run the cold inside the units and the walls: through the partition, the back wall's lining and end wall B to the WC cistern (W4), the basin (W5) and up to the heater's foot in the shower (W2). Keep cold 300 mm above the floor.
@@ -48,11 +56,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumber.rw.md) · Print: [this 
 6. Fall at 1:40 or steeper; rodding eyes at every bend; the 75 mm vent up end B.
 7. Pressure-test at 10 bar for one hour, photograph every wall, sign the release for the foam.
 
-[Table: Pipe runs: system, size, length and fall](../../public/designs/studio/data/pipes.csv)
-
-[Table: Fittings: what, where and how high](../../public/designs/studio/data/fittings.csv)
-
-## S09, S10 and S13: second fix
+### S09, S10 and S13: second fix
 
 1. S09: set the shower tray ({{studio.tray_l}} × {{studio.tray_w}}) on its 90 mm waste, with the carpenter's ledge and the fixed glass screen.
 2. S10: hang the wall-hung WC on its slim concealed cistern (80 mm frame in end wall B, 30 mm build-out, dual-flush plate).
@@ -60,7 +64,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumber.rw.md) · Print: [this 
 4. S10: fit the basin (400 × 300) and its cold tap with a bottle trap in the wash lobby; the slide rail and the hand shower on end wall B.
 5. S13: the kitchen tap (cold) on its angle valve, and the drinking-water filter in the sink base with its own faucet by the tap.
 
-## Tests
+### Tests
 
 1. PPR at 10 bar for one hour, before the foam (S04).
 2. Fill-test every drain and check every trap holds its seal.
@@ -68,13 +72,17 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumber.rw.md) · Print: [this 
 4. Run the shower at full flow and measure it with a thermometer: about 40 °C. If it is hotter, turn the heater's display down.
 5. Run a long shower: the water stays hot, since the heater has no tank to empty.
 
-## What the studio needs from the farm
+## Runs
 
-- One cold supply at 2.5 to 3 bar from the farm's storage tank and booster pump. Mains water enters that tank through an air gap, so private water never flows back into the main (D-016).
-- A soil connection from the inspection chamber outside end B to the farm's septic tank, and the kitchen line to a grease trap with its own soak pit.
-- The septic tank sits at least 50 m from the borehole, 3 to 7 m from buildings and the boundary, downhill of the borehole, within 30 m of tanker access, and only after a percolation test.
+[Pipe runs: system, size, length and fall](../../src/components/studio/docs-sections.tsx#StudioPipes)
 
-[Table: Site water and septic sizing for the two studios](../../public/designs/studio/data/site-water.csv)
+## Points
+
+[Fittings: what, where and how high](../../src/components/studio/docs-sections.tsx#StudioFittings)
+
+## Open questions
+
+1. Where does the farm's septic tank go, and has its percolation test passed? The studios' drains and their first guests wait on both ([the farm's water](../farm/water.md)).
 
 ## Drawings
 

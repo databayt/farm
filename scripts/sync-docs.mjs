@@ -43,9 +43,6 @@ const LANGS = ["en", "rw"]
 const PAGES = [
   { slug: "index", src: "guide/start.md", title: "Start here" },
   "---Trades---",
-  { slug: "carpenter", src: "guide/trades/carpenter.md" },
-  { slug: "electrician", src: "guide/trades/electrician.md" },
-  { slug: "plumber", src: "guide/trades/plumber.md" },
   { slug: "power", src: "guide/trades/power.md" },
   "---Grow---",
   { slug: "vegetables", src: "guide/grow/vegetables.md" },
@@ -75,27 +72,6 @@ const PAGES = [
   { slug: "studio-bom", src: "study/studio/studio-bom.md" },
   { slug: "studio-budget", src: "study/studio/studio-budget.md" },
   { slug: "studio-permits", src: "study/studio/studio-permits.md" },
-  {
-    slug: "studio-materials", title: "Studio: bill of materials",
-    description: "Everything one studio needs, section by section, and the water and sanitation the studios share with the farm.",
-    sections: [["", "StudioBom"], ["Shared with the farm", "StudioShared"]],
-  },
-  {
-    slug: "studio-circuits", title: "Studio: circuits and points",
-    description: "The eight circuits, each checked against its breaker, cable and voltage drop, and every light, switch and socket.",
-    sections: [["Circuits", "StudioCircuits"], ["Points", "StudioElectricPoints"]],
-  },
-  {
-    slug: "studio-pipes", title: "Studio: pipe runs and points",
-    description: "Every pipe run with its size, length and fall, and every valve, tap and drain.",
-    sections: [["Pipe runs", "StudioPipes"], ["Points", "StudioFittings"]],
-  },
-  {
-    slug: "studio-features", title: "Studio: features and downloads",
-    description: "What the studio has, how it is built the IKEA way, the drawing set to download, and where it stands.",
-    sections: [["What the studio has", "StudioFeatures"], ["Built the IKEA way", "StudioSteps"],
-      ["Downloads", "StudioDownloads"], ["Status", "StudioStatus"]],
-  },
   {
     slug: "studio-cut-list", csv: "public/designs/studio/data/cut-list.csv", title: "Studio cut list",
     description: "Every sheet part of one studio: size, material, edge banding and machining counts.",
@@ -242,22 +218,13 @@ const PAGES = [
 // its /docs URL and stays linked from the guides and Start here; add a slug back when it is needed again.
 const SIDEBAR = [
   "index",
-  "---Build the studios---",
-  "carpenter",
-  "electrician",
-  "plumber",
-  "power",
-  "---The studio---",
-  "studio-materials",
-  "studio-circuits",
-  "studio-pipes",
-  "studio-features",
   "---Start the field---",
   "vegetables",
   "livestock",
   "---The land---",
   "farm-today",
   "master-plan",
+  "power",
   "---Execution plan---",
   "first-90-days",
   "five-year-roadmap",
@@ -295,6 +262,7 @@ const twins = listed
   .filter((p) => p.src?.endsWith(".md") && existsSync(join(ROOT, p.src.replace(/\.md$/, ".rw.md"))))
   .map((p) => ({ ...p, lang: "rw", src: p.src.replace(/\.md$/, ".rw.md"), twinOf: p.src }))
 const entries = [...listed, ...twins]
+const twinned = new Set(twins.map((t) => t.twinOf))
 // one page per slug and language: a repeated slug would silently overwrite the earlier page's .mdx
 const seenSlugs = new Set()
 for (const { slug, lang } of entries) {
@@ -465,8 +433,30 @@ const MDX_COMPONENTS = readFileSync(join(ROOT, "src", "mdx-components.tsx"), "ut
 
 const isDirective = (l) => COMPONENT.test(l) || /^\s*!\[[^\]]*\]\([^)]+\)\s*$/.test(l) || /^\s*\[(Table:[^\]]*|[^\]]+)\]\([^)\s]+\.(csv|glb)\)\s*$/.test(l)
 
+/** github-slugger's way: lower case, drop punctuation, a dash for every space; repeats get -1, -2 … */
+function headingIds(src) {
+  const seen = new Map()
+  let inFence = false
+  const ids = []
+  for (const line of readFileSync(join(ROOT, src), "utf8").split("\n").map((l) => tokens(l, src))) {
+    if (/^\s*(```|~~~)/.test(line)) inFence = !inFence
+    const m = !inFence && line.match(/^#{2,3} (.+)$/)
+    if (!m) continue
+    const text = m[1].replace(/\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/[*_`]/g, "")
+    const base = text.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, "").trim().replace(/\s/g, "-")
+    const n = seen.get(base) ?? 0
+    seen.set(base, n + 1)
+    ids.push(n ? `${base}-${n}` : base)
+  }
+  return ids
+}
+
 function fromMarkdown(page) {
   const { src, title, description: fixed } = page
+  // A page and its translation share their anchors, the English headings' (D-058), so a link or the language
+  // switch lands on the same section in either language.
+  const ids = page.twinOf ? headingIds(page.twinOf) : twinned.has(src) ? headingIds(src) : null
+  let heading_ = 0
   const lines = readFileSync(join(ROOT, src), "utf8").split("\n").map((l) => tokens(l, src))
   const h1 = lines.findIndex((l) => l.startsWith("# "))
   const heading = h1 >= 0 ? lines[h1].slice(2).trim() : basename(src, ".md")
@@ -489,7 +479,10 @@ function fromMarkdown(page) {
     if (/^\s*(```|~~~)/.test(line)) { inFence = !inFence; return line }
     if (inFence) return line
     const block = blockDirective(line, src)
-    return block !== null ? `\n${block}\n` : escapeProse(rewriteLinks(line, page, keep))
+    if (block !== null) return `\n${block}\n`
+    const out = escapeProse(rewriteLinks(line, page, keep))
+    if (ids && /^#{2,3} /.test(line)) { const id = ids[heading_++]; return id ? `${out} [#${id}]` : out }
+    return out
   })
   const where = page.place ? `place: ${yaml(page.place)}\nkind: ${yaml(page.kind)}\n` : ""
   return `---\ntitle: ${yaml(title ?? heading)}\ndescription: ${yaml(description)}\n${where}---\n\n` +
@@ -554,7 +547,15 @@ function parity(enSrc, rwSrc) {
 // Old URLs (D-058): the docs moved from /docs to /en/docs (and the Kinyarwanda pages from /docs/<slug>-rw to
 // /rw/docs/<slug>), and a renamed page keeps its old link. One map, so a redirect can't point at a page that is
 // gone: each old slug and the page it became.
-const MOVED = { studio: "studio-package", farm: "farm-today" }
+const MOVED = {
+  farm: "farm-today",
+  // the studio's trade guides and reference pages, now its execution plan, materials, electric and plumbing (D-059)
+  carpenter: "studio", "studio-features": "studio", "studio-materials": "studio/materials",
+  electrician: "studio/electric", "studio-circuits": "studio/electric",
+  plumber: "studio/plumbing", "studio-pipes": "studio/plumbing",
+}
+// printed guides renamed with their pages: public/guides/<old>[-rw].pdf is now <new>[-rw].pdf
+const MOVED_PDFS = { carpenter: "studio-plan", electrician: "studio-electric", plumber: "studio-plumbing" }
 
 /** public/_redirects for Cloudflare: static rules first, the catch-all last (the first matching rule wins). */
 function redirects() {
@@ -563,9 +564,17 @@ function redirects() {
   for (const [old, now] of Object.entries(MOVED)) {
     if (!live.has(now)) throw new Error(`sync-docs: MOVED sends "${old}" to "${now}", which is not a page`)
     if (live.has(old)) throw new Error(`sync-docs: MOVED moves "${old}", which is still a page`)
-    rules.push([`/docs/${old}`, `/en/docs/${now}`])
+    // its URL before the languages, its Kinyarwanda twin's, and its URLs under /en and /rw before it moved
+    rules.push([`/docs/${old}`, `/en/docs/${now}`], [`/docs/${old}-rw`, `/rw/docs/${now}`],
+      [`/en/docs/${old}`, `/en/docs/${now}`], [`/rw/docs/${old}`, `/rw/docs/${now}`])
   }
-  for (const { slug } of twins) rules.push([`/docs/${slug}-rw`, `/rw/docs/${slug}`])
+  for (const { slug } of twins.filter((t) => !t.place)) rules.push([`/docs/${slug}-rw`, `/rw/docs/${slug}`])
+  for (const [old, now] of Object.entries(MOVED_PDFS)) {
+    for (const rw of ["", "-rw"]) {
+      if (!existsSync(join(PUBLIC, "guides", `${now}${rw}.pdf`))) throw new Error(`sync-docs: MOVED_PDFS sends ${old}${rw}.pdf to ${now}${rw}.pdf, which is not in public/guides`)
+      rules.push([`/guides/${old}${rw}.pdf`, `/guides/${now}${rw}.pdf`])
+    }
+  }
   rules.push(["/docs/*", "/en/docs/:splat"])
   return "# Generated by scripts/sync-docs.mjs from MOVED. Old docs URLs and the pages they became.\n" +
     rules.map(([from, to]) => `${from} ${to} 301`).join("\n") + "\n"

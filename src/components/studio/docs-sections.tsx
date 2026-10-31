@@ -1,14 +1,9 @@
-
-import { Button } from "@/components/ui/button"
 import { type BomGroup, type BomLine, type BomSection, BomTable } from "@/components/docs/bom-table"
 import { Figure } from "@/components/docs/figure"
 import { D, degC, frw, mm, readCsv, rwf } from "@/components/studio/data"
-import { LocaleLink as Link } from "@/components/internationalization/locale-link"
-import totals from "../../../public/designs/studio/data/totals.json"
 
-// The studio's reference sections, moved off /en/studio onto its docs pages (studio-materials, studio-circuits,
-// studio-pipes, studio-features; scripts/sync-docs.mjs places them under MDX headings). Every number is the
-// generator's, read from public/designs/studio/data on the server.
+// The studio's reference sections, on its docs pages (D-059: guide/studio/*.md embeds them; scripts/sync-docs.mjs
+// renders each as <Name />). Every number is the generator's, read from public/designs/studio/data on the server.
 
 const FEATURES = [
   { title: "Sleep", text: "A queen bed up to 1.6 × 2.0 m against the wall, with two storage boxes underneath, a bedside table, a reading lamp and USB-C." },
@@ -370,21 +365,5 @@ export function StudioDownloads(): React.JSX.Element {
         </li>
       ))}
     </ul>
-  )
-}
-
-export function StudioStatus(): React.JSX.Element {
-  return (
-    <>
-      <p className="text-muted-foreground">
-        Preliminary. Openings are scaled from a photo, so nothing is cut until the container is measured.
-        Prices are placeholders until three quotes per line: about {rwf(totals.unit_with_contingency)} for the
-        studio, before the farm&rsquo;s shared septic, water and power works. A structural engineer signs the
-        roof terrace before guests use it.
-      </p>
-      <Button asChild variant="outline" className="mt-4">
-        <Link href="/docs/studio-site">See the survey sheet</Link>
-      </Button>
-    </>
   )
 }

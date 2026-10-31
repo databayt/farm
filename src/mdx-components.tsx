@@ -9,7 +9,7 @@ import { Figure } from "@/components/docs/figure"
 import { StudioViewer } from "@/components/docs/studio-viewer"
 import {
   StudioBom, StudioCircuits, StudioDownloads, StudioElectricPoints, StudioFeatures, StudioFittings, StudioPipes,
-  StudioShared, StudioStatus, StudioSteps,
+  StudioShared, StudioSteps,
 } from "@/components/studio/docs-sections"
 import { BarElectricPoints, BarPlumbingPoints, BarStatus } from "@/components/bar/docs-sections"
 import { FarmingBom, FarmingCalendar, FarmingPlate, FarmingStatus, FarmingWaterPoints } from "@/components/farming/docs-sections"
@@ -195,7 +195,7 @@ const mdxComponents = {
   StudioViewer,
   // the studio's reference sections (scripts/sync-docs.mjs "sections" pages)
   StudioBom, StudioShared, StudioCircuits, StudioElectricPoints, StudioPipes, StudioFittings,
-  StudioFeatures, StudioSteps, StudioDownloads, StudioStatus,
+  StudioFeatures, StudioSteps, StudioDownloads,
   // every other place's (the "---The places---" pages), in the site menu's order
   GuestRoomElectricPoints, GuestRoomStatus,
   OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus,

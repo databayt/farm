@@ -33,9 +33,9 @@ Dates are a target, not a promise. The order matters more than the dates.
 
 | Guide | Who | What it says, simply |
 |---|---|---|
-| [Carpenter](trades/carpenter.md) | the carpenter | Measure 7 numbers on day 1. Then floor, battens, wall panels, bathroom, kitchen and bed, in that order. |
-| [Electrician](trades/electrician.md) | the electrician | Cables go in after the battens and before the foam. The board and sockets come at the end. |
-| [Plumber](trades/plumber.md) | the plumber | Pipes go in with the cables, then the 10 bar test. No guest stays until the septic tank passes inspection. |
+| [Carpenter](studio/plan.md) | the carpenter | Measure 7 numbers on day 1. Then floor, battens, wall panels, bathroom, kitchen and bed, in that order. |
+| [Electrician](studio/electric.md) | the electrician | Cables go in after the battens and before the foam. The board and sockets come at the end. |
+| [Plumber](studio/plumbing.md) | the plumber | Pipes go in with the cables, then the 10 bar test. No guest stays until the septic tank passes inspection. |
 | [Power](trades/power.md) | the owner | Connect to the grid, add solar with batteries, and keep a generator as a spare. This month: ask EUCL for a written quote. |
 
 ### Start the field

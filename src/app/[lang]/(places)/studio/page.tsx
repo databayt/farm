@@ -17,12 +17,12 @@ import wallPieces from "../../../../../public/designs/studio/render/wall-pieces.
 // Public showcase of the container-studio design package (study/studio, D-014..D-016).
 // Every number here comes from the generated package; the docs hold the evidence.
 
-// The docs pages the reference sections moved to, linked from the end of this page after the execution plan.
+// The studio's docs pages, as the docs sidebar groups them (D-059), linked from the end of this page.
 const DOCS = [
-  { href: "/docs/studio-materials", title: "Bill of materials", text: "Every line one studio needs, section by section, and what the studios share with the farm." },
-  { href: "/docs/studio-circuits", title: "Circuits and points", text: "The eight circuits, checked against breaker, cable and voltage drop, and every light, switch and socket." },
-  { href: "/docs/studio-pipes", title: "Pipe runs and points", text: "Every run with its size, length and fall, and every valve, tap and drain." },
-  { href: "/docs/studio-features", title: "Features and downloads", text: "What the studio has, how it is built the IKEA way, the drawing set and the status." },
+  { href: "/docs/studio", title: "Execution plan", text: "Every step of building out one studio, in order: the carpenter's drawings and where the electrician and the plumber come in." },
+  { href: "/docs/studio/materials", title: "Materials", text: "The carpenter's sheets and battens, the bill of materials kit by kit, and the files the workshop cuts from." },
+  { href: "/docs/studio/electric", title: "Electric", text: "The eight circuits checked against breaker, cable and voltage drop, the first and second fix, the tests, and every point." },
+  { href: "/docs/studio/plumbing", title: "Plumbing", text: "The supply, the instant heater and the drains, the tests, every pipe run and fitting, and what the farm supplies." },
 ]
 
 export const metadata: Metadata = {
@@ -310,13 +310,13 @@ export default function StudioPage() {
           scripts/studio/render/room.html?view=electric, built from render/scene.json. */}
       <ServiceSection id="electrical" title="Electric"
         diagram={<WiringDiagram circuits={circuits} demand={demand} />}
-        figure={<TaggedFigure table="/docs/studio-circuits" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
+        figure={<TaggedFigure table="/docs/studio/electric" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
           alt="Line drawing of the studio from the front with every electrical point and conduit run: the unit board on the back wall by the galley with seven circuits leaving its top, cables along the ceiling edge and straight down to each light, switch and socket, in blue for lights, orange for sockets and green for fixed appliances."
           info={Object.fromEntries(points.map((p) => [p.point, { label: p.description,
             colour: circuits.find((c) => c.circuit === p.circuit)?.colour }]))} />}
         note={<>
           Every run goes up into the ceiling void, along it and straight down to its device. Each tag opens its row
-          in the <Link href="/docs/studio-circuits#points" className="underline underline-offset-4">points table</Link>.
+          in the <Link href="/docs/studio/electric#points" className="underline underline-offset-4">points table</Link>.
           Outside the drawing: C6 leaves through the front wall at the bed end for{" "}
           {points.filter((p) => p.circuit === "C6" && !electricTags.tags.some((t) => t.id === p.point)).map((p) => p.point).join(", ")}{" "}
           on the deck, the stair and the roof. The inlet (PI) is behind the board, and the earth rod (E1) is in a pit
@@ -334,14 +334,14 @@ export default function StudioPage() {
           scripts/studio/render/room.html?view=plumbing, built from render/scene.json. */}
       <ServiceSection id="plumbing" title="Plumbing"
         diagram={<PipeDiagram pipes={pipes} fittings={fittings} water={water} />}
-        figure={<TaggedFigure table="/docs/studio-pipes" src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags}
+        figure={<TaggedFigure table="/docs/studio/plumbing" src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags}
           alt="Line drawing of the studio from the front with the sink base cut open, the bathroom's wet walls stripped to the foam and every pipe run: the stop valve, filter and meter on the main in the sink base, cold in blue along the back wall and up end wall B to every outlet and to the instant heater in the shower, its hose in red to the hand shower, and the drains in brown dropping through the floor."
           info={Object.fromEntries(fittings.map((f) => [f.point, { label: f.description, colour: fittingColour(f, pipes) }]))} />}
         note={<>
           Supplies run inside the units and the walls, then straight up to each outlet; drains drop through the floor and
           hang under it. The sink base and the bathroom&rsquo;s wet walls are drawn open; a run is dashed where a wall or
           the floor still hides it. Each tag opens its row in the{" "}
-          <Link href="/docs/studio-pipes#points" className="underline underline-offset-4">points table</Link>. Outside
+          <Link href="/docs/studio/plumbing#points" className="underline underline-offset-4">points table</Link>. Outside
           the drawing: the main comes in under end B from the farm; D1, D2 and D3 leave for the inspection chamber (IC1)
           and the septic tank, D4 for the grease trap (GT); the vent rises up end B to its terminal (VT), 900 mm above
           the roof guardrail.
@@ -354,7 +354,7 @@ export default function StudioPage() {
       {/* The reference sections live in the docs (scripts/sync-docs.mjs, src/components/studio/docs-sections.tsx):
           the bill of materials, the circuit and pipe schedules with their points, and the studio's features and
           downloads. A card each, after the execution plan's. */}
-      <DocsSection cards={DOCS} />
+      <DocsSection cards={DOCS} ownPlan />
     </main>
   )
 }
