@@ -532,6 +532,12 @@ function zoneSheets(t, lang) {
     if (byY) { s.text(x0, et - 60, t.back, { size: 60, anchor: "start" }); s.text(x0 + ew, et - 60, t.front, { size: 60, anchor: "end" }) }
     s.text(x0, eb + 200, t.up, { size: 75, anchor: "start" })
     write(`zone-${name}`, lang, s)
+    // the same sheet in black and white, in the studio page's 2D pattern: white pieces, black lines and numbers
+    writeFileSync(join(OUT, `zone-${name}-bw.${lang}.svg`), s.svg()
+      .replace(/(<(?:rect|path)[^>]*?)fill="(#[0-9a-fA-F]{3,6})"/g, (m0, a, f) => `${a}fill="${f === C.steel || f === "#8d8578" ? "#111111" : "#ffffff"}"`)
+      .replace(/stroke="#[0-9a-fA-F]{3,6}"/g, 'stroke="#111111"')
+      .replace(/(<text[^>]*?)fill="#[0-9a-fA-F]{3,6}"/g, (m0, a) => `${a}fill="#111111"`)
+    )
   }
 }
 

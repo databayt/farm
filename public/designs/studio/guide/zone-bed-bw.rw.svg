@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1300 -1390 5720 8858" width="953" height="1476" font-family="Helvetica, Arial, sans-serif">
+<rect x="-1300" y="-1390" width="5720" height="8858" fill="#ffffff"/>
+<rect x="0" y="0" width="1980" height="2252" fill="#ffffff" stroke="#111111" stroke-width="10"/>
+<rect x="0" y="-50" width="1980" height="50" fill="#111111" stroke="none" stroke-width="0"/>
+<rect x="0" y="2252" width="1980" height="50" fill="#111111" stroke="none" stroke-width="0"/>
+<rect x="1380" y="2247" width="600" height="60" fill="#ffffff" stroke="#111111" stroke-width="5"/>
+<rect x="-50" y="-50" width="50" height="2352" fill="#111111" stroke="none" stroke-width="0"/>
+<rect x="0" y="18" width="1640" height="2020" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+<text x="820" y="1028" font-size="70" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">IGITANDA</text>
+<rect x="1022" y="790" width="618" height="606" fill="none" stroke="#111111" stroke-width="6" stroke-dasharray="30 20"/>
+<text x="1331" y="1093" font-size="70" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">AGASANDUKU</text>
+<rect x="1022" y="1414" width="618" height="606" fill="none" stroke="#111111" stroke-width="6" stroke-dasharray="30 20"/>
+<text x="1331" y="1717" font-size="70" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">AGASANDUKU</text>
+<rect x="1640" y="0" width="340" height="340" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+<text x="1810" y="170" font-size="70" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">AKAMEZA</text>
+<text x="0" y="-1170" font-size="110" font-weight="700" fill="#111111" text-anchor="start" dominant-baseline="middle">IGITANDA · UREBYE UVA HEJURU</text>
+<line x1="1640" y1="-230" x2="1980" y2="-230" stroke="#111111" stroke-width="5"/>
+<line x1="1610" y1="-200" x2="1670" y2="-260" stroke="#111111" stroke-width="7"/>
+<line x1="1950" y1="-200" x2="2010" y2="-260" stroke="#111111" stroke-width="7"/>
+<text x="1810" y="-315" font-size="85" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">340</text>
+<line x1="1022" y1="-460" x2="1640" y2="-460" stroke="#111111" stroke-width="5"/>
+<line x1="992" y1="-430" x2="1052" y2="-490" stroke="#111111" stroke-width="7"/>
+<line x1="1610" y1="-430" x2="1670" y2="-490" stroke="#111111" stroke-width="7"/>
+<text x="1331" y="-545" font-size="85" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">618</text>
+<line x1="0" y1="-690" x2="1640" y2="-690" stroke="#111111" stroke-width="5"/>
+<line x1="-30" y1="-660" x2="30" y2="-720" stroke="#111111" stroke-width="7"/>
+<line x1="1610" y1="-660" x2="1670" y2="-720" stroke="#111111" stroke-width="7"/>
+<text x="820" y="-775" font-size="85" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">1640</text>
+<line x1="2280" y1="18" x2="2280" y2="2038" stroke="#111111" stroke-width="5"/>
+<line x1="2250" y1="48" x2="2310" y2="-12" stroke="#111111" stroke-width="7"/>
+<line x1="2250" y1="2068" x2="2310" y2="2008" stroke="#111111" stroke-width="7"/>
+<text x="2375" y="1028" font-size="80" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 2375 1028)">2020</text>
+<line x1="2540" y1="790" x2="2540" y2="1396" stroke="#111111" stroke-width="5"/>
+<line x1="2510" y1="820" x2="2570" y2="760" stroke="#111111" stroke-width="7"/>
+<line x1="2510" y1="1426" x2="2570" y2="1366" stroke="#111111" stroke-width="7"/>
+<text x="2635" y="1093" font-size="80" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 2635 1093)">606</text>
+<line x1="2800" y1="1414" x2="2800" y2="2020" stroke="#111111" stroke-width="5"/>
+<line x1="2770" y1="1444" x2="2830" y2="1384" stroke="#111111" stroke-width="7"/>
+<line x1="2770" y1="2050" x2="2830" y2="1990" stroke="#111111" stroke-width="7"/>
+<text x="2895" y="1717" font-size="80" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 2895 1717)">606</text>
+<line x1="3060" y1="0" x2="3060" y2="340" stroke="#111111" stroke-width="5"/>
+<line x1="3030" y1="30" x2="3090" y2="-30" stroke="#111111" stroke-width="7"/>
+<line x1="3030" y1="370" x2="3090" y2="310" stroke="#111111" stroke-width="7"/>
+<text x="3155" y="170" font-size="80" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 3155 170)">340</text>
+<line x1="-450" y1="0" x2="-450" y2="2252" stroke="#111111" stroke-width="5"/>
+<line x1="-480" y1="30" x2="-420" y2="-30" stroke="#111111" stroke-width="7"/>
+<line x1="-480" y1="2282" x2="-420" y2="2222" stroke="#111111" stroke-width="7"/>
+<text x="-545" y="1126" font-size="90" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -545 1126)">2252</text>
+<line x1="0" y1="2702" x2="1980" y2="2702" stroke="#111111" stroke-width="5"/>
+<line x1="-30" y1="2732" x2="30" y2="2672" stroke="#111111" stroke-width="7"/>
+<line x1="1950" y1="2732" x2="2010" y2="2672" stroke="#111111" stroke-width="7"/>
+<text x="990" y="2797" font-size="90" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">1980</text>
+<text x="0" y="3052" font-size="75" font-weight="400" fill="#111111" text-anchor="start" dominant-baseline="middle">bipimwe uhereye ku rukuta rurangiye rwa end A: 0 → 1980</text>
+<line x1="1700" y1="2038" x2="1700" y2="2252" stroke="#111111" stroke-width="5"/>
+<line x1="1670" y1="2068" x2="1730" y2="2008" stroke="#111111" stroke-width="7"/>
+<line x1="1670" y1="2282" x2="1730" y2="2222" stroke="#111111" stroke-width="7"/>
+<text x="1795" y="2145" font-size="75" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 1795 2145)">inzira 214</text>
+<text x="0" y="3502" font-size="110" font-weight="700" fill="#111111" text-anchor="start" dominant-baseline="middle">IGITANDA · UREBYE UTURUTSE KU KIRAHURE</text>
+<rect x="0" y="3752" width="1980" height="2316" fill="#ffffff" stroke="#111111" stroke-width="8"/>
+<rect x="0" y="5068" width="1640" height="1000" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+<rect x="1640" y="5518" width="340" height="550" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+<rect x="0" y="5618" width="1640" height="450" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+<rect x="20" y="5418" width="1600" height="200" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+<rect x="1710" y="5098" width="200" height="420" fill="#ffffff" stroke="#111111" stroke-width="6"/>
+<text x="1810" y="5793" font-size="60" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">AKAMEZA</text>
+<text x="820" y="5843" font-size="60" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">IGITANDA</text>
+<text x="820" y="5518" font-size="60" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">MATELA</text>
+<text x="1810" y="5308" font-size="60" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle">ITARA</text>
+<line x1="-100" y1="5618" x2="0" y2="5618" stroke="#111111" stroke-width="4"/>
+<line x1="-150" y1="5618" x2="-100" y2="5618" stroke="#111111" stroke-width="3"/>
+<text x="-170" y="5618" font-size="75" font-weight="700" fill="#111111" text-anchor="end" dominant-baseline="middle">450</text>
+<line x1="-100" y1="5518" x2="0" y2="5518" stroke="#111111" stroke-width="4"/>
+<line x1="-150" y1="5518" x2="-100" y2="5518" stroke="#111111" stroke-width="3"/>
+<text x="-170" y="5518" font-size="75" font-weight="700" fill="#111111" text-anchor="end" dominant-baseline="middle">550</text>
+<line x1="-100" y1="5418" x2="0" y2="5418" stroke="#111111" stroke-width="4"/>
+<line x1="-150" y1="5418" x2="-100" y2="5418" stroke="#111111" stroke-width="3"/>
+<text x="-170" y="5418" font-size="75" font-weight="700" fill="#111111" text-anchor="end" dominant-baseline="middle">650</text>
+<line x1="-100" y1="5098" x2="0" y2="5098" stroke="#111111" stroke-width="4"/>
+<line x1="-150" y1="5098" x2="-100" y2="5098" stroke="#111111" stroke-width="3"/>
+<text x="-170" y="5098" font-size="75" font-weight="700" fill="#111111" text-anchor="end" dominant-baseline="middle">970</text>
+<line x1="-100" y1="5068" x2="0" y2="5068" stroke="#111111" stroke-width="4"/>
+<line x1="-150" y1="5008" x2="-100" y2="5068" stroke="#111111" stroke-width="3"/>
+<text x="-170" y="5008" font-size="75" font-weight="700" fill="#111111" text-anchor="end" dominant-baseline="middle">1000</text>
+<line x1="2280" y1="3752" x2="2280" y2="6068" stroke="#111111" stroke-width="5"/>
+<line x1="2250" y1="3782" x2="2310" y2="3722" stroke="#111111" stroke-width="7"/>
+<line x1="2250" y1="6098" x2="2310" y2="6038" stroke="#111111" stroke-width="7"/>
+<text x="2375" y="4910" font-size="90" font-weight="700" fill="#111111" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 2375 4910)">2316</text>
+<text x="0" y="6268" font-size="75" font-weight="400" fill="#111111" text-anchor="start" dominant-baseline="middle">uhereye hasi harangiye ujya hejuru</text>
+</svg>

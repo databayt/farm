@@ -24,29 +24,37 @@ English: [read this plan in English](plan.md) · Gucapa: [iyi gahunda nka PDF](.
 
 ## Ibice bine
 
-Buri gice gishushanyije n'ingano zacyo zose: urebye uri hejuru, urebye uri ku ruhande, hanyuma mu 3D. Ingano ni milimetero, zipimwe uhereye ku nkuta zirangiye; ingano zitukura ni inzira zisigaye.
+Buri gice gishushanyije n'ingano zacyo zose, mu mukara n'umweru: urebye uri hejuru, urebye uri ku ruhande, hanyuma mu 3D nk'igishushanyo cy'imirongo, n'ishusho isa n'ifoto. Ingano ni milimetero, zipimwe uhereye ku nkuta zirangiye; ingano zanditseho inzira ni inzira zisigaye.
 
 ### Igitanda
 
-![Igice cy'igitanda urebye uri hejuru n'uturutse ku kirahure, ingano zose](../../public/designs/studio/guide/zone-bed.rw.svg)
+![Igice cy'igitanda urebye uri hejuru n'uturutse ku kirahure, ingano zose](../../public/designs/studio/guide/zone-bed-bw.rw.svg)
+
+![Igice cy'igitanda mu 3D, umukara n'umweru](../../public/designs/studio/render/zones/bed-line.png)
 
 ![Igice cy'igitanda mu 3D](../../public/designs/studio/render/zones/bed.jpg)
 
 ### Kwicara
 
-![Igice cyo kwicara urebye uri hejuru n'uturutse ku kirahure, ingano zose](../../public/designs/studio/guide/zone-seating.rw.svg)
+![Igice cyo kwicara urebye uri hejuru n'uturutse ku kirahure, ingano zose](../../public/designs/studio/guide/zone-seating-bw.rw.svg)
+
+![Igice cyo kwicara mu 3D, umukara n'umweru](../../public/designs/studio/render/zones/seating-line.png)
 
 ![Igice cyo kwicara mu 3D](../../public/designs/studio/render/zones/seating.jpg)
 
 ### Igikoni
 
-![Igikoni urebye uri hejuru n'uri mu cyumba ureba end B, ingano zose; inzira iruhande rwacyo ni 700](../../public/designs/studio/guide/zone-galley.rw.svg)
+![Igikoni urebye uri hejuru n'uri mu cyumba ureba end B, ingano zose; inzira iruhande rwacyo ni 700](../../public/designs/studio/guide/zone-galley-bw.rw.svg)
+
+![Igikoni mu 3D, umukara n'umweru](../../public/designs/studio/render/zones/galley-line.png)
 
 ![Igikoni mu 3D](../../public/designs/studio/render/zones/galley.jpg)
 
 ### Ubwiherero
 
-![Ubwiherero urebye uri hejuru n'uri mu cyumba ureba end B, ingano zose](../../public/designs/studio/guide/zone-bath.rw.svg)
+![Ubwiherero urebye uri hejuru n'uri mu cyumba ureba end B, ingano zose](../../public/designs/studio/guide/zone-bath-bw.rw.svg)
+
+![Ubwiherero mu 3D, umukara n'umweru](../../public/designs/studio/render/zones/bath-line.png)
 
 ![Ubwiherero mu 3D](../../public/designs/studio/render/zones/bath.jpg)
 
