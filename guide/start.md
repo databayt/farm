@@ -8,13 +8,13 @@ What the farm builds this month, the five rules that must not break, and where e
 
 - **What:** about 5 ha in Gashora, Bugesera, an hour from Kigali. The lake is in view, but not on the farm (D-027).
 - **The idea:** guests stay in containers, eat what the field grows, and work in the study room.
-- **This month:** we do two things. We **build the two studios** and we **get the field ready**.
+- **This month:** we **build the two studios**, **start the three guest rooms** and **get the field ready**.
 
 ## This month in 4 weeks
 
 | Week | Studios | Field |
 |---|---|---|
-| 1 (from 29 Oct) | Measure both containers. Book the welder. Finish all welding. | Test the soil and the borehole water. |
+| 1 (from 29 Oct) | Measure both containers and the guest-room block. Book the welder. Finish all welding. | Test the soil and the borehole water. |
 | 2 | Lay the floor sheets, then the battens. | Fence the field. Mark out the beds. |
 | 3 | Electrician and plumber lay cables and pipes. Test and photograph everything. | Build the {{farming.bedsTotal}} beds. Lay the drip lines. |
 | 4 | Spray foam. Then the wall panels. | Start the seedlings. Sow beans and amaranth. |
@@ -36,7 +36,7 @@ Every place keeps them; [the farm's execution plan](farm/plan.md) holds them for
 | Place | Its execution plan, simply |
 |---|---|
 | [Studio](studio/plan.md) | Measure the 7 numbers on day 1 and finish all the welding. Then the floor, battens, cables and pipes, foam, linings, bathroom, kitchen and bed, with the roof deck and the stair last. |
-| [Guest room](guest-room/plan.md) | Decide the en-suite first; then the studio's order in the joined pair, three rooms alike. |
+| [Guest room](guest-room/plan.md) | Measure the block on day 1: four doors stand, and three rooms alike are planned, each with its own shower and WC (D-061). Then the studio's order. |
 | [Office](office/plan.md) | Survey the signal before any radio is bought: the farm's network starts here. |
 | [Study room](study-room/plan.md) | A long table for eight and a screen; its Wi-Fi comes from the office. |
 | [Galley](galley/plan.md) | Decide gas or electric first; the cook and a kitchen fitter check the layout. |

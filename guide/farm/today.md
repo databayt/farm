@@ -21,7 +21,7 @@ What the farm is, where it is and what already stands on it, so every guide star
 
 ## What stands today
 
-- **Containers:** red and yellow 20 ft boxes on steel decks about 700 mm up, with red pipe rails; the yellow joined pair with red doors (the future guest rooms); a teal 40 ft box; a red 20 ft kiosk (the future bar).
+- **Containers:** red and yellow 20 ft boxes on steel decks about 700 mm up, with red pipe rails; the yellow joined pair, four red doors each with a barred window (the future guest rooms); a teal 40 ft box; a red 20 ft kiosk (the future bar).
 - **A brick building** behind the containers; its use is not decided [U].
 - **The camping lawn:** pop-up tents, reed screens, thatched and coloured umbrellas, a round concrete fire pit, string lights for events. It has already hosted night camps with covered tables.
 - **Sport:** a volleyball net on the lawn. The planned court, 18 × 9 m, is drawn on [its page](/en/volleyball) and beside the compound on [the farm plan](/#plans).
@@ -54,6 +54,6 @@ What the farm is, where it is and what already stands on it, so every guide star
 
 1. The pin or the UPI: the true boundary, the area and the distance to the lake.
 2. The brick building: keep it and give it a use (store, workshop, kitchen), or take it down?
-3. The guest rooms: each with its own shower and WC, or sharing the public bathroom? The plans disagree.
+3. The guest rooms: three rooms, each with its own shower and WC (D-061). Which of today's four doors and windows close or move for them? The Day 1 survey settles it.
 4. The borehole: its yield through June to August, and a water-quality test.
 5. The grid: single or three phase, where the meter is, how far the transformer is.

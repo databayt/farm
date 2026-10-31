@@ -53,4 +53,4 @@ The bathroom drawn: [the public bathroom page](/en/public-bathroom) · Its other
 1. A women's side and a men's side, or every room open to everyone, as drawn?
 2. A shower for the campers? The tents have no washing of their own; a shower room would take a fitting's place or a second building.
 3. An accessible toilet room fits only by replanning the box round it; is it needed, and what does Rwanda's rule ask?
-4. The guest rooms: this file says they have their own bathrooms (D-029), but guest-room.json draws none. Its users, and so the septic's size, depend on it.
+4. The guest rooms now have their own bathrooms (D-061), so this one serves the campers, the bar, the fire pit and the galley's staff. How many people is that at the busiest hour? The septic's size depends on it.
