@@ -3,12 +3,30 @@
 // double-pole main switch with its surge protection, then one RCBO per circuit. A drop's colour is what its circuit
 // feeds, the same colours as the runs in the 3D view below it. Every rating comes from the page's JSON.
 
+import { getLocale } from "@/components/internationalization/locale"
+import type { Words } from "@/components/internationalization/words"
+
 export type RoomCircuit = { id: string; serves: string; device: string; cable_mm2: number; design_A?: number; group: string; colour: string }
 
 const W = 1600
 const TOP = 50 // the supply row
 const BUS = 260 // the busbar the circuit breakers hang from
-const GROUPS: Record<string, string> = { lights: "Lights", sockets: "Sockets", fixed: "Fixed appliances", data: "Data and Wi-Fi" }
+// the diagram's words (D-058); the supply, the board and the notes come from the page, already in its language
+const en = {
+  groups: { lights: "Lights", sockets: "Sockets", fixed: "Fixed appliances", data: "Data and Wi-Fi" } as Record<string, string>,
+  main: (a: number) => `Main switch ${a} A DP`,
+  spd: "SPD type 2",
+  label: (supply: string, a: number, board: string, n: number) =>
+    `Single-line diagram: ${supply} into a ${a} A main switch with surge protection on ${board}, then one RCBO for each of ${n} circuits`,
+}
+const rw: typeof en = {
+  groups: { lights: "Amatara", sockets: "Priza", fixed: "Ibikoresho bifashe", data: "Data na Wi-Fi" },
+  main: (a) => `Disijonkitere nkuru A ${a} DP`,
+  spd: "SPD ubwoko bwa 2",
+  label: (supply, a, board, n) =>
+    `Igishushanyo cy'umurongo umwe: ${supply} kijya kuri disijonkitere nkuru ya A ${a} ifite uburinzi bw'umuriro mwinshi (${board}), hanyuma RCBO imwe kuri buri muzunguruko muri ${n}`,
+}
+const words: Words<typeof en> = { en, rw }
 
 // A breaker drawn down from (x, y): lead in, the open contact, lead out. 60 tall. With `rcd`, the ring of an RCBO.
 function Breaker({ x, y, rcd = false }: { x: number; y: number; rcd?: boolean }) {
@@ -52,13 +70,14 @@ function Label({ x, y, children, sub }: { x: number; y: number; children: string
   )
 }
 
-export function RoomWiring({ circuits, mainA, supply, board, notes }: {
+export async function RoomWiring({ circuits, mainA, supply, board, notes }: {
   circuits: RoomCircuit[]
   mainA: number
   supply: { title: string; sub: string; cable: string }
   board: string
   notes: string[]
 }) {
+  const t = words[await getLocale()], GROUPS = t.groups
   const x0 = 140
   const step = circuits.length > 1 ? (W - 2 * x0) / (circuits.length - 1) : 0
   const H = BUS + 300 + notes.length * 24
@@ -67,7 +86,7 @@ export function RoomWiring({ circuits, mainA, supply, board, notes }: {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="h-auto w-full min-w-[960px] stroke-foreground"
       strokeWidth={2} strokeLinecap="round" fill="none"
-      aria-label={`Single-line diagram: ${supply.title} into a ${mainA} A main switch with surge protection on ${board}, then one RCBO for each of ${circuits.length} circuits`}>
+      aria-label={t.label(supply.title, mainA, board, circuits.length)}>
       {/* the supply: the farm's, off the drawing */}
       <rect x={src - 90} y={TOP - 34} width={180} height={68} rx={12} strokeDasharray="6 6" />
       <text x={src} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">{supply.title}</text>
@@ -77,12 +96,12 @@ export function RoomWiring({ circuits, mainA, supply, board, notes }: {
 
       {/* the main switch, drawn on its side */}
       <g transform={`rotate(-90 ${main} ${TOP}) translate(0 ${-30})`}><Breaker x={main} y={TOP} /></g>
-      <Label x={main} y={TOP + 66} sub={board}>{`Main switch ${mainA} A DP`}</Label>
+      <Label x={main} y={TOP + 66} sub={board}>{t.main(mainA)}</Label>
       <line x1={main + 30} y1={TOP} x2={feed} y2={TOP} />
       <circle cx={spd} cy={TOP} r={4} className="fill-foreground" />
       <line x1={spd} y1={TOP} x2={spd} y2={TOP + 50} />
       <rect x={spd - 50} y={TOP + 50} width={100} height={44} rx={8} />
-      <text x={spd} y={TOP + 78} textAnchor="middle" stroke="none" className="fill-foreground text-[16px] font-semibold">SPD type 2</text>
+      <text x={spd} y={TOP + 78} textAnchor="middle" stroke="none" className="fill-foreground text-[16px] font-semibold">{t.spd}</text>
       <line x1={spd} y1={TOP + 94} x2={spd} y2={TOP + 110} />
       <Earth x={spd} y={TOP + 110} />
       <line x1={feed} y1={TOP} x2={feed} y2={BUS} />

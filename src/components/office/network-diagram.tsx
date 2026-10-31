@@ -3,6 +3,9 @@
 // office is taken as the base of the IoT architecture's case A (content/docs/iot-architecture.mdx); the drops
 // beyond the office are dashed, as they are planned with the other buildings, not drawn here.
 
+import { getLocale } from "@/components/internationalization/locale"
+import { words } from "@/components/office/words"
+
 type Link = { id: string; serves: string; colour: string }
 type Point = { id: string; model: string; circuit?: string; description: string }
 
@@ -33,13 +36,15 @@ function wrap(text: string, n = 22): string[] {
   return out
 }
 
-export function NetworkDiagram({ links, points }: { links: Link[]; points: Point[] }) {
+// `links` and `points` come in the reader's language (officeData); the diagram's own words are in words.tsx
+export async function NetworkDiagram({ links, points }: { links: Link[]; points: Point[] }) {
+  const t = words[await getLocale()].network.diagram
   const colour = Object.fromEntries(links.map((l) => [l.id, l.colour]))
   // the office's own drops, then the planned ones beyond it
   const drops = [
     ...points.filter((p) => p.circuit).map((p) => ({ id: p.id, text: p.description.replace(/\s*\(.*\)/, ""), colour: colour[p.circuit!], away: false })),
-    { id: "AP", text: "Access points in the study room and by the guest rooms", colour: colour.N1, away: true },
-    { id: "CAM", text: "Cameras at the gate and the store, recorded on the gateway", colour: colour.N1, away: true },
+    { id: "AP", text: t.ap, colour: colour.N1, away: true },
+    { id: "CAM", text: t.cam, colour: colour.N1, away: true },
   ]
   const x0 = 130, step = (W - 2 * x0) / (drops.length - 1)
   const net = 120, router = 470, sw = 820, gw = 1130, ups = 1400
@@ -47,23 +52,23 @@ export function NetworkDiagram({ links, points }: { links: Link[]; points: Point
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="h-auto w-full min-w-[960px] stroke-foreground"
       strokeWidth={2} strokeLinecap="round" fill="none"
-      aria-label={`Network diagram: two 4G networks into the router, the router into an 8-port PoE switch in the office's cabinet, with the edge gateway and a UPS, then a drop for each of ${drops.length} access points, outlets and cameras`}>
-      <Box x={net} y={TOP} w={180} title="4G networks" sub="two SIMs, two operators" dashed />
+      aria-label={t.label(drops.length)}>
+      <Box x={net} y={TOP} w={180} title={t.networks.title} sub={t.networks.sub} dashed />
       <line x1={net + 90} y1={TOP} x2={router - 75} y2={TOP} strokeDasharray="2 8" />
-      <Box x={router} y={TOP} title="R1 · Router" sub="4G, failover" muted />
+      <Box x={router} y={TOP} title={t.router.title} sub={t.router.sub} muted />
       <line x1={router + 75} y1={TOP} x2={sw - 75} y2={TOP} />
-      <Box x={sw} y={TOP} title="SW · Switch" sub="8 ports, PoE" muted />
+      <Box x={sw} y={TOP} title={t.switch.title} sub={t.switch.sub} muted />
       <line x1={sw + 75} y1={TOP} x2={gw - 75} y2={TOP} />
-      <Box x={gw} y={TOP} title="GW · Gateway" sub="MQTT, dashboard, recorder" w={210} muted />
+      <Box x={gw} y={TOP} title={t.gateway.title} sub={t.gateway.sub} w={210} muted />
       {/* the UPS keeps the cabinet up through a cut, on its own circuit (C3) */}
-      <Box x={ups} y={TOP + 130} title="UPS" sub="from C3" />
+      <Box x={ups} y={TOP + 130} title={t.ups.title} sub={t.ups.sub} />
       <path d={`M ${ups} ${TOP + 96} V ${TOP + 70} H ${router} V ${TOP + 34}`} strokeDasharray="6 6" strokeWidth={1.5} />
       <line x1={sw + 40} y1={TOP + 70} x2={sw + 40} y2={TOP + 34} strokeDasharray="6 6" strokeWidth={1.5} />
       <line x1={gw} y1={TOP + 70} x2={gw} y2={TOP + 34} strokeDasharray="6 6" strokeWidth={1.5} />
       <text x={(sw + gw) / 2} y={TOP + 92} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">
-        battery power to the cabinet (dashed)
+        {t.battery}
       </text>
-      <text x={x0 - 40} y={TOP + 160} stroke="none" className="fill-muted-foreground text-[14px]">All in the wall cabinet (RK) on the back wall</text>
+      <text x={x0 - 40} y={TOP + 160} stroke="none" className="fill-muted-foreground text-[14px]">{t.cabinet}</text>
 
       {/* key */}
       {links.map((l, i) => (
@@ -76,7 +81,7 @@ export function NetworkDiagram({ links, points }: { links: Link[]; points: Point
       {/* the switch's ports: one drop each */}
       <line x1={sw} y1={TOP + 34} x2={sw} y2={BUS} />
       <line x1={x0} y1={BUS} x2={W - x0} y2={BUS} strokeWidth={4} />
-      <text x={sw + 12} y={BUS - 14} stroke="none" className="fill-muted-foreground text-[14px]">the switch&rsquo;s ports</text>
+      <text x={sw + 12} y={BUS - 14} stroke="none" className="fill-muted-foreground text-[14px]">{t.ports}</text>
       {drops.map((d, i) => {
         const x = x0 + i * step
         return (
@@ -90,10 +95,10 @@ export function NetworkDiagram({ links, points }: { links: Link[]; points: Point
         )
       })}
       <text x={x0 - 40} y={H - 46} stroke="none" className="fill-muted-foreground text-[14px]">
-        Cat 6 inside; outdoor-rated cable in duct, with surge protection at each end, to the access points and cameras outside (dashed)
+        {t.cable}
       </text>
       <text x={x0 - 40} y={H - 22} stroke="none" className="fill-muted-foreground text-[14px]">
-        The signal at the site is unknown until the survey of both networks; the edge gateway keeps working when the link is down
+        {t.signal}
       </text>
     </svg>
   )

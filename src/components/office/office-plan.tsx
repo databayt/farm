@@ -1,4 +1,7 @@
+import { getWords } from "@/components/internationalization/words"
+
 import office from "./office.json"
+import { words } from "./words"
 
 // The office drawn in the pattern of the camp plan (src/components/camp/camp-plan.tsx): thin lines, no
 // colour, bold capitals and dimensions in millimetres. Seen from the deck, as the 3D's front view: the deck
@@ -58,7 +61,11 @@ function Chair({ x, y, toward, s = 0.5 }: { x: number; y: number; toward: "up" |
   )
 }
 
-export function OfficePlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function OfficePlan({ title, className }: { title?: string; className?: string }) {
+  const w = await getWords(words)
+  const name = w.plan.labels
+  title ??= w.plan.title
   const L = box.l, H = box.w / 2
   const { x0: ix0, x1: ix1, y0: iy0, y1: iy1 } = box.inner
   const front = H, edge = H + deck.d, rail = edge - 0.04
@@ -115,22 +122,22 @@ export function OfficePlan({ title, className }: { title: string; className?: st
       ].map((d) => <path key={d} d={d} {...faint} />)}
       <rect {...rect(sofa.table.x0, sofa.table.y0, sofa.table.x1, sofa.table.y1)} rx={0.04} {...thin} />
 
-      <text x={f(ix1 - ws.d / 2)} y={f(iy1 - 0.15)} textAnchor="middle" style={small}>DESK</text>
-      <text x={f(ix1 - 0.08 - ws.mac.w / 2)} y={f(ws.mac.y - ws.mac.w / 2 - 0.06)} textAnchor="middle" style={small}>MAC STUDIO</text>
-      <text x={f(ix1 - 0.27)} y={0} transform={`rotate(-90 ${f(ix1 - 0.27)} 0)`} textAnchor="middle" style={small}>STUDIO DISPLAY</text>
-      <text x={f((ix0 + sofa.d + sofa.x1 - sofa.arm) / 2)} y={f(iy0 + (sofa.rest + sofa.d) / 2 + 0.035)} textAnchor="middle" style={small}>SOFA</text>
-      <text x={f((sofa.table.x0 + sofa.table.x1) / 2)} y={f((sofa.table.y0 + sofa.table.y1) / 2 + 0.035)} textAnchor="middle" style={small}>TABLE</text>
+      <text x={f(ix1 - ws.d / 2)} y={f(iy1 - 0.15)} textAnchor="middle" style={small}>{name.desk}</text>
+      <text x={f(ix1 - 0.08 - ws.mac.w / 2)} y={f(ws.mac.y - ws.mac.w / 2 - 0.06)} textAnchor="middle" style={small}>{name.mac}</text>
+      <text x={f(ix1 - 0.27)} y={0} transform={`rotate(-90 ${f(ix1 - 0.27)} 0)`} textAnchor="middle" style={small}>{name.display}</text>
+      <text x={f((ix0 + sofa.d + sofa.x1 - sofa.arm) / 2)} y={f(iy0 + (sofa.rest + sofa.d) / 2 + 0.035)} textAnchor="middle" style={small}>{name.sofa}</text>
+      <text x={f((sofa.table.x0 + sofa.table.x1) / 2)} y={f((sofa.table.y0 + sofa.table.y1) / 2 + 0.035)} textAnchor="middle" style={small}>{name.table}</text>
       {/* The ahwa set on the deck: the round marble table on its pedestal, a chair either side, both looking out over the garden */}
       <circle cx={cafe.table.x} cy={cafe.table.y} r={cafe.table.r} {...thin} />
       <circle cx={cafe.table.x} cy={cafe.table.y} r={0.08} {...faint} />
       {cafe.chairs.map(([x, y]) => <Chair key={x} x={x} y={y} s={cafe.chair.w} toward="down" />)}
-      <text x={cafe.table.x} y={f(cafe.table.y + cafe.table.r + 0.16)} textAnchor="middle" style={small}>CAFE</text>
-      <text x={f((g0 + g1) / 2)} y={f(front - 0.16)} textAnchor="middle" style={small}>SLIDING GLAZING</text>
-      <text x={f(L / 2)} y={f(edge - 0.55)} textAnchor="middle" style={label}>DECK</text>
-      <text x={f(sx + (-sx) / 2)} y={f(edge - st.w - 0.1)} textAnchor="middle" style={small}>STAIR</text>
-      <text x={f(L + 0.12)} y={f(-H + 0.3)} style={label}>OFFICE</text>
-      <text x={-0.12} y={f(-0.3)} textAnchor="end" style={small}>CARGO</text>
-      <text x={-0.12} y={f(-0.16)} textAnchor="end" style={small}>DOORS</text>
+      <text x={cafe.table.x} y={f(cafe.table.y + cafe.table.r + 0.16)} textAnchor="middle" style={small}>{name.cafe}</text>
+      <text x={f((g0 + g1) / 2)} y={f(front - 0.16)} textAnchor="middle" style={small}>{name.glazing}</text>
+      <text x={f(L / 2)} y={f(edge - 0.55)} textAnchor="middle" style={label}>{name.deck}</text>
+      <text x={f(sx + (-sx) / 2)} y={f(edge - st.w - 0.1)} textAnchor="middle" style={small}>{name.stair}</text>
+      <text x={f(L + 0.12)} y={f(-H + 0.3)} style={label}>{name.office}</text>
+      <text x={-0.12} y={f(-0.3)} textAnchor="end" style={small}>{name.cargo}</text>
+      <text x={-0.12} y={f(-0.16)} textAnchor="end" style={small}>{name.doors}</text>
       <Dimension x0={0} x1={L} y={-H - 0.45} />
       <Dimension x0={g0} x1={g1} y={edge + 0.4} />
       <Rise y0={-H} y1={front} x={L + 0.45} />

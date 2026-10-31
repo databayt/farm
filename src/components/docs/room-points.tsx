@@ -4,7 +4,10 @@ import { frw } from "@/lib/format"
 import { type RailItem } from "@/components/docs/item-rail"
 import { PointsTable } from "@/components/docs/points-table"
 import { type RoomCircuit } from "@/components/docs/room-wiring"
-import { NOT_BUDGETED, NOT_SOURCED } from "@/components/page/sections"
+import type { Locale } from "@/components/internationalization/config"
+import { dictionary } from "@/components/internationalization/dictionaries"
+import { getLocale } from "@/components/internationalization/locale"
+import type { Words } from "@/components/internationalization/words"
 
 // The services of a room page (guest room, office, study room), in the studio's Electric pattern: the circuits with
 // their design currents, a rail card for each kind of device and the points table on the room's docs page, where the
@@ -25,36 +28,63 @@ export function withLoads(circuits: RoomCircuit[], points: RoomPoint[]): RoomCir
   })
 }
 
-const TITLES: Record<string, string> = {
-  board: "Unit board", ceiling: "Ceiling light", pendant: "Pendant light", walllamp: "Wall reading lamp",
-  switch: "Switch", switch2: "Two-gang switch", wallfan: "Wall fan", usb: "Socket + USB-C", socket2: "Double socket",
-  socket: "Socket", isolator: "AC isolator", heater: "Instant shower heater", alarm: "Smoke alarm", ap: "Wi-Fi access point", data: "Data outlet",
-  av: "Screen wall plate", floorbox: "Floor box", rack: "Network cabinet", poe: "PoE switch", router: "4G router", gateway: "Edge gateway", ups: "UPS",
+// the rooms' shared words (D-058): each kind of device, a card's size and cost around its numbers, the points table
+const en = {
+  titles: {
+    board: "Unit board", ceiling: "Ceiling light", pendant: "Pendant light", walllamp: "Wall reading lamp",
+    switch: "Switch", switch2: "Two-gang switch", wallfan: "Wall fan", usb: "Socket + USB-C", socket2: "Double socket",
+    socket: "Socket", isolator: "AC isolator", heater: "Instant shower heater", alarm: "Smoke alarm", ap: "Wi-Fi access point", data: "Data outlet",
+    av: "Screen wall plate", floorbox: "Floor box", rack: "Network cabinet", poe: "PoE switch", router: "4G router", gateway: "Edge gateway", ups: "UPS",
+  } as Record<string, string>,
+  round: (w: number, d: number) => `Ø ${w} mm, ${d} mm deep`,
+  box: (w: string, h: string, d: number) => `${w} × ${h} mm, ${d} mm deep`,
+  one: (n: string) => `RWF ${n} (estimate)`,
+  each: (n: string, k: number) => `RWF ${n} each × ${k} (estimate)`,
+  all: (n: string, k: number) => `RWF ${n} for ${k} (estimate)`,
+  table: { what: "What and where", height: "Centre height", load: "Load", ceiling: "Ceiling", floor: "Floor", notWired: "Not wired" },
 }
+const rw: typeof en = {
+  titles: {
+    board: "Ikibaho cy'amashanyarazi", ceiling: "Itara ryo ku gisenge", pendant: "Itara rimanitse", walllamp: "Itara ryo gusomeraho ku rukuta",
+    switch: "Switch", switch2: "Switch y'imfunguzo ebyiri", wallfan: "Fani yo ku rukuta", usb: "Priza + USB-C", socket2: "Priza ebyiri",
+    socket: "Priza", isolator: "Isolator ya AC", heater: "Icyuma gishyushya amazi ya douche ako kanya", alarm: "Icyuma kimenyesha umwotsi",
+    ap: "Access point ya Wi-Fi", data: "Priza ya data", av: "Plaque ya ecran ku rukuta", floorbox: "Agasanduku ko hasi", rack: "Akabati ka network",
+    poe: "Switch ya PoE", router: "Router ya 4G", gateway: "Edge gateway", ups: "UPS",
+  },
+  round: (w, d) => `Ø mm ${w}, ubujyakuzimu mm ${d}`,
+  box: (w, h, d) => `mm ${w} × ${h}, ubujyakuzimu mm ${d}`,
+  one: (n) => `RWF ${n} (igereranya)`,
+  each: (n, k) => `RWF ${n} kuri kimwe × ${k} (igereranya)`,
+  all: (n, k) => `RWF ${n} kuri ${k} (igereranya)`,
+  table: { what: "Icyo ari cyo n'aho kiri", height: "Uburebure bw'hagati", load: "Ingufu", ceiling: "Igisenge", floor: "Hasi", notWired: "Ntihujwe" },
+}
+const words: Words<typeof en> = { en, rw }
 const ROUND = new Set(["ceiling", "alarm", "ap", "pendant"])
 
-// one card per kind of device, rendered on its own by the page's render html (?item=<model>)
-export function deviceRail(points: RoomPoint[], src: (model: string) => string, extra: Record<string, { title?: string; size?: string; where?: string; cost?: string }> = {}): RailItem[] {
+// one card per kind of device, rendered on its own by the page's render html (?item=<model>), labelled in `lang`
+// (the points' descriptions and `extra` come already in it)
+export function deviceRail(points: RoomPoint[], src: (model: string) => string, extra: Record<string, { title?: string; size?: string; where?: string; cost?: string }> = {}, lang: Locale = "en"): RailItem[] {
+  const t = words[lang], r = dictionary(lang).rail
   const models = [...new Set(points.map((p) => p.model))]
   return models.map((m) => {
     const pts = points.filter((p) => p.model === m)
     const [w, h, d] = pts[0].size
-    const size = ROUND.has(m) ? `Ø ${w} mm, ${d} mm deep` : `${frw(w)} × ${frw(h)} mm, ${d} mm deep`
+    const size = ROUND.has(m) ? t.round(w, d) : t.box(frw(w), frw(h), d)
     const prices = pts.map((p) => p.rwf).filter((n): n is number => !!n)
-    const cost = !prices.length ? NOT_BUDGETED
-      : pts.length === 1 ? `RWF ${frw(prices[0])} (estimate)`
-      : prices.every((n) => n === prices[0]) ? `RWF ${frw(prices[0])} each × ${pts.length} (estimate)`
-      : `RWF ${frw(prices.reduce((a, b) => a + b, 0))} for ${pts.length} (estimate)`
+    const cost = !prices.length ? r.notBudgeted
+      : pts.length === 1 ? t.one(frw(prices[0]))
+      : prices.every((n) => n === prices[0]) ? t.each(frw(prices[0]), pts.length)
+      : t.all(frw(prices.reduce((a, b) => a + b, 0)), pts.length)
     const on = [...new Set(pts.map((p) => p.circuit).filter(Boolean))]
     const x = extra[m] ?? {}
-    const title = x.title ?? TITLES[m] ?? m
+    const title = x.title ?? t.titles[m] ?? m
     return {
       src: src(m), alt: title, title,
       note: `${pts.map((p) => p.id).join(", ")}${on.length ? ` · ${on.join(", ")}` : ""} · ${pts.map((p) => p.description).join("; ")}`,
       details: [
-        { label: "Dimensions", value: x.size ?? size },
-        { label: "Where to buy", value: x.where ?? NOT_SOURCED },
-        { label: "Cost", value: x.cost ?? cost },
+        { key: "size", label: r.dimensions, value: x.size ?? size },
+        { key: "where", label: r.whereToBuy, value: x.where ?? r.notSourced },
+        { key: "cost", label: r.cost, value: x.cost ?? cost },
       ],
     }
   })
@@ -66,14 +96,16 @@ export function tagInfo(points: RoomPoint[], circuits: RoomCircuit[]) {
 }
 
 // every point, its circuit and where it stands; each row is the target of its tag (#pt-<id>)
-export function RoomPointsTable({ points, circuits }: { points: RoomPoint[]; circuits: RoomCircuit[] }): React.JSX.Element {
+export async function RoomPointsTable({ points, circuits }: { points: RoomPoint[]; circuits: RoomCircuit[] }): Promise<React.JSX.Element> {
+  const lang = await getLocale()
+  const t = words[lang].table
   return (
     <PointsTable
-      columns={[{ label: "What and where" }, { label: "Circuit", muted: true }, { label: "Centre height", end: true }, { label: "Load", end: true }]}
+      columns={[{ label: t.what }, { label: dictionary(lang).table.circuit, muted: true }, { label: t.height, end: true }, { label: t.load, end: true }]}
       rows={points.map((p) => {
         const c = circuits.find((x) => x.id === p.circuit)
-        const height = p.face === "down" ? "Ceiling" : p.face === "up" ? "Floor" : `${frw(Math.round(p.at[2] * 1000))} mm`
-        return { id: p.id, colour: c?.colour, cells: [p.description, c ? `${c.id} · ${c.serves}` : "Not wired", height, p.watts ? `${p.watts} W` : ""] }
+        const height = p.face === "down" ? t.ceiling : p.face === "up" ? t.floor : `${frw(Math.round(p.at[2] * 1000))} mm`
+        return { id: p.id, colour: c?.colour, cells: [p.description, c ? `${c.id} · ${c.serves}` : t.notWired, height, p.watts ? `${p.watts} W` : ""] }
       })} />
   )
 }
