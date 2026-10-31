@@ -1,5 +1,7 @@
 import type { ReactNode } from "react"
 
+import { Dim } from "@/components/drawing/dims"
+import { STUDIO } from "@/components/drawing/geometry"
 import { localeHref } from "@/components/internationalization/href"
 import { getLocale } from "@/components/internationalization/locale"
 import plan from "../../../public/designs/farming/data/plan.json"
@@ -77,7 +79,6 @@ async function Page({ href, children }: { href?: string; children: ReactNode }) 
 }
 
 const f = (n: number) => +n.toFixed(3)
-const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 const at = ([x0, y0, x1, y1]: Box) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
 
 // An opening in a wall: the wall knocked out between two points.
@@ -126,33 +127,15 @@ function Gate({ x: [left, right], y, post }: { x: Point; y: number; post: number
   )
 }
 
-// A dimension: extension lines, a line with oblique ticks, the value on it, as the studio plan does.
+// A dimension, drawn by the shared kit as the studio's plan draws one (src/components/drawing). The overview keeps
+// its own small type: k is set so that a figure stands as high as the plan's small labels (0.5 m), not at the
+// studio's share of the drawing. `offset` is in metres, toward -x or -y when negative, as the plan places them.
+const K = 0.5 / STUDIO.figure
 function Dimension({ a, b, offset }: { a: Point; b: Point; offset: number }) {
   const vertical = a[0] === b[0]
-  const [dx, dy] = vertical ? [offset, 0] : [0, offset]
-  const [sx, sy] = [Math.sign(dx), Math.sign(dy)]
-  const [ax, ay, bx, by] = [f(a[0] + dx), f(a[1] + dy), f(b[0] + dx), f(b[1] + dy)]
-  const tick = (x: number, y: number) => `M${f(x - 0.3)} ${f(y + 0.3)}L${f(x + 0.3)} ${f(y - 0.3)}`
-  const [mx, my] = [f((ax + bx) / 2), f((ay + by) / 2)]
-  return (
-    <g>
-      <path
-        d={`M${f(a[0] + sx * 0.3)} ${f(a[1] + sy * 0.3)}L${f(ax + sx * 0.4)} ${f(ay + sy * 0.4)}M${f(b[0] + sx * 0.3)} ${f(b[1] + sy * 0.3)}L${f(bx + sx * 0.4)} ${f(by + sy * 0.4)}`}
-        {...thin}
-      />
-      <path d={`M${ax} ${ay}L${bx} ${by}${tick(ax, ay)}${tick(bx, by)}`} {...thin} />
-      <text
-        x={mx}
-        y={my}
-        textAnchor="middle"
-        dominantBaseline="central"
-        transform={vertical ? `rotate(90 ${mx} ${my})` : undefined}
-        style={{ ...small, fontWeight: 500, stroke: PAGE, strokeWidth: 0.6, paintOrder: "stroke" }}
-      >
-        {mm(vertical ? Math.abs(b[1] - a[1]) : Math.abs(b[0] - a[0]))}
-      </text>
-    </g>
-  )
+  // the kit's offset runs to the left of a→b: down for a→b running right, left for a→b running down
+  const along = vertical ? Math.sign(b[1] - a[1]) : Math.sign(b[0] - a[0])
+  return <Dim k={K} a={[a[0], a[1]]} b={[b[0], b[1]]} off={((vertical ? -offset : offset) * along) / K} />
 }
 
 // The joined guest-room pair, its doors and windows onto the veranda on the courtyard side (right).
