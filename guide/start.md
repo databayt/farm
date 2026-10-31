@@ -60,6 +60,6 @@ Eight pages are also in Kinyarwanda, a machine draft until a native speaker revi
 3. **Gas or electric cooking in the galley?** It changes the size of the solar system.
 4. **The original videos,** sent on WhatsApp as "Document", for the film.
 
-## Not this month
+## Not on this site
 
-These pages are off the sidebar but still open from their links: [how the farm runs](operations.md), [the film](film.md), [the business model](business/model.md), [marketing](business/marketing.md), [the digital farm](business/digital.md), the full studio package ([studio package](../study/studio/studio.md)), the [decision log](../study/execution/decision-log.md), the study's [first 90 days](../study/execution/first-90-days.md) and the research study ([study overview](../PROJECT_STATUS.md)).
+The study behind these plans stays in the repo, not on the site: the [decision log](../study/execution/decision-log.md), the research ([study overview](../PROJECT_STATUS.md)), the [business model](business/model.md), [how the farm runs](operations.md) and [the film](film.md). Each link opens it on GitHub.

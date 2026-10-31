@@ -30,7 +30,7 @@ const GROUPS: { id: Group; rows: { id: Row; links: RefLink[] }[] }[] = [
   {
     id: "buildings",
     rows: [
-      { id: "studio", links: [page("/en/studio"), docs("studio"), { label: "package", href: "/docs/studio-package" }] },
+      { id: "studio", links: [page("/en/studio"), docs("studio")] },
       { id: "guest-room", links: [page("/en/guest-room"), docs("guest-room")] },
       { id: "office", links: [page("/en/office"), docs("office")] },
       { id: "study-room", links: [page("/en/study-room"), docs("study-room")] },
@@ -72,9 +72,6 @@ const GROUPS: { id: Group; rows: { id: Row; links: RefLink[] }[] }[] = [
       { id: "start", links: [{ label: "docs", href: "/docs" }] },
       { id: "farm-plan", links: [docs("farm")] },
       { id: "today", links: [{ label: "docs", href: "/docs/farm/today" }] },
-      { id: "operations", links: [{ label: "docs", href: "/docs/operations" }] },
-      { id: "film", links: [{ label: "docs", href: "/docs/film" }] },
-      { id: "business-model", links: [{ label: "docs", href: "/docs/business-model" }] },
     ],
   },
 ]

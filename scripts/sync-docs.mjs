@@ -28,6 +28,7 @@
 // content/docs/rw at its English slug, and /rw shows the English page wherever there is none. Links between pages
 // are written without a language, so the page adds the reader's (src/mdx-components.tsx); a guide's link to its own
 // translation names the other language (hrefLang). Old URLs reach their pages through public/_redirects (MOVED).
+import { execFileSync } from "node:child_process"
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { basename, dirname, join, relative, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -38,10 +39,23 @@ const PUBLIC = join(ROOT, "public")
 // the site's languages, as src/components/internationalization/config.ts lists them
 const LANGS = ["en", "rw"]
 
-// The docs pages beside the places' (which come from guide/<place>/, below), grouped by kind ("---" lines are labels
-// for the reader of this file). They render off the sidebar, reached from the places' pages and Start here.
+// The docs pages beside the places' (which come from guide/<place>/, below). They render off the sidebar,
+// reached from the places' pages and Start here. Only what the first build uses is published (the founder's cut,
+// 2026-10-31): Start here, and the studio's survey sheet and cut list, which the carpenter works from.
 const PAGES = [
   { slug: "index", src: "guide/start.md", title: "Start here" },
+  { slug: "studio-site", src: "study/studio/studio-site.md" },
+  {
+    slug: "studio-cut-list", csv: "public/designs/studio/data/cut-list.csv", title: "Studio cut list",
+    description: "Every sheet part of one studio: size, material, edge banding and machining counts.",
+    columns: ["id", "name", "material", "length_mm", "width_mm", "thickness_mm", "edges", "step"],
+  },
+]
+
+// Unpublished (the founder's cut, 2026-10-31): the study's archive, the registers, the decision log, the studio
+// package's write-up, the business pages, operations and the film plan. Their files stay in the repo; a link to one
+// becomes its GitHub page, and its old URL redirects there (302: a page may come back by moving it to PAGES).
+const UNPUBLISHED = [
   "---How the farm runs---",
   { slug: "operations", src: "guide/operations.md" },
   { slug: "film", src: "guide/film.md" },
@@ -51,7 +65,6 @@ const PAGES = [
   { slug: "digital", src: "guide/business/digital.md" },
   "---Studio package---",
   { slug: "studio-package", src: "study/studio/studio.md" },
-  { slug: "studio-site", src: "study/studio/studio-site.md" },
   { slug: "studio-design", src: "study/studio/studio-design.md" },
   { slug: "studio-envelope", src: "study/studio/studio-envelope.md" },
   { slug: "studio-roof", src: "study/studio/studio-roof.md" },
@@ -65,11 +78,6 @@ const PAGES = [
   { slug: "studio-bom", src: "study/studio/studio-bom.md" },
   { slug: "studio-budget", src: "study/studio/studio-budget.md" },
   { slug: "studio-permits", src: "study/studio/studio-permits.md" },
-  {
-    slug: "studio-cut-list", csv: "public/designs/studio/data/cut-list.csv", title: "Studio cut list",
-    description: "Every sheet part of one studio: size, material, edge banding and machining counts.",
-    columns: ["id", "name", "material", "length_mm", "width_mm", "thickness_mm", "edges", "step"],
-  },
   {
     slug: "studio-bom-table", csv: "public/designs/studio/data/bom.csv", title: "Studio bill of materials",
     description: "Every line of one studio's bill of materials, with the price label and source.",
@@ -194,6 +202,12 @@ for (const { slug, lang } of entries) {
 }
 const pageByPath = new Map(entries.map((p) => [p.src ?? p.csv, p]))
 
+// The public repo (D-013): an unpublished page, or any other tracked file a page links to, is read on GitHub.
+const REPO = "https://github.com/databayt/farm"
+const TRACKED = new Set(execFileSync("git", ["ls-files"], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean))
+const unpublished = UNPUBLISHED.filter((p) => typeof p !== "string")
+const githubUrl = (path, hash) => `${REPO}/blob/main/${path}${hash ? `#${hash}` : ""}`
+
 // {{ns.key}} values: the studio generator's measurements, read only when a page uses one.
 const TOKEN_FILES = {
   studio: join(PUBLIC, "designs", "studio", "data", "dims.json"),
@@ -282,6 +296,9 @@ function rewriteLinks(line, page, keep) {
       return `[${text}](${url})`
     }
     // a guide's link to another page must reach one: a typo would otherwise print as code
+    // an unpublished study page or another tracked file outside public/: its GitHub page
+    const rel = toPosix(relative(ROOT, abs))
+    if (TRACKED.has(rel) && !rel.startsWith("public/")) return `[${text}](${githubUrl(rel, hash)})`
     if (src.startsWith("guide/") && path.endsWith(".md")) throw new Error(`${src}: ${target} is not a docs page`)
     if (abs.startsWith(join(PUBLIC, "guides") + sep) && !existsSync(abs)) return `${text} (not printed yet)`
     const url = publicUrl(abs, src)
@@ -507,9 +524,16 @@ function redirects() {
       rules.push([`/guides/${old}${rw}.pdf`, `/guides/${now}${rw}.pdf`])
     }
   }
+  // the unpublished pages (the founder's cut, 2026-10-31): their old URLs go to their GitHub pages, 302
+  for (const { slug, src, csv } of unpublished) {
+    if (live.has(slug)) throw new Error(`sync-docs: "${slug}" is both published and unpublished`)
+    if (MOVED[slug]) throw new Error(`sync-docs: "${slug}" is both MOVED and unpublished`)
+    const to = csv?.startsWith("public/") ? `/${csv.slice("public/".length)}` : githubUrl(src ?? csv)
+    for (const from of [`/docs/${slug}`, `/docs/${slug}-rw`, `/en/docs/${slug}`, `/rw/docs/${slug}`]) rules.push([from, to, 302])
+  }
   rules.push(["/docs/*", "/en/docs/:splat"])
   return "# Generated by scripts/sync-docs.mjs from MOVED. Old docs URLs and the pages they became.\n" +
-    rules.map(([from, to]) => `${from} ${to} 301`).join("\n") + "\n"
+    rules.map(([from, to, code = 301]) => `${from} ${to} ${code}`).join("\n") + "\n"
 }
 
 rmSync(OUT, { recursive: true, force: true })
