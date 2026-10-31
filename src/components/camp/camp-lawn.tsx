@@ -1,5 +1,8 @@
 import compound from "../home/compound.json"
 import bathroom from "../public-bathroom/public-bathroom.json"
+import { getWords } from "@/components/internationalization/words"
+
+import { words } from "./words"
 
 // The camping lawn and what serves it, in the 2D's pattern (thin lines in the text colour, bold capitals): the
 // six tents of compound.json `outdoor`, the fire pit they end at, the public bathroom whose toilets and basins the
@@ -48,7 +51,11 @@ const hex = (cx: number, cy: number) =>
   Array.from({ length: 6 }, (_, k) => [f(cx + t * Math.cos((k * Math.PI) / 3)), f(cy + t * Math.sin((k * Math.PI) / 3))])
 const rect = ([x0, y0, x1, y1]: number[]) => ({ x: x0, y: f(SIZE - y1), width: f(x1 - x0), height: f(y1 - y0) })
 
-export function CampLawn({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's, in the reader's language.
+export async function CampLawn({ title, className }: { title?: string; className?: string }) {
+  const w = await getWords(words)
+  const name = w.lawn.labels
+  title ??= w.lawn.drawing(LAWN.bathNear, LAWN.bathFar)
   const nb = near(door), np = near([pitX, pitY])
   // where a route leaves its tent: the tent's edge toward the point
   const edge = (a: number[], b: number[]) => {
@@ -68,15 +75,15 @@ export function CampLawn({ title, className }: { title: string; className?: stri
         <g key={u.id}>
           <rect {...rect(u.box)} {...faint} />
           <text x={f((u.box[0] + u.box[2]) / 2)} y={f(SIZE - (u.box[1] + u.box[3]) / 2 + 0.2)} textAnchor="middle" style={small} fillOpacity={0.55}>
-            {u.label}
+            {w.json.units[u.id] ?? u.label}
           </text>
         </g>
       ))}
       <rect {...rect(bath.box)} {...medium} />
       <line x1={f(bx0 + bathroom.front.door.x0)} x2={f(bx0 + bathroom.front.door.x1)} y1={door[1]} y2={door[1]} strokeWidth={4}
         stroke="var(--background)" vectorEffect="non-scaling-stroke" />
-      <text x={f((bx0 + bx1) / 2)} y={f(SIZE - by1 - 0.5)} textAnchor="middle" style={label}>PUBLIC BATHROOM</text>
-      <text x={door[0]} y={f(door[1] + 0.9)} textAnchor="middle" style={small}>DOOR</text>
+      <text x={f((bx0 + bx1) / 2)} y={f(SIZE - by1 - 0.5)} textAnchor="middle" style={label}>{name.bathroom}</text>
+      <text x={door[0]} y={f(door[1] + 0.9)} textAnchor="middle" style={small}>{name.door}</text>
 
       {/* the fire pit and its stools */}
       <circle cx={pitX} cy={pitY} r={pitR} {...medium} />
@@ -85,7 +92,7 @@ export function CampLawn({ title, className }: { title: string; className?: stri
         <circle key={a} cx={f(pitX + outdoor.firePitSeats.ring * Math.cos(a))} cy={f(pitY + outdoor.firePitSeats.ring * Math.sin(a))}
           r={outdoor.firePitSeats.r} {...thin} />
       ))}
-      <text x={f(pitX + outdoor.firePitSeats.ring + 0.6)} y={f(pitY + 0.2)} style={label}>FIRE PIT</text>
+      <text x={f(pitX + outdoor.firePitSeats.ring + 0.6)} y={f(pitY + 0.2)} style={label}>{name.firePit}</text>
 
       {/* the six tents on the camping lawn */}
       {tents.map(([cx, cy]) => {
@@ -98,16 +105,16 @@ export function CampLawn({ title, className }: { title: string; className?: stri
         )
       })}
       <text x={f(Math.min(...tents.map(([x]) => x)) - t - 0.5)} y={f(tents.reduce((n, [, y]) => n + y, 0) / tents.length + 0.25)}
-        textAnchor="end" style={label}>CAMPING LAWN</text>
+        textAnchor="end" style={label}>{name.campingLawn}</text>
 
       {/* straight lines from the nearest tent to the bathroom's door and to the fire pit */}
       <line x1={b0[0]} y1={b0[1]} x2={b1[0]} y2={b1[1]} {...route} />
       <text x={f(b0[0] + (b1[0] - b0[0]) * 0.72 - 0.6)} y={f(b0[1] + (b1[1] - b0[1]) * 0.72)} textAnchor="end" style={small}>
-        {LAWN.bathNear}–{LAWN.bathFar} m to the toilets, in a straight line
+        {name.toToilets(LAWN.bathNear, LAWN.bathFar)}
       </text>
       <line x1={p0[0]} y1={p0[1]} x2={p1[0]} y2={p1[1]} {...route} />
       <text x={f(pitX + 0.6)} y={f(pitY + outdoor.firePitSeats.ring + 1.4)} style={small}>
-        {LAWN.pitNear}–{LAWN.pitFar} m from the tents
+        {name.fromTents(LAWN.pitNear, LAWN.pitFar)}
       </text>
     </svg>
   )

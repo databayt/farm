@@ -1,4 +1,7 @@
+import { getWords } from "@/components/internationalization/words"
+
 import camp from "./camp.json"
+import { words } from "./words"
 
 // One camp drawn in the pattern of the compound plan (src/components/home/compound-plan.tsx): thin lines,
 // no colour, bold capitals and dimensions in millimetres. The door faces down the page, toward the viewer of
@@ -42,7 +45,11 @@ function Dimension({ a, b, at, vertical }: { a: number; b: number; at: number; v
   )
 }
 
-export function CampPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function CampPlan({ title, className }: { title?: string; className?: string }) {
+  const w = await getWords(words)
+  const name = w.plan.labels
+  title ??= w.plan.title
   const p = hex(tent.r)
   const front = f(tent.r * Math.sin(Math.PI / 3))
   const stripes = Array.from({ length: 13 }, (_, k) => f(rug.x - rug.w / 2 + ((k + 1) * rug.w) / 14))
@@ -85,11 +92,11 @@ export function CampPlan({ title, className }: { title: string; className?: stri
       <circle cx={lantern.x} cy={lantern.y} r={0.07} {...thin} />
       <circle cx={lantern.x} cy={lantern.y} r={0.035} {...thin} />
 
-      <text x={chair.x} y={f(chair.y + 0.1)} textAnchor="middle" style={small}>FLOOR CHAIR</text>
-      <text x={futon.x} y={f(fy + 0.03)} textAnchor="middle" style={small}>FUTON</text>
-      <text x={f(rug.x - 0.2)} y={f(rug.y + 0.06)} textAnchor="middle" style={small}>RUG</text>
-      <text x={0} y={f(front + 0.17)} textAnchor="middle" style={label}>DOOR</text>
-      <text x={f(tent.r + 0.12)} y={0.03} style={label}>TENT</text>
+      <text x={chair.x} y={f(chair.y + 0.1)} textAnchor="middle" style={small}>{name.floorChair}</text>
+      <text x={futon.x} y={f(fy + 0.03)} textAnchor="middle" style={small}>{name.futon}</text>
+      <text x={f(rug.x - 0.2)} y={f(rug.y + 0.06)} textAnchor="middle" style={small}>{name.rug}</text>
+      <text x={0} y={f(front + 0.17)} textAnchor="middle" style={label}>{name.door}</text>
+      <text x={f(tent.r + 0.12)} y={0.03} style={label}>{name.tent}</text>
       <Dimension a={-tent.r} b={tent.r} at={-1.45} />
       <Dimension a={-front} b={front} at={-1.75} vertical />
     </svg>
