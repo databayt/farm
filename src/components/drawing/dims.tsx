@@ -10,6 +10,8 @@ const font = "var(--font-sans), ui-sans-serif, system-ui, sans-serif"
 const stroke = (opacity: number, width: number) =>
   ({ fill: "none", stroke: "currentColor", strokeOpacity: opacity, strokeWidth: width, vectorEffect: "non-scaling-stroke" }) as const
 const EXT = stroke(0.55, 0.6), LINE = stroke(0.75, 0.8), TICK = stroke(0.95, 1.3)
+// a figure or a name knocks out the lines under it (pavers, setts, beds) with a ring of the page's colour
+const halo = (size: number) => ({ stroke: "var(--background)", strokeWidth: +(size * 0.22).toFixed(4), strokeLinejoin: "round", paintOrder: "stroke" }) as const
 
 type Side = "top" | "bottom" | "left" | "right"
 
@@ -21,7 +23,7 @@ function Drawn({ g, label, value }: { g: DimGeom; label: string; value: number }
       {g.line.map(([p, q], i) => <line key={`l${i}`} x1={p[0]} y1={p[1]} x2={q[0]} y2={q[1]} {...LINE} />)}
       {g.ticks.map(([p, q], i) => <line key={`t${i}`} x1={p[0]} y1={p[1]} x2={q[0]} y2={q[1]} {...TICK} />)}
       <text x={at[0]} y={at[1]} fontSize={size} fontFamily={font} fontWeight={500} fill="currentColor" textAnchor="middle"
-        dominantBaseline={inline ? "central" : "auto"} transform={angle ? `rotate(${angle} ${at[0]} ${at[1]})` : undefined}>
+        {...halo(size)} dominantBaseline={inline ? "central" : "auto"} transform={angle ? `rotate(${angle} ${at[0]} ${at[1]})` : undefined}>
         {label}
       </text>
     </g>
@@ -93,7 +95,7 @@ export function Name({ k, x, y, children, size = STUDIO.name, anchor = "middle",
 }): React.JSX.Element {
   return (
     <text x={+x.toFixed(4)} y={+y.toFixed(4)} fontSize={+(size * k).toFixed(4)} fontFamily={font} fontWeight={700}
-      letterSpacing="0.04em" fill="currentColor" textAnchor={anchor} dominantBaseline="central"
+      letterSpacing="0.04em" fill="currentColor" {...halo(size * k)} textAnchor={anchor} dominantBaseline="central"
       transform={rotate ? `rotate(${rotate} ${+x.toFixed(4)} ${+y.toFixed(4)})` : undefined}>
       {children}
     </text>
@@ -106,7 +108,7 @@ export function Note({ k, x, y, children, anchor = "middle", rotate }: {
 }): React.JSX.Element {
   return (
     <text x={+x.toFixed(4)} y={+y.toFixed(4)} fontSize={+(STUDIO.inner * k).toFixed(4)} fontFamily={font} fontWeight={600}
-      fill="currentColor" textAnchor={anchor} dominantBaseline="central"
+      fill="currentColor" {...halo(STUDIO.inner * k)} textAnchor={anchor} dominantBaseline="central"
       transform={rotate ? `rotate(${rotate} ${+x.toFixed(4)} ${+y.toFixed(4)})` : undefined}>
       {children}
     </text>

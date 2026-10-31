@@ -1,7 +1,12 @@
+import { Chain, Dim, HDim, VDim } from "@/components/drawing/dims"
+import { scaleFor } from "@/components/drawing/geometry"
+
 import parking from "./parking.json"
 
 // The way in drawn in the pattern of the livestock plan (src/components/livestock/livestock-plan.tsx): thin lines,
-// no colour, bold capitals and dimensions in millimetres. It is turned as the homepage plan turns the compound
+// no colour, bold capitals, and its dimensions as the studio's plan sets them (src/components/drawing): the bays and
+// the open east end along the far edge, then the parking's width; the rock road's width; the parking's depth, the
+// strips and the run to the sign wall; along the road, the sign wall, the pillar and the gate, then the turn's mouth. It is turned as the homepage plan turns the compound
 // (src/components/home/compound-plan.tsx), compound.json's y flipped: the public road runs along the bottom of the
 // page, the sign wall stands left of the gate and the rock road leaves at the top. Units are metres in
 // compound.json's frame at true size; the homepage spreads the way in sideways, this plan does not.
@@ -23,7 +28,6 @@ const small = { ...label, fontSize: 0.36, fontWeight: 600 } as const
 const halo = { stroke: "var(--background)", strokeWidth: 0.16, strokeLinejoin: "round", paintOrder: "stroke" } as const
 
 const f = (n: number) => +n.toFixed(3)
-const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 // compound.json's y runs south, into the farm; the page's runs down it, toward the road
 const Y = (y: number) => f(-y)
 const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: Y(Math.max(y0, y1)), width: f(x1 - x0), height: f(Math.abs(y1 - y0)) })
@@ -47,28 +51,6 @@ const off = (p: Curve, t: number, d: number) => {
   return [x + nx * d, y + ny * d]
 }
 
-function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.15, at = Y(y)
-  return (
-    <g>
-      <line x1={x0} x2={x1} y1={at} y2={at} {...thin} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(at + tick)} y2={f(at - tick)} {...thin} />)}
-      <text x={f((x0 + x1) / 2)} y={f(at - 0.15)} textAnchor="middle" style={{ ...small, ...halo }}>{mm(x1 - x0)}</text>
-    </g>
-  )
-}
-// the same, standing: the text turned to read up the page
-function DimensionUp({ y0, y1, x }: { y0: number; y1: number; x: number }) {
-  const tick = 0.15, cy = f((Y(y0) + Y(y1)) / 2)
-  return (
-    <g>
-      <line x1={x} x2={x} y1={Y(y0)} y2={Y(y1)} {...thin} />
-      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(Y(y) + tick)} y2={f(Y(y) - tick)} {...thin} />)}
-      <text x={f(x - 0.15)} y={cy} textAnchor="middle" transform={`rotate(-90 ${f(x - 0.15)} ${cy})`} style={{ ...small, ...halo }}>{mm(Math.abs(y1 - y0))}</text>
-    </g>
-  )
-}
-
 // A hedge run in plan: its two long sides scalloped, as a hedge is drawn from above.
 function Hedge({ x0, x1 }: { x0: number; x1: number }) {
   const n = Math.max(1, Math.round((x1 - x0) / 0.5)), s = (x1 - x0) / n, r = f(s * 0.62)
@@ -77,6 +59,10 @@ function Hedge({ x0, x1 }: { x0: number; x1: number }) {
   const back = Array.from({ length: n }, (_, k) => `A${r} ${r} 0 0 1 ${f(x1 - (k + 1) * s)} ${bottom}`).join("")
   return <path d={`M${f(x0)} ${top}${along}L${f(x1)} ${bottom}${back}Z`} {...thin} />
 }
+
+// the drawing's frame, page units (compound.json's metres, y flipped)
+const VIEW = { x: 1.9, y: -6.1, w: 33.2, h: 15.5 }
+const k = scaleFor(VIEW.w, VIEW.h)
 
 export function ParkingPlan({ title, className }: { title: string; className?: string }) {
   const [px0, py0, px1, py1] = lot.box
@@ -103,7 +89,7 @@ export function ParkingPlan({ title, className }: { title: string; className?: s
   const bays = lot.bays.slice(0, -1).map((b, i) => ({ n: i + 1, x0: b, x1: lot.bays[i + 1], cx: f((b + lot.bays[i + 1]) / 2) }))
   const stopY = py1 - lot.stops.at
   return (
-    <svg viewBox="1.9 -6.1 33.2 15.5" role="img" aria-label={title} className={className}>
+    <svg viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`} role="img" aria-label={title} className={className}>
       {/* The public road's edge, the hedge along the boundary, the sign wall and the gate's pillars (solid, as the
           homepage plan draws them) */}
       <line x1={x0} x2={x1} y1={Y(road.edge)} y2={Y(road.edge)} {...medium} />
@@ -173,14 +159,16 @@ export function ParkingPlan({ title, className }: { title: string; className?: s
       <text x={trees.list[1][0]} y={f(Y(trees.list[1][1]) - 0.5)} textAnchor="middle" style={{ ...small, ...halo }}>SHADE TREE</text>
       <text x={29.5} y={f(Y(road.edge) + 1.45)} textAnchor="middle" style={label}>PUBLIC ROAD</text>
 
-      {bays.map((b) => <Dimension key={b.n} x0={b.x0} x1={b.x1} y={py1 + 0.12} />)}
-      <Dimension x0={off(curve, 0, half)[0]} x1={off(curve, 0, -half)[0]} y={py1 + 0.12} />
-      <Dimension x0={px0} x1={px1} y={py1 + 3.4} />
-      <DimensionUp y0={py1} y1={py0} x={px0 - 0.75} />
-      <DimensionUp y0={py1} y1={py1 - lot.strips.l} x={bays[3].x1 - 0.25} />
-      <DimensionUp y0={py1 - lot.strips.l} y1={sy1} x={bays[3].x1 - 0.25} />
-      <Dimension x0={sx0} x1={sx1} y={road.edge - 0.75} />
-      <Dimension x0={gl} x1={gr} y={road.edge - 0.75} />
+      {/* The far edge: the five bays and the open east end, then the parking's width */}
+      <Chain k={k} along="x" at={[...lot.bays, px1]} edge={Y(py1)} side="top" overall />
+      {/* The rock road's width, across its start */}
+      <Dim k={k} a={[off(curve, 0, half)[0], Y(py1 + 2.8)]} b={[off(curve, 0, -half)[0], Y(py1 + 2.8)]} off={0} size={2.2} />
+      {/* The parking's depth beside it; inside bay 4, the strips and the run from them to the sign wall */}
+      <VDim k={k} y0={Y(py1)} y1={Y(py0)} x={px0} side="left" />
+      <Chain k={k} along="y" at={[Y(py1), Y(py1 - lot.strips.l), Y(sy1)]} edge={bays[3].x1 - 0.25} side="left" size={2.2} />
+      {/* Along the road: the sign wall, the pillar and hedge between, the gate; then the turn's mouth at the road */}
+      <Chain k={k} along="x" at={[sx0, sx1, gl, gr]} edge={Y(road.edge)} side="bottom" />
+      <HDim k={k} x0={gl - p - turn.splay} x1={gr + p + turn.splay} y={Y(road.edge)} side="bottom" at={2} />
     </svg>
   )
 }
