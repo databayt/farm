@@ -24,7 +24,7 @@ const en = {
     title: "Plan: a 20 ft container 6,058 by 2,438 mm on a stone plinth, with a 1,500 mm landing and a step in front of its door at the east end of the front wall; inside, one row against the back wall: two toilet rooms 1,350 by 1,200 mm, each with a WC against the back wall, then the urinal in its own room 900 mm wide, then the two basins on a counter straight across from the door, paper towels and a bin on the end wall beside them and a floor drain; a 900 mm corridor along the front wall, under the two windows, joins them and ends at the cleaner's cupboard.",
     labels: {
       wc: "WC", corridor: "CORRIDOR", cleaning: "CLEANING", basins: "BASINS", towels: "TOWELS", lobby: "LOBBY", urinal: "URINAL",
-      window: "WINDOW", landing: "LANDING", step: "STEP", bathroom: "PUBLIC BATHROOM", courtyard: "TOWARD THE COURTYARD",
+      window: "WINDOW", landing: "LANDING", step: "STEP", bathroom: "PUBLIC BATHROOM", courtyard: "TOWARD THE COURTYARD", door: "DOOR",
     },
   },
   model: {
@@ -166,7 +166,7 @@ const rw: typeof en = {
     title: "Igishushanyo: ikontineri ya metero 6 (20 ft), mm 6,058 kuri 2,438, ku musingi w'amabuye, ifite urubuga rwa mm 1,500 n'intambwe imbere y'urugi rwayo ku mpera y'iburasirazuba y'urukuta rw'imbere; imbere, umurongo umwe ku rukuta rw'inyuma: ibyumba bibiri by'imisarani bya mm 1,350 kuri 1,200, buri kimwe gifite umusarani ku rukuta rw'inyuma, hanyuma inkari mu cyumba cyazo cy'ubugari bwa mm 900, hanyuma lavabo ebyiri kuri kawunta ahateganye n'urugi, impapuro zo kwihanagura n'agasanduku k'imyanda ku rukuta rw'impera iruhande rwazo n'umwobo w'amazi wo hasi; inzira ya mm 900 ku rukuta rw'imbere, munsi y'amadirishya abiri, irabihuza ikarangirira ku kabati k'usukura.",
     labels: {
       wc: "WC", corridor: "INZIRA", cleaning: "ISUKU", basins: "LAVABO", towels: "IMPAPURO", lobby: "IBARAZA", urinal: "INKARI",
-      window: "IDIRISHYA", landing: "URUBUGA", step: "INTAMBWE", bathroom: "UBWIHERERO RUSANGE", courtyard: "HAREBA KU RUGO",
+      window: "IDIRISHYA", landing: "URUBUGA", step: "INTAMBWE", bathroom: "UBWIHERERO RUSANGE", courtyard: "HAREBA KU RUGO", door: "URUGI",
     },
   },
   model: {

@@ -1,10 +1,14 @@
 import { getWords } from "@/components/internationalization/words"
+import { Chain, Dim, HDim, Note, VDim } from "@/components/drawing/dims"
+import { frame } from "@/components/drawing/geometry"
 
 import bath from "./public-bathroom.json"
 import { words } from "./words"
 
 // The public bathroom drawn in the pattern of the office plan (src/components/office/office-plan.tsx): thin lines,
-// no colour, bold capitals and dimensions in millimetres. Seen from the courtyard, as the 3D's front view: the door
+// no colour, and its dimensions as the studio's plan sets them (src/components/drawing): the row along the back wall
+// named room by room with its partitions, then the length; the windows and the door along the front past the step,
+// then the landing; the rooms' depth, the partition and the corridor at the west end, then the width; a WC door. Seen from the courtyard, as the 3D's front view: the door
 // and the windows face down the page (north), the west end to the left, mirrored as the homepage draws the compound.
 // Units are metres, x from the west end, y toward the courtyard, the container's centre line at y = 0.
 
@@ -13,40 +17,15 @@ const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEf
 const medium = { ...thin, strokeWidth: 1.6 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
 const dashed = { ...thin, strokeDasharray: "4 3" } as const
-const label = {
-  fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif",
-  fontSize: 0.15,
-  fontWeight: 700,
-  letterSpacing: "0.04em",
-  fill: "currentColor",
-} as const
-const small = { ...label, fontSize: 0.1, fontWeight: 600 } as const
 
 const f = (n: number) => +n.toFixed(3)
-const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
 
-function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.06
-  return (
-    <g>
-      <line x1={x0} x2={x1} y1={y} y2={y} {...thin} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f((x0 + x1) / 2)} y={f(y - 0.07)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
-    </g>
-  )
-}
-// the same, standing: the figure reads up the page beside the line
-function Rise({ y0, y1, x }: { y0: number; y1: number; x: number }) {
-  const tick = 0.06, my = f((y0 + y1) / 2)
-  return (
-    <g>
-      <line x1={x} x2={x} y1={y0} y2={y1} {...thin} />
-      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f(x + 0.08)} y={my} transform={`rotate(-90 ${f(x + 0.08)} ${my})`} textAnchor="middle" style={small}>{mm(y1 - y0)}</text>
-    </g>
-  )
-}
+const H0 = box.w / 2, sy0 = H0 + entry.landing.d + entry.step.d // the step's outer edge
+// the drawing, then its dimensions' reach (studio mm): the names and the length over the back wall, the names and the
+// landing past the step, two tiers at the west end
+const { k, viewBox } = frame({ x0: -box.proud, y0: -H0 - box.proud, x1: box.l + box.proud, y1: sy0 }, { top: 19, right: 2, bottom: 19, left: 13 })
+const pastStep = (sy0 - H0) / k // from the front wall to the step's edge, in studio mm
 
 // a door standing open: the leaf, 40 mm thick, at right angles to its wall from the hinge, its swing faint (along:
 // the way the shut leaf runs from the hinge; into: the way it opens)
@@ -100,7 +79,7 @@ export async function PublicBathroomPlan({ title, className }: { title?: string;
   // the row's three rooms, each between two partitions: their walls drawn round from the back wall to the front face
   const rooms = [[r1.x0, r1.x1], [r2.x0, r2.x1], [u.x0, u.x1]]
   return (
-    <svg viewBox="-0.6 -1.95 7.45 5.2" role="img" aria-label={title} className={className}>
+    <svg viewBox={viewBox} role="img" aria-label={title} className={className}>
       {/* The plinth, a stone course 100 mm proud of the box all round; the stone landing at its height in front of
           the door and the step down to the grass */}
       <rect {...rect(-p, -H - p, L + p, H + p)} {...faint} />
@@ -133,7 +112,7 @@ export async function PublicBathroomPlan({ title, className }: { title?: string;
         <g key={r.x0}>
           <Wc x={f(r.x0 + toilets.wc.x)} y={iy0} />
           <Door hinge={[r.door[1], face]} along={[-1, 0]} into={[0, -1]} w={r.door[1] - r.door[0]} />
-          <text x={f(r.x0 + toilets.wc.x)} y={f(face - 0.12)} textAnchor="middle" style={small}>{name.wc}</text>
+          <Note k={k} x={r.x0 + toilets.wc.x} y={face - 0.14}>{name.wc}</Note>
         </g>
       ))}
 
@@ -162,23 +141,28 @@ export async function PublicBathroomPlan({ title, className }: { title?: string;
       <rect {...rect(lobby.drain[0] - 0.07, lobby.drain[1] - 0.07, lobby.drain[0] + 0.07, lobby.drain[1] + 0.07)} {...thin} />
       <path d={`M${f(lobby.drain[0] - 0.07)} ${f(lobby.drain[1] - 0.07)}l0.14 0.14m0 -0.14l-0.14 0.14`} {...faint} />
 
-      <text x={f((cupboard.x1 + lobby.x0) / 2)} y={f((hall + iy1) / 2 + 0.035)} textAnchor="middle" style={small}>{name.corridor}</text>
-      <text x={f((cupboard.x0 + cupboard.x1) / 2 + 0.035)} y={f((hall + iy1) / 2)} transform={`rotate(-90 ${f((cupboard.x0 + cupboard.x1) / 2 + 0.035)} ${f((hall + iy1) / 2)})`} textAnchor="middle" style={small}>{name.cleaning}</text>
-      <text x={f((basins.x0 + basins.x1) / 2)} y={f(iy0 + basins.d + 0.14)} textAnchor="middle" style={small}>{name.basins}</text>
-      <text x={f(towels.x - 0.06)} y={f(towels.y + towels.bin + 0.15)} textAnchor="end" style={small}>{name.towels}</text>
-      <text x={f((lobby.x0 + door.x0) / 2 + 0.05)} y={f(iy1 - 0.3)} textAnchor="middle" style={small}>{name.lobby}</text>
-      <text x={u.x} y={f(face - 0.12)} textAnchor="middle" style={small}>{name.urinal}</text>
-      {windows.map(([a, b]) => <text key={a} x={f((a + b) / 2)} y={f(H + p + 0.16)} textAnchor="middle" style={small}>{name.window}</text>)}
-      <text x={f((landing.x0 + landing.x1) / 2)} y={f(H + p + (landing.d - p) / 2 + 0.035)} textAnchor="middle" style={small}>{name.landing}</text>
-      <text x={f((step.x0 + step.x1) / 2)} y={f(ly1 + step.d / 2 + 0.035)} textAnchor="middle" style={small}>{name.step}</text>
-      <text x={0} y={f(H + 0.6)} textAnchor="start" style={label}>{name.bathroom}</text>
-      <text x={f(L / 2)} y={f(sy1 + 0.62)} textAnchor="middle" style={small}>{name.courtyard}</text>
-      <Dimension x0={0} x1={L} y={f(-H - 0.5)} />
-      {[...rooms, [lobby.x0, lobby.x1]].map(([a, b]) => <Dimension key={a} x0={a} x1={b} y={f(-H - 0.22)} />)}
-      <Dimension x0={landing.x0} x1={landing.x1} y={f(sy1 + 0.3)} />
-      <Rise y0={-H} y1={H} x={f(L + 0.4)} />
-      <Rise y0={iy0} y1={face} x={-0.35} />
-      <Rise y0={hall} y1={iy1} x={-0.35} />
+      <Note k={k} x={(cupboard.x1 + lobby.x0) / 2} y={(hall + iy1) / 2}>{name.corridor}</Note>
+      <Note k={k} x={(cupboard.x0 + cupboard.x1) / 2} y={(hall + iy1) / 2} rotate={-90}>{name.cleaning}</Note>
+      <Note k={k} x={(basins.x0 + basins.x1) / 2} y={iy0 + basins.d + 0.13}>{name.basins}</Note>
+      <Note k={k} x={towels.x - 0.06} y={towels.y + towels.bin + 0.14} anchor="end">{name.towels}</Note>
+      <Note k={k} x={(lobby.x0 + door.x0) / 2 + 0.05} y={iy1 - 0.3}>{name.lobby}</Note>
+      <Note k={k} x={u.x} y={face - 0.14}>{name.urinal}</Note>
+      <Note k={k} x={(landing.x0 + landing.x1) / 2} y={H + p + (landing.d - p) / 2}>{name.landing}</Note>
+      <Note k={k} x={(step.x0 + step.x1) / 2} y={ly1 + step.d / 2}>{name.step}</Note>
+
+      {/* The back wall: the row, room by room with its partitions, named; then the length */}
+      <Chain k={k} along="x" at={[ix0, r1.x1, r2.x0, r2.x1, u.x0, u.x1, lobby.x0, ix1]} edge={-H} side="top"
+        names={[name.wc, null, name.wc, null, name.urinal, null, name.basins]} />
+      <HDim k={k} x0={0} x1={L} y={-H} side="top" at={3} />
+      {/* The front, past the step: the windows and the door, named, then the landing */}
+      <Chain k={k} along="x" at={[0, ...windows.flat(), door.x0, door.x1, L]} edge={H} side="bottom" base={pastStep}
+        names={[null, name.window, null, name.window, null, name.door, null]} />
+      <HDim k={k} x0={landing.x0} x1={landing.x1} y={H} side="bottom" base={pastStep} at={3} prefix={name.landing.toLowerCase()} />
+      {/* The west end: the rooms' depth, the partition, the corridor; then the width */}
+      <Chain k={k} along="y" at={[iy0, face, hall, iy1]} edge={0} side="left" />
+      <VDim k={k} y0={-H} y1={H} x={0} side="left" at={2} />
+      {/* Inside: a toilet room's door, clear */}
+      <Dim k={k} a={[r1.door[0], hall + 0.16]} b={[r1.door[1], hall + 0.16]} off={0} size={2.2} />
     </svg>
   )
 }
