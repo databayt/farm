@@ -1,0 +1,66 @@
+{
+  "_meta": {
+    "status": "machine-draft",
+    "note": "A machine draft of en.json until a native speaker reviews it (D-058); then set localeConfig.rw.reviewed to true. The words follow the Kinyarwanda guides (sitidiyo, ifamu, amashanyarazi)."
+  },
+  "site": {
+    "name": "Digital Farm",
+    "docs": "Inyandiko"
+  },
+  "menu": {
+    "open": "Fungura urutonde",
+    "close": "Funga urutonde",
+    "pages": "Paji"
+  },
+  "places": {
+    "studio": "Sitidiyo",
+    "guest-room": "Icyumba cy'abashyitsi",
+    "office": "Ibiro",
+    "study-room": "Icyumba cyo kwigiramo",
+    "galley": "Igikoni",
+    "public-bathroom": "Ubwiherero rusange",
+    "volleyball": "Volleyball",
+    "parking": "Parikingi",
+    "camp": "Aho bakambika",
+    "bar": "Akabari",
+    "farming": "Ubuhinzi",
+    "livestock": "Ubworozi",
+    "farm": "Ifamu"
+  },
+  "language": {
+    "label": "Ururimi",
+    "en": "English",
+    "rw": "Ikinyarwanda"
+  },
+  "notice": {
+    "notTranslated": "Iyi paji ntirashyirwa mu Kinyarwanda, ni yo mpamvu igaragara mu Cyongereza."
+  },
+  "docs": {
+    "title": "Inyandiko z'ifamu",
+    "start": "Tangira hano",
+    "onThisPage": "Kuri iyi paji",
+    "copyPage": "Koporora paji",
+    "openInChatGPT": "Fungura muri ChatGPT",
+    "openInClaude": "Fungura muri Claude",
+    "previous": "Ibanziriza",
+    "next": "Ikurikira",
+    "kinds": {
+      "plan": "Gahunda y'imirimo",
+      "today": "Ifamu uyu munsi",
+      "master-plan": "Igishushanyo mbonera",
+      "materials": "Ibikoresho",
+      "electric": "Amashanyarazi",
+      "lighting": "Amatara",
+      "net": "Urushundura n'iyobora ry'amazi",
+      "plumbing": "Imiyoboro y'amazi",
+      "water": "Amazi",
+      "drainage": "Iyobora ry'amazi"
+    }
+  },
+  "notFound": {
+    "title": "Iyi paji ntibaho",
+    "text": "Ishobora kuba yarimuwe igihe inyandiko zavugururwaga. Tangirira ku ifamu cyangwa ku nyandiko.",
+    "home": "Digital Farm",
+    "docs": "Inyandiko z'ifamu"
+  }
+}

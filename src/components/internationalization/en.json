@@ -1,0 +1,66 @@
+{
+  "_meta": {
+    "status": "source",
+    "note": "The site's shared words in English (D-058). rw.json mirrors every key."
+  },
+  "site": {
+    "name": "Digital Farm",
+    "docs": "Docs"
+  },
+  "menu": {
+    "open": "Open the menu",
+    "close": "Close the menu",
+    "pages": "Pages"
+  },
+  "places": {
+    "studio": "Studio",
+    "guest-room": "Guest room",
+    "office": "Office",
+    "study-room": "Study room",
+    "galley": "Galley",
+    "public-bathroom": "Public bathroom",
+    "volleyball": "Volleyball",
+    "parking": "Parking",
+    "camp": "Camping",
+    "bar": "Bar",
+    "farming": "Farming",
+    "livestock": "Livestock",
+    "farm": "The farm"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "rw": "Ikinyarwanda"
+  },
+  "notice": {
+    "notTranslated": "This page is not in Kinyarwanda yet, so it is shown in English."
+  },
+  "docs": {
+    "title": "Farm docs",
+    "start": "Start here",
+    "onThisPage": "On This Page",
+    "copyPage": "Copy Page",
+    "openInChatGPT": "Open in ChatGPT",
+    "openInClaude": "Open in Claude",
+    "previous": "Previous",
+    "next": "Next",
+    "kinds": {
+      "plan": "Execution plan",
+      "today": "The farm today",
+      "master-plan": "Master plan",
+      "materials": "Materials",
+      "electric": "Electric",
+      "lighting": "Lighting",
+      "net": "Net and drainage",
+      "plumbing": "Plumbing",
+      "water": "Water",
+      "drainage": "Drainage"
+    }
+  },
+  "notFound": {
+    "title": "This page doesn't exist",
+    "text": "It may have moved when the study was reorganised. Start from the farm or the study.",
+    "home": "Digital Farm",
+    "docs": "The open study"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "_": "The farm's places in the founder's order (D-032), read by the site menu and by scripts/sync-docs.mjs for the docs groups (D-059). Their names live in the dictionaries (src/components/internationalization).",
+  "places": [
+    "studio",
+    "guest-room",
+    "office",
+    "study-room",
+    "galley",
+    "public-bathroom",
+    "volleyball",
+    "parking",
+    "camp",
+    "bar",
+    "farming",
+    "livestock"
+  ]
+}
