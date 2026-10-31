@@ -73,7 +73,7 @@ const en = {
       hedge: (lamp: number) => `about ${lamp} m behind the hedge`,
       notes: [
         "On at dusk by the photocell; the timer can switch the sign off late at night while the lanterns stay on. Ducts with a draw wire and a warning tape over them; cables rise inside the pillars and the wall.",
-        "Design intent: no lamp, driver or cable is sized or sourced yet, and the compound’s board is designed with the farm’s power (guide/trades/power.md)",
+        "Design intent: no lamp, driver or cable is sized or sourced yet, and the compound’s board is designed with the farm’s power (guide/farm/electric.md)",
       ] as [string, string],
     },
   },
@@ -222,7 +222,7 @@ const rw: typeof en = {
       hedge: (lamp) => `hafi m ${lamp} inyuma y'uruzitiro rw'ibiti`,
       notes: [
         "Byaka nimugoroba bicanwe na photocell; timer ishobora kuzimya icyapa nijoro cyane amatara agakomeza kwaka. Duct zifite insinga yo gukurura na tape y'umuburo hejuru yazo; insinga zizamuka imbere mu nkingi no mu rukuta.",
-        "Ibyateganyijwe: nta tara, driver cyangwa insinga biragenerwa ingano cyangwa ngo biboneke aho kugurwa, kandi board y'urugo itegurwa hamwe n'amashanyarazi y'ifamu (guide/trades/power.md)",
+        "Ibyateganyijwe: nta tara, driver cyangwa insinga biragenerwa ingano cyangwa ngo biboneke aho kugurwa, kandi board y'urugo itegurwa hamwe n'amashanyarazi y'ifamu (guide/farm/electric.md)",
       ],
     },
   },
