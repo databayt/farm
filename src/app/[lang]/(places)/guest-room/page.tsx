@@ -26,9 +26,10 @@ const designA = Math.round(circuits.reduce((n, c) => n + (c.design_A ?? 0), 0) *
 
 // The guest room's docs pages, as the docs sidebar groups them (D-059), linked from the end of this page.
 const DOCS = [
-  { href: "/docs/guest-room", title: "Execution plan", text: "Every step of fitting out the three rooms, in the studio's order, from the survey to the first guest." },
-  { href: "/docs/guest-room/materials", title: "Materials", text: "The bed, the room and the veranda, and each electric device, with its size, where to buy it and its cost." },
-  { href: "/docs/guest-room/electric", title: "Electric", text: "The four circuits, the first and second fix, the tests and the certificate, and every light, switch and socket." },
+  { href: "/docs/guest-room", title: "Execution plan", text: "Every step of fitting out the three rooms, in the studio's order, from the Day 1 survey to the first guest." },
+  { href: "/docs/guest-room/materials", title: "Materials", text: "The bed, the room and the veranda, the bathroom, and each electric device, with its size, where to buy it and its cost." },
+  { href: "/docs/guest-room/electric", title: "Electric", text: "The five circuits, the first and second fix, the tests and the certificate, and every light, switch and socket." },
+  { href: "/docs/guest-room/plumbing", title: "Plumbing", text: "Each room's shower, WC and basin: the supply, the hot water, the drains and the vent, and the tests." },
 ]
 
 export default function GuestRoomPage() {
@@ -77,9 +78,10 @@ export default function GuestRoomPage() {
         note={<>
           Every run goes up into the ceiling, along it and straight down to its device, in conduit inside the linings.
           Each tag opens its row in the <Link href="/docs/guest-room/electric#points" className="underline underline-offset-4">points table</Link>.
-          The bedside lamps plug into P1 and P2, so the bed has a lamp on each side (D-029). The room has no bathroom of
-          its own in this drawing, so it has no water-heater circuit; the en-suite of{" "}
-          <Link href="/docs/decision-log" className="underline underline-offset-4">D-029</Link> would add one, and its plumbing.
+          The bedside lamps plug into P1 and P2, so the bed has a lamp on each side (D-029). The room&rsquo;s own bathroom
+          (<Link href="/docs/decision-log" className="underline underline-offset-4">D-061</Link>) puts the shower&rsquo;s
+          instant heater on a circuit of its own, with a double-pole isolator outside the bathroom door, as the
+          studio&rsquo;s; its pipes are on the <Link href="/docs/guest-room/plumbing" className="underline underline-offset-4">plumbing page</Link>.
         </>}
         real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1800, caption: "Rendered from the design model",
           alt: "The same view rendered as finished: the white unit board on the right wall, sockets with USB-C beside both bedside tables, a double socket by the desk and on the right wall, a two-gang switch by the door, the wall fan high on the left wall, the red AC isolator high on the back wall, and slim ceiling lights and a smoke alarm." }}
