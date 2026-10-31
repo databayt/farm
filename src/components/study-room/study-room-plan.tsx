@@ -1,4 +1,7 @@
+import { getWords } from "@/components/internationalization/words"
+
 import room from "./study-room.json"
+import { words } from "./words"
 
 // The study room drawn in the pattern of the camp plan (src/components/camp/camp-plan.tsx): thin lines, no
 // colour, bold capitals and dimensions in millimetres. The glazing faces down the page, toward the viewer of
@@ -45,7 +48,11 @@ function Upright({ y0, y1, x }: { y0: number; y1: number; x: number }) {
   )
 }
 
-export function StudyRoomPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function StudyRoomPlan({ title, className }: { title?: string; className?: string }) {
+  const w = await getWords(words)
+  const name = w.plan.labels
+  title ??= w.plan.title
   const [L, W] = [box.l / 2, box.w / 2]
   const front = W + deck.d
   const [g0, g1] = [-L + glazing.inset, L - glazing.inset]
@@ -127,14 +134,14 @@ export function StudyRoomPlan({ title, className }: { title: string; className?:
       {lights.pendants.map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r={0.15} {...dashed} />)}
       {fans.x.map((x) => <circle key={x} cx={x} cy={f(r.back + 0.15)} r={0.18} {...dashed} />)}
 
-      <text x={f(r.x0 + 0.62)} y={f(screen.y)} textAnchor="middle" transform={`rotate(-90 ${f(r.x0 + 0.62)} ${f(screen.y)})`} style={small}>SCREEN</text>
-      <text x={f(table.x)} y={0.05} textAnchor="middle" style={small}>8 SEATS</text>
-      <text x={f(reading.table.x)} y={f(reading.rug.y[1] + 0.27)} textAnchor="middle" style={small}>READING</text>
-      <text x={f(sx0 - 0.08)} y={f(r.front - 0.1)} textAnchor="end" style={small}>BOOKS</text>
-      <text x={0} y={-1.45} textAnchor="middle" style={label}>STUDY ROOM</text>
-      <text x={0} y={f(W + lo1 + 0.3)} textAnchor="middle" style={small}>GLAZED DOORS BEHIND LOUVRES</text>
-      <text x={0} y={f(front - 0.4)} textAnchor="middle" style={label}>DECK</text>
-      <text x={0} y={f(front + st.d - 0.12)} textAnchor="middle" style={small}>STEP</text>
+      <text x={f(r.x0 + 0.62)} y={f(screen.y)} textAnchor="middle" transform={`rotate(-90 ${f(r.x0 + 0.62)} ${f(screen.y)})`} style={small}>{name.screen}</text>
+      <text x={f(table.x)} y={0.05} textAnchor="middle" style={small}>{name.seats}</text>
+      <text x={f(reading.table.x)} y={f(reading.rug.y[1] + 0.27)} textAnchor="middle" style={small}>{name.reading}</text>
+      <text x={f(sx0 - 0.08)} y={f(r.front - 0.1)} textAnchor="end" style={small}>{name.books}</text>
+      <text x={0} y={-1.45} textAnchor="middle" style={label}>{name.room}</text>
+      <text x={0} y={f(W + lo1 + 0.3)} textAnchor="middle" style={small}>{name.glazing}</text>
+      <text x={0} y={f(front - 0.4)} textAnchor="middle" style={label}>{name.deck}</text>
+      <text x={0} y={f(front + st.d - 0.12)} textAnchor="middle" style={small}>{name.step}</text>
       <Dimension x0={-L} x1={L} y={-1.8} />
       <Upright y0={-W} y1={W} x={f(L + 0.35)} />
       <Upright y0={W} y1={front} x={f(L + 0.35)} />
