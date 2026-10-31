@@ -1,5 +1,5 @@
 {
- "all_units_total": 38461149.699999996,
+ "all_units_total": 38460459.699999996,
  "shared_site": 4856000,
  "shared_with_contingency": 5584400.0,
  "sheets": {
@@ -8,9 +8,9 @@
   "PLY18": 8,
   "WTOP38": 1
  },
- "unit_materials_labour": 14294239,
- "unit_with_contingency": 16438374.85,
+ "unit_materials_labour": 14293939,
+ "unit_with_contingency": 16438029.85,
  "units": 2,
  "usd_rate": 1475.91,
- "verified_share": 0.018538937259968857
+ "verified_share": 0.01853932635363842
 }

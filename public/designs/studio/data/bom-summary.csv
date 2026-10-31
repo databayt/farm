@@ -1,7 +1,7 @@
 category,per_unit_rwf,all_units_rwf
 roof kit,3790152,7580304
 labour,2090000,4180000
-boards,1359940,2719880
+boards,1359640,2719280
 insulation,1131300,2262600
 electrical,1020800,2041600
 sanitaryware,785000,1570000
@@ -20,5 +20,5 @@ doors,90000,180000
 roofing,90000,180000
 accessories,40000,80000
 shared site works (all units),,4856000
-contingency 15 %,2144136,5016672
-TOTAL,16438375,38461150
+contingency 15 %,2144091,5016582
+TOTAL,16438030,38460460

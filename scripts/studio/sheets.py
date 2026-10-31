@@ -252,6 +252,9 @@ def plan_bw(m) -> str:
     s.dim(X(lo.part_x0) - 1, Y(d0 + 18), X(lo.part_x0) - 1, Y(d1 - 18), mm(d1 - d0 - 36), 3, 2.2, inline=True)
     wy = Y((sb.y0 + sb.y1) / 2)
     s.dim(X(sb.x1), wy, X(X0), wy, mm(X0 - sb.x1), 0, 2.2, inline=True)
+    # the walk past the galley's end panel to the front wall, the carpenter's 70 cm (D-068)
+    gx = X((X0 + lo.part_x0) / 2)
+    s.dim(gx, Y(lo.sink[1] + 12), gx, Y(lo.W), mm(lo.W - lo.sink[1] - 12), 0, 2.2, inline=True)
     return s.bare(X(lo.L) + 22, Y(lo.W) + 22)
 
 

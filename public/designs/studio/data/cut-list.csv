@@ -39,14 +39,14 @@ K3-H-13,K3,Hob base drawer side L 2,PLY12,566,160,12,,0,0,0,S11
 K3-H-14,K3,Hob base drawer side R 2,PLY12,566,160,12,,0,0,0,S11
 K3-H-15,K3,Hob base drawer back 2,PLY12,514,160,12,,0,0,0,S11
 K3-H-16,K3,Hob base drawer bottom 2,PLY12,554,514,12,,0,0,0,S11
-K3-PL,K3,Plinth,PLY18,1050,98,18,L1,1.05,0,0,S13
+K3-PL,K3,Plinth,PLY18,990,98,18,L1,0.99,0,0,S13
 K3-S-01,K3,Sink base side L,PLY18,762,588,18,L1,0.76,10,0,S11
 K3-S-02,K3,Sink base side R,PLY18,762,588,18,L1,0.76,10,0,S11
-K3-S-03,K3,Sink base bottom,PLY18,588,414,18,L1,0.59,0,10,S11
-K3-S-04,K3,Sink base front rail,PLY18,414,100,18,L1,0.41,0,10,S11
-K3-S-05,K3,Sink base back rail,PLY18,414,100,18,,0,0,10,S11
-K3-S-06,K3,Sink base back,PLY12,762,450,12,,0,1,0,S11
-K3-S-07,K3,Sink base door 1,PLY18,758,447,18,L2S2,2.41,2,0,S11
+K3-S-03,K3,Sink base bottom,PLY18,588,354,18,L1,0.59,0,10,S11
+K3-S-04,K3,Sink base front rail,PLY18,354,100,18,L1,0.35,0,10,S11
+K3-S-05,K3,Sink base back rail,PLY18,354,100,18,,0,0,10,S11
+K3-S-06,K3,Sink base back,PLY12,762,390,12,,0,1,0,S11
+K3-S-07,K3,Sink base door 1,PLY18,758,387,18,L2S2,2.29,2,0,S11
 K3-T-01,K3,Wall cabinet (fridge side) side L,PLY18,500,488,18,L1,0.5,10,0,S12
 K3-T-02,K3,Wall cabinet (fridge side) side R,PLY18,500,488,18,L1,0.5,10,0,S12
 K3-T-03,K3,Wall cabinet (fridge side) bottom,PLY18,514,488,18,L1,0.51,0,10,S12
@@ -55,11 +55,11 @@ K3-T-05,K3,Wall cabinet (fridge side) back,PLY12,550,500,12,,0,0,0,S12
 K3-T-06,K3,Wall cabinet (fridge side) door 1,PLY18,547,496,18,L2S2,2.09,2,0,S12
 K3-U-01,K3,Wall cabinet (sink side) side L,PLY18,500,488,18,L1,0.5,10,0,S12
 K3-U-02,K3,Wall cabinet (sink side) side R,PLY18,500,488,18,L1,0.5,10,0,S12
-K3-U-03,K3,Wall cabinet (sink side) bottom,PLY18,488,414,18,L1,0.49,0,10,S12
-K3-U-04,K3,Wall cabinet (sink side) top,PLY18,488,414,18,L1,0.49,0,10,S12
-K3-U-05,K3,Wall cabinet (sink side) back,PLY12,500,450,12,,0,0,0,S12
-K3-U-06,K3,Wall cabinet (sink side) door 1,PLY18,496,447,18,L2S2,1.89,2,0,S12
-K3-WT,K3,Worktop 38 mm,WTOP38,1600,620,38,L1,1.6,2,0,S13
+K3-U-03,K3,Wall cabinet (sink side) bottom,PLY18,488,354,18,L1,0.49,0,10,S12
+K3-U-04,K3,Wall cabinet (sink side) top,PLY18,488,354,18,L1,0.49,0,10,S12
+K3-U-05,K3,Wall cabinet (sink side) back,PLY12,500,390,12,,0,0,0,S12
+K3-U-06,K3,Wall cabinet (sink side) door 1,PLY18,496,387,18,L2S2,1.77,2,0,S12
+K3-WT,K3,Worktop 38 mm,WTOP38,1540,620,38,L1,1.54,2,0,S13
 K4-01,K4,"Headboard (full height, on the back wall)",PLY18,1640,1000,18,L1,1.64,1,0,S15
 K4-02,K4,"Rail, end-A side",PLY18,2020,432,18,,0,2,0,S15
 K4-03,K4,"Rail, room side (top)",PLY18,2020,80,18,L1,2.02,1,0,S15
@@ -126,6 +126,6 @@ K7-03,K7,"Skirting, front strip",PLY12,1368,70,12,L1,1.37,0,0,S18
 K7-04,K7,Slider head reveal,PLY12,1500,40,12,L1,1.5,0,0,S18
 K7-05,K7,Slider jamb reveal,PLY12,2240,40,12,L1,2.24,0,0,S18
 K7-06,K7,Slider jamb reveal,PLY12,2240,40,12,L1,2.24,0,0,S18
-K7-07,K7,Ceiling scribe strip over the wall cabinets,PLY12,1600,16,12,,0,0,0,S18
+K7-07,K7,Ceiling scribe strip over the wall cabinets,PLY12,1540,16,12,,0,0,0,S18
 K7-19,K7,Slider head reveal,PLY12,1500,40,12,L1,1.5,0,0,S18
 K7-20,K7,Galley end panel (scribed to the floor on site),PLY12,862,600,12,,0,0,0,S18
