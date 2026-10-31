@@ -80,7 +80,7 @@ Hanyuma:
 
 ## Ibipimo
 
-Imibare ivuye ku kibanza, buri umwe n'itariki wapimiweho. Kugeza umurongo ufite agaciro, ibishushanyo biguma ari igitekerezo cy'igishushanyo.
+Imibare ivuye ku kibanza, buri umwe n'itariki wapimiweho. Kugeza umurongo ufite agaciro, ibishushanyo biguma ari igitekerezo cy'igishushanyo. Inyandiko (note) ziri mu Cyongereza: umubare uri imbere ya buri imwe ni nimero y'igipimo ku rutonde ruri hejuru.
 
 [Table: Inyubako y'ibyumba by'abashyitsi, yapimwe ku Munsi wa 1](../../study/guest-room/survey.csv)
 
