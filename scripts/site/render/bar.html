@@ -5,7 +5,8 @@
   model (scripts/site/render/compound.html: oxide paint, corrugations, frame, cargo doors, stone plinth, the
   propped flap) and the 2026-10-25 footage of the red container (assets/library/footage/2026-10-25/IMG_3195, IMG_3196); the
   fit-out takes the studio's finishes (scripts/studio/render/room.html: Medium Oak joinery, off-white lining).
-  The roof is off so the inside shows over the counter. Rendered two ways:
+  The roof is off so the inside shows over the hatch. Outside, D-065's lounge: today's steel ledge under the hatch
+  and a deck with two deep chairs and a low table at each end. Rendered two ways:
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/bar/render/bar-line.png
     ?mode=real  materials, low sun and shadow          -> public/designs/bar/render/bar-real.webp
@@ -17,7 +18,7 @@
     ?view=electric&mode=...   the same for bar.json's electric: the board, every circuit up to the ceiling, along
                               its own track and down to its points                  -> render/electric-line.png, -real.webp
     ?item=<id>                one piece on its own, rendered, transparent, for a rail: the equipment (coffee,
-                              grinder, juicer, fruit, blender, fridge, sink, shelves, store, stool) or a service part
+                              grinder, fridge, sink, shelves, store, chair, table) or a service part
                               (a water point's `item`, an electric point's `model`, ppr, upvc) -> render/<rail>/<id>.webp
 
   Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
@@ -198,10 +199,8 @@ function mat(name) {
       amber: () => std({ color: "#9a5a22", roughness: 0.15, transparent: true, opacity: 0.85 }),
       cup: () => std({ color: "#f4f1ea", roughness: 0.35 }),
       jar: () => std({ color: "#e4d3a6", roughness: 0.3 }),
-      passion: () => std({ color: "#5b2a45", roughness: 0.6 }),
-      pine: () => std({ color: "#d9a43a", roughness: 0.7 }),
-      tomato: () => std({ color: "#b8452a", roughness: 0.5 }),
-      crate: () => std({ color: "#b98250", roughness: 0.8 }),
+      crate: () => std({ color: "#b98250", roughness: 0.8 }), // the deck's bearers
+      cushion: () => std({ color: "#d9cfbb", roughness: 0.95 }), // outdoor canvas, natural
       lamp: () => std({ color: "#fff3d6", roughness: 0.3, emissive: "#ffcf7a", emissiveIntensity: 2.2 }),
       sky: () => new THREE.MeshBasicMaterial({ map: T.sky, side: THREE.BackSide, fog: false, toneMapped: false }),
     }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
@@ -259,7 +258,7 @@ function pipe(a, b, r, name, seg = 6) {
 }
 
 // ------------------------------------------------------------ ground, plinth, deck
-const { container: K, hatch: H, counter: CO, deck: D, stools: S, inside: I } = C
+const { container: K, hatch: H, ledge: LE, deck: D, lounge: LO, inside: I } = C
 const L = K.l / 2, W = K.w / 2, t = K.wall, Y0 = K.plinth, Y1 = Y0 + K.h
 const ix = L - t, iz = W - t, FL = Y0 + K.floor // the inside faces and the inside floor
 const sill = Y0 + H.sill, head = Y0 + H.head
@@ -268,10 +267,10 @@ if (!LINE) {
   add(new THREE.CircleGeometry(40, 64), "lawn", { rot: [-Math.PI / 2, 0, 0], keepUV: true })
 }
 blk(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1, 0, Y0, "stone")
-TAG = "cut" // the deck, the outside counter and the stools also stay out of a service view, so its low camera sees under the counters
+TAG = "cut" // the deck and its lounge also stay out of a service view, so its low camera sees under the counters
 blk(D.x0, W + 0.1, D.x1, W + D.d, 0, D.h - 0.03, "crate", { noEdges: !LINE }) // bearers, hidden under the boards
 blk(D.x0, W + 0.1, D.x1, W + D.d, D.h - 0.03, D.h, "deck")
-blk(D.x0 + 0.3, W + D.d, D.x1 - 0.3, W + D.d + 0.3, 0, D.h / 2, "deck") // one step down to the lawn
+blk(D.step.x0, W + D.d, D.step.x1, W + D.d + D.step.d, 0, D.h / 2, "deck") // one step down to the lawn, at the hatch
 TAG = null
 
 // ------------------------------------------------------------ the steel box
@@ -349,31 +348,41 @@ for (const x of [H.x0 - 0.06, H.x1]) blk(x, W - 0.02, x + 0.06, W + 0.04, sill, 
 }
 TAG = "cut"
 {
-  // the timber counter outside, on steel brackets, over today's steel ledge
-  const [x0, x1] = [H.x0 - CO.over, H.x1 + CO.over]
-  blk(x0, W, x1, W + CO.d, sill - CO.t, sill, "oak")
-  blk(x0 + 0.02, W, x1 - 0.02, W + 0.3, sill - CO.t - 0.008, sill - CO.t, "steel")
-  for (const x of [x0 + 0.2, (x0 + x1) / 2, x1 - 0.2]) {
-    blk(x - 0.015, W, x + 0.015, W + CO.d - 0.05, sill - CO.t - 0.04, sill - CO.t, "black")
-    pipe([x, sill - CO.t - 0.02, W + CO.d - 0.08], [x, sill - 0.45, W + 0.02], 0.012, "black")
-  }
-  // the inside lip: the counter runs through the hatch onto the work counter
+  // today's steel ledge under the hatch, the shelf drinks are handed over on, on three brackets
+  blk(H.x0, W, H.x1, W + LE.d, sill - LE.t, sill, "steel")
+  for (const x of [H.x0 + 0.2, (H.x0 + H.x1) / 2, H.x1 - 0.2]) pipe([x, sill - LE.t, W + LE.d - 0.06], [x, sill - 0.3, W + 0.02], 0.01, "black")
+  // the inside lip: an oak sill board through the hatch onto the work counter
   blk(H.x0, W - t, H.x1, W, sill - 0.03, sill, "oak")
   TAG = null
 }
 
-// ------------------------------------------------------------ the stools
-for (const x of S.x) {
-  ITEMS = x === S.x[0] ? ["stool"] : []; TAG = "cut"
-  const z = W + S.out, y0 = D.h, top = y0 + S.seat
-  cyl(x, z, S.r, top - 0.04, 0.04, "oak", 32)
-  for (let k = 0; k < 4; k++) {
-    const a = (k * Math.PI) / 2 + Math.PI / 4
-    pipe([x + Math.cos(a) * 0.1, top - 0.04, z + Math.sin(a) * 0.1], [x + Math.cos(a) * 0.19, y0, z + Math.sin(a) * 0.19], 0.011, "black")
-  }
-  add(new THREE.TorusGeometry(0.155, 0.008, 6, 32), "black", { pos: [x, y0 + 0.28, z], rot: [Math.PI / 2, 0, 0] })
+// ------------------------------------------------------------ the lounge: at each end of the deck two deep chairs,
+// their backs to the box, and a low table in front of them (bar.json `lounge`)
+{
+  const { chair: ch, table: tb } = LO, y0 = D.h
+  const z0 = W + 0.1 + LO.wall, z1 = z0 + ch.d // a chair's back and front
+  const ARM = 0.08, BACK = 0.14 // the arms' and the back's thickness, as the 2D draws them
+  LO.pairs.forEach((cx, n) => {
+    TAG = "cut"
+    for (const x0 of [cx - LO.gap / 2 - ch.w, cx + LO.gap / 2]) {
+      ITEMS = n === 0 && x0 < cx ? ["chair"] : []
+      const x1 = x0 + ch.w
+      // a hardwood frame: two arms, the back and the seat's rail, then a seat cushion and a back cushion
+      for (const xa of [x0, x1 - ARM]) blk(xa, z0, xa + ARM, z1, y0, y0 + ch.arm, "oak")
+      blk(x0 + ARM, z0, x1 - ARM, z0 + BACK - 0.06, y0 + 0.08, y0 + ch.back, "oak")
+      blk(x0 + ARM, z0 + BACK - 0.06, x1 - ARM, z1, y0 + 0.08, y0 + ch.seat - 0.12, "oak")
+      soft(x0 + ARM + 0.005, z0 + BACK, x1 - ARM - 0.005, z1 - 0.01, y0 + ch.seat - 0.12, y0 + ch.seat, 0.04, "cushion")
+      soft(x0 + ARM + 0.005, z0 + BACK - 0.06, x1 - ARM - 0.005, z0 + BACK + 0.06, y0 + ch.seat, y0 + ch.back - 0.03, 0.04, "cushion")
+    }
+    // the low table: a hardwood top on a black steel stem and foot
+    ITEMS = n === 0 ? ["table"] : []
+    const tz = z1 + tb.off + tb.r
+    cyl(cx, tz, tb.r, y0 + tb.h - 0.035, 0.035, "oak", 48)
+    cyl(cx, tz, 0.03, y0 + 0.015, tb.h - 0.05, "black", 12)
+    cyl(cx, tz, 0.2, y0, 0.015, "black", 32)
+  })
+  ITEMS = []; TAG = null
 }
-ITEMS = []; TAG = null
 
 // ------------------------------------------------------------ inside: the work counter under the hatch
 const { front: F, back: B, store: ST } = I
@@ -441,27 +450,11 @@ const top = sill // both counters meet the sill
   ITEMS = ["grinder"]
   blk(g.x0, z0 + 0.08, g.x1, z0 + 0.3, top, top + 0.28, "black")
   cyl((g.x0 + g.x1) / 2, z0 + 0.19, 0.07, top + 0.28, 0.16, "glass", 16, 0.09)
-  // the juicer and crates of fruit
-  ITEMS = ["juicer"]
-  const j = B.juicer, jx = (j.x0 + j.x1) / 2
-  cyl(jx, z0 + 0.22, 0.12, top, 0.18, "steel", 24)
-  cyl(jx, z0 + 0.22, 0.09, top + 0.18, 0.14, "glass", 24)
-  ITEMS = ["fruit"]
-  const fx = B.fruit
-  for (let k = 0; k < 3; k++) {
-    const w = (fx.x1 - fx.x0) / 3, a = fx.x0 + k * w + 0.02, b = fx.x0 + (k + 1) * w - 0.02
-    blk(a, z0 + 0.06, b, z1 - 0.04, top, top + 0.12, "crate")
-    const kind = ["passion", "pine", "tomato"][k]
-    for (let n = 0; n < 6; n++) {
-      const m = add(new THREE.SphereGeometry(kind === "pine" ? 0.055 : 0.035, 10, 8), kind,
-        { pos: [a + 0.05 + (n % 3) * ((b - a - 0.1) / 2), top + 0.13, z0 + 0.14 + Math.floor(n / 3) * 0.15] })
-      if (kind === "pine") m.scale.y = 1.6
-    }
-  }
-  ITEMS = ["blender"]
-  const bl = B.blender, bx = (bl.x0 + bl.x1) / 2
-  blk(bl.x0, z0 + 0.12, bl.x1, z0 + 0.32, top, top + 0.12, "black")
-  cyl(bx, z0 + 0.22, 0.06, top + 0.12, 0.24, "glass", 16, 0.08)
+  ITEMS = []
+  // the free worktop where drinks are poured: a few glasses and bottles on a tray
+  blk(0.2, z0 + 0.08, 0.7, z0 + 0.36, top, top + 0.012, "black")
+  for (let k = 0; k < 3; k++) cyl(0.3 + k * 0.1, z0 + 0.22, 0.035, top + 0.012, 0.11, "glass", 12)
+  cyl(0.62, z0 + 0.2, 0.04, top + 0.012, 0.24, "amber", 12); cyl(0.62, z0 + 0.2, 0.013, top + 0.252, 0.07, "amber", 8)
   // three open shelves in Medium Oak on black brackets, cups, glasses, jars and plain bottles on them
   ITEMS = ["shelves"]
   B.shelves.forEach((h, k) => {

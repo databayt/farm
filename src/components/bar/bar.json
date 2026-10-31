@@ -1,5 +1,5 @@
 {
-  "about": "The compound's bar, as /en/camp is one camp: the red 20 ft container of compound.json (units id \"bar\") on its stone plinth, its long hatch open onto the courtyard (east) under a propped flap. The container is on site today (2026-10-25 footage, public/footage/IMG_3195 t6.9 and IMG_3196 t5.9): oxide red, a two-panel hatch already framed into one long wall with a steel ledge under it and a loose pole lying ready to prop it. The 2D (bar-plan.tsx) and the 3D (scripts/site/render/bar.html) both read this file. Plan in metres: x along the container to the right as seen from the courtyard (south end left, the cargo doors' north end right), y toward the courtyard (the hatch side), the container's centre at 0,0; heights from the ground. Fit-out past the shell is a design choice, not yet sourced: a farm-stay bar serving coffee, fresh juice and drinks, run by one or two people.",
+  "about": "The compound's bar, as /en/camp is one camp: the red 20 ft container of compound.json (units id \"bar\") on its stone plinth, its long hatch open onto the courtyard (east) under a propped flap. The container is on site today (2026-10-25 footage, public/footage/IMG_3195 t6.9 and IMG_3196 t5.9): oxide red, a two-panel hatch already framed into one long wall with a steel ledge under it and a loose pole lying ready to prop it. The 2D (bar-plan.tsx) and the 3D (scripts/site/render/bar.html) both read this file. Plan in metres: x along the container to the right as seen from the courtyard (south end left, the cargo doors' north end right), y toward the courtyard (the hatch side), the container's centre at 0,0; heights from the ground. Fit-out past the shell is a design choice, not yet sourced: the farm-stay bar at its minimum (D-065), a coffee corner and drinks inside the hatch and a lounge on the deck outside (D-028's lounge, without a building of its own), run by one or two people.",
   "container": {
     "about": "A 20 ft box, 6,058 x 2,438 x 2,591 mm, painted oxide red, on a fieldstone plinth 300 mm high and 100 mm proud all round (compound.json).",
     "l": 6.058,
@@ -10,37 +10,38 @@
     "floor": 0.15
   },
   "hatch": {
-    "about": "The opening in the courtyard wall: 2.6 m long (compound.json's hatch, 30.1 to 32.7 along the box, here x from the centre), sill 1.05 m and head 2.15 m above the container's base, so the inside work counter meets the sill. The cut-out wall panel is the flap: hinged at the head, swung up and out 115 degrees on two steel struts, a sun and rain shade over the counter.",
+    "about": "The opening in the courtyard wall: 2.6 m long (compound.json's hatch, 30.1 to 32.7 along the box, here x from the centre), sill 1.05 m and head 2.15 m above the container's base, so the inside work counter meets the sill. The cut-out wall panel is the flap: hinged at the head, swung up and out 115 degrees on two steel struts, a sun and rain shade over the ledge and the people ordering at it.",
     "x0": -1.287,
     "x1": 1.313,
     "sill": 1.05,
     "head": 2.15,
     "flap": { "angle": 115, "struts": 2 }
   },
-  "counter": {
-    "about": "Outside, along the hatch: a Medium Oak timber counter on steel brackets over today's steel ledge, 450 mm deep and 60 mm past the hatch at each end, its top at the sill (1.05 m above the deck: bar height).",
-    "d": 0.45,
-    "over": 0.06,
-    "t": 0.05
+  "ledge": {
+    "about": "Today's steel ledge under the hatch, kept as the shelf drinks are handed over on (D-065: no outside counter), its top at the sill, 1.05 m above the deck: bar height. Drawn 300 mm deep and 8 mm thick until the survey measures it [U].",
+    "d": 0.3,
+    "t": 0.008
   },
   "deck": {
-    "about": "A timber deck at the plinth's height in front of the hatch, so the counter stands at bar height for the stools. The homepage 3D draws the stools on the ground; this deck is a proposal it can pick up.",
-    "x0": -2.2,
-    "x1": 2.2,
+    "about": "A timber deck at the plinth's height along the courtyard side, 6 m long and centred on the hatch, so the ledge stands at bar height (D-065): the middle in front of the hatch kept clear for ordering, under the flap, with one step down to the lawn, and the lounge at its two ends. A proposal [A]; the homepage 3D still draws the old counter and stools.",
+    "x0": -2.987,
+    "x1": 3.013,
     "d": 2.2,
-    "h": 0.3
+    "h": 0.3,
+    "step": { "x0": -1.287, "x1": 1.313, "d": 0.3 }
   },
-  "stools": {
-    "about": "Five high stools at the counter, 550 mm apart: steel frame, round Medium Oak seat 760 mm above the deck, footrest ring.",
-    "x": [-1.087, -0.537, 0.013, 0.563, 1.113],
-    "out": 0.68,
-    "r": 0.18,
-    "seat": 0.76
+  "lounge": {
+    "about": "D-028's lounge at its minimum (D-065): at each end of the deck two deep armchairs side by side, their backs to the container and facing the courtyard, and a low round table in front of them; four seats in all. Hardwood frames with outdoor cushions, a design choice [A]. `pairs`: each pair's centre along x; `wall`: from the deck's inner edge to the chairs' backs; `gap`: between the two chairs; the table's `off`: clear between the chairs' fronts and its edge.",
+    "pairs": [-2.137, 2.163],
+    "wall": 0.1,
+    "gap": 0.1,
+    "chair": { "w": 0.75, "d": 0.8, "seat": 0.4, "arm": 0.6, "back": 0.78 },
+    "table": { "r": 0.3, "h": 0.42, "off": 0.35 }
   },
   "inside": {
     "about": "Lined in off-white painted ply over insulation (the studio's finish), oak plank floor, Medium Oak joinery. A 1.2 m aisle between the work counter under the hatch and the back bar on the far wall; the way in is the cargo doors at the north end.",
     "front": {
-      "about": "The work counter under the hatch, top at the sill, 600 mm deep. Under it, left to right: a store cupboard with the bins, two under-counter fridges (glass doors: juice, milk, soft drinks), the sink with a mixer tap, a drawer stack.",
+      "about": "The work counter under the hatch, top at the sill, 600 mm deep. Under it, left to right: a store cupboard with the bins, two under-counter fridges (glass doors: milk and cold drinks), the sink with a mixer tap, a drawer stack.",
       "x0": -2.4,
       "x1": 2.0,
       "d": 0.6,
@@ -53,15 +54,12 @@
       ]
     },
     "back": {
-      "about": "The back bar on the far (west) wall: a counter 450 mm deep at the same height with the espresso machine and grinder on the left, the juicer and crates of fruit (passion fruit, pineapple, tree tomato) in the middle, a blender on the right; three open Medium Oak shelves above with cups, glasses, jars and plain unbranded bottles; a tall store cupboard at the left end.",
+      "about": "The back bar on the far (west) wall: a counter 450 mm deep at the same height with the espresso machine and grinder on the left and the rest free worktop, where drinks are poured (D-065: no juicer); three open Medium Oak shelves above with cups, glasses, jars and plain unbranded bottles; a tall store cupboard at the left end.",
       "x0": -2.4,
       "x1": 1.7,
       "d": 0.45,
       "coffee": { "x0": -1.75, "x1": -1.05 },
       "grinder": { "x0": -0.95, "x1": -0.72 },
-      "juicer": { "x0": -0.2, "x1": 0.1 },
-      "fruit": { "x0": 0.2, "x1": 1.0 },
-      "blender": { "x0": 1.2, "x1": 1.4 },
       "shelves": [1.5, 1.85, 2.2],
       "shelf": 0.26
     },
@@ -96,18 +94,18 @@
     ]
   },
   "electric": {
-    "about": "The bar's power, a design choice for a RURA class A electrician to check and certify [A]. Single-phase 230 V from the farm's site board to a board on the back wall by the way in, one RCBO per circuit; the coffee machine on its own circuit with a switched spur beside it. The power guide gives the bar 5 kWh a day and a 2 kW peak for fridges, lights and music (guide/farm/electric.md); a two-group coffee machine draws about 3 to 4 kW on its own, so with it the bar peaks nearer 5 kW [E]. Every rating (kW) is a design value for the chosen model's rating plate. Points at [x, y, h] as the water's; `face`: +y off the back wall, -y off the hatch wall, +x on the north end, down from the ceiling.",
+    "about": "The bar's power, a design choice for a RURA class A electrician to check and certify [A]. Single-phase 230 V from the farm's site board to a board on the back wall by the way in, one RCBO per circuit; the coffee machine on its own circuit with a switched spur beside it. The power guide gives the bar 5 kWh a day and a 5 kW peak, a two-group coffee machine's 3 to 4 kW among it (guide/farm/electric.md, D-065) [E]. Every rating (kW) is a design value for the chosen model's rating plate. Points at [x, y, h] as the water's; `face`: +y off the back wall, -y off the hatch wall, +x on the north end, down from the ceiling.",
     "colours": { "lights": "#2a78d6", "sockets": "#eb6834", "fixed": "#1baf7a", "spare": "#9a9893" },
     "track0": 0.4,
     "supply": { "title": "Farm site board", "sub": "230 V single-phase, buried cable", "main": "Main switch 40 A DP", "mainSub": "with surge protection" },
     "board": { "x": 2.3, "y": -1.12, "h": 1.75, "w": 0.3, "hh": 0.4 },
     "circuits": [
       { "id": "C1", "serves": "Lights inside", "device": "B6", "cable": 1.5, "kw": 0.15, "group": "lights", "phases": 1 },
-      { "id": "C2", "serves": "Back bar sockets", "device": "B16", "cable": 2.5, "kw": 2.5, "group": "sockets", "phases": 1 },
+      { "id": "C2", "serves": "Back bar sockets", "device": "B16", "cable": 2.5, "kw": 1.0, "group": "sockets", "phases": 1 },
       { "id": "C3", "serves": "Coffee machine", "device": "B20", "cable": 4, "kw": 3.5, "group": "fixed", "phases": 1 },
       { "id": "C4", "serves": "Fridges", "device": "B16", "cable": 2.5, "kw": 0.4, "group": "sockets", "phases": 1 },
       { "id": "C5", "serves": "Water heater", "device": "B16", "cable": 2.5, "kw": 1.5, "group": "fixed", "phases": 1 },
-      { "id": "C6", "serves": "Outside: flap light and counter socket", "device": "B10", "cable": 1.5, "kw": 0.5, "group": "lights", "phases": 1 },
+      { "id": "C6", "serves": "Outside: the light under the flap", "device": "B10", "cable": 1.5, "kw": 0.05, "group": "lights", "phases": 1 },
       { "id": "C7", "serves": "Spare", "device": "B16", "cable": 2.5, "kw": 0, "group": "spare", "phases": 1 }
     ],
     "points": [
@@ -118,13 +116,12 @@
       { "id": "L4", "what": "LED strips under the three shelves, one driver", "circuit": "C1", "at": [-0.35, -1.0, 1.47], "face": "down", "model": "strip", "size": "3 × 4.0 m" },
       { "id": "S1", "what": "Light switch by the way in", "circuit": "C1", "at": [2.75, -1.12, 1.2], "face": "+y", "model": "switch", "size": "86 × 86 mm" },
       { "id": "P1", "what": "Double socket, grinder and spare", "circuit": "C2", "at": [-0.84, -1.12, 1.08], "face": "+y", "model": "socket", "size": "146 × 86 mm" },
-      { "id": "P2", "what": "Double socket, juicer and blender", "circuit": "C2", "at": [0.65, -1.12, 1.08], "face": "+y", "model": "socket", "size": "146 × 86 mm" },
+      { "id": "P2", "what": "Double socket, music and the card reader", "circuit": "C2", "at": [0.65, -1.12, 1.08], "face": "+y", "model": "socket", "size": "146 × 86 mm" },
       { "id": "Q1", "what": "Coffee machine switched spur, double-pole", "circuit": "C3", "at": [-2.05, -1.12, 1.08], "face": "+y", "model": "isolator", "size": "86 × 86 mm" },
       { "id": "P3", "what": "Fridge socket, at the back of the unit", "circuit": "C4", "at": [-0.95, 1.12, 0.5], "face": "-y", "model": "single", "size": "86 × 86 mm" },
       { "id": "P4", "what": "Fridge socket, at the back of the unit", "circuit": "C4", "at": [-0.35, 1.12, 0.5], "face": "-y", "model": "single", "size": "86 × 86 mm" },
       { "id": "Q2", "what": "Water heater switched spur, double-pole", "circuit": "C5", "at": [0.88, 1.12, 0.6], "face": "-y", "model": "isolator", "size": "86 × 86 mm" },
       { "id": "L5", "what": "Light bar under the flap, IP65", "circuit": "C6", "at": [0.0, 2.11, 2.43], "face": "down", "model": "bar", "size": "2.2 m long" },
-      { "id": "P5", "what": "Socket IP66 under the outside counter: music, a card reader", "circuit": "C6", "at": [1.6, 1.24, 0.45], "face": "+y", "model": "socket66", "size": "About 100 × 150 mm" },
       { "id": "AL", "what": "Smoke alarm, 10-year battery", "circuit": "", "at": [0.8, -0.05, 2.33], "face": "down", "model": "alarm", "size": "Ø 110 mm" },
       { "id": "E1", "what": "Earth rod in an inspection pit", "circuit": "", "at": null, "face": "", "model": "earth", "size": "1.5 m rod, outside the north end, off the drawing" }
     ]

@@ -16,15 +16,15 @@ import waterTags from "../../../../../public/designs/bar/render/water-tags.json"
 
 // The bar, in /en/studio's pattern: the hero, the 2D and the 3D, the Equipment rail, Electric and Plumbing, then the
 // docs cards; its points, circuits and runs are on its docs pages (/docs/bar). Both drawings read src/components/bar/bar.json: the red 20 ft container on its stone plinth, the long hatch open onto the
-// courtyard under a propped flap, a timber counter with five stools on a deck, and inside a work counter with
-// fridges and a sink, a back bar with the coffee machine and the juice station, a door at the north end.
+// courtyard under a propped flap over today's steel ledge, a deck with two deep chairs and a low table at each end, and
+// inside a work counter with fridges and a sink, a back bar with the coffee machine, a door at the north end (D-065).
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/bar">): Promise<Metadata> {
   const { lang } = await params
   return words[hasLocale(lang) ? lang : i18n.defaultLocale].meta
 }
 
-const OUTSIDE = ["L5", "P5"]
+const OUTSIDE = ["L5"]
 
 export default async function BarPage() {
   const lang = await getLocale()
@@ -55,7 +55,7 @@ export default async function BarPage() {
       <RailSection id="equipment" title={t.equipment} items={equipmentRail(lang)} />
 
       {/* Electric, in the studio's pattern: the single line drawn full width, then the installation in the 3D view's
-          camera, lower, with the hatch wall, the deck and the stools left out (every circuit up from the board to the
+          camera, lower, with the hatch wall and the deck left out (every circuit up from the board to the
           ceiling, along its own track and down to its points, every point tagged), the same view rendered, then each
           device on its own. All from bar.html?view=electric. */}
       <ServiceSection id="electrical" title={t.electric}

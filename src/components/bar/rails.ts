@@ -12,7 +12,7 @@ import { dictionary } from "@/components/internationalization/dictionaries"
 // (D-059) read one list.
 // The equipment, the power and the water, in the studio's pattern (the galley's diagrams; the water and the power read
 // in data.ts). Every size comes from bar.json; nothing is sourced or priced yet, so no card names a shop or a price.
-const I = B.inside
+const I = B.inside, LO = B.lounge
 const m = (n: number) => `${+n.toFixed(2)} m`
 const span = (u: { x0: number; x1: number }) => u.x1 - u.x0
 
@@ -26,14 +26,12 @@ export function equipmentRail(lang: Locale): RailItem[] {
   return railCards(`${D}/render/equipment`, [
     { id: "coffee", title: t.coffee.title, size: t.coffee.size(m(span(I.back.coffee))), note: t.coffee.note(kw("C3")) },
     { id: "grinder", title: t.grinder.title, size: t.grinder.size(m(span(I.back.grinder))), note: t.grinder.note },
-    { id: "juicer", title: t.juicer.title, size: t.juicer.size, note: t.juicer.note },
-    { id: "fruit", title: t.fruit.title, size: t.fruit.size(m(span(I.back.fruit))), note: t.fruit.note },
-    { id: "blender", title: t.blender.title, size: t.blender.size(m(span(I.back.blender))), note: t.blender.note },
     { id: "fridge", title: t.fridge.title(fridges.length), size: t.fridge.size(m(span(fridges[0])), m(I.front.d)), note: t.fridge.note },
     { id: "sink", title: t.sink.title, size: t.sink.size(m(span(sink)), m(I.front.d)), note: t.sink.note },
     { id: "shelves", title: t.shelves.title, size: t.shelves.size(m(span(I.back)), m(I.back.shelf), I.back.shelves.map((h) => m(h)).join(", ")), note: t.shelves.note },
     { id: "store", title: t.store.title, size: t.store.size(m(span(I.store)), m(I.store.d), m(I.store.h)), note: t.store.note },
-    { id: "stool", title: t.stool.title(B.stools.x.length), size: t.stool.size(m(B.stools.r * 2), m(B.stools.seat)), note: t.stool.note },
+    { id: "chair", title: t.chair.title(LO.pairs.length * 2), size: t.chair.size(m(LO.chair.w), m(LO.chair.d), m(LO.chair.seat)), note: t.chair.note },
+    { id: "table", title: t.table.title(LO.pairs.length), size: t.table.size(m(LO.table.r * 2), m(LO.table.h)), note: t.table.note },
   ], lang)
 }
 
@@ -52,7 +50,7 @@ export function waterRail(lang: Locale): RailItem[] {
   ], lang)
 }
 
-const DEVICES = ["board", "isolator", "socket", "single", "socket66", "ceiling", "strip", "bar", "switch", "alarm", "earth"]
+const DEVICES = ["board", "isolator", "socket", "single", "ceiling", "strip", "bar", "switch", "alarm", "earth"]
 export function electricRail(lang: Locale): RailItem[] {
   const t = words[lang].rails.electric
   const { ELECTRIC } = barData(lang)

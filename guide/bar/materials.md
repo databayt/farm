@@ -14,7 +14,7 @@ The floor, the battens and the linings follow the studio's list, scaled to the b
 
 ## How a price becomes real
 
-1. Start with the lines that move the total: the coffee machine, the fridges, the counters.
-2. Ask for three written quotes per line, with the same specification and the same quantity, once what the bar serves is decided.
+1. Start with the lines that move the total: the coffee machine, the fridges, the counters, the deck and its chairs.
+2. Ask for three written quotes per line, with the same specification and the same quantity.
 3. Record each quote in the [prices register](../../study/registers/prices.csv) with its date and supplier, and mark its line verified.
 4. Write the price on its card in `src/components/bar/rails.ts`, so the page and this table show it.

@@ -16,7 +16,7 @@ Hasi, ibiti (battens) na lining bikurikiza urutonde rwa sitidiyo, rugabanyijwe k
 
 ## Uko igiciro kiba icy'ukuri
 
-1. Hera ku mirongo ihindura igiciro cyose: imashini ya kawa, firigo, ameza (counters).
-2. Saba ibiciro bitatu byanditse (quotes) kuri buri murongo, bifite ibisobanuro bimwe (specification) n'umubare umwe, igihe ibyo akabari kazagurisha bimaze kwemezwa.
+1. Hera ku mirongo ihindura igiciro cyose: imashini ya kawa, firigo, ameza (counters), deck n'intebe zayo.
+2. Saba ibiciro bitatu byanditse (quotes) kuri buri murongo, bifite ibisobanuro bimwe (specification) n'umubare umwe.
 3. Andika buri giciro mu [gitabo cy'ibiciro](../../study/registers/prices.csv) n'itariki yacyo n'ugitanga (supplier), hanyuma ugaragaze ko umurongo wacyo wemejwe (verified).
 4. Andika igiciro ku ikarita yacyo muri `src/components/bar/rails.ts`, kugira ngo urupapuro n'iyi mbonerahamwe bikigaragaze.
