@@ -126,6 +126,8 @@ const mdxComponents = {
     />
   ),
   a: DocsLink,
+  // a guide's link to its own translation, which scripts/sync-docs.mjs writes as <DocsLink hrefLang>
+  DocsLink,
   p: ({ className, ...props }) => (
     <p
       className={cn("leading-relaxed [&:not(:first-child)]:mt-6", className)}
