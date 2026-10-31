@@ -58,7 +58,7 @@
     "shelves": [0.2, 0.6, 1.0, 1.4, 1.8]
   },
   "line": {
-    "about": "The cooking line on the back wall, across from the prep bench: a six-ring range over an oven (1.2 m), a griddle (0.7 m) and a fryer (0.5 m), 700 mm deep and 900 mm high, with a steel splashback up to the hood [A]. Gas or electric is still open: the power guide's 25 kWh a day for the galley assume electric cooking, about 8 on gas (guide/farm/electric.md), so the line is drawn for either. The aisle in front of it is 900 mm, the galley's narrowest: one person cooks while the other passes behind [A].",
+    "about": "The cooking line on the back wall, across from the prep bench: a six-ring range over an oven (1.2 m), a griddle (0.7 m) and a fryer (0.5 m), 700 mm deep and 900 mm high, with a steel splashback up to the hood [A]. It cooks on LPG (D-065): a gas range, griddle and fryer fed from two 38 kg cylinders in a ventilated cage outside the back wall behind the line (`gas`, guide/farm/gas.md), installed and leak-tested by a RURA-licensed gas installer; electricity only lights the ignition, the oven light and the gas valve. The aisle in front of it is 900 mm, the galley's narrowest: one person cooks while the other passes behind [A].",
     "d": 0.7,
     "h": 0.9,
     "units": [
@@ -114,6 +114,13 @@
     "h": 0.9
   },
   "fire": { "about": "A fire blanket and an extinguisher for cooking-oil fires on the east end wall, by the service door [A].", "y": 0.22 },
+  "gas": {
+    "about": "The LPG for the cooking line (D-065, guide/farm/gas.md): two 38 kg cylinders standing upright in a ventilated steel cage outside the back wall, behind the line, on a concrete pad, in the shade, at least 1 m from the drains and from any opening; a regulator and a changeover valve on the cage, one copper pipe through the back wall to the line with an isolating valve by the range, all fitted and leak-tested by a RURA-licensed installer [A, sizes for the installer to confirm].",
+    "cage": { "x0": 5.0, "x1": 6.4, "d": 0.7 },
+    "cylinders": 2,
+    "kg": 38,
+    "r": 0.18
+  },
   "water": {
     "about": "The galley's water and drains, a design choice for the plumber to check [A]. One cold supply from the farm's tank and booster pump at 2.5 to 3 bar (guide/studio/plumbing.md, shared with the compound), in under the staff door end to a stop valve, Y-filter and check meter by the hand-wash basin, then along the front wall under the worktop to every outlet and to a 100 L electric storage heater on the east end wall above the bins; hot back along the same wall to the pre-rinse spray, both sinks and the basin. Every drain falls at 1:40 or steeper (plumber.md) to one 110 mm collector laid under the plinth along the front, out at the east end to the kitchen's grease trap and its own soak pit (operations.md: the kitchen drains to its grease trap). No dishwasher is drawn (worktop.about), so none is plumbed; a 50 mm waste and a cold tee are left capped under the dish drop for one. Points at [x, y, h]: plan x and y as the rest of this file, h above the finished floor (the ground is at -0.45). Each run's path is one or more polylines of such points; its length is their sum. Sizes are design intent; nothing is sourced or priced.",
     "colours": { "cold": "#2a78d6", "hot": "#e34948", "waste": "#8b4a12", "vent": "#9a9893" },
@@ -157,10 +164,10 @@
     ]
   },
   "electric": {
-    "about": "The galley's power, a design choice for a RURA class A electrician to check and certify [A]. The power guide's 25 kWh a day and 14 kW peak assume electric cooking (guide/farm/electric.md); gas or electric is still open (line.about), so the line is drawn electric: a three-phase 400 V supply from the farm's site board to a board on the front wall by the staff door, one RCBO per circuit, the range, griddle and fryer each on a three-phase circuit with its own isolator beside the line, and an emergency stop by the service door that drops them all through one contactor. The line only runs while the extract fan runs (an interlock in the hood control). Every rating (kW) is a design value for the chosen model's rating plate. Points at [x, y, h] as the water's; `face` is the way a device looks: +y off the back wall, -y off the front wall, -x off the east end wall, down from the ceiling.",
+    "about": "The galley's power, a design choice for a RURA class A electrician to check and certify [A]. The line cooks on LPG (D-065, line.about), so the galley is single-phase: a 230 V supply from the farm's site board to a board on the front wall by the staff door, one RCBO per circuit, the range's ignition and gas valve on one small circuit with its isolator beside the line, and an emergency stop by the service door that shuts the gas valve and the ignition through one contactor; about 8 kWh a day [E, guide/farm/electric.md]. The line only runs while the extract fan runs (an interlock in the hood control). Every rating (kW) is a design value for the chosen model's rating plate. Points at [x, y, h] as the water's; `face` is the way a device looks: +y off the back wall, -y off the front wall, -x off the east end wall, down from the ceiling.",
     "colours": { "lights": "#2a78d6", "sockets": "#eb6834", "fixed": "#1baf7a", "spare": "#9a9893" },
     "track0": 0.3,
-    "supply": { "title": "Farm site board", "sub": "400 V three-phase, buried cable", "main": "Main switch 63 A 4P", "mainSub": "with surge protection" },
+    "supply": { "title": "Farm site board", "sub": "230 V single-phase, buried cable", "main": "Main switch 63 A 2P", "mainSub": "with surge protection" },
     "board": { "x": 0.88, "y": 1.08, "h": 1.6, "w": 0.45, "hh": 0.6 },
     "circuits": [
       { "id": "C1", "serves": "Lights", "device": "B10", "cable": 1.5, "kw": 0.2, "group": "lights", "phases": 1 },
@@ -168,12 +175,10 @@
       { "id": "C3", "serves": "Worktop sockets, east", "device": "B16", "cable": 2.5, "kw": 3, "group": "sockets", "phases": 1 },
       { "id": "C4", "serves": "Freezer and fridge", "device": "B16", "cable": 2.5, "kw": 1, "group": "sockets", "phases": 1 },
       { "id": "C5", "serves": "Cold bench and the pass", "device": "B16", "cable": 2.5, "kw": 2.5, "group": "sockets", "phases": 1 },
-      { "id": "C6", "serves": "Range and oven", "device": "B32 3P", "cable": 6, "kw": 15, "group": "fixed", "phases": 3, "stop": true },
-      { "id": "C7", "serves": "Griddle", "device": "B16 3P", "cable": 2.5, "kw": 6, "group": "fixed", "phases": 3, "stop": true },
-      { "id": "C8", "serves": "Fryer", "device": "B16 3P", "cable": 2.5, "kw": 6, "group": "fixed", "phases": 3, "stop": true },
-      { "id": "C9", "serves": "Extract fan and hood lights", "device": "B10", "cable": 1.5, "kw": 0.6, "group": "fixed", "phases": 1 },
-      { "id": "C10", "serves": "Water heater", "device": "B16", "cable": 2.5, "kw": 3, "group": "fixed", "phases": 1 },
-      { "id": "C11", "serves": "Spare", "device": "B16", "cable": 2.5, "kw": 0, "group": "spare", "phases": 1 }
+      { "id": "C6", "serves": "Range ignition, oven light and gas valve", "device": "B6", "cable": 1.5, "kw": 0.1, "group": "fixed", "phases": 1, "stop": true },
+      { "id": "C7", "serves": "Extract fan and hood lights", "device": "B10", "cable": 1.5, "kw": 0.6, "group": "fixed", "phases": 1 },
+      { "id": "C8", "serves": "Water heater", "device": "B16", "cable": 2.5, "kw": 3, "group": "fixed", "phases": 1 },
+      { "id": "C9", "serves": "Spare", "device": "B16", "cable": 2.5, "kw": 0, "group": "spare", "phases": 1 }
     ],
     "points": [
       { "id": "DB", "what": "Distribution board, 4-pole, 24 modules", "circuit": "", "at": [0.88, 1.08, 1.6], "face": "-y", "model": "board", "size": "About 450 × 600 mm, 110 mm deep" },
@@ -191,15 +196,11 @@
       { "id": "P6", "what": "Fridge socket, above it", "circuit": "C4", "at": [1.52, -1.08, 2.18], "face": "+y", "model": "single", "size": "86 × 86 mm" },
       { "id": "P7", "what": "Double socket, cold bench", "circuit": "C5", "at": [8.05, -1.08, 1.05], "face": "+y", "model": "socket", "size": "146 × 86 mm" },
       { "id": "P8", "what": "Double socket, the pass: heated cupboard and heat lamps", "circuit": "C5", "at": [10.3, -1.08, 1.05], "face": "+y", "model": "socket", "size": "146 × 86 mm" },
-      { "id": "Q1", "what": "Range isolator, 3P", "circuit": "C6", "at": [4.55, -1.08, 1.65], "face": "+y", "model": "isolator", "size": "About 90 × 140 mm" },
-      { "id": "Q2", "what": "Griddle isolator, 3P", "circuit": "C7", "at": [4.55, -1.08, 1.42], "face": "+y", "model": "isolator", "size": "About 90 × 140 mm" },
-      { "id": "Q3", "what": "Fryer isolator, 3P", "circuit": "C8", "at": [4.55, -1.08, 1.19], "face": "+y", "model": "isolator", "size": "About 90 × 140 mm" },
-      { "id": "O1", "what": "Range connection box, behind it", "circuit": "C6", "at": [5.3, -1.08, 0.45], "face": "+y", "model": "outlet", "size": "86 × 86 mm" },
-      { "id": "O2", "what": "Griddle connection box, behind it", "circuit": "C7", "at": [6.25, -1.08, 0.45], "face": "+y", "model": "outlet", "size": "86 × 86 mm" },
-      { "id": "O3", "what": "Fryer connection box, behind it", "circuit": "C8", "at": [6.85, -1.08, 0.45], "face": "+y", "model": "outlet", "size": "86 × 86 mm" },
-      { "id": "HC", "what": "Hood control: fan speed, hood lights, the line's interlock", "circuit": "C9", "at": [7.3, -1.08, 1.5], "face": "+y", "model": "control", "size": "About 120 × 160 mm" },
-      { "id": "FN", "what": "Roof extract fan, its isolator on the curb", "circuit": "C9", "at": [5.9, -0.75, 2.42], "face": "+y", "model": "fan", "size": "Ø 600 mm upblast fan on a 200 mm curb" },
-      { "id": "Q4", "what": "Water heater isolator, double-pole", "circuit": "C10", "at": [12.07, 0.0, 1.75], "face": "-x", "model": "isolator", "size": "About 90 × 140 mm" },
+      { "id": "Q1", "what": "Range isolator: its ignition and the gas valve", "circuit": "C6", "at": [4.55, -1.08, 1.65], "face": "+y", "model": "isolator", "size": "About 90 × 140 mm" },
+      { "id": "O1", "what": "Range connection box, behind it: the ignition", "circuit": "C6", "at": [5.3, -1.08, 0.45], "face": "+y", "model": "outlet", "size": "86 × 86 mm" },
+      { "id": "HC", "what": "Hood control: fan speed, hood lights, the line's interlock", "circuit": "C7", "at": [7.3, -1.08, 1.5], "face": "+y", "model": "control", "size": "About 120 × 160 mm" },
+      { "id": "FN", "what": "Roof extract fan, its isolator on the curb", "circuit": "C7", "at": [5.9, -0.75, 2.42], "face": "+y", "model": "fan", "size": "Ø 600 mm upblast fan on a 200 mm curb" },
+      { "id": "Q4", "what": "Water heater isolator, double-pole", "circuit": "C8", "at": [12.07, 0.0, 1.75], "face": "-x", "model": "isolator", "size": "About 90 × 140 mm" },
       { "id": "ES", "what": "Emergency stop for the cooking line, to the contactor in the board", "circuit": "", "control": true, "at": [11.05, 1.08, 1.5], "face": "-y", "model": "estop", "size": "Red mushroom button, 40 mm, in a yellow box" },
       { "id": "HA1", "what": "Heat alarm, 10-year battery", "circuit": "", "at": [3.0, 0.0, 2.29], "face": "down", "model": "alarm", "size": "Ø 110 mm" },
       { "id": "HA2", "what": "Heat alarm, 10-year battery", "circuit": "", "at": [9.4, 0.0, 2.29], "face": "down", "model": "alarm", "size": "Ø 110 mm" },

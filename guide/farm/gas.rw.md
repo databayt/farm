@@ -2,7 +2,7 @@
 
 > **Ubusobanuro:** iyi nyandiko yahinduwe na mudasobwa (machine draft). Igomba gusuzumwa n'umuntu uvuga Ikinyarwanda kavukire mbere yo kuyiha abakozi. Iyo hari itandukaniro, kurikiza iy'Icyongereza.
 
-Status: inama yo ku wa 2026-10-31. Ibicanwa bya galley (igikoni) ntibirahitwamo; gaze yakoresha ni igereranya [E] kugeza igihe menu n'ifuru (range) bizemezwa, kandi ibiciro ni uko byatangajwe ku matariki yavuzwe.
+Status: inama yo ku wa 2026-10-31. Galley (igikoni) itekesha gaze LPG (D-065); gaze ikoresha ni igereranya [E] kugeza igihe menu n'ifuru (range) bizemezwa, kandi ibiciro ni uko byatangajwe ku matariki yavuzwe.
 
 Niba galley ikwiye guteka kuri gaze yo mu macupa (LPG), ingano yayo yakoresha n'icyo itwara, n'uko amacupa abikwa kandi agahuzwa mu mutekano, ku bw'nyir'ifamu n'uwushyiraho (installer).
 

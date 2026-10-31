@@ -1,6 +1,6 @@
 import { railCards } from "@/components/page/sections"
 import { type RailItem } from "@/components/docs/item-rail"
-import { D, ELECTRIC as ELECTRIC_EN, galleyData } from "@/components/galley/data"
+import { D, galleyData } from "@/components/galley/data"
 import G from "@/components/galley/galley.json"
 import { words } from "@/components/galley/words"
 import { metres } from "@/components/galley/service-diagrams"
@@ -20,13 +20,11 @@ export function equipmentRail(lang: Locale): RailItem[] {
   const t = words[lang].rails.equipment
   const unit = (id: string) => [...G.cold.units, ...G.line.units].find((u) => u.id === id)!
   const sinks = Object.fromEntries(G.worktop.sinks.map((s) => [s.id, s]))
-  // the circuit is found by its English name, so the lookup reads galley.json as written
-  const kw = (id: string) => ELECTRIC_EN.circuits.find((c) => c.serves.toLowerCase().startsWith(id))?.kw
   const line = (id: string) => t.box(m(span(unit(id))), m(G.line.d), m(G.line.h))
   return railCards(`${D}/render/equipment`, [
-    { id: "range", title: t.range.title, size: line("range"), note: t.range.note(kw("range")) },
-    { id: "griddle", title: t.griddle.title, size: line("griddle"), note: t.griddle.note(kw("griddle")) },
-    { id: "fryer", title: t.fryer.title, size: line("fryer"), note: t.fryer.note(kw("fryer")) },
+    { id: "range", title: t.range.title, size: line("range"), note: t.range.note() },
+    { id: "griddle", title: t.griddle.title, size: line("griddle"), note: t.griddle.note() },
+    { id: "fryer", title: t.fryer.title, size: line("fryer"), note: t.fryer.note() },
     { id: "hood", title: t.hood.title, size: t.hood.size(m(span(G.hood)), m(G.hood.d), m(G.hood.y0), G.hood.duct * 1000), note: t.hood.note },
     { id: "freezer", title: t.freezer.title, size: t.box(m(span(unit("freezer"))), m(G.cold.d), m(G.cold.h)), note: t.freezer.note },
     { id: "fridge", title: t.fridge.title, size: t.box(m(span(unit("fridge"))), m(G.cold.d), m(G.cold.h)), note: t.fridge.note },

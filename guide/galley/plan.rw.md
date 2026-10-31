@@ -18,11 +18,11 @@ English: [read this plan in English](plan.md) · Igikoni gikuru mu bishushanyo: 
 | Abo kigaburira | ifunguro rya mu gitondo kuva 07:00 kugeza 09:00 n'iry'ijoro iyo ibyumba byuzuye, abashyitsi 22 n'abakozi, hafi abantu 25.5 ku munsi (D-031), bitekwa n'umutetsi n'umufasha we |
 | Imirimo | uva iburengerazuba ujya iburasirazuba: urugi rw'abakozi n'ububiko, ameza yo gutegurirwaho (prep bench), cooking line, pass n'urugi rwa serivisi |
 | Worktop | worktop ya stainless ya m 7.8 ya nyir'ifamu, sinki zayo ebyiri ziri munsi y'amadirishya (D-022) |
-| Serivisi | umuriro wa 400 V three-phase ku mizunguruko 11, cooking line iri kuri itatu muri yo; heater y'amazi ya L 100; buri muyoboro w'amazi yanduye unyura muri grease trap |
+| Serivisi | umuriro wa 230 V wa fazi imwe ku mizunguruko 9; cooking line ikoresha gaz LPG iva mu macupa abiri ari mu kazu kayo inyuma yayo (D-065); heater y'amazi ya L 100; buri muyoboro w'amazi yanduye unyura muri grease trap |
 
 ## Mbere yo gutangira
 
-1. Hitamo gaz cyangwa amashanyarazi kuri cooking line: bihindura umuriro ifamu ikoresha ku munsi ho hafi 17 kWh kandi bigena imizunguruko ya cooking line ([amashanyarazi y'ifamu](../farm/electric.md)).
+1. Teganya umutekinisiye wa gaz ufite uruhushya rwa RURA ku kazu k'amacupa, umuyoboro ujya kuri cooking line n'igerageza ry'uko nta gaz isohoka ([gaz y'ifamu](../farm/gas.md)).
 2. Saba umutetsi n'umuhanga mu gushyiraho ibikoni kugenzura imiterere: uko imirimo ikurikirana, inzira ya mm 900 imbere ya cooking line, hood.
 3. Pima kontineri nk'uko ipima rya sitidiyo ribikora, kandi uteganye umusuderi ku mirimo yo gusudira ipima rizagaragaza: umuyoboro w'umwuka wa hood unyura mu gisenge, amakadiri y'inzugi n'amadirishya.
 
@@ -30,12 +30,13 @@ English: [read this plan in English](plan.md) · Igikoni gikuru mu bishushanyo: 
 
 1. **Umusuderi:** imirimo yose yo gusudira, harimo umwobo wo mu gisenge n'urugara (curb) rwa fan ya hood, mbere y'uko hashyirwamo ikintu cyose gishobora gushya.
 2. **Umubaji:** membrane n'impapuro za hasi, hanyuma ibiti (battens), nk'uko biri muri [gahunda ya sitidiyo](../studio/plan.md).
-3. **Umuyagankuba (electrician) n'umufundi w'amazi (plumber):** first fix: umuriro ujya kuri board iri iruhande rw'urugi rw'abakozi n'insinga z'imizunguruko 11; umuyoboro mukuru w'amazi akonje, amazi ashyushye n'imiyoboro y'amazi yanduye inyura munsi ya plinth ijya kuri grease trap ([amashanyarazi](electric.md), [imiyoboro y'amazi](plumbing.md)).
+3. **Umuyagankuba (electrician) n'umufundi w'amazi (plumber):** first fix: umuriro ujya kuri board iri iruhande rw'urugi rw'abakozi n'insinga z'imizunguruko 9; umuyoboro mukuru w'amazi akonje, amazi ashyushye n'imiyoboro y'amazi yanduye inyura munsi ya plinth ijya kuri grease trap ([amashanyarazi](electric.md), [imiyoboro y'amazi](plumbing.md)).
 4. **Bombi:** igerageza mbere y'uko hagira igifungwa: continuity na insulation kuri buri nsinga, buri tiyo igumana bar 10 mu isaha imwe; amafoto ya buri rukuta; uruhushya (release).
 5. **Insulation na lining:** panneaux z'umweru zihanagurika ku nkuta na resin y'ibara ry'ivu itanyerera hasi [A].
 6. **Umuhanga mu gushyiraho ibikoni:** worktop ya stainless na sinki zayo, cooking line, hood, ububiko bukonje (cold store), ububiko bw'ibintu byumye (dry store) na pass ([ibikoresho](materials.md)).
-7. **Umuyagankuba n'umufundi w'amazi:** second fix (board, isolators iruhande rwa cooking line, emergency stop, priza n'amatara; robine, heater, pre-rinse spray na lavabo), hanyuma igerageza n'icyemezo (certificate).
-8. **Nyir'ifamu n'umutetsi:** poubelles, aho kuzimya umuriro (fire point) n'amasahane; serivisi ya mbere itekwa n'ibivuye mu murima.
+7. **Umutekinisiye wa gaz (ufite uruhushya rwa RURA):** akazu ku gitereko cyako inyuma ya cooking line, regulator na vane yo guhinduranya amacupa, umuyoboro unyura mu rukuta ujya kuri range, griddle na fryer; hanyuma igerageza ry'uko nta gaz isohoka n'icyemezo ([gaz y'ifamu](../farm/gas.md)).
+8. **Umuyagankuba n'umufundi w'amazi:** second fix (board, isolator ya range, emergency stop ifunga vane ya gaz, priza n'amatara; robine, heater, pre-rinse spray na lavabo), hanyuma igerageza n'icyemezo (certificate).
+9. **Nyir'ifamu n'umutetsi:** poubelles, aho kuzimya umuriro (fire point) n'amasahane; serivisi ya mbere itekwa n'ibivuye mu murima.
 
 ## Ingingo zo guhagarara ukagenzura (hold points)
 
@@ -44,6 +45,7 @@ English: [read this plan in English](plan.md) · Igikoni gikuru mu bishushanyo: 
 3. **Nta gihishwa kitageragejwe.** Insinga zitsinda igerageza ryazo kandi amatiyo agumana bar 10 mbere y'uko lining zifungwa.
 4. **Nta muriro mbere y'icyemezo.** Umuyagankuba wa RURA class A abanza gusinya igerageza.
 5. **Cooking line ikora gusa iyo fan ikora.** Range, griddle na fryer bikora gusa iyo fan isohora umwuka (extract fan) ikora.
+6. **Nta muriro wa gaz mbere y'igerageza.** Igerageza n'icyemezo by'umutekinisiye wa gaz biza mbere y'uko cooking line yakwa.
 
 ## Byarangiye iyo
 
@@ -53,5 +55,4 @@ English: [read this plan in English](plan.md) · Igikoni gikuru mu bishushanyo: 
 
 ## Ibibazo bitarasubizwa
 
-1. Guteka kuri gaz cyangwa ku mashanyarazi? Cooking line yashushanyijwe ku buryo bwombi; amabwiriza y'umuriro (power guide) abara 25 kWh ku munsi ku mashanyarazi, hafi 8 kuri gaz.
-2. Imashini yoza amasahane (dishwasher)? Nta n'imwe yashushanyijwe, hasigaye gusa umuyoboro w'amazi yanduye ufunze n'umuyoboro w'amazi akonje (tee) munsi y'aho amasahane ashyirwa, bigenewe imwe.
+1. Imashini yoza amasahane (dishwasher)? Nta n'imwe yashushanyijwe, hasigaye gusa umuyoboro w'amazi yanduye ufunze n'umuyoboro w'amazi akonje (tee) munsi y'aho amasahane ashyirwa, bigenewe imwe.

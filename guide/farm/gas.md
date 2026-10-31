@@ -1,6 +1,6 @@
 # The farm: gas
 
-Status: advice of 2026-10-31. The galley's fuel is not chosen yet; the gas it would burn is an estimate [E] until the menu and the range are fixed, and the prices are as published on the dates given.
+Status: advice of 2026-10-31. The galley cooks on LPG (D-065); the gas it burns is an estimate [E] until the menu and the range are fixed, and the prices are as published on the dates given.
 
 Whether the galley should cook on bottled gas (LPG), how much it would burn and what it costs, and how the cylinders are stored and connected safely, for the owner and the installer.
 

@@ -13,7 +13,7 @@ import { words } from "./words"
 // left. Units are metres, x from the west end, y toward the front, the container's centre line at y = 0. It is
 // long: the viewBox is wide.
 
-const { container: box, front: fr, worktop: wt, basin, hooks, cold, dry, line, hood, bench, pass, cleaning, bins, plates } = galley
+const { container: box, front: fr, worktop: wt, basin, hooks, cold, dry, line, hood, bench, pass, cleaning, bins, plates, gas } = galley
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
 const medium = { ...thin, strokeWidth: 1.6 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
@@ -31,10 +31,11 @@ const f = (n: number) => +n.toFixed(3)
 const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
 
 const H0 = box.w / 2, steps = 0.1 + 2 * fr.steps.d // the stone steps' reach past the front wall
-// the drawing, then its dimensions' reach (studio mm): the zones' names and the length over the back wall, the
-// openings' names and the worktop past the steps, one tier at the west end
-const { k, viewBox } = frame({ x0: -0.1, y0: -H0 - 0.1, x1: box.l + 0.1, y1: H0 + steps }, { top: 19, right: 2, bottom: 19, left: 7 })
-const pastSteps = steps / k
+const cageOut = 0.25 + gas.cage.d // the LPG cage behind the back wall, 250 mm off it (D-065)
+// the drawing, then its dimensions' reach (studio mm): the zones' names and the length over the back wall past the
+// cage, the openings' names and the worktop past the steps, one tier at the west end
+const { k, viewBox } = frame({ x0: -0.1, y0: -H0 - cageOut, x1: box.l + 0.1, y1: H0 + steps }, { top: 19, right: 2, bottom: 19, left: 7 })
+const pastSteps = steps / k, pastCage = cageOut / k
 
 // a window across the wall's thickness: the wall's lines knocked out, the reveal's lines and the glass between
 function Window({ x0, x1, y0, y1 }: { x0: number; x1: number; y0: number; y1: number }) {
@@ -158,15 +159,24 @@ export async function GalleyPlan({ title, className }: { title?: string; classNa
       {bins.y.map((y) => <text key={y} x={f(bx0 + bins.d / 2)} y={f(y + 0.04)} textAnchor="middle" style={small}>{name.bin}</text>)}
       <text x={f((plates.x0 + ix1) / 2)} y={f((plates.y0 + iy1) / 2 + 0.04)} textAnchor="middle" style={small}>{name.plates}</text>
 
+      {/* Behind the back wall, past the line: the LPG cage with its two cylinders, the pipe through the wall to the
+          range dashed (D-065, the farm's gas guide) */}
+      <rect {...rect(gas.cage.x0, -H - cageOut, gas.cage.x1, -H - 0.25)} {...thin} />
+      {Array.from({ length: gas.cylinders }, (_, n) => (
+        <circle key={n} cx={f(gas.cage.x0 + ((n + 0.5) * (gas.cage.x1 - gas.cage.x0)) / gas.cylinders)} cy={f(-H - 0.25 - gas.cage.d / 2)} r={gas.r} {...thin} />
+      ))}
+      <path d={`M${f((gas.cage.x0 + gas.cage.x1) / 2)} ${f(-H - 0.25)}V${f(iy0 + 0.1)}H${f(range.x0 + 0.3)}`} {...dashed} />
+      <text x={f(gas.cage.x1 + 0.12)} y={f(-H - 0.25 - gas.cage.d / 2 + 0.04)} style={small}>{name.lpg}</text>
+
       {/* The back wall: each zone measured and named on its own, as the studio's; then the length */}
       {([[ix0, cold.units[1].x1, name.cold], [dry.x0, dry.x1, name.dry], [line.units[0].x0, line.units[2].x1, name.line],
         [bench.x0, bench.x1, name.bench], [pass.x0, pass.x1, name.pass], [cleaning.x0, cleaning.x1, name.cleaning]] as const).map(([a, b, n]) => (
         <g key={a}>
-          <HDim k={k} x0={a} x1={b} y={-H} side="top" />
-          <Name k={k} x={(a + b) / 2} y={-H - (tier(1) + STUDIO.names) * k}>{n}</Name>
+          <HDim k={k} x0={a} x1={b} y={-H} side="top" base={pastCage} />
+          <Name k={k} x={(a + b) / 2} y={-H - (pastCage + tier(1) + STUDIO.names) * k}>{n}</Name>
         </g>
       ))}
-      <HDim k={k} x0={0} x1={L} y={-H} side="top" at={3} />
+      <HDim k={k} x0={0} x1={L} y={-H} side="top" at={3} base={pastCage} />
       {/* The front, past the steps: the doors and the windows, named; then the worktop under the windows */}
       <Chain k={k} along="x" at={[0, s0, s1, ...fr.windows.flat(), e0, e1, L]} edge={H} side="bottom" base={pastSteps}
         names={[null, name.staffDoor, null, name.window, null, name.window, null, name.serviceDoor, null]} />

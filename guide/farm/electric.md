@@ -1,10 +1,10 @@
 # The farm: electric
 
-Status: advice of 2026-10-28. Loads are estimates [E] until the galley's cooking fuel and the guest-room heaters are chosen; prices are as published on the dates given.
+Status: advice of 2026-10-31. Loads are estimates [E]: the galley cooks on LPG (D-065) and the guest-room heaters are still to choose; prices are as published on the dates given.
 
 How the farm should get its electricity, what each option costs, and the steps to put it in, for the owner and the electrician.
 
-Recommendation, in one line: connect to the grid, add a solar system of about 10 kWp with about 15 kWh of batteries for the things that must never stop, heat water with the sun, and keep a generator only as an emergency backup.
+Recommendation, in one line: connect to the grid, add a solar system of about 8 kWp with about 15 kWh of batteries for the things that must never stop, heat water with the sun, and keep a generator only as an emergency backup.
 
 Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](electric.rw.md) · Print: [this guide as a PDF](../../public/guides/farm-electric.pdf) · When it happens: [the farm's execution plan](plan.md)
 
@@ -18,13 +18,13 @@ Every building, with the energy it uses on a normal day and the most it draws at
 |---|---|---|---|
 | Studios, two | 16 | 20.8 | 45 A each at 230 V (D-021, D-053); hob, 5.5 kW instant shower heater, AC provision |
 | Guest rooms, three | 12 | 9 | each with its own shower (D-029): a heater each, or solar hot water |
-| Galley | 25 | 14 | electric cooking; about 8 kWh if it cooks on gas |
-| Bar | 5 | 2 | fridges, lights, music |
-| Study room | 7 | 2 | 12 laptops, the screen, fans |
+| Galley | 8 | 7 | the line cooks on LPG (D-065): fridges, the hood, the water heater, lights |
+| Bar | 5 | 5 | the coffee machine (3 to 4 kW, D-065), fridges, lights, music |
+| Study room | 6 | 2 | 8 laptops, the screen, fans |
 | Office, public bathroom, guest kitchen | 9 | 5 | |
 | Pumps: borehole and booster | 5 | 2 | run at midday, when the sun is strongest |
 | Outdoor lights, Wi-Fi, CCTV | 5 | 1 | the things that must never stop |
-| **Farm total** | **about 84** | **about 45** | with diversity; about 65 kWh a day if the galley cooks on gas |
+| **Farm total** | **about 66** | **about 42** | with diversity |
 
 ### The facts that decide it
 
@@ -48,8 +48,8 @@ Every building, with the energy it uses on a normal day and the most it draws at
 
 | | Grid only | Solar only (off-grid) | Grid with solar (hybrid) |
 |---|---|---|---|
-| What you build | the connection, a site board and cables to each building | panels for the worst month, large batteries, a generator for cloudy spells | the connection, about 10 kWp of panels, about 15 kWh of batteries |
-| Cost to start | lowest if the line is near | highest: panels and batteries for 84 kWh a day | in between |
+| What you build | the connection, a site board and cables to each building | panels for the worst month, large batteries, a generator for cloudy spells | the connection, about 8 kWp of panels, about 15 kWh of batteries |
+| Cost to start | lowest if the line is near | highest: panels and batteries for 66 kWh a day | in between |
 | Running cost | every kWh at about 444 RWF | almost none, but batteries wear out | the sun covers the day; the grid covers the rest |
 | When the grid fails | everything stops | nothing changes | the batteries keep Wi-Fi, CCTV, fridges, pumps and some lights going |
 | Fits this farm when | the line is close and money is short | the line is far and the quote is very high | the line is within reach: the likely case |
@@ -58,8 +58,8 @@ What solar saves: every kWp whose power is used on the farm produces about 1,589
 
 ### The recommendation
 
-1. **Grid first.** Ask for a three-phase, non-residential connection; the poles already run along the road (photo of 2026-10-28). Ask in writing whether the hotel tariff applies.
-2. **Solar for the day.** About 10 kWp of panels on a hybrid inverter set to zero export: they cover the pumps, the hot water, the study room and lunch in the galley.
+1. **Grid first.** Ask for a three-phase, non-residential connection; the founder reports the grid on site. Ask in writing whether the hotel tariff applies.
+2. **Solar for the day.** About 8 kWp of panels on a hybrid inverter set to zero export (the galley cooks on gas, D-065): they cover the pumps, the hot water, the study room and the cold stores.
 3. **Batteries for the night essentials.** About 15 kWh of LiFePO4 batteries for Wi-Fi, CCTV, fridges and freezers, the pumps and the path lights, so an outage goes unnoticed.
 4. **Sun for hot water.** Solar water heaters on the guest rooms and the public bathroom; the studios keep their electric instant heaters at the shower (D-053).
 5. **Generator as a spare only.** A small diesel set for long outages, wired so it can feed the site board; never the main supply.
@@ -73,12 +73,11 @@ What solar saves: every kWp whose power is used on the farm produces about 1,589
 
 ## Steps
 
-1. Take ID, the land title and the construction permit to the EUCL Bugesera branch and ask for a written connection quote: three phase, about 45 kW, the distance from the nearest line to the gate.
-2. Decide the galley's cooking fuel (gas or electric): it moves the daily total by about 17 kWh.
-3. Ask three RURA-licensed installers (class D covers solar) to quote a 10 kWp hybrid system with 15 kWh of LiFePO4 batteries, zero export, under 50 kW, VAT-exempt.
-4. Ask the tax authority (RRA) in writing to confirm that the LiFePO4 batteries count as deep-cycle, so they stay VAT-free.
-5. The electrician designs the site board: one 63 A feeder for each studio, feeders for every other building, the inverter, the generator change-over.
-6. Choose with the quotes in hand, using the triggers below, and record the decision in the decision log.
+1. Take ID, the land title and the construction permit to the EUCL Bugesera branch and ask for a written connection quote: three phase, about 42 kW, the distance from the nearest line to the gate.
+2. Ask three RURA-licensed installers (class D covers solar) to quote an 8 kWp hybrid system with 15 kWh of LiFePO4 batteries, zero export, under 50 kW, VAT-exempt.
+3. Ask the tax authority (RRA) in writing to confirm that the LiFePO4 batteries count as deep-cycle, so they stay VAT-free.
+4. The electrician designs the site board: one 63 A feeder for each studio, feeders for every other building, the inverter, the generator change-over.
+5. Choose with the quotes in hand, using the triggers below, and record the decision in the decision log.
 
 ## Open questions
 
@@ -86,5 +85,4 @@ Each of these, once known, changes the advice:
 
 - The connection quote is far higher than the cost of the extra panels and batteries for going off-grid: choose solar only.
 - Net metering comes into force: add more panels and sell the surplus.
-- The galley cooks on gas: the hybrid system can shrink, to about 8 kWp.
 - Outages at the farm turn out longer than the national figure: add battery capacity.

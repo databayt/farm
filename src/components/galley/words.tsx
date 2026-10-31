@@ -22,7 +22,7 @@ const en = {
     labels: {
       handWash: "HAND WASH", harvest: "HARVEST", prepSink: ["PREP", "SINK"], prepBench: "PREP BENCH", washSink: ["WASH-UP", "SINK"],
       dishDrop: "DISH DROP", dry: "DRY STORE", hood: "HOOD", bench: "COLD BENCH", pass: "PASS", cleaning: "CLEANING", bin: "BIN",
-      plates: "PLATES", staffDoor: "STAFF DOOR", serviceDoor: "SERVICE DOOR", galley: "GALLEY", cold: "COLD", line: "COOKING LINE", window: "WINDOW", worktop: "worktop",
+      plates: "PLATES", staffDoor: "STAFF DOOR", serviceDoor: "SERVICE DOOR", galley: "GALLEY", cold: "COLD", line: "COOKING LINE", window: "WINDOW", worktop: "worktop", lpg: "LPG",
       units: { freezer: "FREEZER", fridge: "FRIDGE", range: "RANGE", griddle: "GRIDDLE", fryer: "FRYER" } as Record<string, string>,
     },
   },
@@ -32,10 +32,10 @@ const en = {
   },
   electric: {
     notes: (kw: number): [string, string] => [
-      `About ${kw} kW connected; the power guide's peak is 14 kW with diversity, about 25 kWh a day · the emergency stop (ES) drops K on the cooking line`,
-      "Drawn for electric cooking: on gas the line needs only its ignition and the day falls to about 8 kWh · ratings are design intent until a RURA class A electrician certifies",
+      `About ${kw} kW connected, on one phase; about 8 kWh a day with the line on LPG (D-065) · the emergency stop (ES) shuts the gas valve and the ignition through K`,
+      "The line cooks on LPG from two cylinders outside (the farm's gas guide): its circuit feeds only the ignition and the gas valve · ratings are design intent until a RURA class A electrician certifies",
     ],
-    label: (n: number) => `Single-line diagram: the farm's site board at 400 volts three-phase into a main switch with surge protection, then one RCBO for each of ${n} circuits: lights, two worktop socket circuits, the freezer and fridge, the cold bench and the pass, the range, the griddle and the fryer on three-phase circuits dropped together by the emergency stop, the extract fan, the water heater and a spare.`,
+    label: (n: number) => `Single-line diagram: the farm's site board at 230 volts single-phase into a main switch with surge protection, then one RCBO for each of ${n} circuits: lights, two worktop socket circuits, the freezer and fridge, the cold bench and the pass, the range's ignition and the gas valve, dropped by the emergency stop, the extract fan, the water heater and a spare.`,
     figureAlt: "Line drawing of the galley from the courtyard with the fit-out in grey: the board on the front wall by the staff door with every circuit rising from it into the ceiling, along its own track and down to its points: LED battens in blue, worktop and appliance sockets in orange, the cooking line's isolators and connection boxes, the hood control, the roof fan and the water heater in green.",
     note: (link: L): React.ReactNode => <>
       Every circuit rises from the board into the ceiling, runs along its own track and drops straight to its device;
@@ -85,9 +85,9 @@ const en = {
   rails: {
     equipment: {
       box: (w: string, d: string, h: string) => `${w} × ${d}, ${h} high`,
-      range: { title: "Range and oven", note: (kw?: number) => `Six rings over an oven, about ${kw} kW if electric (a design value: gas or electric is still open).` },
-      griddle: { title: "Griddle", note: (kw?: number) => `A steel plate behind a grease channel, about ${kw} kW if electric.` },
-      fryer: { title: "Fryer", note: (kw?: number) => `One tank, two baskets, about ${kw} kW if electric.` },
+      range: { title: "Range and oven", note: () => "Six gas burners over a gas oven, on LPG (D-065); its circuit feeds only the ignition and the oven light." },
+      griddle: { title: "Griddle", note: () => "A steel plate behind a grease channel, gas-fired on LPG (D-065)." },
+      fryer: { title: "Fryer", note: () => "One tank, two baskets, gas-fired on LPG (D-065)." },
       hood: { title: "Extract hood", size: (w: string, d: string, y: string, duct: number) => `${w} × ${d}, lower edge ${y} up, ${duct} mm duct`, note: "A stainless canopy, its duct up through the roof to the fan; the line only runs while the fan runs." },
       freezer: { title: "Upright freezer", note: "Stainless, one door, across from the staff door." },
       fridge: { title: "Two-door fridge", note: "Stainless upright, where the harvest, the eggs and the deliveries go first." },
@@ -119,7 +119,7 @@ const en = {
   theRuns: "The runs:",
   // galley.json's words, by row id
   json: {
-    supply: { title: "Farm site board", sub: "400 V three-phase, buried cable", main: "Main switch 63 A 4P", mainSub: "with surge protection" },
+    supply: { title: "Farm site board", sub: "230 V single-phase, buried cable", main: "Main switch 63 A 2P", mainSub: "with surge protection" },
     circuits: {} as Record<string, Partial<Circuit>>,
     electric: {} as Record<string, Partial<ElectricPoint>>,
     water: {} as Record<string, Partial<WaterPoint>>,
@@ -141,7 +141,7 @@ const rw: typeof en = {
     labels: {
       handWash: "GUKARABA", harvest: "UMUSARURO", prepSink: ["LAVABO", "GUTEGURA"], prepBench: "AHO GUTEGURIRA", washSink: ["LAVABO", "KOZA"],
       dishDrop: "IBYOMBO BYANDUYE", dry: "UBUBIKO", hood: "IGIKURURA UMWOTSI", bench: "KAWUNTA IKONJE", pass: "AHO BATANGIRA", cleaning: "ISUKU", bin: "IMYANDA",
-      plates: "AMASAHANI", staffDoor: "URUGI RW'ABAKOZI", serviceDoor: "URUGI RWO KUGABURIRA", galley: "IGIKONI", cold: "IBIKONJESHA", line: "AHO GUTEKERA", window: "IDIRISHYA", worktop: "kawunta",
+      plates: "AMASAHANI", staffDoor: "URUGI RW'ABAKOZI", serviceDoor: "URUGI RWO KUGABURIRA", galley: "IGIKONI", cold: "IBIKONJESHA", line: "AHO GUTEKERA", window: "IDIRISHYA", worktop: "kawunta", lpg: "GAZ LPG",
       units: { freezer: "FIRIZERI", fridge: "FIRIGO", range: "AMASHYIGA", griddle: "ISAHANI", fryer: "IKARANGIRO" },
     },
   },
@@ -151,10 +151,10 @@ const rw: typeof en = {
   },
   electric: {
     notes: (kw) => [
-      `Hafi kW ${kw} zihujweho; ingufu nyinshi zo mu nyandiko y'amashanyarazi ni kW 14 hakurikijwe ko byose bidakoreshwa icyarimwe, hafi kWh 25 ku munsi · buto yo guhagarika byihutirwa (ES) ikupa K ku murongo wo guteka`,
-      "Byashushanyijwe hatekeshwa amashanyarazi: hakoreshejwe gaz, umurongo ukenera gusa icyo kuwatsa, umunsi ukamanuka kuri kWh 8 · ibipimo ni ibyateganyijwe kugeza umutekinisiye w'amashanyarazi wo mu cyiciro A cya RURA abyemeje",
+      `Hafi kW ${kw} zihujweho, kuri fazi imwe; hafi kWh 8 ku munsi umurongo wo guteka ukoresha LPG (D-065) · buto yo guhagarika byihutirwa (ES) ifunga vane ya gaz n'icyatsa binyuze kuri K`,
+      "Umurongo wo guteka ukoresha LPG iva mu macupa abiri ari hanze (inyandiko ya gaz y'ifamu): umuzunguruko wawo ugaburira gusa icyatsa na vane ya gaz · ibipimo ni ibyateganyijwe kugeza umutekinisiye w'amashanyarazi wo mu cyiciro A cya RURA abyemeje",
     ],
-    label: (n) => `Igishushanyo cy'umurongo umwe: ikibaho cy'amashanyarazi cy'ifamu kuri volti 400 fazi eshatu kijya kuri disijonkitere nkuru ifite uburinzi bw'umuriro mwinshi, hanyuma RCBO imwe kuri buri muzunguruko muri ${n}: amatara, imizunguruko ibiri ya priza za kawunta, firizeri na firigo, kawunta ikonje n'aho ibiryo bitangirwa, amashyiga, isahani yokeramo n'ikarangiro ku mizunguruko ya fazi eshatu ihagarikwa icyarimwe na buto yo guhagarika byihutirwa, vantilateri isohora umwotsi, icyuma gishyushya amazi n'umuzunguruko w'inyongera.`,
+    label: (n) => `Igishushanyo cy'umurongo umwe: ikibaho cy'amashanyarazi cy'ifamu kuri volti 230 fazi imwe kijya kuri disijonkitere nkuru ifite uburinzi bw'umuriro mwinshi, hanyuma RCBO imwe kuri buri muzunguruko muri ${n}: amatara, imizunguruko ibiri ya priza za kawunta, firizeri na firigo, kawunta ikonje n'aho ibiryo bitangirwa, icyatsa amashyiga na vane ya gaz, bihagarikwa na buto yo guhagarika byihutirwa, vantilateri isohora umwotsi, icyuma gishyushya amazi n'umuzunguruko w'inyongera.`,
     figureAlt: "Igishushanyo cy'imirongo cy'igikoni kirebwa uturutse ku rugo, ibikoresho by'imbere mu ibara ry'ivu: ikibaho ku rukuta rw'imbere hafi y'urugi rw'abakozi, buri muzunguruko uzamuka uvaho ujya mu gisenge, ugakurikira inzira yawo ukamanuka ku hantu hawo: amatara marerare ya LED mu bururu, priza za kawunta n'iz'ibikoresho mu icunga, isolator n'udusanduku two guhuza by'umurongo wo guteka, igenzura ry'igikurura umwotsi, vantilateri yo ku gisenge n'icyuma gishyushya amazi mu cyatsi.",
     note: (link) => <>
       Buri muzunguruko uzamuka uva ku kibaho ukajya mu gisenge, ugakurikira inzira yawo ukamanuka ku gikoresho cyawo;
@@ -205,9 +205,9 @@ const rw: typeof en = {
   rails: {
     equipment: {
       box: (w, d, h) => `${w} × ${d}, uburebure ${h}`,
-      range: { title: "Amashyiga n'ifuru", note: (kw) => `Amashyiga atandatu hejuru y'ifuru, hafi kW ${kw} niba ari ay'amashanyarazi (agaciro kateganyijwe: gaz cyangwa amashanyarazi ntibiremezwa).` },
-      griddle: { title: "Isahani yokeramo", note: (kw) => `Isahani y'icyuma inyuma y'akayoboro k'amavuta, hafi kW ${kw} niba ari iy'amashanyarazi.` },
-      fryer: { title: "Ikarangiro", note: (kw) => `Ikigega kimwe, uduseke tubiri, hafi kW ${kw} niba ari iry'amashanyarazi.` },
+      range: { title: "Amashyiga n'ifuru", note: () => "Amashyiga atandatu ya gaz hejuru y'ifuru ya gaz, kuri LPG (D-065); umuzunguruko wayo ugaburira gusa icyatsa n'itara ry'ifuru." },
+      griddle: { title: "Isahani yokeramo", note: () => "Isahani y'icyuma inyuma y'akayoboro k'amavuta, ikoresha gaz LPG (D-065)." },
+      fryer: { title: "Ikarangiro", note: () => "Ikigega kimwe, uduseke tubiri, rikoresha gaz LPG (D-065)." },
       hood: { title: "Igikurura umwotsi", size: (w, d, y, duct) => `${w} × ${d}, impera yo hasi kuri ${y} uvuye hasi, umuyoboro wa mm ${duct}`, note: "Igisenge gito cy'icyuma kitagwa ingese, umuyoboro wacyo uzamuka unyuze mu gisenge ugana kuri vantilateri; umurongo wo guteka ukora gusa iyo vantilateri ikora." },
       freezer: { title: "Firizeri ihagaze", note: "Icyuma kitagwa ingese, urugi rumwe, ahateganye n'urugi rw'abakozi." },
       fridge: { title: "Firigo y'inzugi ebyiri", note: "Ihagaze, y'icyuma kitagwa ingese, aho umusaruro, amagi n'ibizanywe bibanza gushyirwa." },
@@ -238,12 +238,12 @@ const rw: typeof en = {
   pointsDrawing: { electric: "gishushanyo cy'amashanyarazi cy'igikoni", plumbing: "gishushanyo cy'imiyoboro y'amazi cy'igikoni" },
   theRuns: "Imiyoboro:",
   json: {
-    supply: { title: "Ikibaho cy'ifamu", sub: "V 400 fazi eshatu, umugozi ushyinguye", main: "Disijonkitere nkuru A 63 4P", mainSub: "ifite uburinzi bw'umuriro mwinshi" },
+    supply: { title: "Ikibaho cy'ifamu", sub: "V 230 fazi imwe, umugozi ushyinguye", main: "Disijonkitere nkuru A 63 2P", mainSub: "ifite uburinzi bw'umuriro mwinshi" },
     circuits: {
       C1: { serves: "Amatara" }, C2: { serves: "Priza za kawunta, iburengerazuba" }, C3: { serves: "Priza za kawunta, iburasirazuba" },
-      C4: { serves: "Firizeri na firigo" }, C5: { serves: "Kawunta ikonje n'aho ibiryo bitangirwa" }, C6: { serves: "Amashyiga n'ifuru" },
-      C7: { serves: "Isahani yokeramo" }, C8: { serves: "Ikarangiro" }, C9: { serves: "Vantilateri isohora umwotsi n'amatara y'igikurura umwotsi" },
-      C10: { serves: "Icyuma gishyushya amazi" }, C11: { serves: "Uw'inyongera" },
+      C4: { serves: "Firizeri na firigo" }, C5: { serves: "Kawunta ikonje n'aho ibiryo bitangirwa" }, C6: { serves: "Icyatsa amashyiga, itara ry'ifuru na vane ya gaz" },
+      C7: { serves: "Vantilateri isohora umwotsi n'amatara y'igikurura umwotsi" }, C8: { serves: "Icyuma gishyushya amazi" },
+      C9: { serves: "Uw'inyongera" },
     },
     electric: {
       DB: { what: "Ikibaho cy'amashanyarazi, pole 4, modile 24", size: "Hafi mm 450 × 600, ubujyakuzimu mm 110" },
@@ -258,12 +258,8 @@ const rw: typeof en = {
       P5: { what: "Priza ya firizeri, hejuru yayo" }, P6: { what: "Priza ya firigo, hejuru yayo" },
       P7: { what: "Priza ebyiri, kawunta ikonje" },
       P8: { what: "Priza ebyiri, aho ibiryo bitangirwa: akabati gashyushya n'amatara ashyushya" },
-      Q1: { what: "Isolator y'amashyiga, 3P", size: "Hafi mm 90 × 140" },
-      Q2: { what: "Isolator y'isahani yokeramo, 3P", size: "Hafi mm 90 × 140" },
-      Q3: { what: "Isolator y'ikarangiro, 3P", size: "Hafi mm 90 × 140" },
-      O1: { what: "Agasanduku ko guhuza amashyiga, inyuma yayo" },
-      O2: { what: "Agasanduku ko guhuza isahani yokeramo, inyuma yayo" },
-      O3: { what: "Agasanduku ko guhuza ikarangiro, inyuma yaryo" },
+      Q1: { what: "Isolator y'amashyiga: icyatsa na vane ya gaz", size: "Hafi mm 90 × 140" },
+      O1: { what: "Agasanduku ko guhuza amashyiga, inyuma yayo: icyatsa" },
       HC: { what: "Igenzura ry'igikurura umwotsi: umuvuduko wa vantilateri, amatara yacyo, n'interlock y'umurongo wo guteka", size: "Hafi mm 120 × 160" },
       FN: { what: "Vantilateri isohora umwotsi ku gisenge, isolator yayo ku musingi wayo", size: "Vantilateri isohorera hejuru Ø mm 600 ku musingi wa mm 200" },
       Q4: { what: "Isolator y'icyuma gishyushya amazi, impande zombi", size: "Hafi mm 90 × 140" },

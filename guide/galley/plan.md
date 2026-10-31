@@ -16,11 +16,11 @@ Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The galley drawn: 
 | Who it feeds | breakfast from 07:00 to 09:00 and dinner for a full house of 22 guests and the team, about 25.5 people a day (D-031), cooked by the cook and a helper |
 | The work | from west to east: the staff door and the stores, the prep bench, the cooking line, the pass and the service door |
 | The worktop | the founder's 7.8 m stainless worktop, its two sinks under the windows (D-022) |
-| Services | a 400 V three-phase supply to 11 circuits, the cooking line on three of them; a 100 L water heater; every drain through a grease trap |
+| Services | a 230 V single-phase supply to 9 circuits; the cooking line on LPG from two cylinders in a cage behind it (D-065); a 100 L water heater; every drain through a grease trap |
 
 ## Before you start
 
-1. Decide gas or electric for the cooking line: it moves the farm's day by about 17 kWh and sets the line's circuits ([the farm's electric](../farm/electric.md)).
+1. Book a RURA-licensed gas installer for the cylinder cage, the pipe to the line and its leak test ([the farm's gas](../farm/gas.md)).
 2. Have the cook and a kitchen fitter check the layout: the order of work, the 900 mm aisle in front of the line, the hood.
 3. Measure the container as the studio's survey does, and book the welder for the hot work it finds: the hood's duct through the roof, the frames of the doors and windows.
 
@@ -28,12 +28,13 @@ Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The galley drawn: 
 
 1. **Welder:** all the hot work, the roof opening and the curb for the hood's fan among it, before anything that can burn goes in.
 2. **Carpenter:** the membrane and the floor sheets, then the battens, as in [the studio's plan](../studio/plan.md).
-3. **Electrician and plumber:** the first fix: the supply to the board by the staff door and the cables for the 11 circuits; the cold main, the hot, and the drains under the plinth to the grease trap ([electric](electric.md), [plumbing](plumbing.md)).
+3. **Electrician and plumber:** the first fix: the supply to the board by the staff door and the cables for the 9 circuits; the cold main, the hot, and the drains under the plinth to the grease trap ([electric](electric.md), [plumbing](plumbing.md)).
 4. **Both:** the tests before anything closes: continuity and insulation on every cable, every pipe held at 10 bar for an hour; photographs of every wall; the release.
 5. **Insulation and linings:** white wipe-clean panels on the walls and a grey non-slip resin floor [A].
 6. **Kitchen fitter:** the stainless worktop and its sinks, the cooking line, the hood, the cold store, the dry store and the pass ([materials](materials.md)).
-7. **Electrician and plumber:** the second fix (the board, the isolators by the line, the emergency stop, the sockets and lights; the taps, the heater, the pre-rinse spray and the basin), then the tests and the certificate.
-8. **Owner and cook:** the bins, the fire point and the plates; a first service cooked from the field.
+7. **Gas installer (RURA licensed):** the cage on its pad behind the line, the regulator and the changeover valve, the pipe through the wall to the range, the griddle and the fryer; then the leak test and the certificate ([the farm's gas](../farm/gas.md)).
+8. **Electrician and plumber:** the second fix (the board, the range's isolator, the emergency stop that shuts the gas valve, the sockets and lights; the taps, the heater, the pre-rinse spray and the basin), then the tests and the certificate.
+9. **Owner and cook:** the bins, the fire point and the plates; a first service cooked from the field.
 
 ## Hold points
 
@@ -42,6 +43,7 @@ Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The galley drawn: 
 3. **Nothing buried untested.** The cables pass their tests and the pipes hold 10 bar before the linings close.
 4. **No power on before the certificate.** A RURA class A electrician signs the tests first.
 5. **The line only with the fan.** The range, the griddle and the fryer run only while the extract fan runs.
+6. **No flame before the leak test.** The gas installer's leak test and certificate come before the line is lit.
 
 ## Done when
 
@@ -51,5 +53,4 @@ Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The galley drawn: 
 
 ## Open questions
 
-1. Gas or electric cooking? The line is drawn for either; the power guide's 25 kWh a day assume electric, about 8 on gas.
-2. A dishwasher? None is drawn, only a capped waste and cold tee under the dish drop for one.
+1. A dishwasher? None is drawn, only a capped waste and cold tee under the dish drop for one.
