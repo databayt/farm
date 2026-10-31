@@ -33,6 +33,18 @@ Dates are a target, not a promise. The order matters more than the dates.
 
 Every place keeps them; [the farm's execution plan](farm/plan.md) holds them for the whole farm.
 
+## What makes it work
+
+Seven lessons from farms like this one, each with the place it changes:
+
+1. **Water first.** Bugesera is Rwanda's drought district, with dry spells from May to nearly October [V LOC-55, LOC-56]: the borehole's dry-season yield decides how much the field can grow. A solar pump costs less to run than diesel, and the state's irrigation subsidy has covered 75% of a solar kit [V LOC-55, ENG-32]. [The field](farming/plan.md), [the farm's water](farm/water.md).
+2. **Test the soil before you plant.** Bugesera's soils are old, acid clays, pH about 5.3 [V CRP-76]: lime, compost and the yard's manure make them grow. [The field](farming/plan.md).
+3. **Slow the water off the hill.** Bench terraces are the surest erosion control on Rwandan slopes [V CRP-77]; start the beds on the flattest ground and dig a cut-off swale above the containers. [The farm](farm/plan.md).
+4. **A dry floor and a vet before the animals.** East African extension raises goats on slatted floors 1 to 1.5 m up, which keeps worms down [V LVS-77, LVS-78]; the shed's straw floor waits for the vet's view, and no animal comes while Bugesera's Rift Valley fever rules hold [V LVS-79]. [The livestock](livestock/plan.md).
+5. **Licensed before the first paying guest.** Every place that sleeps, feeds or serves a drink to guests needs an RDB tourism operating licence, and RDB closes places that trade without one [V REG-30, REG-31, REG-32]. [The farm](farm/plan.md).
+6. **Shade the steel.** A container's roof takes most of the sun's heat: a roof over the box, air through the room and sealed foam keep it cool and dry [V ENG-33]. [The studio](studio/plan.md).
+7. **Size the septic to the standard.** Size the tank for everyone who will use it, to Rwanda's septic-tank standard RS 143:2019, before it is bought [V REG-33]. [The farm's water](farm/water.md).
+
 ## Every place, in one line
 
 | Place | Its execution plan, simply |

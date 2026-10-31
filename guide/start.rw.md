@@ -35,6 +35,18 @@ Amatariki ni intego, si isezerano. Uko imirimo ikurikirana ni byo bifite akamaro
 
 Buri hantu harayakurikiza; [gahunda y'imirimo y'ifamu](farm/plan.md) iyafite ku ifamu yose.
 
+## Ibituma bigenda neza
+
+Amasomo arindwi avuye ku mafamu ameze nk'iyi, buri rimwe n'ahantu rihindura:
+
+1. **Amazi mbere ya byose.** Bugesera ni akarere k'u Rwanda karangwa n'amapfa, ahabaho igihe cy'izuba kuva muri Gicurasi kugeza hafi mu Ukwakira [V LOC-55, LOC-56]: amazi borehole itanga mu gihe cy'izuba ni yo agena ibyo umurima ushobora kweza. Pompe ikoresha imirasire y'izuba ihendutse kuyikoresha kurusha mazutu, kandi inkunga ya Leta yo kuhira yatanze 75% by'ibikoresho by'imirasire y'izuba [V LOC-55, ENG-32]. [Umurima](farming/plan.md), [amazi y'ifamu](farm/water.md).
+2. **Gerageza ubutaka mbere yo gutera.** Ubutaka bwa Bugesera ni ibumba rishaje kandi rifite aside, pH igera kuri 5.3 [V CRP-76]: ishwagara, ifumbire mvaruganda y'imborera n'amase yo mu rugo rw'amatungo bituma byera. [Umurima](farming/plan.md).
+3. **Gabanya umuvuduko w'amazi ava ku musozi.** Amaterasi y'indinganire ni yo arwanya isuri neza ku misozi y'u Rwanda [V CRP-77]; tangira uturima ahantu harambuye cyane kandi ucukure umuferege ufata amazi hejuru ya kontineri. [Ifamu](farm/plan.md).
+4. **Hasi humutse n'umuganga w'amatungo mbere y'amatungo.** Ubujyanama mu buhinzi bwo muri Afurika y'Iburasirazuba buzamura ihene ku mbaho zifite imyanya, m 1 kugeza kuri 1.5 hejuru y'ubutaka, bigabanya inzoka [V LVS-77, LVS-78]; ibyatsi byo hasi mu kiraro bitegereje igitekerezo cy'umuganga w'amatungo, kandi nta tungo rizaza mu gihe amategeko ya Rift Valley fever akiri i Bugesera [V LVS-79]. [Ubworozi](livestock/plan.md).
+5. **Uruhushya mbere y'umushyitsi wa mbere wishyura.** Ahantu hose harara, hagaburira cyangwa hagurisha icyo kunywa abashyitsi hakenera uruhushya rw'ubukerarugendo rwa RDB, kandi RDB ifunga ahakora nta ruhushya [V REG-30, REG-31, REG-32]. [Ifamu](farm/plan.md).
+6. **Tanga igicucu ku cyuma.** Igisenge cya kontineri ni cyo kinjiza ubushyuhe bwinshi bw'izuba: igisenge hejuru y'agasanduku, umwuka unyura mu cyumba na foam ifunze bituma hakomeza gukonja no kumuka [V ENG-33]. [Sitidiyo](studio/plan.md).
+7. **Gena ingano ya septic ukurikije amabwiriza.** Gena ingano ya tank ku bazayikoresha bose, ukurikije amabwiriza y'u Rwanda ya septic tank RS 143:2019, mbere yo kuyigura [V REG-33]. [Amazi y'ifamu](farm/water.md).
+
 ## Buri hantu, mu murongo umwe
 
 | Ahantu | Gahunda y'imirimo yaho, mu magambo make |
