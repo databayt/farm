@@ -40,7 +40,7 @@ export default function StudyRoomPage() {
           things: no timber louvres over the glazing, and the middle doors stand open. The room sits centre with the
           deck across the bottom, so the image centres. */}
       <PageHero src={`${D}/render/study-room-hero.jpg`} width={2400} height={1340} className="bg-[#c9a36a]" imgClassName="object-[50%_50%]"
-        title="A room to meet, train and build, with the lake outside"
+        title="A room to meet, train and build"
         alt="A long teal shipping container seen square-on at golden hour, its front glazed with white-framed sliding doors, the middle pair open: inside, a long oak table with eight oak chairs and a few laptops under three rattan pendants, a big screen and a lectern on the left, two ochre armchairs before a full-height bookshelf on the right, fig plants between; a wide honey-coloured timber deck with a broad step on a stone plinth, on a lawn among banana plants and trees." />
 
       {/* 2D, full screen: the study room's plan (src/components/study-room/study-room-plan.tsx), in the text
