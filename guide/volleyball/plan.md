@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. The court, its lines, the net and the posts
 
 Every step of making a full-size court on the lawn, where guests already play round a net, in the order its page builds it.
 
-The court drawn: [the volleyball page](/en/volleyball) · Its other pages: [materials](materials.md), [net and drainage](net.md) · Where it sits: [the master plan](../farm/master-plan.md)
+Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The court drawn: [the volleyball page](/en/volleyball) · Its other pages: [materials](materials.md), [net and drainage](net.md) · Where it sits: [the master plan](../farm/master-plan.md)
 
 ## At a glance
 

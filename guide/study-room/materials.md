@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Sizes come from study-room.json; the electr
 
 What the study room needs: the table and the screen, the reading corner, and its electric devices with the Wi-Fi, as its page shows them.
 
-The room drawn: [the study room page](/en/study-room) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The room drawn: [the study room page](/en/study-room) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 

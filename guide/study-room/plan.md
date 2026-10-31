@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. The container is not measured: every size p
 
 Every step of fitting out the study room, a working room for startups and small businesses, in the studio's order, from the survey to the first workshop.
 
-The room drawn: [the study room page](/en/study-room) · Its other pages: [materials](materials.md), [electric](electric.md) · Each step done in full: [the studio's plan](../studio/plan.md)
+Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The room drawn: [the study room page](/en/study-room) · Its other pages: [materials](materials.md), [electric](electric.md) · Each step done in full: [the studio's plan](../studio/plan.md)
 
 ## At a glance
 

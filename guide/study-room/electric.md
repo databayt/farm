@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Every rating is design intent until a RURA-
 
 Everything the electrician needs to wire the study room with its Wi-Fi: the circuits, the first fix before the linings close, the second fix, the tests and every point.
 
-The wiring drawn: [the study room page](/en/study-room#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
+Kinyarwanda: [soma iyi paji mu Kinyarwanda](electric.rw.md) · The wiring drawn: [the study room page](/en/study-room#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
 
 ## At a glance
 

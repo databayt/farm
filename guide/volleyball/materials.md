@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Sizes come from volleyball.json and the FIV
 
 What the court needs: its kit, and its net with the posts and the footings, as its page shows them.
 
-The court drawn: [the volleyball page](/en/volleyball) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The court drawn: [the volleyball page](/en/volleyball) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 

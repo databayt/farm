@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. The net, the posts and their heights follow
 
 Everything the builder needs for the net, from the footings to the antennae, and where the rain goes on a court that is a lawn.
 
-The net drawn: [the volleyball page](/en/volleyball#net) · When it happens: [the execution plan](plan.md)
+Kinyarwanda: [soma iyi paji mu Kinyarwanda](net.rw.md) · The net drawn: [the volleyball page](/en/volleyball#net) · When it happens: [the execution plan](plan.md)
 
 ## At a glance
 
