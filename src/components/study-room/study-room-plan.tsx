@@ -1,10 +1,14 @@
 import { getWords } from "@/components/internationalization/words"
+import { Chain, Dim, HDim, Name, Note, VDim } from "@/components/drawing/dims"
+import { frame } from "@/components/drawing/geometry"
 
 import room from "./study-room.json"
 import { words } from "./words"
 
-// The study room drawn in the pattern of the camp plan (src/components/camp/camp-plan.tsx): thin lines, no
-// colour, bold capitals and dimensions in millimetres. The glazing faces down the page, toward the viewer of
+// The study room drawn in the pattern of the camp plan (src/components/camp/camp-plan.tsx): thin lines, no colour,
+// and its dimensions as the studio's plan sets them (src/components/drawing): along the back wall the screen's end,
+// the long table, the reading corner and the bookshelves, named, then the length; the glazing past the deck and its
+// step; the box and the deck at the west end; the room's depth and the screen at the east end; the table's width. The glazing faces down the page, toward the viewer of
 // the 3D's front view, so the screen wall (east) is on the left and the bookshelf wall (west) on the right.
 // Units are metres, the container's centre at 0,0, y toward the glazing. It is long: the viewBox is wide.
 
@@ -13,40 +17,14 @@ const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEf
 const medium = { ...thin, strokeWidth: 1.6 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
 const dashed = { ...thin, strokeDasharray: "4 3" } as const
-const label = {
-  fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif",
-  fontSize: 0.19,
-  fontWeight: 700,
-  letterSpacing: "0.04em",
-  fill: "currentColor",
-} as const
-const small = { ...label, fontSize: 0.14, fontWeight: 600 } as const
 
 const f = (n: number) => +n.toFixed(3)
-const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
 
-function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.08
-  return (
-    <g>
-      <line x1={x0} x2={x1} y1={y} y2={y} {...thin} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f((x0 + x1) / 2)} y={f(y - 0.1)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
-    </g>
-  )
-}
-// the same, standing up: the text turned to read from the right
-function Upright({ y0, y1, x }: { y0: number; y1: number; x: number }) {
-  const tick = 0.08, cy = f((y0 + y1) / 2)
-  return (
-    <g>
-      <line x1={x} x2={x} y1={y0} y2={y1} {...thin} />
-      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f(x + 0.1)} y={cy} textAnchor="middle" transform={`rotate(-90 ${f(x + 0.1)} ${cy})`} style={small}>{mm(y1 - y0)}</text>
-    </g>
-  )
-}
+const W0 = box.w / 2, front0 = W0 + deck.d, edge0 = front0 + deck.step.d // the deck's edge, then the step's
+// the drawing, then its dimensions' reach (studio mm): the names and the length over the back wall, the glazing's name
+// past the step, one tier at the east end, two at the west
+const { k, viewBox } = frame({ x0: -box.l / 2 - 0.1, y0: -W0 - 0.1, x1: box.l / 2 + 0.1, y1: edge0 }, { top: 19, right: 13, bottom: 14, left: 8 })
 
 // `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
 export async function StudyRoomPlan({ title, className }: { title?: string; className?: string }) {
@@ -66,7 +44,7 @@ export async function StudyRoomPlan({ title, className }: { title?: string; clas
   const [t0, t1] = [table.x - table.l / 2, table.x + table.l / 2]
   const sx0 = r.x1 - shelves.d, bay = (r.front - r.back) / shelves.bays
   return (
-    <svg viewBox="-6.75 -2.05 13.5 6.55" role="img" aria-label={title} className={className}>
+    <svg viewBox={viewBox} role="img" aria-label={title} className={className}>
       {/* The stone plinth, the container's steel skin and the lined room inside it; along the front, the
           glazed sliding doors between short steel returns, and the timber louvres standing out in front */}
       <rect {...rect(-L - 0.1, -W - 0.1, L + 0.1, W + 0.1)} {...faint} />
@@ -134,17 +112,26 @@ export async function StudyRoomPlan({ title, className }: { title?: string; clas
       {lights.pendants.map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r={0.15} {...dashed} />)}
       {fans.x.map((x) => <circle key={x} cx={x} cy={f(r.back + 0.15)} r={0.18} {...dashed} />)}
 
-      <text x={f(r.x0 + 0.62)} y={f(screen.y)} textAnchor="middle" transform={`rotate(-90 ${f(r.x0 + 0.62)} ${f(screen.y)})`} style={small}>{name.screen}</text>
-      <text x={f(table.x)} y={0.05} textAnchor="middle" style={small}>{name.seats}</text>
-      <text x={f(reading.table.x)} y={f(reading.rug.y[1] + 0.27)} textAnchor="middle" style={small}>{name.reading}</text>
-      <text x={f(sx0 - 0.08)} y={f(r.front - 0.1)} textAnchor="end" style={small}>{name.books}</text>
-      <text x={0} y={-1.45} textAnchor="middle" style={label}>{name.room}</text>
-      <text x={0} y={f(W + lo1 + 0.3)} textAnchor="middle" style={small}>{name.glazing}</text>
-      <text x={0} y={f(front - 0.4)} textAnchor="middle" style={label}>{name.deck}</text>
-      <text x={0} y={f(front + st.d - 0.12)} textAnchor="middle" style={small}>{name.step}</text>
-      <Dimension x0={-L} x1={L} y={-1.8} />
-      <Upright y0={-W} y1={W} x={f(L + 0.35)} />
-      <Upright y0={W} y1={front} x={f(L + 0.35)} />
+      <Note k={k} x={r.x0 + 0.62} y={screen.y} rotate={-90}>{name.screen}</Note>
+      <Note k={k} x={table.x} y={0}>{name.seats}</Note>
+      <Note k={k} x={reading.table.x} y={reading.rug.y[1] + 0.25}>{name.reading}</Note>
+      <Note k={k} x={sx0 - 0.08} y={r.front - 0.12} anchor="end">{name.books}</Note>
+      <Name k={k} x={0} y={front - 0.4}>{name.deck}</Name>
+      <Note k={k} x={0} y={front + st.d / 2}>{name.step}</Note>
+
+      {/* The back wall: the screen's end, the long table, the reading corner, the bookshelves, named; then the length */}
+      <Chain k={k} along="x" at={[r.x0, t0, t1, reading.rug.x[0], sx0, r.x1]} edge={-W} side="top"
+        names={[name.screen, name.seats, null, name.reading, name.books]} />
+      <HDim k={k} x0={-L} x1={L} y={-W} side="top" at={3} />
+      {/* The front, past the deck and its step: the glazing between its steel returns */}
+      <Chain k={k} along="x" at={[-L, g0, g1, L]} edge={W} side="bottom" base={(front + st.d - W) / k} names={[null, name.glazing, null]} />
+      {/* The west end: the box and the deck, then both */}
+      <Chain k={k} along="y" at={[-W, W, front]} edge={L} side="right" overall />
+      {/* The east end: the room's depth inside the linings, the screen on its wall */}
+      <VDim k={k} y0={r.back} y1={r.front} x={-L} side="left" />
+      <VDim k={k} y0={screen.y - screen.w / 2} y1={screen.y + screen.w / 2} x={r.x0} side="right" size={2.2} />
+      {/* Inside: the table's width, at its free end */}
+      <Dim k={k} a={[t1 + 0.12, -table.w / 2]} b={[t1 + 0.12, table.w / 2]} off={0} size={2.2} />
     </svg>
   )
 }

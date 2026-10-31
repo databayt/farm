@@ -40,5 +40,5 @@ Live: https://farm.databayt.org in English and Kinyarwanda (D-058; the Kinyarwan
 ## Where things are
 
 - The docs, one group per place, the first phase only: https://farm.databayt.org/en/docs. The study behind them (research, registers, decision log, business, the five-year roadmap) stays in this repo and opens on GitHub.
-- Every place's 2D carries the studio's dimensions (`src/components/drawing`), except the guest room, study room, galley and public bathroom, which follow once their Kinyarwanda work is committed.
+- Every place's 2D carries the studio's dimensions, drawn by one kit (`src/components/drawing`): chains named as the studio's zones, the openings, the overall sizes and the clearances inside.
 - Why things changed: `study/execution/decision-log.md`.
