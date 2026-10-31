@@ -58,8 +58,9 @@ study/registers    sources, prices, suppliers, buyers, assumptions
 study/feasibility  decision matrix, financial model (+ notes)
 study/studio       container studios (generated assets in public/designs/studio)
 study/execution    first 90 days, decision log
-guide/             the maintained execution guides, one per trade: X.md + its Kinyarwanda X.rw.md (/rw/docs);
-                   numbers are {{studio.*}} tokens from public/designs/studio/data/dims.json
+guide/             the docs by place (D-059): guide/<place>/<kind>.md, its execution plan (plan.md), materials and
+                   services, + its Kinyarwanda <kind>.rw.md (/rw/docs); numbers are {{studio.*}}, {{site.*}} and
+                   {{farming.*}} tokens from the generators' data
 scripts/           generators (financial model, studio package, site assets, contact sheets, docs sync)
 ```
 

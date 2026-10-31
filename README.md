@@ -54,7 +54,7 @@ This writes `study/feasibility/financial-model.xlsx`. The inputs are on the `Ass
 
 ## Read the study as docs
 
-`pnpm dev` and open http://localhost:3000/docs. The study renders as a docs site (the hogwarts / shadcn docs block); `scripts/sync-docs.mjs` generates it from `study/` on every dev and build. See `src/components/docs/README.md`.
+`pnpm dev` and open http://localhost:3000/en/docs (or /rw/docs in Kinyarwanda). The docs are grouped by place, each opening on its execution plan, then its materials and its services (D-059), in the hogwarts / shadcn docs block; `scripts/sync-docs.mjs` generates them from `guide/` and `study/` on every dev and build. See `src/components/docs/README.md`.
 
 ## Deploy (public)
 
