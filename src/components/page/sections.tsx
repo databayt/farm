@@ -8,7 +8,6 @@ import type { Locale } from "@/components/internationalization/config"
 import { dictionary, getDictionary } from "@/components/internationalization/dictionaries"
 import { LocaleLink as Link } from "@/components/internationalization/locale-link"
 import { getLocale } from "@/components/internationalization/locale"
-import { NotTranslated } from "@/components/internationalization/not-translated"
 import { Button } from "@/components/ui/button"
 
 // The sections of every /en page, in /en/studio's pattern: a full-screen hero photo, the 2D and the 3D, then the
@@ -36,7 +35,6 @@ export async function PageHero({ src, width, height, alt, title, className, imgC
           <Button asChild className="mt-6">
             <Link href="/#enquire">{t.page.bookNow}</Link>
           </Button>
-          <NotTranslated className="mt-4 text-white/80" />
         </div>
       </div>
     </section>
