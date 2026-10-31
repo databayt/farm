@@ -56,7 +56,9 @@
       "net": "Net and drainage",
       "plumbing": "Plumbing",
       "water": "Water",
-      "drainage": "Drainage"
+      "drainage": "Drainage",
+      "waste": "Waste",
+      "gas": "Gas"
     }
   },
   "notFound": {

@@ -6,6 +6,7 @@ import { Hero } from "./hero"
 import { Model } from "./model"
 import { Plans } from "./plans"
 import { References } from "./references"
+import { Services } from "./services"
 import { words } from "./words"
 
 // The Digital Farm homepage: the hero, then the compound in 2D and 3D, as /en/studio shows the
@@ -26,6 +27,7 @@ export async function HomeContent() {
         <Hero />
         <Plans />
         <Model />
+        <Services />
         <References />
       </main>
     </div>

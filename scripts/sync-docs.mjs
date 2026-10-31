@@ -166,7 +166,7 @@ const UNPUBLISHED = [
 // each from guide/<place>/<kind>.md: its execution plan (plan.md, the folder's index at /docs/<place>), its
 // materials and the services it has. KINDS is their order in the sidebar, where their names come from the
 // dictionaries (docs.kinds); a folder's title is the place's English name.
-const KINDS = ["plan", "today", "master-plan", "materials", "electric", "lighting", "net", "plumbing", "water", "drainage"]
+const KINDS = ["plan", "today", "master-plan", "materials", "electric", "lighting", "net", "plumbing", "water", "drainage", "waste", "gas"]
 const PLACES = [...JSON.parse(readFileSync(join(ROOT, "src", "components", "site", "places.json"), "utf8")).places, "farm"]
 const PLACE_NAMES = JSON.parse(readFileSync(join(ROOT, "src", "components", "internationalization", "en.json"), "utf8")).places
 const placePages = PLACES.flatMap((place) => {

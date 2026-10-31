@@ -337,3 +337,5 @@ STU-P06,"Electricity, hotels under 660,000 kWh per year",per kWh,239,tariff,Rwan
 STU-P07,"Electricity, residential above 50 kWh per month",per kWh,369,tariff,Rwanda,2025-10-01,STU-17,[V],Press report of the RURA tariff.
 STU-P08,"RURA electrician licence, class A (person)",per licence,30000,fee,Rwanda (RURA),2026-10-26,STU-15,[V],"Plus a RWF 25,000 application fee; RWF 100,000 for a company."
 STU-P09,RDB tourism operating licence,per licence,80000,fee,Rwanda (RDB),2017-01-01,STU-35,[V],From a 2017 page; the fee may have changed.
+ENG-P01,"LPG (cooking gas), SP Ltd list price",per kg,1945,retail,Rwanda (SP Ltd),2026-04-22,ENG-31,[V],"Press report of the company price; 38 kg cylinder 73,910 RWF."
+ENG-P02,"LPG (cooking gas), 12 kg refill",per 12 kg cylinder,27000,retail,"Rwamagana District and Kabuga, Gasabo",2026-04-22,ENG-31,[V],"About 27,000 to 28,000 RWF; press report of dealer prices east of Kigali."

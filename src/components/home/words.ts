@@ -58,6 +58,51 @@ const en = {
     parking: "PARKING",
     sign: "DIGITAL FARM",
   },
+  // After the 3D (D-062): the farm's four services, each with its advice, a few facts and its guide.
+  services: {
+    title: "Services",
+    lead: "How the farm will get its power, water and cooking gas, and what it will do with its waste. Each card opens its guide, with the sources, the steps and the open questions.",
+    guide: "Read the guide",
+    note: "Figures are the guides' estimates and prices published in 2025 and 2026; nothing on the land is measured yet.",
+    cards: {
+      electric: {
+        title: "Electric",
+        line: "The grid, about 10 kWp of solar with 15 kWh of batteries for what must never stop, and a generator only as a spare.",
+        facts: [
+          "About 84 kWh a day and 45 kW at peak, with the galley cooking on electricity",
+          "Grid power at about 444 RWF/kWh, VAT included, at the business price",
+          "No VAT on panels, inverters and batteries until 30 June 2028",
+        ],
+      },
+      water: {
+        title: "Water",
+        line: "Mains, a borehole and rain into one tank, pumped to every place; the waste water to a septic tank.",
+        facts: [
+          "A 2.5 m³ tank holds about 4 days for the two studios, at 150 L a guest a day",
+          "A booster pump at 2.5 to 3 bar, through buried pipe",
+          "No guest stays before the septic system passes its inspection",
+        ],
+      },
+      waste: {
+        title: "Waste",
+        line: "Sorted where it is made: what rots goes back to the hens and the compost, the rest to licensed collectors. Nothing burned.",
+        facts: [
+          "Scraps to the hens, manure and litter to three compost bays",
+          "No single-use plastic: banned in Rwanda since 2019",
+          "Old batteries and panels to a licensed e-waste recycler",
+        ],
+      },
+      gas: {
+        title: "Gas",
+        line: "Bottled gas for the galley's cooking, from two large cylinders outside, if the galley cooks on gas.",
+        facts: [
+          "About 2.2 kg a day, about 126,000 RWF a month",
+          "Cylinders upright, outdoors, ventilated and away from heat",
+          "Piped in by a RURA-licensed installer",
+        ],
+      },
+    },
+  },
   // Under the 3D: every page the plan links to, with its docs, and the printed pages (English and Kinyarwanda).
   references: {
     title: "Pages and guides",
@@ -162,6 +207,50 @@ const rw: typeof en = {
     courtyard: "URUGO RWO HAGATI",
     parking: "PARIKINGI",
     sign: "DIGITAL FARM",
+  },
+  services: {
+    title: "Serivisi",
+    lead: "Uko ifamu izabona amashanyarazi, amazi na gaze yo guteka, n'icyo izakora imyanda yayo. Buri karita ifungura amabwiriza yayo, arimo aho amakuru yavuye, intambwe n'ibibazo bitarasubizwa.",
+    guide: "Soma amabwiriza",
+    note: "Imibare ni ibigereranyo by'amabwiriza n'ibiciro byatangajwe mu 2025 no mu 2026; nta na kimwe kirapimwa ku butaka.",
+    cards: {
+      electric: {
+        title: "Amashanyarazi",
+        line: "Umuyoboro wa REG, imirasire y'izuba ya hafi 10 kWp na bateri za 15 kWh z'ibitagomba guhagarara, na moteri itanga umuriro nk'ingoboka gusa.",
+        facts: [
+          "Hafi kWh 84 ku munsi na kW 45 ku isonga, igikoni giteka ku mashanyarazi",
+          "Umuriro wa REG ku giciro cya hafi RWF 444 kuri kWh, TVA irimo, ku giciro cy'ubucuruzi",
+          "Nta TVA ku mirasire, inverters na bateri kugeza ku wa 30 Kamena 2028",
+        ],
+      },
+      water: {
+        title: "Amazi",
+        line: "Amazi ya WASAC, iriba n'imvura bijya mu kigega kimwe, bigasunikwa kuri buri hantu; amazi yanduye ajya mu cyobo gifata imyanda (septic).",
+        facts: [
+          "Ikigega cya m³ 2.5 gihagije iminsi 4 kuri sitidiyo ebyiri, litiro 150 ku mushyitsi ku munsi",
+          "Pompe yongera umuvuduko kuri bar 2.5 kugeza kuri 3, mu miyoboro itabye",
+          "Nta mushyitsi urara mbere y'uko septic igenzurwa ikemezwa",
+        ],
+      },
+      waste: {
+        title: "Imyanda",
+        line: "Itandukanywa aho ikorewe: ibibora bisubira ku nkoko no mu ifumbire, ibindi bigahabwa abakusanya bafite uruhushya. Nta gutwika.",
+        facts: [
+          "Ibisigazwa by'ibiryo ku nkoko, amase n'ibyatsi byo mu kiraro mu byobo bitatu by'ifumbire",
+          "Nta bikoresho bya pulasitiki bikoreshwa rimwe: byabujijwe mu Rwanda kuva mu 2019",
+          "Bateri n'imirasire bishaje bihabwa uwemerewe gutunganya imyanda y'ikoranabuhanga",
+        ],
+      },
+      gas: {
+        title: "Gaze",
+        line: "Gaze yo mu macupa yo guteka mu gikoni, ivuye mu macupa abiri manini ari hanze, niba igikoni giteka kuri gaze.",
+        facts: [
+          "Hafi kg 2.2 ku munsi, hafi RWF 126,000 ku kwezi",
+          "Amacupa ahagaze, hanze, ahantu hinjira umwuka, kure y'ubushyuhe",
+          "Ashyirwamo n'umutekinisiye ufite uruhushya rwa RURA",
+        ],
+      },
+    },
   },
   references: {
     title: "Paji n'inyandiko",

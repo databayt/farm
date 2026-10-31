@@ -56,7 +56,9 @@
       "net": "Urushundura n'iyobora ry'amazi",
       "plumbing": "Imiyoboro y'amazi",
       "water": "Amazi",
-      "drainage": "Iyobora ry'amazi"
+      "drainage": "Iyobora ry'amazi",
+      "waste": "Imyanda",
+      "gas": "Gaze"
     }
   },
   "notFound": {
