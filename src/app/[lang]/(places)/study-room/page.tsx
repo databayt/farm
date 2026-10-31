@@ -14,7 +14,7 @@ import electricTags from "../../../../../public/designs/study-room/render/electr
 // docs cards; the points table and the status are on /docs/study-room-points. Both drawings read
 // src/components/study-room/study-room.json: the compound's teal 40 ft container on a stone plinth, glazed
 // doors behind timber louvres onto a 2 m deck, furnished with one long table for eight, a screen wall, a bookshelf
-// wall and a reading corner. The hero is a stand-in until the Nano Banana remaster.
+// wall and a reading corner.
 
 export const metadata: Metadata = {
   title: "The study room · Farm",
@@ -60,13 +60,13 @@ const DOCS = [
 export default function StudyRoomPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the Nano Banana remaster (brief and references in the founder's
-          study-room-nano-banana folder). It is today's footage still of the courtyard lawn (IMG_3171, via
-          assets/today/aerial.png) with the lake through the trees on the left, where the study room will
-          stand, cut to 2400 x 1340. The buildings sit right, so the words keep the open lawn bottom-left. */}
-      <PageHero src={`${D}/render/study-room-hero.jpg`} width={2400} height={1340} className="bg-[#c9d3dc]" imgClassName="object-[60%_50%]"
+      {/* First screen: the founder's Nano Banana render of the study room (2026-10-31); master kept at
+          assets/study-room/hero-gemini.jpeg (2752 x 1536), cut to 2400 x 1340. It departs from the drawings in two
+          things: no timber louvres over the glazing, and the middle doors stand open. The room sits centre with the
+          deck across the bottom, so the image centres. */}
+      <PageHero src={`${D}/render/study-room-hero.jpg`} width={2400} height={1340} className="bg-[#c9a36a]" imgClassName="object-[50%_50%]"
         title="A room to meet, train and build, with the lake outside"
-        alt="The farm's courtyard lawn today under a soft overcast sky: pop-up tents on the grass, a yellow container with red doors on the right, trees and the lake glinting behind them on the left." />
+        alt="A long teal shipping container seen square-on at golden hour, its front glazed with white-framed sliding doors, the middle pair open: inside, a long oak table with eight oak chairs and a few laptops under three rattan pendants, a big screen and a lectern on the left, two ochre armchairs before a full-height bookshelf on the right, fig plants between; a wide honey-coloured timber deck with a broad step on a stone plinth, on a lawn among banana plants and trees." />
 
       {/* 2D, full screen: the study room's plan (src/components/study-room/study-room-plan.tsx), in the text
           colour. It is long, so it takes the full width. */}
