@@ -1,14 +1,16 @@
 import { BlurImg } from "@/components/atom/blur-img"
 
-import { copy } from "./copy"
+import { getLocale } from "@/components/internationalization/locale"
+
+import { words } from "./words"
 
 const R = "/designs/compound/render"
 
 // 3D, in /en/studio's pattern and across the full width like the 2D: the compound as a line drawing,
 // then the same view rendered with materials and sun. Both come from scripts/site/render/compound.html, built from compound.json like
 // the 2D plan; /designs is not cached for good, so a new render keeps its URL.
-export function Model() {
-  const { title, line, real, caption } = copy.model
+export async function Model() {
+  const { title, line, real, caption } = words[await getLocale()].model
   return (
     <section id="model" aria-labelledby="model-title">
       <div className="px-4 pt-10 pb-6 md:px-10">

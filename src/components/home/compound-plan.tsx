@@ -6,6 +6,7 @@ import plan from "../../../public/designs/farming/data/plan.json"
 import site from "../site/site.json"
 import volleyball from "../volleyball/volleyball.json"
 import compound from "./compound.json"
+import { words } from "./words"
 
 // The compound drawn in the pattern of the studio's plan (/en/studio, render/plan.svg): solid black
 // container walls, thin lines for everything else, bold capitals beside each building and dimensions in
@@ -15,6 +16,9 @@ import compound from "./compound.json"
 type Box = readonly number[]
 type Point = readonly number[]
 type Unit = (typeof compound.units)[number]
+// The words drawn on the plan, in the reader's language (words.ts plan; a building's name by its compound.json id)
+type W = (typeof words)["en"]["plan"]
+const name = (w: W, unit: Unit) => w.units[unit.id] ?? unit.label
 
 // Flip the north-up layout top to bottom inside a 46 m square (study room at the top, gates at the
 // bottom, guest rooms and bar on the left), then spread it sideways for a wide screen: positions move
@@ -152,7 +156,7 @@ function Dimension({ a, b, offset }: { a: Point; b: Point; offset: number }) {
 }
 
 // The joined guest-room pair, its doors and windows onto the veranda on the courtyard side (right).
-function GuestRooms({ unit }: { unit: Unit }) {
+function GuestRooms({ unit, w }: { unit: Unit; w: W }) {
   const [x0, y0, x1, y1] = B(unit.box)
   const n = unit.rooms ?? 3
   const room = (y1 - y0) / n
@@ -172,7 +176,7 @@ function GuestRooms({ unit }: { unit: Unit }) {
       <Dimension a={[x0, y0]} b={[x1, y0]} offset={-1.2} />
       <Page href={unit.page}>
         <text x={f(x0 - 2.9)} y={f((y0 + y1) / 2)} textAnchor="middle" transform={`rotate(-90 ${f(x0 - 2.9)} ${f((y0 + y1) / 2)})`} style={label}>
-          {unit.label}
+          {name(w, unit)}
         </text>
       </Page>
     </g>
@@ -180,7 +184,7 @@ function GuestRooms({ unit }: { unit: Unit }) {
 }
 
 // The bar, in line with the guest rooms: its serving hatch and counter on the courtyard side.
-function Bar({ unit, east }: { unit: Unit; east: number }) {
+function Bar({ unit, east, w }: { unit: Unit; east: number; w: W }) {
   // flush with the guest rooms' courtyard side after the spread, as on the layout
   const [a, y0, b, y1] = B(unit.box)
   const [x0, x1] = [east - (b - a), east]
@@ -192,7 +196,7 @@ function Bar({ unit, east }: { unit: Unit; east: number }) {
       <rect {...at([x1, h0, x1 + 0.4, h1])} {...thin} />
       <Page href={unit.page}>
         <text x={f(x0 - 0.7)} y={f((y0 + y1) / 2 + 0.32)} textAnchor="end" style={label}>
-          {unit.label}
+          {name(w, unit)}
         </text>
       </Page>
     </g>
@@ -202,7 +206,7 @@ function Bar({ unit, east }: { unit: Unit; east: number }) {
 // A 20 ft container on a raised deck facing the courtyard (down the drawing), steps at the middle.
 // Studios have a 3 m glass wall, a dashed roof terrace overhead and a stair at their end; the office
 // a glazed door and a window.
-function RowUnit({ unit, dimension }: { unit: Unit; dimension?: boolean }) {
+function RowUnit({ unit, dimension, w }: { unit: Unit; dimension?: boolean; w: W }) {
   const [x0, y0, x1, y1] = B(unit.box)
   const deck = unit.deck ?? 1.5
   const cx = f((x0 + x1) / 2)
@@ -235,7 +239,7 @@ function RowUnit({ unit, dimension }: { unit: Unit; dimension?: boolean }) {
       )}
       <Page href={unit.page}>
         <text x={cx} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
-          {unit.label}
+          {name(w, unit)}
         </text>
       </Page>
       {dimension ? <Dimension a={[x0, y0]} b={[x1, y0]} offset={-2.4} /> : null}
@@ -244,7 +248,7 @@ function RowUnit({ unit, dimension }: { unit: Unit; dimension?: boolean }) {
 }
 
 // The study room: one 40 ft container, a band of glazed doors onto its deck (down the drawing).
-function Study({ unit, west }: { unit: Unit; west: number }) {
+function Study({ unit, west, w }: { unit: Unit; west: number; w: W }) {
   // its west end stays in line with the guest rooms after the spread (D-022)
   const [a, y0, b, y1] = B(unit.box)
   const [x0, x1] = [west, west + (b - a)]
@@ -257,7 +261,7 @@ function Study({ unit, west }: { unit: Unit; west: number }) {
       <Glazing a={[f(g0), y1]} b={[f(g1), y1]} />
       <Page href={unit.page}>
         <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
-          {unit.label}
+          {name(w, unit)}
         </text>
       </Page>
     </g>
@@ -267,7 +271,7 @@ function Study({ unit, west }: { unit: Unit; west: number }) {
 // Beside the study room, two buildings of their own. The galley, a 40 ft container: a worktop along the
 // back wall with two sinks. The public bathroom, a 20 ft container: two toilet rooms, two hand basins
 // and a urinal, one door from the courtyard side.
-function Galley({ unit }: { unit: Unit }) {
+function Galley({ unit, w }: { unit: Unit; w: W }) {
   const [x0, y0, x1, y1] = B(unit.box)
   return (
     <g>
@@ -280,14 +284,14 @@ function Galley({ unit }: { unit: Unit }) {
       <Door hinge={[f(x1 - 1.2), y1]} along={[-1, 0]} into={[0, -1]} width={0.9} />
       <Page href={unit.page}>
         <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
-          {unit.label}
+          {name(w, unit)}
         </text>
       </Page>
     </g>
   )
 }
 
-function Bath({ unit }: { unit: Unit }) {
+function Bath({ unit, w }: { unit: Unit; w: W }) {
   const [x0, y0, x1, y1] = B(unit.box)
   const deep = 1.45 // the toilet rooms' depth from the back wall
   const part = { stroke: "currentColor", strokeWidth: WALL * 0.6 } as const
@@ -314,7 +318,7 @@ function Bath({ unit }: { unit: Unit }) {
       <Door hinge={[f(x0 + 3.0), y1]} along={[1, 0]} into={[0, -1]} width={0.9} />
       <Page href={unit.page}>
         <text x={f((x0 + x1) / 2)} y={f(y0 - 0.8)} textAnchor="middle" style={label}>
-          {unit.label}
+          {name(w, unit)}
         </text>
       </Page>
     </g>
@@ -325,7 +329,7 @@ function Bath({ unit }: { unit: Unit }) {
 // tents on a camping lawn between the guest rooms and the fire pit, ending at the pit, a long timber table with benches
 // where today's unfinished platform stands, and stools round the fire pit. Each at true size.
 const outdoor = compound.outdoor
-function Outdoor() {
+function Outdoor({ w }: { w: W }) {
   const [pitX, pitY] = P(compound.courtyard.firePit)
   const { count, ring, r } = outdoor.firePitSeats
   // the cluster keeps its shape and ends at the fire pit's west edge, whatever the spread
@@ -360,7 +364,7 @@ function Outdoor() {
       })}
       <Page href="/en/camp">
         <text x={f(left - 0.6)} y={f(middle + 0.18)} textAnchor="end" style={small}>
-          CAMPING
+          {w.camping}
         </text>
       </Page>
       {rows.map(([a, b]) => (
@@ -373,7 +377,7 @@ function Outdoor() {
 // The volleyball court on the lawn between the guest rooms and the parking, in /en/volleyball's numbers (FIVB
 // rules): the 18 x 9 m court inside its 3 m free zone, the net over the centre line, an attack line 3 m each side
 // of it, the posts 1 m outside the side lines. Turned (compound.json) so its long side runs across the page.
-function Volleyball() {
+function Volleyball({ w }: { w: W }) {
   const [cx, cy] = T(N.volleyball.at)
   const turn = N.volleyball.turn
   const [hw, hl, free] = turn ? [court.l / 2, court.w / 2, court.free] : [court.w / 2, court.l / 2, court.free]
@@ -397,7 +401,7 @@ function Volleyball() {
       <Dimension a={[x0, y1]} b={[x1, y1]} offset={1.4} />
       <Page href={N.volleyball.page}>
         <text x={f(cx)} y={f(y0 - free - 0.8)} textAnchor="middle" style={label}>
-          VOLLEYBALL
+          {w.volleyball}
         </text>
       </Page>
     </g>
@@ -409,7 +413,7 @@ function Volleyball() {
 // so the field runs west: plan.json's y (toward its far end) runs left, its x (its fence's east side at the top)
 // runs down the page. Its fence on the two sides toward the compound; the bottom is cut with a break line and the
 // west side left open toward the arrow: the field goes on.
-function Field() {
+function Field({ w }: { w: W }) {
   const [fx, fy] = T(N.field.corner)
   const [, top, east] = plan.fence
   const F = (x: number, y: number) => [f(fx - (y - top)), f(fy + (east - x))]
@@ -429,7 +433,7 @@ function Field() {
       <Zigzag a={[wx, ey1]} b={[ex, ey1]} />
       <Page href={N.field.page}>
         <text x={f((wx + ex) / 2)} y={f(ey1 + 1.4)} textAnchor="middle" style={label}>
-          VEGETABLE FIELD · {plan.bedsTotal} BEDS
+          {w.field(plan.bedsTotal)}
         </text>
       </Page>
     </g>
@@ -438,17 +442,17 @@ function Field() {
 
 // At the field's cut, the land going on: an arrow pointing out of the drawing to /en/farming, which draws the
 // whole field, the nursery and the livestock (founder, 2026-10-29).
-function Continues() {
+function Continues({ w }: { w: W }) {
   const [x, y] = T(N.continues.at)
   const end = x - N.continues.length
   return (
     <Page href={N.continues.page}>
       <path d={`M${f(x)} ${f(y)}H${f(end)}M${f(end + 0.6)} ${f(y - 0.4)}L${f(end)} ${f(y)}L${f(end + 0.6)} ${f(y + 0.4)}`} {...medium} />
       <text x={f(x)} y={f(y - 0.8)} textAnchor="end" style={small}>
-        TO BE CONTINUED
+        {w.continued}
       </text>
       <text x={f(x)} y={f(y + 1.3)} textAnchor="end" style={{ ...small, fontWeight: 500 }}>
-        SEE THE FULL FARM
+        {w.fullFarm}
       </text>
     </Page>
   )
@@ -516,19 +520,20 @@ function Zigzag({ a: [ax, ay], b: [bx, by] }: { a: Point; b: Point }) {
 
 // Between the field and the compound: the gap drawn short, and how far it is on the land (site.json).
 const westGap = Math.round(site.zones.find((z) => z.id === "compound")!.rect[0] - plan.fence[2])
-function Break() {
+function Break({ w }: { w: W }) {
   const x = N.break
   return (
     <g>
       <Zigzag a={[x, 1]} b={[x, 27]} />
       <text x={f(x - 0.5)} y={14} textAnchor="middle" transform={`rotate(-90 ${f(x - 0.5)} 14)`} style={{ ...small, fontWeight: 500, stroke: PAGE, strokeWidth: 0.6, paintOrder: "stroke" }}>
-        DRAWN CLOSE · ON THE LAND THE FIELD IS {westGap} M AWAY
+        {w.drawnClose(westGap)}
       </text>
     </g>
   )
 }
 
-export function CompoundPlan({ title, className }: { title: string; className?: string }) {
+export async function CompoundPlan({ title, className }: { title: string; className?: string }) {
+  const w = words[await getLocale()].plan
   const { parking, courtyard } = compound
   const units = Object.fromEntries(compound.units.map((u) => [u.id, u])) as Record<string, Unit>
   const row = compound.units.filter((u) => u.kind === "20" && u.front === "north")
@@ -551,31 +556,31 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       <Garden />
 
       {/* The study room, then the row of office and two studios, the bar and the guest rooms */}
-      <Study unit={units.study} west={B(units.rooms.box)[0]} />
-      <Galley unit={units.galley} />
-      <Bath unit={units.bath} />
+      <Study unit={units.study} west={B(units.rooms.box)[0]} w={w} />
+      <Galley unit={units.galley} w={w} />
+      <Bath unit={units.bath} w={w} />
       {row.map((unit) => (
-        <RowUnit key={unit.id} unit={unit} dimension={unit.id === "studio-two"} />
+        <RowUnit key={unit.id} unit={unit} dimension={unit.id === "studio-two"} w={w} />
       ))}
-      <Bar unit={units.bar} east={B(units.rooms.box)[2]} />
-      <GuestRooms unit={units.rooms} />
+      <Bar unit={units.bar} east={B(units.rooms.box)[2]} w={w} />
+      <GuestRooms unit={units.rooms} w={w} />
 
       {/* The neighbours, drawn close: the volleyball court on the lawn; past the break, half the field and the way to the rest */}
-      <Volleyball />
-      <Break />
-      <Field />
-      <Continues />
+      <Volleyball w={w} />
+      <Break w={w} />
+      <Field w={w} />
+      <Continues w={w} />
 
       {/* The courtyard: no outline, only its name and the stone fire pit */}
       <circle cx={pitX} cy={pitY} r={pitR} {...medium} />
       <circle cx={pitX} cy={pitY} r={pitInner} {...thin} />
       {/* stools round the fire pit, the camping lawn beside it, the long table at the middle studio */}
-      <Outdoor />
+      <Outdoor w={w} />
       <text x={f(pitX + outdoor.firePitSeats.ring + 0.6)} y={f(pitY + 0.18)} style={small}>
-        FIRE PIT
+        {w.firePit}
       </text>
       <text x={f(cx1 - 0.8)} y={f(cy0 + 1.6)} textAnchor="end" style={label}>
-        COURTYARD
+        {w.courtyard}
       </text>
 
       {/* The inner gate, the rock road down to the parking, the outer gate and the sign wall */}
@@ -588,13 +593,13 @@ export function CompoundPlan({ title, className }: { title: string; className?: 
       <path d={roadPath} fill="none" stroke={PAGE} strokeWidth={compound.rockRoad.width - 0.16} />
       <Page href="/en/parking">
         <text x={f(px1 - 0.6)} y={f(py0 + 1.4)} textAnchor="end" style={label}>
-          PARKING
+          {w.parking}
         </text>
       </Page>
       <Gate {...turn(compound.gate)} />
       <rect {...at(sign)} fill="currentColor" />
       <text x={f(sign[0] - 0.5)} y={f(sign[3] - 0.05)} textAnchor="end" style={small}>
-        DIGITAL FARM
+        {w.sign}
       </text>
     </svg>
   )

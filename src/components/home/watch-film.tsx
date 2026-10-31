@@ -4,11 +4,11 @@ import * as React from "react"
 import { Play, X } from "lucide-react"
 
 import { VIDEOS } from "./assets.generated"
-import { copy } from "./copy"
 
 // The hero's button: the courtyard film (the orbit clip of 2026-10-25, its upright cut on portrait screens)
 // full screen in a native <dialog>, so Escape and the top layer come with it. The video loads only when opened.
-export function WatchFilm({ className }: { className?: string }) {
+// Its words come from the hero, in the reader's language.
+export function WatchFilm({ labels, className }: { labels: { watch: string; close: string; today: string }; className?: string }) {
   const dialog = React.useRef<HTMLDialogElement>(null)
   const video = React.useRef<HTMLVideoElement>(null)
   const [open, setOpen] = React.useState(false)
@@ -25,12 +25,12 @@ export function WatchFilm({ className }: { className?: string }) {
   return (
     <>
       <button type="button" onClick={show} className={className}>
-        {copy.hero.watch}
+        {labels.watch}
         <Play className="size-5" strokeWidth={1.5} aria-hidden />
       </button>
       <dialog
         ref={dialog}
-        aria-label={copy.hero.watch}
+        aria-label={labels.watch}
         onClose={() => {
           video.current?.pause()
           setOpen(false)
@@ -52,11 +52,11 @@ export function WatchFilm({ className }: { className?: string }) {
             <source src={film.src} type="video/mp4" />
           </video>
         ) : null}
-        <p className="absolute top-5 left-4 text-xs tracking-[0.12em] uppercase opacity-80 md:left-10">{copy.captions.today}</p>
+        <p className="absolute top-5 left-4 text-xs tracking-[0.12em] uppercase opacity-80 md:left-10">{labels.today}</p>
         <button
           type="button"
           onClick={hide}
-          aria-label={copy.hero.closeFilm}
+          aria-label={labels.close}
           className="absolute top-3 right-2 inline-grid size-11 place-items-center rounded-full md:right-8"
         >
           <X className="size-6" aria-hidden />

@@ -37,8 +37,9 @@ export async function generateMetadata(props: PageProps<"/[lang]/docs/[[...slug]
   const resolved = resolvePage(lang, slug)
   if (!resolved) notFound()
   const { page, fallback, english } = resolved
+  const t = await getDictionary(resolved.lang)
   return {
-    title: `${page.data.title} · Farm docs`,
+    title: `${page.data.title} · ${t.docs.title}`,
     description: page.data.description,
     // a page shown in English under /rw points search at the English one
     alternates: fallback && english ? { canonical: english.url } : undefined,

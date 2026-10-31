@@ -2,20 +2,18 @@ import { getImageProps } from "next/image"
 import { Cormorant_Garamond } from "next/font/google"
 import { ArrowDown } from "lucide-react"
 
-import { NotTranslated } from "@/components/internationalization/not-translated"
+import { getLocale } from "@/components/internationalization/locale"
 
-import { copy } from "./copy"
 import { HERO } from "./hero.generated"
 import { WatchFilm } from "./watch-film"
+import { words } from "./words"
 
 // The guide's headline face: a fine, high-contrast serif in capitals. Only the hero uses it.
 const display = Cormorant_Garamond({ subsets: ["latin"], weight: "500", display: "swap" })
 
-const ALT = "The lawn above the lake under tall pines and a palm, the far shore wooded in late light"
-
 // One photo per shape, as an art-directed <picture>: the upright cut on portrait screens. The LQIP
 // is the wrapper's background, and the photo shows as soon as it decodes (it is the first image).
-function HeroPicture() {
+function HeroPicture({ alt: ALT }: { alt: string }) {
   const { desktop, mobile } = HERO
   const upright = getImageProps({ src: mobile.src, width: mobile.width, height: mobile.height, alt: ALT, sizes: "100vw" })
   const { props } = getImageProps({
@@ -37,15 +35,16 @@ function HeroPicture() {
   )
 }
 
-export function Hero() {
-  const { headline, scroll } = copy.hero
+export async function Hero() {
+  const w = words[await getLocale()]
+  const { headline, scroll, alt } = w.hero
   return (
     <section
       id="top"
       aria-labelledby="hero-title"
       className="bg-soil text-chalk relative isolate flex h-[100svh] min-h-[600px] flex-col justify-end overflow-hidden"
     >
-      <HeroPicture />
+      <HeroPicture alt={alt} />
       {/* A little shade at the top for the header; the words get theirs from the band below. */}
       <div
         aria-hidden
@@ -68,9 +67,8 @@ export function Hero() {
           ))}
         </h1>
         <div className="farm-intro-3 mt-8 flex flex-wrap items-center gap-x-10 gap-y-5 text-[15px] tracking-[0.02em] uppercase">
-          <WatchFilm className="text-soil inline-flex h-14 cursor-pointer items-center gap-5 bg-[rgb(214_207_190/0.92)] px-7 uppercase backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]" />
+          <WatchFilm labels={{ watch: w.hero.watch, close: w.hero.closeFilm, today: w.captions.today }} className="text-soil inline-flex h-14 cursor-pointer items-center gap-5 bg-[rgb(214_207_190/0.92)] px-7 uppercase backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]" />
         </div>
-        <NotTranslated className="farm-intro-3 text-chalk/80 mt-6" />
       </div>
 
       <a

@@ -5,7 +5,9 @@
   },
   "site": {
     "name": "Digital Farm",
-    "docs": "Docs"
+    "docs": "Docs",
+    "title": "Farm study",
+    "description": "Feasibility study and plan for a technology-enabled integrated farm in Rwanda."
   },
   "menu": {
     "open": "Open the menu",

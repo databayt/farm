@@ -5,7 +5,9 @@
   },
   "site": {
     "name": "Digital Farm",
-    "docs": "Inyandiko"
+    "docs": "Inyandiko",
+    "title": "Inyigo y'ifamu",
+    "description": "Inyigo y'ishoboka n'igenamigambi by'ifamu ihuriza hamwe ubuhinzi n'ubworozi, ikoresha ikoranabuhanga, mu Rwanda."
   },
   "menu": {
     "open": "Fungura urutonde",
