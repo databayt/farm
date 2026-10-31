@@ -2,6 +2,8 @@
 
 Status: updated 2026-10-31. This page covers November 2026. The docs are grouped by place, and every place has the same pages: its execution plan, its materials and its services (D-059).
 
+What the farm builds this month, the five rules that must not break, and where each place's execution plan begins.
+
 ## The farm in one minute
 
 - **What:** about 5 ha in Gashora, Bugesera, an hour from Kigali. The lake is in view, but not on the farm (D-027).
