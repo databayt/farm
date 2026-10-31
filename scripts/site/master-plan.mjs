@@ -126,6 +126,11 @@ line("MASTER PLAN · PROVISIONAL", 15, 700)
 line("Scaled from the founder's sketch to 5 ha.", 11)
 line("North not fixed; orientation as sketched.", 11)
 line("Replace with the land-title plan (UPI).", 11)
+line("Two grounds in the footage (2026-10-25):", 11)
+line("a mown lawn, and a laterite hill above", 11)
+line("the compound whose runoff reaches it.", 11)
+line("The hill's extent and a cut-off swale are", 11)
+line("drawn once a slope reading or the pin exists.", 11)
 ly += 8
 const counts = { woodland: 0, compound: 0, field: 0, boundary: 0 }
 for (const t of trees) counts[t.kind]++
