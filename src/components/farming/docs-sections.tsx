@@ -128,7 +128,7 @@ function bomSections(lang: Locale): BomSection[] {
   const by = new Map<string, BomLine[]>()
   for (const l of bomFor(lang)) by.set(sections[l.section] ?? l.section, [...(by.get(sections[l.section] ?? l.section) ?? []), { item: l.item, qty: l.qty, unit: units[l.unit] ?? l.unit, price: l.rwf, total: l.total }])
   return [...by].map(([name, lines]) => {
-    const total = lines.reduce((n, l) => n + l.total, 0)
+    const total = lines.reduce((n, l) => n + (l.total ?? 0), 0)
     return { name, groups: [{ name, lines, total }], total, lines: lines.length }
   })
 }

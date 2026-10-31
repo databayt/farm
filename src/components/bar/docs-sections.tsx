@@ -1,10 +1,10 @@
 import type * as React from "react"
 
 import { barData, circuitColour, waterColour } from "@/components/bar/data"
-import { rails } from "@/components/bar/rails"
+import { barBom } from "@/components/bar/bom"
 import { CircuitsTable } from "@/components/docs/circuits-table"
 import { PointsLead, PointsTable } from "@/components/docs/points-table"
-import { RailTable } from "@/components/docs/rail-table"
+import { PlaceBom } from "@/components/docs/place-bom"
 import { RunsTable } from "@/components/docs/runs-table"
 import { runLength } from "@/components/galley/service-diagrams"
 import { words } from "@/components/bar/words"
@@ -41,9 +41,10 @@ export async function BarPlumbingPoints(): Promise<React.JSX.Element> {
   )
 }
 
-// What to buy: every rail on the page, as one table (the Materials page)
+// What to buy: the bar's bill of materials (bom.ts), on the Materials page
 export async function BarMaterials(): Promise<React.JSX.Element> {
-  return <RailTable rails={rails(await getLocale())} />
+  const lang = await getLocale()
+  return <PlaceBom lines={barBom(lang)} lang={lang} />
 }
 
 // The circuits behind the points (the Electric page)

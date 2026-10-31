@@ -26,7 +26,7 @@ const bomLine = (lang: Locale, r: Record<string, string>, item = r.item): BomLin
 })
 
 const tally = (lang: Locale, groups: Map<string, BomLine[]>): BomGroup[] =>
-  [...groups].filter(([, l]) => l.length).map(([name, lines]) => ({ name: words[lang].json.groups[name] ?? name, lines, total: lines.reduce((n, l) => n + l.total, 0) }))
+  [...groups].filter(([, l]) => l.length).map(([name, lines]) => ({ name: words[lang].json.groups[name] ?? name, lines, total: lines.reduce((n, l) => n + (l.total ?? 0), 0) }))
 
 // The electrician's lines, sorted into the groups an electrician buys by.
 function electricalGroups(lang: Locale, rows: Record<string, string>[], points: Record<string, string>[]) {

@@ -119,7 +119,10 @@
     "materialsAndLabour": "Ibikoresho n'umurimo",
     "line": "umurongo",
     "lines": "imirongo",
-    "item": "Igikoresho"
+    "item": "Igikoresho",
+    "priced": "bifite igiciro",
+    "reuse": "Gukoresha ibihari",
+    "owned": "Birahari"
   },
   "viewer": {
     "loading": "Igishushanyo cya 3D kirimo gufunguka…",

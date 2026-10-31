@@ -119,7 +119,10 @@
     "materialsAndLabour": "Materials and labour",
     "line": "line",
     "lines": "lines",
-    "item": "Item"
+    "item": "Item",
+    "priced": "priced",
+    "reuse": "Reuse",
+    "owned": "Owned"
   },
   "viewer": {
     "loading": "Loading the 3D model…",
