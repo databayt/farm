@@ -17,7 +17,7 @@
 <line x1="5758" y1="670" x2="5758" y2="870" stroke="#c2410c" stroke-width="22"/>
 <text x="4438" y="2582" font-size="75" font-weight="700" fill="#c2410c" text-anchor="start" dominant-baseline="middle">instant heater in the shower: 200 × 330 × 90</text>
 <text x="4438" y="2722" font-size="75" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">WC: 520 × 380 · fixed glass: 520 · leaf: 602 × 2055</text>
-<text x="4548" y="800" font-size="75" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4548 800)">KITCHEN</text>
+<text x="4548" y="770" font-size="75" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4548 770)">KITCHEN</text>
 <text x="4398" y="-1000" font-size="110" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">BATHROOM</text>
 <text x="6058" y="1126" font-size="100" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 6058 1126)">END B</text>
 <line x1="4398" y1="-260" x2="5798" y2="-260" stroke="#1d4ed8" stroke-width="4"/>

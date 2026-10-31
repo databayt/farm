@@ -20,6 +20,34 @@ Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · Print: [this plan 
 
 [What the studio has](../../src/components/studio/docs-sections.tsx#StudioFeatures)
 
+## The four zones
+
+Each zone drawn with every size: from above, then from the side, then in 3D. Sizes are millimetres, measured from the finished faces; the red sizes are the clear walks.
+
+### Bed
+
+![The bed zone from above and from the glass side, every size](../../public/designs/studio/guide/zone-bed.en.svg)
+
+![The bed zone in 3D: the bed on the back wall and end A, its storage boxes, the bedside table and lamp](../../public/designs/studio/render/zones/bed.jpg)
+
+### Seating
+
+![The seating zone from above and from the glass side, every size](../../public/designs/studio/guide/zone-seating.en.svg)
+
+![The seating zone in 3D: the sofa on the back wall, the table and the two chairs](../../public/designs/studio/render/zones/seating.jpg)
+
+### Galley
+
+![The galley from above and from the room facing end B, every size; the walk past its end is 700](../../public/designs/studio/guide/zone-galley.en.svg)
+
+![The galley in 3D: fridge, hob and sink under the worktop, the two wall cabinets and the chimney hood](../../public/designs/studio/render/zones/galley.jpg)
+
+### Bath
+
+![The bathroom from above and from the room facing end B, every size](../../public/designs/studio/guide/zone-bath.en.svg)
+
+![The bathroom in 3D: the shower at the back wall, the wall-hung WC on end wall B, the sliding door](../../public/designs/studio/render/zones/bath.jpg)
+
 ## Before you start
 
 ![Day 1: measure the 7 numbers and write them on the sheet](../../public/designs/studio/guide/measure.en.svg)

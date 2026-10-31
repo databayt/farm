@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="2378 -930 4500 8998" width="750" height="1500" font-family="Helvetica, Arial, sans-serif">
+<rect x="2378" y="-930" width="4500" height="8998" fill="#ffffff"/>
+<rect x="3678" y="0" width="1020" height="2252" fill="#fbf8f1" stroke="#1f2328" stroke-width="10"/>
+<rect x="3678" y="-50" width="1020" height="50" fill="#9aa1a9" stroke="none" stroke-width="0"/>
+<rect x="3678" y="2252" width="1020" height="50" fill="#9aa1a9" stroke="none" stroke-width="0"/>
+<rect x="3678" y="2247" width="702" height="60" fill="#cfe3f2" stroke="#1f2328" stroke-width="5"/>
+<rect x="4098" y="0" width="600" height="550" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<text x="4398" y="275" font-size="70" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">FRIDGE</text>
+<rect x="4098" y="550" width="600" height="600" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<text x="4398" y="850" font-size="70" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">HOB</text>
+<rect x="4098" y="1150" width="600" height="390" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<text x="4398" y="1345" font-size="70" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">SINK</text>
+<text x="3678" y="-710" font-size="110" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">GALLEY · FROM ABOVE</text>
+<line x1="4098" y1="-230" x2="4698" y2="-230" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="4068" y1="-200" x2="4128" y2="-260" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="4668" y1="-200" x2="4728" y2="-260" stroke="#1d4ed8" stroke-width="7"/>
+<text x="4398" y="-315" font-size="85" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">600</text>
+<line x1="4998" y1="0" x2="4998" y2="550" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="4968" y1="30" x2="5028" y2="-30" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="4968" y1="580" x2="5028" y2="520" stroke="#1d4ed8" stroke-width="7"/>
+<text x="5093" y="275" font-size="80" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 5093 275)">550</text>
+<line x1="5258" y1="550" x2="5258" y2="1150" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="5228" y1="580" x2="5288" y2="520" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="5228" y1="1180" x2="5288" y2="1120" stroke="#1d4ed8" stroke-width="7"/>
+<text x="5353" y="850" font-size="80" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 5353 850)">600</text>
+<line x1="5518" y1="1150" x2="5518" y2="1540" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="5488" y1="1180" x2="5548" y2="1120" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="5488" y1="1570" x2="5548" y2="1510" stroke="#1d4ed8" stroke-width="7"/>
+<text x="5613" y="1345" font-size="80" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 5613 1345)">390</text>
+<line x1="3228" y1="0" x2="3228" y2="2252" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="3198" y1="30" x2="3258" y2="-30" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="3198" y1="2282" x2="3258" y2="2222" stroke="#1d4ed8" stroke-width="7"/>
+<text x="3133" y="1126" font-size="90" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 3133 1126)">2252</text>
+<line x1="3678" y1="2702" x2="4698" y2="2702" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="3648" y1="2732" x2="3708" y2="2672" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="4668" y1="2732" x2="4728" y2="2672" stroke="#1d4ed8" stroke-width="7"/>
+<text x="4188" y="2797" font-size="90" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">1020</text>
+<text x="3678" y="3052" font-size="75" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">measured from the finished face of end A: 3678 → 4698</text>
+<line x1="4398" y1="1552" x2="4398" y2="2252" stroke="#c2410c" stroke-width="5"/>
+<line x1="4368" y1="1582" x2="4428" y2="1522" stroke="#c2410c" stroke-width="7"/>
+<line x1="4368" y1="2282" x2="4428" y2="2222" stroke="#c2410c" stroke-width="7"/>
+<text x="4493" y="1902" font-size="75" font-weight="700" fill="#c2410c" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4493 1902)">walk 700</text>
+<text x="3678" y="3502" font-size="110" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">GALLEY · FROM THE ROOM, FACING END B</text>
+<rect x="3678" y="4352" width="2252" height="2316" fill="#f4efe6" stroke="#9aa1a9" stroke-width="8"/>
+<rect x="4398" y="4352" width="260" height="666" fill="#3b3b3b" stroke="#1f2328" stroke-width="6"/>
+<rect x="4228" y="5018" width="600" height="100" fill="#3b3b3b" stroke="#1f2328" stroke-width="6"/>
+<rect x="3678" y="4368" width="550" height="500" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<rect x="4828" y="4368" width="390" height="500" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<rect x="3678" y="5806" width="550" height="762" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<rect x="4228" y="5806" width="600" height="762" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<rect x="4828" y="5806" width="390" height="762" fill="#e4ecf3" stroke="#1f2328" stroke-width="6"/>
+<rect x="3678" y="5768" width="1552" height="38" fill="#c9935a" stroke="#1f2328" stroke-width="6"/>
+<text x="3953" y="4618" font-size="60" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">wall cabinet</text>
+<text x="5023" y="4618" font-size="60" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">wall cabinet</text>
+<text x="3953" y="6187" font-size="60" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">FRIDGE</text>
+<text x="4528" y="6187" font-size="60" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">HOB</text>
+<text x="5023" y="6187" font-size="60" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">SINK</text>
+<line x1="4398" y1="4192" x2="4658" y2="4192" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="4368" y1="4222" x2="4428" y2="4162" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="4628" y1="4222" x2="4688" y2="4162" stroke="#1d4ed8" stroke-width="7"/>
+<text x="4528" y="4107" font-size="70" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">260</text>
+<line x1="4228" y1="3992" x2="4828" y2="3992" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="4198" y1="4022" x2="4258" y2="3962" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="4798" y1="4022" x2="4858" y2="3962" stroke="#1d4ed8" stroke-width="7"/>
+<text x="4528" y="3907" font-size="70" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">600</text>
+<line x1="3678" y1="4192" x2="4228" y2="4192" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="3648" y1="4222" x2="3708" y2="4162" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="4198" y1="4222" x2="4258" y2="4162" stroke="#1d4ed8" stroke-width="7"/>
+<text x="3953" y="4107" font-size="70" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">550</text>
+<line x1="4828" y1="4192" x2="5218" y2="4192" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="4798" y1="4222" x2="4858" y2="4162" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="5188" y1="4222" x2="5248" y2="4162" stroke="#1d4ed8" stroke-width="7"/>
+<text x="5023" y="4107" font-size="70" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">390</text>
+<line x1="3678" y1="6828" x2="4228" y2="6828" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="3648" y1="6858" x2="3708" y2="6798" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="4198" y1="6858" x2="4258" y2="6798" stroke="#1d4ed8" stroke-width="7"/>
+<text x="3953" y="6923" font-size="70" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">550</text>
+<line x1="4228" y1="6828" x2="4828" y2="6828" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="4198" y1="6858" x2="4258" y2="6798" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="4798" y1="6858" x2="4858" y2="6798" stroke="#1d4ed8" stroke-width="7"/>
+<text x="4528" y="6923" font-size="70" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">600</text>
+<line x1="4828" y1="6828" x2="5218" y2="6828" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="4798" y1="6858" x2="4858" y2="6798" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="5188" y1="6858" x2="5248" y2="6798" stroke="#1d4ed8" stroke-width="7"/>
+<text x="5023" y="6923" font-size="70" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">390</text>
+<line x1="3678" y1="7028" x2="5230" y2="7028" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="3648" y1="7058" x2="3708" y2="6998" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="5200" y1="7058" x2="5260" y2="6998" stroke="#1d4ed8" stroke-width="7"/>
+<text x="4454" y="7123" font-size="70" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle">1552</text>
+<line x1="3578" y1="6568" x2="3678" y2="6568" stroke="#1d4ed8" stroke-width="4"/>
+<line x1="3528" y1="6568" x2="3578" y2="6568" stroke="#1d4ed8" stroke-width="3"/>
+<text x="3508" y="6568" font-size="75" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle">100</text>
+<line x1="3578" y1="5806" x2="3678" y2="5806" stroke="#1d4ed8" stroke-width="4"/>
+<line x1="3528" y1="5806" x2="3578" y2="5806" stroke="#1d4ed8" stroke-width="3"/>
+<text x="3508" y="5806" font-size="75" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle">862</text>
+<line x1="3578" y1="5768" x2="3678" y2="5768" stroke="#1d4ed8" stroke-width="4"/>
+<line x1="3528" y1="5716" x2="3578" y2="5768" stroke="#1d4ed8" stroke-width="3"/>
+<text x="3508" y="5716" font-size="75" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle">900</text>
+<line x1="3578" y1="5118" x2="3678" y2="5118" stroke="#1d4ed8" stroke-width="4"/>
+<line x1="3528" y1="5118" x2="3578" y2="5118" stroke="#1d4ed8" stroke-width="3"/>
+<text x="3508" y="5118" font-size="75" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle">1550</text>
+<line x1="3578" y1="5018" x2="3678" y2="5018" stroke="#1d4ed8" stroke-width="4"/>
+<line x1="3528" y1="5018" x2="3578" y2="5018" stroke="#1d4ed8" stroke-width="3"/>
+<text x="3508" y="5018" font-size="75" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle">1650</text>
+<line x1="3578" y1="4868" x2="3678" y2="4868" stroke="#1d4ed8" stroke-width="4"/>
+<line x1="3528" y1="4868" x2="3578" y2="4868" stroke="#1d4ed8" stroke-width="3"/>
+<text x="3508" y="4868" font-size="75" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle">1800</text>
+<line x1="3578" y1="4368" x2="3678" y2="4368" stroke="#1d4ed8" stroke-width="4"/>
+<line x1="3528" y1="4368" x2="3578" y2="4368" stroke="#1d4ed8" stroke-width="3"/>
+<text x="3508" y="4368" font-size="75" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle">2300</text>
+<line x1="6230" y1="4352" x2="6230" y2="6668" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="6200" y1="4382" x2="6260" y2="4322" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="6200" y1="6698" x2="6260" y2="6638" stroke="#1d4ed8" stroke-width="7"/>
+<text x="6325" y="5510" font-size="90" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 6325 5510)">2316</text>
+<text x="3678" y="3732" font-size="60" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">BACK WALL</text>
+<text x="5930" y="3732" font-size="60" font-weight="400" fill="#1f2328" text-anchor="end" dominant-baseline="middle">FRONT WALL</text>
+<text x="3678" y="7428" font-size="75" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">up from the finished floor</text>
+</svg>

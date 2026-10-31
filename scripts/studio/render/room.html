@@ -80,7 +80,10 @@ const FITS = new Set(["meter", "heater", "kitchentap", "filter", "showerset", "c
 const SAMPLES = new Set(["anglevalve", "ppr", "upvc", "vent"])
 const OPEN = PLUMB && !ITEM // the sink base and the bathroom's wet walls opened, so their pipework shows
 const BEDP = BED || ITEM === "bed" ? await (await fetch(`/public/designs/studio/render/bed/parts.json?${Date.now()}`)).json() : null
-const [FW, FH] = ITEM ? [1200, 900] : [2400, 1100]
+// &zone=<bed|seating|galley|bath>: the whole room, framed on one zone from the front, a little above
+// -> render/zones/<zone>.jpg (real) and <zone>-line.png (line), for the studio guide's zone pages (D-068)
+const ZONE = Q.get("zone")
+const [FW, FH] = ITEM ? [1200, 900] : ZONE ? [1600, 1200] : [2400, 1100]
 Object.assign(document.getElementById("out").style, { width: `${FW}px`, height: `${FH}px` })
 const S = await (await fetch(`/public/designs/studio/render/scene.json?${Date.now()}`)).json()
 const m = (v) => v / 1000 // layout mm -> metres; three: x = x, y = height (layout z), z = depth (layout y)
@@ -1051,6 +1054,14 @@ if (ITEM) { // a piece on its own: three-quarter view from the front right, a li
       ? side : [0.75, 0.6, 1])
   camera.position.copy(mid).addScaledVector(new THREE.Vector3(...view).normalize(), r * 4)
   camera.lookAt(mid)
+} else if (ZONE) { // one zone: its box from the front, a little above, turned towards its open side
+  const [x0, x1] = { bed: [0, S.bedside[3]], seating: [S.bedside[3], S.galley_x0 - 20], galley: [S.galley_x0 - 20, S.part_x0],
+    bath: [S.part_x0, S.L] }[ZONE].map(m)
+  bb.set(new THREE.Vector3(x0, 0, 0), new THREE.Vector3(x1, H, W))
+  const zm = bb.getCenter(new THREE.Vector3())
+  const dir = { bed: [0.45, 0.55, 1], seating: [0, 0.5, 1], galley: [-0.55, 0.45, 1], bath: [-0.5, 0.55, 1] }[ZONE]
+  camera.position.copy(zm).addScaledVector(new THREE.Vector3(...dir).normalize(), 4.2)
+  camera.lookAt(zm)
 } else {
   camera.position.set(cx, 3.3, W + 5.2)
   camera.lookAt(cx, 3.3, 0) // level; the view offset below frames the room without tilting

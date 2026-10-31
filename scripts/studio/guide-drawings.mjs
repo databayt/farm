@@ -404,10 +404,141 @@ function kitchen(t, lang) {
   write("kitchen", lang, s)
 }
 
+// ------------------------------------------------------------------ 11. the four zones, every size (D-068)
+// One sheet per zone: the plan on top (from above, the back wall at the top), and below it the elevation seen from
+// the glass side (end A on the left, heights from the finished floor). Every piece carries its width, its depth and
+// its height; the clearances between them are dimensioned too. Boxes are [x0, y0, z0, x1, y1, z1].
+const Z_WORDS = {
+  en: { above: "FROM ABOVE", side: "FROM THE GLASS SIDE", endB: "FROM THE ROOM, FACING END B", mattress: "MATTRESS", boxes: "STORAGE BOX", headboard: "HEADBOARD",
+    lamp: "LAMP", worktop: "WORKTOP", walk: "walk", pull: "pull-out 600", leaf: "LEAF (open)", w1: "W1 (front wall)",
+    screen: "GLASS", heater: "HEATER", zone: { bed: "BED", seating: "SEATING", galley: "GALLEY", bath: "BATH" } },
+  rw: { above: "UREBYE UVA HEJURU", side: "UREBYE UTURUTSE KU KIRAHURE", endB: "UREBYE URI MU CYUMBA, UREBA END B", mattress: "MATELA", boxes: "AGASANDUKU",
+    headboard: "IKIBAHO CY'UMUTWE", lamp: "ITARA", worktop: "WORKTOP", walk: "inzira", pull: "gisohoka 600",
+    leaf: "URUGI (rufunguye)", w1: "W1 (urukuta rw'imbere)", screen: "IKIRAHURE", heater: "HEATER",
+    zone: { bed: "IGITANDA", seating: "KWICARA", galley: "IGIKONI", bath: "UBWIHERERO" } },
+}
+function zoneSheets(t, lang) {
+  const z = Z_WORDS[lang], S = scene, ZT = 450, TOP = 900, LEG = 100
+  const wt = [S.part_x0 - 620, 0, TOP - 38, S.part_x0, S.sink[1] + 12, TOP]
+  const base = (y, label) => ({ b: [S.galley_x0, y[0], LEG, S.part_x0, y[1], TOP - 38], fill: "#e4ecf3", label })
+  const wh = S.fittings.find((f) => f.id === "WH"), [hw, hh, hd] = wh.size
+  const zones = {
+    bed: { x: [0, S.bedside[3]], items: [
+      { b: [0, 0, 0, S.bed_x1, S.bed_y0, 1000], fill: "#c9935a", label: z.headboard, plan: false },
+      { b: [0, S.bed_y0, 0, S.bed_x1, S.bed_y1, ZT], fill: "#f3e3c9", label: t.bed },
+      { b: [20, S.bed_y0 + 28, ZT, S.bed_x1 - 20, S.bed_y1 - 10, ZT + 200], fill: "#ffffff", label: z.mattress, plan: false },
+      ...S.drawers.map(([a, b]) => ({ b: [S.bed_x1 - 618, a, 62, S.bed_x1, b, ZT - 98], fill: "none", dash: true, label: z.boxes, side: false })),
+      { b: S.bedside, fill: "#ead2ad", label: t.bedside },
+      { b: S.lamp, fill: "#fff7e0", label: z.lamp, plan: false },
+    ], gaps: [["y", S.bed_x1 + 60, S.bed_y1, S.W, z.walk]] },
+    seating: { x: [S.bedside[3], S.galley_x0 - 20], items: [
+      { b: S.sofa, fill: "#dfe4ea", label: t.sofa },
+      { b: S.table, fill: "#ead2ad", label: t.table },
+      ...S.chairs.map((c) => ({ b: c, fill: "#ead2ad", label: t.chair })),
+    ], gaps: [["x", S.sofa[1] + 300, S.sofa[3], S.part_x0 - 620, z.walk], ["y", S.table[0] + 60, S.sofa[4], S.table[1], ""],
+      ["y", (S.table[0] + S.table[3]) / 2, S.chairs[0][4], S.W, z.walk]] },
+    galley: { x: [S.part_x0 - 620 - 400, S.part_x0], view: "y", items: [
+      base(S.fridge, t.fridge), base(S.hob, t.hob), base(S.sink, t.sink),
+      { b: wt, fill: "#c9935a", label: z.worktop, plan: false },
+      ...S.overhead.map((o) => ({ b: o, fill: "#e4ecf3", label: t.overhead, plan: false })),
+      { b: S.hood, fill: "#3b3b3b", label: t.hood, plan: false, ink: "#ffffff" },
+      { b: S.chimney, fill: "#3b3b3b", label: "", plan: false },
+    ], gaps: [["y", S.part_x0 - 300, S.sink[1] + 12, S.W, `${z.walk}`]] },
+    bath: { x: [S.part_x0, S.L], view: "y", items: [
+      { b: [S.part_x0, 0, 0, S.bath_x0, S.bdoor[0], H], fill: "#8d8578", label: "", side: false },
+      { b: S.tray, fill: C.wet, label: t.shower },
+      { b: S.screen, fill: "none", label: z.screen, plan: false },
+      { b: S.wc, fill: C.fit, label: t.wc },
+      { b: [S.door[0], S.bleaf[0], S.door[2], S.door[3], S.bleaf[1], S.door[5]], fill: "none", dash: true, label: z.leaf },
+      { b: [S.wall_b - hd, wh.at[1] - hw / 2, wh.at[2] - hh / 2, S.wall_b, wh.at[1] + hw / 2, wh.at[2] + hh / 2], fill: "#ffffff", label: z.heater, plan: false },
+    ], gaps: [["y", S.bath_x0 + 150, S.bdoor[0] + 18, S.W - 18, t.door], ["x", S.tray[4] + 120, S.bath_x0, S.wc[0], ""]] },
+  }
+  for (const [name, zd] of Object.entries(zones)) {
+    const [x0, x1] = zd.x, w = x1 - x0, gap = zd.view === "y" ? 2100 : 1500, EY = W + gap // the elevation's floor sits at EY + H
+    const Z = (v) => EY + H - v
+    const plans = zd.items.filter((i) => i.plan !== false), sides = zd.items.filter((i) => i.side !== false)
+    const nx = new Set(plans.map((i) => `${r(i.b[0])}-${r(i.b[3])}`)).size
+    const s = new Sheet(x0 - 1300, -700 - nx * 230, Math.max(w + 2700 + 260 * plans.length, W + 2000), W + gap + H + 2100 + nx * 230)
+    // plan: the room's strip, the walls, then the pieces
+    s.rect(x0, 0, w, W, "#fbf8f1", C.ink, 10)
+    s.rect(x0, -E, w, E, C.steel, "none", 0); s.rect(x0, W, w, E, C.steel, "none", 0)
+    for (const [a, b] of [S.o1, S.o2]) if (b > x0 && a < x1) s.rect(Math.max(a, x0), W - 5, Math.min(b, x1) - Math.max(a, x0), E + 10, C.wet, C.ink, 5)
+    if (x0 === 0) s.rect(-E, -E, E, W + 2 * E, C.steel, "none", 0)
+    if (x1 === S.L) s.rect(S.wall_b, 0, S.L - S.wall_b, W, "#d8d2c6", C.ink, 4)
+    for (const i of plans) {
+      const [a, b, , c, d] = i.b
+      s.rect(a, b, c - a, d - b, i.fill, C.ink, 6, i.dash ? "30 20" : "")
+      if (i.label) s.text((a + c) / 2, (b + d) / 2, i.label, { size: 70, weight: 700 })
+    }
+    s.text(x0, -480 - nx * 230, `${z.zone[name]} · ${z.above}`, { size: 110, weight: 700, anchor: "start" })
+    // widths along the top, one row per distinct span, nearest the plan first
+    const seen = new Set(); let row = 0
+    for (const i of [...plans].sort((p, q) => (p.b[3] - p.b[0]) - (q.b[3] - q.b[0]))) {
+      const k = `${r(i.b[0])}-${r(i.b[3])}`
+      if (seen.has(k)) continue
+      seen.add(k); s.dimH(i.b[0], i.b[3], -230 - row++ * 230, r(i.b[3] - i.b[0]), { size: 85 })
+    }
+    // depths on the right, one column per piece, and the zone's span and the room's width
+    plans.forEach((i, n) => s.dimV(x1 + 300 + n * 260, i.b[1], i.b[4], r(i.b[4] - i.b[1]), { size: 80, left: false }))
+    s.dimV(x0 - 450, 0, W, W, { size: 90 })
+    s.dimH(x0, x1, W + 450, r(w), { size: 90, below: true })
+    // where the zone starts and ends, from end A
+    s.text(x0, W + 800, `${t.fromA}: ${r(x0)} → ${r(x1)}`, { size: 75, anchor: "start" })
+    for (const [axis, at, a, b, label] of zd.gaps) {
+      if (axis === "y") s.dimV(at, a, b, `${label ? `${label} ` : ""}${r(b - a)}`, { size: 75, color: C.cut, left: false })
+      else s.dimH(a, b, at, `${label ? `${label} ` : ""}${r(b - a)}`, { size: 75, color: C.cut })
+    }
+    // elevation: the far pieces first, so the nearer ones draw over them. Seen from the glass side the run is along x;
+    // the galley and the bath run across the width, so they are seen from the room facing end B (y across, the back
+    // wall on the left). A label is left off where a nearer piece covers it.
+    const byY = zd.view === "y", ew = byY ? W : w, hx = (v) => (byY ? x0 + v : v)
+    let eb = Z(0), et = Z(H) // the elevation's dimension rows, below and above
+    s.text(x0, EY - 250 - (byY ? 600 : 0), `${z.zone[name]} · ${byY ? z.endB : z.side}`, { size: 110, weight: 700, anchor: "start" })
+    s.rect(x0, Z(H), ew, H, C.soft, C.steel, 8)
+    const order = [...sides].sort((p, q) => (byY ? q.b[0] - p.b[0] : p.b[1] - q.b[1]))
+    const span = (i) => (byY ? [i.b[1], i.b[4]] : [i.b[0], i.b[3]])
+    order.forEach((i) => {
+      const [a, c] = span(i)
+      s.rect(hx(a), Z(i.b[5]), c - a, i.b[5] - i.b[2], i.fill, C.ink, 6, i.dash ? "30 20" : "")
+    })
+    order.forEach((i, n) => {
+      const [a, c] = span(i), cx = (a + c) / 2, cz = (i.b[2] + i.b[5]) / 2
+      const hidden = order.slice(n + 1).some((j) => j.fill !== "none" && span(j)[0] < cx && cx < span(j)[1] && j.b[2] < cz && cz < j.b[5])
+      if (i.label && i.b[5] - i.b[2] > 120 && !hidden) s.text(hx(cx), Z(cz), i.label, { size: 60, weight: 700, fill: i.ink ?? C.ink })
+    })
+    // across the width: each piece's width, low pieces below the floor line and high ones above the ceiling, in rows
+    // so that no two overlap
+    if (byY) {
+      const rowsBy = { low: [], high: [] }
+      for (const i of order.filter((j) => j.fill !== "none" && j.b[4] - j.b[1] > 60)) {
+        const k = i.b[2] < 1000 ? "low" : "high", rs = rowsBy[k], a = i.b[1], c = i.b[4]
+        let n = rs.findIndex((row) => row.every(([p, q]) => c <= p + 1 || a >= q - 1))
+        if (n < 0) { n = rs.length; rs.push([]) }
+        rs[n].push([a, c])
+        const y = k === "low" ? Z(0) + 160 + n * 200 : Z(H) - 160 - n * 200
+        s.dimH(hx(a), hx(c), y, r(c - a), { size: 70, below: k === "low" })
+      }
+      eb = Z(0) + 160 + rowsBy.low.length * 200; et = Z(H) - 160 - rowsBy.high.length * 200
+    }
+    // heights: every piece's top and bottom (off the floor), as ordinates on the left
+    const zs = [...new Set(sides.flatMap((i) => [i.b[2], i.b[5]]).map(r))].filter((v) => v > 0 && v < H).sort((a, b) => a - b)
+    let ly = Infinity // labels close together step apart, each with a leader to its own tick
+    for (const v of zs) {
+      const y = Math.min(Z(v), ly - 90); ly = y
+      s.line(x0 - 100, Z(v), x0, Z(v), C.dim, 4); s.line(x0 - 150, y, x0 - 100, Z(v), C.dim, 3)
+      s.text(x0 - 170, y, v, { size: 75, fill: C.dim, weight: 700, anchor: "end" })
+    }
+    s.dimV(x0 + ew + 300, Z(H), Z(0), H, { size: 90, left: false })
+    if (byY) { s.text(x0, et - 60, t.back, { size: 60, anchor: "start" }); s.text(x0 + ew, et - 60, t.front, { size: 60, anchor: "end" }) }
+    s.text(x0, eb + 200, t.up, { size: 75, anchor: "start" })
+    write(`zone-${name}`, lang, s)
+  }
+}
+
 for (const lang of ["en", "rw"]) {
   const t = T[lang]
   measure(t, lang); plan(t, lang); layers(t, lang); floor(t, lang)
   battensBack(t, lang); battensEndFront(t, lang); battensCeiling(t, lang)
-  panels(t, lang); bathroom(t, lang); kitchen(t, lang)
+  panels(t, lang); bathroom(t, lang); kitchen(t, lang); zoneSheets(t, lang)
 }
 console.log("guide drawings ->", OUT.slice(ROOT.length + 1))
