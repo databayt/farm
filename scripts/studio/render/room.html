@@ -437,7 +437,7 @@ function ring(x0, z0, x1, z1, r, t, y0, h, name, bevel = 0) {
 }
 
 const L = m(S.L), W = m(S.W), H = m(S.H), e = m(S.lining)
-const px0 = m(S.part_x0), bx0 = m(S.bath_x0), cy0 = m(S.bath_y1), cy1 = m(S.bath_y1 + S.cross_t), wb = m(S.wall_b)
+const px0 = m(S.part_x0), bx0 = m(S.bath_x0), wb = m(S.wall_b), dz0 = m(S.bdoor[0])
 
 // ------------------------------------------------------------ the room: floor, walls, section cuts
 if (!ITEM) {
@@ -452,27 +452,24 @@ if (OPEN) {
   box(bx0, 0, -e, L + e, H, -e + t, "foam") // back wall, bathroom
   for (let x = bx0 + 0.3; x < L; x += 0.6) box(x, 0, -e + t, x + 0.038, H, -t, "batten")
   box(bx0, H - 0.004, -e, L + e, H + 0.002, 0, "cut")
-  box(L + e - t, 0, 0, L + e, H, W, "foam") // end B, shower room through the lobby
+  box(L + e - t, 0, 0, L + e, H, W, "foam") // end B, the whole bathroom
   for (let z = 0.3; z < W; z += 0.6) { // battens at 600; the cistern frame's posts stand in for them behind the WC
     if (z < m(S.wc[1]) - 0.28 || z > m(S.wc[4]) + 0.28) box(L + t, 0, z, L + e - t, H, z + 0.038, "batten")
   }
   box(L, H - 0.004, 0, L + e, H + 0.002, W, "cut")
 } else {
   cutWall(bx0, 0, -e, L + e, H, 0, "marble") // back wall, bathroom
-  cutWall(wb, 0, 0, L + e, H, cy0, "marble") // end B, bathroom: built out flat over the concealed cistern
-  cutWall(L, 0, cy1, L + e, H, W, "wall") // end B in the lobby, where the sliding leaf parks
-  cutWall(L, 0, cy0, L + e, H, cy1, "wall")
+  cutWall(wb, 0, 0, L + e, H, W, "marble") // end B, bathroom: built out flat over the concealed cistern
 }
 // front wall off: a low curb either side of the sliding glass (the entrance)
 const curb = 0.12
 cutWall(-e, 0, W, m(S.o1[0]), curb, W + e, "wall")
 cutWall(m(S.o1[1]), 0, W, L + e, curb, W + e, "wall") // solid past the glazing: W1 has steel infill below its sill
-// the partition between the galley and the bathroom stands full height, in place
-cutWall(px0, 0, 0, bx0, H, cy1, "wall")
-box(bx0 - 0.012, 0, 0, bx0, H, cy0, "marble")
-// the cross wall is cut low so the shower and WC show behind it; the door opening is left open
-const cut = 0.55, d0 = m(S.bdoor[0]), d1 = m(S.bdoor[1])
-cutWall(d1, 0, cy0, L, cut, cy1, "marble")
+// the partition between the galley and the bathroom stands full height, in place, open by the front wall for the
+// bathroom door (D-067), with its head over the opening
+cutWall(px0, 0, 0, bx0, H, dz0, "wall")
+box(bx0 - 0.012, 0, 0, bx0, H, dz0, "marble")
+cutWall(px0, 2.05, dz0, bx0, H, W, "wall")
 }
 
 // ------------------------------------------------------------ bed (MALM look), bedside table, reading lamps
@@ -800,16 +797,18 @@ if (!ITEM || ROOM_ITEMS.has(ITEM) || FITS.has(ITEM)) {
   box(wb - 0.009, 0.97, pcz + 0.006, wb - 0.005, 1.05, pcz + 0.1, "steel", 0.004)
   fitted(nw, "cistern")
   TAG = "prop"
-  // roll holder on the cross wall's bath face
-  cyl(L - 0.45, 0.72, cy0 - 0.05, 0.055, 0.1, "white", "x", 32)
-  box(L - 0.52, 0.715, cy0 - 0.012, L - 0.38, 0.725, cy0, "steel")
+  // roll holder on end wall B, beside the WC towards the door
+  const rz = m(S.wc[4]) + 0.2
+  cyl(wb - 0.05, 0.72, rz, 0.055, 0.1, "white", "z", 32)
+  box(wb - 0.012, 0.715, rz - 0.07, wb, 0.725, rz + 0.07, "steel")
 
   TAG = "door"
-  // the sliding leaf parked open on the lobby face towards end B, cut low with the cross wall so the WC shows;
-  // a flush pull near its leading edge
-  const [lx0, , lz0, lx1, , lz1] = L3(S.door), lw = lx1 - lx0, px = m(S.bleaf[0])
-  box(px, 0.005, lz0, px + lw, ITEM ? m(S.door[5]) : 0.55, lz1, "pine", 0.004) // 0.55: the cross wall's cut
-  if (ITEM) box(px + 0.05, 0.95, lz1, px + 0.07, 1.15, lz1 + 0.004, "black", 0.002)
+  // the sliding leaf inside the bathroom on the partition, parked open towards the back wall, its track above;
+  // a flush pull near its front edge
+  const [lx0, , , lx1, ly1] = L3(S.door), lz0 = m(S.bleaf[0]), lz1 = m(S.bleaf[1])
+  box(lx0, 0.005, lz0, lx1, ly1, lz1, "pine", 0.004)
+  box(lx1 - 0.004, 0.95, lz1 - 0.07, lx1 + 0.002, 1.15, lz1 - 0.05, "black", 0.002)
+  box(bx0, 2.06, lz0, bx0 + 0.06, 2.12, W, "steel", 0.004)
 }
 
 // ------------------------------------------------------------ electric: the devices of scene.json's points

@@ -1,13 +1,13 @@
 id,wall,measured,centre_mm,length_mm
 K1-BAT-01,back wall,from the steel of end A,75,2316
-K1-BAT-02,back wall,from the steel of end A,622,2316
-K1-BAT-03,back wall,from the steel of end A,1194,2316
-K1-BAT-04,back wall,from the steel of end A,1767,2316
-K1-BAT-05,back wall,from the steel of end A,2339,2316
-K1-BAT-06,back wall,from the steel of end A,2911,2316
-K1-BAT-07,back wall,from the steel of end A,3484,2316
-K1-BAT-08,back wall,from the steel of end A,4056,2316
-K1-BAT-09,back wall,from the steel of end A,4603,2316
+K1-BAT-02,back wall,from the steel of end A,637,2316
+K1-BAT-03,back wall,from the steel of end A,1224,2316
+K1-BAT-04,back wall,from the steel of end A,1812,2316
+K1-BAT-05,back wall,from the steel of end A,2399,2316
+K1-BAT-06,back wall,from the steel of end A,2986,2316
+K1-BAT-07,back wall,from the steel of end A,3574,2316
+K1-BAT-08,back wall,from the steel of end A,4161,2316
+K1-BAT-09,back wall,from the steel of end A,4723,2316
 K1-BAT-10,end A,from the steel of the back wall,75,2316
 K1-BAT-11,end A,from the steel of the back wall,613,2316
 K1-BAT-12,end A,from the steel of the back wall,1176,2316

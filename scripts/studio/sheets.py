@@ -123,7 +123,7 @@ def a102_options(m) -> Sheet:
          "FAIL: WC side 364 < 400, front 500 < 600; 550 mm door", False)
     s.note(20, 120, [
         "Options checked by the generator against the same rules (scripts/studio/validate.py):",
-        "WC centreline at least 400 from walls and 600 clear in front; shower tray at least 1,000 x 900; galley aisle at",
+        "WC centreline at least 400 from walls and 420 clear in front to the parked leaf (1 m bathroom, D-067); shower tray at least 1,000 x 900; galley aisle at",
         "least 800 to the sofa; door and drawer sweeps clear of solids; partition on the solid strip after the glazing.",
         "Layout B keeps A's bathroom (WC facing across the width) and passes at the estimate and at -150 / +150 mm.",
         "A first version with the WC facing along the container failed if the glazing ended more than about 70 mm later.",
@@ -151,11 +151,11 @@ def a103_plan(m) -> Sheet:
     s.dim(X(0), Y(lo.W) + 6, X(lo.L), Y(lo.W) + 6, f"{lo.L:.0f} net", -8)
     s.dim(X(lo.o1[0]), Y(lo.W) + 3, X(lo.o1[1]), Y(lo.W) + 3, f"slider {lo.o1[1] - lo.o1[0]:.0f}", -4)
     s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:.0f}", -4)
-    # the bathroom's sliding door: the leaf closed on the lobby face, dashed where it parks open
-    cy1 = lo.bath_y1 + lo.cross_t
+    # the bathroom's sliding door: the leaf closed inside on the partition, dashed where it parks open
+    bx1 = lo.bath_x0
     lw = lo.bleaf[1] - lo.bleaf[0]
-    s.rect(X(lo.bdoor[0] + 18 - 20), Y(cy1 + 10), lw / sc, 40 / sc, "#fff", "#111", 0.2)
-    s.rect(X(lo.bleaf[0]), Y(cy1 + 10), lw / sc, 40 / sc, "none", "#111", 0.15, dash="0.8,0.6")
+    s.rect(X(bx1 + 10), Y(lo.W - lw), 40 / sc, lw / sc, "#fff", "#111", 0.2)
+    s.rect(X(bx1 + 10), Y(lo.bleaf[0]), 40 / sc, lw / sc, "none", "#111", 0.15, dash="0.8,0.6")
     for y0, y1, lab in (lo.fridge + ("fridge",), lo.hob + ("hob",), lo.sink + ("sink",)):
         s.dim(X(lo.galley_x0) - 4, Y(y0), X(lo.galley_x0) - 4, Y(y1), f"{y1 - y0:.0f} {lab}", 3)
     for (lx, ly, t) in ((800, 1100, "BED 1,600 x 2,000"), ((lo.galley_x0 + lo.part_x0) / 2, lo.sink[1] + 200, "GALLEY 900"),
@@ -217,17 +217,16 @@ def plan_bw(m) -> str:
     box(hob.x0, hob.y0, hob.x1, hob.y1)
     for hy in ((hob.y0 + hob.y1) / 2 - 148, (hob.y0 + hob.y1) / 2 + 148):
         s.circle(X((hob.x0 + hob.x1) / 2), Y(hy), 90 / sc, "none", ink, sw)
-    # partition to the cross wall; the cross wall with its sliding-door opening; the door leaf
-    cy0, cy1 = lo.bath_y1, lo.bath_y1 + lo.cross_t
-    box(lo.part_x0, 0, lo.bath_x0, cy1, ink, 0.1)
+    # the partition with its door opening by the front wall; the leaf closed inside it, dashed where it parks open
     d0, d1 = lo.bdoor
-    box(lo.bath_x0, cy0, d0 + 18, cy1, ink, 0.1)
-    box(d1, cy0, lo.L, cy1, ink, 0.1)
+    box(lo.part_x0, 0, lo.bath_x0, d0, ink, 0.1)
+    for a, b in ((d0, d0 + 18), (d1 - 18, d1)):
+        box(lo.part_x0, a, lo.bath_x0 - 12, b, ink, 0.1)  # the jambs
     lw = lo.bleaf[1] - lo.bleaf[0]
-    box(d0 + 18 - 20, cy1 + 10, d0 + 18 - 20 + lw, cy1 + 50)  # the leaf, closed on the lobby face
-    s.rect(X(lo.bleaf[0]), Y(cy1 + 10), lw / sc, 40 / sc, "none", ink, 0.18, dash="0.8,0.6")  # parked open
+    box(lo.bath_x0 + 10, lo.W - lw, lo.bath_x0 + 50, lo.W)
+    s.rect(X(lo.bath_x0 + 10), Y(lo.bleaf[0]), 40 / sc, lw / sc, "none", ink, 0.18, dash="0.8,0.6")  # parked open
     # bathroom: shower tray with its drain, WC
-    box(lo.wall_b, 0, lo.L, cy0, ink, 0.1)  # end wall built out over the concealed cistern
+    box(lo.wall_b, 0, lo.L, lo.W, ink, 0.1)  # end wall built out over the concealed cistern
     tx0, tx1, ty0, ty1 = lo.tray
     box(tx0, ty0, tx1, ty1)
     s.circle(X((tx0 + tx1) / 2), Y((ty0 + ty1) / 2), 45 / sc, "none", ink, sw)
@@ -247,10 +246,10 @@ def plan_bw(m) -> str:
     # end A: the bed's length and the floor in front of it; end B: the bathroom's depth, then the overall width
     for y0, y1 in ((lo.bed_y0, lo.bed_y1), (lo.bed_y1, lo.W)):
         s.dim(X(0) - 6, Y(y0), X(0) - 6, Y(y1), mm(y1 - y0), 4, 2.4, inline=True)
-    s.dim(X(lo.L) + 4, Y(0), X(lo.L) + 4, Y(cy0), mm(cy0), -4, 2.4, inline=True)
+    s.dim(X(lo.L) + 4, Y(0), X(lo.L) + 4, Y(ty1), mm(ty1), -4, 2.4, inline=True)
     s.dim(X(lo.L) + 4, Y(0), X(lo.L) + 4, Y(lo.W), mm(lo.W), -10, 2.4, inline=True)
     # inside: the bathroom door opening, and the walkway between the sofa end and the worktop
-    s.dim(X(d0 + 18), Y(cy1 + 50) + 1, X(d1 - 18), Y(cy1 + 50) + 1, mm(d1 - d0 - 36), 3, 2.2, inline=True)
+    s.dim(X(lo.part_x0) - 1, Y(d0 + 18), X(lo.part_x0) - 1, Y(d1 - 18), mm(d1 - d0 - 36), 3, 2.2, inline=True)
     wy = Y((sb.y0 + sb.y1) / 2)
     s.dim(X(sb.x1), wy, X(X0), wy, mm(X0 - sb.x1), 0, 2.2, inline=True)
     return s.bare(X(lo.L) + 22, Y(lo.W) + 22)
@@ -285,7 +284,7 @@ def scene_json(m) -> dict:
         "fridge": list(lo.fridge), "hob": list(lo.hob), "sink": list(lo.sink),
         "overhead": [union(lambda i, n: i.startswith("K3-T-")), union(lambda i, n: i.startswith("K3-U-"))],
         "hood": box(by_id["K3-HOOD"]), "chimney": box(by_id["K3-CHIM"]), "hob_box": box(by_id["K3-HOB"]), "sink_box": box(by_id["K3-SINK"]),
-        "bath_x0": lo.bath_x0, "bath_y1": lo.bath_y1, "cross_t": lo.cross_t, "bdoor": list(lo.bdoor),
+        "bath_x0": lo.bath_x0, "bdoor": list(lo.bdoor),
         "bleaf": list(lo.bleaf), "door": box(by_id["K2-DOOR"]),
         "wall_b": lo.wall_b,
         "tray": box(by_id["K2-TRAY"]), "screen": box(by_id["K2-SCREEN"]), "wc": box(by_id["K2-WC"]),

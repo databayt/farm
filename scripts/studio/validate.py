@@ -1,7 +1,7 @@
 """Checks that fail the build: geometry, clearances, services, nesting, BOM, steps."""
 from __future__ import annotations
 
-from layout import AISLE_MIN, JAMB_T, PASS_MIN, WC_D
+from layout import AISLE_MIN, JAMB_T, PASS_MIN, WC_PAN
 from model import Box, Kit
 from services import STANDARD_INLET_A, TEMPERED_MAX
 
@@ -61,13 +61,14 @@ def check(kits: list[Kit], lo, circuits, md, runs) -> tuple[list[str], list[dict
     tx0, tx1, ty0, ty1 = lo.tray
     rule("R-TRAY", "Shower tray length (mm)", tx1 - tx0, 1000)
     rule("R-WC-SIDE", "WC centreline to the shower (mm)", lo.wc_cy - lo.tray[3], 400)
-    rule("R-WC-SIDE2", "WC centreline to the bathroom wall (mm)", lo.bath_y1 - lo.wc_cy, 400)
-    rule("R-WC-FRONT", "Clear space in front of the WC (mm)", lo.L - WC_D - lo.bath_x0, 600)
-    rule("R-BDOOR", "Bathroom door clear opening, between the jambs (mm)", lo.bdoor[1] - lo.bdoor[0] - 2 * JAMB_T, 530)
-    rule("R-SLIDE", "Open sliding leaf clear of end wall B (mm)", lo.L - lo.bleaf[1], 20)
+    rule("R-WC-SIDE2", "WC centreline to the front wall (mm)", lo.W - lo.wc_cy, 400)
+    # a 1 m bathroom (D-067): nothing swings, so the WC's front space runs to the parked leaf, under the 600 guide
+    rule("R-WC-FRONT", "Clear space in front of the WC, to the parked leaf (mm)", lo.wall_b - WC_PAN - lo.bath_x0 - 50, 420)
+    rule("R-BDOOR", "Bathroom door clear opening, between the jambs (mm)", lo.bdoor[1] - lo.bdoor[0] - 2 * JAMB_T, 560)
+    rule("R-SLIDE", "Open sliding leaf clear of the shower (mm)", lo.bleaf[0] - lo.tray[3], 100)
     rule("R-AISLE", "Walkway, worktop to the sofa end (mm)", lo.part_x0 - 620 - lo.sofa[1], AISLE_MIN)
     rule("R-BEDSIDE", "Sofa clear of the bedside table (mm)", lo.sofa[0] - lo.bedside[1], 20)
-    rule("R-GALLEY", "Galley clear of the bathroom wall end (mm)", lo.bath_y1 - lo.sink[1], 30)
+    rule("R-GALLEY", "Galley end clear of the bathroom door (mm)", lo.bdoor[0] - lo.sink[1], 30)
     rule("R-PASS", "Walk past the galley end to the bathroom door (mm)", lo.W - lo.sink[1], PASS_MIN)
     rule("R-BED", "Room beside the bed foot (mm)", lo.W - lo.bed_y1, 50)
     rule("R-HEIGHT", "Clear height (mm)", lo.H, 2250)

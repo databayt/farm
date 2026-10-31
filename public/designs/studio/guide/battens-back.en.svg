@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-500 -1000 6128 4016" width="1021" height="669" font-family="Helvetica, Arial, sans-serif">
-<rect x="-500" y="-1000" width="6128" height="4016" fill="#ffffff"/>
-<rect x="0" y="0" width="4628" height="2316" fill="#f4efe6" stroke="#9aa1a9" stroke-width="16"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-500 -1000 6248 4016" width="1041" height="669" font-family="Helvetica, Arial, sans-serif">
+<rect x="-500" y="-1000" width="6248" height="4016" fill="#ffffff"/>
+<rect x="0" y="0" width="4748" height="2316" fill="#f4efe6" stroke="#9aa1a9" stroke-width="16"/>
 <rect x="50" y="0" width="1144" height="2316" fill="none" stroke="#c9c2b4" stroke-width="6" stroke-dasharray="40 30"/>
 <text x="350" y="277.92" font-size="80" font-weight="700" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">K1-01</text>
 <text x="350" y="387.92" font-size="80" font-weight="400" fill="#8d8578" text-anchor="middle" dominant-baseline="middle">1144</text>
@@ -19,79 +19,79 @@
 <circle cx="75" cy="1066" r="16" fill="#1f2328"/>
 <circle cx="75" cy="466" r="16" fill="#1f2328"/>
 <circle cx="75" cy="60" r="16" fill="#1f2328"/>
-<rect x="597" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
-<circle cx="622" cy="2256" r="16" fill="#1f2328"/>
-<circle cx="622" cy="1666" r="16" fill="#1f2328"/>
-<circle cx="622" cy="1066" r="16" fill="#1f2328"/>
-<circle cx="622" cy="466" r="16" fill="#1f2328"/>
-<circle cx="622" cy="60" r="16" fill="#1f2328"/>
-<rect x="1169" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
-<circle cx="1194" cy="2256" r="16" fill="#1f2328"/>
-<circle cx="1194" cy="1666" r="16" fill="#1f2328"/>
-<circle cx="1194" cy="1066" r="16" fill="#1f2328"/>
-<circle cx="1194" cy="466" r="16" fill="#1f2328"/>
-<circle cx="1194" cy="60" r="16" fill="#1f2328"/>
-<rect x="1742" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
-<circle cx="1767" cy="2256" r="16" fill="#1f2328"/>
-<circle cx="1767" cy="1666" r="16" fill="#1f2328"/>
-<circle cx="1767" cy="1066" r="16" fill="#1f2328"/>
-<circle cx="1767" cy="466" r="16" fill="#1f2328"/>
-<circle cx="1767" cy="60" r="16" fill="#1f2328"/>
-<rect x="2314" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
-<circle cx="2339" cy="2256" r="16" fill="#1f2328"/>
-<circle cx="2339" cy="1666" r="16" fill="#1f2328"/>
-<circle cx="2339" cy="1066" r="16" fill="#1f2328"/>
-<circle cx="2339" cy="466" r="16" fill="#1f2328"/>
-<circle cx="2339" cy="60" r="16" fill="#1f2328"/>
-<rect x="2886" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
-<circle cx="2911" cy="2256" r="16" fill="#1f2328"/>
-<circle cx="2911" cy="1666" r="16" fill="#1f2328"/>
-<circle cx="2911" cy="1066" r="16" fill="#1f2328"/>
-<circle cx="2911" cy="466" r="16" fill="#1f2328"/>
-<circle cx="2911" cy="60" r="16" fill="#1f2328"/>
-<rect x="3459" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
-<circle cx="3484" cy="2256" r="16" fill="#1f2328"/>
-<circle cx="3484" cy="1666" r="16" fill="#1f2328"/>
-<circle cx="3484" cy="1066" r="16" fill="#1f2328"/>
-<circle cx="3484" cy="466" r="16" fill="#1f2328"/>
-<circle cx="3484" cy="60" r="16" fill="#1f2328"/>
-<rect x="4031" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
-<circle cx="4056" cy="2256" r="16" fill="#1f2328"/>
-<circle cx="4056" cy="1666" r="16" fill="#1f2328"/>
-<circle cx="4056" cy="1066" r="16" fill="#1f2328"/>
-<circle cx="4056" cy="466" r="16" fill="#1f2328"/>
-<circle cx="4056" cy="60" r="16" fill="#1f2328"/>
-<rect x="4578" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
-<circle cx="4603" cy="2256" r="16" fill="#1f2328"/>
-<circle cx="4603" cy="1666" r="16" fill="#1f2328"/>
-<circle cx="4603" cy="1066" r="16" fill="#1f2328"/>
-<circle cx="4603" cy="466" r="16" fill="#1f2328"/>
-<circle cx="4603" cy="60" r="16" fill="#1f2328"/>
-<line x1="0" y1="2576" x2="4628" y2="2576" stroke="#1d4ed8" stroke-width="4"/>
+<rect x="612" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<circle cx="637" cy="2256" r="16" fill="#1f2328"/>
+<circle cx="637" cy="1666" r="16" fill="#1f2328"/>
+<circle cx="637" cy="1066" r="16" fill="#1f2328"/>
+<circle cx="637" cy="466" r="16" fill="#1f2328"/>
+<circle cx="637" cy="60" r="16" fill="#1f2328"/>
+<rect x="1199" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<circle cx="1224" cy="2256" r="16" fill="#1f2328"/>
+<circle cx="1224" cy="1666" r="16" fill="#1f2328"/>
+<circle cx="1224" cy="1066" r="16" fill="#1f2328"/>
+<circle cx="1224" cy="466" r="16" fill="#1f2328"/>
+<circle cx="1224" cy="60" r="16" fill="#1f2328"/>
+<rect x="1787" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<circle cx="1812" cy="2256" r="16" fill="#1f2328"/>
+<circle cx="1812" cy="1666" r="16" fill="#1f2328"/>
+<circle cx="1812" cy="1066" r="16" fill="#1f2328"/>
+<circle cx="1812" cy="466" r="16" fill="#1f2328"/>
+<circle cx="1812" cy="60" r="16" fill="#1f2328"/>
+<rect x="2374" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<circle cx="2399" cy="2256" r="16" fill="#1f2328"/>
+<circle cx="2399" cy="1666" r="16" fill="#1f2328"/>
+<circle cx="2399" cy="1066" r="16" fill="#1f2328"/>
+<circle cx="2399" cy="466" r="16" fill="#1f2328"/>
+<circle cx="2399" cy="60" r="16" fill="#1f2328"/>
+<rect x="2961" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<circle cx="2986" cy="2256" r="16" fill="#1f2328"/>
+<circle cx="2986" cy="1666" r="16" fill="#1f2328"/>
+<circle cx="2986" cy="1066" r="16" fill="#1f2328"/>
+<circle cx="2986" cy="466" r="16" fill="#1f2328"/>
+<circle cx="2986" cy="60" r="16" fill="#1f2328"/>
+<rect x="3549" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<circle cx="3574" cy="2256" r="16" fill="#1f2328"/>
+<circle cx="3574" cy="1666" r="16" fill="#1f2328"/>
+<circle cx="3574" cy="1066" r="16" fill="#1f2328"/>
+<circle cx="3574" cy="466" r="16" fill="#1f2328"/>
+<circle cx="3574" cy="60" r="16" fill="#1f2328"/>
+<rect x="4136" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<circle cx="4161" cy="2256" r="16" fill="#1f2328"/>
+<circle cx="4161" cy="1666" r="16" fill="#1f2328"/>
+<circle cx="4161" cy="1066" r="16" fill="#1f2328"/>
+<circle cx="4161" cy="466" r="16" fill="#1f2328"/>
+<circle cx="4161" cy="60" r="16" fill="#1f2328"/>
+<rect x="4698" y="0" width="50" height="2316" fill="#b9874c" stroke="#1f2328" stroke-width="4"/>
+<circle cx="4723" cy="2256" r="16" fill="#1f2328"/>
+<circle cx="4723" cy="1666" r="16" fill="#1f2328"/>
+<circle cx="4723" cy="1066" r="16" fill="#1f2328"/>
+<circle cx="4723" cy="466" r="16" fill="#1f2328"/>
+<circle cx="4723" cy="60" r="16" fill="#1f2328"/>
+<line x1="0" y1="2576" x2="4748" y2="2576" stroke="#1d4ed8" stroke-width="4"/>
 <line x1="75" y1="2536" x2="75" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
 <text x="75" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 75 2646)">75</text>
-<line x1="622" y1="2536" x2="622" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
-<text x="622" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 622 2646)">622</text>
-<line x1="1194" y1="2536" x2="1194" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
-<text x="1194" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 1194 2646)">1194</text>
-<line x1="1767" y1="2536" x2="1767" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
-<text x="1767" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 1767 2646)">1767</text>
-<line x1="2339" y1="2536" x2="2339" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
-<text x="2339" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 2339 2646)">2339</text>
-<line x1="2911" y1="2536" x2="2911" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
-<text x="2911" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 2911 2646)">2911</text>
-<line x1="3484" y1="2536" x2="3484" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
-<text x="3484" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 3484 2646)">3484</text>
-<line x1="4056" y1="2536" x2="4056" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
-<text x="4056" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 4056 2646)">4056</text>
-<line x1="4603" y1="2536" x2="4603" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
-<text x="4603" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 4603 2646)">4603</text>
+<line x1="637" y1="2536" x2="637" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
+<text x="637" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 637 2646)">637</text>
+<line x1="1224" y1="2536" x2="1224" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
+<text x="1224" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 1224 2646)">1224</text>
+<line x1="1812" y1="2536" x2="1812" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
+<text x="1812" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 1812 2646)">1812</text>
+<line x1="2399" y1="2536" x2="2399" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
+<text x="2399" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 2399 2646)">2399</text>
+<line x1="2986" y1="2536" x2="2986" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
+<text x="2986" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 2986 2646)">2986</text>
+<line x1="3574" y1="2536" x2="3574" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
+<text x="3574" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 3574 2646)">3574</text>
+<line x1="4161" y1="2536" x2="4161" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
+<text x="4161" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 4161 2646)">4161</text>
+<line x1="4723" y1="2536" x2="4723" y2="2616" stroke="#1d4ed8" stroke-width="6"/>
+<text x="4723" y="2646" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 4723 2646)">4723</text>
 <text x="-260" y="1158" font-size="100" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -260 1158)">END A</text>
-<text x="4878" y="1158" font-size="100" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4878 1158)">PARTITION</text>
-<line x1="5148" y1="0" x2="5148" y2="2316" stroke="#1d4ed8" stroke-width="5"/>
-<line x1="5118" y1="30" x2="5178" y2="-30" stroke="#1d4ed8" stroke-width="7"/>
-<line x1="5118" y1="2346" x2="5178" y2="2286" stroke="#1d4ed8" stroke-width="7"/>
-<text x="5243" y="1158" font-size="120" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 5243 1158)">2316</text>
+<text x="4998" y="1158" font-size="100" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4998 1158)">PARTITION</text>
+<line x1="5268" y1="0" x2="5268" y2="2316" stroke="#1d4ed8" stroke-width="5"/>
+<line x1="5238" y1="30" x2="5298" y2="-30" stroke="#1d4ed8" stroke-width="7"/>
+<line x1="5238" y1="2346" x2="5298" y2="2286" stroke="#1d4ed8" stroke-width="7"/>
+<text x="5363" y="1158" font-size="120" font-weight="700" fill="#1d4ed8" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 5363 1158)">2316</text>
 <text x="0" y="-650" font-size="95" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">BACK WALL · batten centres, measured from the steel of end A</text>
 <text x="0" y="-470" font-size="90" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">winged screws 5.5 × 50: both ends + every 600</text>
 </svg>

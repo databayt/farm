@@ -1,8 +1,8 @@
 point,kind,model,runs,description,item,x_mm,y_mm,z_mm,face,rating,w_mm,h_mm,d_mm
-SV,valve,meter,W1,"Stop valve, Y-filter and check meter on the main, in the sink base",Stop valve + Y-filter + check water meter,4578,1540,320,-x,DN25,90,260,80
+SV,valve,meter,W1,"Stop valve, Y-filter and check meter on the main, in the sink base",Stop valve + Y-filter + check water meter,4698,1540,320,-x,DN25,90,260,80
 WH,heater,heater,W2 H1,"Instant heater on end wall B inside the shower, its display at eye height; hot only to the shower","Instant electric shower heater 5.5 kW, IPX4, digital thermostat, hand shower and hose",5768,770,1415,-x,"5.5 kW, about 4 L/min, 40 C",200,330,90
-KT,tap,kitchentap,W3 D4,"Kitchen tap (cold), its angle valve under the sink",Kitchen tap (cold),4528,1375,900,+z,6 L/min,60,60,300
-DF,filter,filter,W3,"Drinking-water filter in the sink base, its own faucet by the tap",Under-sink drinking-water filter + faucet,4278,1168,350,+y,drinking water,240,330,110
+KT,tap,kitchentap,W3 D4,"Kitchen tap (cold), its angle valve under the sink",Kitchen tap (cold),4648,1375,900,+z,6 L/min,60,60,300
+DF,filter,filter,W3,"Drinking-water filter in the sink base, its own faucet by the tap",Under-sink drinking-water filter + faucet,4398,1168,350,+y,drinking water,240,330,110
 SH,shower,showerset,H1 D2,"Hand shower on a slide rail on end wall B, fed by the heater's hose",Shower slide rail with hand-shower holder,5768,450,1110,-x,about 4 L/min,180,1000,100
 WC,wc,cistern,W4 D1,"Concealed cistern in end wall B, dual-flush plate","Slim concealed cistern frame (80 mm) with dual-flush plate, in the end-B stud wall and its 30 mm build-out",5768,1300,1010,-x,dual flush,500,1120,80
 IC1,site,chamber,D1 D2,"Inspection chamber outside end B, on to the farm's septic tank","Septic tank (2 chambers, about 4 m3) + inspection chambers",6698,1126,-326,+z,DN110 in,450,450,600

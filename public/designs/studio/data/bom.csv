@@ -1,5 +1,5 @@
 kit,category,trade,item,qty_per_unit,unit,unit_price_rwf,label,source,total_per_unit_rwf,note
-K1-K7,boards,carpentry,MPLY18 sheet 2440x1220x18,3,sheet,60000,A,AS-21,180000,18 mm marine / WBP plywood (STU-31 lists film-faced)
+K1-K7,boards,carpentry,MPLY18 sheet 2440x1220x18,2,sheet,60000,A,AS-21,120000,18 mm marine / WBP plywood (STU-31 lists film-faced)
 K1-K7,boards,carpentry,PLY12 sheet 2440x1220x12,15,sheet,35000,A,AS-21,525000,12 mm plywood
 K1-K7,boards,carpentry,PLY18 sheet 2440x1220x18,8,sheet,45000,A,AS-21,360000,"18 mm plywood or MR melamine board, 2440 x 1220"
 K1-K7,boards,carpentry,WTOP38 sheet 3050x650x38,1,sheet,90000,A,AS-21,90000,38 mm worktop blank 3000 x 620
@@ -26,22 +26,22 @@ K1,insulation,spray foam,"Closed-cell spray foam between the battens, ceiling",1
 K1,insulation,spray foam,"Closed-cell spray foam between the battens, end-A",5.22,m2,30000,A,AS-21,156600,"closed-cell spray foam about 40 mm, applied, per m2; no Kigali contractor found yet"
 K1,insulation,carpentry,PU foam adhesive and gap filler (750 ml),12,each,7000,A,AS-21,84000,
 K1,finishes,carpentry,"Polythene membrane 250 um over the treated container floor, laps 150 mm",15.3,m2,1500,A,AS-21,22950,"polythene membrane 250 um, per m2"
-K1,finishes,carpentry,"Oak SPC plank 5 mm with attached underlay, natural oak decor without knots (living area)",11.1,m2,18000,A,AS-21,199800,per m2
+K1,finishes,carpentry,"Oak SPC plank 5 mm with attached underlay, natural oak decor without knots (living area)",11.4,m2,18000,A,AS-21,205200,per m2
 K1,finishes,painting,Rust converter + zinc primer for steel,4,L,8000,A,AS-21,32000,per L
 K1,finishes,painting,Vapour-retarding primer + off-white paint for the linings,10,L,9000,A,AS-21,90000,per L
-K2,doors,carpentry,"Sliding door leaf 574 x 2,055, moisture-resistant, flush pulls, privacy hook lock",1,each,90000,A,AS-21,90000,
-K2,hardware,carpentry,"Surface sliding-door track 1140 mm with soft-close, end stop and floor guide, on the cross wall's lobby face",1,set,60000,A,AS-21,60000,"surface slider kit, soft-close"
-K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, back wall",2.66,m2,14000,A,AS-21,37240,per m2 incl. membrane
-K2,wet walls,tiling,"Wall tiles + adhesive + grout, back wall",2.93,m2,16000,A,AS-21,46880,per m2 incl. adhesive and grout
-K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, end wall B, built out 30 mm over the concealed WC cistern (stud wall inside the cargo doors)",3.94,m2,14000,A,AS-21,55160,per m2 incl. membrane
-K2,wet walls,tiling,"Wall tiles + adhesive + grout, end wall B, built out 30 mm over the concealed WC cistern (stud wall inside the cargo doors)",4.33,m2,16000,A,AS-21,69280,per m2 incl. adhesive and grout
-K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, partition, bath face",3.94,m2,14000,A,AS-21,55160,per m2 incl. membrane
-K2,wet walls,tiling,"Wall tiles + adhesive + grout, partition, bath face",4.33,m2,16000,A,AS-21,69280,per m2 incl. adhesive and grout
-K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, cross wall, bath face",2.66,m2,14000,A,AS-21,37240,per m2 incl. membrane
-K2,wet walls,tiling,"Wall tiles + adhesive + grout, cross wall, bath face",2.93,m2,16000,A,AS-21,46880,per m2 incl. adhesive and grout
-K2,finishes,tiling,"Safety vinyl sheet, coved 100 mm up the walls (bathroom and lobby)",3.2,m2,15000,A,AS-21,48000,per m2
+K2,doors,carpentry,"Sliding door leaf 602 x 2,055, moisture-resistant, flush pulls, privacy hook lock",1,each,90000,A,AS-21,90000,
+K2,hardware,carpentry,"Surface sliding-door track 1184 mm with soft-close, end stop and floor guide, inside the bathroom on the partition",1,set,60000,A,AS-21,60000,"surface slider kit, soft-close"
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, back wall",2.39,m2,14000,A,AS-21,33460,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, back wall",2.63,m2,16000,A,AS-21,42080,per m2 incl. adhesive and grout
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, end wall B, built out 30 mm over the concealed WC cistern (stud wall inside the cargo doors)",5.22,m2,14000,A,AS-21,73080,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, end wall B, built out 30 mm over the concealed WC cistern (stud wall inside the cargo doors)",5.74,m2,16000,A,AS-21,91840,per m2 incl. adhesive and grout
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, partition, bath face",3.83,m2,14000,A,AS-21,53620,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, partition, bath face",4.21,m2,16000,A,AS-21,67360,per m2 incl. adhesive and grout
+K2,wet walls,tiling,"Cement board 12 mm + liquid membrane, front wall around W1",2.39,m2,14000,A,AS-21,33460,per m2 incl. membrane
+K2,wet walls,tiling,"Wall tiles + adhesive + grout, front wall around W1",2.63,m2,16000,A,AS-21,42080,per m2 incl. adhesive and grout
+K2,finishes,tiling,"Safety vinyl sheet, coved 100 mm up the walls (bathroom)",2.9,m2,15000,A,AS-21,43500,per m2
 K2,sanitaryware,plumbing,"Shower tray 1000 x 900, low profile, 90 mm waste",1,each,120000,A,AS-21,120000,
-K2,sanitaryware,plumbing,"Fixed glass shower screen 700 x 2,000, 8 mm toughened",1,each,180000,A,AS-21,180000,
+K2,sanitaryware,plumbing,"Fixed glass shower screen 520 x 2,000, 8 mm toughened",1,each,180000,A,AS-21,180000,
 K2,sanitaryware,plumbing,"Wall-hung WC, short projection (520), soft-close seat",1,each,150000,A,AS-21,150000,
 K2,sanitaryware,plumbing,"Slim concealed cistern frame (80 mm) with dual-flush plate, in the end-B stud wall and its 30 mm build-out",1,set,220000,A,AS-21,220000,slim concealed cistern frame + dual-flush plate
 K2,accessories,carpentry,"Towel rail, robe hook, toilet-roll holder, shower shelf",1,set,40000,A,AS-21,40000,
@@ -71,7 +71,7 @@ K8,electrical,electrical,Wall reading light over the bed (wall side),1,each,1500
 K8,electrical,electrical,Under-cabinet LED strip,1,each,15000,A,AS-21,15000,
 K8,electrical,electrical,"Entry: bed (2-way), living and galley lights",1,each,3500,A,AS-21,3500,
 K8,electrical,electrical,"Bed: ceiling light (2-way), over the bedside table",1,each,3500,A,AS-21,3500,
-K8,electrical,electrical,"Bathroom light + fan (outside, by the door)",1,each,3500,A,AS-21,3500,
+K8,electrical,electrical,"Bathroom light + fan (inside, by the door)",1,each,3500,A,AS-21,3500,
 K8,electrical,electrical,"Bathroom extract 100 mm, IPX4 for zone 1, with run-on",1,each,35000,A,AS-21,35000,
 K8,electrical,electrical,Wall fan 300 mm,1,each,35000,A,AS-21,35000,
 K8,electrical,electrical,Socket + USB-C in the headboard (wall side),1,each,15000,A,AS-21,15000,
@@ -94,16 +94,16 @@ K8,electrical,electrical,AC provision: isolator,1,each,9000,A,AS-21,9000,
 K8,safety,electrical,"Smoke alarm, 10-year battery",1,each,20000,A,AS-21,20000,
 K8,safety,electrical,"Heat alarm, kitchen, 10-year battery",1,each,20000,A,AS-21,20000,
 K8,electrical,electrical,"Earth rod 1.5 m copper-bonded in an inspection pit, behind the board",1,each,35000,A,AS-21,35000,
-K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Indoor lights and fans",31,m,500,A,AS-21,15500,per m
+K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Indoor lights and fans",36,m,500,A,AS-21,18000,per m
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, Sockets: bed, sofa and deck",26,m,750,A,AS-21,19500,per m
 K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, Kitchen sockets, fridge and hood",14,m,750,A,AS-21,10500,per m
 K8,electrical,electrical,"Cable 4.0 mm2 T+E/singles in conduit, Induction hob",6,m,1200,A,AS-21,7200,per m
 K8,electrical,electrical,"Cable 6.0 mm2 T+E/singles in conduit, Instant shower heater 5.5 kW",5,m,1800,A,AS-21,9000,per m
 K8,electrical,electrical,"Cable 1.5 mm2 T+E/singles in conduit, Outdoor lights: deck, stair and roof",21,m,500,A,AS-21,10500,per m
-K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, AC provision",5,m,750,A,AS-21,3750,per m
+K8,electrical,electrical,"Cable 2.5 mm2 T+E/singles in conduit, AC provision",6,m,750,A,AS-21,4500,per m
 K8,electrical,electrical,"Cable 16 mm2 tails, inlet to main breaker, through a gland in the back wall",2,m,4800,A,AS-21,9600,"per m, tails to the 63 A main"
 K8,electrical,electrical,"Matching 63 A plug (IEC 60309 blue), for whatever supply cable",1,each,20000,A,AS-21,20000,IP67
-K8,electrical,electrical,"PVC conduit 20 mm + boxes, in the lining",53,m,600,A,AS-21,31800,per m
+K8,electrical,electrical,"PVC conduit 20 mm + boxes, in the lining",52,m,600,A,AS-21,31200,per m
 K8,electrical,electrical,"UV-stable conduit 20 mm + IP66 glands, outdoor runs",12,m,900,A,AS-21,10800,"per m, UV-stable"
 K8,electrical,electrical,Main breaker 63 A DP (C curve) + DIN kWh check meter,1,set,45000,A,AS-21,45000,DP breaker + DIN kWh meter
 K8,electrical,electrical,Surge protection device type 2,1,each,60000,A,AS-21,60000,
@@ -111,11 +111,11 @@ K8,electrical,electrical,"RCBOs 30 mA type A, 1 module (B6 x2, B16 x3, B20 x1, B
 K8,electrical,electrical,"Priority relay, DIN: senses the hob (C4) and sheds C5 and C7",1,each,60000,A,AS-21,60000,"load shedding, DIN"
 K8,electrical,electrical,"Contactor 2-pole 40 A, DIN: the C5 and C7 lines",1,each,25000,A,AS-21,25000,DIN
 K8,safety,furnishing,Fire extinguisher 2 kg ABC + fire blanket,1,set,55000,A,AS-21,55000,
-K9,plumbing,plumbing,PPR PN20 pipe DN20,8.2,m,2000,A,AS-21,16400,per m
-K9,plumbing,plumbing,PPR PN20 pipe DN25,4.4,m,2800,A,AS-21,12320,per m
+K9,plumbing,plumbing,PPR PN20 pipe DN20,8,m,2000,A,AS-21,16000,per m
+K9,plumbing,plumbing,PPR PN20 pipe DN25,4.2,m,2800,A,AS-21,11760,per m
 K9,plumbing,plumbing,uPVC soil pipe DN110,3,m,7000,A,AS-21,21000,per m
 K9,plumbing,plumbing,uPVC vent pipe DN75,8.8,m,4500,A,AS-21,39600,per m
-K9,plumbing,plumbing,uPVC waste pipe DN50,6.3,m,3000,A,AS-21,18900,per m
+K9,plumbing,plumbing,uPVC waste pipe DN50,6.1,m,3000,A,AS-21,18300,per m
 K9,plumbing,plumbing,Pipe fittings and clips (allowance),1,set,120000,A,AS-21,120000,
 K9,plumbing,plumbing,Shower slide rail with hand-shower holder,1,set,30000,A,AS-21,30000,
 K9,plumbing,plumbing,"Instant electric shower heater 5.5 kW, IPX4, digital thermostat, hand shower and hose",1,each,90000,A,AS-21,90000,5.5 kW instant shower heater not priced yet (D-053)
@@ -123,7 +123,7 @@ K9,plumbing,plumbing,Angle valves with filters,4,each,6000,A,AS-21,24000,
 K9,plumbing,plumbing,Air admittance valve 110 mm (spare) + rodding eyes,1,set,30000,A,AS-21,30000,
 K9,plumbing,plumbing,Stop valve + Y-filter + check water meter,1,set,45000,A,AS-21,45000,
 K10,steel,welding,"W1 infill: 2 mm steel welded into the old door frame (0-1,150), foamed with the walls",1,each,180000,A,AS-21,180000,incl. welding
-K10,glazing,glazier,W1 obscure louvre window 520 x 890 + insect mesh (bathroom lobby),1,each,120000,A,AS-21,120000,
+K10,glazing,glazier,W1 obscure louvre window 520 x 890 + insect mesh (bathroom),1,each,120000,A,AS-21,120000,
 K10,steel,welding,"Seal and lock the end-B cargo doors (weld tabs, sealant)",1,each,60000,A,AS-21,60000,
 K10,steel,masonry,"Concrete block stands 40 x 60 cm under the four corner castings, levelled (D-029)",4,each,25000,A,AS-21,100000,
 K10,steel,welding,Steel hanging rail for the wall units,1,set,40000,A,AS-21,40000,
@@ -133,7 +133,7 @@ K10,steel,welding,"AC wall sleeve 75 mm (provision, back wall, one hole)",1,each
 K11,roofing,welding,Gutter + downpipe to the rainwater tank (deck canopy),1,set,90000,A,AS-21,90000,
 K11,electrical,electrical,Bonding: 16 mm2 green-yellow from the frame to the earth bar,1,set,25000,A,AS-21,25000,
 K1,timber,carpentry,"Battens 38 x 50 treated, 2.4 m",35.2,each,2500,A,AS-21,88000,"38 x 50 treated, 2.4 m"
-K2,timber,carpentry,"Studs 40 x 40 treated, 2.4 m",5.5,each,3000,A,AS-21,16500,"40 x 40, 2.4 m"
+K2,timber,carpentry,"Studs 40 x 40 treated, 2.4 m",3.3,each,3000,A,AS-21,9900,"40 x 40, 2.4 m"
 labour,labour,,"Carpentry workshop: cutting, edging, drilling, labelling (per unit kit)",1,lot,450000,A,AS-21,450000,
 labour,labour,,Site carpentry and assembly: 2 people x 8 days,1,lot,320000,A,AS-21,320000,
 labour,labour,,"Electrician (RURA class A), install + certificate",1,lot,250000,A,AS-21,250000,

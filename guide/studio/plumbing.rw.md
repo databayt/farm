@@ -60,7 +60,7 @@ English: [read this page in English](plumbing.md) · Gucapa: [iyi paji nka PDF](
 
 ### S09, S10 na S13: second fix
 
-1. S09: shyiraho tray yo kwiyuhagiriramo ({{studio.tray_l}} × {{studio.tray_w}}) ku mwobo wayo usohora amazi (waste) wa mm 90, hamwe na ledge y'umubaji n'ikirahure gihamye (screen).
+1. S09: shyiraho tray yo kwiyuhagiriramo ({{studio.tray_l}} × {{studio.tray_w}}) ku mwobo wayo usohora amazi (waste) wa mm 90, yuzuza hagati ya partition n'urukuta rwa end B, n'ikirahure gihamye (screen) ku ruhande rw'urukuta rwa end B.
 2. S10: manika WC ifatwa ku rukuta (wall-hung) kuri cistern yayo yoroheje ihishe mu rukuta (concealed cistern): ikadiri ya mm 80 mu rukuta rwa end B, urukuta rwongerewe mm 30 imbere (build-out), na dual-flush plate.
 3. S10: manika heater ihita ishyushya amazi ya {{studio.heater_kw}} kW (200 × 330 × 90) ku rukuta rwa end B imbere muri douche, hagati ya rail n'ikirahure, ecran yayo iri hafi m 1.3 hejuru ya hasi; uhuze amazi akonje ku kirenge cyayo na hose ya douche hejuru yayo. Nta kigega ifite, bityo ntikeneye relief valve.
 4. S10: shyiraho rail na douche ifatwa mu ntoki ku rukuta rwa end B. Nta lavabo: intoki zikarabirwa kuri sink y'igikoni.

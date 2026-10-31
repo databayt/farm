@@ -139,14 +139,11 @@ function plan(t, lang) {
   box([gx, scene.fridge[0], 0, scene.part_x0, scene.fridge[1], 0], "#e4ecf3", t.fridge, 70)
   box([gx, scene.hob[0], 0, scene.part_x0, scene.hob[1], 0], "#e4ecf3", t.hob, 70)
   box([gx, scene.sink[0], 0, scene.part_x0, scene.sink[1], 0], "#e4ecf3", t.sink, 70)
-  const cw = scene.bath_y1 + scene.cross_t
-  box([scene.part_x0, 0, 0, scene.bath_x0, cw, 0], "#8d8578", "")
-  box([scene.bath_x0, scene.bath_y1, 0, scene.bdoor[0], cw, 0], "#8d8578", "")
-  box([scene.bdoor[1], scene.bath_y1, 0, scene.wall_b, cw, 0], "#8d8578", "")
+  box([scene.part_x0, 0, 0, scene.bath_x0, scene.bdoor[0], 0], "#8d8578", "")
   box(scene.tray, C.wet, t.shower, 85)
   box(scene.wc, C.fit, t.wc, 80)
   box([scene.door[0], scene.door[1], 0, scene.door[3], scene.door[4], 0], C.oak, "")
-  s.text(scene.part_x0 + scene.part_t / 2, cw + 120, `${t.partition} 70`, { size: 65, weight: 700, anchor: "start", rotate: 90 })
+  s.text(scene.part_x0 + scene.part_t / 2, scene.tray[4] + 120, `${t.partition} 70`, { size: 65, weight: 700, anchor: "start", rotate: 90 })
   s.rect(scene.wall_b, 0, L - scene.wall_b, W, "#d8d2c6", C.ink, 4)
   // labels outside
   s.text(-330, W / 2, t.endA, { size: 115, weight: 700, rotate: -90 })
@@ -331,15 +328,13 @@ function panels(t, lang) {
 function bathroom(t, lang) {
   const x0 = scene.part_x0 - 300, s = new Sheet(x0 - 500, -1300, L - x0 + 2100, W + 2700)
   s.rect(x0, 0, L - x0, W, "#fbf8f1", C.ink, 10)
-  const cw = scene.bath_y1 + scene.cross_t
-  s.rect(scene.part_x0, 0, scene.part_t, cw, "#8d8578", C.ink, 5)
-  s.rect(scene.bath_x0, scene.bath_y1, scene.bdoor[0] - scene.bath_x0, scene.cross_t, "#8d8578", C.ink, 5)
-  s.rect(scene.bdoor[1], scene.bath_y1, scene.wall_b - scene.bdoor[1], scene.cross_t, "#8d8578", C.ink, 5)
-  // the sliding leaf, closed on the lobby face; dashed where it parks open towards end B
-  const dr = scene.door, lw = dr[3] - dr[0]
-  s.rect(dr[0], dr[1], lw, dr[4] - dr[1], C.oak, C.ink, 5)
-  s.add(`<rect x="${scene.bleaf[0]}" y="${dr[1]}" width="${lw}" height="${dr[4] - dr[1]}" fill="none" stroke="${C.ink}" stroke-width="4" stroke-dasharray="30 20"/>`)
-  s.text((scene.bdoor[0] + scene.bdoor[1]) / 2, dr[4] + 230, `${t.slidingDoor} ${r(scene.bdoor[1] - scene.bdoor[0] - 36)}`, { size: 80, weight: 700 })
+  // the partition, open by the front wall for the door; the leaf closed inside it, dashed where it parks open
+  s.rect(scene.part_x0, 0, scene.part_t, scene.bdoor[0], "#8d8578", C.ink, 5)
+  for (const y of [scene.bdoor[0], scene.bdoor[1] - 18]) s.rect(scene.part_x0, y, scene.part_t - 12, 18, "#8d8578", C.ink, 4)
+  const dr = scene.door, lw = dr[4] - dr[1], lt = dr[3] - dr[0]
+  s.rect(dr[0], dr[1], lt, lw, C.oak, C.ink, 5)
+  s.add(`<rect x="${dr[0]}" y="${scene.bleaf[0]}" width="${lt}" height="${lw}" fill="none" stroke="${C.ink}" stroke-width="4" stroke-dasharray="30 20"/>`)
+  s.text(scene.part_x0 - 120, (scene.bdoor[0] + scene.bdoor[1]) / 2, `${t.slidingDoor} ${r(scene.bdoor[1] - scene.bdoor[0] - 36)}`, { size: 70, weight: 700, rotate: -90 })
   const b = (q, fill, label, size = 80) => {
     s.rect(q[0], q[1], q[3] - q[0], q[4] - q[1], fill, C.ink, 6)
     if (label) s.text((q[0] + q[3]) / 2, (q[1] + q[4]) / 2, label, { size, weight: 700 })
@@ -352,8 +347,8 @@ function bathroom(t, lang) {
   const wh = scene.fittings.find((f) => f.id === "WH"), [hw, hh, hd] = wh.size
   s.line(scene.wall_b - 10, wh.at[1] - hw / 2, scene.wall_b - 10, wh.at[1] + hw / 2, C.cut, 22)
   s.text(x0 + 40, W + 330, `${t.heater}: ${hw} × ${hh} × ${hd}`, { size: 75, anchor: "start", fill: C.cut, weight: 700 })
-  s.text(x0 + 40, W + 470, `${t.wc}: 520 × 380 · ${t.glass}: 700 · ${t.leaf}: ${r(lw)} × ${r(dr[5] - dr[2])}`, { size: 75, anchor: "start" })
-  s.text((x0 + scene.part_x0) / 2, W / 2, t.kitchen, { size: 75, weight: 700, rotate: -90 })
+  s.text(x0 + 40, W + 470, `${t.wc}: 520 × 380 · ${t.glass}: ${r(scene.screen[3] - scene.screen[0])} · ${t.leaf}: ${r(lw)} × ${r(dr[5] - dr[2])}`, { size: 75, anchor: "start" })
+  s.text((x0 + scene.part_x0) / 2, scene.sink[1] / 2, t.kitchen, { size: 75, weight: 700, rotate: -90 })
   s.text(x0, -1000, t.bathroom, { size: 110, weight: 700, anchor: "start" })
   s.text(L + 260, W / 2, t.endB, { size: 100, weight: 700, rotate: -90 })
   // ordinates: x from end A along the top, y from the back wall along the right
@@ -362,7 +357,7 @@ function bathroom(t, lang) {
   for (const x of [scene.part_x0, scene.tray[0], scene.wc[0], scene.wall_b]) s.ord(x, top, r(x))
   const right = L + 620
   s.line(right, 0, right, W, C.dim, 4)
-  for (const y of [scene.tray[4], (scene.wc[1] + scene.wc[4]) / 2, scene.bath_y1, W]) {
+  for (const y of [scene.tray[4], (scene.wc[1] + scene.wc[4]) / 2, scene.bdoor[0], W]) {
     s.line(right - 40, y, right + 40, y, C.dim, 6)
     s.text(right + 70, y, r(y), { size: 85, fill: C.dim, weight: 700, anchor: "start" })
   }

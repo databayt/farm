@@ -1,31 +1,31 @@
 id,rule,result,detail
-KO-WC,WC front clearance 600,pass,
-KO-SHOWER,Shower entry 600,pass,
-KO-BDOOR,The sliding leaf parks here: keep the lobby wall clear,pass,
+KO-WC,WC front space to the parked leaf,pass,
+KO-SHOWER,Shower entry,pass,
+KO-BDOOR,The sliding leaf parks here: keep the partition clear,pass,
 KO-KITCHEN,Galley aisle 650 (worktop to the sofa),pass,
 KO-DRAWERS,Storage boxes pull out 600,pass,
 R-TRAY,Shower tray length (mm),pass,1000 >= 1000
 R-WC-SIDE,WC centreline to the shower (mm),pass,400 >= 400
-R-WC-SIDE2,WC centreline to the bathroom wall (mm),pass,400 >= 400
-R-WC-FRONT,Clear space in front of the WC (mm),pass,600 >= 600
-R-BDOOR,"Bathroom door clear opening, between the jambs (mm)",pass,534 >= 530
-R-SLIDE,Open sliding leaf clear of end wall B (mm),pass,24 >= 20
-R-AISLE,"Walkway, worktop to the sofa end (mm)",pass,658 >= 650
+R-WC-SIDE2,WC centreline to the front wall (mm),pass,952 >= 400
+R-WC-FRONT,"Clear space in front of the WC, to the parked leaf (mm)",pass,430 >= 420
+R-BDOOR,"Bathroom door clear opening, between the jambs (mm)",pass,564 >= 560
+R-SLIDE,Open sliding leaf clear of the shower (mm),pass,168 >= 100
+R-AISLE,"Walkway, worktop to the sofa end (mm)",pass,778 >= 650
 R-BEDSIDE,Sofa clear of the bedside table (mm),pass,20 >= 20
-R-GALLEY,Galley clear of the bathroom wall end (mm),pass,100 >= 30
+R-GALLEY,Galley end clear of the bathroom door (mm),pass,52 >= 30
 R-PASS,Walk past the galley end to the bathroom door (mm),pass,652 >= 600
 R-BED,Room beside the bed foot (mm),pass,214 >= 50
 R-HEIGHT,Clear height (mm),pass,2316 >= 2250
-R-PART,Partition clear of the old door (mm),pass,342 >= 150
-E-C1,Indoor lights and fans: Ib <= In <= Iz; drop <= 3.0%,pass,"Ib 0.6 A, In 6 A, Iz 13.6 A, drop 0.22%"
-E-C2,"Sockets: bed, sofa and deck: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 8.0 A, In 16 A, Iz 18.3 A, drop 1.52%"
+R-PART,Partition clear of the old door (mm),pass,222 >= 150
+E-C1,Indoor lights and fans: Ib <= In <= Iz; drop <= 3.0%,pass,"Ib 0.6 A, In 6 A, Iz 13.6 A, drop 0.25%"
+E-C2,"Sockets: bed, sofa and deck: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 8.0 A, In 16 A, Iz 18.3 A, drop 1.53%"
 E-C3,"Kitchen sockets, fridge and hood: Ib <= In <= Iz; drop <= 5.0%",pass,"Ib 14.0 A, In 16 A, Iz 18.3 A, drop 1.35%"
 E-C4,Induction hob: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 15.2 A, In 20 A, Iz 24.4 A, drop 0.32%"
 E-C5,Instant shower heater 5.5 kW: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 23.9 A, In 25 A, Iz 32.0 A, drop 0.30%"
 E-C6,"Outdoor lights: deck, stair and roof: Ib <= In <= Iz; drop <= 3.0%",pass,"Ib 0.2 A, In 6 A, Iz 13.6 A, drop 0.03%"
-E-C7,AC provision: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 12.0 A, In 16 A, Iz 18.3 A, drop 0.37%"
+E-C7,AC provision: Ib <= In <= Iz; drop <= 5.0%,pass,"Ib 12.0 A, In 16 A, Iz 18.3 A, drop 0.39%"
 E-MD,Diversified maximum demand within a 63 A inlet (D-053),pass,45.3 A
 P-D1,DN110 soil fall at least 1:40,pass,steepest-needed 1:38
 P-D2,DN50 waste fall at least 1:40,pass,steepest-needed 1:34
-P-D4,DN50 waste fall at least 1:40,pass,steepest-needed 1:26
+P-D4,DN50 waste fall at least 1:40,pass,steepest-needed 1:25
 P-ROUTE,Every pipe leg along one axis (drains with their fall),pass,

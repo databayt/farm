@@ -58,7 +58,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumbing.rw.md) · Print: [this
 
 ### S09, S10 and S13: second fix
 
-1. S09: set the shower tray ({{studio.tray_l}} × {{studio.tray_w}}) on its 90 mm waste, with the carpenter's ledge and the fixed glass screen.
+1. S09: set the shower tray ({{studio.tray_l}} × {{studio.tray_w}}) on its 90 mm waste, wall to wall between the partition and end wall B, with the fixed glass screen on the end-wall side.
 2. S10: hang the wall-hung WC on its slim concealed cistern (80 mm frame in end wall B, 30 mm build-out, dual-flush plate).
 3. S10: hang the {{studio.heater_kw}} kW instant heater (200 × 330 × 90) on end wall B inside the shower, between the slide rail and the glass, its display about 1.3 m up; connect the cold at its foot and the hand shower's hose at its top. It has no tank, so it needs no relief valve.
 4. S10: fit the slide rail and the hand shower on end wall B. There is no basin: hands are washed at the galley sink.
