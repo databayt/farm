@@ -49,7 +49,7 @@ Every place keeps them; [the farm's execution plan](farm/plan.md) holds them for
 | [Livestock](livestock/plan.md) | Prepare only this month: register, find a vet, measure the distance from the lake, build the fence and the water. |
 | [The farm](farm/plan.md) | The pin or the land title first; then the tests, the power, the water and the septic every place hangs off. |
 
-Seven pages are also in Kinyarwanda, a machine draft until a native speaker reviews it: the studio's plan, materials, electric and plumbing, the farming and the livestock plans, and the farm's electric. All but the studio's materials print to A4 from the link at their top, to share on WhatsApp.
+Eight pages are also in Kinyarwanda, a machine draft until a native speaker reviews it: the studio's plan, materials, electric and plumbing, the guest room's plan, the farming and the livestock plans, and the farm's electric. All but the studio's materials and the guest room's plan print to A4 from the link at their top, to share on WhatsApp.
 
 ## What we need from the owner
 

@@ -6,7 +6,7 @@ Every step of fitting out the three guest rooms in the joined 40 ft pair, in the
 
 The three rooms are the same, so one plan serves all three.
 
-The rooms drawn: [the guest room page](/en/guest-room) · Its other pages: [materials](materials.md), [electric](electric.md), [plumbing](plumbing.md) · Each step done in full: [the studio's plan](../studio/plan.md)
+Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The rooms drawn: [the guest room page](/en/guest-room) · Its other pages: [materials](materials.md), [electric](electric.md), [plumbing](plumbing.md) · Each step done in full: [the studio's plan](../studio/plan.md)
 
 ## At a glance
 
