@@ -1,6 +1,6 @@
 # The farm: execution plan
 
-Status: plan of 2026-10-31. Everything site-specific waits for the farm's location and title (gate G0); dates are targets, the order matters more.
+Status: plan of 2026-10-31. The land is known from the founder's sketch and footage; its boundary, title and distance to the lake wait for the pin or the land-title UPI (gate G0). Dates are targets, the order matters more.
 
 The work the whole farm shares, in order: the location and the title, the tests, the power, the water and the septic, and the feeders to each place as it is built.
 
