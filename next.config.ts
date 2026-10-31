@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   ...(STATIC ? { output: "export" as const, trailingSlash: false } : {}),
   experimental: {
     agentFeedback: true,
+    // The site has a root layout per language and one for `/` (D-058), so the 404 above them draws its own
+    // document: app/global-not-found.tsx.
+    globalNotFound: true,
   },
   // A static export cannot partially prerender, so the export turns these off.
   cacheComponents: !STATIC,
