@@ -3,12 +3,16 @@
 // Every rating comes from the generator's CSVs (circuits.csv, demand.csv). A drop's colour is what its circuit
 // feeds (lights, sockets, fixed appliances), the same colours as the cable runs in the 3D view below it.
 
+import type * as React from "react"
+
+import { getWords } from "@/components/internationalization/words"
+import { words } from "@/components/studio/words"
+
 type Circuit = Record<string, string>
 
 const W = 1600
 const TOP = 50 // the supply row
 const BUS = 260 // the busbar the circuit breakers hang from
-const GROUPS: Record<string, string> = { lights: "Lights", sockets: "Sockets", fixed: "Fixed appliances" }
 
 // A breaker drawn down from (x, y): lead in, the open contact, lead out. 60 tall. With `rcd`, the ring of an RCBO.
 function Breaker({ x, y, rcd = false }: { x: number; y: number; rcd?: boolean }) {
@@ -54,7 +58,11 @@ function Label({ x, y, children, sub, anchor = "middle" }: {
   )
 }
 
-export function WiringDiagram({ circuits, demand }: { circuits: Circuit[]; demand: Record<string, string> }) {
+// The words are the reader's (src/components/studio/words.tsx `wiring`); pass the circuits in their language too
+// (studioCsv), so each drop names what it serves in it.
+export async function WiringDiagram({ circuits, demand }: { circuits: Circuit[]; demand: Record<string, string> }): Promise<React.JSX.Element> {
+  const t = (await getWords(words)).wiring
+  const GROUPS = t.groups
   const x0 = 110
   const step = (W - 2 * x0) / (circuits.length - 1)
   const H = BUS + 320
@@ -67,32 +75,32 @@ export function WiringDiagram({ circuits, demand }: { circuits: Circuit[]; deman
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="h-auto w-full min-w-[960px] stroke-foreground"
       strokeWidth={2} strokeLinecap="round" fill="none"
-      aria-label={`Single-line diagram: any 230 V supply into a ${demand.inlet_A} A inlet and a ${demand.main_A} A main breaker with surge protection, then one RCBO for each of ${circuits.length} circuits`}>
+      aria-label={t.label(demand.inlet_A, demand.main_A, circuits.length)}>
       {/* the supply: anything at 230 V */}
       <rect x={src - 70} y={TOP - 34} width={140} height={68} rx={12} strokeDasharray="6 6" />
-      <text x={src} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">Any 230 V</text>
-      <text x={src} y={TOP + 18} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">supply</text>
-      <Label x={src} y={TOP + 66} sub="generator · inverter">grid · site board</Label>
+      <text x={src} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">{t.any}</text>
+      <text x={src} y={TOP + 18} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">{t.supply}</text>
+      <Label x={src} y={TOP + 66} sub={t.sourcesSub}>{t.sources}</Label>
       <line x1={src + 70} y1={TOP} x2={inlet - 70} y2={TOP} />
 
       {/* the inlet on the outside of the back wall */}
       <rect x={inlet - 70} y={TOP - 34} width={140} height={68} rx={12} className="fill-muted" />
       <text x={inlet} y={TOP + 6} textAnchor="middle" stroke="none" className="fill-foreground text-[18px] font-semibold">
-        Inlet {demand.inlet_A} A
+        {t.inlet(demand.inlet_A)}
       </text>
-      <Label x={inlet} y={TOP + 66} sub="IEC 60309 blue, back wall">IP67, 2P+E</Label>
+      <Label x={inlet} y={TOP + 66} sub={t.inletSub}>IP67, 2P+E</Label>
       <line x1={inlet + 70} y1={TOP} x2={main - 30} y2={TOP} />
       <text x={(inlet + main) / 2 + 20} y={TOP - 14} textAnchor="middle" stroke="none"
-        className="fill-muted-foreground text-[14px]">{demand.tails_mm2} mm² tails</text>
+        className="fill-muted-foreground text-[14px]">{t.tails(demand.tails_mm2)}</text>
 
       {/* the main breaker, drawn on its side: it protects the inlet and the tails whatever feeds them */}
       <g transform={`rotate(-90 ${main} ${TOP}) translate(0 ${-30})`}><Breaker x={main} y={TOP} /></g>
-      <Label x={main} y={TOP + 66} sub="DP, C curve + kWh meter">{`Main breaker ${demand.main_A} A`}</Label>
+      <Label x={main} y={TOP + 66} sub={t.mainSub}>{t.main(demand.main_A)}</Label>
       <line x1={main + 30} y1={TOP} x2={feed} y2={TOP} />
       <circle cx={spd} cy={TOP} r={4} className="fill-foreground" />
       <line x1={spd} y1={TOP} x2={spd} y2={TOP + 50} />
       <rect x={spd - 50} y={TOP + 50} width={100} height={44} rx={8} />
-      <text x={spd} y={TOP + 78} textAnchor="middle" stroke="none" className="fill-foreground text-[16px] font-semibold">SPD type 2</text>
+      <text x={spd} y={TOP + 78} textAnchor="middle" stroke="none" className="fill-foreground text-[16px] font-semibold">{t.spd}</text>
       <line x1={spd} y1={TOP + 94} x2={spd} y2={TOP + 110} />
       <Earth x={spd} y={TOP + 110} />
       <line x1={feed} y1={TOP} x2={feed} y2={BUS} />
@@ -143,11 +151,10 @@ export function WiringDiagram({ circuits, demand }: { circuits: Circuit[]; deman
       ) : null}
 
       <text x={x0} y={H - 46} stroke="none" className="fill-muted-foreground text-[14px]">
-        Peak {demand.total_A} A of the {demand.inlet_A} A inlet: while the hob (C4) runs, the relay pauses{" "}
-        {shed.map((c) => c.circuit).join(" and ")} at K · one RCBO 30 mA type A per circuit
+        {t.peak(demand.total_A, demand.inlet_A, shed.map((c) => c.circuit).join(t.and))}
       </text>
       <text x={x0} y={H - 22} stroke="none" className="fill-muted-foreground text-[14px]">
-        TT earthing on the studio&rsquo;s own rod · ratings are design intent until a RURA class A electrician certifies
+        {t.earthing}
       </text>
     </svg>
   )

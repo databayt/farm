@@ -5,6 +5,11 @@
 // site-water.csv). A line's colour is what it carries, as in the 3D drawing below it; drains are heavier, the vent
 // dashed, and every line carries its run, so colour never works alone.
 
+import type * as React from "react"
+
+import { getWords } from "@/components/internationalization/words"
+import { words } from "@/components/studio/words"
+
 type Row = Record<string, string>
 
 const W = 1600
@@ -31,7 +36,10 @@ function Unit({ x, y, title, sub, dashed = false, muted = false }: {
 
 const deg = (s = "") => s.replace(/(\d) C\b/g, "$1 °C").replace(/(\d)-(\d)/g, "$1–$2")
 
-export function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fittings: Row[]; water: Record<string, string> }) {
+// The words are the reader's (src/components/studio/words.tsx `pipes`); pass the fittings in their language too
+// (studioCsv), so the ratings read in it.
+export async function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fittings: Row[]; water: Record<string, string> }): Promise<React.JSX.Element> {
+  const t = (await getWords(words)).pipes
   const run = Object.fromEntries(pipes.map((p) => [p.run, p]))
   const fit = Object.fromEntries(fittings.map((f) => [f.point, f]))
   const sys = (id: string) => run[id]?.system ?? ""
@@ -52,28 +60,28 @@ export function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fittings
   )
   const [kw, , hot] = (fit.WH?.rating ?? "").split(", ")
   // the key, each entry as wide as its label
-  const key: [string, string, number, boolean?][] = [["W1", "Cold", 1000], ["H1", `Hot ${deg(hot)}`, 1110],
-    ["D1", "Drain", 1275], ["V1", "Vent", 1400, true]]
+  const key: [string, string, number, boolean?][] = [["W1", t.cold, 1000], ["H1", t.hot(deg(hot)), 1110],
+    ["D1", t.drain, 1275], ["V1", t.vent, 1400, true]]
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="h-auto w-full min-w-[960px] stroke-foreground"
       strokeWidth={2} strokeLinecap="round" fill="none"
-      aria-label={`Water diagram: the farm's water through the studio's stop valve, filter and meter; cold to every outlet and the ${kw} instant heater, whose hose takes hot water at ${deg(hot)} to the shower alone; the WC, shower and basin drain to an inspection chamber and the farm's septic tank, the kitchen sink apart to its grease trap`}>
+      aria-label={t.label(kw, deg(hot))}>
       {/* the farm's water: the tank and the booster pump, shared by the studios */}
       <rect x={20} y={TOP - 34} width={140} height={68} rx={12} strokeDasharray="6 6" />
-      <text x={90} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">Farm water</text>
+      <text x={90} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">{t.farm}</text>
       <text x={90} y={TOP + 18} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">
-        tank {water.tank_m3} m³
+        {t.tank(water.tank_m3)}
       </text>
       {pipe("W1", `M160 ${TOP} H255`)}
       {tag("W1", 208, TOP - 12, "middle")}
       <text x={90} y={TOP + 64} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">
-        booster {water.pump_lpm} L/min
+        {t.booster(water.pump_lpm)}
       </text>
 
       {/* the studio's own valve set, in the sink base */}
       <rect x={255} y={TOP - 34} width={150} height={68} rx={12} className="fill-muted" />
-      <text x={330} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">Stop valve</text>
-      <text x={330} y={TOP + 18} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">filter · meter</text>
+      <text x={330} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">{t.valve}</text>
+      <text x={330} y={TOP + 18} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">{t.valveSub}</text>
       {pipe("W1", `M405 ${TOP} H470 V${COLD}`)}
 
       {/* key: a line's colour is what it carries */}
@@ -98,23 +106,23 @@ export function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fittings
       {tag("W4", X.WC + 8, 290)}
 
       {/* the instant heater, its hose (H1) the only hot, down to the shower */}
-      <Unit x={X.SH} y={200} title="Instant heater" sub={`WH · ${kw}`} />
+      <Unit x={X.SH} y={200} title={t.heater} sub={`WH · ${kw}`} />
       {pipe("H1", `M${X.SH} 260 V${FIX}`)}
       <text x={X.SH + 8} y={340} stroke="none" className="fill-muted-foreground text-[13px]">
-        <tspan className="fill-foreground font-semibold">H1</tspan> hose · {deg(hot)}
+        <tspan className="fill-foreground font-semibold">H1</tspan> {t.hose} · {deg(hot)}
       </text>
 
       {/* the outlets */}
-      <Unit x={X.DF} y={FIX} title="Drinking water" sub="DF · filter tap" />
-      <Unit x={X.KT} y={FIX} title="Kitchen sink" sub={`KT · cold · ${fit.KT?.rating}`} />
-      <Unit x={X.SH} y={FIX} title="Hand shower" sub={`SH · ${deg(fit.SH?.rating)}`} />
-      <Unit x={X.BT} y={FIX} title="Basin" sub={`BT · cold · ${fit.BT?.rating}`} />
-      <Unit x={X.WC} y={FIX} title="WC cistern" sub={`WC · ${fit.WC?.rating}`} />
+      <Unit x={X.DF} y={FIX} title={t.df.title} sub={t.df.sub} />
+      <Unit x={X.KT} y={FIX} title={t.kt.title} sub={t.kt.sub(fit.KT?.rating)} />
+      <Unit x={X.SH} y={FIX} title={t.sh.title} sub={`SH · ${deg(fit.SH?.rating)}`} />
+      <Unit x={X.BT} y={FIX} title={t.bt.title} sub={t.bt.sub(fit.BT?.rating)} />
+      <Unit x={X.WC} y={FIX} title={t.wc.title} sub={`WC · ${fit.WC?.rating}`} />
 
       {/* drains: the kitchen sink apart to the grease trap; the rest to the inspection chamber and the septic tank */}
       {pipe("D4", `M${X.KT} 470 V600`)}
       {tag("D4", X.KT + 10, 540)}
-      <Unit x={X.KT} y={600} title="Grease trap" sub="the farm's, own soak pit" dashed />
+      <Unit x={X.KT} y={600} title={t.trap.title} sub={t.trap.sub} dashed />
       {pipe("D2", `M${X.SH} 470 V${DRAIN} H${X.IC - 75}`)}
       {pipe("D3", `M${X.BT} 470 V${DRAIN}`)}
       {pipe("D1", `M${X.WC} 470 V${DRAIN}`)}
@@ -122,24 +130,22 @@ export function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fittings
       {tag("D2", X.SH - 10, 512, "end")}
       {tag("D3", X.BT - 10, 512, "end")}
       {tag("D1", X.WC - 10, 512, "end")}
-      <Unit x={X.IC} y={DRAIN - 28} title="IC1" sub="inspection chamber" dashed />
+      <Unit x={X.IC} y={DRAIN - 28} title="IC1" sub={t.ic} dashed />
       <path d={`M${X.IC} ${DRAIN + 32} V610`} strokeWidth={5} style={{ stroke: run.D1?.colour }} />
-      <Unit x={X.IC} y={610} title="Septic tank" sub={`the farm's, ${water.septic_m3} m³`} dashed />
+      <Unit x={X.IC} y={610} title={t.septic.title} sub={t.septic.sub(water.septic_m3)} dashed />
 
       {/* the vent off the soil run, up end B past the roof */}
       {pipe("V1", `M${X.V} ${DRAIN} V318`)}
       {tee("D1", X.V, DRAIN)}
       <line x1={X.V - 12} y1={318} x2={X.V + 12} y2={318} strokeWidth={2.5} style={{ stroke: run.V1?.colour }} />
       {tag("V1", X.V + 20, 314)}
-      <text x={X.V + 20} y={334} stroke="none" className="fill-muted-foreground text-[13px]">900 above the roof rail</text>
+      <text x={X.V + 20} y={334} stroke="none" className="fill-muted-foreground text-[13px]">{t.roof}</text>
 
       <text x={110} y={H - 46} stroke="none" className="fill-muted-foreground text-[14px]">
-        Supply in PP-R PN20 inside the units and walls, then straight up to each outlet · drains in uPVC under the floor,
-        falling at least 1:40 · the kitchen sink drains apart, to the grease trap
+        {t.notes[0]}
       </text>
       <text x={110} y={H - 22} stroke="none" className="fill-muted-foreground text-[14px]">
-        Every pipe pressure-tested at 10 bar for an hour before the walls close · design intent until a licensed plumber
-        signs it off
+        {t.notes[1]}
       </text>
     </svg>
   )

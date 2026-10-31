@@ -3,18 +3,13 @@
 // Controls for the studio scene: views, layers, explode, assembly steps, part info.
 import { useEffect, useRef, useState } from "react"
 
+import { useLocale } from "@/components/internationalization/use-locale"
+import { words } from "@/components/studio/words"
+
 import { type PartInfo, StudioScene, type View } from "./studio-scene"
 
-const LAYER_NAMES: Record<string, string> = {
-  shell: "Container",
-  envelope: "Insulation and lining",
-  furniture: "Flat-pack furniture",
-  fixtures: "Fixtures and appliances",
-  electrical: "Electrical points",
-  roof: "Roof terrace and canopies",
-}
-
-const NO_WEBGL = "WebGL is not available in this browser. Download the GLB instead."
+// The controls' words are the reader's (src/components/studio/words.tsx `viewer`); a part's name, kit, material and
+// step title come from the model's parts.json, in English.
 
 function hasWebGL() {
   try {
@@ -34,7 +29,8 @@ export default function StudioViewerCanvas({ src, parts }: { src: string; parts:
   const [explode, setExplode] = useState(0)
   const [info, setInfo] = useState<Record<string, PartInfo>>({})
   const [picked, setPicked] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(() => (hasWebGL() ? null : NO_WEBGL))
+  const t = words[useLocale()].viewer
+  const [error, setError] = useState<string | null>(() => (hasWebGL() ? null : t.noWebgl))
 
   useEffect(() => {
     if (!host.current || !hasWebGL()) return
@@ -47,11 +43,12 @@ export default function StudioViewerCanvas({ src, parts }: { src: string; parts:
       setStep(s.steps())
       s.setLayer("roof", false)
       s.setLayer("envelope", false)
-    }).catch(() => setError("The model could not be loaded."))
+    }).catch(() => setError(t.failed))
     fetch(parts).then((r) => r.json()).then((j: { parts: PartInfo[] }) => {
       setInfo(Object.fromEntries(j.parts.map((p) => [p.id, p])))
     }).catch(() => {})
     return () => s.dispose()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the words only name the failure
   }, [src, parts])
 
   const toggle = (l: string) => {
@@ -72,17 +69,17 @@ export default function StudioViewerCanvas({ src, parts }: { src: string; parts:
           {(["3d", "plan", "inside", "roof"] as View[]).map((v) => (
             <button key={v} type="button" onClick={() => scene.current?.view(v)}
               className="rounded border px-2 py-1 hover:bg-neutral-100">
-              {v === "3d" ? "3D" : v[0].toUpperCase() + v.slice(1)}
+              {t.views[v]}
             </button>
           ))}
         </div>
         <label className="flex items-center gap-2">
-          Explode
+          {t.explode}
           <input type="range" min={0} max={1.5} step={0.05} value={explode} className="w-full"
             onChange={(e) => { const t = Number(e.target.value); setExplode(t); scene.current?.setExplode(t) }} />
         </label>
         <label className="flex items-center gap-2">
-          Steps {step >= steps ? "all" : `to S${String(step).padStart(2, "0")}`}
+          {t.steps(step >= steps ? null : `S${String(step).padStart(2, "0")}`)}
           <input type="range" min={0} max={steps} step={1} value={Math.min(step, steps)} className="w-full"
             onChange={(e) => { const t = Number(e.target.value); setStep(t); scene.current?.setStep(t) }} />
         </label>
@@ -90,7 +87,7 @@ export default function StudioViewerCanvas({ src, parts }: { src: string; parts:
           {layers.map((l) => (
             <label key={l} className="flex items-center gap-1">
               <input type="checkbox" checked={!off.has(l)} onChange={() => toggle(l)} />
-              {LAYER_NAMES[l] ?? l}
+              {t.layers[l] ?? l}
             </label>
           ))}
         </div>
@@ -98,10 +95,10 @@ export default function StudioViewerCanvas({ src, parts }: { src: string; parts:
           {p ? (
             <span>
               <strong className="text-neutral-900">{p.id}</strong> · {p.name} · {p.kitName} · {p.material} ·{" "}
-              {p.size.join(" × ")} mm{p.step ? ` · step ${p.step}: ${p.stepTitle}` : ""}
+              {p.size.join(" × ")} mm{p.step ? t.step(String(p.step), p.stepTitle) : ""}
             </span>
           ) : (
-            "Click a part to see its id, size and assembly step. Drag to orbit, scroll or pinch to zoom."
+            t.hint
           )}
         </div>
       </div>
