@@ -1,6 +1,8 @@
 import type * as React from "react"
 
 import { frw } from "@/lib/format"
+import { getDictionary } from "@/components/internationalization/dictionaries"
+import { getLocale } from "@/components/internationalization/locale"
 
 // A bill of materials on a docs page (the studio's and the field's): a row per section with its total, opening onto
 // its lines, sorted into groups when a section has more than one; then the materials and labour, the contingency and
@@ -10,9 +12,10 @@ export type BomLine = { item: string; qty: number; unit: string; price: number; 
 export type BomGroup = { name: string; lines: BomLine[]; total: number }
 export type BomSection = { name: string; groups: BomGroup[]; total: number; lines: number }
 
-export function BomTable({ sections, contingency, total }: {
+export async function BomTable({ sections, contingency, total }: {
   sections: BomSection[]; contingency: { label: string; rwf: number }; total: { label: string; rwf: number }
-}): React.JSX.Element {
+}): Promise<React.JSX.Element> {
+  const w = (await getDictionary(await getLocale())).table
   return (
     <div className="mt-6 overflow-hidden rounded-xl border">
       {sections.map((t) => (
@@ -23,17 +26,17 @@ export function BomTable({ sections, contingency, total }: {
               <path d="M9 18l6-6-6-6" />
             </svg>
             <span className="font-semibold">{t.name}</span>
-            <span className="text-muted-foreground text-sm">{t.lines} {t.lines === 1 ? "line" : "lines"}</span>
+            <span className="text-muted-foreground text-sm">{t.lines} {t.lines === 1 ? w.line : w.lines}</span>
             <span className="ms-auto font-semibold tabular-nums">{frw(t.total)}</span>
           </summary>
           <div className="overflow-x-auto border-t">
             <table className="w-full text-sm">
               <thead className="text-muted-foreground bg-muted/40">
                 <tr>
-                  <th className="px-3 py-2 ps-11 text-start font-medium">Item</th>
-                  <th className="px-3 py-2 text-end font-medium">Qty</th>
-                  <th className="px-3 py-2 text-end font-medium whitespace-nowrap">Unit price (RWF)</th>
-                  <th className="px-4 py-2 text-end font-medium whitespace-nowrap">Total (RWF)</th>
+                  <th className="px-3 py-2 ps-11 text-start font-medium">{w.item}</th>
+                  <th className="px-3 py-2 text-end font-medium">{w.qty}</th>
+                  <th className="px-3 py-2 text-end font-medium whitespace-nowrap">{w.unitPrice}</th>
+                  <th className="px-4 py-2 text-end font-medium whitespace-nowrap">{w.total}</th>
                 </tr>
               </thead>
               {t.groups.map((g) => (
@@ -59,7 +62,7 @@ export function BomTable({ sections, contingency, total }: {
         </details>
       ))}
       <div className="bg-muted/20 flex px-4 py-2.5 text-sm">
-        <span>Materials and labour</span>
+        <span>{w.materialsAndLabour}</span>
         <span className="ms-auto tabular-nums">{frw(sections.reduce((n, t) => n + t.total, 0))}</span>
       </div>
       <div className="flex border-t px-4 py-2.5 text-sm">

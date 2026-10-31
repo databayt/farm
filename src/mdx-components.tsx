@@ -56,7 +56,7 @@ async function DocsLink({ className, href, hrefLang, ...props }: React.AnchorHTM
 
 // A place's 2D on its execution plan (D-059): the drawing its page opens with, on a sheet in the docs' column, as tall
 // as the screen at most.
-type Plan = (props: { title: string; className?: string }) => React.JSX.Element
+type Plan = (props: { title: string; className?: string }) => React.ReactNode | Promise<React.ReactNode>
 const sheet = (Drawing: Plan) =>
   function PlanSheet({ title }: { title: string }) {
     return (

@@ -4,7 +4,10 @@ import { ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { BlurImg } from "@/components/atom/blur-img"
 import { ItemRail, type RailItem } from "@/components/docs/item-rail"
+import type { Locale } from "@/components/internationalization/config"
+import { dictionary, getDictionary } from "@/components/internationalization/dictionaries"
 import { LocaleLink as Link } from "@/components/internationalization/locale-link"
+import { getLocale } from "@/components/internationalization/locale"
 import { NotTranslated } from "@/components/internationalization/not-translated"
 import { Button } from "@/components/ui/button"
 
@@ -16,9 +19,10 @@ import { Button } from "@/components/ui/button"
 // The first screen. `className` sets the box's colour while the photo loads, `imgClassName` its focus
 // (object-[x_y]); the words sit bottom-left, so the photo keeps its subject centre-right. The sentinel tells the
 // header (components/home/header.tsx) when the hero has mostly scrolled away.
-export function PageHero({ src, width, height, alt, title, className, imgClassName }: {
+export async function PageHero({ src, width, height, alt, title, className, imgClassName }: {
   src: string; width: number; height: number; alt: string; title: React.ReactNode; className?: string; imgClassName?: string
 }) {
+  const t = await getDictionary(await getLocale())
   return (
     <section className={cn("relative h-svh min-h-[520px] w-full overflow-hidden", className)}>
       <BlurImg src={src} width={width} height={height} fetchPriority="high" alt={alt}
@@ -27,10 +31,10 @@ export function PageHero({ src, width, height, alt, title, className, imgClassNa
       <div id="hero-sentinel" aria-hidden className="pointer-events-none absolute inset-x-0 top-[60%] h-px" />
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent">
         <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
-          <p className="text-sm text-white/80">Digital Farm</p>
+          <p className="text-sm text-white/80">{t.page.tagline}</p>
           <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">{title}</h1>
           <Button asChild className="mt-6">
-            <Link href="/#enquire">Book it now</Link>
+            <Link href="/#enquire">{t.page.bookNow}</Link>
           </Button>
           <NotTranslated className="mt-4 text-white/80" />
         </div>
@@ -56,18 +60,23 @@ export function DrawingSection({ id, title, children, after, full = false }: {
   )
 }
 
-// A rail card's placeholders, in the studio's words, until the piece is sourced or quoted.
+// A rail card's placeholders, in the studio's words, until the piece is sourced or quoted: railWords(lang).notSourced
+// and .notBudgeted on a page in either language; these two are the English, for code that has no language.
 export const NOT_SOURCED = "Not sourced yet"
 export const NOT_BUDGETED = "Not in the budget yet"
+export function railWords(lang: Locale): ReturnType<typeof dictionary>["rail"] {
+  return dictionary(lang).rail
+}
 
 // A rail's cards in the studio's Bed rail pattern: each piece rendered on its own (`dir`/<id>.webp), with its size,
-// where to buy it and what it costs.
+// where to buy it and what it costs, labelled in `lang`.
 export type RailCard = { id: string; title: string; size: string; where?: string; cost?: string; note?: string; alt?: string }
-export function railCards(dir: string, rows: RailCard[]): RailItem[] {
+export function railCards(dir: string, rows: RailCard[], lang: Locale = "en"): RailItem[] {
+  const t = dictionary(lang).rail
   return rows.map((x) => ({
     src: `${dir}/${x.id}.webp`, alt: x.alt ?? x.title, title: x.title, note: x.note,
-    details: [{ label: "Dimensions", value: x.size }, { label: "Where to buy", value: x.where ?? NOT_SOURCED },
-      { label: "Cost", value: x.cost ?? NOT_BUDGETED }],
+    details: [{ key: "size", label: t.dimensions, value: x.size }, { key: "where", label: t.whereToBuy, value: x.where ?? t.notSourced },
+      { key: "cost", label: t.cost, value: x.cost ?? t.notBudgeted }],
   }))
 }
 
@@ -125,11 +134,12 @@ export function ServiceSection({ id, title, diagram, figure, note, real, rail }:
 // The page's last section: a card for each of the place's docs pages, its execution plan first, as the docs sidebar
 // groups them (D-059). Five at most, so they keep to one row.
 export type DocCard = { href: string; title: string; text: string }
-export function DocsSection({ cards }: { cards: DocCard[] }) {
+export async function DocsSection({ cards }: { cards: DocCard[] }) {
+  const t = await getDictionary(await getLocale())
   return (
     <section id="docs" className="scroll-mt-20 border-t py-16">
       <div className="w-full px-4 md:px-10">
-        <h2 className="text-3xl font-semibold tracking-tight">In the docs</h2>
+        <h2 className="text-3xl font-semibold tracking-tight">{t.page.inTheDocs}</h2>
         <div className={cn("mt-6 grid gap-4 sm:grid-cols-2", cards.length >= 5 ? "lg:grid-cols-5" : cards.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
           {cards.map((d) => (
             <Link key={d.href} href={d.href} className="group hover:bg-muted/40 rounded-xl border p-5 transition-colors">
@@ -151,16 +161,17 @@ export function DocsSection({ cards }: { cards: DocCard[] }) {
 }
 
 // The 3D: the model's line drawing full screen, then the same view rendered with materials.
-export function ModelSection({ id = "model", title = "3D", line, real, width, height, lineAlt, realAlt, caption = "Rendered from the design model" }: {
+export async function ModelSection({ id = "model", title, line, real, width, height, lineAlt, realAlt, caption }: {
   id?: string; title?: string; line: string; real: string; width: number; height: number; lineAlt: string; realAlt: string; caption?: React.ReactNode
 }) {
+  const t = await getDictionary(await getLocale())
   return (
-    <DrawingSection id={id} title={title} after={
+    <DrawingSection id={id} title={title ?? t.page.model} after={
       <figure className="px-4 pb-10 md:px-10">
         <div className="overflow-hidden">
           <BlurImg src={real} width={width} height={height} loading="lazy" alt={realAlt} className="h-auto w-full" />
         </div>
-        <figcaption className="text-muted-foreground mt-2 text-sm">{caption}</figcaption>
+        <figcaption className="text-muted-foreground mt-2 text-sm">{caption ?? t.page.rendered}</figcaption>
       </figure>
     }>
       {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -4,6 +4,10 @@
 // the grease trap; the power from the farm's site board through the main switch to one RCBO per circuit. A line's
 // colour is what it carries, as in the 3D drawing below it, and every line carries its id, so colour never works alone.
 
+import type { Locale } from "@/components/internationalization/config"
+import { getDictionary } from "@/components/internationalization/dictionaries"
+import { getLocale } from "@/components/internationalization/locale"
+
 type Pt = [number, number, number]
 export type WaterRun = { id: string; system: "cold" | "hot" | "waste" | "vent"; dn: number; note: string; paths: Pt[][] }
 export type WaterPoint = { id: string; what: string; where: string; size: string; at: Pt | null; item?: string }
@@ -18,9 +22,9 @@ export function runLength(run: { paths: Pt[][] }) {
 }
 
 // the pipe a set of runs takes, by size, for a rail card: "6.2 m of 20 mm, 3.1 m of 40 mm"
-export function metres(runs: WaterRun[]): string {
+export function metres(runs: WaterRun[], lang: Locale = "en"): string {
   return [...runs.reduce((a, r) => a.set(r.dn, (a.get(r.dn) ?? 0) + runLength(r)), new Map<number, number>())]
-    .map(([dn, n]) => `${+n.toFixed(1)} m of ${dn} mm`).join(", ")
+    .map(([dn, n]) => lang === "rw" ? `m ${+n.toFixed(1)} za mm ${dn}` : `${+n.toFixed(1)} m of ${dn} mm`).join(", ")
 }
 
 const W = 1600
@@ -42,10 +46,11 @@ export type Outlet = { id: string; title: string; sub: string; cold?: boolean; h
 
 // Top row: the farm's water, the stop valve set; the cold line to the heater at the right, the hot back from it; a row
 // of outlets fed from either; their drains to one collector, the grease trap and the soak pit.
-export function WaterDiagram({ runs, colours, valve, heater, outlets, trap, notes, label }: {
+export async function WaterDiagram({ runs, colours, valve, heater, outlets, trap, notes, label }: {
   runs: WaterRun[]; colours: Record<string, string>; valve: Outlet; heater: Outlet; outlets: Outlet[]; trap: Outlet
   notes: [string, string]; label: string
 }) {
+  const t = (await getDictionary(await getLocale())).diagram
   const run = Object.fromEntries(runs.map((r) => [r.id, r]))
   const byKind = (s: string) => runs.filter((r) => r.system === s)
   const [main, cold] = byKind("cold"), hot = byKind("hot")[0], waste = byKind("waste")
@@ -66,12 +71,12 @@ export function WaterDiagram({ runs, colours, valve, heater, outlets, trap, note
   const coldX = outlets.map((o, i) => (o.cold ? X(i) - 22 : null)).filter((x): x is number => x !== null)
   const hotX = outlets.map((o, i) => (o.hot ? X(i) + 22 : null)).filter((x): x is number => x !== null)
   const drainX = outlets.map((o, i) => (o.drain ? X(i) : null)).filter((x): x is number => x !== null)
-  const key: [string, string, number, boolean?][] = [["cold", "Cold", 1000], ["hot", "Hot", 1100], ["waste", "Drain", 1190], ["vent", "Vent (air admittance)", 1295, true]]
+  const key: [string, string, number, boolean?][] = [["cold", t.cold, 1000], ["hot", t.hot, 1100], ["waste", t.drain, 1190], ["vent", t.vent, 1295, true]]
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="stroke-foreground h-auto w-full min-w-[960px]"
       strokeWidth={2} strokeLinecap="round" fill="none" aria-label={label}>
       {/* the farm's water: the tank and its booster pump, shared with the compound */}
-      <Unit x={100} y={TOP - 30} title="Farm water" sub="tank + booster pump" dashed />
+      <Unit x={100} y={TOP - 30} title={t.farmWater} sub={t.tankPump} dashed />
       {line("cold", `M175 ${TOP} H255`)}
       {tag(main.id, 215, TOP + 56, "middle")}
       <Unit x={330} y={TOP - 30} title={valve.title} sub={`${valve.id} · ${valve.sub}`} muted />
@@ -117,10 +122,10 @@ export function WaterDiagram({ runs, colours, valve, heater, outlets, trap, note
       {/* the collector, the grease trap and the soak pit */}
       {line("waste", `M${Math.min(...drainX)} ${DRAIN} H${hx - 75}`)}
       {tag(collector.id, Math.min(...drainX), DRAIN + 26)}
-      <text x={Math.min(...drainX)} y={DRAIN + 46} stroke="none" className="fill-muted-foreground text-[13px]">under the floor, at 1:40 or steeper</text>
+      <text x={Math.min(...drainX)} y={DRAIN + 46} stroke="none" className="fill-muted-foreground text-[13px]">{t.underFloor}</text>
       <Unit x={hx} y={DRAIN - 30} title={trap.title} sub={`${trap.id} · ${trap.sub}`} muted w={190} />
       {line("waste", `M${hx} ${DRAIN + 30} V${DRAIN + 80}`)}
-      <Unit x={hx} y={DRAIN + 80} title="Soak pit" sub="SP · never the septic tank" dashed w={190} />
+      <Unit x={hx} y={DRAIN + 80} title={t.soakPit} sub={t.soakPitSub} dashed w={190} />
 
       <text x={x0 - 40} y={H - 46} stroke="none" className="fill-muted-foreground text-[14px]">{notes[0]}</text>
       <text x={x0 - 40} y={H - 22} stroke="none" className="fill-muted-foreground text-[14px]">{notes[1]}</text>
@@ -160,29 +165,30 @@ function wrap(text: string, n = 16): string[] {
   return out
 }
 
-const GROUPS: Record<string, string> = { lights: "Lights", sockets: "Sockets", fixed: "Fixed appliances" }
+const GROUPS = ["lights", "sockets", "fixed"] as const
 
 // The single-line diagram: the farm's site board, the main switch with its surge protection, the busbar and one RCBO
 // per circuit, each with its rating, cable and design load. Circuits marked `stop` hang off one contactor (K) that the
 // emergency stop drops.
-export function PowerDiagram({ supply, circuits, colours, notes, label }: {
+export async function PowerDiagram({ supply, circuits, colours, notes, label }: {
   supply: { title: string; sub: string; main: string; mainSub: string }; circuits: Circuit[]; colours: Record<string, string>
   notes: [string, string]; label: string
 }) {
+  const t = (await getDictionary(await getLocale())).diagram
   const TOP = 50, BUS = 250, x0 = 110
   const step = (W - 2 * x0) / Math.max(1, circuits.length - 1)
   const at = (i: number) => x0 + i * step
   const H = BUS + 330
   const src = 100, main = 470, spd = 700, feed = W - x0
   const stops = circuits.map((c, i) => (c.stop ? at(i) : null)).filter((x): x is number => x !== null)
-  const groups = [...new Set(circuits.map((c) => c.group))].filter((g) => GROUPS[g])
+  const groups = [...new Set(circuits.map((c) => c.group))].filter((g): g is (typeof GROUPS)[number] => (GROUPS as readonly string[]).includes(g))
   const kY = BUS + 78
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="stroke-foreground h-auto w-full min-w-[960px]"
       strokeWidth={2} strokeLinecap="round" fill="none" aria-label={label}>
       <rect x={src - 80} y={TOP - 34} width={160} height={68} rx={12} strokeDasharray="6 6" />
       <text x={src} y={TOP - 4} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">{supply.title}</text>
-      <text x={src} y={TOP + 18} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">grid + solar</text>
+      <text x={src} y={TOP + 18} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">{t.gridSolar}</text>
       <text x={src - 80} y={TOP + 64} stroke="none" className="fill-muted-foreground text-[14px]">{supply.sub}</text>
       <line x1={src + 80} y1={TOP} x2={main - 30} y2={TOP} />
 
@@ -194,16 +200,16 @@ export function PowerDiagram({ supply, circuits, colours, notes, label }: {
       <circle cx={spd} cy={TOP} r={4} className="fill-foreground" />
       <line x1={spd} y1={TOP} x2={spd} y2={TOP + 40} />
       <rect x={spd - 50} y={TOP + 40} width={100} height={44} rx={8} />
-      <text x={spd} y={TOP + 68} textAnchor="middle" stroke="none" className="fill-foreground text-[16px] font-semibold">SPD type 2</text>
+      <text x={spd} y={TOP + 68} textAnchor="middle" stroke="none" className="fill-foreground text-[16px] font-semibold">{t.spd}</text>
       <line x1={spd} y1={TOP + 84} x2={spd} y2={TOP + 100} />
       <Earth x={spd} y={TOP + 100} />
-      <text x={spd + 22} y={TOP + 130} stroke="none" className="fill-muted-foreground text-[13px]">E1 · earth rod</text>
+      <text x={spd + 22} y={TOP + 130} stroke="none" className="fill-muted-foreground text-[13px]">{t.earthRod}</text>
       <line x1={feed} y1={TOP} x2={feed} y2={BUS} />
 
       {groups.map((g, i) => (
         <g key={g} transform={`translate(${900 + i * 150} ${TOP + 100})`}>
           <line x1={0} y1={0} x2={26} y2={0} strokeWidth={5} style={{ stroke: colours[g] }} />
-          <text x={36} y={5} stroke="none" className="fill-foreground text-[15px]">{GROUPS[g]}</text>
+          <text x={36} y={5} stroke="none" className="fill-foreground text-[15px]">{t[g]}</text>
         </g>
       ))}
 
@@ -217,9 +223,9 @@ export function PowerDiagram({ supply, circuits, colours, notes, label }: {
             <line x1={x} y1={BUS + 60} x2={x} y2={BUS + 100} strokeWidth={5} style={{ stroke: colours[c.group] }} />
             <text x={x} y={BUS + 130} textAnchor="middle" stroke="none" className="fill-foreground text-[21px] font-bold">{c.id}</text>
             <text x={x} y={BUS + 153} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">
-              {c.cable} mm²{c.phases === 3 ? " · 5-core" : ""}
+              {c.cable} mm²{c.phases === 3 ? ` · ${t.fiveCore}` : ""}
             </text>
-            {c.kw ? <text x={x} y={BUS + 172} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">about {c.kw} kW</text> : null}
+            {c.kw ? <text x={x} y={BUS + 172} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">{t.about} {c.kw} kW</text> : null}
             <text x={x} y={BUS + 198} textAnchor="middle" stroke="none" className="fill-foreground text-[14px]">
               {wrap(c.serves, Math.max(10, Math.floor(step / 8))).map((l, j) => <tspan key={j} x={x} dy={j ? 18 : 0}>{l}</tspan>)}
             </text>

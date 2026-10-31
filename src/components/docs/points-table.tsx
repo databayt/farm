@@ -1,7 +1,9 @@
 import type * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { getDictionary } from "@/components/internationalization/dictionaries"
 import { LocaleLink as Link } from "@/components/internationalization/locale-link"
+import { getLocale } from "@/components/internationalization/locale"
 
 // The points table behind a service, on its place's docs page, as the studio's: a row per tagged point, its anchor
 // (#pt-<id>) the target of the tag on the page's drawing, its dot the colour of the circuit or the run that feeds it.
@@ -9,13 +11,14 @@ import { LocaleLink as Link } from "@/components/internationalization/locale-lin
 
 // The line over a points table: how many points, and the drawing on the place's page whose tags open these rows
 // (`href`). Points off the drawing (a soak pit, a feed from the farm) have a row but no tag.
-export function PointsLead({ count, href, drawing, children }: {
+export async function PointsLead({ count, href, drawing, children }: {
   count: number; href: string; drawing: string; children?: React.ReactNode
-}): React.JSX.Element {
+}): Promise<React.JSX.Element> {
+  const t = (await getDictionary(await getLocale())).table
   return (
     <p className="text-muted-foreground">
-      {count} points. Each tag on the <Link href={href} className="underline underline-offset-4">{drawing}</Link> opens
-      its row here.{children ? <> {children}</> : null}
+      {count} {t.points} <Link href={href} className="underline underline-offset-4">{drawing}</Link>{" "}
+      {t.opensRow}{children ? <> {children}</> : null}
     </p>
   )
 }
@@ -24,7 +27,8 @@ export type PointsColumn = { label: string; end?: boolean; muted?: boolean }
 export type PointsRow = { id: string; colour?: string; cells: React.ReactNode[] }
 
 // `first` names the id column: "Point" for the points, "Run" for a place's pipe runs
-export function PointsTable({ columns, rows, first = "Point" }: { columns: PointsColumn[]; rows: PointsRow[]; first?: string }): React.JSX.Element {
+export async function PointsTable({ columns, rows, first }: { columns: PointsColumn[]; rows: PointsRow[]; first?: string }): Promise<React.JSX.Element> {
+  first ??= (await getDictionary(await getLocale())).table.point
   return (
     <div className="mt-6 overflow-x-auto rounded-xl border">
       <table className="w-full text-sm">

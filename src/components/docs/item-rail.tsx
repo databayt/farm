@@ -8,12 +8,14 @@
 import { useEffect, useRef, useState } from "react"
 
 import { cx } from "@/lib/cx"
+import { dictionary } from "@/components/internationalization/dictionaries"
+import { useLocale } from "@/components/internationalization/use-locale"
 
 export type RailItem = {
   src: string
   alt: string
   title: string
-  details: { label: string; value: string }[]
+  details: { key?: string; label: string; value: string }[]
   note?: string
 }
 
@@ -21,6 +23,7 @@ export function ItemRail({ items }: { items: RailItem[] }) {
   const ref = useRef<HTMLDivElement>(null)
   const [edge, setEdge] = useState({ start: true, end: false })
   const [active, setActive] = useState(0)
+  const t = dictionary(useLocale()).rail
 
   useEffect(() => {
     const el = ref.current
@@ -77,8 +80,8 @@ export function ItemRail({ items }: { items: RailItem[] }) {
         ))}
       </div>
       <div className="mt-4 flex justify-end gap-3 px-4 md:px-10">
-        <Paddle label="Previous" disabled={active === 0 && edge.start} onClick={() => step(-1)} d="M15 18l-6-6 6-6" />
-        <Paddle label="Next" disabled={active === items.length - 1 && edge.end} onClick={() => step(1)} d="M9 18l6-6-6-6" />
+        <Paddle label={t.previous} disabled={active === 0 && edge.start} onClick={() => step(-1)} d="M15 18l-6-6 6-6" />
+        <Paddle label={t.next} disabled={active === items.length - 1 && edge.end} onClick={() => step(1)} d="M9 18l6-6-6-6" />
       </div>
       <div className="px-4 md:px-10" aria-live="polite" aria-label={it.title}>
         <dl className="mt-4 grid gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-3">

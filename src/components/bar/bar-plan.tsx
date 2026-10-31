@@ -1,4 +1,7 @@
+import { getWords } from "@/components/internationalization/words"
+
 import bar from "./bar.json"
+import { words } from "./words"
 
 // The bar drawn in the pattern of the camp plan (src/components/camp/camp-plan.tsx): thin lines, no colour,
 // bold capitals and dimensions in millimetres. The hatch faces down the page, toward the courtyard and the
@@ -45,7 +48,11 @@ function DimensionUp({ y0, y1, x }: { y0: number; y1: number; x: number }) {
   )
 }
 
-export function BarPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function BarPlan({ title, className }: { title?: string; className?: string }) {
+  const w = await getWords(words)
+  const name = w.plan.labels
+  title ??= w.plan.title
   const L = container.l / 2, W = container.w / 2, t = container.wall
   const [ix, iy] = [L - t, W - t] // the inside faces
   const { front, back, store, door } = inside
@@ -111,15 +118,15 @@ export function BarPlan({ title, className }: { title: string; className?: strin
       <rect {...rect(store.x0 + 0.01, -iy, store.x1, -iy + store.d)} {...thin} />
       <path d={`M${f(store.x0 + 0.01)} ${f(-iy)}L${store.x1} ${f(-iy + store.d)}M${store.x1} ${f(-iy)}L${f(store.x0 + 0.01)} ${f(-iy + store.d)}`} {...faint} />
 
-      <text x={f((front.units[1].x0 + front.units[2].x1) / 2)} y={f(fy + 0.36)} textAnchor="middle" style={small}>FRIDGES</text>
-      <text x={f((front.units[3].x0 + front.units[3].x1) / 2)} y={f(fy - 0.08)} textAnchor="middle" style={small}>SINK</text>
-      <text x={f((back.coffee.x0 + back.coffee.x1) / 2)} y={f(by + 0.17)} textAnchor="middle" style={small}>COFFEE</text>
-      <text x={f((back.juicer.x0 + back.fruit.x1) / 2)} y={f(by + 0.17)} textAnchor="middle" style={small}>JUICE</text>
-      <text x={f((store.x0 + store.x1) / 2)} y={f(-iy + store.d + 0.17)} textAnchor="middle" style={small}>STORE</text>
-      <text x={f(ix - 0.12)} y={0.04} textAnchor="end" style={small}>DOOR</text>
-      <text x={-1.0} y={0.04} textAnchor="middle" style={label}>BAR</text>
-      <text x={0} y={f(cy1 - 0.15)} textAnchor="middle" style={small}>COUNTER</text>
-      <text x={f(deck.x1 - 0.12)} y={f(dy1 - 0.15)} textAnchor="end" style={label}>DECK</text>
+      <text x={f((front.units[1].x0 + front.units[2].x1) / 2)} y={f(fy + 0.36)} textAnchor="middle" style={small}>{name.fridges}</text>
+      <text x={f((front.units[3].x0 + front.units[3].x1) / 2)} y={f(fy - 0.08)} textAnchor="middle" style={small}>{name.sink}</text>
+      <text x={f((back.coffee.x0 + back.coffee.x1) / 2)} y={f(by + 0.17)} textAnchor="middle" style={small}>{name.coffee}</text>
+      <text x={f((back.juicer.x0 + back.fruit.x1) / 2)} y={f(by + 0.17)} textAnchor="middle" style={small}>{name.juice}</text>
+      <text x={f((store.x0 + store.x1) / 2)} y={f(-iy + store.d + 0.17)} textAnchor="middle" style={small}>{name.store}</text>
+      <text x={f(ix - 0.12)} y={0.04} textAnchor="end" style={small}>{name.door}</text>
+      <text x={-1.0} y={0.04} textAnchor="middle" style={label}>{name.bar}</text>
+      <text x={0} y={f(cy1 - 0.15)} textAnchor="middle" style={small}>{name.counter}</text>
+      <text x={f(deck.x1 - 0.12)} y={f(dy1 - 0.15)} textAnchor="end" style={label}>{name.deck}</text>
       <Dimension x0={-L} x1={L} y={-1.6} />
       <Dimension x0={hatch.x0} x1={hatch.x1} y={f(dy1 + 0.35)} />
       <DimensionUp y0={-W} y1={W} x={-3.45} />

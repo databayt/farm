@@ -1,6 +1,8 @@
 import type * as React from "react"
 
 import { PointsTable } from "@/components/docs/points-table"
+import { getDictionary } from "@/components/internationalization/dictionaries"
+import { getLocale } from "@/components/internationalization/locale"
 
 // A place's pipe runs on its Plumbing page (D-059): each run's system, size, length (measured along its paths, as the
 // page's drawing routes them) and what it does. The JSONs name a run `id` (the galley, the bar) or `run` (the public
@@ -13,10 +15,12 @@ const length = (r: Run) => {
   return Math.round(m * 10) / 10
 }
 
-export function RunsTable({ runs, colours }: { runs: Run[]; colours: Record<string, string> }): React.JSX.Element {
+export async function RunsTable({ runs, colours }: { runs: Run[]; colours: Record<string, string> }): Promise<React.JSX.Element> {
+  const t = (await getDictionary(await getLocale())).table
+  const system = (s: string) => t.systems[s as keyof typeof t.systems] ?? s
   return (
-    <PointsTable first="Run"
-      columns={[{ label: "System", muted: true }, { label: "Size", end: true }, { label: "Length", end: true }, { label: "What it does" }]}
-      rows={runs.map((r) => ({ id: r.id ?? r.run ?? "", colour: colours[r.system], cells: [r.system, `${r.dn} mm`, `${length(r)} m`, r.note] }))} />
+    <PointsTable first={t.run}
+      columns={[{ label: t.system, muted: true }, { label: t.size, end: true }, { label: t.length, end: true }, { label: t.whatItDoes }]}
+      rows={runs.map((r) => ({ id: r.id ?? r.run ?? "", colour: colours[r.system], cells: [system(r.system), `${r.dn} mm`, `${length(r)} m`, r.note] }))} />
   )
 }
