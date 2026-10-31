@@ -5,15 +5,15 @@ import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, Servi
 import { tagInfo } from "@/components/docs/room-points"
 import { RoomWiring } from "@/components/docs/room-wiring"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
-import { bedRail, electricRail, roomRail } from "@/components/guest-room/rails"
+import { bathRail, bedRail, electricRail, roomRail } from "@/components/guest-room/rails"
 import { circuits, D, E, points } from "@/components/guest-room/data"
 import { GuestRoomPlan } from "@/components/guest-room/guest-room-plan"
 import electricTags from "../../../../../public/designs/guest-room/render/electric-tags.json"
 
 // One guest room, in /en/studio's pattern: the hero, the 2D and the 3D, the rails, Electric, then the docs cards; the
 // points table and the status are on /docs/guest-room-points. Both drawings read src/components/guest-room/guest-room.json: a third of the saffron container block from the footage, a
-// barred window and a red door onto the timber veranda, a double bed under the back window, a wardrobe, a
-// desk under the front window, two chairs and a table outside.
+// barred window and a red door onto the timber veranda, a double bed under the back window, a wardrobe and a
+// desk beside it, the en-suite (shower, WC, basin) across the front-left corner (D-061), two chairs and a table outside.
 
 export const metadata: Metadata = {
   title: "The guest room · Farm",
@@ -43,22 +43,24 @@ export default function GuestRoomPage() {
         title="A quiet room, with the veranda for mornings"
         alt="The guest-room block at sunset: two teal shipping containers joined into one long building on a fieldstone plinth, three rooms each with a cream door and a white-framed window lit warm onto a bed and lamps inside, a timber veranda under a slatted timber pergola along the front with two slatted chairs, a small table with a lantern and potted plants at each room, a step down to the lawn at each door, among avocado trees." />
 
-      {/* 2D, full screen: the room's plan (src/components/guest-room/guest-room-plan.tsx), in the text colour. */}
+      {/* 2D, full screen: the room's plan (src/components/guest-room/guest-room-plan.tsx), in the text colour,
+          measured as the studio's plan is. */}
       <DrawingSection id="plans" title="2D">
-        <GuestRoomPlan title="Plan: one guest room 4.06 m wide and 4.88 m deep, a third of the container block, with a 1.5 m veranda in front. A double bed against the back wall under a window, a bedside table each side and a bench at its foot on a rug; a wardrobe on the left wall; a desk and chair under the front window; the door on the front right opening in; coat hooks on the right wall; red steel posts at the joint across the middle; two chairs and a round table on the veranda."
+        <GuestRoomPlan title="Plan: one guest room 4,064 mm wide and 4,876 mm deep, a third of the container block, with a 1,500 mm veranda in front. A 1,600 x 2,000 mm double bed against the back wall under a window, a bedside table each side and a bench at its foot on a rug; a wardrobe on the left wall and a 1,000 mm desk on the right, beside the bed; across the front-left corner an en-suite 2,400 x 1,350 mm behind a 700 mm sliding door, with a 900 x 900 mm walk-in shower, a WC and a basin under the front window; the 900 mm door on the front right opening in; coat hooks on the right wall; red steel posts at the joint across the middle; two chairs and a round table on the veranda."
           className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 
       {/* 3D, in the 2D section's pattern: a line drawing of the room seen from the front with its front wall
           and ceiling off, then the same view rendered. Both from scripts/site/render/guest-room.html. */}
       <ModelSection line={`${D}/render/guest-room-line.png`} real={`${D}/render/guest-room-real.webp`} width={2400} height={1800}
-        lineAlt="Line drawing of the guest room from the front with the front wall and ceiling off: the double bed with two pillows under the barred back window, bedside tables with lamps, a bench at the foot on a rug, the wardrobe on the left, the desk and chair by the front, the door open against the right, the joint's beam overhead, and two chairs and a table on the veranda with the step down."
-        realAlt="The same view rendered: cream walls, an oak plank floor and Medium Oak furniture, white bedding with a mustard throw on a striped rug, the red-framed barred window, red steel posts and beam, the red door open, and timber chairs and a table with a lantern on the veranda over the lawn." />
+        lineAlt="Line drawing of the guest room from the front with the front wall and ceiling off: the double bed with two pillows under the barred back window, bedside tables with lamps, a bench at the foot on a rug, the wardrobe on the left and the desk and chair on the right, the en-suite in the front-left corner with its walls cut low, showing the shower tray behind a glass screen, the WC and the basin on its console, the door open against the right, the joint's beam overhead, and two chairs and a table on the veranda with the step down."
+        realAlt="The same view rendered: cream walls, an oak plank floor and Medium Oak furniture, white bedding with a mustard throw on a striped rug, the red-framed barred window, red steel posts and beam, the en-suite's white shower tray, WC and basin on grey tiles, the red door open, and timber chairs and a table with a lantern on the veranda over the lawn." />
 
       {/* The rails, in the studio's pattern: each piece on its own (guest-room.html?item=<id>), the card in focus
           showing its size, source and cost below. */}
       <RailSection id="bedroom" title="Bed" items={bedRail} />
       <RailSection id="furniture" title="Room and veranda" items={roomRail} />
+      <RailSection id="bathroom" title="Bathroom" items={bathRail} />
 
       {/* Electric, in the studio's pattern: the room's wiring drawn full width from the farm's supply to every circuit,
           then the installation in the 3D view's camera (render/electric-line.png, every run in its circuit's colour,
@@ -70,7 +72,7 @@ export default function GuestRoomPage() {
           notes={[`Design ${designA} A on a ${E.main_A} A main switch · one RCBO 30 mA type A per circuit · the studio's conventions (D-021)`,
             "Ratings are design intent until a RURA class A electrician designs the supply and certifies the room"]} />}
         figure={<TaggedFigure table="/docs/guest-room/electric" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
-          alt="Line drawing of the guest room from the front with the ceiling and the joint's beam off: the unit board on the right wall by the bed, the circuits rising from its top along the ceiling edge and down to each point, in blue for the lights and the wall fan, orange for the sockets beside the bedside tables, by the desk and on the right wall, and green for the AC isolator high on the back wall."
+          alt="Line drawing of the guest room from the front with the ceiling and the joint's beam off: the unit board on the right wall by the bed, the circuits rising from its top along the ceiling edge and down to each point, in blue for the lights, the bathroom's switch and the wall fan, orange for the sockets beside the bedside tables, over the desk and by the bathroom, green for the AC isolator high on the back wall, and red for the shower heater on the bathroom's left wall and its isolator outside the bathroom door."
           info={tagInfo(points, circuits)} />}
         note={<>
           Every run goes up into the ceiling, along it and straight down to its device, in conduit inside the linings.

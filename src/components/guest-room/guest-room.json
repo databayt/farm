@@ -1,5 +1,5 @@
 {
-  "about": "One guest room, as /en/camp is one camp: a third of the compound's guest-room block (src/components/home/compound.json, unit \"rooms\": two 40 ft containers joined side by side, 12.192 x 4.876 m, three rooms, front east onto a 1.5 m timber veranda under a slatted shade). Each room is 4.064 m along the block and 4.876 m deep. As in the 2026-10-25 footage (assets/reference/rooms, rooms-planned, room): on the front, a barred red-framed window left of a red door with a barred glass panel; a second barred window in the back wall; cream walls; red steel posts where the two containers were joined, across the middle of the room. No en-suite shows in the footage, so there is none: guests use the compound's public bathroom. The floor is bare plywood today; it is drawn in the studio's oak planks, and the furniture in the studio's Medium Oak. The 2D (guest-room-plan.tsx) and the 3D (scripts/site/render/guest-room.html) both read this file. Plan in metres: x to the right along the block, y toward the front (the door), the room's centre at 0,0. Furniture sizes and places are design choices, not yet sourced.",
+  "about": "One guest room, as /en/camp is one camp: a third of the compound's guest-room block (src/components/home/compound.json, unit \"rooms\": two 40 ft containers joined side by side, 12.192 x 4.876 m, three rooms, front east onto a 1.5 m timber veranda under a slatted shade). Each room is 4.064 m along the block and 4.876 m deep. As in the 2026-10-25 footage (assets/reference/rooms, rooms-planned, room): on the front, a barred red-framed window left of a red door with a barred glass panel; a second barred window in the back wall; cream walls; red steel posts where the two containers were joined, across the middle of the room. No en-suite shows in the footage; the owner's brief (D-029) and the founder (2026-10-31, D-061) give every room its own shower and WC, so one is drawn across the front-left corner, under the front window, its sizes design intent [A]. The floor is bare plywood today; it is drawn in the studio's oak planks, and the furniture in the studio's Medium Oak. The 2D (guest-room-plan.tsx) and the 3D (scripts/site/render/guest-room.html) both read this file. Plan in metres: x to the right along the block, y toward the front (the door), the room's centre at 0,0. Furniture sizes and places are design choices, not yet sourced.",
   "block": {
     "about": "The room's share of the block, outside the steel: 12.192 / 3 long, two container widths deep. The stone plinth lifts it 0.3 m; the floor sits on the container's 0.14 m bottom rail.",
     "w": 4.064,
@@ -47,53 +47,65 @@
     "mattress": 0.22,
     "headboard": 1.05
   },
-  "bedsides": {
-    "about": "A bedside table each side with a linen-shade lamp.",
-    "w": 0.45,
-    "d": 0.4,
-    "h": 0.5,
-    "gap": 0.05
-  },
+  "bedsides": { "about": "A bedside table each side with a linen-shade lamp.", "w": 0.45, "d": 0.4, "h": 0.5, "gap": 0.05 },
   "bench": { "about": "Luggage bench across the foot of the bed.", "w": 1.2, "d": 0.4, "h": 0.45, "gap": 0.1 },
   "wardrobe": {
-    "about": "Two-door wardrobe on the left wall, between the joint post and the desk.",
+    "about": "Two-door wardrobe on the left wall, beside the bed, between the left bedside table and the joint post.",
     "x0": -1.97,
-    "y0": 0.15,
+    "y0": -1.05,
     "d": 0.58,
     "w": 1.0,
     "h": 1.95
   },
   "desk": {
-    "about": "A small desk under the front window with a chair facing the window.",
-    "x0": -1.4,
-    "x1": -0.3,
+    "about": "A small desk on the right wall, beside the bed's foot and short of the joint post, its chair facing the wall; the front window now lights the bathroom (D-061).",
+    "y0": -1.05,
+    "y1": -0.05,
     "d": 0.5,
     "h": 0.75,
-    "chair": { "w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.85, "y": 1.55 }
+    "chair": { "w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.85, "x": 1.2 }
   },
   "hooks": { "about": "A rail of coat hooks on the right wall, clear of the door's swing.", "y0": 0.25, "y1": 1.15, "h": 1.65 },
   "rug": { "about": "Woven rug under the lower two thirds of the bed.", "w": 2.4, "d": 1.8, "y": -0.6 },
+  "bath": {
+    "about": "The en-suite (D-061): a lined stud partition across the room's front-left corner, from the left partition to just short of the door, the front window now its window (frosted lower pane, opening out, the room's only ventilation for the shower until an extract fan is chosen) [A]. A sliding door on the room side, sliding left along the partition, so no swing. Inside, along the front wall: a walk-in shower on a 900 x 900 tray with a fixed glass screen and the instant heater on the left wall, as the studio's (D-053); a floor-standing WC with its low cistern under the window's sill; a basin on a timber console with a mirror. Plan metres as the room's; the shower, WC and basin sizes are the studio's and the public bathroom's choices, not yet sourced.",
+    "x0": -1.97,
+    "x1": 0.43,
+    "y0": 1.0,
+    "wall": 0.08,
+    "h": 2.35,
+    "door": { "x0": -0.9, "x1": -0.2, "h": 2.0 },
+    "tray": { "x0": -1.97, "x1": -1.07, "y0": 1.45, "y1": 2.35, "h": 0.04 },
+    "screen": { "x": -1.07, "y0": 1.45, "y1": 2.35, "h": 2.0 },
+    "wc": { "x": -0.6, "w": 0.38, "d": 0.65, "cistern": { "w": 0.4, "d": 0.18, "h": 0.78 }, "seat": 0.42 },
+    "basin": { "x0": -0.12, "x1": 0.35, "d": 0.42, "h": 0.85, "mirror": { "w": 0.42, "h": 0.6, "z0": 1.15 } }
+  },
   "electric": {
-    "about": "The room's wiring in the studio's pattern (D-021): its own surface unit board, a double-pole main switch and type 2 surge protection, one RCBO 30 mA type A per circuit, cables in conduit in the linings. The supply is a cable from the farm's site board (the power guide); its size is the electrician's, to the run's length. Points in plan metres (x, y as the plan, z above the floor) at their centre, facing out of their wall; size in mm (w, h, d). design_A: lights and the fan from their watts at 230 V; sockets and the AC provision at the studio's design loads (C2 and C7). rwf: the studio BOM's placeholder unit prices (AS-21), not quotes. No en-suite is drawn (see about), so there is no plumbing and no water-heater circuit yet.",
-    "main_A": 32,
+    "about": "The room's wiring in the studio's pattern (D-021): its own surface unit board, a double-pole main switch and type 2 surge protection, one RCBO 30 mA type A per circuit, cables in conduit in the linings. The supply is a cable from the farm's site board (the power guide); its size is the electrician's, to the run's length. Points in plan metres (x, y as the plan, z above the floor) at their centre, facing out of their wall; size in mm (w, h, d). design_A: lights and the fan from their watts at 230 V; sockets and the AC provision at the studio's design loads (C2 and C7). rwf: the studio BOM's placeholder unit prices (AS-21), not quotes. The en-suite (D-061) adds the studio's 5.5 kW instant shower heater on its own B25 circuit in 6 mm² (C4), with a double-pole isolator outside the bathroom, so the main switch rises to 63 A as the studio's (D-053) [A]; the bathroom light is IP44, on the lights circuit.",
+    "main_A": 63,
     "circuits": [
       { "id": "C1", "serves": "Lights and the wall fan", "device": "B6", "cable_mm2": 1.5, "group": "lights", "colour": "#2a78d6" },
       { "id": "C2", "serves": "Sockets: the bed, the desk and the cleaning socket", "device": "B16", "cable_mm2": 2.5, "design_A": 8, "group": "sockets", "colour": "#eb6834" },
       { "id": "C3", "serves": "AC provision", "device": "B16", "cable_mm2": 2.5, "design_A": 12, "group": "fixed", "colour": "#1baf7a" },
-      { "id": "C4", "serves": "Spare", "device": "B16", "cable_mm2": 2.5, "group": "spare", "colour": "#9a9893" }
+      { "id": "C4", "serves": "Instant shower heater 5.5 kW", "device": "B25", "cable_mm2": 6.0, "design_A": 23.9, "group": "fixed", "colour": "#c2302b" },
+      { "id": "C5", "serves": "Spare", "device": "B16", "cable_mm2": 2.5, "group": "spare", "colour": "#9a9893" }
     ],
     "points": [
       { "id": "DB", "model": "board", "description": "Unit board, 12 modules, on the right wall by the bed", "at": [1.92, -1.6, 1.75], "face": "-x", "size": [300, 250, 100], "rwf": 65000 },
       { "id": "L1", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, over the bed", "at": [0, -1.0, 2.325], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
-      { "id": "L2", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, by the door and the desk", "at": [0, 1.25, 2.325], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
+      { "id": "L2", "model": "ceiling", "circuit": "C1", "description": "Ceiling light, by the door and the desk", "at": [0.6, 0.45, 2.325], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
       { "id": "S1", "model": "switch2", "circuit": "C1", "description": "Two-gang switch by the door, past its swing: L1 and L2", "at": [1.965, 1.35, 1.1], "face": "-x", "size": [146, 86, 10], "rwf": 3500 },
+      { "id": "L3", "model": "ceiling", "circuit": "C1", "description": "Bathroom ceiling light, IP44", "at": [-0.8, 1.7, 2.325], "face": "down", "size": [220, 220, 50], "watts": 12, "rwf": 15000 },
+      { "id": "S2", "model": "switch", "circuit": "C1", "description": "Switch for the bathroom light, outside its door", "at": [0.25, 0.99, 1.0], "face": "-y", "size": [86, 86, 10], "rwf": 2500 },
       { "id": "F1", "model": "wallfan", "circuit": "C1", "description": "Wall fan 300 mm, high on the left wall over the bed", "at": [-1.845, -1.35, 1.95], "face": "+x", "size": [300, 300, 250], "watts": 45, "rwf": 35000 },
       { "id": "P1", "model": "usb", "circuit": "C2", "description": "Socket + USB-C beside the left bedside table, for its lamp and a phone", "at": [-1.5, -2.345, 0.7], "face": "+y", "size": [146, 86, 10], "rwf": 15000 },
       { "id": "P2", "model": "usb", "circuit": "C2", "description": "Socket + USB-C beside the right bedside table, for its lamp and a phone", "at": [1.5, -2.345, 0.7], "face": "+y", "size": [146, 86, 10], "rwf": 15000 },
-      { "id": "P3", "model": "socket2", "circuit": "C2", "description": "Double socket by the desk, for its lamp and a laptop", "at": [-1.965, 1.75, 0.3], "face": "+x", "size": [146, 86, 10], "rwf": 9000 },
-      { "id": "P4", "model": "socket2", "circuit": "C2", "description": "Double socket on the right wall: cleaning, a kettle, the luggage bench", "at": [1.965, -0.75, 0.3], "face": "-x", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P3", "model": "socket2", "circuit": "C2", "description": "Double socket over the desk, for its lamp and a laptop", "at": [1.965, -0.4, 0.95], "face": "-x", "size": [146, 86, 10], "rwf": 9000 },
+      { "id": "P4", "model": "socket2", "circuit": "C2", "description": "Double socket on the left wall by the bathroom: cleaning, a kettle", "at": [-1.965, 0.5, 0.3], "face": "+x", "size": [146, 86, 10], "rwf": 9000 },
       { "id": "P5", "model": "isolator", "circuit": "C3", "description": "AC provision: isolator high on the back wall, for a split unit later", "at": [1.55, -2.34, 2.0], "face": "+y", "size": [86, 86, 20], "rwf": 9000 },
-      { "id": "A1", "model": "alarm", "description": "Smoke alarm, 10-year battery, on the ceiling by the door", "at": [0.9, 0.55, 2.33], "face": "down", "size": [100, 100, 40], "rwf": 20000 }
+      { "id": "P6", "model": "isolator", "circuit": "C4", "description": "Shower heater double-pole isolator, outside the bathroom", "at": [0.05, 0.99, 1.0], "face": "-y", "size": [86, 86, 20], "rwf": 9000 },
+      { "id": "H1", "model": "heater", "circuit": "C4", "description": "Instant shower heater 5.5 kW, IPX4, on the shower's left wall", "at": [-1.92, 1.9, 1.55], "face": "+x", "size": [200, 330, 90], "watts": 5500, "rwf": 90000 },
+      { "id": "A1", "model": "alarm", "description": "Smoke alarm, 10-year battery, on the ceiling by the door", "at": [1.2, 0.9, 2.33], "face": "down", "size": [100, 100, 40], "rwf": 20000 }
     ]
   }
 }

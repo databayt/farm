@@ -15,9 +15,9 @@
                 window.TAGS -> render/electric-line.png + render/electric-tags.json; real mode shows the finished
                 devices -> render/electric-real.webp
     &item=<id>  one piece on its own, real mode, 1200 x 900 on a transparent ground: the furniture (bed, mattress,
-                bedding, bedside, lamp, bench, wardrobe, desk, chair, hooks, rug, verandachair, verandatable)
-                -> render/furniture/<id>.webp, or a device by its model (board, ceiling, switch2, wallfan, usb,
-                socket2, isolator, alarm) -> render/electric/<id>.webp
+                bedding, bedside, lamp, bench, wardrobe, desk, chair, hooks, rug, verandachair, verandatable) and the
+                en-suite's (shower, wc, basin) -> render/furniture/<id>.webp, or a device by its model (board, ceiling,
+                switch, switch2, wallfan, usb, socket2, isolator, heater, alarm) -> render/electric/<id>.webp
 
   Serve the repo root on a spare port, open this page at 2400 x 1800, and once body[data-ready] is set
   save the data URL in #out.
@@ -171,7 +171,7 @@ const T = LINE ? {} : {
 }
 
 // ------------------------------------------------------------ materials
-const THIN = new Set(["bar", "leg", "hook", "black"])
+const THIN = new Set(["bar", "leg", "hook", "black", "steel"])
 const MAT = {}
 function mat(name) {
   if (MAT[name]) return MAT[name]
@@ -209,8 +209,11 @@ function mat(name) {
       leaf2: () => std({ color: "#3f6b30", roughness: 0.7 }),
       pot: () => std({ color: "#d9d4cc", roughness: 0.8 }),
       towel: () => std({ color: "#d8cdbd", roughness: 0.95 }),
+      ceramic: () => std({ color: "#f6f6f3", roughness: 0.18 }), // the WC, the basin, the shower tray
+      tile: () => std({ color: "#d9d6cf", roughness: 0.5 }), // the bathroom's floor tiles
+      steel: () => std({ color: "#c4c8cc", roughness: 0.25, metalness: 0.85 }),
       view: () => std({ color: "#cfe0d6", roughness: 0.9, emissive: "#cfe0d6", emissiveIntensity: 0.35 }), // daylight beyond the glass
-      glass: () => new THREE.MeshPhysicalMaterial({ color: "#e4f1f3", roughness: 0.04, transparent: true, opacity: 0.18, depthWrite: false }),
+      glass: () => new THREE.MeshPhysicalMaterial({ color: "#e4f1f3", roughness: 0.04, transparent: true, opacity: ITEM ? 0.4 : 0.18, depthWrite: false }),
     }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
   }
   return (MAT[name] = x)
@@ -283,7 +286,7 @@ function plant(x, y, z, s = 1) {
   }
 }
 
-const { block, room, joint, door, window: win, veranda, bed, bedsides, bench, wardrobe, desk, hooks, rug } = C
+const { block, room, joint, door, window: win, veranda, bed, bedsides, bench, wardrobe, desk, hooks, rug, bath } = C
 const OX = block.w / 2, OZ = block.d / 2, IX = room.w / 2, IZ = room.d / 2
 const FY = block.plinth + block.rail // the floor's top
 const TOP = block.plinth + block.height // the containers' top
@@ -407,26 +410,27 @@ for (const sgn of [-1, 1]) {
   blk(x0 + 0.02, y0 + 0.02, x1 - 0.02, y0 + w - 0.02, FY, FY + 0.06, "cut") // the plinth's shadow gap
 }
 {
+  // the desk on the right wall, short of the joint post; its chair faces the wall (D-061)
   TAG = "desk"
-  const z1 = IZ, z0 = IZ - desk.d, h = FY + desk.h, lg = 0.04
-  blk(desk.x0, z0, desk.x1, z1, h - 0.03, h, "pine", 0.006)
-  for (const x of [desk.x0, desk.x1 - lg]) for (const z of [z0, z1 - lg]) blk(x, z, x + lg, z + lg, FY, h - 0.03, "leg")
-  blk(desk.x0 + lg, z1 - 0.03, desk.x1 - lg, z1, h - 0.15, h - 0.03, "pine") // the back rail
+  const x1 = IX, x0 = IX - desk.d, z0 = desk.y0, z1 = desk.y1, h = FY + desk.h, lg = 0.04
+  blk(x0, z0, x1, z1, h - 0.03, h, "pine", 0.006)
+  for (const x of [x0, x1 - lg]) for (const z of [z0, z1 - lg]) blk(x, z, x + lg, z + lg, FY, h - 0.03, "leg")
+  blk(x1 - 0.03, z0 + lg, x1, z1 - lg, h - 0.15, h - 0.03, "pine") // the back rail
   TAG = "deskprops"
-  plant(desk.x0 + 0.15, h, z1 - 0.15, 0.85)
+  plant(x1 - 0.15, h, z0 + 0.15, 0.85)
   // a small reading lamp on the desk, and a notebook
-  const lx = desk.x1 - 0.18, lz = z1 - 0.15
+  const lx = x1 - 0.15, lz = z1 - 0.18
   cyl(lx, lz, 0.06, h, 0.02, "black", 32); cyl(lx, lz, 0.007, h + 0.02, 0.3, "black", 8)
   add(new THREE.CylinderGeometry(0.07, 0.1, 0.13, 40, 1, true), "shade", { pos: [lx, h + 0.36, lz] })
-  blk(desk.x0 + 0.4, z0 + 0.1, desk.x0 + 0.62, z0 + 0.4, h, h + 0.015, "cushion", 0.003)
-  // the chair, facing the window, its back to the room
+  blk(x0 + 0.1, z0 + 0.4, x0 + 0.4, z0 + 0.62, h, h + 0.015, "cushion", 0.003)
+  // the chair, facing the wall, its back to the bed
   TAG = "chair"
-  const { w, d: cd, seat, back, y } = desk.chair, cx = (desk.x0 + desk.x1) / 2
-  const [cx0, cx1, cz0, cz1] = [cx - w / 2, cx + w / 2, y - cd / 2, y + cd / 2]
+  const { w, d: cd, seat, back, x: cx } = desk.chair, cz = (z0 + z1) / 2
+  const [cx0, cx1, cz0, cz1] = [cx - cd / 2, cx + cd / 2, cz - w / 2, cz + w / 2]
   blk(cx0, cz0, cx1, cz1, FY + seat - 0.03, FY + seat, "pine", 0.006)
   for (const x of [cx0, cx1 - 0.035]) for (const z of [cz0, cz1 - 0.035]) blk(x, z, x + 0.035, z + 0.035, FY, FY + seat - 0.03, "leg")
-  for (const x of [cx0, cx1 - 0.035]) blk(x, cz0, x + 0.035, cz0 + 0.035, FY + seat, FY + back, "leg")
-  blk(cx0, cz0, cx1, cz0 + 0.025, FY + back - 0.16, FY + back, "pine", 0.004) // the backrest
+  for (const z of [cz0, cz1 - 0.035]) blk(cx0, z, cx0 + 0.035, z + 0.035, FY + seat, FY + back, "leg")
+  blk(cx0, cz0, cx0 + 0.025, cz1, FY + back - 0.16, FY + back, "pine", 0.004) // the backrest
 }
 {
   TAG = "hooks"
@@ -439,6 +443,53 @@ for (const sgn of [-1, 1]) {
   }
   TAG = "towel"
   blk(x - 0.04, hooks.y0 + 0.1, x - 0.005, hooks.y0 + 0.36, h - 0.55, h - 0.02, "towel", 0.01) // a towel hung on the first
+}
+
+// ------------------------------------------------------------ the en-suite (D-061)
+// Its partition across the front-left corner is cut low, as a section, so the room behind it shows from the front;
+// the sliding door stands open against it on the room side. Inside along the front wall: the walk-in shower on its
+// tray behind a fixed glass screen, the instant heater on the left wall (an electric point, H1), the WC with its low
+// cistern under the window's sill, the basin on a timber console.
+{
+  const { x0, x1, y0, wall: t, door: bd, tray, screen, wc, basin } = bath
+  const CUT = FY + 1.1
+  TAG = ""
+  blk(x0, y0 + t, x1 - t, IZ, FY, FY + 0.006, "tile") // the floor tiles
+  cutWall(x0, y0, bd.x0, y0 + t, FY, CUT)
+  cutWall(bd.x1, y0, x1, y0 + t, FY, CUT)
+  cutWall(x1 - t, y0 + t, x1, IZ, FY, CUT)
+  TAG = "bathdoor"
+  blk(bd.x0 - (bd.x1 - bd.x0) + 0.04, y0 - 0.045, bd.x0 + 0.04, y0 - 0.01, FY + 0.01, CUT - 0.02, "pine", 0.004) // the leaf, slid open
+  blk(bd.x0 - (bd.x1 - bd.x0) + 0.08, y0 - 0.06, bd.x0 + 0.02, y0 - 0.045, CUT - 0.06, CUT - 0.04, "black") // the track
+  TAG = "shower"
+  blk(tray.x0, tray.y0, tray.x1, tray.y1, FY, FY + tray.h, "ceramic", 0.01)
+  cyl((tray.x0 + tray.x1) / 2, (tray.y0 + tray.y1) / 2, 0.045, FY + tray.h, 0.003, "steel", 24) // the drain
+  blk(screen.x - 0.004, screen.y0, screen.x + 0.004, screen.y1, FY + tray.h, FY + screen.h, "glass")
+  for (const [z0, z1, y0, y1] of [[screen.y0, screen.y0 + 0.02, FY + tray.h, FY + screen.h], [screen.y1 - 0.02, screen.y1, FY + tray.h, FY + screen.h],
+    [screen.y0, screen.y1, FY + screen.h - 0.02, FY + screen.h], [screen.y0, screen.y1, FY + tray.h, FY + tray.h + 0.02]])
+    blk(screen.x - 0.012, z0, screen.x + 0.012, z1, y0, y1, "steel") // the screen's frame
+  const rz = (tray.y0 + tray.y1) / 2 + 0.26
+  blk(tray.x0 + 0.01, rz - 0.01, tray.x0 + 0.03, rz + 0.01, FY + 0.9, FY + 2.0, "steel") // the riser rail
+  pipe([tray.x0 + 0.03, FY + 1.85, rz], [tray.x0 + 0.13, FY + 1.92, rz], 0.012, "steel") // the hand shower on it
+  cyl(tray.x0 + 0.15, rz, 0.045, FY + 1.89, 0.03, "steel", 24)
+  TAG = "wc"
+  {
+    const cz1 = IZ, cz0 = IZ - wc.cistern.d, pz0 = IZ - wc.d
+    blk(wc.x - wc.cistern.w / 2, cz0, wc.x + wc.cistern.w / 2, cz1, FY, FY + wc.cistern.h, "ceramic", 0.02) // the cistern
+    blk(wc.x - 0.02, cz0 + 0.06, wc.x + 0.02, cz0 + 0.1, FY + wc.cistern.h, FY + wc.cistern.h + 0.012, "steel") // its button
+    blk(wc.x - wc.w / 2, pz0, wc.x + wc.w / 2, cz0, FY + 0.12, FY + wc.seat - 0.03, "ceramic", 0.12) // the pan
+    blk(wc.x - 0.11, pz0 + 0.15, wc.x + 0.11, cz0, FY, FY + 0.14, "ceramic", 0.04) // its foot
+    blk(wc.x - wc.w / 2 + 0.01, pz0 + 0.01, wc.x + wc.w / 2 - 0.01, cz0, FY + wc.seat - 0.03, FY + wc.seat, "ceramic", 0.12) // the seat
+  }
+  TAG = "basin"
+  {
+    const z1 = IZ, z0 = IZ - basin.d, h = FY + basin.h, cx = (basin.x0 + basin.x1) / 2
+    blk(basin.x0, z0, basin.x1, z1, h - 0.18, h - 0.14, "pine", 0.004) // the console's shelf
+    for (const x of [basin.x0 + 0.02, basin.x1 - 0.04]) blk(x, z0 + 0.02, x + 0.02, z0 + 0.04, FY, h - 0.14, "black") // its legs
+    cyl(cx, z0 + basin.d / 2, 0.2, h - 0.14, 0.13, "ceramic", 48, 0.19) // the bowl
+    cyl(cx, z1 - 0.05, 0.015, h - 0.01, 0.2, "steel", 16) // the tap
+    pipe([cx, h + 0.18, z1 - 0.05], [cx, h + 0.17, z1 - 0.16], 0.01, "steel")
+  }
 }
 
 // ------------------------------------------------------------ the veranda: two chairs and a table

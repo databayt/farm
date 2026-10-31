@@ -88,6 +88,13 @@ export function services({ scene, meshes, LINE, floor, ceiling }) {
       case "switch": plate(); box(w * 0.42, h * 0.55, 0.008, 0, 0, 0.01, "plastic", 0.002); break
       case "switch2": plate(); for (const s of [-1, 1]) box(w * 0.22, h * 0.55, 0.008, s * w * 0.14, 0, 0.01, "plastic", 0.002); break
       case "isolator": plate(); box(w * 0.3, h * 0.45, 0.012, 0, 0, 0.01, "red", 0.002); box(0.01, 0.006, 0.002, 0, -h * 0.34, 0.01, "green"); break
+      case "heater": { // an instant shower heater: white body, a small display, the hose down to the hand shower
+        box(w, h, d, 0, 0, 0, "plastic", 0.012)
+        box(w * 0.5, 0.04, 0.004, 0, h * 0.25, d, "smoke")
+        disc(0.02, 0.02, w * 0.25, -h * 0.3, d, "grey", 24)
+        part(new THREE.CylinderGeometry(0.008, 0.008, 0.45, 8), "steel", [0, -h / 2 - 0.22, d * 0.6])
+        break
+      }
       case "data": plate(); for (const s of [-1, 1]) box(0.016, 0.014, 0.003, s * 0.018, 0, 0.01, "port"); break
       case "av": plate(); box(0.018, 0.008, 0.003, -0.018, 0, 0.01, "port"); box(0.016, 0.014, 0.003, 0.018, 0, 0.01, "port"); break
       case "ceiling": disc(w / 2, d * 0.6, 0, 0, 0, "plastic", 48); disc(w / 2 - 0.02, d * 0.4, 0, 0, d * 0.6, "led", 48); break

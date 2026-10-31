@@ -2,9 +2,11 @@ import room from "./guest-room.json"
 
 // One guest room drawn in the pattern of the camp plan (src/components/camp/camp-plan.tsx): thin lines, no
 // colour, bold capitals and dimensions in millimetres. The door faces down the page, toward the viewer of the
-// 3D's front view. Units are metres, the room's centre at 0,0, y toward the door and the veranda.
+// 3D's front view. Units are metres, the room's centre at 0,0, y toward the door and the veranda. Measured as the
+// studio's plan is (scripts/studio/sheets.py plan_bw): a chain along the back wall, the front's openings and the
+// overall length below, the depths up each side, and the clearances inside, here with the en-suite (D-061).
 
-const { block, room: inner, joint, door, window: win, veranda, bed, bedsides, bench, wardrobe, desk, hooks, rug } = room
+const { block, room: inner, joint, door, window: win, veranda, bed, bedsides, bench, wardrobe, desk, hooks, rug, bath } = room
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
 const medium = { ...thin, strokeWidth: 1.6 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
@@ -66,14 +68,16 @@ export function GuestRoomPlan({ title, className }: { title: string; className?:
   const by0 = -IY, by1 = -IY + bed.l
   const sideX = bed.w / 2 + bedsides.gap
   const benchY = by1 + bench.gap
-  const dy0 = IY - desk.d
-  const dcx = (desk.x0 + desk.x1) / 2
+  const dx0 = IX - desk.d
+  const dcy = (desk.y0 + desk.y1) / 2
   const { chair } = desk
+  const { tray, screen, wc, basin, door: bd, wall: bt } = bath
+  const side0 = -sideX - bedsides.w, side1 = sideX + bedsides.w
   const hinge = door.x1, swing = door.x1 - door.x0
   // the veranda's boards run out from the wall, 140 mm a board
   const boards = Array.from({ length: Math.floor((2 * OX) / 0.14) }, (_, k) => f(-OX + 0.14 * (k + 1)))
   return (
-    <svg viewBox="-2.75 -3.25 5.7 8.25" role="img" aria-label={title} className={className}>
+    <svg viewBox="-2.95 -3.45 5.95 8.6" role="img" aria-label={title} className={className}>
       {/* The neighbouring rooms go on past the partitions, left and right: the block's long walls, faint */}
       {[-1, 1].map((s) => (
         <g key={s}>
@@ -131,14 +135,30 @@ export function GuestRoomPlan({ title, className }: { title: string; className?:
       })}
       <rect {...rect(-bench.w / 2, benchY, bench.w / 2, benchY + bench.d)} {...thin} />
 
-      {/* The wardrobe on the left wall, its two doors; the desk under the front window and its chair */}
+      {/* The wardrobe on the left wall, its two doors; the desk on the right wall and its chair, facing the wall */}
       <rect {...rect(wardrobe.x0, wardrobe.y0, wardrobe.x0 + wardrobe.d, wardrobe.y0 + wardrobe.w)} {...thin} />
       <line x1={f(wardrobe.x0 + wardrobe.d - 0.03)} x2={f(wardrobe.x0 + wardrobe.d - 0.03)} y1={wardrobe.y0} y2={f(wardrobe.y0 + wardrobe.w)} {...faint} />
       <line x1={f(wardrobe.x0 + wardrobe.d - 0.03)} x2={wardrobe.x0} y1={f(wardrobe.y0 + wardrobe.w / 2)} y2={f(wardrobe.y0 + wardrobe.w / 2)} {...faint} />
       <line x1={f(wardrobe.x0 + 0.06)} x2={f(wardrobe.x0 + 0.06)} y1={f(wardrobe.y0 + 0.06)} y2={f(wardrobe.y0 + wardrobe.w - 0.06)} {...dashed} />
-      <rect {...rect(desk.x0, dy0, desk.x1, IY)} {...thin} />
-      <rect {...rect(dcx - chair.w / 2, chair.y - chair.d / 2, dcx + chair.w / 2, chair.y + chair.d / 2)} {...thin} />
-      <line x1={f(dcx - chair.w / 2)} x2={f(dcx + chair.w / 2)} y1={f(chair.y - chair.d / 2 + 0.06)} y2={f(chair.y - chair.d / 2 + 0.06)} {...thin} />
+      <rect {...rect(dx0, desk.y0, IX, desk.y1)} {...thin} />
+      <rect {...rect(chair.x - chair.d / 2, dcy - chair.w / 2, chair.x + chair.d / 2, dcy + chair.w / 2)} {...thin} fill="var(--background)" />
+      <line x1={f(chair.x - chair.d / 2 + 0.06)} x2={f(chair.x - chair.d / 2 + 0.06)} y1={f(dcy - chair.w / 2)} y2={f(dcy + chair.w / 2)} {...thin} />
+
+      {/* The en-suite across the front-left corner: its partition, the sliding door on the room side (closed, its
+          open place dashed), the walk-in shower's tray, drain and glass screen with the heater on the left wall, the
+          WC with its low cistern under the window, the basin on its console */}
+      <path d={`M${bath.x0} ${bath.y0}H${bd.x0}V${f(bath.y0 + bt)}H${bath.x0}M${bd.x1} ${bath.y0}H${bath.x1}V${IY}H${f(bath.x1 - bt)}V${f(bath.y0 + bt)}H${bd.x1}Z`} {...medium} />
+      <rect {...rect(bd.x0 - 0.04, bath.y0 - 0.045, bd.x1 + 0.04, bath.y0 - 0.01)} {...medium} />
+      <rect {...rect(bd.x0 - (bd.x1 - bd.x0), bath.y0 - 0.045, bd.x0 + 0.04, bath.y0 - 0.01)} {...dashed} />
+      <rect {...rect(tray.x0, tray.y0, tray.x1, tray.y1)} {...thin} />
+      <circle cx={f((tray.x0 + tray.x1) / 2)} cy={f((tray.y0 + tray.y1) / 2)} r={0.045} {...thin} />
+      <line x1={screen.x} x2={screen.x} y1={screen.y0} y2={screen.y1} {...medium} />
+      <rect {...rect(-IX, 1.9 - 0.1, -IX + 0.09, 1.9 + 0.1)} {...thin} />
+      <rect {...rect(wc.x - wc.cistern.w / 2, IY - wc.cistern.d, wc.x + wc.cistern.w / 2, IY)} {...thin} />
+      <rect {...rect(wc.x - wc.w / 2, IY - wc.d, wc.x + wc.w / 2, IY - wc.cistern.d)} rx={0.15} {...thin} />
+      <rect {...rect(wc.x - wc.w / 2 + 0.06, IY - wc.d + 0.06, wc.x + wc.w / 2 - 0.06, IY - wc.cistern.d - 0.02)} rx={0.11} {...faint} />
+      <rect {...rect(basin.x0, IY - basin.d, basin.x1, IY)} {...thin} />
+      <ellipse cx={f((basin.x0 + basin.x1) / 2)} cy={f(IY - basin.d / 2)} rx={0.17} ry={0.15} {...thin} />
 
       {/* Coat hooks on the right wall */}
       <line x1={f(IX - 0.04)} x2={f(IX - 0.04)} y1={hooks.y0} y2={hooks.y1} {...medium} />
@@ -158,14 +178,36 @@ export function GuestRoomPlan({ title, className }: { title: string; className?:
       <text x={0} y={f(by1 - 0.27)} textAnchor="middle" style={small}>BED</text>
       <text x={f(wardrobe.x0 + wardrobe.d / 2 + 0.04)} y={f(wardrobe.y0 + wardrobe.w / 2)} textAnchor="middle"
         transform={`rotate(90 ${f(wardrobe.x0 + wardrobe.d / 2 + 0.04)} ${f(wardrobe.y0 + wardrobe.w / 2)})`} style={small}>WARDROBE</text>
-      <text x={f(dcx)} y={f(dy0 + 0.3)} textAnchor="middle" style={small}>DESK</text>
+      <text x={f(dx0 + desk.d / 2 + 0.04)} y={dcy} textAnchor="middle" transform={`rotate(-90 ${f(dx0 + desk.d / 2 + 0.04)} ${dcy})`} style={small}>DESK</text>
+      <text x={f((tray.x0 + tray.x1) / 2)} y={f(tray.y0 + 0.2)} textAnchor="middle" style={small}>SHOWER</text>
+      <text x={wc.x} y={f(IY - wc.d - 0.08)} textAnchor="middle" style={small}>WC</text>
+      <text x={f((basin.x0 + basin.x1) / 2)} y={f(IY - basin.d - 0.08)} textAnchor="middle" style={small}>BASIN</text>
       <text x={f(-IX + joint.post + 0.08)} y={f(joint.y - 0.07)} style={small}>JOINT</text>
       <text x={f(IX - 0.42)} y={f(IY - 0.15)} textAnchor="middle" style={small}>DOOR</text>
       <text x={f(OX - 0.12)} y={f(OY + 0.86)} textAnchor="end" style={label}>VERANDA</text>
-      <text x={0} y={f(-OY - 0.18)} textAnchor="middle" style={label}>GUEST ROOM</text>
-      <Dimension x0={-OX} x1={OX} y={-OY - 0.5} />
-      <DimensionV y0={-OY} y1={OY} x={-OX - 0.3} />
-      <DimensionV y0={OY} y1={V} x={-OX - 0.3} />
+      <text x={0} y={f(-OY - 0.72)} textAnchor="middle" style={label}>GUEST ROOM</text>
+      {/* The back wall: the bed between its bedside tables, inside the linings, then the room's share of the block */}
+      {[-IX, side0, -bed.w / 2, bed.w / 2, side1].map((x, k, a) => <Dimension key={x} x0={x} x1={a[k + 1] ?? IX} y={-OY - 0.14} />)}
+      <Dimension x0={-OX} x1={OX} y={-OY - 0.45} />
+      {/* The front: the window and the door, then the bathroom and the way in, below the veranda */}
+      <Dimension x0={win.front.x0} x1={win.front.x1} y={V + veranda.step.d + 0.22} />
+      <Dimension x0={door.x0} x1={door.x1} y={V + veranda.step.d + 0.22} />
+      <text x={f((-IX + bath.x1) / 2)} y={f(V + veranda.step.d + 0.78)} textAnchor="middle" style={small}>BATHROOM</text>
+      <Dimension x0={-IX} x1={bath.x1} y={V + veranda.step.d + 0.55} />
+      <Dimension x0={bath.x1} x1={IX} y={V + veranda.step.d + 0.55} />
+      {/* The left side: the bed's length, the floor in front of it and the bathroom, inside; the room and the veranda outside */}
+      {[[-IY, -IY + bed.l], [-IY + bed.l, bath.y0], [bath.y0, IY]].map(([y0, y1]) => <DimensionV key={y0} y0={y0} y1={y1} x={-OX - 0.2} />)}
+      <DimensionV y0={-OY} y1={OY} x={-OX - 0.55} />
+      <DimensionV y0={OY} y1={V} x={-OX - 0.55} />
+      {/* The right side: the desk on its wall, the depth inside the linings */}
+      <DimensionV y0={desk.y0} y1={desk.y1} x={OX + 0.32} />
+      <DimensionV y0={-IY} y1={IY} x={OX + 0.62} />
+      {/* Inside: the bathroom door, the walkways beside the bed, the shower tray, the floor in front of the WC */}
+      <Dimension x0={bd.x0} x1={bd.x1} y={f(bath.y0 - 0.12)} />
+      <Dimension x0={f(wardrobe.x0 + wardrobe.d)} x1={-bed.w / 2} y={f(wardrobe.y0 + 0.3)} />
+      <Dimension x0={bed.w / 2} x1={dx0} y={f(desk.y0 + 0.2)} />
+      <Dimension x0={tray.x0} x1={tray.x1} y={f(tray.y1 - 0.12)} />
+      <DimensionV y0={f(bath.y0 + bt)} y1={f(IY - wc.d)} x={f(wc.x + 0.32)} />
     </svg>
   )
 }

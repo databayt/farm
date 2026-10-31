@@ -28,7 +28,7 @@ export function withLoads(circuits: RoomCircuit[], points: RoomPoint[]): RoomCir
 const TITLES: Record<string, string> = {
   board: "Unit board", ceiling: "Ceiling light", pendant: "Pendant light", walllamp: "Wall reading lamp",
   switch: "Switch", switch2: "Two-gang switch", wallfan: "Wall fan", usb: "Socket + USB-C", socket2: "Double socket",
-  socket: "Socket", isolator: "AC isolator", alarm: "Smoke alarm", ap: "Wi-Fi access point", data: "Data outlet",
+  socket: "Socket", isolator: "AC isolator", heater: "Instant shower heater", alarm: "Smoke alarm", ap: "Wi-Fi access point", data: "Data outlet",
   av: "Screen wall plate", floorbox: "Floor box", rack: "Network cabinet", poe: "PoE switch", router: "4G router", gateway: "Edge gateway", ups: "UPS",
 }
 const ROUND = new Set(["ceiling", "alarm", "ap", "pendant"])
