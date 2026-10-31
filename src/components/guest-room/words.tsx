@@ -22,7 +22,7 @@ const en = {
     title: "Plan: one guest room 4,064 mm wide and 4,876 mm deep, a third of the container block, with a 1,500 mm veranda in front. A 1,600 x 2,000 mm double bed against the back wall under a window, a bedside table each side and a bench at its foot on a rug; a wardrobe on the left wall and a 1,000 mm desk on the right, beside the bed; across the front-left corner an en-suite 2,400 x 1,350 mm behind a 700 mm sliding door, with a 900 x 900 mm walk-in shower, a WC and a basin under the front window; the 900 mm door on the front right opening in; coat hooks on the right wall; red steel posts at the joint across the middle; two chairs and a round table on the veranda.",
     labels: {
       bed: "BED", wardrobe: "WARDROBE", desk: "DESK", shower: "SHOWER", wc: "WC", basin: "BASIN", joint: "JOINT",
-      door: "DOOR", veranda: "VERANDA", room: "GUEST ROOM", bathroom: "BATHROOM",
+      door: "DOOR", veranda: "VERANDA", room: "GUEST ROOM", bathroom: "BATHROOM", window: "WINDOW", wayIn: "WAY IN",
     },
   },
   model: {
@@ -102,7 +102,7 @@ const rw: typeof en = {
     title: "Igishushanyo: icyumba kimwe cy'abashyitsi gifite mm 4,064 z'ubugari na mm 4,876 z'ubujyakuzimu, kimwe cya gatatu cy'inyubako y'amakontineri, gifite urubaraza rwa mm 1,500 imbere. Igitanda cy'abantu babiri cya mm 1,600 x 2,000 ku rukuta rw'inyuma munsi y'idirishya, akameza kuri buri ruhande n'intebe ndende ku birenge byacyo ku itapi; akabati k'imyenda ku rukuta rw'ibumoso n'ameza ya mm 1,000 iburyo, iruhande rw'igitanda; mu nguni y'imbere ibumoso ubwiherero bwa mm 2,400 x 1,350 inyuma y'urugi runyerera rwa mm 700, bufite douche yo kwinjiramo ya mm 900 x 900, WC na lavabo munsi y'idirishya ry'imbere; urugi rwa mm 900 imbere iburyo rufungukira imbere; udufashi tw'imyenda ku rukuta rw'iburyo; inkingi z'icyuma zitukura aho amakontineri ahurira hagati; intebe ebyiri n'ameza y'uruziga ku rubaraza.",
     labels: {
       bed: "IGITANDA", wardrobe: "AKABATI K'IMYENDA", desk: "AMEZA", shower: "DOUCHE", wc: "WC", basin: "LAVABO", joint: "IHURIRO",
-      door: "URUGI", veranda: "URUBARAZA", room: "ICYUMBA CY'ABASHYITSI", bathroom: "UBWIHERERO",
+      door: "URUGI", veranda: "URUBARAZA", room: "ICYUMBA CY'ABASHYITSI", bathroom: "UBWIHERERO", window: "IDIRISHYA", wayIn: "AHO BINJIRIRA",
     },
   },
   model: {

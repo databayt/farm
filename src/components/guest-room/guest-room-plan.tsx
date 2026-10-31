@@ -1,10 +1,12 @@
 import { getWords } from "@/components/internationalization/words"
+import { Chain, Dim, HDim, Name, Note, VDim } from "@/components/drawing/dims"
+import { frame } from "@/components/drawing/geometry"
 
 import room from "./guest-room.json"
 import { words } from "./words"
 
 // One guest room drawn in the pattern of the camp plan (src/components/camp/camp-plan.tsx): thin lines, no
-// colour, bold capitals and dimensions in millimetres. The door faces down the page, toward the viewer of the
+// colour, and its dimensions through the shared kit (src/components/drawing). The door faces down the page, toward the viewer of the
 // 3D's front view. Units are metres, the room's centre at 0,0, y toward the door and the veranda. Measured as the
 // studio's plan is (scripts/studio/sheets.py plan_bw): a chain along the back wall, the front's openings and the
 // overall length below, the depths up each side, and the clearances inside, here with the en-suite (D-061).
@@ -14,44 +16,19 @@ const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEf
 const medium = { ...thin, strokeWidth: 1.6 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
 const dashed = { ...thin, strokeDasharray: "4 3" } as const
-const label = {
-  fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif",
-  fontSize: 0.15,
-  fontWeight: 700,
-  letterSpacing: "0.04em",
-  fill: "currentColor",
-} as const
-const small = { ...label, fontSize: 0.11, fontWeight: 600 } as const
 
 const f = (n: number) => +n.toFixed(3)
-const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
 
 // the room's lines: outside the steel (O) and inside the linings (I)
 const OX = block.w / 2, OY = block.d / 2, IX = inner.w / 2, IY = inner.d / 2
 const V = OY + veranda.d // the veranda's edge
 
-function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.06
-  return (
-    <g>
-      <line x1={x0} x2={x1} y1={y} y2={y} {...thin} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f((x0 + x1) / 2)} y={f(y - 0.07)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
-    </g>
-  )
-}
-function DimensionV({ y0, y1, x }: { y0: number; y1: number; x: number }) {
-  const tick = 0.06
-  const cy = f((y0 + y1) / 2)
-  return (
-    <g>
-      <line x1={x} x2={x} y1={y0} y2={y1} {...thin} />
-      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f(x - 0.07)} y={cy} transform={`rotate(-90 ${f(x - 0.07)} ${cy})`} textAnchor="middle" style={small}>{mm(y1 - y0)}</text>
-    </g>
-  )
-}
+const SV = V + veranda.step.d // the step's edge, the front's dimensions past it
+// the drawing with its neighbours' walls, then its dimensions' reach (studio mm): the names and the share of the
+// block over the back wall, two named chains past the step, two tiers each side
+const { k, viewBox } = frame({ x0: -OX - 0.45, y0: -OY, x1: OX + 0.45, y1: SV }, { top: 19, right: 13, bottom: 26, left: 13 })
+const pastStep = (SV - OY) / k
 
 // a window across a wall's thickness: the frame lines and the glass between, at plan height
 function Window({ x0, x1, y0, y1 }: { x0: number; x1: number; y0: number; y1: number }) {
@@ -84,7 +61,7 @@ export async function GuestRoomPlan({ title, className }: { title?: string; clas
   // the veranda's boards run out from the wall, 140 mm a board
   const boards = Array.from({ length: Math.floor((2 * OX) / 0.14) }, (_, k) => f(-OX + 0.14 * (k + 1)))
   return (
-    <svg viewBox="-2.95 -3.45 5.95 8.6" role="img" aria-label={title} className={className}>
+    <svg viewBox={viewBox} role="img" aria-label={title} className={className}>
       {/* The neighbouring rooms go on past the partitions, left and right: the block's long walls, faint */}
       {[-1, 1].map((s) => (
         <g key={s}>
@@ -182,39 +159,35 @@ export async function GuestRoomPlan({ title, className }: { title?: string; clas
       })}
       <circle cx={veranda.table.x} cy={veranda.table.y} r={veranda.table.r} {...thin} fill="var(--background)" />
 
-      <text x={0} y={f(by1 - 0.27)} textAnchor="middle" style={small}>{name.bed}</text>
-      <text x={f(wardrobe.x0 + wardrobe.d / 2 + 0.04)} y={f(wardrobe.y0 + wardrobe.w / 2)} textAnchor="middle"
-        transform={`rotate(90 ${f(wardrobe.x0 + wardrobe.d / 2 + 0.04)} ${f(wardrobe.y0 + wardrobe.w / 2)})`} style={small}>{name.wardrobe}</text>
-      <text x={f(dx0 + desk.d / 2 + 0.04)} y={dcy} textAnchor="middle" transform={`rotate(-90 ${f(dx0 + desk.d / 2 + 0.04)} ${dcy})`} style={small}>{name.desk}</text>
-      <text x={f((tray.x0 + tray.x1) / 2)} y={f(tray.y0 + 0.2)} textAnchor="middle" style={small}>{name.shower}</text>
-      <text x={wc.x} y={f(IY - wc.d - 0.08)} textAnchor="middle" style={small}>{name.wc}</text>
-      <text x={f((basin.x0 + basin.x1) / 2)} y={f(IY - basin.d - 0.08)} textAnchor="middle" style={small}>{name.basin}</text>
-      <text x={f(-IX + joint.post + 0.08)} y={f(joint.y - 0.07)} style={small}>{name.joint}</text>
-      <text x={f(IX - 0.42)} y={f(IY - 0.15)} textAnchor="middle" style={small}>{name.door}</text>
-      <text x={f(OX - 0.12)} y={f(OY + 0.86)} textAnchor="end" style={label}>{name.veranda}</text>
-      <text x={0} y={f(-OY - 0.72)} textAnchor="middle" style={label}>{name.room}</text>
-      {/* The back wall: the bed between its bedside tables, inside the linings, then the room's share of the block */}
-      {[-IX, side0, -bed.w / 2, bed.w / 2, side1].map((x, k, a) => <Dimension key={x} x0={x} x1={a[k + 1] ?? IX} y={-OY - 0.14} />)}
-      <Dimension x0={-OX} x1={OX} y={-OY - 0.45} />
-      {/* The front: the window and the door, then the bathroom and the way in, below the veranda */}
-      <Dimension x0={win.front.x0} x1={win.front.x1} y={V + veranda.step.d + 0.22} />
-      <Dimension x0={door.x0} x1={door.x1} y={V + veranda.step.d + 0.22} />
-      <text x={f((-IX + bath.x1) / 2)} y={f(V + veranda.step.d + 0.78)} textAnchor="middle" style={small}>{name.bathroom}</text>
-      <Dimension x0={-IX} x1={bath.x1} y={V + veranda.step.d + 0.55} />
-      <Dimension x0={bath.x1} x1={IX} y={V + veranda.step.d + 0.55} />
-      {/* The left side: the bed's length, the floor in front of it and the bathroom, inside; the room and the veranda outside */}
-      {[[-IY, -IY + bed.l], [-IY + bed.l, bath.y0], [bath.y0, IY]].map(([y0, y1]) => <DimensionV key={y0} y0={y0} y1={y1} x={-OX - 0.2} />)}
-      <DimensionV y0={-OY} y1={OY} x={-OX - 0.55} />
-      <DimensionV y0={OY} y1={V} x={-OX - 0.55} />
+      <Note k={k} x={0} y={by1 - 0.27}>{name.bed}</Note>
+      <Note k={k} x={wardrobe.x0 + wardrobe.d / 2} y={wardrobe.y0 + wardrobe.w / 2} rotate={90}>{name.wardrobe}</Note>
+      <Note k={k} x={dx0 + desk.d / 2} y={dcy} rotate={-90}>{name.desk}</Note>
+      <Note k={k} x={(tray.x0 + tray.x1) / 2} y={tray.y0 + 0.18}>{name.shower}</Note>
+      <Note k={k} x={wc.x} y={IY - wc.d - 0.1}>{name.wc}</Note>
+      <Note k={k} x={(basin.x0 + basin.x1) / 2} y={IY - basin.d - 0.1}>{name.basin}</Note>
+      <Note k={k} x={-IX + joint.post + 0.08} y={joint.y - 0.1} anchor="start">{name.joint}</Note>
+      <Note k={k} x={IX - 0.42} y={IY - 0.17}>{name.door}</Note>
+      <Name k={k} x={OX - 0.12} y={OY + 0.82} anchor="end">{name.veranda}</Name>
+
+      {/* The back wall: the bed between its bedside tables, inside the linings, named; then the room's share of the block */}
+      <Chain k={k} along="x" at={[-IX, side0, -bed.w / 2, bed.w / 2, side1, IX]} edge={-OY} side="top" names={[null, null, name.bed, null, null]} />
+      <HDim k={k} x0={-OX} x1={OX} y={-OY} side="top" at={3} />
+      {/* The front, past the step: the window and the door; then the bathroom and the way in */}
+      <Chain k={k} along="x" at={[-OX, win.front.x0, win.front.x1, door.x0, door.x1, OX]} edge={OY} side="bottom" base={pastStep}
+        names={[null, name.window, null, name.door, null]} />
+      <Chain k={k} along="x" at={[-IX, bath.x1, IX]} edge={OY} side="bottom" base={pastStep} tier={3} names={[name.bathroom, name.wayIn]} />
+      {/* The left side: the bed, the floor in front of it and the bathroom, inside; the room and the veranda outside */}
+      <Chain k={k} along="y" at={[-IY, -IY + bed.l, bath.y0, IY]} edge={-OX} side="left" />
+      <Chain k={k} along="y" at={[-OY, OY, V]} edge={-OX} side="left" tier={2} />
       {/* The right side: the desk on its wall, the depth inside the linings */}
-      <DimensionV y0={desk.y0} y1={desk.y1} x={OX + 0.32} />
-      <DimensionV y0={-IY} y1={IY} x={OX + 0.62} />
+      <VDim k={k} y0={desk.y0} y1={desk.y1} x={OX} side="right" />
+      <VDim k={k} y0={-IY} y1={IY} x={OX} side="right" at={2} />
       {/* Inside: the bathroom door, the walkways beside the bed, the shower tray, the floor in front of the WC */}
-      <Dimension x0={bd.x0} x1={bd.x1} y={f(bath.y0 - 0.12)} />
-      <Dimension x0={f(wardrobe.x0 + wardrobe.d)} x1={-bed.w / 2} y={f(wardrobe.y0 + 0.3)} />
-      <Dimension x0={bed.w / 2} x1={dx0} y={f(desk.y0 + 0.2)} />
-      <Dimension x0={tray.x0} x1={tray.x1} y={f(tray.y1 - 0.12)} />
-      <DimensionV y0={f(bath.y0 + bt)} y1={f(IY - wc.d)} x={f(wc.x + 0.32)} />
+      <Dim k={k} a={[bd.x0, bath.y0 - 0.12]} b={[bd.x1, bath.y0 - 0.12]} off={0} size={2.2} />
+      <Dim k={k} a={[wardrobe.x0 + wardrobe.d, wardrobe.y0 + 0.3]} b={[-bed.w / 2, wardrobe.y0 + 0.3]} off={0} size={2.2} />
+      <Dim k={k} a={[bed.w / 2, desk.y0 + 0.2]} b={[dx0, desk.y0 + 0.2]} off={0} size={2.2} />
+      <Dim k={k} a={[tray.x0, tray.y1 - 0.12]} b={[tray.x1, tray.y1 - 0.12]} off={0} size={2.2} />
+      <Dim k={k} a={[wc.x + 0.32, bath.y0 + bt]} b={[wc.x + 0.32, IY - wc.d]} off={0} size={2.2} />
     </svg>
   )
 }
