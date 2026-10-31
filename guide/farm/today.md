@@ -21,12 +21,12 @@ What the farm is, where it is and what already stands on it, so every guide star
 
 ## What stands today
 
-- **Containers:** red and yellow 20 ft boxes on steel decks about 700 mm up, with red pipe rails; the yellow joined pair, four red doors each with a barred window (the future guest rooms); a teal 40 ft box; a red 20 ft kiosk (the future bar).
+- **Containers:** red and yellow 20 ft boxes on steel decks about 700 mm up, with red pipe rails; the yellow joined pair, four red doors each with a barred window (the future guest rooms); a yellow and a teal box under one sheet roof; a red 20 ft kiosk (the future bar).
 - **A brick building** behind the containers; its use is not decided [U].
-- **The camping lawn:** pop-up tents, reed screens, thatched and coloured umbrellas, a round concrete fire pit, string lights for events. It has already hosted night camps with covered tables.
+- **The camping lawn:** pop-up tents, reed screens, thatched and coloured umbrellas, a round concrete fire pit, string lights for events. It has already hosted events in the dry season, with hired thatched umbrellas, covered chairs and dome tents.
 - **Sport:** a volleyball net on the lawn. The planned court, 18 × 9 m, is drawn on [its page](/en/volleyball) and beside the compound on [the farm plan](/#plans).
 - **Trees:** rows of young trees, palms, and a tall, slim tree line toward the lake.
-- **Arrival:** a timber X-braced gate on a concrete apron; red laterite roads; power poles along the road down to the lake.
+- **Arrival:** a steel field gate and a sign board on a cracked concrete apron; red laterite tracks.
 
 ![Over the containers to the lake, 2026-10-25](../../public/photos/2026-10-25/over-the-containers.webp)
 
@@ -38,15 +38,11 @@ What the farm is, where it is and what already stands on it, so every guide star
 
 ![The yellow joined pair, the guest rooms, photo received 2026-10-28](../../public/photos/2026-10-28/guest-room-block.webp)
 
-![The road down toward the lake, power poles along it, photo received 2026-10-28](../../public/photos/2026-10-28/road-to-the-lake.webp)
-
-![The open lawn with rows of young trees, photo received 2026-10-28](../../public/photos/2026-10-28/lawn-with-tree-rows.webp)
-
-![A night camp on the lawn, photo received 2026-10-28](../../public/photos/2026-10-28/night-camp.webp)
+![An event held here at night, date not known: hired thatched umbrellas and dome tents, photo received 2026-10-28](../../public/photos/2026-10-28/night-camp.webp)
 
 ## Water, power and waste, as reported
 
-- **Power:** the founder reports the national grid (REG) on site ([studio site](../../study/studio/studio-site.md)), and power poles run along the road. Grid, solar or both: the [power guide](electric.md).
+- **Power:** the founder reports the national grid (REG) on site ([studio site](../../study/studio/studio-site.md)); the office unit is lit. Grid, solar or both: the [power guide](electric.md).
 - **Water:** the founder reports mains water (WASAC), a borehole and rainwater; the borehole's yield and quality are not tested [U].
 - **Waste:** no septic system yet. One is planned at least 50 m from the borehole, and no guest stays before it passes its inspection (D-016).
 

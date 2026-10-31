@@ -23,7 +23,7 @@ const en = {
   hero: {
     // Two lines, as the founder set them.
     headline: ["State of", "comfort"],
-    alt: "The lawn above the lake under tall pines and a palm, the far shore wooded in late light",
+    alt: "As planned (a concept image, not a photograph): the lawn above the lake under tall pines and a palm, the far shore wooded in late light",
     watch: "Watch film",
     closeFilm: "Close the film",
     scroll: "Scroll to explore",
@@ -130,7 +130,7 @@ const rw: typeof en = {
   },
   hero: {
     headline: ["Ahantu", "ho gutuza"],
-    alt: "Ibyatsi biri hejuru y'ikiyaga munsi ya pinusi ndende n'umukindo, inkombe y'hakurya iriho ibiti mu rumuri rwa nimugoroba",
+    alt: "Uko biteganyijwe (ishusho y'igitekerezo, si ifoto): ibyatsi biri hejuru y'ikiyaga munsi ya pinusi ndende n'umukindo, inkombe y'hakurya iriho ibiti mu rumuri rwa nimugoroba",
     watch: "Reba filime",
     closeFilm: "Funga filime",
     scroll: "Manuka urebe",
