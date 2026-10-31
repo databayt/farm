@@ -40,7 +40,3 @@ Nta AC ihari: ahubwo hari fan ebyiri zo ku rukuta.
 ## Points
 
 [Points z'amashanyarazi na Wi-Fi](../../src/components/study-room/docs-sections.tsx#StudyRoomElectricPoints)
-
-## Ibibazo bitarasubizwa
-
-1. Priza ya screen yateganyirijwe screen ya inches 65, iyo ku rupapuro ni inches 86: umuriro ukurikiza screen izagurwa.

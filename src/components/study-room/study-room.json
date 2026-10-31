@@ -39,9 +39,9 @@
     "chair": {"w": 0.44, "d": 0.46, "seat": 0.45, "back": 0.82, "gap": 0.02}
   },
   "screen": {
-    "about": "The east end wall, the room's front for workshops and training: one big 86-inch screen mounted flat on the painted wall on a low-profile bracket, centred on y, a low cabinet under it, and a small lectern table for whoever is presenting.",
-    "w": 1.92,
-    "h": 1.1,
+    "about": "The east end wall, the room's front for workshops and training: one 65-inch screen (D-065) mounted flat on the painted wall on a low-profile bracket, centred on y, a low cabinet under it, and a small lectern table for whoever is presenting.",
+    "w": 1.44,
+    "h": 0.81,
     "y0": 0.85,
     "y": -0.1,
     "cabinet": {"l": 1.6, "d": 0.4, "h": 0.55},

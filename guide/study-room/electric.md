@@ -38,7 +38,3 @@ There is no air conditioning: two wall fans instead.
 ## Points
 
 [Electric and Wi-Fi points](../../src/components/study-room/docs-sections.tsx#StudyRoomElectricPoints)
-
-## Open questions
-
-1. The screen's socket is sized for a 65-inch screen, the page's is 86 inches: the load follows the screen that is bought.

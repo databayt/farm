@@ -17,7 +17,7 @@ English: [read this plan in English](plan.md) · Icyumba mu bishushanyo: [urupap
 | Inyubako | kontineri isanzwe ya 40 ft, 12.192 × 2.438 × 2.591 m inyuma, isize ibara rya teal, ku gitereko cy'amabuye cya mm 300 |
 | Imbere | 11.94 × 2.26 m imbere ya lining, hafi m 2.3 z'uburebure bwo hejuru, imbaho z'igiti (oak planks) hasi |
 | Imbere (front) | inzugi zinyerera zifite amakadiri y'umweru ku rukuta rw'amajyaruguru inyuma y'amalouvres y'imbaho (timber louvres), zifungukira kuri deck ya eucalyptus ya m 2 ifite intambwe ngari |
-| Ibikoresho byo mu nzu | ameza amwe maremare y'igiti (oak), 3.6 × 0.75 m, afite intebe umunani; screen ya inches 86 ku rukuta rw'impera y'iburasirazuba ifite akabati na lectern (aho bavugira); urukuta rw'amasahani y'ibitabo n'inguni yo gusomeramo |
+| Ibikoresho byo mu nzu | ameza amwe maremare y'igiti (oak), 3.6 × 0.75 m, afite intebe umunani; screen ya inches 65 (D-065) ku rukuta rw'impera y'iburasirazuba ifite akabati na lectern (aho bavugira); urukuta rw'amasahani y'ibitabo n'inguni yo gusomeramo |
 | Ibikorwa remezo | amashanyarazi afite imizunguruko (circuits) 4 kuri main switch ya 32 A; Wi-Fi iva kuri PoE switch y'ibiro; nta AC, fan ebyiri zo ku rukuta |
 
 Buri gipimo ni igitekerezo cy'igishushanyo [A] muri study-room.json; nta na kimwe kirashakirwa aho kiva cyangwa ngo gihabwe igiciro.
@@ -55,5 +55,4 @@ Buri gipimo ni igitekerezo cy'igishushanyo [A] muri study-room.json; nta na kimw
 
 ## Ibibazo bitarasubizwa
 
-1. Screen ni inches 86 ku rupapuro, ariko umuriro wateganyirijwe priza yayo muri study-room.json ni uwa screen ya inches 65: ni iyihe?
-2. Ese fan ebyiri zo ku rukuta n'ibirahure bifunguye bihagije gukonjesha icyumba cyuzuye nta AC?
+1. Ese fan ebyiri zo ku rukuta n'ibirahure bifunguye bihagije gukonjesha icyumba cyuzuye nta AC?

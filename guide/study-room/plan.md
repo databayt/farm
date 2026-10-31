@@ -15,7 +15,7 @@ Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The room drawn: [t
 | The box | a standard 40 ft container, 12.192 × 2.438 × 2.591 m outside, painted teal, on a 300 mm stone plinth |
 | Inside | 11.94 × 2.26 m inside the linings, about 2.3 m clear, oak planks on the floor |
 | Front | white-framed sliding doors along the north wall behind timber louvres, onto a 2 m eucalyptus deck with a broad step |
-| Furniture | one long oak table, 3.6 × 0.75 m, with eight seats; an 86-inch screen on the east end wall with a cabinet and a lectern; a bookshelf wall and a reading corner |
+| Furniture | one long oak table, 3.6 × 0.75 m, with eight seats; a 65-inch screen on the east end wall (D-065) with a cabinet and a lectern; a bookshelf wall and a reading corner |
 | Services | electric with 4 circuits on a 32 A main switch; Wi-Fi from the office's PoE switch; no air conditioning, two wall fans |
 
 Every size is design intent [A] in study-room.json; nothing is sourced or priced yet.
@@ -53,5 +53,4 @@ Every size is design intent [A] in study-room.json; nothing is sourced or priced
 
 ## Open questions
 
-1. The screen is 86 inches on the page, but the design load of its socket in study-room.json is for a 65-inch one: which is it?
-2. Do two wall fans and the open glazing keep a full room cool with no air conditioning?
+1. Do two wall fans and the open glazing keep a full room cool with no air conditioning?
