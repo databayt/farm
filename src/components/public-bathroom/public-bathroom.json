@@ -1,5 +1,5 @@
 {
-  "about": "The compound's public bathroom (compound.json units id \"bath\", PUBLIC BATHROOM): a 20 ft container painted teal on a 300 mm fieldstone plinth, beside the galley in the study room's row, its front facing north toward the courtyard. The founder's brief: two toilet rooms, two hand basins and a urinal, sizes assumed, not given (D-022). It serves everyone without a bathroom of their own: the campers in the tents, guests at the bar lounge and the fire pit in the evening, at the volleyball and in the study room by day (guide/operations.md), and the team, as the office, the bar and the galley have none; the studios and the guest rooms have their own (D-029). The outside follows the homepage model (scripts/site/render/compound.html): one door and two high windows in the front. The homepage 2D (compound-plan.tsx) sketches the toilet rooms against the back wall; here they stand against the front, so each has one of those windows. The 2D (public-bathroom-plan.tsx) and the 3D (scripts/site/render/public-bathroom.html) both read this file. Plan in metres, seen from the courtyard and mirrored as the homepage draws the compound (D-022): x to the right from the west end (the galley's side), y toward the courtyard (north), the container's centre line at y = 0; heights above the container's underside unless stated. Every size inside is a design choice, not yet sourced [A], and the plan is not yet checked against Rwanda's rules for public toilets.",
+  "about": "The compound's public bathroom (compound.json units id \"bath\", PUBLIC BATHROOM): a 20 ft container painted teal on a 300 mm fieldstone plinth, beside the galley in the study room's row, its front facing north toward the courtyard. The founder's brief: two toilet rooms, two hand basins and a urinal, sizes assumed, not given (D-022). It serves everyone without a bathroom of their own: the campers in the tents, guests at the bar lounge and the fire pit in the evening, at the volleyball and in the study room by day (guide/operations.md), and the team, as the office, the bar and the galley have none; the studios and the guest rooms have their own (D-029). The outside follows the homepage model (scripts/site/render/compound.html): one door and two high windows in the front. The fittings stand in one row against the back wall, west to east: the two toilet rooms, the urinal room, then the basins straight across from the door, which sits at the east end of the front wall (the homepage model puts it mid-front; it moves here). A corridor along the front wall, under the two windows, joins them. The 2D (public-bathroom-plan.tsx) and the 3D (scripts/site/render/public-bathroom.html) both read this file. Plan in metres, seen from the courtyard and mirrored as the homepage draws the compound (D-022): x to the right from the west end (the galley's side), y toward the courtyard (north), the container's centre line at y = 0; heights above the container's underside unless stated. Every size inside is a design choice, not yet sourced [A], and the plan is not yet checked against Rwanda's rules for public toilets. Revised 2026-10-31 to this one-row layout: the 2D follows it; the 3D, its renders, and the plumbing and electric runs below still draw the earlier layout and are to be redone.",
   "container": {
     "about": "ISO 20 ft, outside, painted teal as on the homepage, on a fieldstone plinth 300 mm high and 100 mm proud all round. The owner's brief (D-029) asks for timber cladding and 40 x 60 cm block stands under the corner castings; the cladding kit is still to be designed, so the shell stays as the homepage draws it until it is. The homepage draws no cargo doors on this box: whichever end has them, they stay shut and are lined over [A]. Linings and tiles leave 5.86 x 2.2 m inside [A]; the floor and ceiling heights are above the container's underside, so the floor stands about 0.45 m above the ground.",
     "l": 6.058,
@@ -13,20 +13,20 @@
     "ceiling": 2.45
   },
   "front": {
-    "about": "The north wall as the homepage model draws it: one door from 3.0 to 3.9 m and two windows from 0.4 to 0.9 and 1.7 to 2.2 m, measured from the west end. The door: red steel with a glass panel in its upper half, in a red frame, hinged at its west jamb and opening in, on a closer [A]; the glass obscured [A]. The windows: white frames with a middle bar, sill 1.3 m and head 2.0 m above the container's underside (about 1.15 m above the floor inside), one lighting each toilet room; obscured glass, top-hung sashes that open for air [A].",
-    "door": { "x0": 3.0, "x1": 3.9, "bottom": 0.16, "top": 2.1 },
+    "about": "The north wall: the door at its east end, from 4.95 to 5.85 m, and two windows from 0.4 to 0.9 and 1.7 to 2.2 m, measured from the west end. The homepage model draws the door mid-front, from 3.0 to 3.9 m; it moves to the end so the fittings can stand in one row with the basins facing it. The door: red steel with a glass panel in its upper half, in a red frame, hinged at its east jamb and opening in, so it stands back against the east end wall, on a closer [A]; the glass obscured [A]. The windows: white frames with a middle bar, sill 1.3 m and head 2.0 m above the container's underside (about 1.15 m above the floor inside), lighting the corridor; obscured glass, top-hung sashes that open for air [A].",
+    "door": { "x0": 4.95, "x1": 5.85, "bottom": 0.16, "top": 2.1 },
     "windows": [[0.4, 0.9], [1.7, 2.2]],
     "sill": 1.3,
     "head": 2.0
   },
   "entry": {
-    "about": "The homepage draws no step up to the door. Here a fieldstone landing at the plinth's height, 1.5 m wide and 1.0 m out from the wall, centred on the door, and one step 0.35 m deep down to the grass, both under a concrete cap like the fire pit's: risers of 150, 150 and 160 mm up to the door sill. A wall light over the door, on with the path lights from 18:00 (guide/operations.md). All [A].",
-    "landing": { "x0": 2.7, "x1": 4.2, "d": 1.0 },
-    "step": { "x0": 2.85, "x1": 4.05, "d": 0.35, "h": 0.15 },
-    "light": { "x": 3.45, "at": 2.3 }
+    "about": "The homepage draws no step up to the door. Here a fieldstone landing at the plinth's height, 1.5 m wide and 1.0 m out from the wall, centred on the door, so it runs a little past the east end, and one step 0.35 m deep down to the grass, both under a concrete cap like the fire pit's: risers of 150, 150 and 160 mm up to the door sill. A wall light over the door, on with the path lights from 18:00 (guide/operations.md). All [A].",
+    "landing": { "x0": 4.65, "x1": 6.15, "d": 1.0 },
+    "step": { "x0": 4.8, "x1": 6.0, "d": 0.35, "h": 0.15 },
+    "light": { "x": 5.4, "at": 2.3 }
   },
   "partitions": {
-    "about": "Timber studs lined both sides in cement board, 100 mm, floor to ceiling, tiled and painted like the walls [A]: between the two toilet rooms, between the second room and the lobby, behind the toilet rooms on the passage side, and round the urinal room.",
+    "about": "Timber studs lined both sides in cement board, 100 mm, floor to ceiling, tiled and painted like the walls [A]: along the front of the row with its three doors, between the two toilet rooms, between the second room and the urinal room, and on the urinal room's east side, where the row meets the basins.",
     "t": 0.1
   },
   "finishes": {
@@ -34,54 +34,55 @@
     "tile": 1.5
   },
   "toilets": {
-    "about": "The two toilet rooms side by side at the west end, against the front wall so each has its window: 1.35 m wide and 1.2 m deep inside. Open to everyone, as the homepage sketch has them, each locked from inside by an indicator bolt that staff can open from outside [A]; a women's and a men's side instead is the founder's call. Each WC is floor-standing with a close-coupled cistern, on the room's west wall under the window and reaching 0.65 m into the room, a roll holder on the wall beside it [A]. The doors, 0.7 m, open in off the passage and stand back against the east wall, clear of the WC [A].",
+    "about": "The two toilet rooms side by side at the west end of the row, against the back wall: 1.35 m wide and 1.2 m deep inside, without a window of their own (the corridor has the two) [A]. Open to everyone, each locked from inside by an indicator bolt that staff can open from outside [A]; a women's and a men's side instead is the founder's call. Each WC is floor-standing with a close-coupled cistern, on the room's west wall and reaching 0.65 m into the room, a roll holder on the wall beside it [A]. The doors, 0.7 m, open in off the corridor and stand back against the east wall, clear of the WC [A].",
     "rooms": [{ "x0": 0.1, "x1": 1.45, "door": [0.7, 1.4] }, { "x0": 1.55, "x1": 2.9, "door": [2.15, 2.85] }],
-    "y0": -0.1,
-    "y1": 1.1,
-    "wc": { "y": 0.5, "out": 0.65, "w": 0.38, "cistern": { "w": 0.44, "d": 0.18, "h": 0.82 }, "seat": 0.43 },
-    "roll": { "y": 0.86, "at": 0.7 }
+    "y0": -1.1,
+    "y1": 0.1,
+    "wc": { "y": -0.5, "out": 0.65, "w": 0.38, "cistern": { "w": 0.44, "d": 0.18, "h": 0.82 }, "seat": 0.43 },
+    "roll": { "y": -0.86, "at": 0.7 }
   },
   "passage": {
-    "about": "Behind the toilet rooms, along the back wall: 0.9 m wide, from the lobby to the cleaner's cupboard at its west end. Both toilet doors open off it, so no toilet door faces the lobby.",
-    "y0": -1.1,
-    "y1": -0.2
+    "about": "The corridor along the front wall, under the two windows: 0.9 m wide, from the lobby at the east end past the three doors of the row to the cleaner's cupboard at its west end.",
+    "y0": 0.2,
+    "y1": 1.1
   },
   "cupboard": {
-    "about": "The cleaner's cupboard at the passage's dead end, where nothing else needs the space: full height, 0.5 m deep and 0.9 m wide, two doors opening along the passage; a mop and bucket on the floor and shelves above for paper, soap and cleaning things, for housekeeping (guide/operations.md) [A]. It has no tap: the bucket is filled at a basin [A].",
+    "about": "The cleaner's cupboard at the corridor's dead end, against the west end wall and stopping at the first window's jamb: full height, 0.3 m deep and 0.9 m wide, two doors opening along the corridor; a mop and bucket on the floor and shelves above for paper, soap and cleaning things, for housekeeping (guide/operations.md) [A]. It has no tap: the bucket is filled at a basin [A].",
     "x0": 0.1,
-    "x1": 0.6
+    "x1": 0.4
   },
   "lobby": {
-    "about": "Inside the door: 1.95 m across at the front and running on to the east end along the back wall, where the urinal room's door and the towels are. Its floor falls to a drain, so it can be washed down [A].",
-    "x0": 3.0,
-    "x1": 4.95,
-    "drain": [3.95, 0.1]
+    "about": "Inside the door, at the east end: the full depth of the box from the row's end to the end wall, the basins on its back wall straight across from the door and the towels on the end wall. Its floor falls to a drain, so it can be washed down [A].",
+    "x0": 4.0,
+    "x1": 5.958,
+    "drain": [4.6, 0.3]
   },
   "basins": {
-    "about": "The two hand basins, shared by everyone, on the back wall between the passage and the urinal room, so both come out to them: white bowls on a 1.4 m counter on black steel brackets, open below so the floor washes clean, after the studio's basin console; push taps that close themselves, one soap dispenser between the bowls and a long mirror over the counter. The counter top 0.85 m above the floor. All [A].",
-    "x0": 3.45,
-    "x1": 4.85,
+    "about": "The two hand basins, shared by everyone, at the east end of the back wall, straight across from the door, so everyone passes them on the way out: white bowls on a 1.4 m counter on black steel brackets, open below so the floor washes clean, after the studio's basin console; push taps that close themselves, one soap dispenser between the bowls and a long mirror over the counter. The counter top 0.85 m above the floor. All [A].",
+    "x0": 4.35,
+    "x1": 5.75,
     "d": 0.5,
     "top": 0.85,
-    "x": [3.8, 4.5],
-    "soap": 4.15,
-    "mirror": { "x0": 3.5, "x1": 4.8, "y0": 1.2, "y1": 1.85 }
+    "x": [4.7, 5.4],
+    "soap": 5.05,
+    "mirror": { "x0": 4.4, "x1": 5.7, "y0": 1.2, "y1": 1.85 }
   },
   "towels": {
-    "about": "A paper towel dispenser on the back wall past the counter, a lidded bin under it [A].",
-    "x": 5.3,
+    "about": "A paper towel dispenser on the east end wall beside the counter, a lidded bin under it [A]: x is the wall, y the dispenser's centre.",
+    "x": 5.958,
+    "y": -0.3,
     "w": 0.3,
     "at": 1.05,
     "bin": 0.14
   },
   "urinal": {
-    "about": "The urinal in a small room of its own at the front of the east end, 0.9 x 1.2 m inside, so nobody at the basins sees it; its door opens in off the lobby and stands back against the room's west wall, clear of the urinal. A wall urinal on the east end wall, its rim about 0.6 m above the floor, and a small extract fan high on the same wall, as this room has no window. All [A].",
-    "x0": 5.05,
-    "x1": 5.958,
-    "y0": -0.1,
-    "y1": 1.1,
-    "door": [5.1, 5.8],
-    "y": 0.6,
+    "about": "The urinal in a small room of its own in the row, between the second toilet room and the basins, 0.9 x 1.2 m inside, so nobody at the basins sees it; its door opens in off the corridor and stands back against the room's east wall, clear of the urinal. A wall urinal on the back wall, its rim about 0.6 m above the floor, and a small extract fan high on the same wall, as this room has no window. All [A].",
+    "x0": 3.0,
+    "x1": 3.9,
+    "y0": -1.1,
+    "y1": 0.1,
+    "door": [3.1, 3.8],
+    "x": 3.45,
     "w": 0.4,
     "out": 0.34,
     "rim": 0.6,

@@ -58,6 +58,9 @@ function Door({ hinge: [hx, hy], along: [ax, ay], into: [ix, iy], w }: { hinge: 
   )
 }
 
+// the fittings stand in one row against the back wall (the top of the page): two toilet rooms, the urinal room, then
+// the basins across from the door at the front's east end; a corridor under the windows joins them.
+
 // a WC from above on the wall at x, facing into the room (+x): the cistern, the bowl and its seat's opening
 function Wc({ x, y }: { x: number; y: number }) {
   const { out, w, cistern } = toilets.wc
@@ -72,11 +75,11 @@ function Wc({ x, y }: { x: number; y: number }) {
 }
 
 export function PublicBathroomPlan({ title, className }: { title: string; className?: string }) {
-  const L = box.l, H = box.w / 2, p = box.proud, t = partitions.t
+  const L = box.l, H = box.w / 2, p = box.proud
   const { x0: ix0, x1: ix1, y0: iy0, y1: iy1 } = box.inner
   const { door, windows } = front
   const [r1, r2] = toilets.rooms
-  const back = toilets.y0, pass = passage.y1 // the toilet rooms' back face, the passage's
+  const face = toilets.y1, hall = passage.y0 // the row's front partition: its face in the rooms, the corridor's
   const u = urinal
   // the front wall's openings, west to east: the two windows, then the door; a wall's line runs round the box at y
   // and stops at each of them (office-plan's path, with three openings)
@@ -85,16 +88,19 @@ export function PublicBathroomPlan({ title, className }: { title: string; classN
     `M${gaps[0][0]} ${y}H${w}V${b}H${e}V${y}H${gaps[gaps.length - 1][1]}` + gaps.slice(1).map(([a], k) => `M${a} ${y}H${gaps[k][1]}`).join("")
   const { landing, step } = entry
   const ly1 = H + landing.d, sy1 = ly1 + step.d
+  const doors = [r1.door, r2.door, u.door]
+  // the row's three rooms, each between two partitions: their walls drawn round from the back wall to the front face
+  const rooms = [[r1.x0, r1.x1], [r2.x0, r2.x1], [u.x0, u.x1]]
   return (
-    <svg viewBox="-0.6 -1.95 7.35 5.2" role="img" aria-label={title} className={className}>
+    <svg viewBox="-0.6 -1.95 7.45 5.2" role="img" aria-label={title} className={className}>
       {/* The plinth, a stone course 100 mm proud of the box all round; the stone landing at its height in front of
           the door and the step down to the grass */}
       <rect {...rect(-p, -H - p, L + p, H + p)} {...faint} />
       <rect {...rect(landing.x0, H + p, landing.x1, ly1)} {...thin} />
       <rect {...rect(step.x0, ly1, step.x1, sy1)} {...thin} />
 
-      {/* The steel box with its lining: the two windows and the door in the courtyard wall, the door open into the
-          lobby against the partition */}
+      {/* The steel box with its lining: the two windows and the door in the courtyard wall, the door at the east end
+          open into the lobby against the end wall */}
       <path d={ring(H, 0, L, -H)} {...medium} />
       <path d={ring(iy1, ix0, ix1, iy0)} {...thin} />
       {gaps.flat().map((x) => <line key={x} x1={x} x2={x} y1={iy1} y2={H} {...thin} />)}
@@ -104,34 +110,38 @@ export function PublicBathroomPlan({ title, className }: { title: string; classN
           <line x1={f((a + b) / 2)} x2={f((a + b) / 2)} y1={iy1} y2={H} {...thin} />
         </g>
       ))}
-      <Door hinge={[door.x0, iy1]} along={[1, 0]} into={[0, -1]} w={door.x1 - door.x0} />
+      <Door hinge={[door.x1, iy1]} along={[-1, 0]} into={[0, -1]} w={door.x1 - door.x0} />
 
-      {/* Partitions, both faces: between the toilet rooms and the lobby, behind the rooms on the passage side with
-          the doors in it, round the urinal room */}
-      <path d={`M${ix0} ${pass}H${r1.door[0]}M${r1.door[1]} ${pass}H${r2.door[0]}M${r2.door[1]} ${pass}H${lobby.x0}V${iy1}`} {...thin} />
-      <path d={`M${ix0} ${back}H${r1.door[0]}M${r1.door[1]} ${back}H${r1.x1}V${iy1}`} {...thin} />
-      <path d={`M${r2.x0} ${iy1}V${back}H${r2.door[0]}M${r2.door[1]} ${back}H${r2.x1}V${iy1}`} {...thin} />
-      <path d={`M${lobby.x1} ${iy1}V${f(u.y0 - t)}H${u.door[0]}M${u.door[1]} ${f(u.y0 - t)}H${ix1}`} {...thin} />
-      <path d={`M${u.x0} ${iy1}V${u.y0}H${u.door[0]}M${u.door[1]} ${u.y0}H${ix1}`} {...thin} />
-      {[...r1.door, ...r2.door].map((x) => <line key={x} x1={x} x2={x} y1={pass} y2={back} {...thin} />)}
-      {u.door.map((x) => <line key={x} x1={x} x2={x} y1={f(u.y0 - t)} y2={u.y0} {...thin} />)}
+      {/* Partitions, both faces: along the front of the row with its three doors, and between the rooms from the back
+          wall, the last one closing the urinal room off from the basins */}
+      <path d={`M${ix0} ${hall}` + doors.map(([a, b]) => `H${a}M${b} ${hall}`).join("") + `H${u.x1 + partitions.t}V${iy0}`} {...thin} />
+      {rooms.map(([a, b], k) => (
+        <path key={a} d={`M${a} ${iy0}V${face}H${doors[k][0]}M${doors[k][1]} ${face}H${b}V${iy0}`} {...thin} />
+      ))}
+      {doors.flat().map((x) => <line key={x} x1={x} x2={x} y1={face} y2={hall} {...thin} />)}
 
-      {/* The two toilet rooms: a WC on each west wall under its window, the door open back against the east wall */}
+      {/* The two toilet rooms: a WC on each west wall, the door open back against the east wall */}
       {[r1, r2].map((r) => (
         <g key={r.x0}>
           <Wc x={r.x0} y={toilets.wc.y} />
-          <Door hinge={[r.door[1], back]} along={[-1, 0]} into={[0, 1]} w={r.door[1] - r.door[0]} />
-          <text x={f((r.door[0] + r.x1) / 2 + 0.12)} y={f(iy1 - 0.16)} textAnchor="middle" style={small}>WC</text>
+          <Door hinge={[r.door[1], face]} along={[-1, 0]} into={[0, -1]} w={r.door[1] - r.door[0]} />
+          <text x={f((r.door[0] + r.x1) / 2 + 0.12)} y={f(iy0 + 0.22)} textAnchor="middle" style={small}>WC</text>
         </g>
       ))}
 
-      {/* The cleaner's cupboard at the passage's end, its two doors opening along the passage */}
-      <rect {...rect(cupboard.x0, iy0, cupboard.x1, pass)} {...thin} />
-      <Door hinge={[cupboard.x1, iy0]} along={[0, 1]} into={[1, 0]} w={(pass - iy0) / 2} />
-      <Door hinge={[cupboard.x1, pass]} along={[0, -1]} into={[1, 0]} w={(pass - iy0) / 2} />
+      {/* The urinal room: the urinal on the back wall, the extract fan over it, the door open back against the east
+          wall */}
+      <path d={`M${f(u.x - u.w / 2)} ${iy0}V${f(iy0 + u.out - 0.13)}A${f(u.w / 2)} 0.13 0 0 0 ${f(u.x + u.w / 2)} ${f(iy0 + u.out - 0.13)}V${iy0}`} {...thin} />
+      <circle cx={u.x} cy={f(iy0 + 0.06)} r={0.1} {...dashed} />
+      <Door hinge={[u.door[1], face]} along={[-1, 0]} into={[0, -1]} w={u.door[1] - u.door[0]} />
 
-      {/* The lobby: the counter with two basins and their taps on the back wall, the towels and the bin past it, the
-          floor drain */}
+      {/* The cleaner's cupboard at the corridor's west end, its two doors opening along the corridor */}
+      <rect {...rect(cupboard.x0, hall, cupboard.x1, iy1)} {...thin} />
+      <Door hinge={[cupboard.x1, hall]} along={[0, 1]} into={[1, 0]} w={(iy1 - hall) / 2} />
+      <Door hinge={[cupboard.x1, iy1]} along={[0, -1]} into={[1, 0]} w={(iy1 - hall) / 2} />
+
+      {/* The lobby, across from the door: the counter with two basins and their taps on the back wall, the towels and
+          the bin on the end wall, the floor drain */}
       <rect {...rect(basins.x0, iy0, basins.x1, iy0 + basins.d)} {...thin} />
       {basins.x.map((x) => (
         <g key={x}>
@@ -139,33 +149,28 @@ export function PublicBathroomPlan({ title, className }: { title: string; classN
           <circle cx={x} cy={f(iy0 + 0.07)} r={0.025} {...thin} />
         </g>
       ))}
-      <rect {...rect(towels.x - towels.w / 2, iy0, towels.x + towels.w / 2, iy0 + 0.11)} {...dashed} />
-      <circle cx={towels.x} cy={f(iy0 + towels.bin + 0.02)} r={towels.bin} {...thin} />
+      <rect {...rect(towels.x - 0.11, towels.y - towels.w / 2, towels.x, towels.y + towels.w / 2)} {...dashed} />
+      <circle cx={f(towels.x - towels.bin - 0.02)} cy={towels.y} r={towels.bin} {...thin} />
       <rect {...rect(lobby.drain[0] - 0.07, lobby.drain[1] - 0.07, lobby.drain[0] + 0.07, lobby.drain[1] + 0.07)} {...thin} />
       <path d={`M${f(lobby.drain[0] - 0.07)} ${f(lobby.drain[1] - 0.07)}l0.14 0.14m0 -0.14l-0.14 0.14`} {...faint} />
 
-      {/* The urinal room: the urinal on the east end wall, the door open back against the room's west wall */}
-      <path d={`M${ix1} ${f(u.y - u.w / 2)}H${f(ix1 - u.out + 0.13)}A0.13 ${f(u.w / 2)} 0 0 0 ${f(ix1 - u.out + 0.13)} ${f(u.y + u.w / 2)}H${ix1}`} {...thin} />
-      <Door hinge={[u.door[0], u.y0]} along={[1, 0]} into={[0, 1]} w={u.door[1] - u.door[0]} />
-      <circle cx={f(ix1 - 0.06)} cy={u.y} r={0.1} {...dashed} />
-
-      <text x={f((ix0 + lobby.x0) / 2 + 0.25)} y={f((iy0 + pass) / 2 + 0.035)} textAnchor="middle" style={small}>PASSAGE</text>
-      <text x={f((cupboard.x0 + cupboard.x1) / 2 + 0.035)} y={f((iy0 + pass) / 2)} transform={`rotate(-90 ${f((cupboard.x0 + cupboard.x1) / 2 + 0.035)} ${f((iy0 + pass) / 2)})`} textAnchor="middle" style={small}>CLEANING</text>
+      <text x={f((cupboard.x1 + lobby.x0) / 2)} y={f((hall + iy1) / 2 + 0.035)} textAnchor="middle" style={small}>CORRIDOR</text>
+      <text x={f((cupboard.x0 + cupboard.x1) / 2 + 0.035)} y={f((hall + iy1) / 2)} transform={`rotate(-90 ${f((cupboard.x0 + cupboard.x1) / 2 + 0.035)} ${f((hall + iy1) / 2)})`} textAnchor="middle" style={small}>CLEANING</text>
       <text x={f((basins.x0 + basins.x1) / 2)} y={f(iy0 + basins.d + 0.14)} textAnchor="middle" style={small}>BASINS</text>
-      <text x={f(towels.x)} y={f(iy0 + 2 * towels.bin + 0.17)} textAnchor="middle" style={small}>TOWELS</text>
-      <text x={f((door.x1 + lobby.x1) / 2)} y={f(iy1 - 0.3)} textAnchor="middle" style={small}>LOBBY</text>
-      <text x={f((u.x0 + ix1 - u.out) / 2)} y={f(iy1 - 0.16)} textAnchor="middle" style={small}>URINAL</text>
+      <text x={f(towels.x - 0.06)} y={f(towels.y + towels.bin + 0.15)} textAnchor="end" style={small}>TOWELS</text>
+      <text x={f((lobby.x0 + door.x0) / 2 + 0.05)} y={f(iy1 - 0.3)} textAnchor="middle" style={small}>LOBBY</text>
+      <text x={u.x} y={f(face - 0.12)} textAnchor="middle" style={small}>URINAL</text>
       {windows.map(([a, b]) => <text key={a} x={f((a + b) / 2)} y={f(H + p + 0.16)} textAnchor="middle" style={small}>WINDOW</text>)}
       <text x={f((landing.x0 + landing.x1) / 2)} y={f(H + p + (landing.d - p) / 2 + 0.035)} textAnchor="middle" style={small}>LANDING</text>
       <text x={f((step.x0 + step.x1) / 2)} y={f(ly1 + step.d / 2 + 0.035)} textAnchor="middle" style={small}>STEP</text>
-      <text x={L} y={f(H + 0.6)} textAnchor="end" style={label}>PUBLIC BATHROOM</text>
+      <text x={0} y={f(H + 0.6)} textAnchor="start" style={label}>PUBLIC BATHROOM</text>
       <text x={f(L / 2)} y={f(sy1 + 0.62)} textAnchor="middle" style={small}>TOWARD THE COURTYARD</text>
       <Dimension x0={0} x1={L} y={f(-H - 0.5)} />
-      {[[r1.x0, r1.x1], [r2.x0, r2.x1], [lobby.x0, lobby.x1], [u.x0, u.x1]].map(([a, b]) => <Dimension key={a} x0={a} x1={b} y={f(-H - 0.22)} />)}
+      {[...rooms, [lobby.x0, lobby.x1]].map(([a, b]) => <Dimension key={a} x0={a} x1={b} y={f(-H - 0.22)} />)}
       <Dimension x0={landing.x0} x1={landing.x1} y={f(sy1 + 0.3)} />
-      <Rise y0={-H} y1={H} x={f(L + 0.35)} />
-      <Rise y0={iy0} y1={pass} x={-0.35} />
-      <Rise y0={back} y1={iy1} x={-0.35} />
+      <Rise y0={-H} y1={H} x={f(L + 0.4)} />
+      <Rise y0={iy0} y1={face} x={-0.35} />
+      <Rise y0={hall} y1={iy1} x={-0.35} />
     </svg>
   )
 }

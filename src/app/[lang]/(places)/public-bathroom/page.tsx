@@ -32,19 +32,19 @@ function fixturesRail() {
   const c = TO.wc.cistern
   return railCards(`${D}/render/fixtures`, [
     { id: "wc", title: "WCs × 2", size: `Floor-standing, close-coupled cistern ${mm(c.w)} × ${mm(c.d)} mm, ${mm(c.h)} mm high; ${mm(TO.wc.out)} mm into the room, seat at ${mm(TO.wc.seat)} mm`,
-      note: "One on each toilet room's west wall, under its window, with a soft-close seat and a dual-flush button." },
+      note: "One on each toilet room's west wall, with a soft-close seat and a dual-flush button." },
     { id: "basin", title: "Basin counter", size: `${(BA.x1 - BA.x0).toFixed(2)} × ${BA.d.toFixed(2)} m, top at ${BA.top.toFixed(2)} m; two bowls`,
       note: "Two white bowls on a Medium Oak counter on black steel brackets, open below so the floor washes clean; a push tap behind each bowl." },
     { id: "urinal", title: "Urinal", size: `${mm(UR.w)} mm wide, rim at ${mm(UR.rim)} mm, ${mm(UR.out)} mm from the wall`,
-      note: "In its own room at the east end, its flush valve above it, so nobody at the basins sees it." },
+      note: "In its own room in the row, between the toilet rooms and the basins, its flush valve above it, so nobody at the basins sees it." },
     { id: "mirror", title: "Mirror", size: `${(BA.mirror.x1 - BA.mirror.x0).toFixed(2)} × ${(BA.mirror.y1 - BA.mirror.y0).toFixed(2)} m`,
       note: "Over the counter, in a thin black frame." },
     { id: "soap", title: "Soap dispenser", size: "About 100 × 80 × 170 mm", note: "One between the two bowls." },
     { id: "towels", title: "Paper towels and bin", size: `Dispenser ${mm(TW.w)} mm wide; lidded bin Ø ${mm(TW.bin * 2)} mm, 0.5 m high`,
-      note: "On the back wall past the counter." },
+      note: "On the east end wall beside the counter." },
     { id: "roll", title: "Roll holders × 2", size: "One roll, on the wall beside each WC", note: `About ${mm(TO.roll.at)} mm above the floor.` },
     { id: "cupboard", title: "Cleaner's cupboard", size: `${(CU.x1 - CU.x0).toFixed(2)} × ${(PA.y1 - PA.y0).toFixed(2)} m, floor to ceiling`,
-      where: "Built in the workshop, like the studio's units", note: "At the passage's end: a mop and bucket below, shelves of paper, soap and cleaning things above, the stop valve and meter low inside." },
+      where: "Built in the workshop, like the studio's units", note: "At the corridor's end: a mop and bucket below, shelves of paper, soap and cleaning things above, the stop valve and meter low inside." },
   ])
 }
 
@@ -101,7 +101,7 @@ export default function PublicBathroomPage() {
       {/* 2D, full screen: the bathroom's plan (src/components/public-bathroom/public-bathroom-plan.tsx), in the text
           colour. */}
       <DrawingSection id="plans" title="2D">
-        <PublicBathroomPlan title="Plan: a 20 ft container 6,058 by 2,438 mm on a stone plinth, with a 1,500 mm landing and a step in front of its door; inside, two toilet rooms 1,350 by 1,200 mm along the front wall, each with a WC under its window, opening off a 900 mm passage behind them that ends at the cleaner's cupboard; the lobby inside the door with two basins on a counter against the back wall, paper towels and a bin past it and a floor drain; and the urinal in its own room at the east end."
+        <PublicBathroomPlan title="Plan: a 20 ft container 6,058 by 2,438 mm on a stone plinth, with a 1,500 mm landing and a step in front of its door at the east end of the front wall; inside, one row against the back wall: two toilet rooms 1,350 by 1,200 mm, each with a WC, then the urinal in its own room 900 mm wide, then the two basins on a counter straight across from the door, paper towels and a bin on the end wall beside them and a floor drain; a 900 mm corridor along the front wall, under the two windows, joins them and ends at the cleaner's cupboard."
           className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 
