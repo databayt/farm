@@ -1,6 +1,5 @@
 import { Header } from "@/components/home/header"
 import { getLocale } from "@/components/internationalization/locale"
-import { LoadingWrapper } from "@/components/loading"
 import { getNav } from "@/components/site/nav"
 
 // The farm's pages (/[lang]/studio, /[lang]/galley …) share the homepage's header: one two-line hamburger opening
@@ -13,11 +12,9 @@ export default async function PlacesLayout({ children }: LayoutProps<"/[lang]">)
   return (
     <>
       <Header nav={nav} />
-      <LoadingWrapper>
-        <div lang={lang === "en" ? undefined : "en"} className="contents">
-          {children}
-        </div>
-      </LoadingWrapper>
+      <div lang={lang === "en" ? undefined : "en"} className="contents">
+        {children}
+      </div>
     </>
   )
 }

@@ -5,8 +5,6 @@ import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, Servi
 import { BuildUp } from "@/components/docs/build-up"
 import { kitRail, netRail } from "@/components/volleyball/rails"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
-import { TennisPlan } from "@/components/tennis/tennis-plan"
-import { CourtSwitch } from "@/components/volleyball/court-switch"
 import { D, m, netPoints } from "@/components/volleyball/data"
 import { CourtDrainageDiagram } from "@/components/volleyball/drainage-diagram"
 import { NetDiagram } from "@/components/volleyball/net-diagram"
@@ -47,19 +45,10 @@ export default async function VolleyballPage() {
         title={w.hero.title}
         alt={w.hero.alt} />
 
-      {/* 2D, full screen, with a switch between the two games the lawn can take: the volleyball court
-          (src/components/volleyball/volleyball-plan.tsx) and a tennis court on the same net line
-          (src/components/tennis/tennis-plan.tsx), each with a point at the serve drawn over it, in the text colour. */}
+      {/* 2D, full screen: the volleyball court (src/components/volleyball/volleyball-plan.tsx) with a point at the
+          serve drawn over it, in the text colour. */}
       <DrawingSection id="plans" title={t.plan}>
-        <CourtSwitch courts={[
-          { id: "volleyball", label: "Volleyball", plan: (
-            <VolleyballPlan className="h-auto w-full lg:h-full lg:w-auto" />
-          ) },
-          { id: "tennis", label: "Tennis", plan: (
-            <TennisPlan title="Plan: a tennis court 23.77 by 10.97 m on the same lawn and net line, with a run-back of 5.49 m behind each baseline and a run-off of 3.05 m beside each side line, 34.75 by 17.07 m in all, the volleyball's 24 by 15 m dashed inside it; singles and doubles side lines, the service lines 6.40 m from the net, four service boxes and a centre mark on each baseline; the net 914 mm at the centre and 1,070 mm at the posts, with singles sticks. Over it a singles point: the server right of the centre mark serving across to the deuce court, the receiver behind the far baseline."
-              className="h-auto w-full lg:h-full lg:w-auto" />
-          ) },
-        ]} />
+        <VolleyballPlan className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 
       {/* 3D, in the 2D section's pattern: a line drawing of the court seen from the open lawn, then the same view

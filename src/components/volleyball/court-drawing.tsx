@@ -1,5 +1,5 @@
-// What the volleyball and tennis plans draw alike, in the pattern of the livestock plan: thin lines in the text
-// colour, bold capitals, dimensions in millimetres; and the match layer that broadcast pictures of both games lead
+// What the volleyball plan draws, in the pattern of the livestock plan: thin lines in the text
+// colour, bold capitals, dimensions in millimetres; and the match layer that broadcast pictures of the game lead
 // with: players as numbered discs, one team open and one filled, and the serve's flight from the server's hand to
 // where it lands. Units are metres.
 
