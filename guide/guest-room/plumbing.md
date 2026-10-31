@@ -6,7 +6,7 @@ Everything the plumber needs for the three guest rooms' bathrooms: the supply, t
 
 The three rooms are piped the same, so one page serves all three.
 
-The bathroom drawn: [the guest room page](/en/guest-room) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's plumbing](../studio/plumbing.md)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumbing.rw.md) · The bathroom drawn: [the guest room page](/en/guest-room) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's plumbing](../studio/plumbing.md)
 
 ## At a glance
 

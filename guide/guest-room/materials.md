@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31; every room has its own shower, WC and basin
 
 What one guest room needs: its furniture, its bathroom, its bedding and lamps, and its electric devices, as its page shows them.
 
-The rooms drawn: [the guest room page](/en/guest-room) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The rooms drawn: [the guest room page](/en/guest-room) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 

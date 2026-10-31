@@ -6,7 +6,7 @@ Everything the electrician needs to wire one guest room: the circuits, the first
 
 The three rooms are wired the same, so one page serves all three.
 
-The wiring drawn: [the guest room page](/en/guest-room#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](electric.rw.md) · The wiring drawn: [the guest room page](/en/guest-room#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
 
 ## At a glance
 
