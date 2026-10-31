@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31, drawn for electric cooking. Every rating is
 
 Everything the electrician needs to wire the galley: the three-phase supply, the circuits, the first fix before the linings close, the second fix, the tests and every point.
 
-The wiring drawn: [the galley page](/en/galley#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](electric.rw.md) · The wiring drawn: [the galley page](/en/galley#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
 
 ## At a glance
 

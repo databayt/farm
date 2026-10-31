@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Every run and size is a design choice for t
 
 Everything the plumber needs for the galley: the supply, the hot water, the drains to the grease trap, the tests and every point.
 
-The pipes drawn: [the galley page](/en/galley#plumbing) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's plumbing](../studio/plumbing.md)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumbing.rw.md) · The pipes drawn: [the galley page](/en/galley#plumbing) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's plumbing](../studio/plumbing.md)
 
 ## At a glance
 

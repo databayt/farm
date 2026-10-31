@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Every size past the box and its openings is
 
 Every step of fitting out the staff kitchen that cooks breakfast and dinner for a full house, in the studio's order, from the cooking fuel to the first meal.
 
-The galley drawn: [the galley page](/en/galley) · Its other pages: [materials](materials.md), [electric](electric.md), [plumbing](plumbing.md) · Each step done in full: [the studio's plan](../studio/plan.md)
+Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The galley drawn: [the galley page](/en/galley) · Its other pages: [materials](materials.md), [electric](electric.md), [plumbing](plumbing.md) · Each step done in full: [the studio's plan](../studio/plan.md)
 
 ## At a glance
 

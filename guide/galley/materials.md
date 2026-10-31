@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Sizes come from galley.json; nothing is sou
 
 What the galley needs: its equipment, its electric devices and its plumbing parts, as its page shows them.
 
-The galley drawn: [the galley page](/en/galley) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The galley drawn: [the galley page](/en/galley) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 
