@@ -82,21 +82,6 @@ const PAGES = [
   // components in src/components/<place>/docs-sections.tsx). Off the sidebar; each page's docs cards and tags link here.
   "---The places---",
   {
-    slug: "guest-room-points", title: "Guest room: circuits and points",
-    description: "Every light, switch and socket in the guest room, with its circuit, height and load, and where the design stands.",
-    sections: [["Electric points", "GuestRoomElectricPoints"], ["Status", "GuestRoomStatus"]],
-  },
-  {
-    slug: "office-points", title: "Office: electric and network points",
-    description: "Every light, socket and network point in the office, with its circuit or cable, and where the design stands.",
-    sections: [["Electric points", "OfficeElectricPoints"], ["Network points", "OfficeNetworkPoints"], ["Status", "OfficeStatus"]],
-  },
-  {
-    slug: "study-room-points", title: "Study room: circuits and points",
-    description: "Every light, socket and Wi-Fi point in the study room, with its circuit, height and load, and where the design stands.",
-    sections: [["Electric points", "StudyRoomElectricPoints"], ["Status", "StudyRoomStatus"]],
-  },
-  {
     slug: "galley-points", title: "Galley: electric and plumbing points",
     description: "Every socket, light, tap and drain in the galley, the pipe runs, and where the design stands.",
     sections: [["Electric points", "GalleyElectricPoints"], ["Plumbing points", "GalleyPlumbingPoints"], ["Status", "GalleyStatus"]],
@@ -543,6 +528,8 @@ const MOVED = {
   carpenter: "studio", "studio-features": "studio", "studio-materials": "studio/materials",
   electrician: "studio/electric", "studio-circuits": "studio/electric",
   plumber: "studio/plumbing", "studio-pipes": "studio/plumbing",
+  // each place's points page (D-057), now its Electric page with its points, circuits and plan beside it
+  "guest-room-points": "guest-room/electric", "office-points": "office/electric", "study-room-points": "study-room/electric",
 }
 // printed guides renamed with their pages: public/guides/<old>[-rw].pdf is now <new>[-rw].pdf
 const MOVED_PDFS = { carpenter: "studio-plan", electrician: "studio-electric", plumber: "studio-plumbing", power: "farm-electric" }

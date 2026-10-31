@@ -14,13 +14,25 @@ import {
 import { BarElectricPoints, BarPlumbingPoints, BarStatus } from "@/components/bar/docs-sections"
 import { FarmingBom, FarmingCalendar, FarmingPlate, FarmingStatus, FarmingWaterPoints } from "@/components/farming/docs-sections"
 import { GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus } from "@/components/galley/docs-sections"
-import { GuestRoomElectricPoints, GuestRoomStatus } from "@/components/guest-room/docs-sections"
+import { GuestRoomCircuits, GuestRoomElectricPoints, GuestRoomMaterials } from "@/components/guest-room/docs-sections"
 import { LivestockStatus, LivestockWaterNeed, LivestockWaterPoints } from "@/components/livestock/docs-sections"
-import { OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus } from "@/components/office/docs-sections"
+import { OfficeCircuits, OfficeElectricPoints, OfficeMaterials, OfficeNetworkPoints } from "@/components/office/docs-sections"
 import { ParkingDrainagePoints, ParkingLightingPoints, ParkingStatus } from "@/components/parking/docs-sections"
 import { PublicBathroomElectricPoints, PublicBathroomPlumbingPoints, PublicBathroomStatus } from "@/components/public-bathroom/docs-sections"
-import { StudyRoomElectricPoints, StudyRoomStatus } from "@/components/study-room/docs-sections"
+import { StudyRoomCircuits, StudyRoomElectricPoints, StudyRoomMaterials } from "@/components/study-room/docs-sections"
 import { VolleyballNetPoints, VolleyballStatus } from "@/components/volleyball/docs-sections"
+import { GuestRoomPlan } from "@/components/guest-room/guest-room-plan"
+import { OfficePlan } from "@/components/office/office-plan"
+import { StudyRoomPlan } from "@/components/study-room/study-room-plan"
+import { GalleyPlan } from "@/components/galley/galley-plan"
+import { PublicBathroomPlan } from "@/components/public-bathroom/public-bathroom-plan"
+import { VolleyballPlan } from "@/components/volleyball/volleyball-plan"
+import { ParkingPlan } from "@/components/parking/parking-plan"
+import { CampPlan } from "@/components/camp/camp-plan"
+import { BarPlan } from "@/components/bar/bar-plan"
+import { FarmingPlan } from "@/components/farming/farming-plan"
+import { NurseryPlan } from "@/components/farming/nursery-plan"
+import { LivestockPlan } from "@/components/livestock/livestock-plan"
 import { localeHref } from "@/components/internationalization/href"
 import { getLocale } from "@/components/internationalization/locale"
 
@@ -40,6 +52,18 @@ async function DocsLink({ className, href, hrefLang, ...props }: React.AnchorHTM
     />
   )
 }
+
+// A place's 2D on its execution plan (D-059): the drawing its page opens with, on a sheet in the docs' column, as tall
+// as the screen at most.
+type Plan = (props: { title: string; className?: string }) => React.JSX.Element
+const sheet = (Drawing: Plan) =>
+  function PlanSheet({ title }: { title: string }) {
+    return (
+      <figure className="mt-6 rounded-xl border p-4">
+        <Drawing title={title} className="mx-auto h-auto max-h-[70svh] w-full" />
+      </figure>
+    )
+  }
 
 const mdxComponents = {
   // Allows customizing built-in components, e.g. to add styling.
@@ -197,9 +221,9 @@ const mdxComponents = {
   StudioBom, StudioShared, StudioCircuits, StudioElectricPoints, StudioPipes, StudioFittings,
   StudioFeatures, StudioSteps, StudioDownloads,
   // every other place's (the "---The places---" pages), in the site menu's order
-  GuestRoomElectricPoints, GuestRoomStatus,
-  OfficeElectricPoints, OfficeNetworkPoints, OfficeStatus,
-  StudyRoomElectricPoints, StudyRoomStatus,
+  GuestRoomCircuits, GuestRoomElectricPoints, GuestRoomMaterials,
+  OfficeCircuits, OfficeElectricPoints, OfficeMaterials, OfficeNetworkPoints,
+  StudyRoomCircuits, StudyRoomElectricPoints, StudyRoomMaterials,
   GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus,
   PublicBathroomElectricPoints, PublicBathroomPlumbingPoints, PublicBathroomStatus,
   VolleyballNetPoints, VolleyballStatus,
@@ -207,6 +231,19 @@ const mdxComponents = {
   BarElectricPoints, BarPlumbingPoints, BarStatus,
   FarmingWaterPoints, FarmingPlate, FarmingCalendar, FarmingBom, FarmingStatus,
   LivestockWaterPoints, LivestockWaterNeed, LivestockStatus,
+  // each place's 2D, for its execution plan
+  GuestRoomPlan: sheet(GuestRoomPlan),
+  OfficePlan: sheet(OfficePlan),
+  StudyRoomPlan: sheet(StudyRoomPlan),
+  GalleyPlan: sheet(GalleyPlan),
+  PublicBathroomPlan: sheet(PublicBathroomPlan),
+  VolleyballPlan: sheet(VolleyballPlan),
+  ParkingPlan: sheet(ParkingPlan),
+  CampPlan: sheet(CampPlan),
+  BarPlan: sheet(BarPlan),
+  FarmingPlan: sheet(FarmingPlan),
+  NurseryPlan: sheet(NurseryPlan),
+  LivestockPlan: sheet(LivestockPlan),
 } satisfies MDXComponents
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {

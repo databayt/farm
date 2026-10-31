@@ -1,11 +1,14 @@
 import type * as React from "react"
 
+import { CircuitsTable } from "@/components/docs/circuits-table"
 import { PointsLead } from "@/components/docs/points-table"
+import { RailTable } from "@/components/docs/rail-table"
 import { RoomPointsTable } from "@/components/docs/room-points"
 import { circuits, netLinks, netPoints, points } from "@/components/office/data"
+import { rails } from "@/components/office/rails"
 
-// The office's reference sections, moved off /en/office onto /docs/office-points as the studio's are
-// (scripts/sync-docs.mjs places them under MDX headings). Each row's id (pt-L1, pt-AP1…) is where a tag on the page's
+// The office's reference sections, on its docs pages (D-059: guide/office/*.md embeds them; scripts/sync-docs.mjs
+// renders each as <Name />). Each row's id (pt-L1, pt-AP1…) is where a tag on the page's
 // electrical or network drawing links.
 
 export function OfficeElectricPoints(): React.JSX.Element {
@@ -26,11 +29,12 @@ export function OfficeNetworkPoints(): React.JSX.Element {
   )
 }
 
-export function OfficeStatus(): React.JSX.Element {
-  return (
-    <p className="text-muted-foreground">
-      Design intent. Places and sizes come from office.json; the electrical costs are the studio&rsquo;s placeholder
-      prices (AS-21) until three quotes come in, and the network gear is neither sourced nor priced.
-    </p>
-  )
+// What to buy: every rail on the page, as one table (the Materials page)
+export function OfficeMaterials(): React.JSX.Element {
+  return <RailTable rails={rails} />
+}
+
+// The circuits behind the points (the Electric page)
+export function OfficeCircuits(): React.JSX.Element {
+  return <CircuitsTable circuits={circuits} />
 }

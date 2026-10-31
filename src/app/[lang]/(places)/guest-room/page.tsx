@@ -1,14 +1,13 @@
 import type { Metadata } from "next"
 import { LocaleLink as Link } from "@/components/internationalization/locale-link"
 
-import { frw } from "@/lib/format"
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
-import { deviceRail, tagInfo } from "@/components/docs/room-points"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection } from "@/components/page/sections"
+import { tagInfo } from "@/components/docs/room-points"
 import { RoomWiring } from "@/components/docs/room-wiring"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
+import { bedRail, electricRail, roomRail } from "@/components/guest-room/rails"
 import { circuits, D, E, points } from "@/components/guest-room/data"
 import { GuestRoomPlan } from "@/components/guest-room/guest-room-plan"
-import room from "@/components/guest-room/guest-room.json"
 import electricTags from "../../../../../public/designs/guest-room/render/electric-tags.json"
 
 // One guest room, in /en/studio's pattern: the hero, the 2D and the 3D, the rails, Electric, then the docs cards; the
@@ -21,44 +20,15 @@ export const metadata: Metadata = {
   description: "A room for two in the container block, with a double bed, its own shower and WC, and a timber veranda with lake views, at the Digital Farm near Kigali.",
 }
 
-const m2 = (n: number) => +n.toFixed(2)
-
-// The furniture rails: each piece rendered on its own by scripts/site/render/guest-room.html?item=<id>, sized from
-// guest-room.json. Nothing is sourced or quoted yet; where the studio already carries a placeholder price for the
-// same piece (AS-21), the card repeats it as an estimate.
-const { bed, bedsides: bs, bench, wardrobe, desk, hooks, rug, veranda } = room
-const bedRail = railCards(`${D}/render/furniture`, [
-  { id: "bed", title: "Bed frame", size: `${m2(bed.w)} × ${m2(bed.l)} m mattress, frame ${m2(bed.frame)} m high, headboard ${m2(bed.headboard)} m`,
-    note: "A solid Medium Oak frame with its headboard on the back wall, under the barred window." },
-  { id: "mattress", title: "Mattress", size: `${bed.w * 100} × ${bed.l * 100} × ${Math.round(bed.mattress * 100)} cm`,
-    where: "Not sourced yet (the studio's: Rwanda Foam Ltd, Kigali)", cost: `RWF ${frw(180_000)} (estimate, as the studio's)` },
-  { id: "bedding", title: "Bedding", size: `Duvet, two pillows and a cushion for ${bed.w * 100} × ${bed.l * 100} cm`, note: "White bedding with a mustard throw at the foot." },
-  { id: "bedside", title: `Bedside tables × 2`, size: `${m2(bs.w)} × ${m2(bs.d)} m, ${m2(bs.h)} m high`, note: "A top and a lower shelf on four legs, one each side of the bed." },
-  { id: "lamp", title: "Table lamps × 2", size: "Ø 0.26 m linen shade, 0.42 m high", cost: `RWF ${frw(35_000)} each × 2 (estimate, as the studio's)`,
-    note: "One on each bedside table, plugged into the socket beside it (P1, P2): a lamp on both sides of the bed (D-029)." },
-  { id: "bench", title: "Luggage bench", size: `${m2(bench.w)} × ${m2(bench.d)} m, ${m2(bench.h)} m high`, note: "Slatted, across the foot of the bed." },
-  { id: "rug", title: "Rug", size: `${m2(rug.w)} × ${m2(rug.d)} m`, note: "A flat-woven rug under the lower two thirds of the bed." },
-])
-const roomRail = railCards(`${D}/render/furniture`, [
-  { id: "wardrobe", title: "Wardrobe", size: `${m2(wardrobe.w)} × ${m2(wardrobe.d)} m, ${m2(wardrobe.h)} m high`, note: "Two doors, on the left wall between the joint's post and the desk." },
-  { id: "desk", title: "Desk", size: `${m2(desk.x1 - desk.x0)} × ${m2(desk.d)} m, ${m2(desk.h)} m high`, note: "Under the front window, with a reading lamp and the socket P3 beside it." },
-  { id: "chair", title: "Desk chair", size: `${m2(desk.chair.w)} × ${m2(desk.chair.d)} m, seat ${m2(desk.chair.seat)} m, back ${m2(desk.chair.back)} m` },
-  { id: "hooks", title: "Coat hooks", size: `A ${m2(hooks.y1 - hooks.y0)} m rail of four hooks at ${m2(hooks.h)} m`, note: "On the right wall, clear of the door's swing." },
-  { id: "verandachair", title: "Veranda chairs × 2", size: `${m2(veranda.chair.w)} × ${m2(veranda.chair.d)} m, seat ${m2(veranda.chair.seat)} m, back ${m2(veranda.chair.back)} m`,
-    note: "Slatted, under the front window, as on the camp's porch." },
-  { id: "verandatable", title: "Veranda table", size: `Ø ${m2(veranda.table.r * 2)} m, ${m2(veranda.table.h)} m high`, note: "A pedestal table between the chairs, with a lantern." },
-])
-
 // The Electric section: room.electric (guest-room.json, read in data.ts), drawn by RoomWiring, rendered by
 // guest-room.html?view=electric
 const designA = Math.round(circuits.reduce((n, c) => n + (c.design_A ?? 0), 0) * 10) / 10
 
-// The room's own docs page first, as the studio's are, then the guides behind the page.
+// The guest room's docs pages, as the docs sidebar groups them (D-059), linked from the end of this page.
 const DOCS = [
-  { href: "/docs/guest-room-points", title: "Circuits and points", text: "Every light, switch and socket on the drawing above, with its circuit, height and load, and where the design stands." },
-  { href: "/docs/power", title: "Power", text: "Grid, solar or both: what the farm uses, building by building, and what each option costs." },
-  { href: "/docs/electrician", title: "Electrician's guide", text: "The first fix before the linings close, the second fix, the tests and the certificate." },
-  { href: "/docs/master-plan", title: "Master plan", text: "The whole farm on one sheet: where the guest rooms stand, the paths and the services." },
+  { href: "/docs/guest-room", title: "Execution plan", text: "Every step of fitting out the three rooms, in the studio's order, from the survey to the first guest." },
+  { href: "/docs/guest-room/materials", title: "Materials", text: "The bed, the room and the veranda, and each electric device, with its size, where to buy it and its cost." },
+  { href: "/docs/guest-room/electric", title: "Electric", text: "The four circuits, the first and second fix, the tests and the certificate, and every light, switch and socket." },
 ]
 
 export default function GuestRoomPage() {
@@ -99,21 +69,21 @@ export default function GuestRoomPage() {
           supply={{ title: "Site board", sub: "the farm's, off the drawing", cable: "armoured cable, sized to its run" }}
           notes={[`Design ${designA} A on a ${E.main_A} A main switch · one RCBO 30 mA type A per circuit · the studio's conventions (D-021)`,
             "Ratings are design intent until a RURA class A electrician designs the supply and certifies the room"]} />}
-        figure={<TaggedFigure table="/docs/guest-room-points" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
+        figure={<TaggedFigure table="/docs/guest-room/electric" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags}
           alt="Line drawing of the guest room from the front with the ceiling and the joint's beam off: the unit board on the right wall by the bed, the circuits rising from its top along the ceiling edge and down to each point, in blue for the lights and the wall fan, orange for the sockets beside the bedside tables, by the desk and on the right wall, and green for the AC isolator high on the back wall."
           info={tagInfo(points, circuits)} />}
         note={<>
           Every run goes up into the ceiling, along it and straight down to its device, in conduit inside the linings.
-          Each tag opens its row in the <Link href="/docs/guest-room-points#electric-points" className="underline underline-offset-4">points table</Link>.
+          Each tag opens its row in the <Link href="/docs/guest-room/electric#points" className="underline underline-offset-4">points table</Link>.
           The bedside lamps plug into P1 and P2, so the bed has a lamp on each side (D-029). The room has no bathroom of
           its own in this drawing, so it has no water-heater circuit; the en-suite of{" "}
           <Link href="/docs/decision-log" className="underline underline-offset-4">D-029</Link> would add one, and its plumbing.
         </>}
         real={{ src: `${D}/render/electric-real.webp`, width: 2400, height: 1800, caption: "Rendered from the design model",
           alt: "The same view rendered as finished: the white unit board on the right wall, sockets with USB-C beside both bedside tables, a double socket by the desk and on the right wall, a two-gang switch by the door, the wall fan high on the left wall, the red AC isolator high on the back wall, and slim ceiling lights and a smoke alarm." }}
-        rail={deviceRail(points, (m) => `${D}/render/electric/${m}.webp`)} />
+        rail={electricRail} />
 
-      <DocsSection cards={DOCS} />
+      <DocsSection cards={DOCS} ownPlan />
     </main>
   )
 }
