@@ -21,8 +21,13 @@
 // guide/ holds the maintained execution guides. In them:
 //   {{studio.l}}  a value from public/designs/studio/data/dims.json (the studio generator), {{site.*}} from
 //                 public/designs/site/site-dims.json (scripts/site/master-plan.mjs); unknown keys fail
-//   X.rw.md       beside X.md becomes <slug>-rw, the Kinyarwanda twin: rendered, linked, kept out of the
-//                 sidebar, and checked against the English for the same sections, steps, numbers and links
+//   X.rw.md       beside X.md is its Kinyarwanda (D-058): the same page at /rw/docs/<slug>, checked against the
+//                 English for the same sections, steps, numbers and links
+//
+// The docs are in two languages (src/lib/source.ts): English pages go to content/docs/en, each Kinyarwanda page to
+// content/docs/rw at its English slug, and /rw shows the English page wherever there is none. Links between pages
+// are written without a language, so the page adds the reader's (src/mdx-components.tsx); a guide's link to its own
+// translation names the other language (hrefLang). Old URLs reach their pages through public/_redirects (MOVED).
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { basename, dirname, join, relative, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -30,6 +35,8 @@ import { fileURLToPath } from "node:url"
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
 const OUT = join(ROOT, "content", "docs")
 const PUBLIC = join(ROOT, "public")
+// the site's languages, as src/components/internationalization/config.ts lists them
+const LANGS = ["en", "rw"]
 
 // Every docs page, grouped by kind ("---" lines are labels for the reader of this file). The sidebar
 // shows only SIDEBAR, below; the rest render off the sidebar, like the Kinyarwanda twins.
@@ -44,7 +51,7 @@ const PAGES = [
   { slug: "vegetables", src: "guide/grow/vegetables.md" },
   { slug: "livestock", src: "guide/grow/livestock.md" },
   "---The farm---",
-  { slug: "farm", src: "guide/farm.md" },
+  { slug: "farm-today", src: "guide/farm.md" },
   { slug: "master-plan", src: "guide/master-plan.md" },
   { slug: "operations", src: "guide/operations.md" },
   { slug: "film", src: "guide/film.md" },
@@ -53,7 +60,7 @@ const PAGES = [
   { slug: "marketing", src: "guide/business/marketing.md" },
   { slug: "digital", src: "guide/business/digital.md" },
   "---Studio package---",
-  { slug: "studio", src: "study/studio/studio.md" },
+  { slug: "studio-package", src: "study/studio/studio.md" },
   { slug: "studio-site", src: "study/studio/studio-site.md" },
   { slug: "studio-design", src: "study/studio/studio-design.md" },
   { slug: "studio-envelope", src: "study/studio/studio-envelope.md" },
@@ -249,7 +256,7 @@ const SIDEBAR = [
   "vegetables",
   "livestock",
   "---The land---",
-  "farm",
+  "farm-today",
   "master-plan",
   "---Execution plan---",
   "first-90-days",
@@ -257,20 +264,21 @@ const SIDEBAR = [
 ]
 const fail = (slug) => { throw new Error(`sync-docs: SIDEBAR lists "${slug}", which is not in PAGES`) }
 
-const listed = PAGES.filter((p) => typeof p !== "string")
+const listed = PAGES.filter((p) => typeof p !== "string").map((p) => ({ ...p, lang: "en" }))
 const toPosix = (p) => p.split(sep).join("/")
-// A Kinyarwanda twin X.rw.md beside a listed X.md: its own page, off the sidebar (meta.json lists only `listed`).
+// A Kinyarwanda page X.rw.md beside a listed X.md: the same slug in content/docs/rw (D-058). fumadocs lists only
+// what the English meta.json lists, so a Kinyarwanda page always has an English one.
 const twins = listed
   .filter((p) => p.src?.endsWith(".md") && existsSync(join(ROOT, p.src.replace(/\.md$/, ".rw.md"))))
-  .map((p) => ({ slug: `${p.slug}-rw`, src: p.src.replace(/\.md$/, ".rw.md"), twinOf: p.src }))
+  .map((p) => ({ slug: p.slug, lang: "rw", src: p.src.replace(/\.md$/, ".rw.md"), twinOf: p.src }))
 const entries = [...listed, ...twins]
-// one page per slug: a repeated slug would silently overwrite the earlier page's .mdx
+// one page per slug and language: a repeated slug would silently overwrite the earlier page's .mdx
 const seenSlugs = new Set()
-for (const { slug } of entries) {
-  if (seenSlugs.has(slug)) throw new Error(`sync-docs: slug "${slug}" is used twice in PAGES`)
-  seenSlugs.add(slug)
+for (const { slug, lang } of entries) {
+  if (seenSlugs.has(`${lang}:${slug}`)) throw new Error(`sync-docs: slug "${slug}" is used twice in PAGES`)
+  seenSlugs.add(`${lang}:${slug}`)
 }
-const slugByPath = new Map(entries.map((p) => [p.src ?? p.csv, p.slug]))
+const pageByPath = new Map(entries.map((p) => [p.src ?? p.csv, p]))
 
 // {{ns.key}} values: the studio generator's measurements, read only when a page uses one.
 const TOKEN_FILES = {
@@ -334,8 +342,14 @@ function escapeProse(line) {
     .join("")
 }
 
-/** Links to other study files become /docs links, links into public/ become downloads, site pages stay links, others become code. */
-function rewriteLinks(line, src) {
+/**
+ * Links to other study files become /docs links, without a language (the page adds the reader's), links into
+ * public/ become downloads, site pages stay links, others become code. A link across languages (an English guide's
+ * link to its Kinyarwanda, and a Kinyarwanda page's link back) names its language: JSX, handed to `keep` so that
+ * escapeProse leaves it alone.
+ */
+function rewriteLinks(line, page, keep) {
+  const { src } = page
   return line.replace(/(!?)\[([^\]]+)\]\(([^)\s]+)\)/g, (match, bang, text, target) => {
     if (bang) throw new Error(`${src}: put images on their own line (${target})`)
     if (/^(https?:|mailto:|#)/.test(target)) return match
@@ -343,8 +357,13 @@ function rewriteLinks(line, src) {
     if (/^\/(en\/|#|$)/.test(target)) return match
     const [path, hash] = target.split("#")
     const abs = resolveTarget(src, path)
-    const slug = slugByPath.get(toPosix(relative(ROOT, abs)))
-    if (slug) return `[${text}](/docs${slug === "index" ? "" : `/${slug}`}${hash ? `#${hash}` : ""})`
+    const to = pageByPath.get(toPosix(relative(ROOT, abs)))
+    if (to) {
+      const url = `/docs${to.slug === "index" ? "" : `/${to.slug}`}${hash ? `#${hash}` : ""}`
+      if (to.lang !== page.lang && (to.lang !== "en" || to.slug === page.slug))
+        return keep(`<a href=${attr(`/${to.lang}${url}`)} hrefLang=${attr(to.lang)}>${escapeProse(text)}</a>`)
+      return `[${text}](${url})`
+    }
     if (abs.startsWith(join(PUBLIC, "guides") + sep) && !existsSync(abs)) return `${text} (not printed yet)`
     const url = publicUrl(abs, src)
     if (url) return `[${text}](${url})`
@@ -409,7 +428,8 @@ function blockDirective(line, src) {
 
 const isDirective = (l) => /^\s*!\[[^\]]*\]\([^)]+\)\s*$/.test(l) || /^\s*\[(Table:[^\]]*|[^\]]+)\]\([^)\s]+\.(csv|glb)\)\s*$/.test(l)
 
-function fromMarkdown({ src, title, description: fixed }) {
+function fromMarkdown(page) {
+  const { src, title, description: fixed } = page
   const lines = readFileSync(join(ROOT, src), "utf8").split("\n").map((l) => tokens(l, src))
   const h1 = lines.findIndex((l) => l.startsWith("# "))
   const heading = h1 >= 0 ? lines[h1].slice(2).trim() : basename(src, ".md")
@@ -425,16 +445,18 @@ function fromMarkdown({ src, title, description: fixed }) {
   const lead = !fixed && src.startsWith("guide/") && firstText ? body.indexOf(firstText) : -1
   const leadText = lead < 0 ? "" : sentence.replace(/[*_`]/g, "").replace(/\s+/g, " ").trim()
   let inFence = false
+  const kept = []
+  const keep = (jsx) => `\u0000${kept.push(jsx) - 1}\u0000`
   const out = body.map((line, i) => {
     if (i === lead && leadText === description) return ""
     if (/^\s*(```|~~~)/.test(line)) { inFence = !inFence; return line }
     if (inFence) return line
     const block = blockDirective(line, src)
-    return block !== null ? `\n${block}\n` : escapeProse(rewriteLinks(line, src))
+    return block !== null ? `\n${block}\n` : escapeProse(rewriteLinks(line, page, keep))
   })
   return `---\ntitle: ${yaml(title ?? heading)}\ndescription: ${yaml(description)}\n---\n\n` +
     `{/* Generated by scripts/sync-docs.mjs from ${src}. Edit the source, not this file. */}\n` +
-    out.join("\n").replace(/^\n+/, "\n")
+    out.join("\n").replace(/^\n+/, "\n").replace(/\u0000(\d+)\u0000/g, (_, n) => kept[n])
 }
 
 function fromSections({ slug, title, description, sections }) {
@@ -489,8 +511,28 @@ function parity(enSrc, rwSrc) {
   return gaps
 }
 
+// Old URLs (D-058): the docs moved from /docs to /en/docs (and the Kinyarwanda pages from /docs/<slug>-rw to
+// /rw/docs/<slug>), and a renamed page keeps its old link. One map, so a redirect can't point at a page that is
+// gone: each old slug and the page it became.
+const MOVED = { studio: "studio-package", farm: "farm-today" }
+
+/** public/_redirects for Cloudflare: static rules first, the catch-all last (the first matching rule wins). */
+function redirects() {
+  const live = new Set(listed.map((p) => p.slug))
+  const rules = [["/docs", "/en/docs"]]
+  for (const [old, now] of Object.entries(MOVED)) {
+    if (!live.has(now)) throw new Error(`sync-docs: MOVED sends "${old}" to "${now}", which is not a page`)
+    if (live.has(old)) throw new Error(`sync-docs: MOVED moves "${old}", which is still a page`)
+    rules.push([`/docs/${old}`, `/en/docs/${now}`])
+  }
+  for (const { slug } of twins) rules.push([`/docs/${slug}-rw`, `/rw/docs/${slug}`])
+  rules.push(["/docs/*", "/en/docs/:splat"])
+  return "# Generated by scripts/sync-docs.mjs from MOVED. Old docs URLs and the pages they became.\n" +
+    rules.map(([from, to]) => `${from} ${to} 301`).join("\n") + "\n"
+}
+
 rmSync(OUT, { recursive: true, force: true })
-mkdirSync(OUT, { recursive: true })
+for (const lang of LANGS) mkdirSync(join(OUT, lang), { recursive: true })
 for (const page of entries) {
   let mdx = page.sections ? fromSections(page) : page.csv ? fromCsv(page) : fromMarkdown(page)
   if (page.twinOf) {
@@ -500,8 +542,10 @@ for (const page of entries) {
       mdx = mdx.replace("\n\n", `\n\n> **Behind the English page:** ${escapeProse(gaps.join("; "))}. Use the English until this is fixed.\n\n`)
     }
   }
-  writeFileSync(join(OUT, `${page.slug}.mdx`), mdx)
+  writeFileSync(join(OUT, page.lang, `${page.slug}.mdx`), mdx)
 }
-const pages = SIDEBAR.filter((s) => s.startsWith("---") || seenSlugs.has(s) || fail(s))
-writeFileSync(join(OUT, "meta.json"), JSON.stringify({ title: "Farm docs", pages }, null, 2) + "\n")
-console.log(`synced ${entries.length} pages to content/docs`)
+const pages = SIDEBAR.filter((s) => s.startsWith("---") || seenSlugs.has(`en:${s}`) || fail(s))
+// One meta.json, the English one: fumadocs builds the Kinyarwanda tree on the English pages.
+writeFileSync(join(OUT, "en", "meta.json"), JSON.stringify({ title: "Farm docs", pages }, null, 2) + "\n")
+writeFileSync(join(PUBLIC, "_redirects"), redirects())
+console.log(`synced ${listed.length} English and ${twins.length} Kinyarwanda pages to content/docs`)

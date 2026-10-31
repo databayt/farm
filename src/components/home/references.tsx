@@ -1,8 +1,12 @@
+import { localeHref } from "@/components/internationalization/href"
+import { getLocale } from "@/components/internationalization/locale"
+
 import { copy } from "./copy"
 
 // Under the 3D: an index of every page the plan links to, with each guide and its printed PDFs. Plain links,
 // no client code, so the homepage's JS budget is untouched; they don't prefetch, as the site menu's don't.
-export function References() {
+export async function References() {
+  const lang = await getLocale()
   const { title, lead, groups } = copy.references
   return (
     <section id="references" aria-labelledby="references-title" className="px-4 pt-6 pb-16 md:px-10">
@@ -20,7 +24,8 @@ export function References() {
                   <p className="text-sm font-medium">{row.name}</p>
                   <p className="text-muted-foreground mt-0.5 flex flex-wrap gap-x-3 text-sm">
                     {row.links.map((link) => (
-                      <a key={link.href} href={link.href} className="hover:text-foreground underline underline-offset-4">
+                      <a key={link.href} href={link.hrefLang ? link.href : localeHref(lang, link.href)} hrefLang={link.hrefLang}
+                        className="hover:text-foreground underline underline-offset-4">
                         {link.label}
                       </a>
                     ))}

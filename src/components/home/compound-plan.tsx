@@ -1,5 +1,7 @@
 import type { ReactNode } from "react"
 
+import { localeHref } from "@/components/internationalization/href"
+import { getLocale } from "@/components/internationalization/locale"
 import plan from "../../../public/designs/farming/data/plan.json"
 import site from "../site/site.json"
 import volleyball from "../volleyball/volleyball.json"
@@ -58,11 +60,13 @@ const label = {
 } as const
 const small = { ...label, fontSize: 0.5, fontWeight: 600 } as const
 
-// A name on the plan opens its own page: underlined on hover and keyboard focus, the browser's focus ring kept.
-function Page({ href, children }: { href?: string; children: ReactNode }) {
+// A name on the plan opens its own page, in the reader's language: underlined on hover and keyboard focus, the
+// browser's focus ring kept.
+async function Page({ href, children }: { href?: string; children: ReactNode }) {
   if (!href) return children
+  const to = localeHref(await getLocale(), href)
   return (
-    <a href={href} className="[&:focus-visible_text]:underline [&:hover_text]:underline">
+    <a href={to} className="[&:focus-visible_text]:underline [&:hover_text]:underline">
       {children}
     </a>
   )

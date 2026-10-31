@@ -5,40 +5,25 @@ import Link from "next/link"
 import { Menu, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import type { Nav } from "@/components/site/nav"
 
-// Every page of the site, in the founder's order (2026-10-28), then the docs. The homepage's header
-// (components/home/header.tsx, on the homepage and every /en page) and the docs header (site-header.tsx) open this one menu.
-export const PAGES = [
-  { href: "/en/studio", label: "Studio" },
-  { href: "/en/guest-room", label: "Guest room" },
-  { href: "/en/office", label: "Office" },
-  { href: "/en/study-room", label: "Study room" },
-  { href: "/en/galley", label: "Galley" },
-  { href: "/en/public-bathroom", label: "Public bathroom" },
-  { href: "/en/volleyball", label: "Volleyball" },
-  { href: "/en/parking", label: "Parking" },
-  { href: "/en/camp", label: "Camping" },
-  { href: "/en/bar", label: "Bar" },
-  { href: "/en/farming", label: "Farming" },
-  { href: "/en/livestock", label: "Livestock" },
-]
-export const DOCS = { href: "/docs", label: "Docs" }
-
+// Every page of the site, in the founder's order (2026-10-28, src/components/site/places.json), then the docs, in
+// the reader's language (components/site/nav.ts). The homepage's header (components/home/header.tsx, on the
+// homepage and every place page) and the docs header (site-header.tsx) open this one menu.
 // A hamburger on phones and desktops alike, opening a panel from the right. It is a native popover, so it needs
 // no dialog library: Escape, a click outside and the top layer come with it. The page you are on is underlined.
 // The links don't prefetch: opening the menu would otherwise preload every page's hero and drawings at once.
 // `full` (the homepage): a two-line trigger, and the panel covers the whole screen on every width.
 export function SiteMenu({
-  title,
-  menu = { open: "Open the menu", close: "Close the menu" },
+  nav,
   full = false,
   className,
 }: {
-  title: string
-  menu?: { open: string; close: string }
+  nav: Nav
   full?: boolean
   className?: string
 }) {
+  const { title, menu, pages, docs } = nav
   const id = React.useId()
   const panel = React.useRef<HTMLDivElement>(null)
   const [here, setHere] = React.useState("")
@@ -74,7 +59,7 @@ export function SiteMenu({
         )}
       >
         <div className={cn("flex h-(--header-height) items-center justify-between border-b px-4", full && "md:px-10")}>
-          <Link href="/" onClick={close} className="font-display text-lg font-semibold">
+          <Link href={`/${nav.lang}`} onClick={close} className="font-display text-lg font-semibold">
             {title}
           </Link>
           <button
@@ -88,13 +73,13 @@ export function SiteMenu({
           </button>
         </div>
         <nav
-          aria-label="Pages"
+          aria-label={menu.pages}
           className={cn(
             "flex flex-col px-4 py-4 text-xl font-medium tracking-tight",
             full && "mx-auto max-w-5xl py-8 text-2xl md:grid md:grid-cols-2 md:gap-x-16 md:px-10 md:py-16 md:text-4xl"
           )}
         >
-          {PAGES.map((page) => (
+          {pages.map((page) => (
             <Link
               key={page.href}
               href={page.href}
@@ -107,13 +92,13 @@ export function SiteMenu({
             </Link>
           ))}
           <Link
-            href={DOCS.href}
+            href={docs.href}
             prefetch={false}
             onClick={close}
-            aria-current={here.startsWith(DOCS.href) ? "page" : undefined}
+            aria-current={here.startsWith(docs.href) ? "page" : undefined}
             className={cn(row, "text-muted-foreground mt-4 border-t pt-4 text-base", full && "md:col-span-2 md:text-lg")}
           >
-            {DOCS.label}
+            {docs.label}
           </Link>
         </nav>
       </div>

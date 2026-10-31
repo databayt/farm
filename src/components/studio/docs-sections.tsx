@@ -1,9 +1,9 @@
-import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { type BomGroup, type BomLine, type BomSection, BomTable } from "@/components/docs/bom-table"
 import { Figure } from "@/components/docs/figure"
 import { D, degC, frw, mm, readCsv, rwf } from "@/components/studio/data"
+import { LocaleLink as Link } from "@/components/internationalization/locale-link"
 import totals from "../../../public/designs/studio/data/totals.json"
 
 // The studio's reference sections, moved off /en/studio onto its docs pages (studio-materials, studio-circuits,

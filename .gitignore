@@ -55,3 +55,4 @@ __pycache__/
 /assets/
 # product photos used as look references for the studio renders (scripts/studio/render/room.html); never committed or published
 /ikea/
+/public/_redirects

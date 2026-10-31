@@ -3,11 +3,13 @@
 // Kinyarwanda version can follow (study/website/implementation-plan.md §9).
 import type { AssetId } from "./assets"
 
-// The index under the 3D: a design page, and a guide with its Kinyarwanda twin and both printed PDFs.
-const page = (href: string) => ({ label: "Page", href })
-const guide = (slug: string) => [
+// The index under the 3D: a design page, and a guide with its Kinyarwanda and both printed PDFs. Page paths take
+// the reader's language when rendered (references.tsx); the Kinyarwanda link names its own (hrefLang).
+type RefLink = { label: string; href: string; hrefLang?: string }
+const page = (href: string): RefLink => ({ label: "Page", href })
+const guide = (slug: string): RefLink[] => [
   { label: "Guide", href: `/docs/${slug}` },
-  { label: "Kinyarwanda", href: `/docs/${slug}-rw` },
+  { label: "Kinyarwanda", href: `/rw/docs/${slug}`, hrefLang: "rw" },
   { label: "PDF", href: `/guides/${slug}.pdf` },
   { label: "PDF (RW)", href: `/guides/${slug}-rw.pdf` },
 ]
@@ -65,7 +67,7 @@ export const copy = {
       {
         title: "Buildings",
         rows: [
-          { name: "Studio", links: [page("/en/studio"), { label: "Design package", href: "/docs/studio" }] },
+          { name: "Studio", links: [page("/en/studio"), { label: "Design package", href: "/docs/studio-package" }] },
           { name: "Guest room", links: [page("/en/guest-room")] },
           { name: "Office", links: [page("/en/office")] },
           { name: "Study room", links: [page("/en/study-room")] },
@@ -103,7 +105,7 @@ export const copy = {
         title: "The farm",
         rows: [
           { name: "Start here", links: [{ label: "Guide", href: "/docs" }] },
-          { name: "The farm today", links: [{ label: "Guide", href: "/docs/farm" }] },
+          { name: "The farm today", links: [{ label: "Guide", href: "/docs/farm-today" }] },
           { name: "How it runs", links: [{ label: "Guide", href: "/docs/operations" }] },
           { name: "The film", links: [{ label: "Guide", href: "/docs/film" }] },
           { name: "Business model", links: [{ label: "Guide", href: "/docs/business-model" }] },

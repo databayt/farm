@@ -4,12 +4,13 @@ import * as React from "react"
 import Link from "next/link"
 
 import { cn } from "@/lib/utils"
-import { DOCS, SiteMenu } from "@/components/site-menu"
+import { SiteMenu } from "@/components/site-menu"
+import type { Nav } from "@/components/site/nav"
 
 // The header on the docs and the 404 (the homepage and /en/* use components/home/header.tsx): the farm's name, the
 // docs and the site menu. On a page that opens on a full-screen hero (overlay), it sits on the picture in white,
 // steps out of the way while the reader scrolls down and comes back, solid, as soon as they scroll up.
-export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
+export function SiteHeader({ nav, overlay = false }: { nav: Nav; overlay?: boolean }) {
   const ref = React.useRef<HTMLElement>(null)
 
   React.useEffect(() => {
@@ -48,13 +49,13 @@ export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
           : "sticky",
       )}
     >
-      <Link href="/" className="me-auto text-sm font-semibold">
-        Digital Farm
+      <Link href={`/${nav.lang}`} className="me-auto text-sm font-semibold">
+        {nav.title}
       </Link>
-      <Link href={DOCS.href} className="px-2 text-sm font-medium transition-opacity hover:opacity-70">
-        {DOCS.label}
+      <Link href={nav.docs.href} className="px-2 text-sm font-medium transition-opacity hover:opacity-70">
+        {nav.docs.label}
       </Link>
-      <SiteMenu title="Digital Farm" className="-me-2" />
+      <SiteMenu nav={nav} className="-me-2" />
     </header>
   )
 }

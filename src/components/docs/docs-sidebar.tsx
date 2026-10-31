@@ -8,7 +8,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronDown } from "lucide-react"
 
-import type { docsSource } from "@/lib/source"
+import type { Node, Root } from "fumadocs-core/page-tree"
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -25,7 +26,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-type TreeNode = (typeof docsSource.pageTree)["children"][number]
+type TreeNode = Node
 type Item = { url: string; name: React.ReactNode }
 type Group = { id: string; label?: React.ReactNode; items: Item[] }
 
@@ -74,7 +75,7 @@ export function DocsSidebar({
   tree,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  tree: typeof docsSource.pageTree
+  tree: Root
 }) {
   const pathname = usePathname()
   const groups = React.useMemo(() => buildGroups(tree.children), [tree])

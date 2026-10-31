@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import Link from "next/link"
+import { LocaleLink as Link } from "@/components/internationalization/locale-link"
 
 import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"

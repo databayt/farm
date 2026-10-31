@@ -1,3 +1,6 @@
+import { getLocale } from "@/components/internationalization/locale"
+import { getNav } from "@/components/site/nav"
+
 import { copy } from "./copy"
 import { Header } from "./header"
 import { Hero } from "./hero"
@@ -7,7 +10,8 @@ import { References } from "./references"
 
 // The Digital Farm homepage: the hero, then the compound in 2D and 3D, as /en/studio shows the
 // studio (D-022), and an index of every page and guide. data-theme="farm" scopes the palette in globals.css.
-export function HomeContent() {
+export async function HomeContent() {
+  const nav = await getNav(await getLocale())
   return (
     <div data-theme="farm" className="bg-background text-foreground flex flex-1 flex-col">
       <a
@@ -16,7 +20,7 @@ export function HomeContent() {
       >
         {copy.skip}
       </a>
-      <Header title={copy.hero.title} menu={copy.menu} />
+      <Header nav={nav} />
       <main>
         <Hero />
         <Plans />

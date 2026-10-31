@@ -1,10 +1,10 @@
 import type * as React from "react"
-import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { BlurImg } from "@/components/atom/blur-img"
 import { ItemRail, type RailItem } from "@/components/docs/item-rail"
+import { LocaleLink as Link } from "@/components/internationalization/locale-link"
 import { Button } from "@/components/ui/button"
 
 // The sections of every /en page, in /en/studio's pattern: a full-screen hero photo, the 2D and the 3D, then the

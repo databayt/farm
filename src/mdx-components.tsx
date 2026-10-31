@@ -21,6 +21,25 @@ import { ParkingDrainagePoints, ParkingLightingPoints, ParkingStatus } from "@/c
 import { PublicBathroomElectricPoints, PublicBathroomPlumbingPoints, PublicBathroomStatus } from "@/components/public-bathroom/docs-sections"
 import { StudyRoomElectricPoints, StudyRoomStatus } from "@/components/study-room/docs-sections"
 import { VolleyballNetPoints, VolleyballStatus } from "@/components/volleyball/docs-sections"
+import { localeHref } from "@/components/internationalization/href"
+import { getLocale } from "@/components/internationalization/locale"
+
+// Links in the docs take the reader's language (D-058): /docs/… and the site's pages become /en/… or /rw/…, so a
+// Kinyarwanda reader stays in Kinyarwanda, even on a page shown in English. A link that names its language
+// (hrefLang: a guide's link to its own translation, written by scripts/sync-docs.mjs) is left as written.
+async function DocsLink({ className, href, hrefLang, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+  const lang = await getLocale()
+  return (
+    <a
+      className={cn("font-medium underline underline-offset-4", className)}
+      href={href && !hrefLang ? localeHref(lang, href) : href}
+      hrefLang={hrefLang}
+      // generated design files download instead of opening as text
+      download={/^\/designs\/.+\.(dxf|zip|pdf|xlsx|csv|glb|json)$/.test(href ?? "") ? true : undefined}
+      {...props}
+    />
+  )
+}
 
 const mdxComponents = {
   // Allows customizing built-in components, e.g. to add styling.
@@ -81,15 +100,7 @@ const mdxComponents = {
       {...props}
     />
   ),
-  a: ({ className, href, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a
-      className={cn("font-medium underline underline-offset-4", className)}
-      href={href}
-      // generated design files download instead of opening as text
-      download={/^\/designs\/.+\.(dxf|zip|pdf|xlsx|csv|glb|json)$/.test(href ?? "") ? true : undefined}
-      {...props}
-    />
-  ),
+  a: DocsLink,
   p: ({ className, ...props }) => (
     <p
       className={cn("leading-relaxed [&:not(:first-child)]:mt-6", className)}

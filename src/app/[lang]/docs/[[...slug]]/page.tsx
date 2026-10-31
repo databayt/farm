@@ -7,31 +7,46 @@ import { findNeighbour } from "fumadocs-core/page-tree"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
 import { docsSource } from "@/lib/source"
+import { hasLocale, i18n } from "@/components/internationalization/config"
+import { getDictionary } from "@/components/internationalization/dictionaries"
 import { Button } from "@/components/ui/button"
 import { DocsCopyPage } from "@/components/docs/docs-copy-page"
 import { DocsTableOfContents } from "@/components/docs/toc"
 
-// Ported from hogwarts app/[lang]/(saas-marketing)/docs/[[...slug]]/page.tsx:
-// same layout, neighbours, copy-page and table of contents; no locale fallback.
+// Ported from hogwarts app/[lang]/(saas-marketing)/docs/[[...slug]]/page.tsx: same layout, neighbours, copy-page,
+// table of contents and English fallback (D-058).
 const ORIGIN = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
 
-export function generateStaticParams() {
-  return docsSource.generateParams()
+// The page in the reader's language. fumadocs fills /rw with the English pages not yet in Kinyarwanda; such a
+// fallback is the English file itself, shown under a notice so a link from a Kinyarwanda page never 404s.
+function resolvePage(lang: string, slug: string[] | undefined) {
+  if (!hasLocale(lang)) return null
+  const page = docsSource.getPage(slug, lang)
+  if (!page) return null
+  const english = lang === i18n.defaultLocale ? page : docsSource.getPage(slug, i18n.defaultLocale)
+  return { page, lang, fallback: lang !== i18n.defaultLocale && page.absolutePath === english?.absolutePath, english }
 }
 
-export async function generateMetadata(props: PageProps<"/docs/[[...slug]]">): Promise<Metadata> {
-  const { slug } = await props.params
-  const page = docsSource.getPage(slug)
-  if (!page) notFound()
+export function generateStaticParams({ params }: { params: { lang: string } }) {
+  return docsSource.getPages(params.lang).map((page) => ({ slug: page.slugs }))
+}
+
+export async function generateMetadata(props: PageProps<"/[lang]/docs/[[...slug]]">): Promise<Metadata> {
+  const { lang, slug } = await props.params
+  const resolved = resolvePage(lang, slug)
+  if (!resolved) notFound()
+  const { page, fallback, english } = resolved
   return {
     title: `${page.data.title} · Farm docs`,
     description: page.data.description,
+    // a page shown in English under /rw points search at the English one
+    alternates: fallback && english ? { canonical: english.url } : undefined,
   }
 }
 
-// With Partial Prefetching on, params are awaited inside <Suspense> (Next 16
-// cache-components guide); every slug is still prerendered via generateStaticParams.
-export default function DocsPage({ params }: PageProps<"/docs/[[...slug]]">) {
+// With Partial Prefetching on, params are awaited inside <Suspense> (Next 16 cache-components guide); every slug is
+// still prerendered via generateStaticParams.
+export default function DocsPage({ params }: PageProps<"/[lang]/docs/[[...slug]]">) {
   return (
     <Suspense fallback={<div className="min-h-svh" />}>
       <DocsArticle params={params} />
@@ -39,14 +54,16 @@ export default function DocsPage({ params }: PageProps<"/docs/[[...slug]]">) {
   )
 }
 
-async function DocsArticle({ params }: Pick<PageProps<"/docs/[[...slug]]">, "params">) {
-  const { slug } = await params
-  const page = docsSource.getPage(slug)
-  if (!page) notFound()
+async function DocsArticle({ params }: Pick<PageProps<"/[lang]/docs/[[...slug]]">, "params">) {
+  const { lang, slug } = await params
+  const resolved = resolvePage(lang, slug)
+  if (!resolved) notFound()
+  const { page, fallback } = resolved
+  const t = await getDictionary(resolved.lang)
 
   const doc = page.data
   const MDX = doc.body
-  const neighbours = findNeighbour(docsSource.pageTree, page.url)
+  const neighbours = findNeighbour(docsSource.getPageTree(resolved.lang), page.url)
   const raw = (await doc.getText("raw")) ?? ""
 
   return (
@@ -54,7 +71,7 @@ async function DocsArticle({ params }: Pick<PageProps<"/docs/[[...slug]]">, "par
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="h-(--top-spacing) shrink-0" />
         <div className="text-foreground mx-auto flex w-full max-w-3xl min-w-0 flex-1 flex-col gap-8 py-6 lg:py-8">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2" lang={fallback ? "en" : undefined}>
             <div className="flex items-start justify-between gap-4">
               <h1 className="scroll-m-24 text-3xl font-semibold tracking-tight">{doc.title}</h1>
               <div className="docs-nav print:hidden bg-background/80 border-border/50 fixed inset-x-0 bottom-0 isolate z-50 flex items-center gap-2 border-t px-6 py-4 backdrop-blur-sm sm:static sm:z-0 sm:border-t-0 sm:bg-transparent sm:px-0 sm:pt-1.5 sm:backdrop-blur-none">
@@ -63,14 +80,14 @@ async function DocsArticle({ params }: Pick<PageProps<"/docs/[[...slug]]">, "par
                   <Button variant="secondary" size="icon" className="extend-touch-target ms-auto size-8 shadow-none md:size-7" asChild>
                     <Link href={neighbours.previous.url}>
                       <ArrowLeft className="rtl:rotate-180" />
-                      <span className="sr-only">Previous</span>
+                      <span className="sr-only">{t.docs.previous}</span>
                     </Link>
                   </Button>
                 )}
                 {neighbours.next && (
                   <Button variant="secondary" size="icon" className="extend-touch-target size-8 shadow-none md:size-7" asChild>
                     <Link href={neighbours.next.url}>
-                      <span className="sr-only">Next</span>
+                      <span className="sr-only">{t.docs.next}</span>
                       <ArrowRight className="rtl:rotate-180" />
                     </Link>
                   </Button>
@@ -81,7 +98,12 @@ async function DocsArticle({ params }: Pick<PageProps<"/docs/[[...slug]]">, "par
               <p className="text-muted-foreground text-[1.05rem] text-balance sm:text-base">{doc.description}</p>
             )}
           </div>
-          <div className="w-full flex-1 *:data-[slot=alert]:first:mt-0">
+          {fallback && (
+            <p role="note" className="bg-muted text-muted-foreground rounded-lg px-4 py-3 text-sm">
+              {t.notice.notTranslated}
+            </p>
+          )}
+          <div lang={fallback ? "en" : undefined} className="w-full flex-1 *:data-[slot=alert]:first:mt-0">
             <MDX components={mdxComponents} />
           </div>
         </div>

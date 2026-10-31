@@ -1,7 +1,7 @@
 import type * as React from "react"
-import Link from "next/link"
 
 import { cn } from "@/lib/utils"
+import { LocaleLink as Link } from "@/components/internationalization/locale-link"
 
 // The points table behind a service, on its place's docs page, as the studio's: a row per tagged point, its anchor
 // (#pt-<id>) the target of the tag on the page's drawing, its dot the colour of the circuit or the run that feeds it.
