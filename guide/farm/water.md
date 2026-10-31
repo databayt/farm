@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31, from the studio plumbing set; nothing is me
 
 Where the farm's water comes from, how it is stored and pumped to every place, and where the waste water goes.
 
-When it happens: [the farm's execution plan](plan.md) · What a building needs from it: [the studio's plumbing](../studio/plumbing.md)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](water.rw.md) · When it happens: [the farm's execution plan](plan.md) · What a building needs from it: [the studio's plumbing](../studio/plumbing.md)
 
 ## At a glance
 

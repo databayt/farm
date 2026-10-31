@@ -4,7 +4,7 @@ Status: plan of 2026-10-31. Everything site-specific waits for the farm's locati
 
 The work the whole farm shares, in order: the location and the title, the tests, the power, the water and the septic, and the feeders to each place as it is built.
 
-The land: [the farm today](today.md), [the master plan](master-plan.md) · The shared works: [materials](materials.md), [electric](electric.md), [water](water.md) · The study's plan of 2026-10-19: [first 90 days](../../study/execution/first-90-days.md), [five-year roadmap](../../study/execution/five-year-roadmap.md)
+Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The land: [the farm today](today.md), [the master plan](master-plan.md) · The shared works: [materials](materials.md), [electric](electric.md), [water](water.md) · The study's plan of 2026-10-19: [first 90 days](../../study/execution/first-90-days.md), [five-year roadmap](../../study/execution/five-year-roadmap.md)
 
 ## At a glance
 

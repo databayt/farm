@@ -4,7 +4,7 @@ Status: placeholders of 2026-10-31: every price is an assumption until three quo
 
 What the farm's shared works need: the septic system, the water storage and the booster. The power system is chosen from quotes on [the farm's electric](electric.md).
 
-When it is needed: [the farm's execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · When it is needed: [the farm's execution plan](plan.md)
 
 ## What to buy
 

@@ -4,6 +4,8 @@ Status: provisional, 2026-10-28. Scaled from the founder's sketch; the boundary,
 
 The whole farm on one sheet: where each part goes, the trees, the paths and the services, and the rules that keep them apart.
 
+Kinyarwanda: [soma igishushanyo mbonera mu Kinyarwanda](master-plan.rw.md)
+
 ## The land
 
 | What | Size |
