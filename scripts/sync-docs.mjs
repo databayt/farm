@@ -82,16 +82,6 @@ const PAGES = [
   // components in src/components/<place>/docs-sections.tsx). Off the sidebar; each page's docs cards and tags link here.
   "---The places---",
   {
-    slug: "galley-points", title: "Galley: electric and plumbing points",
-    description: "Every socket, light, tap and drain in the galley, the pipe runs, and where the design stands.",
-    sections: [["Electric points", "GalleyElectricPoints"], ["Plumbing points", "GalleyPlumbingPoints"], ["Status", "GalleyStatus"]],
-  },
-  {
-    slug: "public-bathroom-points", title: "Public bathroom: electric and plumbing points",
-    description: "Every light, socket, tap and drain in the public bathroom, with its circuit or its pipes, and where the design stands.",
-    sections: [["Electric points", "PublicBathroomElectricPoints"], ["Plumbing points", "PublicBathroomPlumbingPoints"], ["Status", "PublicBathroomStatus"]],
-  },
-  {
     slug: "volleyball-points", title: "Volleyball: net points",
     description: "The footings, the posts, the winch, the net and the antennae, where each is and its size, and where the design stands.",
     sections: [["Net points", "VolleyballNetPoints"], ["Status", "VolleyballStatus"]],
@@ -100,11 +90,6 @@ const PAGES = [
     slug: "parking-points", title: "Parking: lighting and drainage points",
     description: "Every lamp, duct, fall, trench and pit at the way in, where each is and its size, and where the design stands.",
     sections: [["Lighting points", "ParkingLightingPoints"], ["Drainage points", "ParkingDrainagePoints"], ["Status", "ParkingStatus"]],
-  },
-  {
-    slug: "bar-points", title: "Bar: electric and plumbing points",
-    description: "Every socket, light, tap and drain in the bar, the pipe runs, and where the design stands.",
-    sections: [["Electric points", "BarElectricPoints"], ["Plumbing points", "BarPlumbingPoints"], ["Status", "BarStatus"]],
   },
   {
     slug: "farming-plan", title: "Farming: plate, calendar, water and materials",
@@ -530,6 +515,7 @@ const MOVED = {
   plumber: "studio/plumbing", "studio-pipes": "studio/plumbing",
   // each place's points page (D-057), now its Electric page with its points, circuits and plan beside it
   "guest-room-points": "guest-room/electric", "office-points": "office/electric", "study-room-points": "study-room/electric",
+  "galley-points": "galley/electric", "public-bathroom-points": "public-bathroom/electric", "bar-points": "bar/electric",
 }
 // printed guides renamed with their pages: public/guides/<old>[-rw].pdf is now <new>[-rw].pdf
 const MOVED_PDFS = { carpenter: "studio-plan", electrician: "studio-electric", plumber: "studio-plumbing", power: "farm-electric" }

@@ -1,11 +1,15 @@
 import type * as React from "react"
 
 import { circuitColour, ELECTRIC, WATER, waterColour } from "@/components/bar/data"
+import { rails } from "@/components/bar/rails"
+import { CircuitsTable } from "@/components/docs/circuits-table"
 import { PointsLead, PointsTable } from "@/components/docs/points-table"
+import { RailTable } from "@/components/docs/rail-table"
+import { RunsTable } from "@/components/docs/runs-table"
 import { runLength } from "@/components/galley/service-diagrams"
 
-// The bar's reference sections, moved off /en/bar onto /docs/bar-points as the studio's are (scripts/sync-docs.mjs
-// places them under MDX headings). Each row's id (pt-DB, pt-SV…) is where a tag on the page's electrical or plumbing
+// The bar's reference sections, on its docs pages (D-059: guide/bar/*.md embeds them; scripts/sync-docs.mjs renders
+// each as <Name />). Each row's id (pt-DB, pt-SV…) is where a tag on the page's electrical or plumbing
 // drawing links.
 
 export function BarElectricPoints(): React.JSX.Element {
@@ -30,11 +34,17 @@ export function BarPlumbingPoints(): React.JSX.Element {
   )
 }
 
-export function BarStatus(): React.JSX.Element {
-  return (
-    <p className="text-muted-foreground">
-      Design intent. Places and sizes come from bar.json: the pipe sizes until the plumber checks them, the ratings until
-      a RURA class A electrician certifies. Nothing is sourced or priced yet.
-    </p>
-  )
+// What to buy: every rail on the page, as one table (the Materials page)
+export function BarMaterials(): React.JSX.Element {
+  return <RailTable rails={rails} />
+}
+
+// The circuits behind the points (the Electric page)
+export function BarCircuits(): React.JSX.Element {
+  return <CircuitsTable circuits={ELECTRIC.circuits} />
+}
+
+// The pipe runs behind the fittings (the Plumbing page)
+export function BarRuns(): React.JSX.Element {
+  return <RunsTable runs={WATER.runs} colours={WATER.colours} />
 }

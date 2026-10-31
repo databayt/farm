@@ -1,10 +1,15 @@
 import type * as React from "react"
 
+import { CircuitsTable } from "@/components/docs/circuits-table"
 import { PointsLead, PointsTable } from "@/components/docs/points-table"
+import { RailTable } from "@/components/docs/rail-table"
+import { RunsTable } from "@/components/docs/runs-table"
 import { electricPoints, plumbingPoints } from "@/components/public-bathroom/data"
+import bath from "@/components/public-bathroom/public-bathroom.json"
+import { rails } from "@/components/public-bathroom/rails"
 
-// The public bathroom's reference sections, moved off /en/public-bathroom onto /docs/public-bathroom-points as the
-// studio's are (scripts/sync-docs.mjs places them under MDX headings). Each row's id (pt-DB, pt-SV…) is where a tag on
+// The public bathroom's reference sections, on its docs pages (D-059: guide/public-bathroom/*.md embeds them;
+// scripts/sync-docs.mjs renders each as <Name />). Each row's id (pt-DB, pt-SV…) is where a tag on
 // the page's electrical or plumbing drawing links.
 
 export function PublicBathroomElectricPoints(): React.JSX.Element {
@@ -27,12 +32,17 @@ export function PublicBathroomPlumbingPoints(): React.JSX.Element {
   )
 }
 
-export function PublicBathroomStatus(): React.JSX.Element {
-  return (
-    <p className="text-muted-foreground">
-      Design intent. Every size, run and device comes from public-bathroom.json, for the plumber and the electrician to
-      confirm; nothing is sourced or priced yet. The septic tank was sized for the two studios: the campers, the bar and
-      the fire pit must be added before it is built.
-    </p>
-  )
+// What to buy: every rail on the page, as one table (the Materials page)
+export function PublicBathroomMaterials(): React.JSX.Element {
+  return <RailTable rails={rails} />
+}
+
+// The circuits behind the points (the Electric page)
+export function PublicBathroomCircuits(): React.JSX.Element {
+  return <CircuitsTable circuits={bath.electric.circuits} />
+}
+
+// The pipe runs behind the fittings (the Plumbing page)
+export function PublicBathroomRuns(): React.JSX.Element {
+  return <RunsTable runs={bath.plumbing.runs} colours={bath.plumbing.colours} />
 }

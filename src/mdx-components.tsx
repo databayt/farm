@@ -11,14 +11,14 @@ import {
   StudioBom, StudioCircuits, StudioDownloads, StudioElectricPoints, StudioFeatures, StudioFittings, StudioPipes,
   StudioShared, StudioSteps,
 } from "@/components/studio/docs-sections"
-import { BarElectricPoints, BarPlumbingPoints, BarStatus } from "@/components/bar/docs-sections"
+import { BarCircuits, BarElectricPoints, BarMaterials, BarPlumbingPoints, BarRuns } from "@/components/bar/docs-sections"
 import { FarmingBom, FarmingCalendar, FarmingPlate, FarmingStatus, FarmingWaterPoints } from "@/components/farming/docs-sections"
-import { GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus } from "@/components/galley/docs-sections"
+import { GalleyCircuits, GalleyElectricPoints, GalleyMaterials, GalleyPlumbingPoints, GalleyRuns } from "@/components/galley/docs-sections"
 import { GuestRoomCircuits, GuestRoomElectricPoints, GuestRoomMaterials } from "@/components/guest-room/docs-sections"
 import { LivestockStatus, LivestockWaterNeed, LivestockWaterPoints } from "@/components/livestock/docs-sections"
 import { OfficeCircuits, OfficeElectricPoints, OfficeMaterials, OfficeNetworkPoints } from "@/components/office/docs-sections"
 import { ParkingDrainagePoints, ParkingLightingPoints, ParkingStatus } from "@/components/parking/docs-sections"
-import { PublicBathroomElectricPoints, PublicBathroomPlumbingPoints, PublicBathroomStatus } from "@/components/public-bathroom/docs-sections"
+import { PublicBathroomCircuits, PublicBathroomElectricPoints, PublicBathroomMaterials, PublicBathroomPlumbingPoints, PublicBathroomRuns } from "@/components/public-bathroom/docs-sections"
 import { StudyRoomCircuits, StudyRoomElectricPoints, StudyRoomMaterials } from "@/components/study-room/docs-sections"
 import { VolleyballNetPoints, VolleyballStatus } from "@/components/volleyball/docs-sections"
 import { GuestRoomPlan } from "@/components/guest-room/guest-room-plan"
@@ -224,11 +224,11 @@ const mdxComponents = {
   GuestRoomCircuits, GuestRoomElectricPoints, GuestRoomMaterials,
   OfficeCircuits, OfficeElectricPoints, OfficeMaterials, OfficeNetworkPoints,
   StudyRoomCircuits, StudyRoomElectricPoints, StudyRoomMaterials,
-  GalleyElectricPoints, GalleyPlumbingPoints, GalleyStatus,
-  PublicBathroomElectricPoints, PublicBathroomPlumbingPoints, PublicBathroomStatus,
+  GalleyCircuits, GalleyElectricPoints, GalleyMaterials, GalleyPlumbingPoints, GalleyRuns,
+  PublicBathroomCircuits, PublicBathroomElectricPoints, PublicBathroomMaterials, PublicBathroomPlumbingPoints, PublicBathroomRuns,
   VolleyballNetPoints, VolleyballStatus,
   ParkingLightingPoints, ParkingDrainagePoints, ParkingStatus,
-  BarElectricPoints, BarPlumbingPoints, BarStatus,
+  BarCircuits, BarElectricPoints, BarMaterials, BarPlumbingPoints, BarRuns,
   FarmingWaterPoints, FarmingPlate, FarmingCalendar, FarmingBom, FarmingStatus,
   LivestockWaterPoints, LivestockWaterNeed, LivestockStatus,
   // each place's 2D, for its execution plan

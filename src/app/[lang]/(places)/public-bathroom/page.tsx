@@ -1,20 +1,20 @@
 import type { Metadata } from "next"
 import { LocaleLink as Link } from "@/components/internationalization/locale-link"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
+import { electricRail, fixturesRail, plumbingRail } from "@/components/public-bathroom/rails"
 import { D, info } from "@/components/public-bathroom/data"
 import { PublicBathroomPlan } from "@/components/public-bathroom/public-bathroom-plan"
-import bath from "@/components/public-bathroom/public-bathroom.json"
-import { BathPipeDiagram, BathWiringDiagram, runs } from "@/components/public-bathroom/services"
+import { BathPipeDiagram, BathWiringDiagram } from "@/components/public-bathroom/services"
 import electricTags from "../../../../../public/designs/public-bathroom/render/electric-tags.json"
 import plumbingTags from "../../../../../public/designs/public-bathroom/render/plumbing-tags.json"
 import topPieces from "../../../../../public/designs/public-bathroom/render/top-pieces.json"
 
 // The public bathroom, in /en/studio's pattern: the hero, the 2D and the 3D, then how it is built, its fixtures, its two
 // services, Electric and Plumbing, and the docs cards; the points tables and the status are on
-// /docs/public-bathroom-points. Every drawing reads src/components/public-bathroom/public-bathroom.json:
+// its docs pages (/docs/public-bathroom). Every drawing reads src/components/public-bathroom/public-bathroom.json:
 // the teal 20 ft container on its stone plinth beside the galley, one door and two high windows toward the courtyard;
 // inside, the founder's two toilet rooms, two hand basins and a urinal (D-022). Every size, run and device is an
 // assumption [A]; nothing is sourced or priced yet, so no card names a shop or a price.
@@ -24,68 +24,12 @@ export const metadata: Metadata = {
   description: "Two toilet rooms, a urinal and two hand basins in a teal container by the courtyard, for the camp, the bar lounge and the fire pit, at the Digital Farm near Kigali.",
 }
 
-const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
-const { toilets: TO, basins: BA, urinal: UR, cupboard: CU, passage: PA, towels: TW, plumbing: PL, electric: EL } = bath
-
-// The Fixtures rail: each piece rendered on its own by public-bathroom.html?item=<id> (the 3D view's own meshes)
-function fixturesRail() {
-  const c = TO.wc.cistern
-  return railCards(`${D}/render/fixtures`, [
-    { id: "wc", title: "WCs × 2", size: `Floor-standing, close-coupled cistern ${mm(c.w)} × ${mm(c.d)} mm, ${mm(c.h)} mm high; ${mm(TO.wc.out)} mm into the room, seat at ${mm(TO.wc.seat)} mm`,
-      note: "One against each toilet room's back wall, facing the door, with a soft-close seat and a dual-flush button." },
-    { id: "basin", title: "Basin counter", size: `${(BA.x1 - BA.x0).toFixed(2)} × ${BA.d.toFixed(2)} m, top at ${BA.top.toFixed(2)} m; two bowls`,
-      note: "Two white bowls on a Medium Oak counter on black steel brackets, open below so the floor washes clean; a push tap behind each bowl." },
-    { id: "urinal", title: "Urinal", size: `${mm(UR.w)} mm wide, rim at ${mm(UR.rim)} mm, ${mm(UR.out)} mm from the wall`,
-      note: "In its own room in the row, between the toilet rooms and the basins, its flush valve above it, so nobody at the basins sees it." },
-    { id: "mirror", title: "Mirror", size: `${(BA.mirror.x1 - BA.mirror.x0).toFixed(2)} × ${(BA.mirror.y1 - BA.mirror.y0).toFixed(2)} m`,
-      note: "Over the counter, in a thin black frame." },
-    { id: "soap", title: "Soap dispenser", size: "About 100 × 80 × 170 mm", note: "One between the two bowls." },
-    { id: "towels", title: "Paper towels and bin", size: `Dispenser ${mm(TW.w)} mm wide; lidded bin Ø ${mm(TW.bin * 2)} mm, 0.5 m high`,
-      note: "On the east end wall beside the counter." },
-    { id: "roll", title: "Roll holders × 2", size: "One roll, on the wall beside each WC", note: `About ${mm(TO.roll.at)} mm above the floor.` },
-    { id: "cupboard", title: "Cleaner's cupboard", size: `${(CU.x1 - CU.x0).toFixed(2)} × ${(PA.y1 - PA.y0).toFixed(2)} m, floor to ceiling`,
-      where: "Built in the workshop, like the studio's units", note: "At the corridor's end: a mop and bucket below, shelves of paper, soap and cleaning things above, the stop valve and meter low inside." },
-  ])
-}
-
-// The Plumbing rail: each fitting on its own (public-bathroom.html?item=<id>), then the pipe, its metres measured off the runs
-function plumbingRail() {
-  const metres = (re: RegExp) => {
-    const by = new Map<number, number>()
-    for (const r of runs.filter((x) => re.test(x.system))) by.set(r.dn, (by.get(r.dn) ?? 0) + r.m)
-    return [...by].sort((a, b) => b[0] - a[0]).map(([dn, m]) => `${m.toFixed(1)} m of DN${dn}`).join(", ")
-  }
-  const f = Object.fromEntries(PL.fittings.map((x) => [x.point, x]))
-  return railCards(`${D}/render/plumbing`, [
-    { id: "meter", title: "Stop valve, filter and meter", size: `${f.SV.size}, on the main`, note: `SV · ${f.SV.what}.` },
-    { id: "pushtap", title: "Push taps × 2", size: "Cold, a push button that closes itself", note: "BT1, BT2 · so no tap is left running." },
-    { id: "flushvalve", title: "Urinal flush valve", size: "A timed push button on a 15 mm feed", note: `UV · ${f.UV.what}.` },
-    { id: "floordrain", title: "Floor drain", size: f.FD.size, note: `FD · ${f.FD.what}, so the lobby can be washed down.` },
-    { id: "chamber", title: "Inspection chamber", size: f.IC1.size, note: `IC1 · ${f.IC1.what}.` },
-    { id: "ppr", title: "PP-R supply pipe", size: `${metres(/^cold$/)}, PN20, welded joints`, note: "In the linings 300 mm above the floor, then straight up to each outlet." },
-    { id: "upvc", title: "uPVC drain pipe", size: metres(/^(soil|waste)$/), note: "Under the floor and through the plinth, each run falling at least 1:40, a rodding eye at every bend." },
-    { id: "vent", title: "Vent and its cage", size: metres(/^vent$/), note: "V1 · up the back wall outside, to 900 mm above the roof." },
-  ])
-}
-
-// The Electric rail: each device on its own (public-bathroom.html?item=<id>)
-function electricRail() {
-  const n = EL.points.filter((p) => p.model === "light").length
-  return railCards(`${D}/render/electric`, [
-    { id: "board", title: "Unit board", size: EL.board.size, note: `DB · ${EL.board.what}.` },
-    { id: "light", title: `Ceiling lights × ${n}`, size: "Ø 300 mm, a motion sensor in the middle", note: "L1–L5 · each room lights when someone walks in and goes dark a few minutes after." },
-    { id: "fan", title: "Extract fan", size: `Ø ${mm(UR.fan.r * 2)} mm grille`, note: "F1 · in the urinal room, which has no window; it runs with the light and 15 minutes after." },
-    { id: "socket", title: "Socket", size: "Double, 146 × 86 mm", note: "P1 · for the cleaner, by the cupboard." },
-    { id: "walllight", title: "Light over the door", size: "About 180 × 140 mm, IP65", note: "L6 · outside, on with the path lights from 18:00." },
-  ])
-}
-
-// The bathroom's own docs page first, as the studio's are, then the guides behind its services.
+// The public bathroom's docs pages, as the docs sidebar groups them (D-059), linked from the end of this page.
 const DOCS = [
-  { href: "/docs/public-bathroom-points", title: "Electric and plumbing points", text: "Every light, socket, tap and drain on the drawings above, with its circuit or its pipes, and where the design stands." },
-  { href: "/docs/electrician", title: "Electrician's guide", text: "Boards, RCBOs, earthing and the tests, in the studio's pattern." },
-  { href: "/docs/plumber", title: "Plumber's guide", text: "The farm's pipe conventions, the tests before the walls close, and the septic tank's rules." },
-  { href: "/docs/power", title: "Power", text: "Grid, solar or both: the site board this bathroom is fed from, and sun for hot water." },
+  { href: "/docs/public-bathroom", title: "Execution plan", text: "Every step of building the bathroom, the septic sized for its users first, from the survey to the first guest." },
+  { href: "/docs/public-bathroom/materials", title: "Materials", text: "The fixtures, each electric device and each plumbing part, with its size, where to buy it and its cost." },
+  { href: "/docs/public-bathroom/electric", title: "Electric", text: "The board and its four circuits, the first and second fix, the tests and every light, fan and socket." },
+  { href: "/docs/public-bathroom/plumbing", title: "Plumbing", text: "The supply, the drains and the vent to the septic tank, the 10 bar test, and every run and fitting." },
 ]
 
 export default function PublicBathroomPage() {
@@ -148,11 +92,11 @@ export default function PublicBathroomPage() {
           dusk with the lights on (render/electric-real.webp), then each device. public-bathroom.html?view=electric. */}
       <ServiceSection id="electrical" title="Electric"
         diagram={<BathWiringDiagram />}
-        figure={<TaggedFigure table="/docs/public-bathroom-points" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags} info={info}
+        figure={<TaggedFigure table="/docs/public-bathroom/electric" src={`${D}/render/electric-line.png`} aspect={electricTags.aspect} tags={electricTags.tags} info={info}
           alt="Line drawing of the bathroom from the courtyard, faint, with every device dark and every cable route: the unit board on the passage's back wall, blue runs up into the ceiling and across to a round light in each toilet room, the passage, the lobby and the urinal room, and down to the extract fan; another blue run to the front wall over the door; an orange run down to the cleaner's socket." />}
         note={<>
           Every run goes up into the ceiling void, along it and straight down to its device. Each tag opens its row in the{" "}
-          <Link href="/docs/public-bathroom-points#electric-points" className="underline underline-offset-4">points table</Link>. Outside the drawing: the light over
+          <Link href="/docs/public-bathroom/electric#points" className="underline underline-offset-4">points table</Link>. Outside the drawing: the light over
           the door (L6) on the front wall, which the drawing leaves off, and the earth rod (E1) in a pit behind the back
           wall below the board. The board&rsquo;s feeder comes from the farm&rsquo;s site board, sized when that is designed.
         </>}
@@ -167,12 +111,12 @@ export default function PublicBathroomPage() {
           public-bathroom.html?view=plumbing and ?item=. */}
       <ServiceSection id="plumbing" title="Plumbing"
         diagram={<BathPipeDiagram />}
-        figure={<TaggedFigure table="/docs/public-bathroom-points" src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags} info={info}
+        figure={<TaggedFigure table="/docs/public-bathroom/plumbing" src={`${D}/render/plumbing-line.png`} aspect={plumbingTags.aspect} tags={plumbingTags.tags} info={info}
           alt="Line drawing of the bathroom from the courtyard, faint, with its fittings dark and every pipe run: cold in blue from the stop valve in the cleaner's cupboard along the back wall and up to the two WC cisterns, the two basin taps and the urinal's flush valve; the drains in brown under the floor, the WCs' soil run and the lobby's waste run leaving through the back of the plinth for the inspection chamber; the vent in grey up the back wall." />}
         note={<>
           Supplies run in the linings, then straight up to each outlet; drains run under the floor in the plinth. A run is
           dashed where a wall, the floor or the plinth hides it. Each tag opens its row in the{" "}
-          <Link href="/docs/public-bathroom-points#plumbing-points" className="underline underline-offset-4">points table</Link>. Behind the back wall, off the
+          <Link href="/docs/public-bathroom/plumbing#points" className="underline underline-offset-4">points table</Link>. Behind the back wall, off the
           floor: IC1 takes both runs, and S1 carries them to the farm&rsquo;s septic tank and soakaway, at least 50 m from
           the borehole. That tank was sized for the two studios; the campers, the bar and the fire pit must be added
           before it is built. Cold only: a shower, should the founder add one, would bring the solar water heater the
@@ -183,7 +127,7 @@ export default function PublicBathroomPage() {
           alt: "The same view rendered with the floor, the wall tiles and the plinth see-through: the brown drains under the toilet rooms and the lobby, from each WC, the basins, the floor drain and the urinal, out through the back; the blue supply along the back wall and up to the cisterns, the taps and the urinal's valve; the grey vent rising behind the back wall." }}
         rail={plumbingRail()} />
 
-      <DocsSection cards={DOCS} />
+      <DocsSection cards={DOCS} ownPlan />
     </main>
   )
 }

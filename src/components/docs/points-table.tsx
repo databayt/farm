@@ -23,13 +23,14 @@ export function PointsLead({ count, href, drawing, children }: {
 export type PointsColumn = { label: string; end?: boolean; muted?: boolean }
 export type PointsRow = { id: string; colour?: string; cells: React.ReactNode[] }
 
-export function PointsTable({ columns, rows }: { columns: PointsColumn[]; rows: PointsRow[] }): React.JSX.Element {
+// `first` names the id column: "Point" for the points, "Run" for a place's pipe runs
+export function PointsTable({ columns, rows, first = "Point" }: { columns: PointsColumn[]; rows: PointsRow[]; first?: string }): React.JSX.Element {
   return (
     <div className="mt-6 overflow-x-auto rounded-xl border">
       <table className="w-full text-sm">
         <thead className="text-muted-foreground bg-muted/40">
           <tr>
-            {[{ label: "Point" }, ...columns].map((c: PointsColumn) => (
+            {[{ label: first }, ...columns].map((c: PointsColumn) => (
               <th key={c.label} className={cn("px-3 py-2 font-medium whitespace-nowrap", c.end ? "text-end" : "text-start")}>{c.label}</th>
             ))}
           </tr>
