@@ -18,16 +18,18 @@ Live: https://farm.databayt.org in English and Kinyarwanda (D-058; the Kinyarwan
 | Studios (2) | the carpenter on site; the Day 1 survey taken 2026-10-31 | revision B from the survey, then the floor, battens, first fix, foam | a spray-foam contractor |
 | Guest rooms (3) | the joined 40 ft pair, gutted | strip to the steel, find the leak, three en-suite rooms (D-061) | the block's survey |
 | Office | a lit 20 ft unit with a desk | the L sofa and the big desk | which equipment is already owned |
-| Study room | not on site yet [U] | a long table for eight and a screen | the screen: 65 or 86 inches |
-| Galley | not on site yet [U] | the worktop and the cooking line | LPG or electric (D-062 advises LPG) |
+| Study room | not on site yet [U] | a long table for eight and a 65-inch screen (D-065) | nothing |
+| Galley | not on site yet [U] | the worktop and an LPG cooking line, its cylinders in a cage outside (D-065) | an LPG installer |
 | Public bathroom | not on site yet [U] | one row against the back wall (D-060) | the septic sized for its users |
-| Bar | the red kiosk, its hatch framed | the counters, the back bar, the deck | a coffee bar or the cigar lounge (D-028) |
+| Bar | the red kiosk, its hatch framed | the work counter, the back bar, the deck and its lounge (D-065) | which coffee machine |
 | Camp | working: ten tents, the fire pit | furnish the pitches | nothing |
 | Volleyball | a net on the lawn | level, the post footings, the lines | where the court stands |
-| Parking | the gate and the apron | the bays, the lights | pavers or gravel; cabled lights or solar |
+| Parking | the gate and the apron | gravel bays in timber, solar lights, no trench (D-065) | the light for bays 1 and 2, under a tree |
 | Field | not started | soil and water tests, then 60 beds | the flat foot of the hill or terraces |
 | Livestock | not started | registration, a vet, the fence and the water | Rift Valley fever lifted; the vet's view of the shed |
 | The farm | the grid, mains and a borehole reported | the borehole test, the septic, the power | the pin or the land-title UPI |
+
+The bar's and the parking's hero images still show their old designs (stools, grass pavers) until they are made again; the homepage's 3D still draws them too.
 
 ## Still open
 
