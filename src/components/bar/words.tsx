@@ -19,7 +19,7 @@ const en = {
   },
   plan: {
     title: "Plan: a 20 ft container 6,058 by 2,438 mm on a stone plinth, a 2,600 mm hatch in the courtyard wall with the flap propped out over a timber counter and five stools on a deck; inside, a work counter under the hatch with a cupboard, two fridges, a sink and drawers, a back bar with the coffee machine, the juicer and fruit crates under three shelves, a tall store cupboard, and the cargo doors at the north end as the way in.",
-    labels: { fridges: "FRIDGES", sink: "SINK", coffee: "COFFEE", juice: "JUICE", store: "STORE", door: "DOOR", bar: "BAR", counter: "COUNTER", deck: "DECK" },
+    labels: { fridges: "FRIDGES", sink: "SINK", coffee: "COFFEE", juice: "JUICE", store: "STORE", door: "DOOR", bar: "BAR", counter: "COUNTER", deck: "DECK", backBar: "BACK BAR", wayIn: "WAY IN", hatch: "hatch", doors: "doors" },
   },
   model: {
     lineAlt: "Line drawing of the bar from the courtyard with the roof off: the container on its plinth, the flap propped open over the hatch, the counter and five stools on the deck, and inside the back bar with the coffee machine, the juicer, fruit crates and three shelves of cups, jars and bottles.",
@@ -121,7 +121,7 @@ const rw: typeof en = {
   },
   plan: {
     title: "Igishushanyo: ikontineri ya metero 6 (20 ft), mm 6,058 kuri 2,438, ku musingi w'amabuye; idirishya rya mm 2,600 mu rukuta rureba urugo, umupfundikizo waryo uzamuwe hejuru ya kawunta y'imbaho n'intebe eshanu ku rubaho; imbere, kawunta y'akazi munsi y'idirishya ifite akabati, firigo ebyiri, lavabo n'utubati dukururwa, kawunta y'inyuma ifite imashini y'ikawa, imashini y'imitobe n'udusanduku tw'imbuto munsi y'utubati dutatu, akabati kirekire ko kubikamo, n'inzugi z'ikontineri ku ruhande rw'amajyaruguru ari ho binjirira.",
-    labels: { fridges: "FIRIGO", sink: "LAVABO", coffee: "IKAWA", juice: "UMUTOBE", store: "UBUBIKO", door: "URUGI", bar: "AKABARI", counter: "KAWUNTA", deck: "URUBAHO" },
+    labels: { fridges: "FIRIGO", sink: "LAVABO", coffee: "IKAWA", juice: "UMUTOBE", store: "UBUBIKO", door: "URUGI", bar: "AKABARI", counter: "KAWUNTA", deck: "URUBAHO", backBar: "KAWUNTA Y'INYUMA", wayIn: "AHO BINJIRIRA", hatch: "idirishya", doors: "inzugi" },
   },
   model: {
     lineAlt: "Igishushanyo cy'imirongo cy'akabari kirebwa uturutse ku rugo, igisenge cyakuweho: ikontineri ku musingi wayo, umupfundikizo uzamuwe hejuru y'idirishya, kawunta n'intebe eshanu ku rubaho, n'imbere kawunta y'inyuma ifite imashini y'ikawa, imashini y'imitobe, udusanduku tw'imbuto n'utubati dutatu turiho ibikombe, ibibindi n'amacupa.",
