@@ -6,10 +6,10 @@ import { PointsLead, PointsTable } from "@/components/docs/points-table"
 import { crops, D, WATER_POINTS } from "@/components/farming/data"
 import plan from "../../../public/designs/farming/data/plan.json"
 
-// The field's reference sections, moved off /en/farming onto /docs/farming-plan as the studio's are
-// (scripts/sync-docs.mjs places them under MDX headings): the water points (each row's id, pt-M1, pt-V1…, is where a tag
-// on the page's water drawing links), what the galley needs, the planting calendar, the bill of materials and the
-// status. Every number is the generator's (scripts/site/farming.mjs).
+// The field's reference sections, on its docs pages (D-059: guide/farming/*.md embeds them; scripts/sync-docs.mjs
+// renders each as <Name />): the water points (each row's id, pt-M1, pt-V1…, is where a tag on the page's water drawing
+// links), what the galley needs, the planting calendar and the bill of materials. Every number is the generator's
+// (scripts/site/farming.mjs).
 
 export function FarmingWaterPoints(): React.JSX.Element {
   return (
@@ -150,14 +150,5 @@ export function FarmingBom(): React.JSX.Element {
         ))}
       </p>
     </>
-  )
-}
-
-export function FarmingStatus(): React.JSX.Element {
-  return (
-    <p className="text-muted-foreground">
-      Preliminary. The soil, the water and the field&rsquo;s size are not measured yet: the zone follows the
-      provisional master plan, the yields are planning figures and the plate is assumed until the cook writes the menu.
-    </p>
   )
 }

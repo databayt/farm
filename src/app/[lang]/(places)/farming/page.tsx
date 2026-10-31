@@ -16,7 +16,7 @@ import waterTags from "../../../../../public/designs/farming/render/water-tags.j
 
 // The vegetable field, in /en/studio's pattern: the hero, the field's 2D and 3D and the nursery's, the field's build-up,
 // the crops and Water, then the docs cards; what the galley needs, the planting calendar, the water points, the bill of
-// materials and the status are on /docs/farming-plan. It grows every vegetable the galley needs to feed the farm's
+// materials are on its docs pages (/docs/farming). It grows every vegetable the galley needs to feed the farm's
 // guests (founder, 2026-10-28). Every number comes from scripts/site/farming.mjs, which sizes the beds to a full
 // house every day from src/components/farming/farming.json; the facts and sources are guide/grow/vegetables.md.
 
@@ -61,12 +61,11 @@ function waterRail(): RailItem[] {
   ])
 }
 
-// The field's own docs page first, as the studio's are, then the guides behind the page.
+// The farming's docs pages, as the docs sidebar groups them (D-059), linked from the end of this page.
 const DOCS = [
-  { href: "/docs/farming-plan", title: "Plate, calendar and materials", text: "What the galley needs, the planting calendar, the water points, the bill of materials, and where the plan stands." },
-  { href: "/docs/vegetables", title: "The field guide", text: "The first month step by step, the crops, water and pests, in English and Kinyarwanda." },
-  { href: "/docs/water-and-soil", title: "Water and soil", text: "The soil and water tests, the borehole's flow and what the field can drink." },
-  { href: "/docs/irrigation-automation", title: "Irrigation control", text: "Manual valves and meters first; what a monitoring kit would add after planting." },
+  { href: "/docs/farming", title: "Execution plan", text: "The seasons, the beds, the crops and the first month step by step, from the soil test to the first harvest." },
+  { href: "/docs/farming/materials", title: "Materials", text: "The bill of materials for the first beds: the ground, the water, the fence, the nursery, the seed and the tools." },
+  { href: "/docs/farming/water", title: "Water", text: "How the drip is laid from the farm's tank to every bed, what the field drinks, and every point." },
 ]
 
 export default function FarmingPage() {
@@ -141,14 +140,14 @@ export default function FarmingPage() {
           planting (render/water-real.webp), then each part on its own. All from farming.html?view=water and ?part=. */}
       <ServiceSection id="water" title="Water"
         diagram={<WaterDiagram irrigation={I} perBlock={10} dry={[plan.water.dryLow, plan.water.dryHigh]} />}
-        figure={<TaggedFigure table="/docs/farming-plan" src={`${D}/render/water-line.png`} aspect={waterTags.aspect} tags={waterTags.tags}
+        figure={<TaggedFigure table="/docs/farming/water" src={`${D}/render/water-line.png`} aspect={waterTags.aspect} tags={waterTags.tags}
           alt="Line drawing of the whole field from its gate end with the crops left out: the main in dark blue coming in through the gate, the supply in blue along the main path and the aisles, an orange valve where each block's header leaves it, the headers across the bed ends, and two light-blue drip lines down every planted bed."
           info={Object.fromEntries(WATER_POINTS.map((p) => [p.id, { label: p.what, colour: p.colour }]))} />}
         note={<>
           The main comes in through the gate from the farm&rsquo;s tank and pump by the compound (T, with the disc filter F,
           off the drawing). Inside, the supply runs along the main path and up and down each column&rsquo;s end; every block
           has its own valve, so a short flow waters one block at a time. Each tag opens its row in the{" "}
-          <Link href="/docs/farming-plan#water-points" className="underline underline-offset-4">points table</Link>. Water at dawn or dusk, mulch the
+          <Link href="/docs/farming/water#points" className="underline underline-offset-4">points table</Link>. Water at dawn or dusk, mulch the
           beds with dry grass, and plant season C only to the flow the borehole test proves. Under 1 ha of irrigation needs no permit.
         </>}
         real={{ src: `${D}/render/water-real.webp`, width: 2400, height: 1100,
@@ -156,7 +155,7 @@ export default function FarmingPage() {
           alt: "The same view rendered: dark compost beds on sandy paths, two black drip lines down each planted bed, the black supply along the main path and the bed ends with orange valve boxes, the main coming in at the gate, the fence, and the fruit row behind." }}
         rail={waterRail()} />
 
-      <DocsSection cards={DOCS} />
+      <DocsSection cards={DOCS} ownPlan />
     </main>
   )
 }

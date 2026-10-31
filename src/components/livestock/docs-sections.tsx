@@ -2,11 +2,13 @@ import type * as React from "react"
 
 import { frw } from "@/lib/format"
 import { PointsLead, PointsTable } from "@/components/docs/points-table"
+import { RailTable } from "@/components/docs/rail-table"
 import { days, herd, high, low, NEED, peak, POINT_COLOUR, r0, ROWS, tank } from "@/components/livestock/data"
 import livestock from "@/components/livestock/livestock.json"
+import { rails } from "@/components/livestock/rails"
 
-// The yard's reference sections, moved off /en/livestock onto /docs/livestock-points as the studio's are
-// (scripts/sync-docs.mjs places them under MDX headings). Each row's id (pt-T, pt-W1…) is where a tag on the page's
+// The yard's reference sections, on its docs pages (D-059: guide/livestock/*.md embeds them; scripts/sync-docs.mjs
+// renders each as <Name />). Each row's id (pt-T, pt-W1…) is where a tag on the page's
 // water drawing links; what the yard drinks is an estimate [E], its method under the table.
 
 const { water: WV, friends: FR } = livestock
@@ -80,13 +82,7 @@ export function LivestockWaterNeed(): React.JSX.Element {
   )
 }
 
-export function LivestockStatus(): React.JSX.Element {
-  return (
-    <p className="text-muted-foreground">
-      Design intent. Every size in livestock.json is an assumption until the farm&rsquo;s vet checks it, and so are the
-      sheep&rsquo;s, the dogs&rsquo;, the cats&rsquo; and the doves&rsquo; water needs (AS-29). Where the farm&rsquo;s line
-      comes from waits for the farm&rsquo;s water plan and the borehole test, and water for livestock on a farm needs a
-      water use permit (LOC-04).
-    </p>
-  )
+// What to buy: every rail on the page, as one table (the Materials page)
+export function LivestockMaterials(): React.JSX.Element {
+  return <RailTable rails={rails} />
 }

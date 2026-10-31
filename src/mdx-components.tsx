@@ -12,10 +12,10 @@ import {
   StudioShared, StudioSteps,
 } from "@/components/studio/docs-sections"
 import { BarCircuits, BarElectricPoints, BarMaterials, BarPlumbingPoints, BarRuns } from "@/components/bar/docs-sections"
-import { FarmingBom, FarmingCalendar, FarmingPlate, FarmingStatus, FarmingWaterPoints } from "@/components/farming/docs-sections"
+import { FarmingBom, FarmingCalendar, FarmingPlate, FarmingWaterPoints } from "@/components/farming/docs-sections"
 import { GalleyCircuits, GalleyElectricPoints, GalleyMaterials, GalleyPlumbingPoints, GalleyRuns } from "@/components/galley/docs-sections"
 import { GuestRoomCircuits, GuestRoomElectricPoints, GuestRoomMaterials } from "@/components/guest-room/docs-sections"
-import { LivestockStatus, LivestockWaterNeed, LivestockWaterPoints } from "@/components/livestock/docs-sections"
+import { LivestockMaterials, LivestockWaterNeed, LivestockWaterPoints } from "@/components/livestock/docs-sections"
 import { OfficeCircuits, OfficeElectricPoints, OfficeMaterials, OfficeNetworkPoints } from "@/components/office/docs-sections"
 import { CampMaterials } from "@/components/camp/docs-sections"
 import { ParkingDrainagePoints, ParkingLightingPoints, ParkingMaterials } from "@/components/parking/docs-sections"
@@ -231,8 +231,8 @@ const mdxComponents = {
   ParkingLightingPoints, ParkingDrainagePoints, ParkingMaterials,
   CampMaterials,
   BarCircuits, BarElectricPoints, BarMaterials, BarPlumbingPoints, BarRuns,
-  FarmingWaterPoints, FarmingPlate, FarmingCalendar, FarmingBom, FarmingStatus,
-  LivestockWaterPoints, LivestockWaterNeed, LivestockStatus,
+  FarmingWaterPoints, FarmingPlate, FarmingCalendar, FarmingBom,
+  LivestockWaterPoints, LivestockWaterNeed, LivestockMaterials,
   // each place's 2D, for its execution plan
   GuestRoomPlan: sheet(GuestRoomPlan),
   OfficePlan: sheet(OfficePlan),

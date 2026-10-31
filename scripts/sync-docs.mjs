@@ -20,7 +20,8 @@
 //
 // guide/ holds the maintained execution guides. In them:
 //   {{studio.l}}  a value from public/designs/studio/data/dims.json (the studio generator), {{site.*}} from
-//                 public/designs/site/site-dims.json (scripts/site/master-plan.mjs); unknown keys fail
+//                 public/designs/site/site-dims.json (scripts/site/master-plan.mjs), {{farming.*}} from the field's
+//                 public/designs/farming/data/plan.json (scripts/site/farming.mjs); unknown keys fail
 //   X.rw.md       beside X.md is its Kinyarwanda (D-058): the same page at /rw/docs/<slug>, checked against the
 //                 English for the same sections, steps, numbers and links
 //
@@ -38,13 +39,10 @@ const PUBLIC = join(ROOT, "public")
 // the site's languages, as src/components/internationalization/config.ts lists them
 const LANGS = ["en", "rw"]
 
-// Every docs page, grouped by kind ("---" lines are labels for the reader of this file). The sidebar
-// shows only SIDEBAR, below; the rest render off the sidebar, like the Kinyarwanda twins.
+// The docs pages beside the places' (which come from guide/<place>/, below), grouped by kind ("---" lines are labels
+// for the reader of this file). They render off the sidebar, reached from the places' pages and Start here.
 const PAGES = [
   { slug: "index", src: "guide/start.md", title: "Start here" },
-  "---Grow---",
-  { slug: "vegetables", src: "guide/grow/vegetables.md" },
-  { slug: "livestock", src: "guide/grow/livestock.md" },
   "---How the farm runs---",
   { slug: "operations", src: "guide/operations.md" },
   { slug: "film", src: "guide/film.md" },
@@ -81,17 +79,6 @@ const PAGES = [
   // Every other place's reference, moved off its /en page as the studio's was: its points tables and status (the
   // components in src/components/<place>/docs-sections.tsx). Off the sidebar; each page's docs cards and tags link here.
   "---The places---",
-  {
-    slug: "farming-plan", title: "Farming: plate, calendar, water and materials",
-    description: "What the galley needs from the field, the planting calendar, the drip's water points, the bill of materials to start, and where the plan stands.",
-    sections: [["Water points", "FarmingWaterPoints"], ["What the galley needs", "FarmingPlate"],
-      ["Planting so the harvest never stops", "FarmingCalendar"], ["Bill of materials", "FarmingBom"], ["Status", "FarmingStatus"]],
-  },
-  {
-    slug: "livestock-points", title: "Livestock: water points and needs",
-    description: "Every valve, line and trough in the yard, what the herd and the farm friends drink a day, and where the design stands.",
-    sections: [["Water points", "LivestockWaterPoints"], ["What the yard drinks", "LivestockWaterNeed"], ["Status", "LivestockStatus"]],
-  },
   "---Reference---",
   { slug: "decision-log", src: "study/execution/decision-log.md" },
   { slug: "assumptions", src: "study/registers/assumptions.md", description: "The assumptions that shape the study and the model, with how each will be validated." },
@@ -170,15 +157,6 @@ const PAGES = [
   { slug: "website-render-brief", src: "study/website/render-brief.md" },
 ]
 
-// What the sidebar shows: this month's work only (November 2026). Every page in PAGES still renders at
-// its /docs URL and stays linked from the guides and Start here; add a slug back when it is needed again.
-const SIDEBAR = [
-  "index",
-  "---Start the field---",
-  "vegetables",
-  "livestock",
-]
-const fail = (slug) => { throw new Error(`sync-docs: SIDEBAR lists "${slug}", which is not in PAGES`) }
 
 // The docs by place (D-059): every place of the site menu, then the farm as a whole, is a folder of the same pages,
 // each from guide/<place>/<kind>.md: its execution plan (plan.md, the folder's index at /docs/<place>), its
@@ -224,13 +202,15 @@ const pageByPath = new Map(entries.map((p) => [p.src ?? p.csv, p]))
 const TOKEN_FILES = {
   studio: join(PUBLIC, "designs", "studio", "data", "dims.json"),
   site: join(PUBLIC, "designs", "site", "site-dims.json"), // scripts/site/master-plan.mjs
+  farming: join(PUBLIC, "designs", "farming", "data", "plan.json"), // scripts/site/farming.mjs: the field as sized
 }
 const tokenCache = {}
 function tokens(line, src) {
-  return line.replace(/\{\{([a-z]+)\.([a-z0-9_]+)\}\}/g, (match, ns, key) => {
+  // a key may reach into the file (farming.water.dryLow)
+  return line.replace(/\{\{([a-z]+)\.([A-Za-z0-9_.]+)\}\}/g, (match, ns, key) => {
     if (!TOKEN_FILES[ns]) throw new Error(`${src}: unknown token namespace ${match}`)
     tokenCache[ns] ??= JSON.parse(readFileSync(TOKEN_FILES[ns], "utf8"))
-    const v = tokenCache[ns][key]
+    const v = key.split(".").reduce((o, k) => o?.[k], tokenCache[ns])
     if (v === undefined || typeof v === "object") throw new Error(`${src}: unknown token ${match}`)
     return String(v)
   })
@@ -507,9 +487,14 @@ const MOVED = {
   "guest-room-points": "guest-room/electric", "office-points": "office/electric", "study-room-points": "study-room/electric",
   "galley-points": "galley/electric", "public-bathroom-points": "public-bathroom/electric", "bar-points": "bar/electric",
   "volleyball-points": "volleyball/net", "parking-points": "parking/lighting",
+  // the field's guide and reference page, now its execution plan; the yard's water points, now its Water page
+  vegetables: "farming", "farming-plan": "farming", "livestock-points": "livestock/water",
 }
 // printed guides renamed with their pages: public/guides/<old>[-rw].pdf is now <new>[-rw].pdf
-const MOVED_PDFS = { carpenter: "studio-plan", electrician: "studio-electric", plumber: "studio-plumbing", power: "farm-electric" }
+const MOVED_PDFS = {
+  carpenter: "studio-plan", electrician: "studio-electric", plumber: "studio-plumbing", power: "farm-electric",
+  vegetables: "farming-plan", livestock: "livestock-plan",
+}
 
 /** public/_redirects for Cloudflare: static rules first, the catch-all last (the first matching rule wins). */
 function redirects() {
@@ -522,7 +507,8 @@ function redirects() {
     rules.push([`/docs/${old}`, `/en/docs/${now}`], [`/docs/${old}-rw`, `/rw/docs/${now}`],
       [`/en/docs/${old}`, `/en/docs/${now}`], [`/rw/docs/${old}`, `/rw/docs/${now}`])
   }
-  for (const { slug } of twins.filter((t) => !t.place)) rules.push([`/docs/${slug}-rw`, `/rw/docs/${slug}`])
+  // a page at the top of the docs whose Kinyarwanda was once /docs/<slug>-rw (the livestock guide is now its place's plan)
+  for (const { slug } of twins.filter((t) => !t.slug.includes("/"))) rules.push([`/docs/${slug}-rw`, `/rw/docs/${slug}`])
   for (const [old, now] of Object.entries(MOVED_PDFS)) {
     for (const rw of ["", "-rw"]) {
       if (!existsSync(join(PUBLIC, "guides", `${now}${rw}.pdf`))) throw new Error(`sync-docs: MOVED_PDFS sends ${old}${rw}.pdf to ${now}${rw}.pdf, which is not in public/guides`)
@@ -553,8 +539,9 @@ for (const place of placesIn) {
   const pages = placePages.filter((p) => p.place === place && p.kind !== "plan").map((p) => p.kind)
   writeFileSync(join(OUT, "en", place, "meta.json"), JSON.stringify({ title: PLACE_NAMES[place], pages }, null, 2) + "\n")
 }
-// The sidebar: Start here, the places in the menu's order, then whatever SIDEBAR still lists beside them.
-const pages = ["index", ...placesIn, ...SIDEBAR.filter((s) => s !== "index" && (s.startsWith("---") || seenSlugs.has(`en:${s}`) || fail(s)))]
+// The sidebar (D-059): Start here, then the places in the site menu's order and the farm. Every other page renders off
+// the sidebar, reached from the places' pages and Start here.
+const pages = ["index", ...placesIn]
 // One meta.json, the English one: fumadocs builds the Kinyarwanda tree on the English pages.
 writeFileSync(join(OUT, "en", "meta.json"), JSON.stringify({ title: "Farm docs", pages }, null, 2) + "\n")
 writeFileSync(join(PUBLIC, "_redirects"), redirects())
