@@ -1,4 +1,7 @@
+import { getWords } from "@/components/internationalization/words"
+
 import room from "./guest-room.json"
+import { words } from "./words"
 
 // One guest room drawn in the pattern of the camp plan (src/components/camp/camp-plan.tsx): thin lines, no
 // colour, bold capitals and dimensions in millimetres. The door faces down the page, toward the viewer of the
@@ -64,7 +67,11 @@ function Window({ x0, x1, y0, y1 }: { x0: number; x1: number; y0: number; y1: nu
   )
 }
 
-export function GuestRoomPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function GuestRoomPlan({ title, className }: { title?: string; className?: string }) {
+  const w = await getWords(words)
+  const name = w.plan.labels
+  title ??= w.plan.title
   const by0 = -IY, by1 = -IY + bed.l
   const sideX = bed.w / 2 + bedsides.gap
   const benchY = by1 + bench.gap
@@ -175,24 +182,24 @@ export function GuestRoomPlan({ title, className }: { title: string; className?:
       })}
       <circle cx={veranda.table.x} cy={veranda.table.y} r={veranda.table.r} {...thin} fill="var(--background)" />
 
-      <text x={0} y={f(by1 - 0.27)} textAnchor="middle" style={small}>BED</text>
+      <text x={0} y={f(by1 - 0.27)} textAnchor="middle" style={small}>{name.bed}</text>
       <text x={f(wardrobe.x0 + wardrobe.d / 2 + 0.04)} y={f(wardrobe.y0 + wardrobe.w / 2)} textAnchor="middle"
-        transform={`rotate(90 ${f(wardrobe.x0 + wardrobe.d / 2 + 0.04)} ${f(wardrobe.y0 + wardrobe.w / 2)})`} style={small}>WARDROBE</text>
-      <text x={f(dx0 + desk.d / 2 + 0.04)} y={dcy} textAnchor="middle" transform={`rotate(-90 ${f(dx0 + desk.d / 2 + 0.04)} ${dcy})`} style={small}>DESK</text>
-      <text x={f((tray.x0 + tray.x1) / 2)} y={f(tray.y0 + 0.2)} textAnchor="middle" style={small}>SHOWER</text>
-      <text x={wc.x} y={f(IY - wc.d - 0.08)} textAnchor="middle" style={small}>WC</text>
-      <text x={f((basin.x0 + basin.x1) / 2)} y={f(IY - basin.d - 0.08)} textAnchor="middle" style={small}>BASIN</text>
-      <text x={f(-IX + joint.post + 0.08)} y={f(joint.y - 0.07)} style={small}>JOINT</text>
-      <text x={f(IX - 0.42)} y={f(IY - 0.15)} textAnchor="middle" style={small}>DOOR</text>
-      <text x={f(OX - 0.12)} y={f(OY + 0.86)} textAnchor="end" style={label}>VERANDA</text>
-      <text x={0} y={f(-OY - 0.72)} textAnchor="middle" style={label}>GUEST ROOM</text>
+        transform={`rotate(90 ${f(wardrobe.x0 + wardrobe.d / 2 + 0.04)} ${f(wardrobe.y0 + wardrobe.w / 2)})`} style={small}>{name.wardrobe}</text>
+      <text x={f(dx0 + desk.d / 2 + 0.04)} y={dcy} textAnchor="middle" transform={`rotate(-90 ${f(dx0 + desk.d / 2 + 0.04)} ${dcy})`} style={small}>{name.desk}</text>
+      <text x={f((tray.x0 + tray.x1) / 2)} y={f(tray.y0 + 0.2)} textAnchor="middle" style={small}>{name.shower}</text>
+      <text x={wc.x} y={f(IY - wc.d - 0.08)} textAnchor="middle" style={small}>{name.wc}</text>
+      <text x={f((basin.x0 + basin.x1) / 2)} y={f(IY - basin.d - 0.08)} textAnchor="middle" style={small}>{name.basin}</text>
+      <text x={f(-IX + joint.post + 0.08)} y={f(joint.y - 0.07)} style={small}>{name.joint}</text>
+      <text x={f(IX - 0.42)} y={f(IY - 0.15)} textAnchor="middle" style={small}>{name.door}</text>
+      <text x={f(OX - 0.12)} y={f(OY + 0.86)} textAnchor="end" style={label}>{name.veranda}</text>
+      <text x={0} y={f(-OY - 0.72)} textAnchor="middle" style={label}>{name.room}</text>
       {/* The back wall: the bed between its bedside tables, inside the linings, then the room's share of the block */}
       {[-IX, side0, -bed.w / 2, bed.w / 2, side1].map((x, k, a) => <Dimension key={x} x0={x} x1={a[k + 1] ?? IX} y={-OY - 0.14} />)}
       <Dimension x0={-OX} x1={OX} y={-OY - 0.45} />
       {/* The front: the window and the door, then the bathroom and the way in, below the veranda */}
       <Dimension x0={win.front.x0} x1={win.front.x1} y={V + veranda.step.d + 0.22} />
       <Dimension x0={door.x0} x1={door.x1} y={V + veranda.step.d + 0.22} />
-      <text x={f((-IX + bath.x1) / 2)} y={f(V + veranda.step.d + 0.78)} textAnchor="middle" style={small}>BATHROOM</text>
+      <text x={f((-IX + bath.x1) / 2)} y={f(V + veranda.step.d + 0.78)} textAnchor="middle" style={small}>{name.bathroom}</text>
       <Dimension x0={-IX} x1={bath.x1} y={V + veranda.step.d + 0.55} />
       <Dimension x0={bath.x1} x1={IX} y={V + veranda.step.d + 0.55} />
       {/* The left side: the bed's length, the floor in front of it and the bathroom, inside; the room and the veranda outside */}
