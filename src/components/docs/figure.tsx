@@ -1,7 +1,11 @@
 // A drawing from public/designs on a white "sheet" card, so it reads in light and dark mode.
 // Emitted by scripts/sync-docs.mjs for an image alone on a line in study Markdown. Guide pages pass
 // `eager`: they are printed to PDF, and a lazy image below the fold would print blank.
-export function Figure({
+import { getWords, type Words } from "@/components/internationalization/words"
+
+const words: Words<{ full: string }> = { en: { full: "open full size" }, rw: { full: "fungura mu ngano yuzuye" } }
+
+export async function Figure({
   src,
   alt,
   caption,
@@ -16,6 +20,7 @@ export function Figure({
   height?: number
   eager?: boolean
 }) {
+  const t = await getWords(words)
   return (
     <figure className="my-6 break-inside-avoid">
       <a href={src} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-lg border bg-white p-2">
@@ -25,7 +30,7 @@ export function Figure({
       </a>
       {caption ? (
         <figcaption className="text-muted-foreground mt-2 text-sm">
-          {caption} · <a href={src} target="_blank" rel="noreferrer" className="underline underline-offset-4">open full size</a>
+          {caption} · <a href={src} target="_blank" rel="noreferrer" className="underline underline-offset-4">{t.full}</a>
         </figcaption>
       ) : null}
     </figure>
