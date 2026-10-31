@@ -1,70 +1,75 @@
 import { railCards } from "@/components/page/sections"
-import { D } from "@/components/public-bathroom/data"
+import type { RailItem } from "@/components/docs/item-rail"
+import { bathData, D } from "@/components/public-bathroom/data"
 import bath from "@/components/public-bathroom/public-bathroom.json"
 import { runs } from "@/components/public-bathroom/services"
+import { words } from "@/components/public-bathroom/words"
 import type { Rail } from "@/components/docs/rail-table"
+import type { Locale } from "@/components/internationalization/config"
+import { dictionary } from "@/components/internationalization/dictionaries"
 
 // The public bathroom's rails, moved off its page so that the page (/[lang]/public-bathroom) and its Materials page in the docs
 // (D-059) read one list.
 const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
-const { toilets: TO, basins: BA, urinal: UR, cupboard: CU, passage: PA, towels: TW, plumbing: PL, electric: EL } = bath
+const { toilets: TO, basins: BA, urinal: UR, cupboard: CU, passage: PA, towels: TW, electric: EL } = bath
 
 // The Fixtures rail: each piece rendered on its own by public-bathroom.html?item=<id> (the 3D view's own meshes)
-export function fixturesRail() {
+export function fixturesRail(lang: Locale): RailItem[] {
+  const t = words[lang].rails.fixtures
   const c = TO.wc.cistern
   return railCards(`${D}/render/fixtures`, [
-    { id: "wc", title: "WCs × 2", size: `Floor-standing, close-coupled cistern ${mm(c.w)} × ${mm(c.d)} mm, ${mm(c.h)} mm high; ${mm(TO.wc.out)} mm into the room, seat at ${mm(TO.wc.seat)} mm`,
-      note: "One against each toilet room's back wall, facing the door, with a soft-close seat and a dual-flush button." },
-    { id: "basin", title: "Basin counter", size: `${(BA.x1 - BA.x0).toFixed(2)} × ${BA.d.toFixed(2)} m, top at ${BA.top.toFixed(2)} m; two bowls`,
-      note: "Two white bowls on a Medium Oak counter on black steel brackets, open below so the floor washes clean; a push tap behind each bowl." },
-    { id: "urinal", title: "Urinal", size: `${mm(UR.w)} mm wide, rim at ${mm(UR.rim)} mm, ${mm(UR.out)} mm from the wall`,
-      note: "In its own room in the row, between the toilet rooms and the basins, its flush valve above it, so nobody at the basins sees it." },
-    { id: "mirror", title: "Mirror", size: `${(BA.mirror.x1 - BA.mirror.x0).toFixed(2)} × ${(BA.mirror.y1 - BA.mirror.y0).toFixed(2)} m`,
-      note: "Over the counter, in a thin black frame." },
-    { id: "soap", title: "Soap dispenser", size: "About 100 × 80 × 170 mm", note: "One between the two bowls." },
-    { id: "towels", title: "Paper towels and bin", size: `Dispenser ${mm(TW.w)} mm wide; lidded bin Ø ${mm(TW.bin * 2)} mm, 0.5 m high`,
-      note: "On the east end wall beside the counter." },
-    { id: "roll", title: "Roll holders × 2", size: "One roll, on the wall beside each WC", note: `About ${mm(TO.roll.at)} mm above the floor.` },
-    { id: "cupboard", title: "Cleaner's cupboard", size: `${(CU.x1 - CU.x0).toFixed(2)} × ${(PA.y1 - PA.y0).toFixed(2)} m, floor to ceiling`,
-      where: "Built in the workshop, like the studio's units", note: "At the corridor's end: a mop and bucket below, shelves of paper, soap and cleaning things above, the stop valve and meter low inside." },
-  ])
+    { id: "wc", title: t.wc.title, size: t.wc.size(mm(c.w), mm(c.d), mm(c.h), mm(TO.wc.out), mm(TO.wc.seat)), note: t.wc.note },
+    { id: "basin", title: t.basin.title, size: t.basin.size((BA.x1 - BA.x0).toFixed(2), BA.d.toFixed(2), BA.top.toFixed(2)), note: t.basin.note },
+    { id: "urinal", title: t.urinal.title, size: t.urinal.size(mm(UR.w), mm(UR.rim), mm(UR.out)), note: t.urinal.note },
+    { id: "mirror", title: t.mirror.title, size: t.mirror.size((BA.mirror.x1 - BA.mirror.x0).toFixed(2), (BA.mirror.y1 - BA.mirror.y0).toFixed(2)), note: t.mirror.note },
+    { id: "soap", title: t.soap.title, size: t.soap.size, note: t.soap.note },
+    { id: "towels", title: t.towels.title, size: t.towels.size(mm(TW.w), mm(TW.bin * 2)), note: t.towels.note },
+    { id: "roll", title: t.roll.title, size: t.roll.size, note: t.roll.note(mm(TO.roll.at)) },
+    { id: "cupboard", title: t.cupboard.title, size: t.cupboard.size((CU.x1 - CU.x0).toFixed(2), (PA.y1 - PA.y0).toFixed(2)), where: t.cupboard.where, note: t.cupboard.note },
+  ], lang)
 }
 
 // The Plumbing rail: each fitting on its own (public-bathroom.html?item=<id>), then the pipe, its metres measured off the runs
-export function plumbingRail() {
+export function plumbingRail(lang: Locale): RailItem[] {
+  const t = words[lang].rails.plumbing
   const metres = (re: RegExp) => {
     const by = new Map<number, number>()
     for (const r of runs.filter((x) => re.test(x.system))) by.set(r.dn, (by.get(r.dn) ?? 0) + r.m)
-    return [...by].sort((a, b) => b[0] - a[0]).map(([dn, m]) => `${m.toFixed(1)} m of DN${dn}`).join(", ")
+    return [...by].sort((a, b) => b[0] - a[0]).map(([dn, m]) => t.metres(m.toFixed(1), dn)).join(", ")
   }
-  const f = Object.fromEntries(PL.fittings.map((x) => [x.point, x]))
+  const f = bathData(lang).fitting
   return railCards(`${D}/render/plumbing`, [
-    { id: "meter", title: "Stop valve, filter and meter", size: `${f.SV.size}, on the main`, note: `SV · ${f.SV.what}.` },
-    { id: "pushtap", title: "Push taps × 2", size: "Cold, a push button that closes itself", note: "BT1, BT2 · so no tap is left running." },
-    { id: "flushvalve", title: "Urinal flush valve", size: "A timed push button on a 15 mm feed", note: `UV · ${f.UV.what}.` },
-    { id: "floordrain", title: "Floor drain", size: f.FD.size, note: `FD · ${f.FD.what}, so the lobby can be washed down.` },
-    { id: "chamber", title: "Inspection chamber", size: f.IC1.size, note: `IC1 · ${f.IC1.what}.` },
-    { id: "ppr", title: "PP-R supply pipe", size: `${metres(/^cold$/)}, PN20, welded joints`, note: "In the linings 300 mm above the floor, then straight up to each outlet." },
-    { id: "upvc", title: "uPVC drain pipe", size: metres(/^(soil|waste)$/), note: "Under the floor and through the plinth, each run falling at least 1:40, a rodding eye at every bend." },
-    { id: "vent", title: "Vent and its cage", size: metres(/^vent$/), note: "V1 · up the back wall outside, to 900 mm above the roof." },
-  ])
+    { id: "meter", title: t.meter.title, size: t.meter.size(f.SV.size), note: `SV · ${f.SV.what}.` },
+    { id: "pushtap", title: t.pushtap.title, size: t.pushtap.size, note: t.pushtap.note },
+    { id: "flushvalve", title: t.flushvalve.title, size: t.flushvalve.size, note: `UV · ${f.UV.what}.` },
+    { id: "floordrain", title: t.floordrain.title, size: f.FD.size, note: t.floordrain.note(f.FD.what) },
+    { id: "chamber", title: t.chamber.title, size: f.IC1.size, note: `IC1 · ${f.IC1.what}.` },
+    { id: "ppr", title: t.ppr.title, size: t.ppr.size(metres(/^cold$/)), note: t.ppr.note },
+    { id: "upvc", title: t.upvc.title, size: metres(/^(soil|waste)$/), note: t.upvc.note },
+    { id: "vent", title: t.vent.title, size: metres(/^vent$/), note: t.vent.note },
+  ], lang)
 }
 
 // The Electric rail: each device on its own (public-bathroom.html?item=<id>)
-export function electricRail() {
+export function electricRail(lang: Locale): RailItem[] {
+  const t = words[lang].rails.electric
+  const board = bathData(lang).board
   const n = EL.points.filter((p) => p.model === "light").length
   return railCards(`${D}/render/electric`, [
-    { id: "board", title: "Unit board", size: EL.board.size, note: `DB · ${EL.board.what}.` },
-    { id: "light", title: `Ceiling lights × ${n}`, size: "Ø 300 mm, a motion sensor in the middle", note: "L1–L5 · each room lights when someone walks in and goes dark a few minutes after." },
-    { id: "fan", title: "Extract fan", size: `Ø ${mm(UR.fan.r * 2)} mm grille`, note: "F1 · in the urinal room, which has no window; it runs with the light and 15 minutes after." },
-    { id: "socket", title: "Socket", size: "Double, 146 × 86 mm", note: "P1 · for the cleaner, by the cupboard." },
-    { id: "walllight", title: "Light over the door", size: "About 180 × 140 mm, IP65", note: "L6 · outside, on with the path lights from 18:00." },
-  ])
+    { id: "board", title: t.board.title, size: board.size, note: `DB · ${board.what}.` },
+    { id: "light", title: t.light.title(n), size: t.light.size, note: t.light.note },
+    { id: "fan", title: t.fan.title, size: t.fan.size(mm(UR.fan.r * 2)), note: t.fan.note },
+    { id: "socket", title: t.socket.title, size: t.socket.size, note: t.socket.note },
+    { id: "walllight", title: t.walllight.title, size: t.walllight.size, note: t.walllight.note },
+  ], lang)
 }
 
 // every rail, as the Materials page lists them
-export const rails: Rail[] = [
-  { title: "Fixtures", items: fixturesRail() },
-  { title: "Electric", items: electricRail() },
-  { title: "Plumbing", items: plumbingRail() },
-]
+export function rails(lang: Locale): Rail[] {
+  const t = dictionary(lang).page
+  return [
+    { title: words[lang].fixtures, items: fixturesRail(lang) },
+    { title: t.electric, items: electricRail(lang) },
+    { title: t.plumbing, items: plumbingRail(lang) },
+  ]
+}

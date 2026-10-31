@@ -1,4 +1,7 @@
+import { getWords } from "@/components/internationalization/words"
+
 import bath from "./public-bathroom.json"
+import { words } from "./words"
 
 // The public bathroom drawn in the pattern of the office plan (src/components/office/office-plan.tsx): thin lines,
 // no colour, bold capitals and dimensions in millimetres. Seen from the courtyard, as the 3D's front view: the door
@@ -75,7 +78,11 @@ function Wc({ x, y }: { x: number; y: number }) {
   )
 }
 
-export function PublicBathroomPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function PublicBathroomPlan({ title, className }: { title?: string; className?: string }) {
+  const w = await getWords(words)
+  const name = w.plan.labels
+  title ??= w.plan.title
   const L = box.l, H = box.w / 2, p = box.proud
   const { x0: ix0, x1: ix1, y0: iy0, y1: iy1 } = box.inner
   const { door, windows } = front
@@ -126,7 +133,7 @@ export function PublicBathroomPlan({ title, className }: { title: string; classN
         <g key={r.x0}>
           <Wc x={f(r.x0 + toilets.wc.x)} y={iy0} />
           <Door hinge={[r.door[1], face]} along={[-1, 0]} into={[0, -1]} w={r.door[1] - r.door[0]} />
-          <text x={f(r.x0 + toilets.wc.x)} y={f(face - 0.12)} textAnchor="middle" style={small}>WC</text>
+          <text x={f(r.x0 + toilets.wc.x)} y={f(face - 0.12)} textAnchor="middle" style={small}>{name.wc}</text>
         </g>
       ))}
 
@@ -155,17 +162,17 @@ export function PublicBathroomPlan({ title, className }: { title: string; classN
       <rect {...rect(lobby.drain[0] - 0.07, lobby.drain[1] - 0.07, lobby.drain[0] + 0.07, lobby.drain[1] + 0.07)} {...thin} />
       <path d={`M${f(lobby.drain[0] - 0.07)} ${f(lobby.drain[1] - 0.07)}l0.14 0.14m0 -0.14l-0.14 0.14`} {...faint} />
 
-      <text x={f((cupboard.x1 + lobby.x0) / 2)} y={f((hall + iy1) / 2 + 0.035)} textAnchor="middle" style={small}>CORRIDOR</text>
-      <text x={f((cupboard.x0 + cupboard.x1) / 2 + 0.035)} y={f((hall + iy1) / 2)} transform={`rotate(-90 ${f((cupboard.x0 + cupboard.x1) / 2 + 0.035)} ${f((hall + iy1) / 2)})`} textAnchor="middle" style={small}>CLEANING</text>
-      <text x={f((basins.x0 + basins.x1) / 2)} y={f(iy0 + basins.d + 0.14)} textAnchor="middle" style={small}>BASINS</text>
-      <text x={f(towels.x - 0.06)} y={f(towels.y + towels.bin + 0.15)} textAnchor="end" style={small}>TOWELS</text>
-      <text x={f((lobby.x0 + door.x0) / 2 + 0.05)} y={f(iy1 - 0.3)} textAnchor="middle" style={small}>LOBBY</text>
-      <text x={u.x} y={f(face - 0.12)} textAnchor="middle" style={small}>URINAL</text>
-      {windows.map(([a, b]) => <text key={a} x={f((a + b) / 2)} y={f(H + p + 0.16)} textAnchor="middle" style={small}>WINDOW</text>)}
-      <text x={f((landing.x0 + landing.x1) / 2)} y={f(H + p + (landing.d - p) / 2 + 0.035)} textAnchor="middle" style={small}>LANDING</text>
-      <text x={f((step.x0 + step.x1) / 2)} y={f(ly1 + step.d / 2 + 0.035)} textAnchor="middle" style={small}>STEP</text>
-      <text x={0} y={f(H + 0.6)} textAnchor="start" style={label}>PUBLIC BATHROOM</text>
-      <text x={f(L / 2)} y={f(sy1 + 0.62)} textAnchor="middle" style={small}>TOWARD THE COURTYARD</text>
+      <text x={f((cupboard.x1 + lobby.x0) / 2)} y={f((hall + iy1) / 2 + 0.035)} textAnchor="middle" style={small}>{name.corridor}</text>
+      <text x={f((cupboard.x0 + cupboard.x1) / 2 + 0.035)} y={f((hall + iy1) / 2)} transform={`rotate(-90 ${f((cupboard.x0 + cupboard.x1) / 2 + 0.035)} ${f((hall + iy1) / 2)})`} textAnchor="middle" style={small}>{name.cleaning}</text>
+      <text x={f((basins.x0 + basins.x1) / 2)} y={f(iy0 + basins.d + 0.14)} textAnchor="middle" style={small}>{name.basins}</text>
+      <text x={f(towels.x - 0.06)} y={f(towels.y + towels.bin + 0.15)} textAnchor="end" style={small}>{name.towels}</text>
+      <text x={f((lobby.x0 + door.x0) / 2 + 0.05)} y={f(iy1 - 0.3)} textAnchor="middle" style={small}>{name.lobby}</text>
+      <text x={u.x} y={f(face - 0.12)} textAnchor="middle" style={small}>{name.urinal}</text>
+      {windows.map(([a, b]) => <text key={a} x={f((a + b) / 2)} y={f(H + p + 0.16)} textAnchor="middle" style={small}>{name.window}</text>)}
+      <text x={f((landing.x0 + landing.x1) / 2)} y={f(H + p + (landing.d - p) / 2 + 0.035)} textAnchor="middle" style={small}>{name.landing}</text>
+      <text x={f((step.x0 + step.x1) / 2)} y={f(ly1 + step.d / 2 + 0.035)} textAnchor="middle" style={small}>{name.step}</text>
+      <text x={0} y={f(H + 0.6)} textAnchor="start" style={label}>{name.bathroom}</text>
+      <text x={f(L / 2)} y={f(sy1 + 0.62)} textAnchor="middle" style={small}>{name.courtyard}</text>
       <Dimension x0={0} x1={L} y={f(-H - 0.5)} />
       {[...rooms, [lobby.x0, lobby.x1]].map(([a, b]) => <Dimension key={a} x0={a} x1={b} y={f(-H - 0.22)} />)}
       <Dimension x0={landing.x0} x1={landing.x1} y={f(sy1 + 0.3)} />

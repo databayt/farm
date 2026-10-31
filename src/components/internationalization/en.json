@@ -110,7 +110,8 @@
       "cold": "cold",
       "hot": "hot",
       "waste": "drain",
-      "vent": "vent"
+      "vent": "vent",
+      "soil": "soil"
     },
     "qty": "Qty",
     "unitPrice": "Unit price (RWF)",
