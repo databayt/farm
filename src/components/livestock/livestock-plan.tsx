@@ -1,4 +1,7 @@
+import { getWords } from "@/components/internationalization/words"
+
 import livestock from "./livestock.json"
+import { words } from "./words"
 
 // The livestock yard drawn in the pattern of the studio's plan (public/designs/studio/render/plan.svg): solid walls
 // in black, fittings in thin outline, what is where named in one row above and only the two overall dimensions.
@@ -71,7 +74,11 @@ function DimensionUp({ y0, y1, x }: { y0: number; y1: number; x: number }) {
   )
 }
 
-export function LivestockPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function LivestockPlan({ title, className }: { title?: string; className?: string }) {
+  const w = (await getWords(words)).plan
+  const name = w.labels
+  title ??= w.title
   const L = shelter.l / 2, W = shelter.d / 2, E = shelter.plinth.edge
   const Y = yards.y1
   const { dovecote, cats, bench } = friends
@@ -190,14 +197,14 @@ export function LivestockPlan({ title, className }: { title: string; className?:
 
       {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH; the rest in place */}
       {([
-        [cats.house.x, "CATS"], [0, pens.label], [tank.x, "TANK"],
-        [compost.x0 + compost.bay / 2, "COMPOST"], [(dogs.x0 + dogs.x1) / 2, "DOGS"],
+        [cats.house.x, name.cats], [0, name.shed], [tank.x, name.tank],
+        [compost.x0 + compost.bay / 2, name.compost], [(dogs.x0 + dogs.x1) / 2, name.dogs],
       ] as const).map(([x, t]) => <text key={t} x={f(x)} y={f(row)} textAnchor="middle" style={label}>{t}</text>)}
-      <text x={-1.0} y={3.4} textAnchor="middle" style={label}>VILLAGE YARD</text>
-      <text x={dovecote.x} y={f(dovecote.y + dovecote.s / 2 + 0.22)} textAnchor="middle" style={small}>DOVES</text>
-      <text x={f((bench.x0 + bench.x1) / 2)} y={f(bench.y + 0.4)} textAnchor="middle" style={small}>BENCH</text>
-      <text x={f(yg.x0 + yg.w / 2)} y={f(bottom - 0.12)} textAnchor="middle" style={small}>TO THE PADDOCK · GUESTS</text>
-      <text x={f((planting.beds[1].x0 + planting.beds[1].x1) / 2)} y={f(planting.beds[1].y1 + 0.3)} textAnchor="middle" style={small}>VEGETABLES</text>
+      <text x={-1.0} y={3.4} textAnchor="middle" style={label}>{name.yard}</text>
+      <text x={dovecote.x} y={f(dovecote.y + dovecote.s / 2 + 0.22)} textAnchor="middle" style={small}>{name.doves}</text>
+      <text x={f((bench.x0 + bench.x1) / 2)} y={f(bench.y + 0.4)} textAnchor="middle" style={small}>{name.bench}</text>
+      <text x={f(yg.x0 + yg.w / 2)} y={f(bottom - 0.12)} textAnchor="middle" style={small}>{name.paddock}</text>
+      <text x={f((planting.beds[1].x0 + planting.beds[1].x1) / 2)} y={f(planting.beds[1].y1 + 0.3)} textAnchor="middle" style={small}>{name.vegetables}</text>
 
       <Dimension x0={yards.x0} x1={yards.x1} y={f(dimY)} />
       <DimensionUp y0={yards.y0} y1={Y} x={f(edge.x1 + 0.4)} />

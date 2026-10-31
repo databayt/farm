@@ -7,6 +7,10 @@
 
 export const WATER_COLOUR = { farm: "#1d4e89", supply: "#2f7ed8", riser: "#5fb0ea", valve: "#d9822b" }
 
+import { getWords } from "@/components/internationalization/words"
+
+import { words } from "./words"
+
 const W = 1600
 const H = 470
 const TOP = 70 // the farm line and the tank
@@ -25,9 +29,12 @@ function Unit({ x, y, title, sub, dashed = false, muted = false, w = 170 }: {
   )
 }
 
-export function WaterDiagram({ tank, yardM, need, peak, days }: {
+export async function WaterDiagram({ tank, yardM, need, peak, days }: {
   tank: number; yardM: number; need: [number, number]; peak: number; days: [number, number]
 }) {
+  const t = (await getWords(words)).water.diagram
+  const litres = tank.toLocaleString("en-US")
+  const notes = t.notes(need[0], need[1], peak, days[0], days[1])
   const line = (kind: keyof typeof WATER_COLOUR, d: string, width = 3.5, dash?: string) => (
     <path d={d} style={{ stroke: WATER_COLOUR[kind] }} strokeWidth={width} strokeLinejoin="round" strokeDasharray={dash} />
   )
@@ -44,21 +51,21 @@ export function WaterDiagram({ tank, yardM, need, peak, days }: {
       <text x={x + at[0]} y={y + at[1]} textAnchor={at[2]} stroke="none" className="fill-foreground text-[13px] font-semibold">{id}</text>
     </g>
   )
-  const key: [keyof typeof WATER_COLOUR, string, number][] = [["farm", "The farm’s line", 900], ["supply", "Yard line 20 mm", 1080],
-    ["riser", "Riser to a trough", 1260], ["valve", "Valve or tap", 1450]]
+  const key: [keyof typeof WATER_COLOUR, string, number][] = [["farm", t.key.farm, 900], ["supply", t.key.supply, 1080],
+    ["riser", t.key.riser, 1260], ["valve", t.key.valve, 1450]]
   const tx = 560 // the tank
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="stroke-foreground h-auto w-full min-w-[960px]"
       strokeWidth={2} strokeLinecap="round" fill="none"
-      aria-label={`Water diagram: the farm's water line fills the ${tank.toLocaleString("en-US")} litre tank by the shed through a float valve; from the outlet valve at the tank's foot a 20 mm line, about ${yardM} m, runs buried to a float valve in each of the two troughs, and a bucket tap fills the buckets for the dogs' bowl`}>
+      aria-label={t.label(litres, yardM)}>
       {/* the farm's water, off the drawing */}
-      <Unit x={110} y={TOP} title="Farm line" sub="from the farm’s water" dashed />
+      <Unit x={110} y={TOP} title={t.farm.title} sub={t.farm.sub} dashed />
       {line("farm", `M195 ${TOP} H${tx - 170}`, 5, "10 8")}
-      {label("F1", "under the back fence", 215, TOP - 14)}
+      {label("F1", t.underFence, 215, TOP - 14)}
       {valve(tx - 140, TOP, "FV", false, [0, -16, "middle"])}
-      <text x={tx - 140} y={TOP + 34} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">float valve</text>
+      <text x={tx - 140} y={TOP + 34} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">{t.float}</text>
       {line("farm", `M${tx - 128} ${TOP} H${tx - 95}`, 5)}
-      <Unit x={tx} y={TOP} title={`Tank ${tank.toLocaleString("en-US")} L`} sub="T · on a stone base 1.2 m high" w={190} />
+      <Unit x={tx} y={TOP} title={t.tank(litres)} sub={t.tankSub} w={190} />
 
       {/* key: a line's colour is what it carries */}
       {key.map(([k, text, x]) => (
@@ -73,24 +80,23 @@ export function WaterDiagram({ tank, yardM, need, peak, days }: {
       {valve(tx, TOP + 75, "V1", true, [-18, 5, "end"])}
       {valve(tx, TOP + 140, "TP", true, [-18, 5, "end"])}
       {line("riser", `M${tx} ${TOP + 140} H${tx + 260}`, 3, "4 6")}
-      <Unit x={tx + 360} y={TOP + 140} title="Buckets" sub="B · the dogs’ bowl, the cats" muted w={210} />
+      <Unit x={tx + 360} y={TOP + 140} title={t.buckets.title} sub={t.buckets.sub} muted w={210} />
       {line("supply", `M${tx} ${LOW} H170`)}
       {line("supply", `M${tx} ${LOW} H1440`)}
-      {label("S1", `20 mm PE · about ${yardM} m, buried 30 cm`, tx + 20, LOW - 14)}
-      {([["W1", "West trough", 300], ["W2", "East trough", 1180]] as const).map(([id, name, x]) => (
+      {label("S1", t.yard(yardM), tx + 20, LOW - 14)}
+      {([["W1", t.west, 300], ["W2", t.east, 1180]] as const).map(([id, name, x]) => (
         <g key={id}>
           <circle cx={x} cy={LOW} r={5} stroke="none" style={{ fill: WATER_COLOUR.supply }} />
           {line("riser", `M${x} ${LOW} V${LOW + 60}`)}
-          <Unit x={x} y={LOW + 90} title={name} sub={`${id} · float valve, 1.0 × 0.35 m`} w={230} />
+          <Unit x={x} y={LOW + 90} title={name} sub={t.trough(id)} w={230} />
         </g>
       ))}
 
       <text x={110} y={H - 46} stroke="none" className="fill-muted-foreground text-[14px]">
-        The yard drinks about {need[0]} to {need[1]} L a day, up to about {peak} L with does and ewes in milk in the dry season [E] ·
-        a full tank lasts about {days[0]} to {days[1]} days if the farm line stops
+        {notes[0]}
       </text>
       <text x={110} y={H - 22} stroke="none" className="fill-muted-foreground text-[14px]">
-        The tank stands only about 1.2 m above the troughs, so their floats are low-pressure ones · sizes and routes are design intent
+        {notes[1]}
       </text>
     </svg>
   )

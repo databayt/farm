@@ -1,6 +1,9 @@
 import { frw } from "@/lib/format"
 import livestock from "@/components/livestock/livestock.json"
 import { WATER_COLOUR } from "@/components/livestock/water-diagram"
+import { words } from "@/components/livestock/words"
+import type { Locale } from "@/components/internationalization/config"
+import { overlay } from "@/components/internationalization/words"
 
 // The yard's water (livestock.json `water`), read by /en/livestock (the diagram, the rail, the tags) and by its docs
 // page (/docs/livestock-points: the points and what the yard drinks) alike, as src/components/studio/data.ts is the
@@ -8,6 +11,11 @@ import { WATER_COLOUR } from "@/components/livestock/water-diagram"
 
 export const D = "/designs/livestock"
 const { animals: AN, tank: TK, fittings: FT, water: WV } = livestock
+
+// the water points in the reader's language: livestock.json's words with their Kinyarwanda laid over by id (words.tsx)
+export function pointsFor(lang: Locale): typeof WV.points {
+  return lang === "en" ? WV.points : overlay(WV.points, words[lang].json.points)
+}
 
 // the water: every run and point in livestock.json's water section; the litres a day from its need block [E]
 const len = (path: number[][]) => path.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - path[i][0], p[1] - path[i][1]), 0)
