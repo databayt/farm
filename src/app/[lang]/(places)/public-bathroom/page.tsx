@@ -32,7 +32,7 @@ function fixturesRail() {
   const c = TO.wc.cistern
   return railCards(`${D}/render/fixtures`, [
     { id: "wc", title: "WCs × 2", size: `Floor-standing, close-coupled cistern ${mm(c.w)} × ${mm(c.d)} mm, ${mm(c.h)} mm high; ${mm(TO.wc.out)} mm into the room, seat at ${mm(TO.wc.seat)} mm`,
-      note: "One on each toilet room's west wall, with a soft-close seat and a dual-flush button." },
+      note: "One against each toilet room's back wall, facing the door, with a soft-close seat and a dual-flush button." },
     { id: "basin", title: "Basin counter", size: `${(BA.x1 - BA.x0).toFixed(2)} × ${BA.d.toFixed(2)} m, top at ${BA.top.toFixed(2)} m; two bowls`,
       note: "Two white bowls on a Medium Oak counter on black steel brackets, open below so the floor washes clean; a push tap behind each bowl." },
     { id: "urinal", title: "Urinal", size: `${mm(UR.w)} mm wide, rim at ${mm(UR.rim)} mm, ${mm(UR.out)} mm from the wall`,
@@ -101,7 +101,7 @@ export default function PublicBathroomPage() {
       {/* 2D, full screen: the bathroom's plan (src/components/public-bathroom/public-bathroom-plan.tsx), in the text
           colour. */}
       <DrawingSection id="plans" title="2D">
-        <PublicBathroomPlan title="Plan: a 20 ft container 6,058 by 2,438 mm on a stone plinth, with a 1,500 mm landing and a step in front of its door at the east end of the front wall; inside, one row against the back wall: two toilet rooms 1,350 by 1,200 mm, each with a WC, then the urinal in its own room 900 mm wide, then the two basins on a counter straight across from the door, paper towels and a bin on the end wall beside them and a floor drain; a 900 mm corridor along the front wall, under the two windows, joins them and ends at the cleaner's cupboard."
+        <PublicBathroomPlan title="Plan: a 20 ft container 6,058 by 2,438 mm on a stone plinth, with a 1,500 mm landing and a step in front of its door at the east end of the front wall; inside, one row against the back wall: two toilet rooms 1,350 by 1,200 mm, each with a WC against the back wall, then the urinal in its own room 900 mm wide, then the two basins on a counter straight across from the door, paper towels and a bin on the end wall beside them and a floor drain; a 900 mm corridor along the front wall, under the two windows, joins them and ends at the cleaner's cupboard."
           className="h-auto w-full lg:h-full lg:w-auto" />
       </DrawingSection>
 

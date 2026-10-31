@@ -61,15 +61,16 @@ function Door({ hinge: [hx, hy], along: [ax, ay], into: [ix, iy], w }: { hinge: 
 // the fittings stand in one row against the back wall (the top of the page): two toilet rooms, the urinal room, then
 // the basins across from the door at the front's east end; a corridor under the windows joins them.
 
-// a WC from above on the wall at x, facing into the room (+x): the cistern, the bowl and its seat's opening
+// a WC from above on the back wall at y, centred on x, facing into the room (+y): the cistern, the bowl and its
+// seat's opening
 function Wc({ x, y }: { x: number; y: number }) {
   const { out, w, cistern } = toilets.wc
-  const r = w / 2, a = x + cistern.d, b = x + out - 0.2
+  const r = w / 2, a = y + cistern.d, b = y + out - 0.2
   return (
     <g>
-      <rect {...rect(x, y - cistern.w / 2, a, y + cistern.w / 2)} rx={0.03} {...thin} />
-      <path d={`M${f(a)} ${f(y - r)}H${f(b)}A0.2 ${f(r)} 0 0 1 ${f(b)} ${f(y + r)}H${f(a)}`} {...thin} />
-      <ellipse cx={f(b - 0.03)} cy={y} rx={0.15} ry={f(r - 0.07)} {...faint} />
+      <rect {...rect(x - cistern.w / 2, y, x + cistern.w / 2, a)} rx={0.03} {...thin} />
+      <path d={`M${f(x + r)} ${f(a)}V${f(b)}A${f(r)} 0.2 0 0 1 ${f(x - r)} ${f(b)}V${f(a)}`} {...thin} />
+      <ellipse cx={x} cy={f(b - 0.03)} rx={f(r - 0.07)} ry={0.15} {...faint} />
     </g>
   )
 }
@@ -120,12 +121,12 @@ export function PublicBathroomPlan({ title, className }: { title: string; classN
       ))}
       {doors.flat().map((x) => <line key={x} x1={x} x2={x} y1={face} y2={hall} {...thin} />)}
 
-      {/* The two toilet rooms: a WC on each west wall, the door open back against the east wall */}
+      {/* The two toilet rooms: a WC on each back wall, facing the door, the door open back against the east wall */}
       {[r1, r2].map((r) => (
         <g key={r.x0}>
-          <Wc x={r.x0} y={toilets.wc.y} />
+          <Wc x={f(r.x0 + toilets.wc.x)} y={iy0} />
           <Door hinge={[r.door[1], face]} along={[-1, 0]} into={[0, -1]} w={r.door[1] - r.door[0]} />
-          <text x={f((r.door[0] + r.x1) / 2 + 0.12)} y={f(iy0 + 0.22)} textAnchor="middle" style={small}>WC</text>
+          <text x={f(r.x0 + toilets.wc.x)} y={f(face - 0.12)} textAnchor="middle" style={small}>WC</text>
         </g>
       ))}
 
