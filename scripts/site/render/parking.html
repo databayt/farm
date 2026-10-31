@@ -2,9 +2,9 @@
 <!--
   /en/parking's 3D, in the pattern of the camp's (scripts/site/render/camp.html): the way in seen from the public
   road, built from src/components/parking/parking.json (the numbers the 2D draws) in compound.json's true metres:
-  the outer gate and the sign wall lettered DIGITAL FARM in LED, the turn from the road, the green parking of grass
-  pavers with its five bays, sett strips, eucalyptus wheel stops and shade trees, two plain cars for scale (no
-  plates, no badges), the boundary hedge and the start of the rock road. The gate, the sign wall and the surfaces
+  the outer gate and the sign wall lettered DIGITAL FARM in LED, the turn from the road, the parking of compacted
+  gravel in a timber edging (D-065) with its five bays, timber strips, eucalyptus wheel stops, solar bollards and
+  shade trees, two plain cars for scale (no plates, no badges), the boundary hedge and the start of the rock road. The gate, the sign wall and the surfaces
   follow the homepage 3D (scripts/site/render/compound.html). Rendered two ways:
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/parking/render/parking-line.png
@@ -13,15 +13,16 @@
                 gate -> the stand-in parking-hero.jpg
 
     ?top=<layer>  real mode from straight above the parking, the road at the bottom, for the page's BuildUp:
-                  ground (opaque: the lawn and the dug box) | sub | edging | pavers | grass | marks (transparent)
+                  ground (opaque: the lawn and the dug box) | geotex | edging | base | gravel | marks (transparent)
                   -> render/top-<layer>.webp; window.TAGS holds each piece's rectangle as fractions of the picture
                   (saved by render.mjs, then reshaped into render/top-pieces.json)
     ?item=<id>    one part on its own, transparent, 1600 x 1200, for the rails -> render/item/<id>.webp:
-                  gate | sign | lantern | stop | tree | pavers | setts (the design's own meshes or a patch of them),
-                  enclosure | duct (lighting.json parts), layers | trench | soakaway (drainage, cut open)
-    ?view=light   the model view with the lighting circuit (parking.json lighting): &mode=line draws every duct run in
-                  its colour and sets window.TAGS -> render/light-line.png + light-tags.json; &mode=real renders it
-                  at dusk, the sign and the lantern lit -> render/light-real.webp
+                  gate | sign | lantern | stop | tree | gravel | edging | setts (the design's own meshes or a patch
+                  of them), bollard | solar (the lighting's parts), layers | trench | soakaway (drainage, cut open)
+    ?view=light   the model view with the lights (parking.json lighting, all solar since D-065): &mode=line draws the
+                  sign's short runs on its wall in their colours and tags every light -> render/light-line.png +
+                  light-tags.json; &mode=real renders it at dusk, the bollards, the sign and the lantern lit
+                  -> render/light-real.webp
     ?view=drain   the same for where the rain goes (parking.json drainage): the falls as arrows, the trench and the
                   soakaway -> render/drain-line.png + drain-tags.json; real -> render/drain-real.webp
 
@@ -113,16 +114,21 @@ const T = LINE ? {} : {
       g.fillRect(0, rnd() * h, w, 4 + rnd() * 14)
     }
   }),
-  // grass pavers, as on the homepage: a concrete grid with grass in its cells, 0.4 m a tile
-  pavers: tex((g, w, h) => {
-    g.fillStyle = "#b9b4a8"; g.fillRect(0, 0, w, h)
-    const n = 4, s = w / n
-    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
-      g.fillStyle = (i + j) % 2 ? "#6f934a" : "#789c50"
-      g.fillRect(i * s + s * 0.18, j * s + s * 0.18, s * 0.64, s * 0.64)
+  // the parking's top (D-065): angular gravel, 6 to 14 mm, rolled in. Seen from the road a stone is under a pixel, so
+  // the gravel reads by its grain and by soft patches where the roller left it lighter or darker
+  chips: tex((g, w, h) => {
+    g.fillStyle = "#9d9587"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 90; i++) {
+      const x = rnd() * w, y = rnd() * h, r = 20 + rnd() * 50
+      g.fillStyle = rnd() > 0.5 ? `rgba(200,190,172,${0.08 + rnd() * 0.1})` : `rgba(80,72,62,${0.08 + rnd() * 0.1})`
+      g.beginPath(); g.ellipse(x, y, r, r * (0.6 + rnd() * 0.4), rnd() * Math.PI, 0, Math.PI * 2); g.fill()
     }
-    speckle(g, w, h, 6000, "rgba(255,255,255,0.2)", "rgba(0,0,0,0.15)")
-  }, 256, 256),
+    for (let i = 0; i < 30000; i++) {
+      const t = rnd(), x = rnd() * w, y = rnd() * h, r = 0.8 + rnd() * 2.2
+      g.fillStyle = t > 0.8 ? "#d2cbbd" : t > 0.55 ? "#b8b0a2" : t > 0.3 ? "#8a8276" : t > 0.08 ? "#6f685e" : "#a5896a"
+      g.beginPath(); g.moveTo(x - r, y); g.lineTo(x - r * 0.2, y - r * 0.9); g.lineTo(x + r, y - r * 0.3); g.lineTo(x + r * 0.5, y + r * 0.8); g.closePath(); g.fill()
+    }
+  }, 1024, 1024),
   // grey granite setts in segmental arcs, as on the homepage: about 100 mm setts, mixed greys with the odd warm one,
   // sand in the joints; one tile is 1.6 m, an arc row every sett
   setts: tex((g, w, h) => {
@@ -143,16 +149,6 @@ const T = LINE ? {} : {
       }
     }
   }),
-  // a strip between bays: one row of the same setts, ten to the metre
-  row: tex((g, w, h) => {
-    g.fillStyle = "#bdb5a5"; g.fillRect(0, 0, w, h)
-    const s = h / 10
-    for (let i = 0; i < 10; i++) {
-      const tone = rnd(), k = 0.9 + rnd() * 0.18, c = tone > 0.7 ? [142, 141, 137] : tone > 0.35 ? [160, 159, 153] : [121, 123, 121]
-      g.fillStyle = `rgb(${c.map((v) => Math.round(v * k)).join(",")})`
-      g.beginPath(); g.roundRect(3, i * s + 3, w - 6, s - 6, 4); g.fill()
-    }
-  }, 32, 320),
   // fieldstone: rounded stones of mixed size and tone in darker mortar; 1 m a tile
   stone: tex((g, w, h) => {
     g.fillStyle = "#6c6358"; g.fillRect(0, 0, w, h)
@@ -199,23 +195,16 @@ const T = LINE ? {} : {
       g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 2 + rnd() * 4, 1.5 + rnd() * 3, rnd() * Math.PI, 0, Math.PI * 2); g.fill()
     }
   }),
-  // the pavers as laid: the concrete grid, its cells of fresh topsoil not yet grown
-  pavers0: tex((g, w, h) => {
-    g.fillStyle = "#bdb8ac"; g.fillRect(0, 0, w, h)
-    const n = 4, s = w / n
-    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { g.fillStyle = (i + j) % 2 ? "#6b4a33" : "#72503a"; g.fillRect(i * s + s * 0.18, j * s + s * 0.18, s * 0.64, s * 0.64) }
-    speckle(g, w, h, 6000, "rgba(255,255,255,0.2)", "rgba(0,0,0,0.15)")
-  }, 256, 256),
   concrete: tex((g, w, h) => {
     g.fillStyle = "#a9a59d"; g.fillRect(0, 0, w, h)
     speckle(g, w, h, 9000, "rgba(255,255,255,0.1)", "rgba(60,55,45,0.12)")
   }),
 }
 // metres one tile of each texture covers [along, across]
-const TILE = { grass: [9, 9], murram: [4, 4], pavers: [0.4, 0.4], setts: [1.6, 1.6], row: [0.1, 1], stone: [1, 1], hedge: [0.9, 0.9],
-  earth: [3, 3], gravel: [0.8, 0.8], pavers0: [0.4, 0.4], concrete: [1, 1] }
-const MAP = { lawn: "grass", murram: "murram", pavers: "pavers", setts: "setts", row: "row", stone: "stone", hedge: "hedge",
-  earth: "earth", gravel: "gravel", pavers0: "pavers0", concrete: "concrete" }
+const TILE = { grass: [9, 9], murram: [4, 4], chips: [2.4, 2.4], setts: [1.6, 1.6], stone: [1, 1], hedge: [0.9, 0.9],
+  earth: [3, 3], gravel: [0.8, 0.8], concrete: [1, 1] }
+const MAP = { lawn: "grass", murram: "murram", chips: "chips", setts: "setts", stone: "stone", hedge: "hedge",
+  earth: "earth", gravel: "gravel", concrete: "concrete" }
 
 // DIGITAL FARM for the sign's panel, sized to it as the homepage's: LED letters in warm white with their glow on dark
 // steel, or plain letters in the page's ink for the line drawing
@@ -263,25 +252,22 @@ function mat(name) {
     x = {
       lawn: () => std({ map: T.grass, roughness: 1 }),
       murram: () => std({ map: T.murram, roughness: 1 }),
-      pavers: () => std({ map: T.pavers, roughness: 0.95 }),
+      chips: () => std({ map: T.chips, roughness: 1 }),
       setts: () => std({ map: T.setts, roughness: 0.9 }),
-      row: () => std({ map: T.row, roughness: 0.9 }),
+      edgewood: () => std({ color: "#94714c", roughness: 0.85 }), // treated eucalyptus boards, the edging and the strips
+      bollard: () => std({ color: "#3a3b3e", roughness: 0.5, metalness: 0.4 }),
+      pv: () => std({ color: "#1b2433", roughness: 0.25, metalness: 0.3 }), // a solar panel's cells
       stone: () => std({ map: T.stone, roughness: 0.95 }),
       gatewood: () => std({ color: "#b48f63", roughness: 0.8 }), // weathered pine, as the reference gate
       black: () => std({ color: "#26272b", roughness: 0.45, metalness: 0.5 }),
       lamp: () => std({ color: "#f6ecd2", roughness: 0.3, emissive: "#ffe2a8", emissiveIntensity: DUSK ? 6 : 0.25 }),
       earth: () => std({ map: T.earth, roughness: 1 }),
       gravel: () => std({ map: T.gravel, roughness: 1 }),
-      pavers0: () => std({ map: T.pavers0, roughness: 0.95 }),
       concrete: () => std({ map: T.concrete, roughness: 0.95 }),
-      sand: () => std({ color: "#cdb68a", roughness: 1 }),
-      topsoil: () => std({ color: "#5d3f2a", roughness: 1 }),
       geotex: () => std({ color: "#e4e0d4", roughness: 1, side: THREE.DoubleSide }),
       box: () => std({ color: "#d8dbd7", roughness: 0.5 }), // the grey weatherproof box
-      duct: () => std({ color: "#2b2c2e", roughness: 0.6 }),
       cable: () => std({ color: "#1a1a1a", roughness: 0.5 }),
       perf: () => std({ color: "#3a3c3a", roughness: 0.6 }),
-      tapeY: () => std({ color: "#e8c22a", roughness: 0.7 }), // the warning tape over a duct
       sett0: () => std({ color: "#8c8b87", roughness: 0.85 }), sett1: () => std({ color: "#a2a19b", roughness: 0.85 }),
       sett2: () => std({ color: "#787a78", roughness: 0.85 }),
       log: () => std({ color: "#a37a52", roughness: 0.85 }), // eucalyptus, barked and oiled
@@ -291,7 +277,7 @@ function mat(name) {
       gum: () => std({ color: "#6f8462", roughness: 0.95 }), // its grey-green crown
       leaf: () => std({ map: T.foliage, color: "#e2ecd6", roughness: 0.95 }),
       leaf2: () => std({ map: T.foliage, color: "#f4f8e8", roughness: 0.95 }),
-      white: () => std({ color: "#eeeeec", roughness: 0.3, metalness: 0.3 }),
+      white: () => std({ color: "#eeeeec", roughness: 0.3, metalness: 0.3 }), // the four-by-four's paint
       silver: () => std({ color: "#a9adb1", roughness: 0.3, metalness: 0.6 }),
       glass: () => std({ color: "#12171b", roughness: 0.55, metalness: 0, envMapIntensity: 0.3, side: THREE.DoubleSide }),
       tyre: () => std({ color: "#1d1d1f", roughness: 0.9 }),
@@ -411,6 +397,11 @@ PART = "sign"
   const [p0, p1] = [x0 + inset, x1 - inset]
   blk(p0, y0 - 0.05, p1, y0, q0, q1, "black")
   add(new THREE.PlaneGeometry(p1 - p0, q1 - q0), "led", { pos: [(p0 + p1) / 2, (q0 + q1) / 2, -(y0 - 0.052)], noEdges: true, noShadow: true })
+  // the letters' solar panel on the cap at the wall's east end, tilted toward the farm on two black rails (D-065)
+  const pv = C.lighting.panel, cy = (y0 + y1) / 2
+  for (const x of [pv.x[0] + 0.15, pv.x[1] - 0.15]) blk(x - 0.02, cy - pv.d / 2, x + 0.02, cy + pv.d / 2, h + 0.12, h + 0.17, "black")
+  const panel = add(new THREE.BoxGeometry(pv.x[1] - pv.x[0], 0.035, pv.d), "pv", { pos: [(pv.x[0] + pv.x[1]) / 2, h + 0.2, -cy] })
+  panel.rotation.x = -THREE.MathUtils.degToRad(pv.tilt)
 }
 
 // ------------------------------------------------------------ the gates
@@ -427,6 +418,7 @@ function pillar(x0, y0, x1, y1, h, lantern) {
     blk(cx - 0.08, cy - 0.08, cx + 0.08, cy + 0.08, h + 0.12, h + 0.16, "black")
     blk(cx - 0.07, cy - 0.07, cx + 0.07, cy + 0.07, h + 0.16, h + 0.38, "lamp")
     blk(cx - 0.1, cy - 0.1, cx + 0.1, cy + 0.1, h + 0.38, h + 0.42, "black")
+    blk(cx - 0.09, cy - 0.09, cx + 0.09, cy + 0.09, h + 0.42, h + 0.428, "pv") // solar (D-065): its panel on the top
     if (DUSK) { const l = new THREE.PointLight(0xffc982, 9, 9, 1.6); l.position.set(cx, h + 0.27, -cy); scene.add(l) }
     PART = was
   }
@@ -468,20 +460,33 @@ PART = "turn"
     0, 0.05, "setts", { noShadow: true })
 }
 
-// ------------------------------------------------------------ the green parking: pavers in a fieldstone edging, sett strips, wheel stops
+// ------------------------------------------------------------ the parking (D-065): gravel in a timber edging, timber strips, wheel stops
 {
   const [x0, y0, x1, y1] = PK.box, e = PK.edging.w, inner = [x0 + e, y0 + e, x1 - e, y1 - e]
   PART = "lot"
-  extrude(rrect(new THREE.Shape(), inner, PK.r - e), 0, 0.04, "pavers", { noShadow: true })
+  extrude(rrect(new THREE.Shape(), inner, PK.r - e), 0, 0.03, "chips", { noShadow: true })
   const ring = rrect(new THREE.Shape(), PK.box, PK.r)
   ring.holes.push(rrect(new THREE.Path(), inner, PK.r - e))
-  extrude(ring, 0, 0.05, "stone", { noShadow: true })
-  for (const x of PK.bays.slice(1)) blk(x - PK.strips.w / 2, y1 - PK.strips.l, x + PK.strips.w / 2, y1 - e, 0.04, 0.065, "row", { noShadow: true })
+  extrude(ring, 0, 0.04, "edgewood", { noShadow: true })
+  for (const x of PK.bays.slice(1)) blk(x - PK.strips.w / 2, y1 - PK.strips.l, x + PK.strips.w / 2, y1 - e, 0.03, 0.036, "edgewood", { noShadow: true })
   for (let i = 0; i < PK.bays.length - 1; i++) {
     const cx = (PK.bays[i] + PK.bays[i + 1]) / 2
     PART = i === 0 ? "stop" : "stops"
-    add(new THREE.CylinderGeometry(PK.stops.r, PK.stops.r, PK.stops.l, 16), "log", { pos: [cx, 0.04 + PK.stops.r, -(y1 - PK.stops.at)], rot: [0, 0, Math.PI / 2] })
+    add(new THREE.CylinderGeometry(PK.stops.r, PK.stops.r, PK.stops.l, 16), "log", { pos: [cx, 0.03 + PK.stops.r, -(y1 - PK.stops.at)], rot: [0, 0, Math.PI / 2] })
   }
+}
+
+// ------------------------------------------------------------ the solar bollards (D-065): a post on a footing, a lamp
+// band under its cap and a panel on top; the first is the rail's bollard
+for (const [k, [x, y]] of C.lighting.bollards.at.entries()) {
+  PART = k === 0 ? "bollard" : "bollards"
+  const { h, d } = C.lighting.bollards, r = d / 2
+  cyl(x, y, r * 1.7, 0, 0.03, "concrete", 24)
+  cyl(x, y, r, 0.03, h - 0.2, "bollard", 24)
+  cyl(x, y, r * 0.9, h - 0.17, 0.12, "lamp", 24)
+  cyl(x, y, r * 1.1, h - 0.05, 0.05, "bollard", 24)
+  cyl(x, y, r, h, 0.006, "pv", 24)
+  if (DUSK) { const l = new THREE.PointLight(0xffd29a, 2.4, 6, 1.8); l.position.set(x, h - 0.11, -y); scene.add(l) }
 }
 
 // ------------------------------------------------------------ the rock road: setts between fieldstone edgings, along compound.json's curve
@@ -629,18 +634,18 @@ if (TOP) {
   for (const [x, y] of [[x0 - 0.2, y0 - 0.2], [x1 + 0.2, y0 - 0.2], [x0 - 0.2, y1 + 0.2], [x1 + 0.2, y1 + 0.2]]) cyl(x, y, 0.04, 0, 0.3, "log", 10)
   for (const y of [y0 - 0.2, y1 + 0.2]) blk(x0 - 0.2, y - 0.012, x1 + 0.2, y + 0.012, 0.28, 0.29, "black")
   for (const x of [x0 - 0.2, x1 + 0.2]) blk(x - 0.012, y0 - 0.2, x + 0.012, y1 + 0.2, 0.28, 0.29, "black")
-  LAYER = "sub" // the crushed-stone sub-base, rolled
-  extrude(rrect(new THREE.Shape(), PK.box, PK.r), 0.01, 0.01, "gravel")
-  LAYER = "edging" // the fieldstone edging set round it
+  LAYER = "geotex" // the geotextile over the dug floor, in four widths from the roll
+  extrude(rrect(new THREE.Shape(), PK.box, PK.r), 0.006, 0.003, "geotex")
+  LAYER = "edging" // the timber edging pegged round it
   const ring = rrect(new THREE.Shape(), PK.box, PK.r)
   ring.holes.push(rrect(new THREE.Path(), inner, PK.r - e))
-  extrude(ring, 0.02, 0.01, "stone")
-  LAYER = "pavers" // the blocks laid, their cells filled with topsoil
-  extrude(rrect(new THREE.Shape(), inner, PK.r - e), 0.03, 0.01, "pavers0")
-  LAYER = "grass" // the grass come through
-  extrude(rrect(new THREE.Shape(), inner, PK.r - e), 0.04, 0.01, "pavers")
-  LAYER = "marks" // the sett strips between the bays and the wheel stops
-  for (const x of PK.bays.slice(1)) blk(x - PK.strips.w / 2, y1 - PK.strips.l, x + PK.strips.w / 2, y1 - e, 0.05, 0.06, "row")
+  extrude(ring, 0.02, 0.01, "edgewood")
+  LAYER = "base" // murram or crushed stone with its fines, compacted in two layers
+  extrude(rrect(new THREE.Shape(), inner, PK.r - e), 0.012, 0.006, "murram")
+  LAYER = "gravel" // the angular gravel spread and rolled in
+  extrude(rrect(new THREE.Shape(), inner, PK.r - e), 0.03, 0.01, "chips")
+  LAYER = "marks" // the timber strips between the bays and the wheel stops
+  for (const x of PK.bays.slice(1)) blk(x - PK.strips.w / 2, y1 - PK.strips.l, x + PK.strips.w / 2, y1 - e, 0.05, 0.056, "edgewood")
   for (let i = 0; i < PK.bays.length - 1; i++) {
     const cx = (PK.bays[i] + PK.bays[i + 1]) / 2
     add(new THREE.CylinderGeometry(PK.stops.r, PK.stops.r, PK.stops.l, 16), "log", { pos: [cx, 0.06 + PK.stops.r, -(y1 - PK.stops.at)], rot: [0, 0, Math.PI / 2] })
@@ -653,32 +658,21 @@ if (TOP) {
   const st = PK.bays.slice(0, -1).map((b, i) => { const cx = (b + PK.bays[i + 1]) / 2, cy = y1 - PK.stops.at; return frac(cx - PK.stops.l / 2 - 0.03, cy - PK.stops.r - 0.03, cx + PK.stops.l / 2 + 0.03, cy + PK.stops.r + 0.03) })
   Object.assign(PIECES, {
     aspect: +(TW / TH).toFixed(5),
-    sub: quarters,
+    geotex: quarters,
     edging: [frac(x0, y0, x0 + e, y1), frac(x0, y1 - e, x1, y1), frac(x1 - e, y0, x1, y1), frac(x0, y0, x1, y0 + e)],
-    pavers: cols, grass: cols, strips: sx, stops: st,
+    base: quarters, gravel: cols, strips: sx, stops: st,
   })
 }
 
 // ------------------------------------------------------------ the rail's parts that the model has no single mesh for (?item=)
 if (ITEM) {
   PART = ITEM
-  // a block of grass pavers: 400 x 400 x 80 mm of concrete round sixteen cells, grassed, or with bare topsoil
-  const paver = (x, y, z, grassed) => {
-    const P = C.build.paver, n = 4, c = P.l / n, hole = c * 0.64
-    const sh = new THREE.Shape([[0, 0], [P.l, 0], [P.l, P.w], [0, P.w]].map(([u, v]) => new THREE.Vector2(u, v)))
-    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
-      const u = i * c + (c - hole) / 2, v = j * c + (c - hole) / 2
-      sh.holes.push(new THREE.Path([[u, v], [u + hole, v], [u + hole, v + hole], [u, v + hole]].map(([a, b]) => new THREE.Vector2(a, b))))
-    }
-    const g = new THREE.ExtrudeGeometry(sh, { depth: P.h, bevelEnabled: false })
-    add(g, "concrete", { pos: [x, z, -y], rot: [-Math.PI / 2, 0, 0] })
-    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
-      const u = x + i * c + c / 2, v = y + j * c + c / 2
-      blk(u - hole / 2, v - hole / 2, u + hole / 2, v + hole / 2, z, z + P.h - (grassed ? 0.004 : 0.015), "topsoil", { noEdges: true })
-      if (grassed) for (let k = 0; k < 5; k++) { // a tuft of blades
-        const bl = add(new THREE.ConeGeometry(0.006, 0.05 + rnd() * 0.03, 3), k % 2 ? "leaf" : "leaf2", { pos: [u + (rnd() - 0.5) * hole * 0.7, z + P.h + 0.02, -(v + (rnd() - 0.5) * hole * 0.7)], noEdges: true })
-        bl.rotation.set((rnd() - 0.5) * 0.5, 0, (rnd() - 0.5) * 0.5)
-      }
+  // a few loose stones on the gravel, so its card reads as gravel and not as a grey slab
+  const stones = (x0, y0, x1, y1, z, n) => {
+    for (let k = 0; k < n; k++) {
+      const t = rnd(), m = add(new THREE.IcosahedronGeometry(0.007 + rnd() * 0.006, 0), t > 0.66 ? "sett0" : t > 0.33 ? "sett1" : "sett2",
+        { pos: [x0 + rnd() * (x1 - x0), z + 0.004, -(y0 + rnd() * (y1 - y0))], noEdges: true })
+      m.rotation.set(rnd() * 3, rnd() * 3, rnd() * 3)
     }
   }
   const sett = (x, y, z, s = 0.1) => {
@@ -686,31 +680,40 @@ if (ITEM) {
     const m = blk(x - s / 2 + 0.006, y - s / 2 + 0.006, x + s / 2 - 0.006, y + s / 2 - 0.006, z, z + 0.08 + (rnd() - 0.5) * 0.01, t > 0.66 ? "sett0" : t > 0.33 ? "sett1" : "sett2")
     m.rotation.y = (rnd() - 0.5) * 0.08
   }
-  if (ITEM === "pavers") {
-    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) paver(i * 0.4, j * 0.4, 0, j > 0)
+  if (ITEM === "gravel") { // a square metre of the top, rolled, on its base
+    blk(0, 0, 1, 1, -0.11, 0, "murram")
+    blk(0, 0, 1, 1, 0, 0.04, "chips")
+    stones(0.05, 0.05, 0.95, 0.95, 0.04, 140)
+  } else if (ITEM === "edging") { // a corner of the edging: two boards on edge, pegs behind them, the gravel inside
+    const { w: ew, h: eh } = C.parking.edging
+    blk(0, 0, 1.2, ew, -eh + 0.01, 0.01, "edgewood")
+    blk(0, ew, ew, 0.9, -eh + 0.01, 0.01, "edgewood")
+    for (const x of [0.25, 1.0]) blk(x - 0.025, -0.05, x + 0.025, 0, -0.4, 0.0, "edgewood")
+    for (const y of [0.6]) blk(-0.05, y - 0.025, 0, y + 0.025, -0.4, 0.0, "edgewood")
+    blk(ew, ew, 1.2, 0.9, -0.03, 0, "chips")
+    stones(ew + 0.03, ew + 0.03, 1.15, 0.85, 0, 70)
   } else if (ITEM === "setts") {
     for (let i = 0; i < 10; i++) for (let j = 0; j < 6; j++) sett(i * 0.1 + (j % 2) * 0.05, j * 0.1, 0)
-  } else if (ITEM === "enclosure") { // the weatherproof box: a grey body, its door, two glands below, the photocell on top
-    const { w, d, h: [h0, h1] } = C.lighting.box
-    // drawn with its door toward the camera (plan -y), the wall behind it
-    blk(-w / 2, -(d - 0.02), w / 2, 0, h0, h1, "box")
+  } else if (ITEM === "solar") { // the sign's kit on a length of its wall, turned so its back face (and the box) faces us
+    const { box: b, panel: pv } = C.lighting, h = C.sign.h, { w, d, h: [h0, h1] } = b
+    blk(-0.75, 0, 0.75, 0.6, 0, h, "stone")
+    blk(-0.81, -0.06, 0.81, 0.66, h, h + 0.12, "gatewood")
+    for (const x of [-0.35, 0.35]) blk(x - 0.02, 0.05, x + 0.02, 0.55, h + 0.12, h + 0.17, "black")
+    const panel = add(new THREE.BoxGeometry(pv.x[1] - pv.x[0], 0.035, pv.d), "pv", { pos: [0, h + 0.2, -0.3] })
+    panel.rotation.x = THREE.MathUtils.degToRad(pv.tilt)
+    blk(-w / 2, -(d - 0.02), w / 2, 0, h0, h1, "box") // the box, its door toward us
     blk(-w / 2 + 0.01, -d, w / 2 - 0.01, -(d - 0.02), h0 + 0.01, h1 - 0.01, "box")
     blk(w / 2 - 0.05, -d - 0.012, w / 2 - 0.035, -d, (h0 + h1) / 2 - 0.04, (h0 + h1) / 2 + 0.04, "black") // the catch
-    for (const x of [-0.08, 0.08]) cyl(x, -d / 2, 0.016, h0 - 0.03, 0.03, "black", 12)
-    for (const x of [-0.08, 0.08]) cyl(x, -d / 2, 0.012, h0 - 0.35, 0.32, "duct", 12) // the ducts rising out of the ground
-    cyl(0, -d / 2, 0.025, h1, 0.05, "white", 16) // the photocell
-    blk(-0.4, 0, 0.4, 0.05, h0 - 0.35, h1 + 0.25, "stone") // the wall behind it
-  } else if (ITEM === "duct") { // a coil of 50 mm duct, a length of armoured cable out of it, the warning tape
-    for (let k = 0; k < 5; k++) add(new THREE.TorusGeometry(0.42, 0.025, 10, 64), "duct", { pos: [0, 0.025 + k * 0.05, 0], rot: [Math.PI / 2, 0, 0] })
-    add(new THREE.CylinderGeometry(0.025, 0.025, 0.7, 16), "duct", { pos: [0.77, 0.025, -0.42], rot: [0, 0, Math.PI / 2] })
-    add(new THREE.CylinderGeometry(0.008, 0.008, 0.35, 12), "cable", { pos: [1.29, 0.025, -0.42], rot: [0, 0, Math.PI / 2] })
-    blk(0.55, 0.3, 1.45, 0.38, 0, 0.004, "tapeY")
+    cyl(0.12, -0.02, 0.008, h1, h + 0.14 - h1, "cable", 8) // the panel's lead down the wall
   } else if (ITEM === "layers") { // the parking cut open, each layer stepped back so its top shows
-    const L = 1.2, D = 0.8, { dig, subbase, bedding, paver: P } = C.build
+    const L = 1.2, D = 0.8, { dig, base } = C.build, { w: ew, h: eh } = C.parking.edging
     blk(0, 0, L, D, -dig - 0.25, -dig, "earth")
-    blk(0.25, 0, L, D, -dig, -dig + subbase, "gravel")
-    blk(0.5, 0, L, D, -dig + subbase, -dig + subbase + bedding, "sand")
-    for (const y of [0, 0.4]) paver(0.8, y, -P.h, true)
+    blk(0.2, 0, L, D, -dig, -dig + 0.004, "geotex")
+    blk(0.4, 0, L, D, -dig + 0.004, -dig + base, "murram")
+    blk(0.7, 0, L, D, -dig + base, 0, "chips")
+    stones(0.72, 0.02, L - 0.02, D - 0.02, 0, 60)
+    blk(L, 0, L + ew, D, -eh + 0.01, 0.01, "edgewood") // the edging at its end, and a peg behind it
+    blk(L + ew, 0.35, L + ew + 0.05, 0.4, -0.4, 0, "edgewood")
   } else if (ITEM === "trench") { // a metre of the trench, cut open: the lining, the stone, the pipe
     const { w, depth, pipe: dp } = C.drainage.trench
     blk(-0.5, 0, -w / 2, 1, -depth - 0.2, 0, "earth"); blk(w / 2, 0, 0.5, 1, -depth - 0.2, 0, "earth"); blk(-w / 2, 0, w / 2, 1, -depth - 0.2, -depth, "earth")
@@ -728,7 +731,7 @@ if (ITEM) {
 }
 
 // ------------------------------------------------------------ the services' views: the box on the wall, the trench and the pit
-const LCOL = { feed: "#1d4e89", lamp: "#2f7ed8", sign: "#d9822b" }
+const LCOL = { solar: "#1d4e89", lamp: "#2f7ed8", sign: "#d9822b" }
 const DCOL = { fall: "#2f7ed8", trench: "#1d4e89", pit: "#5fb0ea" }
 const runs = [] // [colour, width, ...a, ...b] for the line view
 const seg3 = (col, wdt, [ax, ay, ah], [bx, by, bh]) => runs.push([col, wdt, ax, ah, -ay, bx, bh, -by])
@@ -738,28 +741,22 @@ const arrow = (col, [ax, ay], [bx, by], h = 0.08) => { // a fall: from high to l
   const a = Math.atan2(by - ay, bx - ax), k = 0.5
   for (const s of [-1, 1]) poly(col, 3, [[bx, by], [bx - k * Math.cos(a + s * 0.45), by - k * Math.sin(a + s * 0.45)]], h)
 }
-// a polyline cut where it leaves the model view (the rock road is drawn to its first 40 %)
-const clipY = (pts, ymax) => {
-  const out = []
-  for (let i = 0; i < pts.length; i++) {
-    const p = pts[i], q = pts[i - 1]
-    if (p[1] <= ymax) { if (q && q[1] > ymax) out.push([q[0] + ((p[0] - q[0]) * (ymax - q[1])) / (p[1] - q[1]), ymax]); out.push(p) }
-  }
-  return out
-}
 const SPOTS = {} // each tag's point, in plan metres and height
 if (VIEW === "light") {
-  const LT = C.lighting, b = LT.box
+  // every light is solar (D-065): no line runs to the bollards or the lanterns; only the sign has runs, on its wall
+  const LT = C.lighting, b = LT.box, mid = (b.h[0] + b.h[1]) / 2, cap = S.h + 0.12
   PART = "box"
   blk(b.x - b.w / 2, b.y, b.x + b.w / 2, b.y + b.d, b.h[0], b.h[1], "box")
-  cyl(b.x, b.y + b.d / 2, 0.025, b.h[1], 0.05, "white", 16)
-  const feed = clipY(LT.route.feed, 4.8)
-  poly(LCOL.feed, 3.4, feed)
-  poly(LCOL.lamp, 3.4, LT.route.lantern)
-  seg3(LCOL.lamp, 3.4, [19.7, -6.3, 0.03], [19.7, -6.55, G.leaf + 0.3 + 0.16]) // up inside the pillar to the lantern
-  seg3(LCOL.sign, 3.4, [b.x, b.y, (b.h[0] + b.h[1]) / 2], [b.x, S.box[1], (b.h[0] + b.h[1]) / 2]) // through the wall to the letters' driver
-  seg3(LCOL.sign, 3.4, [b.x, S.box[1], (b.h[0] + b.h[1]) / 2], [b.x - 0.4, S.box[1], (S.panel.y0 + S.panel.y1) / 2])
-  Object.assign(SPOTS, { LF: [...feed[0], 0.03], LD: [21, -2.3, 0.03], EB: [b.x, b.y + b.d, b.h[1]], SG: [15, S.box[1], S.panel.y1], L1: [19.7, -6.7, G.leaf + 0.3 + 0.42] })
+  seg3(LCOL.solar, 3.4, [b.x, b.y + 0.02, cap], [b.x, b.y + 0.02, b.h[1]]) // the panel's lead down the wall's back to the box
+  seg3(LCOL.sign, 3.4, [b.x, b.y, mid], [b.x, S.box[1], mid]) // through the wall to the letters
+  seg3(LCOL.sign, 3.4, [b.x, S.box[1], mid], [b.x - 0.4, S.box[1], (S.panel.y0 + S.panel.y1) / 2])
+  Object.assign(SPOTS, {
+    ...Object.fromEntries(LT.bollards.at.map(([x, y], i) => [`B${i + 1}`, [x, y, LT.bollards.h]])),
+    L1: [19.7, -6.7, G.leaf + 0.3 + 0.43],
+    SP: [(LT.panel.x[0] + LT.panel.x[1]) / 2, (S.box[1] + S.box[3]) / 2, cap + 0.1],
+    EB: [b.x, b.y + b.d, b.h[0]],
+    SG: [15, S.box[1], S.panel.y1],
+  })
 } else if (VIEW === "drain") {
   const DR = C.drainage, t = DR.trench, p = DR.pit
   PART = "drain"

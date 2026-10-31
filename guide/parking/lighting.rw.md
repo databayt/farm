@@ -2,33 +2,32 @@
 
 > **Ubusobanuro:** iyi nyandiko yahinduwe na mudasobwa (machine draft). Igomba gusuzumwa n'umuntu uvuga Ikinyarwanda kavukire mbere yo kuyiha abakozi. Iyo hari itandukaniro, kurikiza iy'Icyongereza.
 
-Status: igitekerezo cy'igishushanyo (design intent) cyo ku wa 2026-10-31. Nta kintu kirashakirwa aho kiva; uburinzi bw'umuzunguruko (circuit) buri kuri board y'urugo (compound), bugomba gutegurwa no guhabwa icyemezo n'umuyagankuba ufite uruhushya rwa RURA class A [A].
+Status: igitekerezo cy'igishushanyo (design intent) cyo ku wa 2026-10-31. Amatara yose akoresha izuba (D-065): nta nsinga iva kuri board y'ifamu, bityo inzira yinjira ntiyongera umuriro ukenewe ku mizunguruko yayo; nta kintu kiragenerwa ingano cyangwa ngo kiboneke aho kugurwa [A].
 
-Ibyo umuyagankuba (electrician) akeneye byose ngo amurikire inzira yinjira nijoro: insinga iyigaburira (feed), agasanduku ko ku rukuta ruriho icyapa, inyuguti n'amatara, na buri point.
+Ibyo umuyagankuba (electrician) akeneye byose ngo amurikire inzira yinjira nijoro: amatara y'izuba yo hasi (bollards), amatara y'izuba yo ku nkingi, icyuma gifata izuba na bateri by'icyapa ubwacyo, na buri point.
 
-English: [read this page in English](lighting.md) · Amatara mu bishushanyo: [urupapuro rwa parikingi](/en/parking#lighting) · Igihe bikorwa: [gahunda y'imirimo](plan.md) · Umuriro w'ifamu: [amashanyarazi y'ifamu](../farm/electric.md)
+English: [read this page in English](lighting.md) · Amatara mu bishushanyo: [urupapuro rwa parikingi](/en/parking#lighting) · Igihe bikorwa: [gahunda y'imirimo](plan.md)
 
 ## Mu ncamake
 
 | Iki | Uko byateganyijwe |
 |---|---|
-| Umuzunguruko (circuit) | umuzunguruko w'amatara yo hanze y'ifamu, kimwe mu bitagomba guhagarara na rimwe; RCD yawo na breaker biri kuri board y'urugo |
-| Insinga iyigaburira (feed) | insinga ivuye kuri board y'urugo, inyura ku muhanda w'amabuye muri duct iri mu butaka, ikanyura ku itara ry'irembo ry'imbere, ikagera ku gasanduku ko ku rukuta ruriho icyapa |
-| Agasanduku | kadatinywa n'imvura, inyuma y'urukuta ruriho icyapa: isolator, photocell ibyatsa nimugoroba ikabizimya mu gitondo ifite timer, na driver ya 24 V y'inyuguti z'icyapa |
-| Bivuye ku gasanduku | icyapa, n'insinga inyura inyuma y'uruzitiro rw'ibiti (hedge) ijya ku itara (lantern) riri ku nkingi y'ibumoso y'irembo ry'inyuma |
-| Duct | mm 50, hafi mm 450 mu butaka munsi ya tape y'umuburo, zizamuka imbere mu nkingi no mu rukuta |
+| Amatara yo hasi (bollards) | 4, uburebure bwa hafi m 0.8, buri rimwe rifite icyuma cyaryo gifata izuba, bateri na sensori icana nimugoroba, ku gashingiro gato hakurya y'impera ya kure ya parikingi, kure y'amashami y'ibiti |
+| Amatara yo ku nkingi (lanterns) | amatara abiri yo ku nkingi, akoresha izuba, buri rimwe rifite icyuma cyaryo hejuru: L1 ku irembo ry'inyuma, L2 ku irembo ry'imbere |
+| Icyapa | icyuma gifata izuba cya 100 W ku mutwe w'urukuta gisharija bateri iri mu gasanduku kadatinya imvura kari inyuma y'urukuta; charge controller yacyo na timer bigaburira driver ya 24 V y'inyuguti za LED |
+| Insinga | nta n'imwe mu butaka: imiyoboro migufi y'icyapa gusa, imanuka ku rukuta ikanarunyuramo |
 
 ## Ingingo zo guhagarara ukagenzura (hold points)
 
-1. **Duct mbere y'amapave.** Duct n'urudodo rwayo rukurura insinga (draw wire) bishyirwamo mbere y'uko sub-base ishyirwa hejuru y'inzira.
-2. **Mbere yo guha umuriro.** Igerageza ritsinda kandi umuzunguruko uhabwa icyemezo mbere y'uko uhabwa umuriro.
+1. **Ibyuma bifata izuba biri ku zuba.** Buri cyuma kibona ikirere gifunguye mu masaha yo hagati y'umunsi, kure y'amashami y'ibiti.
+2. **Bigeragezwa nimugoroba.** Buri tara ryaka ubwaryo nimugoroba mbere y'uko inzira yinjira ikoreshwa nijoro.
 
 ## Intambwe
 
-1. **Duct:** cukura umuferege ku nzira, shyiramo duct ya mm 50 n'urudodo rwayo, tape y'umuburo hejuru yayo; uyizamure imbere mu nkingi no mu rukuta.
-2. **Insinga:** kurura insinga yo hanze ikomejwe (armoured cable) uyinyuze muri duct.
-3. **Agasanduku n'amatara:** fatisha agasanduku ku rukuta ruriho icyapa, gafite isolator, photocell na driver; huza inyuguti n'amatara yombi.
-4. **Igerageza:** insulation na continuity; photocell na timer bigeragezwa nimugoroba; icyemezo (certificate).
+1. **Udushingiro:** agashingiro gato ka beto kuri buri tara ryo hasi, m 0.35 hakurya y'impera ya kure.
+2. **Amatara yo hasi n'ayo ku nkingi:** fatisha amatara yo hasi ku dushingiro twayo n'ayo ku nkingi ku mitwe yazo.
+3. **Ibikoresho by'icyapa:** fatisha icyuma ku mutwe w'urukuta n'agasanduku inyuma y'urukuta; manura insinga y'icyuma ku rukuta igere ku gasanduku, unyuze iy'inyuguti mu rukuta; huza bateri, controller na driver.
+4. **Igerageza:** reka bisharijwe umunsi umwe, hanyuma urebe buri tara ryaka nimugoroba; tunganya timer y'icyapa.
 
 ## Points
 
@@ -36,4 +35,5 @@ English: [read this page in English](lighting.md) · Amatara mu bishushanyo: [ur
 
 ## Ibibazo bitarasubizwa
 
-1. Amatara (lanterns) yaka ijoro ryose cyangwa azima ku isaha ya timer? Photocell ifite timer ishobora gukora kimwe muri ibyo byombi.
+1. Inyuguti zaka ijoro ryose cyangwa zizima ku isaha ya timer? Controller y'icyapa ifite timer ishobora gukora kimwe muri ibyo byombi.
+2. Imyanya 1 na 2 iri munsi y'amashami y'igiti gitanga igicucu, aho itara ry'izuba ryo hasi ritasharija: ese urumuri rwa B1 rurahagije aho?

@@ -58,7 +58,7 @@ Amasomo arindwi avuye ku mafamu ameze nk'iyi, buri rimwe n'ahantu rihindura:
 | [Igikoni gikuru (galley)](galley/plan.md) | Banza uhitemo gaz cyangwa amashanyarazi; umutetsi n'umuhanga mu gushyiraho ibikoni bagenzura imiterere. |
 | [Ubwiherero rusange](public-bathroom/plan.md) | Banza ugene ingano ya septic tank ku bazayikoresha; nta mushyitsi mbere y'igenzura ryayo. |
 | [Volleyball](volleyball/plan.md) | Ringaniza ibyatsi kandi usuke fondasiyo (footings); hanyuma ibyatsi, imirongo n'urushundura. |
-| [Parikingi](parking/plan.md) | Gucukura, sub-base, umusenyi wo hasi (bedding), pavés; umuyoboro w'insinga z'amatara ushyirwamo mbere ya pavés. |
+| [Parikingi](parking/plan.md) | Gucukura, geotextile, imbaho ziyizengurutse, ishingiro, amabuye mato; amatara akoresha izuba, nta muferege (D-065). |
 | [Ingando (camping)](camp/plan.md) | Gushinga, gutegura imbere, byiteguye: nta muriro, nta mazi aho amahema ashingwa. |
 | [Akabari](bar/plan.md) | Hitamo icyo kazagurisha; hatch yamaze gushyirwamo ikadiri muri kontineri. |
 | [Ubuhinzi](farming/plan.md) | Gerageza ubutaka n'amazi, zitira, ubake uturima, ushyireho ibitonyanga, utangize ingemwe. Ibishyimbo na dodo bibibwa mu turima ubwabyo bitanga umusaruro wa mbere mu byumweru 4 kugeza 8. |

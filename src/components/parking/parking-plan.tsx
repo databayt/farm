@@ -8,12 +8,14 @@ import { words } from "./words"
 // The way in drawn in the pattern of the livestock plan (src/components/livestock/livestock-plan.tsx): thin lines,
 // no colour, bold capitals, and its dimensions as the studio's plan sets them (src/components/drawing): the bays and
 // the open east end along the far edge, then the parking's width; the rock road's width; the parking's depth, the
-// strips and the run to the sign wall; along the road, the sign wall, the pillar and the gate, then the turn's mouth. It is turned as the homepage plan turns the compound
+// strips and the run to the sign wall; along the road, the sign wall, the pillar and the gate, then the turn's mouth.
+// Since D-065 the parking is gravel (stippled) in a timber edging, its bays marked by timber strips, and lit by solar
+// bollards past its far edge (ringed dots). It is turned as the homepage plan turns the compound
 // (src/components/home/compound-plan.tsx), compound.json's y flipped: the public road runs along the bottom of the
 // page, the sign wall stands left of the gate and the rock road leaves at the top. Units are metres in
 // compound.json's frame at true size; the homepage spreads the way in sideways, this plan does not.
 
-const { road, turn, gate, sign, hedge, parking: lot, rockRoad, trees, cars } = parking
+const { road, turn, gate, sign, hedge, parking: lot, rockRoad, trees, cars, lighting } = parking
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
 const medium = { ...thin, strokeWidth: 1.6 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
@@ -62,6 +64,18 @@ function Hedge({ x0, x1 }: { x0: number; x1: number }) {
   return <path d={`M${f(x0)} ${top}${along}L${f(x1)} ${bottom}${back}Z`} {...thin} />
 }
 
+// The gravel, stippled: a dot about every 0.45 m, jittered by a fixed sequence so the drawing never changes, inside the
+// edging; the cars, the strips and the stops are drawn over it and hide what they stand on.
+function stipple([x0, y0, x1, y1]: number[]): [number, number][] {
+  let seed = 11
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+  const out: [number, number][] = []
+  for (let x = x0 + 0.25; x < x1 - 0.2; x += 0.45) for (let y = y0 + 0.25; y < y1 - 0.2; y += 0.45) {
+    out.push([f(x + (rnd() - 0.5) * 0.3), f(y + (rnd() - 0.5) * 0.3)])
+  }
+  return out
+}
+
 // the drawing's frame, page units (compound.json's metres, y flipped)
 const VIEW = { x: 1.9, y: -6.1, w: 33.2, h: 15.5 }
 const k = scaleFor(VIEW.w, VIEW.h)
@@ -88,10 +102,8 @@ export async function ParkingPlan({ title, className }: { title?: string; classN
   const half = width / 2
   const arcs = Array.from({ length: 9 }, (_, k) => ((k + 0.5) * show) / 9)
   const cut = [off(curve, show, half), off(curve, show, -half)]
-  // the pavers drawn on a 0.8 m grid, twice the blocks' size, so they read as pavers and not as a grey fill
   const [ix0, iy0, ix1, iy1] = [px0 + e, py0 + e, px1 - e, py1 - e]
-  const gridX = Array.from({ length: Math.floor((ix1 - ix0) / 0.8) }, (_, k) => f(ix0 + 0.4 + k * 0.8)).filter((x) => x < ix1 - 0.2)
-  const gridY = Array.from({ length: Math.floor((iy1 - iy0) / 0.8) }, (_, k) => f(iy0 + 0.4 + k * 0.8)).filter((y) => y < iy1 - 0.2)
+  const dots = stipple([ix0, iy0, ix1, iy1])
   const bays = lot.bays.slice(0, -1).map((b, i) => ({ n: i + 1, x0: b, x1: lot.bays[i + 1], cx: f((b + lot.bays[i + 1]) / 2) }))
   const stopY = py1 - lot.stops.at
   return (
@@ -114,11 +126,10 @@ export async function ParkingPlan({ title, className }: { title?: string; classN
       <path d={`M${f(gl + leaf)} ${Y(gate.y)}A${leaf} ${leaf} 0 0 0 ${gl} ${Y(gate.y + leaf)}`} {...dashed} />
       <path d={`M${f(gr - leaf)} ${Y(gate.y)}A${leaf} ${leaf} 0 0 1 ${gr} ${Y(gate.y + leaf)}`} {...dashed} />
 
-      {/* The parking: its fieldstone edging, the pavers inside it */}
+      {/* The parking: its timber edging, the gravel inside it */}
       <rect {...rect(px0, py0, px1, py1)} rx={lot.r} {...thin} />
       <rect {...rect(ix0, iy0, ix1, iy1)} rx={f(lot.r - e)} {...thin} />
-      {gridX.map((x) => <line key={`x${x}`} x1={x} x2={x} y1={Y(iy1)} y2={Y(iy0)} {...faint} />)}
-      {gridY.map((y) => <line key={`y${y}`} x1={ix0} x2={ix1} y1={Y(y)} y2={Y(y)} {...faint} />)}
+      <g fill="currentColor" fillOpacity={0.4}>{dots.map(([x, y]) => <circle key={`${x} ${y}`} cx={x} cy={Y(y)} r={0.035} />)}</g>
 
       {/* The rock road leaving the far edge: its edges and edging, sett arcs across, cut where the plan ends */}
       {[half, half - edging, -half + edging, -half].map((d) => <path key={d} d={path(ts.map((t) => off(curve, t, d)))} {...(Math.abs(d) === half ? thin : faint)} />)}
@@ -144,6 +155,14 @@ export async function ParkingPlan({ title, className }: { title?: string; classN
         )
       })}
 
+      {/* The solar bollards past the far edge (D-065) */}
+      {lighting.bollards.at.map(([x, y]) => (
+        <g key={x}>
+          <circle cx={x} cy={Y(y)} r={0.13} {...thin} fill="var(--background)" />
+          <circle cx={x} cy={Y(y)} r={0.05} fill="currentColor" />
+        </g>
+      ))}
+
       {/* Shade trees: the crowns overhead, dashed, and their trunks */}
       {trees.list.map(([x, y, r]) => (
         <g key={x}>
@@ -155,18 +174,19 @@ export async function ParkingPlan({ title, className }: { title?: string; classN
       {bays.map((b) => <text key={b.n} x={b.cx} y={Y(py1 - lot.strips.l - 0.85)} textAnchor="middle" style={small}>{b.n}</text>)}
       <text x={bays[1].cx} y={Y(stopY - 0.62)} textAnchor="middle" style={{ ...small, ...halo }}>{name.stop}</text>
       <text x={27.6} y={Y(-1.6)} textAnchor="middle" style={{ ...label, ...halo }}>{name.parking}</text>
-      <text x={27.6} y={Y(-2.25)} textAnchor="middle" style={{ ...small, ...halo }}>{name.pavers}</text>
+      <text x={27.6} y={Y(-2.25)} textAnchor="middle" style={{ ...small, ...halo }}>{name.gravel}</text>
+      <text x={f(lighting.bollards.at.at(-1)![0] + 0.3)} y={f(Y(lighting.bollards.at.at(-1)![1]) + 0.13)} style={{ ...small, ...halo }}>{name.bollard}</text>
       <text x={27.1} y={Y(3.6)} style={label}>{name.road}</text>
       <text x={27.1} y={Y(3.05)} style={{ ...small, ...halo }}>{name.inner}</text>
       <text x={f((gl + gr) / 2)} y={Y(gate.y - 0.62)} textAnchor="middle" style={{ ...label, ...halo }}>{name.gate}</text>
       <text x={13.6} y={Y(sy1 + 0.55)} textAnchor="middle" style={label}>{name.wall}</text>
       <text x={f((sx0 + sx1) / 2)} y={f(Y(sy0) + 0.4)} textAnchor="middle" style={small}>{name.letters}</text>
       <text x={31.4} y={Y(hedge.y + hedge.w / 2 + 0.5)} textAnchor="middle" style={small}>{name.hedge}</text>
-      <text x={trees.list[1][0]} y={f(Y(trees.list[1][1]) - 0.5)} textAnchor="middle" style={{ ...small, ...halo }}>{name.tree}</text>
+      <text x={trees.list[1][0]} y={Y(trees.list[1][1] + 1.6)} textAnchor="middle" style={{ ...small, ...halo }}>{name.tree}</text>
       <text x={29.5} y={f(Y(road.edge) + 1.45)} textAnchor="middle" style={label}>{name.public}</text>
 
-      {/* The far edge: the five bays and the open east end, then the parking's width */}
-      <Chain k={k} along="x" at={[...lot.bays, px1]} edge={Y(py1)} side="top" overall />
+      {/* The far edge: the five bays and the open east end, then the parking's width, past the bollards */}
+      <Chain k={k} along="x" at={[...lot.bays, px1]} edge={Y(py1)} side="top" overall base={(Math.max(...lighting.bollards.at.map(([, y]) => y)) - py1 + 0.15) / k} />
       {/* The rock road's width, across its start */}
       <Dim k={k} a={[off(curve, 0, half)[0], Y(py1 + 2.8)]} b={[off(curve, 0, -half)[0], Y(py1 + 2.8)]} off={0} size={2.2} />
       {/* The parking's depth beside it; inside bay 4, the strips and the run from them to the sign wall */}

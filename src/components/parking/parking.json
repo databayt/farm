@@ -1,5 +1,5 @@
 {
-  "about": "The way in, as /en/camp is one camp: the outer gate off the public road, the sign wall beside it, the green parking just inside and the start of the rock road, as the homepage plans them (D-017, D-022). The 2D (parking-plan.tsx) and the 3D (scripts/site/render/parking.html) both read this file. Plan in true metres in compound.json's own frame (x east, y south, from the road into the farm), so every number it shares with the homepage (gate, sign, parking, shadeTrees, rockRoad, innerGate and the bays the cars stand in) is copied from src/components/home/compound.json as it is and must move with it. The homepage spreads the way in sideways for a wide screen (spread.wayIn), so there the sign wall stands 4.2 m from the gate's left pillar; here it is 0.6 m, as the true numbers give it. Both drawings turn it as the homepage does, flipped top to bottom: the public road at the bottom, the sign wall left of the gate. Nothing is surveyed, and the master plan (src/components/site/site.json) still has the gate's position to confirm. Every choice the compound files do not give is [A], a design choice.",
+  "about": "The way in, as /en/camp is one camp: the outer gate off the public road, the sign wall beside it, the gravel parking just inside and the start of the rock road, as the homepage plans them (D-017, D-022, D-065). The 2D (parking-plan.tsx) and the 3D (scripts/site/render/parking.html) both read this file. Plan in true metres in compound.json's own frame (x east, y south, from the road into the farm), so every number it shares with the homepage (gate, sign, parking, shadeTrees, rockRoad, innerGate and the bays the cars stand in) is copied from src/components/home/compound.json as it is and must move with it. The homepage spreads the way in sideways for a wide screen (spread.wayIn), so there the sign wall stands 4.2 m from the gate's left pillar; here it is 0.6 m, as the true numbers give it. Both drawings turn it as the homepage does, flipped top to bottom: the public road at the bottom, the sign wall left of the gate. Nothing is surveyed, and the master plan (src/components/site/site.json) still has the gate's position to confirm. Every choice the compound files do not give is [A], a design choice.",
   "road": {
     "about": "The public road, a dirt road (study/website/render-brief.md). Its near edge is 0.8 m outside the gate line, where compound.json's publicRoad band starts; its width and surface are not known, so it is drawn 6 m wide [A].",
     "edge": -7.5,
@@ -10,7 +10,7 @@
     "splay": 0.5
   },
   "gate": {
-    "about": "The outer gate (D-022, after the founder's reference photo): two timber leaves of vertical boards on a frame braced in an X, with black iron strap hinges and a latch, between fieldstone pillars under timber caps, a lantern on the left one. 4.4 m between the pillars (compound.json); the leaves 1.8 m high and the pillars 0.6 m square and 2.1 m high under a 120 mm cap, as the homepage 3D draws them. The leaves open inward, over the drive [A]: the hero shows them open, the model view shut as the homepage draws them, the 2D their swing.",
+    "about": "The outer gate (D-022, after the founder's reference photo): two timber leaves of vertical boards on a frame braced in an X, with black iron strap hinges and a latch, between fieldstone pillars under timber caps, a solar lantern on the left one (D-065). 4.4 m between the pillars (compound.json); the leaves 1.8 m high and the pillars 0.6 m square and 2.1 m high under a 120 mm cap, as the homepage 3D draws them. The leaves open inward, over the drive [A]: the hero shows them open, the model view shut as the homepage draws them, the 2D their swing.",
     "x": [20, 24.4],
     "y": -6.7,
     "post": 0.6,
@@ -18,7 +18,7 @@
     "pillar": 2.1
   },
   "sign": {
-    "about": "The sign wall (D-022): fieldstone under a timber cap, 7.6 m long, 0.6 m thick and 1.6 m high, 0.6 m from the gate's left pillar (compound.json). On its road face a dark steel panel 7.1 m long and 1.0 m high, from 0.35 m up, carries DIGITAL FARM in warm-white LED capitals across its width, as the homepage 3D draws it. The letters' supply and switching are not designed yet [A].",
+    "about": "The sign wall (D-022): fieldstone under a timber cap, 7.6 m long, 0.6 m thick and 1.6 m high, 0.6 m from the gate's left pillar (compound.json). On its road face a dark steel panel 7.1 m long and 1.0 m high, from 0.35 m up, carries DIGITAL FARM in warm-white LED capitals across its width, as the homepage 3D draws it. The letters run at 24 V from the sign's own solar kit (lighting) [A].",
     "box": [11.2, -7.0, 18.8, -6.4],
     "h": 1.6,
     "panel": { "inset": 0.25, "y0": 0.35, "y1": 1.35, "text": "DIGITAL FARM" }
@@ -31,12 +31,12 @@
     "runs": [[2.5, 11.2], [18.8, 19.4], [25, 34.5]]
   },
   "parking": {
-    "about": "Green parking (D-017): a lawn of grass pavers 22 by 6 m with rounded corners (compound.json), concrete blocks with 100 mm cells of grass, as the homepage 3D draws them [A]. Five bays 2.6 m wide along its west end (compound.json), cars nose in; the open east end, 9 m, takes the drive, the turn and the start of the rock road.",
+    "about": "The parking (D-017), at its minimum (D-065): a bed of compacted gravel 22 by 6 m with rounded corners (compound.json) in a timber edging, no paver sub-base [A]. Five bays 2.6 m wide along its west end (compound.json), cars nose in; the open east end, 9 m, takes the drive, the turn and the start of the rock road.",
     "box": [8, -5, 30, 1],
     "r": 0.4,
     "bays": [8, 10.6, 13.2, 15.8, 18.4, 21],
     "strips": {
-      "about": "Between neighbouring bays and along bay 5's open side, a row of granite setts 100 mm wide running 4.0 m from the far edge, laid a little proud of the pavers so the bays read (compound.html) [A].",
+      "about": "Between neighbouring bays and along bay 5's open side, a timber strip 100 mm wide running 4.0 m from the far edge, laid flat on pegs flush with the gravel, so the bays read [A].",
       "w": 0.1,
       "l": 4.0
     },
@@ -47,8 +47,10 @@
       "at": 0.45
     },
     "edging": {
-      "about": "A fieldstone edging 200 mm wide round the pavers, flush with them, after the render brief's low kerbs [A].",
-      "w": 0.2
+      "about": "Treated eucalyptus boards 150 x 50 mm on edge round the gravel, on pegs every metre, their top 10 mm above it so the gravel stays in; the rounded corners in short lengths [A].",
+      "w": 0.05,
+      "h": 0.15,
+      "peg": 1.0
     }
   },
   "rockRoad": {
@@ -87,20 +89,18 @@
     ]
   },
   "build": {
-    "about": "[A] How the green parking is built, a common way to lay grass pavers for cars on a clay soil, until a builder sees the ground and the soil is tested: the turf lifted and the box dug out, a compacted crushed-stone sub-base, a bedding layer of sharp sand and topsoil, the fieldstone edging set round it to hold the pavers, the paver blocks laid butted, their cells filled with topsoil and seeded, then the sett strips between the bays and the wheel stops. Depths are planning figures; the sub-base thickens if the ground is soft. The BuildUp on the page and its renders (parking.html?top=) read these.",
-    "dig": 0.32,
-    "subbase": 0.2,
-    "bedding": 0.04,
-    "paver": { "l": 0.4, "w": 0.4, "h": 0.08, "cell": 0.1 },
-    "cure": "6 to 8 weeks of rain or watering before cars park on the grass"
+    "about": "[A] How the gravel parking is built (D-065), a common way to lay a gravel car park on a clay soil, until a builder sees the ground and the soil is tested: the turf lifted and the box dug out, a geotextile over the subsoil, the timber edging pegged round it, a base of murram or crushed stone with its fines compacted in two layers, angular gravel spread on it and rolled in, then the timber strips between the bays and the wheel stops. Depths are planning figures; the base thickens if the ground is soft. The BuildUp on the page and its renders (parking.html?top=) read these.",
+    "dig": 0.15,
+    "base": 0.11,
+    "gravel": 0.04
   },
   "drainage": {
-    "about": "[A] Where the rain goes. The pavers and their sub-base are the drain: rain falls through the grass cells and is held in the stone while it soaks away, so the lawn needs no gully. For a storm heavier than that, the lot falls 1 in 100 along its length to its west end, where a gravel trench across that end, outside the edging, takes the overflow into a soakaway pit under the lawn. The turn falls 1 in 50 back toward the public road, so the road water never runs in through the gate; the rock road is crowned and sheds to its fieldstone edgings and the grass beyond them. The soakaway is sized after a percolation test on site [U]; until then its size is a placeholder.",
+    "about": "[A] Where the rain goes. The gravel takes some of the rain where it falls; its compacted base sheds the rest, so the lot falls 1 in 100 along its length to its west end, where a gravel trench across that end, outside the edging, takes the run-off into a soakaway pit under the lawn. The turn falls 1 in 50 back toward the public road, so the road water never runs in through the gate; the rock road is crowned and sheds to its fieldstone edgings and the grass beyond them. The soakaway is sized after a percolation test on site [U]; until then its size is a placeholder.",
     "lot": 0.01,
     "turn": 0.02,
     "road": 0.025,
     "trench": {
-      "about": "[A] a trench 0.4 m wide and 0.6 m deep across the west end, 0.3 m outside the edging, lined with geotextile, filled with 20 to 40 mm clean stone round a 110 mm perforated pipe, falling 1 in 100 to the pit at its south end, by the hedge and clear of the shade tree's trunk.",
+      "about": "[A] a trench 0.4 m wide and 0.6 m deep across the west end, 0.4 m outside the edging, lined with geotextile, filled with 20 to 40 mm clean stone round a 110 mm perforated pipe, falling 1 in 100 to the pit at its south end, by the hedge and clear of the shade tree's trunk.",
       "x": 7.4,
       "y": [-4.6, 0.6],
       "w": 0.4,
@@ -115,13 +115,14 @@
     }
   },
   "lighting": {
-    "about": "[A] The way in lit after dark, on the farm’s outdoor-lights circuit, one of the loads that must never stop (guide/farm/electric.md). A feed from the compound’s board comes down the rock road in a buried duct, past the inner gate’s lantern, to a weatherproof box on the back of the sign wall. In the box: an isolator, a dusk-to-dawn photocell with a timer, and the 24 V driver for the sign’s LED letters. From the box, the sign panel, and a cable along the back of the hedge to the lantern on the outer gate’s left pillar. Cables run in 50 mm ducts about 450 mm down under a warning tape, and rise inside the pillars and the wall. The circuit’s RCD and breaker are at the compound’s board. Nothing is sized or sourced yet: the lamps’ and the letters’ wattage wait for the products.",
+    "about": "[A] The way in lit after dark by the sun (D-065): no cable and no trench. Solar bollards mark the bays' heads and the rock road's mouth; the two pillar lanterns are solar, each with its panel on its top; the sign's LED letters run from a small solar kit on the sign wall, its panel on the wall's cap and, in a weatherproof box on the wall's back face, its battery, its charge controller with a timer and the 24 V driver for the letters. Each light comes on at dusk by its own sensor; the timer can put the letters out late at night. Nothing is sized or sourced yet: the letters' wattage, the panel and the battery wait for the products.",
+    "bollards": {
+      "about": "Solar bollards about 0.8 m high and 0.15 m across, a panel on top and a battery, a dusk sensor and the lamp inside, each on a small concrete footing in the lawn 0.35 m past the far edge: between bays 2 and 3 and bays 4 and 5, at bay 5's open side, and across the rock road's mouth. None stands under a shade tree's crown, where its panel would not charge, so bays 1 and 2 take their light from B1 [A]. `at`: [x, y] in plan.",
+      "h": 0.8,
+      "d": 0.15,
+      "at": [[13.2, 1.35], [18.4, 1.35], [21.0, 1.35], [26.4, 1.35]]
+    },
     "box": { "about": "The weatherproof box (IP65 or better) on the sign wall's back face, at its east end: x its centre, y the wall's back face, h its bottom and top.", "x": 18.2, "y": -6.4, "h": [0.6, 1], "w": 0.4, "d": 0.15 },
-    "duct": { "d": 0.05, "depth": 0.45 },
-    "route": {
-      "about": "The duct, in plan, as polylines: the feed from the inner gate down the lawn 0.3 m outside the rock road's west edging, under the sett strip on bay 5's open side and across under the lawn behind the sign wall to the box; and the branch from the box behind the hedge to the outer gate's left pillar. The model view shows the rock road's first 40 %, so there the feed comes in from beyond the drawing.",
-      "feed": [[23.7, 11.1], [22.8, 6.7], [21.7, 1.4], [21, 1], [21, -5.7], [18.3, -5.7], [18.3, -6.3]],
-      "lantern": [[18.1, -6.3], [18.1, -6.05], [19.7, -6.05], [19.7, -6.3]]
-    }
+    "panel": { "about": "The sign's solar panel, on the timber cap over the box, tilted 10 degrees to shed rain: x its ends along the wall, d its depth across [A].", "x": [17.4, 18.4], "d": 0.5, "watts": 100, "tilt": 10 }
   }
 }

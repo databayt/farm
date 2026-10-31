@@ -56,7 +56,7 @@ Seven lessons from farms like this one, each with the place it changes:
 | [Galley](galley/plan.md) | Decide gas or electric first; the cook and a kitchen fitter check the layout. |
 | [Public bathroom](public-bathroom/plan.md) | Size the septic tank for its users first; no guest before its inspection. |
 | [Volleyball](volleyball/plan.md) | Level the lawn and cast the footings; then the grass, the lines and the net. |
-| [Parking](parking/plan.md) | Dig, sub-base, bedding, pavers; the lighting duct goes in before the pavers. |
+| [Parking](parking/plan.md) | Dig, geotextile, timber edging, base, gravel; the lights are solar, so no trench (D-065). |
 | [Camping](camp/plan.md) | Pitch, furnish, ready: no power and no water at the pitches. |
 | [Bar](bar/plan.md) | Decide what it serves; the hatch is already framed in the container. |
 | [Farming](farming/plan.md) | Test the soil and the water, fence, build the beds, lay the drip, start the seedlings. The beans and amaranth sown straight into the beds give the first harvest in 4 to 8 weeks. |
