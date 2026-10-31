@@ -20,7 +20,7 @@ The drawings are wordless, IKEA-style: new parts in white with a heavy line, fin
 
 ![AS-11 Kitchen base units](../../public/designs/studio/drawings/as-11.svg)
 
-![AS-12 Overhead cabinet](../../public/designs/studio/drawings/as-12.svg)
+![AS-12 Wall cabinets](../../public/designs/studio/drawings/as-12.svg)
 
 ![AS-14 Wall units](../../public/designs/studio/drawings/as-14.svg)
 
@@ -39,7 +39,7 @@ Every step has its own sheet (AS-01 to AS-27) in `public/designs/studio/drawings
 ## Commissioning and snag list
 
 - Electrical: tests and certificate (S19). Plumbing: pressure test at the first fix, before the foam (S04), drain fill tests, the shower's temperature at full flow.
-- Doors, drawers and the bathroom door swing freely; the slider locks; insect mesh is tight.
+- Doors and drawers swing freely; the bathroom's sliding door runs to its stop and closes softly; the slider locks; insect mesh is tight.
 - A long hot shower at full flow: the instant heater should hold about 40 C throughout (D-053).
 - Roof: the engineer's inspection is recorded before the terrace opens (S27).
 - Clean, photograph each studio, and keep the as-built survey values with the set.

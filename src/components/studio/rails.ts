@@ -59,9 +59,9 @@ export function galleyRail(lang: Locale): RailItem[] {
     { id: "fridge", title: g.fridge.title, size: g.fridge.size, where: g.fridge.where, cost: `RWF ${frw(265_000)}`, note: g.fridge.note },
     { id: "hob", title: g.hob.title, size: g.hob.size, cost: est(lang, 250_000), note: g.hob.note },
     { id: "sink", title: g.sink.title, size: g.sink.size, where: t.hardware, cost: est(lang, 70_000 + 45_000), note: g.sink.note },
-    { id: "hood", title: g.hood.title, size: g.hood.size, cost: est(lang, 90_000 + boardCost((id) => id === "K3-HS")), note: g.hood.note },
+    { id: "hood", title: g.hood.title, size: g.hood.size, cost: est(lang, 150_000), note: g.hood.note },
     { id: "overhead", title: g.overhead.title, size: g.overhead.size, where: g.overhead.where,
-      cost: built(lang, boardCost((id) => id.startsWith("K3-T-"))), note: g.overhead.note },
+      cost: built(lang, boardCost((id) => /^K3-[TU]-/.test(id))), note: g.overhead.note },
   ], lang)
 }
 export function bathRail(lang: Locale): RailItem[] {
@@ -69,8 +69,7 @@ export function bathRail(lang: Locale): RailItem[] {
   return railCards(`${D}/render/bath`, [
     { id: "shower", title: b.shower.title, size: b.shower.size, where: t.hardware, cost: est(lang, 120_000 + 180_000), note: b.shower.note },
     { id: "wc", title: b.wc.title, size: b.wc.size, where: t.hardware, cost: est(lang, 150_000 + 220_000), note: b.wc.note },
-    { id: "basin", title: b.basin.title, size: b.basin.size, where: t.hardware, cost: est(lang, 90_000), note: b.basin.note },
-    { id: "mirror", title: b.mirror.title, size: b.mirror.size, where: t.hardware, cost: est(lang, 25_000), note: b.mirror.note },
+    { id: "door", title: b.door.title, size: b.door.size, where: b.door.where, cost: est(lang, 90_000 + 60_000), note: b.door.note },
   ], lang)
 }
 
@@ -146,8 +145,6 @@ export function plumbingRail(lang: Locale): RailItem[] {
     card("filter", p.filter.title, p.filter.size(f.filter.w_mm, f.filter.h_mm), r.notSourced, each("filter")),
     card("showerset", p.showerset.title, p.showerset.size(Number(f.showerset.h_mm) / 1000), t.hardware, each("showerset")),
     card("cistern", p.cistern.title, p.cistern.size(f.cistern.w_mm, mm(Number(f.cistern.h_mm)), f.cistern.d_mm), t.hardware, each("cistern")),
-    card("basintap", p.basintap.title, p.basintap.size, t.hardware,
-      p.basintap.cost(frw(Number(bom.find((b) => b.item === f.basintap.item)?.total_per_unit_rwf ?? 0)))),
     card("anglevalve", p.anglevalve.title(valves.qty_per_unit), p.anglevalve.size, t.hardware,
       p.anglevalve.cost(frw(Number(valves.unit_price_rwf)), valves.qty_per_unit), p.anglevalve.note),
     card("ppr", p.ppr.title, p.ppr.size(metres(/^PPR/)), p.shops, cost(/^PPR/), p.ppr.note),

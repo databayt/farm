@@ -77,7 +77,7 @@ English: [read this plan in English](plan.md) · Gucapa: [iyi gahunda nka PDF](.
 ![Igikoni urebye uri mu cyumba](../../public/designs/studio/guide/kitchen.rw.svg)
 
 1. Banza ushyireho imbaho z'igiti (oak planks), uhereye kuri end A kugeza kuri partition.
-2. Hanyuma ibice bitatu byo hasi, worktop, akabati ko hejuru na hood.
+2. Hanyuma ibice bitatu byo hasi, worktop, utubati tubiri two ku rukuta ku mpande zombi za hob, na hotte ifite chimney hagati yatwo, mm 650 hejuru ya hob, igipfundikizo cya chimney kigera ku gisenge.
 
 ### Igitanda, intebe na trims (S15 kugeza S18)
 

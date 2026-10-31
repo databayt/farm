@@ -2,7 +2,7 @@
 
 Status: PRELIMINARY, rev A, 2026-10-26. Openings are photo estimates until the [site survey](studio-site.md) is filled in. Decisions: D-014, D-016, D-020 (Layout B, which replaced D-015) in the [decision log](../execution/decision-log.md).
 
-Three standard 20 ft shipping containers already stand on the site, each on a raised steel deck, with identical openings. Two become identical farm-stay guest studios and the third the office (D-017). This section designs the studios: a queen bed, a shower, a WC and basin, a small kitchen with an induction hob, and a roof terrace under a transparent shade. The interior is built the IKEA way: flat panels cut and drilled in a Kigali workshop, numbered, packed one kit per studio, and assembled on site with one small hardware family and wordless step drawings.
+Three standard 20 ft shipping containers already stand on the site, each on a raised steel deck, with identical openings. Two become identical farm-stay guest studios and the third the office (D-017). This section designs the studios: a queen bed, a shower and a WC, a small kitchen with an induction hob, and a roof terrace under a transparent shade. The interior is built the IKEA way: flat panels cut and drilled in a Kigali workshop, numbered, packed one kit per studio, and assembled on site with one small hardware family and wordless step drawings.
 
 Everything on these pages comes from one parametric model (`scripts/studio/`). The plans, the 3D model, the cutting lists, the circuits, the pipe runs and the bill of materials can never disagree, and the whole set regenerates in seconds when the survey numbers arrive (`pnpm studio:build`).
 
@@ -14,8 +14,8 @@ Everything on these pages comes from one parametric model (`scripts/studio/`). T
 |---|---|
 | Interior | About 5,798 x 2,252 x 2,323 mm net (13.1 m2) after insulation and lining [E, AS-13, AS-15] |
 | Bed | Queen bed up to 1,600 x 2,000 in the MALM manner, against the back wall and end A: tall headboard with USB-C, two storage boxes on castors; a bedside table with a reading lamp, a wall reading light |
-| Kitchen | 1.6 m galley on the bathroom wall: under-counter fridge, a wide two-zone induction hob in black glass under a slim black hood, a compact sink; an overhead cabinet for storage; a 5.5 kW instant water heater in the shower (D-053) |
-| Bathroom | Shower, WC and basin in one row on end wall B: a 1,000 x 900 walk-in shower and a wall-hung WC (concealed cistern, flush plate on the wall) behind a 600 mm door; the basin and mirror cabinet outside it in a wash lobby under the W1 window |
+| Kitchen | 1.6 m galley on the bathroom wall: under-counter fridge, a wide two-zone induction hob in black glass under a black chimney hood, a compact sink; two wall cabinets either side of the hood; a 5.5 kW instant water heater in the shower (D-053) |
+| Bathroom | Shower and WC in one row on end wall B: a 1,000 x 900 walk-in shower and a wall-hung WC (concealed cistern, flush plate on the wall) behind a sliding door (534 mm clear) whose leaf parks on the lobby side under the W1 window; no basin, hands are washed at the galley sink (D-066) |
 | Seating | Low two-seat sofa, a low wide table and two chairs by the 3 m sliding glass wall, coat hooks and a luggage rack, wall fan, split-AC provision |
 | Envelope | Closed-cell spray foam between battens, 12 mm ply linings, 12 mm floor sheets with oak planks over a membrane, insect mesh everywhere (D-026) |
 | Outside | Roof terrace with chairs on the corner castings behind an open guardrail (steel posts, hardwood top rail, stainless cables), tinted polycarbonate over the front deck, straight steel stair with a landing |

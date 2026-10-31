@@ -151,8 +151,11 @@ def a103_plan(m) -> Sheet:
     s.dim(X(0), Y(lo.W) + 6, X(lo.L), Y(lo.W) + 6, f"{lo.L:.0f} net", -8)
     s.dim(X(lo.o1[0]), Y(lo.W) + 3, X(lo.o1[1]), Y(lo.W) + 3, f"slider {lo.o1[1] - lo.o1[0]:.0f}", -4)
     s.dim(X(lo.L) + 6, Y(0), X(lo.L) + 6, Y(lo.W), f"{lo.W:.0f}", -4)
-    # door swings
-    s.arc(X(lo.bdoor[0]), Y(lo.bath_y1), (lo.bdoor[1] - lo.bdoor[0]) / sc, 270, 360)  # door swings into the bathroom
+    # the bathroom's sliding door: the leaf closed on the lobby face, dashed where it parks open
+    cy1 = lo.bath_y1 + lo.cross_t
+    lw = lo.bleaf[1] - lo.bleaf[0]
+    s.rect(X(lo.bdoor[0] + 18 - 20), Y(cy1 + 10), lw / sc, 40 / sc, "#fff", "#111", 0.2)
+    s.rect(X(lo.bleaf[0]), Y(cy1 + 10), lw / sc, 40 / sc, "none", "#111", 0.15, dash="0.8,0.6")
     for y0, y1, lab in (lo.fridge + ("fridge",), lo.hob + ("hob",), lo.sink + ("sink",)):
         s.dim(X(lo.galley_x0) - 4, Y(y0), X(lo.galley_x0) - 4, Y(y1), f"{y1 - y0:.0f} {lab}", 3)
     for (lx, ly, t) in ((800, 1100, "BED 1,600 x 2,000"), ((lo.galley_x0 + lo.part_x0) / 2, lo.sink[1] + 200, "GALLEY 900"),
@@ -220,9 +223,10 @@ def plan_bw(m) -> str:
     d0, d1 = lo.bdoor
     box(lo.bath_x0, cy0, d0 + 18, cy1, ink, 0.1)
     box(d1, cy0, lo.L, cy1, ink, 0.1)
-    s.line(X(d0 + 18), Y(cy0), X(d0 + 18), Y(cy0 - (d1 - d0)), ink, sw)
-    s.arc(X(d0 + 18), Y(cy0), (d1 - d0 - 18) / sc, 270, 360, ink, 0.18, "0.8,0.6")
-    # bathroom: shower tray with its drain, WC, basin
+    lw = lo.bleaf[1] - lo.bleaf[0]
+    box(d0 + 18 - 20, cy1 + 10, d0 + 18 - 20 + lw, cy1 + 50)  # the leaf, closed on the lobby face
+    s.rect(X(lo.bleaf[0]), Y(cy1 + 10), lw / sc, 40 / sc, "none", ink, 0.18, dash="0.8,0.6")  # parked open
+    # bathroom: shower tray with its drain, WC
     box(lo.wall_b, 0, lo.L, cy0, ink, 0.1)  # end wall built out over the concealed cistern
     tx0, tx1, ty0, ty1 = lo.tray
     box(tx0, ty0, tx1, ty1)
@@ -232,8 +236,6 @@ def plan_bw(m) -> str:
           f'height="{(wc.y1 - wc.y0) / sc:.2f}" rx="{120 / sc:.2f}" fill="#fff" stroke="{ink}" stroke-width="{sw}"/>')
     s.add(f'<rect x="{X(wc.x0 + 60):.2f}" y="{Y(wc.y0 + 50):.2f}" width="{(wc.x1 - wc.x0 - 140) / sc:.2f}" '
           f'height="{(wc.y1 - wc.y0 - 100) / sc:.2f}" rx="{90 / sc:.2f}" fill="none" stroke="{ink}" stroke-width="{sw}"/>')
-    bs = by_id["K2-BASIN"]
-    box(bs.x0, bs.y0, bs.x1, bs.y1)
     for x0, x1, lab in ((0, lo.bed_x1, "BED"), (*lo.sofa, "SEATING"),
                         (lo.part_x0 - 620, lo.part_x0, "GALLEY"), (lo.bath_x0, lo.L, "BATH")):
         s.text(X((x0 + x1) / 2), oy - 15, lab, 2.6, "middle", "bold", ink)
@@ -248,7 +250,7 @@ def plan_bw(m) -> str:
     s.dim(X(lo.L) + 4, Y(0), X(lo.L) + 4, Y(cy0), mm(cy0), -4, 2.4, inline=True)
     s.dim(X(lo.L) + 4, Y(0), X(lo.L) + 4, Y(lo.W), mm(lo.W), -10, 2.4, inline=True)
     # inside: the bathroom door opening, and the walkway between the sofa end and the worktop
-    s.dim(X(d0 + 18), Y(cy1) + 1, X(d1), Y(cy1) + 1, mm(d1 - d0 - 18), 3, 2.2, inline=True)
+    s.dim(X(d0 + 18), Y(cy1 + 50) + 1, X(d1 - 18), Y(cy1 + 50) + 1, mm(d1 - d0 - 36), 3, 2.2, inline=True)
     wy = Y((sb.y0 + sb.y1) / 2)
     s.dim(X(sb.x1), wy, X(X0), wy, mm(X0 - sb.x1), 0, 2.2, inline=True)
     return s.bare(X(lo.L) + 22, Y(lo.W) + 22)
@@ -281,12 +283,12 @@ def scene_json(m) -> dict:
         "chairs": [union(lambda i, n, c=c: i.startswith("K6-") and n.startswith(f"Chair {c} ")) for c in (1, 2)],
         "part_x0": lo.part_x0, "part_t": lo.part_t, "galley_x0": lo.galley_x0,
         "fridge": list(lo.fridge), "hob": list(lo.hob), "sink": list(lo.sink),
-        "overhead": union(lambda i, n: i.startswith("K3-T-")),
-        "hood": box(by_id["K3-HOOD"]), "hob_box": box(by_id["K3-HOB"]), "sink_box": box(by_id["K3-SINK"]),
+        "overhead": [union(lambda i, n: i.startswith("K3-T-")), union(lambda i, n: i.startswith("K3-U-"))],
+        "hood": box(by_id["K3-HOOD"]), "chimney": box(by_id["K3-CHIM"]), "hob_box": box(by_id["K3-HOB"]), "sink_box": box(by_id["K3-SINK"]),
         "bath_x0": lo.bath_x0, "bath_y1": lo.bath_y1, "cross_t": lo.cross_t, "bdoor": list(lo.bdoor),
+        "bleaf": list(lo.bleaf), "door": box(by_id["K2-DOOR"]),
         "wall_b": lo.wall_b,
         "tray": box(by_id["K2-TRAY"]), "screen": box(by_id["K2-SCREEN"]), "wc": box(by_id["K2-WC"]),
-        "basin": box(by_id["K2-BASIN"]), "mirror": union(lambda i, n: n.startswith("Mirror cabinet")),
         # the electrical installation (services.py): every point on its face, each circuit's conduit route, the
         # circuit colours, and the outdoor set-out (veranda canopy, stair, roof deck) the outdoor points hang from
         "points": [{"id": p.id, "kind": p.kind, "model": p.model, "circuit": p.circuit, "face": p.face,
@@ -324,7 +326,7 @@ def a201_elev(m) -> Sheet:
     s.rect(30, oy, lo.L / sc, lo.H / sc, "#fafafa", "#111", 0.4)
     ortho(s, "front", [(b, fl, n) for (b, fl, n, i, *_x) in sl if i == "K0-SLIDER"], 30 + lo.L / sc, oy + lo.H / sc, sc)
     ortho(s, "front", front, 30 + lo.L / sc, oy + lo.H / sc, sc, labels=True)
-    for z, t in ((900, "worktop 900"), (450, "bed deck 450"), (1800, "overhead cabinet 1,800")):
+    for z, t in ((900, "worktop 900"), (450, "bed deck 450"), (1800, "wall cabinets 1,800")):
         s.line(30 + lo.L / sc + 3, 36 + (lo.H - z) / sc, 30 + lo.L / sc + 8, 36 + (lo.H - z) / sc, "#555", 0.2)
         s.text(30 + lo.L / sc + 9, 36 + (lo.H - z) / sc + 0.8, t, 2)
     return s
@@ -594,9 +596,9 @@ def p201_iso(m) -> Sheet:
     s.poly([(ox + iso(*p)[0] * sc, oy + iso(*p)[1] * sc) for p in fl], "none", "#999", 0.2)
     s.note(25, 30, [
         f"Supply: PPR PN20, 20/25 mm, cold only. A {P.HEATER_KW.value:g} kW instant heater in the shower",
-        "heats the shower alone, set on its own display; the sink and the basin are cold.",
+        "heats the shower alone, set on its own display; the sink is cold.",
         "Drainage hangs in the void under the raised floor (the container is about 700 mm up),",
-        "between cross-members: WC 110, shower and sink 50, basin 40, falls at least 1:40.",
+        "between cross-members: WC 110, shower and sink 50, falls at least 1:40.",
         "Vent: 75 mm open vent up end B to 900 above the guardrail line (or an AAV inside).",
         "Kitchen sink waste runs separately to a grease trap and its own soak pit (STU-11).",
     ], 2.4)
@@ -633,7 +635,7 @@ def p301_site(m) -> Sheet:
     # drainage
     s.text(25, 150, "DRAINAGE", 3, weight="bold")
     for i in range(3):
-        blk(25 + i * 50, 158, 40, 14, f"Studio {i + 1}", "WC, shower, basin")
+        blk(25 + i * 50, 158, 40, 14, f"Studio {i + 1}", "WC, shower")
         arrow(45 + i * 50, 172, 45 + i * 50, 185, "#3d2b14")
         blk(30 + i * 50, 185, 30, 10, f"IC{i + 1}", "")
     blk(190, 180, 52, 22, f"Septic tank {st['septic_m3']:.1f} m3", f"2 chambers: {st['chamber1_m3']:.2f} + {st['chamber2_m3']:.2f}")

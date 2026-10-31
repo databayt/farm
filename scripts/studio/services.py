@@ -214,8 +214,9 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], list[CableRun], 
         Point("S1", "switch", entry + 100, W, 1100, "Entry: bed (2-way), living and galley lights", "C1", face="-y"),
         Point("S2", "switch", lo.bedside[0] + 170, 0, 1000, "Bed: ceiling light (2-way), over the bedside table",
               "C1"),
-        Point("S3", "switch", lo.bdoor[1] + 120, lo.bath_y1 + lo.cross_t, 1100, "Bathroom light + fan (outside)",
-              "C1"),
+        # on the partition's end by the door: the cross wall's lobby face is where the sliding leaf parks
+        Point("S3", "switch", lo.part_x0, lo.sink[1] + 90, 1100, "Bathroom light + fan (outside, by the door)",
+              "C1", face="-x"),
         Point("F1", "fan", lo.L - 900, 0, 2100, "Bathroom extract 100 mm, IPX4 for zone 1, with run-on", "C1", 20,
               model="extract"),
         Point("F2", "fan", 1800, 0, 2050, "Wall fan 300 mm", "C1", 50, model="wallfan"),
@@ -229,7 +230,7 @@ def electrical(lo: Layout) -> tuple[list[Point], list[Circuit], list[CableRun], 
         Point("P7", "socket", lo.galley_x0 + 300, 0, 1100, "Worktop double socket 2 (back wall)", "C3", 1000,
               model="socket2"),
         Point("P8", "socket", lo.part_x0, fridge_y, 250, "Fridge socket", "C3", 100, "-x"),
-        Point("P12", "socket", lo.part_x0, hob_y, 1720, "Double socket above the hood: hood + Wi-Fi router", "C3",
+        Point("P12", "socket", lo.part_x0, hob_y, 1720, "Double socket behind the hood's chimney: hood + Wi-Fi router", "C3",
               120, "-x", "socket2"),
         Point("P9", "outlet", lo.part_x0, hob_y, 600, "Hob outlet plate, isolated at its RCBO on the board", "C4",
               P.HOB_KW.value * 1000, "-x"),
@@ -416,7 +417,7 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
     cav = P.LINING_WALL.value - 19  # the middle of the 38 mm batten cavity behind the 12 mm ply
     vz = -260.0  # pipe zone in the void under the floor (cross-members are 122 deep)
     zc = 300.0  # cold runs in the walls
-    wz = vz - 60  # the main comes in under the drains, clear of the basin waste
+    wz = vz - 60  # the main comes in under the drains
     xs = lo.part_x0 - 30  # in the sink base, along its back
     xp = lo.part_x0 + lo.part_t / 2  # in the partition
     yb = -cav  # in the back wall's lining
@@ -424,19 +425,17 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
     tx0, tx1, ty0, ty1 = lo.tray
     shower = ((tx0 + tx1) / 2, (ty0 + ty1) / 2)
     wc = (lo.wall_b + 20, lo.wc_cy)  # the wall-hung pan drains into the frame in the end wall
-    basin = ((lo.basin[0] + lo.basin[1]) / 2, (lo.basin[2] + lo.basin[3]) / 2)
     sink = (lo.part_x0 - 260, (lo.sink[0] + lo.sink[1]) / 2)  # the bowl's waste
     ic = (L + 900, W / 2)  # inspection chamber outside end B
     # the heater is an instant box on end wall B inside the shower (D-053), between the rail and the glass screen, its
     # display at eye height; cold comes up the wall to its foot, hot leaves its top straight into the hand shower's
-    # hose. Only the shower is hot: the sink and the basin are cold.
+    # hose. Only the shower is hot: the sink is cold (and hands are washed there: the bathroom has no basin).
     hw, hh, hd = FIT_SIZE["heater"]
     hy, hz0 = ty1 - 30 - hw / 2, 1250.0
     hcx = lo.wall_b - 40  # the inlet stub, 40 mm out from the tiles
     ym = lo.sink[1] - 60  # the main rises at the open end of the sink base, through the stop valve set
     yk_c = sink[1]  # the sink's angle valve on the back of the sink base
     y_w2 = lo.sink[0] + 50  # where the bathroom's cold leaves the sink base
-    yb_c = basin[1]  # the basin's angle valve under its top
     vy = 200.0  # the vent rises outside end B, clear of the back corner post
     runs = [
         PipeRun("D1", "soil", 110, [(wc[0], wc[1], 230), (wc[0], wc[1], vz), (L - 100, wc[1], vz - 16),
@@ -444,9 +443,6 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
         PipeRun("D2", "waste", 50, [(shower[0], shower[1], -30), (shower[0], shower[1], vz + 40),
                                      (L - 160, shower[1], vz + 15), (L - 160, ic[1], vz - 5),
                                      (L - 100, ic[1], vz - 10)], "Shower (90 mm tray waste) joins the soil run"),
-        PipeRun("D3", "waste", 40, [(basin[0], basin[1], 800), (basin[0], basin[1], vz + 45),
-                                     (L - 220, basin[1], vz + 40), (L - 220, ic[1], vz + 8),
-                                     (L - 100, ic[1], vz)], "Basin (wash lobby) joins the soil run"),
         PipeRun("D4", "waste", 50, [(sink[0], sink[1], 700), (sink[0], sink[1], vz + 60),
                                      (L + 900, sink[1], vz - 30)], "Kitchen sink to the grease trap (separate soak pit)"),
         PipeRun("V1", "vent", 75, [(L - 100, ic[1], vz - 35), (L + 120, ic[1], vz - 35), (L + 120, vy, vz - 35),
@@ -459,7 +455,6 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
         PipeRun("W4", "cold", 20, [(xs, ym, 450), (xs, y_w2, 450), (xp, y_w2, 450), (xp, y_w2, zc), (xp, yb, zc),
                                     (xb, yb, zc), (xb, wc[1], zc), (xb, wc[1], 1000)],
                 "Cold through the partition and the walls to the WC cistern"),
-        PipeRun("W5", "cold", 20, [(xb, wc[1], zc), (xb, yb_c, zc), (xb, yb_c, 600)], "Cold on to the basin"),
         PipeRun("H1", "hot", 15, [(hcx, hy, hz0 + hh), (hcx, hy, hz0 + hh + 120), (hcx, shower[1], hz0 + hh + 120),
                                    (hcx, shower[1], 1500)], "Hot from the heater's top to the hand shower: its own hose"),
     ]
@@ -479,10 +474,8 @@ def plumbing(lo: Layout) -> tuple[list[PipeRun], list[Fitting], Kit, dict[str, f
         Fitting("WC", "wc", "cistern", lo.wall_b, wc[1], 1010, "Concealed cistern in end wall B, dual-flush plate",
                 "Slim concealed cistern frame (80 mm) with dual-flush plate, in the end-B stud wall and its 30 mm "
                 "build-out", "W4 D1", "dual flush"),
-        Fitting("BT", "tap", "basintap", L - 30, basin[1], 820, "Basin tap (cold), its angle valve under the console",
-                "Wall basin 400 x 300 + cold tap + bottle trap (wash lobby)", "W5 D3", "6 L/min", "+z"),
         Fitting("IC1", "site", "chamber", ic[0], ic[1], vz - 66, "Inspection chamber outside end B, on to the farm's "
-                "septic tank", "Septic tank (2 chambers, about 4 m3) + inspection chambers", "D1 D2 D3", "DN110 in",
+                "septic tank", "Septic tank (2 chambers, about 4 m3) + inspection chambers", "D1 D2", "DN110 in",
                 "+z"),
         Fitting("GT", "site", "greasetrap", L + 900, sink[1], vz - 30, "To the farm's grease trap and its own soak pit",
                 "Grease trap + kitchen soak pit", "D4", "DN50 in", "+z"),

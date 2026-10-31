@@ -75,7 +75,7 @@ Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · Print: [this plan 
 ![The kitchen, seen from the living room](../../public/designs/studio/guide/kitchen.en.svg)
 
 1. Lay the oak planks first, from end A to the partition.
-2. Then the three bases, the worktop, the overhead cabinet and the hood.
+2. Then the three bases, the worktop, the two wall cabinets either side of the hob, and the chimney hood between them, 650 mm over the hob, its chimney cover up to the ceiling.
 
 ### Bed, seating and trims (S15 to S18)
 
@@ -101,7 +101,7 @@ Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · Print: [this plan 
 ## Done when
 
 1. The electrical tests pass and the certificate is signed (S19); the pipes held 10 bar before the foam, the drains are fill-tested, and the shower holds about 40 °C at full flow.
-2. The doors, the drawers and the bathroom door swing freely; the slider locks; the insect mesh is tight.
+2. The doors and the drawers swing freely; the bathroom's sliding door runs to its stop and closes softly; the slider locks; the insect mesh is tight.
 3. The farm's septic system has passed its inspection: no guest stays before it (D-016).
 4. Each studio is cleaned and photographed, and its measurements are kept with its drawing set.
 

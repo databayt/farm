@@ -23,7 +23,7 @@ Status: design intent. Every rating is an assumption [A, AS-19] until a RURA-lic
 - **The circuits:**
   - C1: indoor lights and both fans.
   - C2: sockets at the bed, the sofa and the deck.
-  - C3: kitchen sockets, the fridge and the hood. The socket above the hood also takes the Wi-Fi router.
+  - C3: kitchen sockets, the fridge and the hood. The socket behind the hood's chimney also takes the Wi-Fi router.
   - C4: the induction hob.
   - C5: the 5.5 kW instant shower heater in the shower (D-053), on a B25 RCBO and 6 mm2 cable (23.9 A design current); its double-pole isolator stays outside the bathroom, on the galley side of the partition.
   - C6: the outdoor lights (deck, stair and roof), on their own circuit.

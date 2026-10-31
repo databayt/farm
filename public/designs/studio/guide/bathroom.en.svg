@@ -3,21 +3,20 @@
 <rect x="4278" y="0" width="1520" height="2252" fill="#fbf8f1" stroke="#1f2328" stroke-width="10"/>
 <rect x="4578" y="0" width="70" height="1770" fill="#8d8578" stroke="#1f2328" stroke-width="5"/>
 <rect x="4648" y="1700" width="0" height="70" fill="#8d8578" stroke="#1f2328" stroke-width="5"/>
-<rect x="5248" y="1700" width="520" height="70" fill="#8d8578" stroke="#1f2328" stroke-width="5"/>
-<path d="M 4648 1700 A 600 600 0 0 0 5248 1100" fill="none" stroke="#1f2328" stroke-width="4" stroke-dasharray="30 20"/>
-<text x="4948" y="1900" font-size="80" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">DOOR 600</text>
+<rect x="5218" y="1700" width="550" height="70" fill="#8d8578" stroke="#1f2328" stroke-width="5"/>
+<rect x="4646" y="1780" width="574" height="40" fill="#c9935a" stroke="#1f2328" stroke-width="5"/>
+<rect x="5200" y="1780" width="574" height="40" fill="none" stroke="#1f2328" stroke-width="4" stroke-dasharray="30 20"/>
+<text x="4933" y="2050" font-size="80" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">SLIDING DOOR 534</text>
 <rect x="4768" y="0" width="1000" height="900" fill="#cfe3f2" stroke="#1f2328" stroke-width="6"/>
 <text x="5268" y="450" font-size="75" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">tray 1000 × 900</text>
 <rect x="5068" y="884" width="700" height="24" fill="#2563eb" stroke="none" stroke-width="0"/>
 <text x="5418" y="990" font-size="65" font-weight="400" fill="#2563eb" text-anchor="middle" dominant-baseline="middle">fixed glass</text>
 <rect x="5248" y="1110" width="520" height="380" fill="#ffffff" stroke="#1f2328" stroke-width="6"/>
 <text x="5508" y="1300" font-size="80" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">WC</text>
-<rect x="5498" y="1820" width="300" height="400" fill="#ffffff" stroke="#1f2328" stroke-width="6"/>
-<text x="5648" y="2020" font-size="60" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">BASIN</text>
 <rect x="5768" y="0" width="30" height="2252" fill="#d8d2c6" stroke="#1f2328" stroke-width="4"/>
 <line x1="5758" y1="670" x2="5758" y2="870" stroke="#c2410c" stroke-width="22"/>
 <text x="4318" y="2582" font-size="75" font-weight="700" fill="#c2410c" text-anchor="start" dominant-baseline="middle">instant heater in the shower: 200 × 330 × 90</text>
-<text x="4318" y="2722" font-size="75" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">WC: 520 × 380 · BASIN: 300 × 400 · fixed glass: 700</text>
+<text x="4318" y="2722" font-size="75" font-weight="400" fill="#1f2328" text-anchor="start" dominant-baseline="middle">WC: 520 × 380 · fixed glass: 700 · leaf: 574 × 2055</text>
 <text x="4428" y="1126" font-size="75" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4428 1126)">KITCHEN</text>
 <text x="4278" y="-1000" font-size="110" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle">BATHROOM</text>
 <text x="6058" y="1126" font-size="100" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 6058 1126)">END B</text>
@@ -28,8 +27,6 @@
 <text x="4768" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 4768 -330)">4768</text>
 <line x1="5248" y1="-300" x2="5248" y2="-220" stroke="#1d4ed8" stroke-width="6"/>
 <text x="5248" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 5248 -330)">5248</text>
-<line x1="5498" y1="-300" x2="5498" y2="-220" stroke="#1d4ed8" stroke-width="6"/>
-<text x="5498" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 5498 -330)">5498</text>
 <line x1="5768" y1="-300" x2="5768" y2="-220" stroke="#1d4ed8" stroke-width="6"/>
 <text x="5768" y="-330" font-size="105" font-weight="700" fill="#1d4ed8" text-anchor="start" dominant-baseline="middle" transform="rotate(-90 5768 -330)">5768</text>
 <line x1="6418" y1="0" x2="6418" y2="2252" stroke="#1d4ed8" stroke-width="4"/>

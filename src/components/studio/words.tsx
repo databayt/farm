@@ -18,10 +18,10 @@ const en = {
     title: "Studio in nature, with forest vibes",
     alt: "A yellow container studio at golden hour under a dark roof canopy: the sliding glass wall half open on a bed, a sofa and two chairs, a red-railed timber deck with a bistro table and a potted plant, a steel ladder up the side to two lounge chairs on the roof, and eucalyptus behind.",
   },
-  planAlt: "Plan: the bed at one end, a sofa with a table and two chairs, the galley on the bathroom wall, and at the other end the shower and WC behind a door, with the basin outside it.",
+  planAlt: "Plan: the bed at one end, a sofa with a table and two chairs, the galley on the bathroom wall, and at the other end the shower and WC behind a sliding door.",
   model: {
-    lineAlt: "Line drawing of the studio seen from the front with the front wall off: the bed against the wall with two storage boxes, a bedside table with a reading lamp, the sofa with a low table and two chairs, the galley with a wide two-zone hob under a slim hood, a sink and an overhead cabinet, and the bathroom with the shower, a wall-hung WC and the basin on its console outside the door.",
-    realAlt: "The same view rendered with materials and daylight: pine furniture in a medium-oak finish on a natural oak floor, a white bed with storage boxes and a lit bedside lamp, a grey sofa with yellow and blue cushions, a table and two chairs, the galley with a black-glass hob under a black hood, and a white marble bathroom with a glass shower screen, a wall-hung WC and a basin on a black metal console.",
+    lineAlt: "Line drawing of the studio seen from the front with the front wall off: the bed against the wall with two storage boxes, a bedside table with a reading lamp, the sofa with a low table and two chairs, the galley with a wide two-zone hob under a chimney hood between two wall cabinets, and a sink, and the bathroom with the shower and a wall-hung WC behind the sliding door, parked open.",
+    realAlt: "The same view rendered with materials and daylight: pine furniture in a medium-oak finish on a natural oak floor, a white bed with storage boxes and a lit bedside lamp, a grey sofa with yellow and blue cushions, a table and two chairs, the galley with a black-glass hob under a black chimney hood between two wall cabinets, and a white marble bathroom with a glass shower screen and a wall-hung WC.",
   },
   floor: {
     title: "Floor",
@@ -75,12 +75,12 @@ const en = {
       hang under it. The sink base and the bathroom&rsquo;s wet walls are drawn open; a run is dashed where a wall or
       the floor still hides it. Each tag opens its row in the{" "}
       {link("/docs/studio/plumbing#points", "points table")}. Outside
-      the drawing: the main comes in under end B from the farm; D1, D2 and D3 leave for the inspection chamber (IC1)
+      the drawing: the main comes in under end B from the farm; D1 and D2 leave for the inspection chamber (IC1)
       and the septic tank, D4 for the grease trap (GT); the vent rises up end B to its terminal (VT), 900 mm above
       the roof guardrail.
     </>,
     caption: (): React.ReactNode => <>Rendered from the design model, the sink base and the bathroom&rsquo;s wet walls opened</>,
-    realAlt: "The same view rendered as finished with the sink base cut open and the bathroom's wet walls stripped to the yellow foam: in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap; in the bathroom the small white instant heater in the shower beside the hand shower on its rail, the pipes along the back wall and up end wall B, the cistern frame behind the flush plate, and the basin's valves and trap under its console.",
+    realAlt: "The same view rendered as finished with the sink base cut open and the bathroom's wet walls stripped to the yellow foam: in the sink base the twin drinking-water filters, the blue meter with its brass valve and filter, the angle valves and the trap; in the bathroom the small white instant heater in the shower beside the hand shower on its rail, the pipes along the back wall and up end wall B, and the cistern frame behind the flush plate.",
   },
   docs: [
     { href: "/docs/studio", title: "Execution plan", text: "Every step of building out one studio, in order: the carpenter's drawings and where the electrician and the plumber come in." },
@@ -116,14 +116,14 @@ const en = {
       fridge: { title: "Fridge", size: "About 90 L, under the counter", where: "Kanis Retail (online)", note: "A published price (Kanis, 2026-10-26), not a placeholder." },
       hob: { title: "Induction hob", size: "590 × 350 mm, two zones side by side, about 3.5 kW", note: "Black glass with front knobs. No gas indoors." },
       sink: { title: "Sink and tap", size: "Inset bowl about 380 × 420 mm", note: "Stainless single bowl with a cold tap. A drinking-water filter goes under it (RWF 80,000 estimate)." },
-      hood: { title: "Cooker hood", size: "600 mm wide, slim", note: "Black, recirculating with a charcoal filter, on its own shelf under the cabinet." },
-      overhead: { title: "Wall cabinet", size: "1.60 × 0.50 m, 0.50 m high", where: "Built in the workshop from 18 mm board (kit K3)", note: "Two doors, hung on the steel rail over the galley." },
+      hood: { title: "Chimney hood", size: "600 mm wide, its chimney up to the ceiling", note: "Black, recirculating with a charcoal filter, 650 mm over the hob between the two wall cabinets." },
+      overhead: { title: "Wall cabinets × 2", size: "0.55 m and 0.45 m wide, 0.50 m deep and high", where: "Built in the workshop from 18 mm board (kit K3)", note: "One door each, hung on the steel rail either side of the hood." },
     },
     bath: {
       shower: { title: "Shower", size: "Tray 1,000 × 900 mm, glass screen 700 × 2,000 mm", note: "A low tray with a 90 mm waste, a fixed 8 mm toughened glass screen, and the instant heater on the wall beside the hand shower." },
       wc: { title: "WC", size: "Wall-hung, 520 mm projection", note: "A soft-close seat, on a slim concealed cistern frame with a dual-flush plate." },
-      basin: { title: "Basin", size: "400 × 300 mm", note: "With a cold tap and a bottle trap, outside the shower door." },
-      mirror: { title: "Mirror", size: "0.40 × 0.65 m", note: "4 mm glass over the basin." },
+      door: { title: "Sliding door", size: "Leaf 574 × 2,055 mm, 534 mm clear opening", where: "Built in the workshop (kit K2), track bought",
+        note: "Runs on a soft-close track on the lobby side and parks towards end B, so nothing swings into the WC. Hands are washed at the galley sink: no basin." },
     },
     devices: {
       board: "Unit board", inlet: "Power inlet", ceiling: "Ceiling light", bulkhead: "IP65 light", walllamp: "Wall reading lamp",
@@ -155,9 +155,7 @@ const en = {
       filter: { title: "Drinking-water filter", size: (w: string, h: string) => `Twin canisters ${w} × ${h} mm, its own faucet by the tap` },
       showerset: { title: "Slide rail and hand shower", size: (m: number) => `${m} m rail; the hand shower and hose come with the heater` },
       cistern: { title: "Concealed cistern", size: (w: string, h: string, d: string) => `Frame ${w} × ${h} × ${d} mm, dual-flush plate` },
-      basintap: { title: "Basin tap", size: "A tall cold tap for the vessel basin, one angle valve under the console",
-        cost: (a: string) => `RWF ${a} for the basin, its tap and bottle trap (estimate)` },
-      anglevalve: { title: (n: string) => `Angle valves × ${n}`, size: "With a filter: one under the sink, one under the basin, one at the cistern, one at the heater",
+      anglevalve: { title: (n: string) => `Angle valves × ${n}`, size: "With a filter: one under the sink, one at the cistern, one at the heater",
         cost: (a: string, n: string) => `RWF ${a} each × ${n} (estimate)`, note: "Each tap and the cistern can be shut off on its own, without the main." },
       ppr: { title: "PP-R supply pipe", size: (m: string) => `${m}, PN20, welded joints`, note: "Cold water inside the units and walls, then straight up to each outlet." },
       upvc: { title: "uPVC drain pipe", note: "Under the floor, each run falling at least 1:40 to IC1 or the grease trap." },
@@ -178,7 +176,7 @@ const en = {
   },
   // the water diagram (src/components/docs/pipe-diagram.tsx)
   pipes: {
-    label: (kw: string, hot: string) => `Water diagram: the farm's water through the studio's stop valve, filter and meter; cold to every outlet and the ${kw} instant heater, whose hose takes hot water at ${hot} to the shower alone; the WC, shower and basin drain to an inspection chamber and the farm's septic tank, the kitchen sink apart to its grease trap`,
+    label: (kw: string, hot: string) => `Water diagram: the farm's water through the studio's stop valve, filter and meter; cold to every outlet and the ${kw} instant heater, whose hose takes hot water at ${hot} to the shower alone; the WC and shower drain to an inspection chamber and the farm's septic tank, the kitchen sink apart to its grease trap`,
     farm: "Farm water", tank: (m3: string) => `tank ${m3} m³`, booster: (lpm: string) => `booster ${lpm} L/min`,
     valve: "Stop valve", valveSub: "filter · meter",
     cold: "Cold", hot: (t: string) => `Hot ${t}`, drain: "Drain", vent: "Vent",
@@ -186,7 +184,6 @@ const en = {
     df: { title: "Drinking water", sub: "DF · filter tap" },
     kt: { title: "Kitchen sink", sub: (r: string) => `KT · cold · ${r}` },
     sh: { title: "Hand shower" },
-    bt: { title: "Basin", sub: (r: string) => `BT · cold · ${r}` },
     wc: { title: "WC cistern" },
     trap: { title: "Grease trap", sub: "the farm's, own soak pit" },
     ic: "inspection chamber",
@@ -206,7 +203,7 @@ const en = {
     },
     shared: {
       lead: (tank: string, daily: string, persons: string, pump: string, septic: string, c1: string, c2: string) =>
-        `WASAC water, the borehole and rain from the canopies fill the farm’s ${tank} m³ tank, about four days at ${daily} L a day for ${persons} guests, and a booster pump sends ${pump} L/min to the studios. WCs, showers and basins drain to a new ${septic} m³ septic tank in two chambers (${c1} + ${c2} m³); kitchen sinks drain to their own grease trap.`,
+        `WASAC water, the borehole and rain from the canopies fill the farm’s ${tank} m³ tank, about four days at ${daily} L a day for ${persons} guests, and a booster pump sends ${pump} L/min to the studios. WCs and showers drain to a new ${septic} m³ septic tank in two chambers (${c1} + ${c2} m³); kitchen sinks drain to their own grease trap.`,
       figure: "P-301 · Site water and sanitation schematic",
       total: "Water and sanitation, once for the site",
       full: "Full list:",
@@ -227,14 +224,14 @@ const en = {
       figure: "P-201 · Pipework isometric (unit)",
     },
     fittings: {
-      lead: (n: number) => `${n} points, from the stop valve on the main to the vent above the roof. The sink, the heater, the shower, the WC and the basin sit within about 1.5 m of each other, so the pipes stay short.`,
+      lead: (n: number) => `${n} points, from the stop valve on the main to the vent above the roof. The sink, the heater, the shower and the WC sit within about 1.5 m of each other, so the pipes stay short.`,
       figure: "P-101 · Plumbing layout plan (supply and drainage)",
       pipes: "Pipes", rating: "Rating",
     },
     features: [
       { title: "Sleep", text: "A queen bed up to 1.6 × 2.0 m against the wall, with two storage boxes underneath, a bedside table, a reading lamp and USB-C." },
       { title: "Cook", text: "A galley on the bathroom wall: under-counter fridge, two-zone induction hob, sink, drinking-water filter. No gas indoors." },
-      { title: "Wash", text: "Shower, WC and basin in one row: a wall-hung WC and the shower behind a door, the basin outside it." },
+      { title: "Wash", text: "Shower and WC in one row behind a sliding door; hands are washed at the galley sink." },
       { title: "Sit", text: "A seating room: a two-seat sofa, a low wide table and two chairs, by the 3 m sliding glass wall onto the deck." },
       { title: "Roof", text: "An open roof terrace with lounge chairs behind a timber-topped rail, up a steel stair; a canopy shades the deck." },
       { title: "Stay cool", text: "The roof deck shades the steel, foam is sprayed onto it inside, a wall fan moves the air, and the AC is ready." },
@@ -289,10 +286,10 @@ const rw: typeof en = {
     title: "Sitidiyo hagati muri kamere, mu mwuka w'ishyamba",
     alt: "Sitidiyo ya kontineri y'umuhondo ku zuba rirenga, munsi y'igisenge cyijimye: urukuta runyerera rw'ikirahure rufunguye kimwe cya kabiri ku gitanda, sofa n'intebe ebyiri, deck y'imbaho ifite uruzitiro rutukura n'akameza gato n'igiti mu nkono, esikariye y'icyuma izamuka ku ruhande igana ku ntebe ebyiri zo kuruhukiraho ziri ku gisenge, n'inturusu inyuma.",
   },
-  planAlt: "Igishushanyo: igitanda ku mpera imwe, sofa n'ameza n'intebe ebyiri, igikoni ku rukuta rw'ubwiherero, no ku yindi mpera douche na WC inyuma y'urugi, lavabo iri hanze yarwo.",
+  planAlt: "Igishushanyo: igitanda ku mpera imwe, sofa n'ameza n'intebe ebyiri, igikoni ku rukuta rw'ubwiherero, no ku yindi mpera douche na WC inyuma y'urugi runyerera.",
   model: {
-    lineAlt: "Igishushanyo cy'imirongo cya sitidiyo kirebwa uturutse imbere, urukuta rw'imbere rwakuweho: igitanda cyegamye ku rukuta gifite udusanduku tubiri two kubikamo, akameza ko ku buriri gafite itara ryo gusomeraho, sofa n'ameza magufi n'intebe ebyiri, igikoni gifite hob nini y'imyanya ibiri munsi ya hotte yoroheje, sink n'akabati ko hejuru, n'ubwiherero bufite douche, WC ifashwe ku rukuta na lavabo ku gitereko cyayo hanze y'urugi.",
-    realAlt: "Ishusho imwe yakozwe nk'ifoto, ifite ibikoresho n'urumuri rw'umunsi: ibikoresho by'igiti cya pinusi gisize ibara rya medium oak ku butaka bw'imbaho z'igiti cya oak, igitanda cy'umweru gifite udusanduku two kubikamo n'itara ryaka ku meza yo ku buriri, sofa y'ivu ifite imisego y'umuhondo n'iy'ubururu, ameza n'intebe ebyiri, igikoni gifite hob y'ikirahure cy'umukara munsi ya hotte y'umukara, n'ubwiherero bw'umweru busa na marbre bufite ikirahure cya douche, WC ifashwe ku rukuta na lavabo ku gitereko cy'icyuma cy'umukara.",
+    lineAlt: "Igishushanyo cy'imirongo cya sitidiyo kirebwa uturutse imbere, urukuta rw'imbere rwakuweho: igitanda cyegamye ku rukuta gifite udusanduku tubiri two kubikamo, akameza ko ku buriri gafite itara ryo gusomeraho, sofa n'ameza magufi n'intebe ebyiri, igikoni gifite hob nini y'imyanya ibiri munsi ya hotte ifite chimney hagati y'utubati tubiri two ku rukuta, na sink, n'ubwiherero bufite douche na WC ifashwe ku rukuta inyuma y'urugi runyerera rufunguye.",
+    realAlt: "Ishusho imwe yakozwe nk'ifoto, ifite ibikoresho n'urumuri rw'umunsi: ibikoresho by'igiti cya pinusi gisize ibara rya medium oak ku butaka bw'imbaho z'igiti cya oak, igitanda cy'umweru gifite udusanduku two kubikamo n'itara ryaka ku meza yo ku buriri, sofa y'ivu ifite imisego y'umuhondo n'iy'ubururu, ameza n'intebe ebyiri, igikoni gifite hob y'ikirahure cy'umukara munsi ya hotte y'umukara ifite chimney hagati y'utubati tubiri two ku rukuta, n'ubwiherero bw'umweru busa na marbre bufite ikirahure cya douche na WC ifashwe ku rukuta.",
   },
   floor: {
     title: "Hasi",
@@ -346,12 +343,12 @@ const rw: typeof en = {
       y&rsquo;amazi yanduye imanuka inyuze hasi ikamanikwa munsi yaho. Sink base n&rsquo;inkuta z&rsquo;ubwiherero zitose
       zishushanyijwe zifunguye; umuyoboro ugaragazwa n&rsquo;utudomo aho urukuta cyangwa hasi bikiwuhisha. Buri kimenyetso
       gifungura umurongo wacyo mu {link("/docs/studio/plumbing#points", "mbonerahamwe ya points")}. Hanze
-      y&rsquo;igishushanyo: umuyoboro mukuru winjira munsi ya end B uvuye ku ifamu; D1, D2 na D3 bijya kuri inspection
+      y&rsquo;igishushanyo: umuyoboro mukuru winjira munsi ya end B uvuye ku ifamu; D1 na D2 bijya kuri inspection
       chamber (IC1) no kuri septic tank, D4 ikajya kuri grease trap (GT); vent izamuka kuri end B igera ku musozo wayo
       (VT), mm 900 hejuru y&rsquo;uruzitiro rwo ku gisenge.
     </>,
     caption: () => <>Byakozwe uhereye ku gishushanyo mbonera, sink base n&rsquo;inkuta z&rsquo;ubwiherero zitose bifunguye</>,
-    realAlt: "Ishusho imwe yakozwe nk'ifoto, irangiye, sink base ifunguye n'inkuta z'ubwiherero zitose zakuweho kugeza kuri foam y'umuhondo: muri sink base, filters ebyiri z'amazi yo kunywa, mubazi y'ubururu ifite valve y'umuringa na filter yayo, angle valves na siphon; mu bwiherero, heater ntoya y'umweru ihita ishyushya muri douche iruhande rwa douche ifatwa mu ntoki kuri rail yayo, amatiyo akurikira urukuta rw'inyuma akazamuka ku rukuta rwa end B, ikadiri ya cistern inyuma ya plate yo gukurura amazi, na valves na siphon bya lavabo munsi y'igitereko cyayo.",
+    realAlt: "Ishusho imwe yakozwe nk'ifoto, irangiye, sink base ifunguye n'inkuta z'ubwiherero zitose zakuweho kugeza kuri foam y'umuhondo: muri sink base, filters ebyiri z'amazi yo kunywa, mubazi y'ubururu ifite valve y'umuringa na filter yayo, angle valves na siphon; mu bwiherero, heater ntoya y'umweru ihita ishyushya muri douche iruhande rwa douche ifatwa mu ntoki kuri rail yayo, amatiyo akurikira urukuta rw'inyuma akazamuka ku rukuta rwa end B, n'ikadiri ya cistern inyuma ya plate yo gukurura amazi.",
   },
   docs: [
     { href: "/docs/studio", title: "Gahunda y'imirimo", text: "Buri ntambwe yo kubaka sitidiyo imwe, uko zikurikirana: ibishushanyo by'umubaji n'aho umuyagankuba n'umufundi w'amazi binjirira." },
@@ -387,14 +384,14 @@ const rw: typeof en = {
       fridge: { title: "Firigo", size: "Hafi L 90, munsi ya kawunta", where: "Kanis Retail (kuri interineti)", note: "Igiciro cyatangajwe (Kanis, 2026-10-26), si icy'agateganyo." },
       hob: { title: "Hob ya induction", size: "mm 590 × 350, imyanya ibiri iri iruhande rw'indi, hafi kW 3.5", note: "Ikirahure cy'umukara gifite ibikoresho byo guhindura imbere. Nta gaz imbere mu nzu." },
       sink: { title: "Sink na robine", size: "Ibase ryinjijwe, hafi mm 380 × 420", note: "Ibase rimwe ry'icyuma kitagwa ingese rifite robine y'amazi akonje. Akayunguruzo k'amazi yo kunywa kajya munsi yaryo (ikigereranyo cya RWF 80,000)." },
-      hood: { title: "Hotte", size: "Ubugari mm 600, yoroheje", note: "Y'umukara, isubiza umwuka mu cyumba inyujije muri filter y'amakara, ku kabati kayo bwite munsi y'akabati ko hejuru." },
-      overhead: { title: "Akabati ko ku rukuta", size: "m 1.60 × 0.50, uburebure m 0.50", where: "Gakorerwa muri atelier mu mpapuro za mm 18 (kit K3)", note: "Inzugi ebyiri, kamanitswe ku cyuma kiri hejuru y'igikoni." },
+      hood: { title: "Hotte ifite chimney", size: "Ubugari mm 600, chimney yayo igera ku gisenge", note: "Y'umukara, isubiza umwuka mu cyumba inyujije muri filter y'amakara, mm 650 hejuru ya hob hagati y'utubati tubiri two ku rukuta." },
+      overhead: { title: "Utubati two ku rukuta × 2", size: "Ubugari m 0.55 na m 0.45, ubujyakuzimu n'uburebure m 0.50", where: "Dukorerwa muri atelier mu mpapuro za mm 18 (kit K3)", note: "Buri kamwe gafite urugi rumwe, bimanitswe ku cyuma ku mpande zombi za hotte." },
     },
     bath: {
       shower: { title: "Douche", size: "Tray mm 1,000 × 900, ikirahure mm 700 × 2,000", note: "Tray ngufi ifite umwobo usohora amazi wa mm 90, ikirahure gihamye gikomeye cya mm 8, na heater ihita ishyushya ku rukuta iruhande rwa douche ifatwa mu ntoki." },
       wc: { title: "WC", size: "Ifashwe ku rukuta, isohoka mm 520", note: "Intebe ifunga buhoro, kuri cistern yoroheje ihishe mu rukuta ifite plate ya dual-flush." },
-      basin: { title: "Lavabo", size: "mm 400 × 300", note: "Ifite robine y'amazi akonje na bottle trap (siphon), hanze y'urugi rwa douche." },
-      mirror: { title: "Indorerwamo", size: "m 0.40 × 0.65", note: "Ikirahure cya mm 4 hejuru ya lavabo." },
+      door: { title: "Urugi runyerera", size: "Urugi mm 574 × 2,055, umwanya wo kunyuramo mm 534", where: "Rukorerwa muri atelier (kit K2), inzira yarwo iguzwe",
+        note: "Runyerera ku nzira ifunga buhoro ku ruhande rw'inyuma y'ubwiherero, rukajya ku ruhande rwa end B, bityo ntirukingukira kuri WC. Intoki zikarabirwa kuri sink y'igikoni: nta lavabo." },
     },
     devices: {
       board: "Board (tableau)", inlet: "Inlet y'umuriro", ceiling: "Itara ryo ku gisenge", bulkhead: "Itara rya IP65", walllamp: "Itara ryo gusomeraho ryo ku rukuta",
@@ -426,9 +423,7 @@ const rw: typeof en = {
       filter: { title: "Akayunguruzo k'amazi yo kunywa", size: (w, h) => `Ibikombe bibiri mm ${w} × ${h}, gafite robine yako iruhande rwa robine y'igikoni` },
       showerset: { title: "Rail na douche ifatwa mu ntoki", size: (m) => `Rail ya m ${m}; douche ifatwa mu ntoki na hose biza hamwe na heater` },
       cistern: { title: "Cistern ihishe mu rukuta", size: (w, h, d) => `Ikadiri mm ${w} × ${h} × ${d}, plate ya dual-flush` },
-      basintap: { title: "Robine ya lavabo", size: "Robine ndende y'amazi akonje ya lavabo iteretse, angle valve imwe munsi y'igitereko",
-        cost: (a) => `RWF ${a} kuri lavabo, robine yayo na bottle trap (ikigereranyo)` },
-      anglevalve: { title: (n) => `Angle valves × ${n}`, size: "Zifite filter: imwe munsi ya sink, imwe munsi ya lavabo, imwe kuri cistern, imwe kuri heater",
+      anglevalve: { title: (n) => `Angle valves × ${n}`, size: "Zifite filter: imwe munsi ya sink, imwe kuri cistern, imwe kuri heater",
         cost: (a, n) => `RWF ${a} buri imwe × ${n} (ikigereranyo)`, note: "Buri robine na cistern bishobora gufungwa ukwabyo, udafunze umuyoboro mukuru." },
       ppr: { title: "Itiyo y'amazi meza PP-R", size: (m) => `${m}, PN20, ingingo zisudiye`, note: "Amazi akonje imbere mu tubati no mu nkuta, hanyuma akazamuka agororotse kuri buri aho asohokera." },
       upvc: { title: "Itiyo y'amazi yanduye uPVC", note: "Munsi y'hasi, buri muyoboro ufite ubuhaname bwa 1:40 cyangwa burenzeho ugana kuri IC1 cyangwa kuri grease trap." },
@@ -447,7 +442,7 @@ const rw: typeof en = {
     earthing: "Earthing ya TT kuri earth rod ya sitidiyo ubwayo · ibipimo ni ibyateganyijwe kugeza umuyagankuba wo mu cyiciro A cya RURA abyemeje",
   },
   pipes: {
-    label: (kw, hot) => `Igishushanyo cy'amazi: amazi y'ifamu anyura kuri stop valve, filter na mubazi bya sitidiyo; amazi akonje ajya kuri buri aho asohokera no kuri heater ihita ishyushya ya ${kw}, hose yayo ijyana amazi ashyushye ya ${hot} kuri douche yonyine; WC, douche na lavabo bisohokera kuri inspection chamber no kuri septic tank y'ifamu, sink y'igikoni ukwayo kuri grease trap yayo`,
+    label: (kw, hot) => `Igishushanyo cy'amazi: amazi y'ifamu anyura kuri stop valve, filter na mubazi bya sitidiyo; amazi akonje ajya kuri buri aho asohokera no kuri heater ihita ishyushya ya ${kw}, hose yayo ijyana amazi ashyushye ya ${hot} kuri douche yonyine; WC na douche bisohokera kuri inspection chamber no kuri septic tank y'ifamu, sink y'igikoni ukwayo kuri grease trap yayo`,
     farm: "Amazi y'ifamu", tank: (m3) => `ikigega ${m3} m³`, booster: (lpm) => `pompe ${lpm} L/min`,
     valve: "Stop valve", valveSub: "filter · mubazi",
     cold: "Akonje", hot: (t) => `Ashyushye ${t}`, drain: "Yanduye", vent: "Vent",
@@ -455,7 +450,6 @@ const rw: typeof en = {
     df: { title: "Amazi yo kunywa", sub: "DF · robine ya filter" },
     kt: { title: "Sink y'igikoni", sub: (r) => `KT · akonje · ${r}` },
     sh: { title: "Douche y'intoki" },
-    bt: { title: "Lavabo", sub: (r) => `BT · akonje · ${r}` },
     wc: { title: "Cistern ya WC" },
     trap: { title: "Grease trap", sub: "y'ifamu, soak pit yayo" },
     ic: "inspection chamber",
@@ -474,7 +468,7 @@ const rw: typeof en = {
     },
     shared: {
       lead: (tank, daily, persons, pump, septic, c1, c2) =>
-        `Amazi ya WASAC, iriba ricukuwe (borehole) n'imvura iva ku bisenge byuzuza ikigega cy'ifamu cya ${tank} m³, kingana n'iminsi ine ku gipimo cya L ${daily} ku munsi ku bashyitsi ${persons}, kandi pompe yongera umuvuduko yohereza L ${pump} ku munota kuri sitidiyo. WC, douche na lavabo bisohokera muri septic tank nshya ya ${septic} m³ ifite ibyumba bibiri (${c1} + ${c2} m³); sink z'igikoni zisohokera kuri grease trap yazo bwite.`,
+        `Amazi ya WASAC, iriba ricukuwe (borehole) n'imvura iva ku bisenge byuzuza ikigega cy'ifamu cya ${tank} m³, kingana n'iminsi ine ku gipimo cya L ${daily} ku munsi ku bashyitsi ${persons}, kandi pompe yongera umuvuduko yohereza L ${pump} ku munota kuri sitidiyo. WC na douche bisohokera muri septic tank nshya ya ${septic} m³ ifite ibyumba bibiri (${c1} + ${c2} m³); sink z'igikoni zisohokera kuri grease trap yazo bwite.`,
       figure: "P-301 · Igishushanyo cy'amazi n'isuku by'ikibanza",
       total: "Amazi n'isuku, rimwe ku kibanza cyose",
       full: "Urutonde rwuzuye:",
@@ -495,14 +489,14 @@ const rw: typeof en = {
       figure: "P-201 · Igishushanyo cy'amatiyo mu buryo bwa isometric (sitidiyo)",
     },
     fittings: {
-      lead: (n) => `Points ${n}, kuva kuri stop valve ku muyoboro mukuru kugeza kuri vent hejuru y'igisenge. Sink, heater, douche, WC na lavabo biri muri metero 1.5 hagati yabyo, bityo amatiyo aguma magufi.`,
+      lead: (n) => `Points ${n}, kuva kuri stop valve ku muyoboro mukuru kugeza kuri vent hejuru y'igisenge. Sink, heater, douche na WC biri muri metero 1.5 hagati yabyo, bityo amatiyo aguma magufi.`,
       figure: "P-101 · Igishushanyo cy'aho imiyoboro y'amazi iherereye (amazi meza n'ayanduye)",
       pipes: "Imiyoboro", rating: "Igipimo",
     },
     features: [
       { title: "Kuryama", text: "Igitanda kinini kigera kuri m 1.6 × 2.0 cyegamye ku rukuta, gifite udusanduku tubiri two kubikamo munsi yacyo, akameza ko ku buriri, itara ryo gusomeraho na USB-C." },
       { title: "Guteka", text: "Igikoni ku rukuta rw'ubwiherero: firigo yo munsi ya kawunta, hob ya induction y'imyanya ibiri, sink, akayunguruzo k'amazi yo kunywa. Nta gaz imbere mu nzu." },
-      { title: "Gukaraba", text: "Douche, WC na lavabo ku murongo umwe: WC ifashwe ku rukuta na douche inyuma y'urugi, lavabo iri hanze yarwo." },
+      { title: "Gukaraba", text: "Douche na WC ku murongo umwe inyuma y'urugi runyerera; intoki zikarabirwa kuri sink y'igikoni." },
       { title: "Kwicara", text: "Icyumba cyo kwicaramo: sofa y'abantu babiri, ameza magufi kandi manini n'intebe ebyiri, iruhande rw'urukuta runyerera rw'ikirahure rwa m 3 rureba kuri deck." },
       { title: "Igisenge", text: "Terase ifunguye yo ku gisenge ifite intebe zo kuruhukiraho inyuma y'uruzitiro rufite hejuru h'igiti, uzamuka esikariye y'icyuma; igisenge gito gitwikira deck." },
       { title: "Guhorana ubukonje", text: "Deck yo ku gisenge itwikira icyuma, foam iterwa kuri cyo imbere, fan yo ku rukuta yimura umwuka, kandi AC yiteguye gushyirwaho." },
@@ -538,7 +532,7 @@ const rw: typeof en = {
       L7: "Umurongo w'amatara ya LED munsi y'akabati",
       S1: "Ku muryango: amatara y'igitanda (2-way), aho kubamo n'igikoni",
       S2: "Igitanda: itara ryo ku gisenge (2-way), hejuru y'akameza ko ku buriri",
-      S3: "Itara na fan by'ubwiherero (hanze)",
+      S3: "Itara na fan by'ubwiherero (hanze, iruhande rw'urugi)",
       F1: "Fan isohora umwuka mu bwiherero mm 100, IPX4 ya zone 1, ikomeza gukora gato nyuma yo kuzimya",
       F2: "Fan yo ku rukuta mm 300",
       P1: "Priza + USB-C mu mutwe w'igitanda (ku ruhande rw'urukuta)",
@@ -546,7 +540,7 @@ const rw: typeof en = {
       P3: "Priza + USB-C hejuru y'ukuboko kwa sofa, ya sofa n'ameza",
       P5: "Priza ya deck IP66, hanze iruhande rw'urugi runyerera",
       P6: "Priza ebyiri ku worktop 1", P7: "Priza ebyiri ku worktop 2 (urukuta rw'inyuma)", P8: "Priza ya firigo",
-      P12: "Priza ebyiri hejuru ya hotte: hotte + router ya Wi-Fi",
+      P12: "Priza ebyiri inyuma ya chimney ya hotte: hotte + router ya Wi-Fi",
       P9: "Plate aho hob icomekwa, umuriro wayo ucibwa kuri RCBO yayo muri board",
       P10: "Isolateri DP ya heater, hanze y'ubwiherero",
       L8: "Itara rya deck IP65, munsi y'igisenge cya veranda", S5: "Itara rya deck, iruhande rwa switch yo ku muryango",
@@ -569,18 +563,17 @@ const rw: typeof en = {
       DF: { description: "Akayunguruzo k'amazi yo kunywa muri sink base, gafite robine yako iruhande rwa robine y'igikoni", rating: "amazi yo kunywa" },
       SH: { description: "Douche ifatwa mu ntoki kuri rail ku rukuta rwa end B, ihabwa amazi na hose ya heater", rating: "hafi L 4 ku munota" },
       WC: { description: "Cistern ihishe mu rukuta rwa end B, plate ya dual-flush", rating: "dual flush" },
-      BT: { description: "Robine ya lavabo (amazi akonje), angle valve yayo munsi y'igitereko", rating: "L 6 ku munota" },
       IC1: { description: "Inspection chamber hanze ya end B, ikomeza kuri septic tank y'ifamu", rating: "DN110 yinjira" },
       GT: { description: "Ijya kuri grease trap y'ifamu na soak pit yayo bwite", rating: "DN50 yinjira" },
       VT: { description: "Umusozo wa vent, mm 900 hejuru y'uruzitiro rwo ku gisenge" },
     },
     pipes: {
       D1: "WC ijya kuri IC1, 1:40", D2: "Douche (umwobo wa tray wa mm 90) yinjira mu muyoboro wa WC",
-      D3: "Lavabo (aho gukarabira) yinjira mu muyoboro wa WC", D4: "Sink y'igikoni ijya kuri grease trap (soak pit yihariye)",
+      D4: "Sink y'igikoni ijya kuri grease trap (soak pit yihariye)",
       V1: "Vent ifunguye izamuka kuri end B kugeza mm 900 hejuru y'uruzitiro",
       W1: "Umuyoboro mukuru w'amazi akonje uva ku ifamu, uzamuka muri sink base: stop valve, filter, mubazi yo kugenzura",
       W2: "Amazi akonje azamuka ku rukuta rwa end B agana ku kirenge cya heater", W3: "Amazi akonje ajya kuri angle valve ya sink",
-      W4: "Amazi akonje anyura muri partition no mu nkuta agana kuri cistern ya WC", W5: "Amazi akonje akomeza kuri lavabo",
+      W4: "Amazi akonje anyura muri partition no mu nkuta agana kuri cistern ya WC",
       H1: "Amazi ashyushye ava hejuru kuri heater ajya kuri douche ifatwa mu ntoki: hose yayo bwite",
     },
     systems: { soil: "imyanda ya WC", waste: "amazi yanduye", vent: "umwuka", cold: "akonje", hot: "ashyushye" },
@@ -622,7 +615,8 @@ const rw: typeof en = {
       "Oak SPC plank 5 mm with attached underlay, natural oak decor without knots (living area)": "Imbaho za SPC zisa na oak mm 5 zifite underlay, isura ya oak isanzwe nta mapfundo (aho kubamo)",
       "Rust converter + zinc primer for steel": "Umuti uhindura ingese + primer ya zinc y'icyuma",
       "Vapour-retarding primer + off-white paint for the linings": "Primer ibuza ubuhehere + irangi ry'umweru utarera rya lining",
-      "Door leaf 564 x 2,030, moisture-resistant, opens into the bathroom, privacy lock": "Urugi 564 x 2,030, rutangizwa n'ubuhehere, rufungukira mu bwiherero, rufite ingufuri y'ubwiherero",
+      "Sliding door leaf 574 x 2,055, moisture-resistant, flush pulls, privacy hook lock": "Urugi runyerera 574 x 2,055, rutangizwa n'ubuhehere, imikoba yinjiye mu rugi, ingufuri y'ubwiherero",
+      "Surface sliding-door track 1140 mm with soft-close, end stop and floor guide, on the cross wall's lobby face": "Inzira y'urugi runyerera mm 1140 ifunga buhoro, ifite icyo guhagarika n'icyo kuyobora hasi, ku ruhande rw'inyuma rw'urukuta rwambukiranya",
       "Cement board 12 mm + liquid membrane, back wall": "Cement board mm 12 + membrane y'amazi, urukuta rw'inyuma",
       "Wall tiles + adhesive + grout, back wall": "Amakaro yo ku rukuta + kole + grout, urukuta rw'inyuma",
       "Cement board 12 mm + liquid membrane, end wall B, built out 30 mm over the concealed WC cistern (stud wall inside the cargo doors)": "Cement board mm 12 + membrane y'amazi, urukuta rwa end B, rwongerewe mm 30 hejuru ya cistern ya WC ihishe (urukuta rw'ibiti imbere y'inzugi za kontineri)",
@@ -631,15 +625,11 @@ const rw: typeof en = {
       "Wall tiles + adhesive + grout, partition, bath face": "Amakaro yo ku rukuta + kole + grout, partition, uruhande rw'ubwiherero",
       "Cement board 12 mm + liquid membrane, cross wall, bath face": "Cement board mm 12 + membrane y'amazi, urukuta rwambukiranya, uruhande rw'ubwiherero",
       "Wall tiles + adhesive + grout, cross wall, bath face": "Amakaro yo ku rukuta + kole + grout, urukuta rwambukiranya, uruhande rw'ubwiherero",
-      "Cement board 12 mm + liquid membrane, splashback behind the basin (end wall B, wash lobby)": "Cement board mm 12 + membrane y'amazi, inyuma ya lavabo (urukuta rwa end B, aho gukarabira)",
-      "Wall tiles + adhesive + grout, splashback behind the basin (end wall B, wash lobby)": "Amakaro yo ku rukuta + kole + grout, inyuma ya lavabo (urukuta rwa end B, aho gukarabira)",
-      "Safety vinyl sheet, coved 100 mm up the walls (bathroom and wash lobby)": "Vinyl itanyerera, izamuka mm 100 ku nkuta (ubwiherero n'aho gukarabira)",
+      "Safety vinyl sheet, coved 100 mm up the walls (bathroom and lobby)": "Vinyl itanyerera, izamuka mm 100 ku nkuta (ubwiherero n'imbere yabwo)",
       "Shower tray 1000 x 900, low profile, 90 mm waste": "Tray ya douche 1000 x 900, ngufi, umwobo wa mm 90",
       "Fixed glass shower screen 700 x 2,000, 8 mm toughened": "Ikirahure gihamye cya douche 700 x 2,000, gikomeye mm 8",
       "Wall-hung WC, short projection (520), soft-close seat": "WC ifashwe ku rukuta, isohoka gato (520), intebe ifunga buhoro",
       "Slim concealed cistern frame (80 mm) with dual-flush plate, in the end-B stud wall and its 30 mm build-out": "Ikadiri ya cistern yoroheje ihishe (mm 80) ifite plate ya dual-flush, mu rukuta rw'ibiti rwa end B n'inyongera yarwo ya mm 30",
-      "Wall basin 400 x 300 + mixer + bottle trap (wash lobby)": "Lavabo yo ku rukuta 400 x 300 + robine ivanga + bottle trap (aho gukarabira)",
-      "Mirror 4 mm bonded to the cabinet door": "Indorerwamo mm 4 ifatishijwe ku rugi rw'akabati",
       "Towel rail, robe hook, toilet-roll holder, shower shelf": "Icyo kumanikaho isume, agashinge k'ikanzu, icyo gushyiraho impapuro z'isuku, akabati ka douche",
       "Hob base adjustable legs": "Amaguru ahindurwa y'akabati ka hob",
       "Sink base adjustable legs": "Amaguru ahindurwa y'akabati ka sink",
@@ -647,7 +637,8 @@ const rw: typeof en = {
       "Inset stainless sink about 380 x 420, single bowl": "Sink y'icyuma kitagwa ingese yinjijwe, hafi 380 x 420, ibase rimwe",
       "Kitchen mixer tap": "Robine ivanga y'igikoni",
       "Under-counter fridge about 90 L (A-class)": "Firigo yo munsi ya kawunta hafi L 90 (icyiciro A)",
-      "Slim recirculating hood 600 mm, black, charcoal filter": "Hotte yoroheje isubiza umwuka mm 600, y'umukara, filter y'amakara",
+      "Chimney hood 600 mm, black, recirculating with a charcoal filter": "Hotte ifite chimney mm 600, y'umukara, isubiza umwuka inyujije muri filter y'amakara",
+      "Telescopic chimney cover 260 x 220, hood to the ceiling (comes with the hood)": "Igipfundikizo cya chimney kirambuka 260 x 220, kuva kuri hotte kugeza ku gisenge (kizana na hotte)",
       "Under-sink drinking-water filter + faucet": "Akayunguruzo k'amazi yo kunywa ko munsi ya sink + robine yako",
       "Mattress up to 1,600 x 2,000 (local size, e.g. 5 x 6 ft), 200 mm": "Matela igera kuri 1,600 x 2,000 (ingano yo mu gihugu, urugero 5 x 6 ft), mm 200",
       "Table lamp, linen drum shade, LED E27 (reading lamp)": "Itara ryo ku meza, igitwikirizo cya linen kimeze nk'ingoma, LED E27 (itara ryo gusomeraho)",
@@ -679,7 +670,7 @@ const rw: typeof en = {
       "Air admittance valve 110 mm (spare) + rodding eyes": "Valve yinjiza umwuka mm 110 (y'inyongera) + rodding eyes",
       "Stop valve + Y-filter + check water meter": "Stop valve + Y-filter + mubazi y'amazi yo kugenzura",
       "W1 infill: 2 mm steel welded into the old door frame (0-1,150), foamed with the walls": "Kuziba W1: icyuma cya mm 2 gisudiwe mu ikadiri y'urugi rwa kera (0-1,150), giterwaho foam hamwe n'inkuta",
-      "W1 obscure louvre window 520 x 890 + insect mesh (wash lobby)": "Idirishya rya W1 ry'ibirahure bitabonerana bifite imirongo 520 x 890 + inzitiramibu (aho gukarabira)",
+      "W1 obscure louvre window 520 x 890 + insect mesh (bathroom lobby)": "Idirishya rya W1 ry'ibirahure bitabonerana bifite imirongo 520 x 890 + inzitiramibu (imbere y'ubwiherero)",
       "Seal and lock the end-B cargo doors (weld tabs, sealant)": "Gufunga no kuziba inzugi za kontineri za end B (gusudira, sealant)",
       "Concrete block stands 40 x 60 cm under the four corner castings, levelled (D-029)": "Ibitereko bya beto cm 40 x 60 munsi y'ibyuma bine byo ku nguni, biringanijwe (D-029)",
       "Steel hanging rail for the wall units": "Icyuma cyo kumanikaho utubati two ku rukuta",

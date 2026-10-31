@@ -19,7 +19,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumbing.rw.md) · Print: [this
 | Supply pipe | PPR PN20, 25 mm for the main, 20 mm inside |
 | Main in | under the floor at end B, up into the sink base: stop valve, Y-filter, check meter (SV) |
 | Hot water | an instant heater, {{studio.heater_kw}} kW, IPX4, on end wall B inside the shower, beside the hand shower; no tank. It heats about 4 L/min to 40 °C, set on its own display, for the shower only. The sink and the basin are cold (D-053) |
-| Drains | WC 110 mm, shower 50 mm, basin 40 mm, kitchen sink 50 mm on its own line to a grease trap; all at 1:40 or steeper |
+| Drains | WC 110 mm, shower 50 mm, kitchen sink 50 mm on its own line to a grease trap; all at 1:40 or steeper |
 | Vent | 75 mm open vent up end B, ending 900 mm above the roof guardrail |
 | Shower tray | {{studio.tray_l}} × {{studio.tray_w}} |
 | Pressure | 2.5 to 3 bar from the farm's booster pump |
@@ -27,7 +27,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumbing.rw.md) · Print: [this
 | When | What | Step |
 |---|---|---|
 | After the battens (S03) | First fix: main in, every supply and drain run, the 10 bar test | S04 |
-| With the bathroom | Tray (S09), WC, heater and basin (S10) | S09, S10 |
+| With the bathroom | Tray (S09), WC and heater (S10) | S09, S10 |
 | With the kitchen | Sink, tap and filter | S13 |
 
 ### From the farm
@@ -49,10 +49,10 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumbing.rw.md) · Print: [this
 ### S04: first fix
 
 1. Bring the cold main (W1, 25 mm) in under the floor at end B and up into the sink base through the stop valve, Y-filter and check meter, where it can be shut off without tools.
-2. Run the cold inside the units and the walls: through the partition, the back wall's lining and end wall B to the WC cistern (W4), the basin (W5) and up to the heater's foot in the shower (W2). Keep cold 300 mm above the floor.
+2. Run the cold inside the units and the walls: through the partition, the back wall's lining and end wall B to the WC cistern (W4) and up to the heater's foot in the shower (W2). Keep cold 300 mm above the floor.
 3. No hot pipes: the only hot water is the hand shower's hose from the top of the heater (H1).
 4. Every run goes straight: along the wall, then straight up to its outlet. No diagonal legs.
-5. Hang the drains in the void under the floor (the container stands about 700 mm up): WC 110 mm, shower 50 mm, basin 40 mm to the inspection chamber; the kitchen sink 50 mm on its own line to the grease trap. Pass between the 122 mm cross-members, never through them.
+5. Hang the drains in the void under the floor (the container stands about 700 mm up): WC 110 mm and shower 50 mm to the inspection chamber; the kitchen sink 50 mm on its own line to the grease trap. Pass between the 122 mm cross-members, never through them.
 6. Fall at 1:40 or steeper; rodding eyes at every bend; the 75 mm vent up end B.
 7. Pressure-test at 10 bar for one hour, photograph every wall, sign the release for the foam.
 
@@ -61,7 +61,7 @@ Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](plumbing.rw.md) · Print: [this
 1. S09: set the shower tray ({{studio.tray_l}} × {{studio.tray_w}}) on its 90 mm waste, with the carpenter's ledge and the fixed glass screen.
 2. S10: hang the wall-hung WC on its slim concealed cistern (80 mm frame in end wall B, 30 mm build-out, dual-flush plate).
 3. S10: hang the {{studio.heater_kw}} kW instant heater (200 × 330 × 90) on end wall B inside the shower, between the slide rail and the glass, its display about 1.3 m up; connect the cold at its foot and the hand shower's hose at its top. It has no tank, so it needs no relief valve.
-4. S10: fit the basin (400 × 300) and its cold tap with a bottle trap in the wash lobby; the slide rail and the hand shower on end wall B.
+4. S10: fit the slide rail and the hand shower on end wall B. There is no basin: hands are washed at the galley sink.
 5. S13: the kitchen tap (cold) on its angle valve, and the drinking-water filter in the sink base with its own faucet by the tap.
 
 ### Tests

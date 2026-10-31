@@ -1,12 +1,12 @@
 kit,name,trade,made_where,parts,bought_lines
 K1,Insulation and lining,carpentry + spray foam,site,15,42
-K2,Bathroom shell and fixtures,carpentry + tiling + plumbing,workshop + site,13,25
-K3,Kitchen,carpentry,workshop,36,8
+K2,Bathroom shell and fixtures,carpentry + tiling + plumbing,workshop + site,7,22
+K3,Kitchen,carpentry,workshop,40,9
 K4,Bed,carpentry,workshop,41,1
 K5,Bedside table and lamp,carpentry,workshop,10,2
 K6,"Seating: sofa, table and chairs",carpentry,workshop,11,3
 K7,Trims and scribes,carpentry,workshop,7,1
 K8,Electrical,electrical,site,0,50
-K9,Plumbing,plumbing,site,0,12
+K9,Plumbing,plumbing,site,0,11
 K10,Steel and glazing,welding + glazier,steel workshop + site,0,8
 K11,"Roof terrace, deck canopy and stair",welding + carpentry,steel workshop + site,76,2

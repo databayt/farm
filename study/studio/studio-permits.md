@@ -21,7 +21,7 @@ Status: the founder reports that the containers are already approved; the refere
 - No gas indoors (induction hob); the instant shower heater has no tank, so no relief valve (D-053).
 - The 3 m slider is the escape route; keep the deck clear; the slider lock opens from inside without a key.
 - Roof terrace: guardrail 1,100 mm, no climbable infill, stair lights on, closed to guests until the engineer signs (R26).
-- Hot water at 41-44 C at the shower and basin (thermostatic mixer).
+- Hot water at 41-44 C at the shower (thermostatic mixer).
 
 ## Guest information card
 

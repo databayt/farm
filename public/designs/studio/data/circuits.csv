@@ -1,5 +1,5 @@
 circuit,serves,device,cable_mm2,design_A,derated_Iz_A,run_m,drop_pct,points,group,colour,relay
-C1,Indoor lights and fans,B6,1.5,0.6,13.6,34.9,0.25,L1 L2 L3 L4 L5 L7 S1 S2 S3 F1 F2,lights,#2a78d6,
+C1,Indoor lights and fans,B6,1.5,0.6,13.6,30,0.22,L1 L2 L3 L4 L5 L7 S1 S2 S3 F1 F2,lights,#2a78d6,
 C2,"Sockets: bed, sofa and deck",B16,2.5,8,18.3,24.3,1.52,P1 P2 P3 P5,sockets,#eb6834,
 C3,"Kitchen sockets, fridge and hood",B16,2.5,14,18.3,12.3,1.35,P6 P7 P8 P12,sockets,#eb6834,
 C4,Induction hob,B20,4,15.2,24.4,4.4,0.32,P9,fixed,#1baf7a,

@@ -31,7 +31,7 @@ const T = {
   en: {
     endA: "END A", endB: "END B", back: "BACK WALL", front: "FRONT WALL", bed: "BED", bedside: "BEDSIDE",
     sofa: "SOFA", table: "TABLE", chair: "CHAIR", kitchen: "KITCHEN", fridge: "FRIDGE", hob: "HOB", sink: "SINK",
-    shower: "SHOWER", wc: "WC", basin: "BASIN", bathroom: "BATHROOM", wash: "WASH LOBBY", door: "DOOR",
+    shower: "SHOWER", wc: "WC", bathroom: "BATHROOM", wash: "LOBBY", door: "DOOR", slidingDoor: "SLIDING DOOR", leaf: "leaf",
     slider: "SLIDING GLASS DOOR", w1: "WINDOW W1", partition: "PARTITION", fromA: "measured from the finished face of end A",
     fromAsteel: "measured from the steel of end A", fromBack: "measured from the steel of the back wall",
     length: "length", width: "width", height: "height", diag: "both diagonals: write the difference",
@@ -45,7 +45,7 @@ const T = {
     head: "head battens", sliderGap: "sliding door opening", ceilingB: "CEILING (seen from below)",
     panels: "lining panels, plywood 12 (ids from the cut list)", over: "over the slider", tray: "tray 1000 × 900",
     glass: "fixed glass", heater: "instant heater in the shower",
-    worktop: "worktop 38", legs: "legs", overhead: "overhead cabinet", hood: "hood", plinth: "plinth",
+    worktop: "worktop 38", legs: "legs", overhead: "wall cabinet", hood: "chimney hood", plinth: "plinth",
     depth: "bases 600 deep · worktop 620 deep", frontView: "seen from the living room, facing the partition",
     fromBackFin: "from the finished back wall", up: "up from the finished floor", ledge: "ledge",
     wallTitle: "WALL: steel → room", floorTitle: "FLOOR: on the container floor 28 (treated)", ceilTitle: "CEILING: roof steel → room",
@@ -53,8 +53,8 @@ const T = {
   rw: {
     endA: "IMPERA A", endB: "IMPERA B", back: "URUKUTA RW'INYUMA", front: "URUKUTA RW'IMBERE", bed: "IGITANDA",
     bedside: "AKAMEZA", sofa: "SOFA", table: "AMEZA", chair: "INTEBE", kitchen: "IGIKONI", fridge: "FRIGO",
-    hob: "AMASHYIGA", sink: "EVIYE", shower: "DOUCHE", wc: "WC", basin: "LAVABO", bathroom: "UBWIHERERO",
-    wash: "AHO BAKARABIRA", door: "URUGI", slider: "URUGI RW'IKIRAHURE", w1: "IDIRISHYA W1", partition: "PARTITION",
+    hob: "AMASHYIGA", sink: "EVIYE", shower: "DOUCHE", wc: "WC", bathroom: "UBWIHERERO",
+    wash: "IMBERE Y'UBWIHERERO", door: "URUGI", slidingDoor: "URUGI RUNYERERA", leaf: "urugi", slider: "URUGI RW'IKIRAHURE", w1: "IDIRISHYA W1", partition: "PARTITION",
     fromA: "bipimwe uhereye ku rukuta rurangiye rwa end A", fromAsteel: "bipimwe uhereye ku cyuma cya end A",
     fromBack: "bipimwe uhereye ku cyuma cy'urukuta rw'inyuma", length: "uburebure", width: "ubugari",
     height: "uburebure bwo hejuru", diag: "diyagonale zombi: andika itandukaniro",
@@ -69,7 +69,7 @@ const T = {
     head: "ibiti byo hejuru", sliderGap: "umwanya w'urugi runyerera", ceilingB: "IGISENGE (urebye uri hasi)",
     panels: "impapuro za lining, pulayiwudi 12 (nimero zo muri cut list)", over: "hejuru y'urugi runyerera",
     tray: "tray 1000 × 900", glass: "ikirahure gihamye", heater: "heater ihita ishyushya amazi, muri douche",
-    worktop: "worktop 38", legs: "amaguru", overhead: "akabati ko hejuru", hood: "hood", plinth: "plinth",
+    worktop: "worktop 38", legs: "amaguru", overhead: "akabati ko hejuru", hood: "hotte ifite chimney", plinth: "plinth",
     depth: "ubujyakuzimu: ibice byo hasi 600 · worktop 620", frontView: "urebye uri mu cyumba, ureba partition",
     fromBackFin: "uhereye ku rukuta rurangiye rw'inyuma", up: "uhereye hasi harangiye ujya hejuru", ledge: "ledge",
     wallTitle: "URUKUTA: icyuma → icyumba", floorTitle: "HASI: hejuru ya hasi ha kontineri 28 (hatewe umuti)",
@@ -145,8 +145,7 @@ function plan(t, lang) {
   box([scene.bdoor[1], scene.bath_y1, 0, scene.wall_b, cw, 0], "#8d8578", "")
   box(scene.tray, C.wet, t.shower, 85)
   box(scene.wc, C.fit, t.wc, 80)
-  box(scene.basin, C.fit, "", 70)
-  s.text((scene.basin[0] + scene.basin[3]) / 2, (scene.basin[1] + scene.basin[4]) / 2, t.basin, { size: 65, weight: 700, rotate: -90 })
+  box([scene.door[0], scene.door[1], 0, scene.door[3], scene.door[4], 0], C.oak, "")
   s.text(scene.part_x0 + scene.part_t / 2, cw + 120, `${t.partition} 70`, { size: 65, weight: 700, anchor: "start", rotate: 90 })
   s.rect(scene.wall_b, 0, L - scene.wall_b, W, "#d8d2c6", C.ink, 4)
   // labels outside
@@ -336,8 +335,11 @@ function bathroom(t, lang) {
   s.rect(scene.part_x0, 0, scene.part_t, cw, "#8d8578", C.ink, 5)
   s.rect(scene.bath_x0, scene.bath_y1, scene.bdoor[0] - scene.bath_x0, scene.cross_t, "#8d8578", C.ink, 5)
   s.rect(scene.bdoor[1], scene.bath_y1, scene.wall_b - scene.bdoor[1], scene.cross_t, "#8d8578", C.ink, 5)
-  s.add(`<path d="M ${scene.bdoor[0]} ${scene.bath_y1} A ${scene.bdoor[1] - scene.bdoor[0]} ${scene.bdoor[1] - scene.bdoor[0]} 0 0 0 ${scene.bdoor[1]} ${scene.bath_y1 - (scene.bdoor[1] - scene.bdoor[0])}" fill="none" stroke="${C.ink}" stroke-width="4" stroke-dasharray="30 20"/>`)
-  s.text((scene.bdoor[0] + scene.bdoor[1]) / 2, scene.bath_y1 + 200, `${t.door} 600`, { size: 80, weight: 700 })
+  // the sliding leaf, closed on the lobby face; dashed where it parks open towards end B
+  const dr = scene.door, lw = dr[3] - dr[0]
+  s.rect(dr[0], dr[1], lw, dr[4] - dr[1], C.oak, C.ink, 5)
+  s.add(`<rect x="${scene.bleaf[0]}" y="${dr[1]}" width="${lw}" height="${dr[4] - dr[1]}" fill="none" stroke="${C.ink}" stroke-width="4" stroke-dasharray="30 20"/>`)
+  s.text((scene.bdoor[0] + scene.bdoor[1]) / 2, dr[4] + 230, `${t.slidingDoor} ${r(scene.bdoor[1] - scene.bdoor[0] - 36)}`, { size: 80, weight: 700 })
   const b = (q, fill, label, size = 80) => {
     s.rect(q[0], q[1], q[3] - q[0], q[4] - q[1], fill, C.ink, 6)
     if (label) s.text((q[0] + q[3]) / 2, (q[1] + q[4]) / 2, label, { size, weight: 700 })
@@ -346,19 +348,18 @@ function bathroom(t, lang) {
   s.rect(scene.screen[0], scene.screen[1] - 8, scene.screen[3] - scene.screen[0], 24, C.membrane, "none", 0)
   s.text((scene.screen[0] + scene.screen[3]) / 2, scene.screen[4] + 90, t.glass, { size: 65, fill: C.membrane })
   b(scene.wc, C.fit, t.wc)
-  b(scene.basin, C.fit, t.basin, 60)
   s.rect(scene.wall_b, 0, L - scene.wall_b, W, "#d8d2c6", C.ink, 4)
   const wh = scene.fittings.find((f) => f.id === "WH"), [hw, hh, hd] = wh.size
   s.line(scene.wall_b - 10, wh.at[1] - hw / 2, scene.wall_b - 10, wh.at[1] + hw / 2, C.cut, 22)
   s.text(x0 + 40, W + 330, `${t.heater}: ${hw} × ${hh} × ${hd}`, { size: 75, anchor: "start", fill: C.cut, weight: 700 })
-  s.text(x0 + 40, W + 470, `${t.wc}: 520 × 380 · ${t.basin}: 300 × 400 · ${t.glass}: 700`, { size: 75, anchor: "start" })
+  s.text(x0 + 40, W + 470, `${t.wc}: 520 × 380 · ${t.glass}: 700 · ${t.leaf}: ${r(lw)} × ${r(dr[5] - dr[2])}`, { size: 75, anchor: "start" })
   s.text((x0 + scene.part_x0) / 2, W / 2, t.kitchen, { size: 75, weight: 700, rotate: -90 })
   s.text(x0, -1000, t.bathroom, { size: 110, weight: 700, anchor: "start" })
   s.text(L + 260, W / 2, t.endB, { size: 100, weight: 700, rotate: -90 })
   // ordinates: x from end A along the top, y from the back wall along the right
   const top = -260
   s.line(x0, top, L, top, C.dim, 4)
-  for (const x of [scene.part_x0, scene.tray[0], scene.wc[0], scene.basin[0], scene.wall_b]) s.ord(x, top, r(x))
+  for (const x of [scene.part_x0, scene.tray[0], scene.wc[0], scene.wall_b]) s.ord(x, top, r(x))
   const right = L + 620
   s.line(right, 0, right, W, C.dim, 4)
   for (const y of [scene.tray[4], (scene.wc[1] + scene.wc[4]) / 2, scene.bath_y1, W]) {
@@ -371,7 +372,7 @@ function bathroom(t, lang) {
 
 // ------------------------------------------------------------------ 10. kitchen (elevation)
 function kitchen(t, lang) {
-  const run = scene.sink[1], top = 900, leg = 100, oz0 = scene.overhead[2], oz1 = scene.overhead[5]
+  const run = scene.sink[1], top = 900, leg = 100, oz0 = scene.overhead[0][2], oz1 = scene.overhead[0][5]
   const hz0 = scene.hood[2], hz1 = scene.hood[5], Z = (z) => H - z
   const s = new Sheet(-900, -700, W + 2100, H + 1500)
   s.rect(0, 0, W, H, C.soft, C.steel, 12)
@@ -385,10 +386,17 @@ function kitchen(t, lang) {
   s.text(run + 60, Z(top - 19), t.worktop, { size: 75, anchor: "start" })
   s.rect(0, Z(leg), run, leg, "#cfc7b8", C.ink, 4)
   s.text(run + 60, Z(leg / 2), `${t.legs} / ${t.plinth}`, { size: 70, anchor: "start" })
-  s.rect(0, Z(oz1), run, oz1 - oz0, "#e4ecf3", C.ink, 6)
-  s.text(run / 2, Z((oz0 + oz1) / 2), t.overhead, { size: 85, weight: 700 })
-  s.rect(scene.hood[1], Z(hz1), scene.hood[4] - scene.hood[1], hz1 - hz0, "#3b3b3b", C.ink, 4)
-  s.text((scene.hood[1] + scene.hood[4]) / 2, Z(hz1) - 70, t.hood, { size: 70 })
+  // two wall cabinets either side of the hob, and the chimney hood between them up to the ceiling
+  for (const o of scene.overhead) {
+    s.rect(o[1], Z(oz1), o[4] - o[1], oz1 - oz0, "#e4ecf3", C.ink, 6)
+    s.dimH(o[1], o[4], Z(oz1) - 90, r(o[4] - o[1]))
+  }
+  s.text((scene.overhead[0][1] + scene.overhead[0][4]) / 2, Z((oz0 + oz1) / 2), t.overhead, { size: 70, weight: 700 })
+  s.text((scene.overhead[1][1] + scene.overhead[1][4]) / 2, Z((oz0 + oz1) / 2), t.overhead, { size: 70, weight: 700 })
+  const ch = scene.chimney
+  s.rect(ch[1], Z(ch[5]), ch[4] - ch[1], ch[5] - ch[2], "#3b3b3b", C.ink, 4)
+  s.add(`<path d="M ${scene.hood[1]} ${Z(hz0)} H ${scene.hood[4]} L ${ch[4]} ${Z(hz1)} H ${ch[1]} Z" fill="#3b3b3b" stroke="${C.ink}" stroke-width="4"/>`)
+  s.text((scene.hood[1] + scene.hood[4]) / 2, Z(hz0) + 90, t.hood, { size: 70 })
   // heights on the left
   for (const z of [leg, top, hz0, oz0, oz1]) {
     s.line(-120, Z(z), 0, Z(z), C.dim, 4)

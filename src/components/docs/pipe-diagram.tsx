@@ -17,7 +17,7 @@ const TOP = 56 // the supply row
 const COLD = 150 // the cold line
 const FIX = 410 // the outlets
 const DRAIN = 548 // the bathroom's drains join here
-const X = { DF: 150, KT: 360, SH: 640, BT: 900, WC: 1160, V: 1372, IC: 1480 }
+const X = { DF: 150, KT: 360, SH: 700, WC: 1060, V: 1372, IC: 1480 } // no basin: hands are washed at the sink
 
 function Unit({ x, y, title, sub, dashed = false, muted = false }: {
   x: number; y: number; title: string; sub?: string; dashed?: boolean; muted?: boolean
@@ -96,13 +96,11 @@ export async function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fi
       {/* cold, to every outlet and the heater */}
       {pipe("W1", `M${X.DF} ${FIX} V${COLD} H${X.WC} V${FIX}`)}
       {tee("W1", 470, COLD)}
-      {[X.KT, X.SH, X.BT].map((x) => tee("W1", x, COLD))}
+      {[X.KT, X.SH].map((x) => tee("W1", x, COLD))}
       {pipe("W3", `M${X.KT} ${COLD} V${FIX}`)}
       {tag("W3", X.KT + 8, 290)}
       {pipe("W2", `M${X.SH} ${COLD} V200`)}
       {tag("W2", X.SH + 8, 185)}
-      {pipe("W5", `M${X.BT} ${COLD} V${FIX}`)}
-      {tag("W5", X.BT + 8, 290)}
       {tag("W4", X.WC + 8, 290)}
 
       {/* the instant heater, its hose (H1) the only hot, down to the shower */}
@@ -116,7 +114,6 @@ export async function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fi
       <Unit x={X.DF} y={FIX} title={t.df.title} sub={t.df.sub} />
       <Unit x={X.KT} y={FIX} title={t.kt.title} sub={t.kt.sub(fit.KT?.rating)} />
       <Unit x={X.SH} y={FIX} title={t.sh.title} sub={`SH · ${deg(fit.SH?.rating)}`} />
-      <Unit x={X.BT} y={FIX} title={t.bt.title} sub={t.bt.sub(fit.BT?.rating)} />
       <Unit x={X.WC} y={FIX} title={t.wc.title} sub={`WC · ${fit.WC?.rating}`} />
 
       {/* drains: the kitchen sink apart to the grease trap; the rest to the inspection chamber and the septic tank */}
@@ -124,11 +121,9 @@ export async function PipeDiagram({ pipes, fittings, water }: { pipes: Row[]; fi
       {tag("D4", X.KT + 10, 540)}
       <Unit x={X.KT} y={600} title={t.trap.title} sub={t.trap.sub} dashed />
       {pipe("D2", `M${X.SH} 470 V${DRAIN} H${X.IC - 75}`)}
-      {pipe("D3", `M${X.BT} 470 V${DRAIN}`)}
       {pipe("D1", `M${X.WC} 470 V${DRAIN}`)}
-      {[X.BT, X.WC].map((x) => tee("D1", x, DRAIN))}
+      {tee("D1", X.WC, DRAIN)}
       {tag("D2", X.SH - 10, 512, "end")}
-      {tag("D3", X.BT - 10, 512, "end")}
       {tag("D1", X.WC - 10, 512, "end")}
       <Unit x={X.IC} y={DRAIN - 28} title="IC1" sub={t.ic} dashed />
       <path d={`M${X.IC} ${DRAIN + 32} V610`} strokeWidth={5} style={{ stroke: run.D1?.colour }} />

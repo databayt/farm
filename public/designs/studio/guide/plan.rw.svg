@@ -22,13 +22,12 @@
 <text x="4278" y="1375" font-size="70" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">EVIYE</text>
 <rect x="4578" y="0" width="70" height="1770" fill="#8d8578" stroke="#1f2328" stroke-width="6"/>
 <rect x="4648" y="1700" width="0" height="70" fill="#8d8578" stroke="#1f2328" stroke-width="6"/>
-<rect x="5248" y="1700" width="520" height="70" fill="#8d8578" stroke="#1f2328" stroke-width="6"/>
+<rect x="5218" y="1700" width="550" height="70" fill="#8d8578" stroke="#1f2328" stroke-width="6"/>
 <rect x="4768" y="0" width="1000" height="900" fill="#cfe3f2" stroke="#1f2328" stroke-width="6"/>
 <text x="5268" y="450" font-size="85" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">DOUCHE</text>
 <rect x="5248" y="1110" width="520" height="380" fill="#ffffff" stroke="#1f2328" stroke-width="6"/>
 <text x="5508" y="1300" font-size="80" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle">WC</text>
-<rect x="5498" y="1820" width="300" height="400" fill="#ffffff" stroke="#1f2328" stroke-width="6"/>
-<text x="5648" y="2020" font-size="65" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 5648 2020)">LAVABO</text>
+<rect x="4646" y="1780" width="574" height="40" fill="#c9935a" stroke="#1f2328" stroke-width="6"/>
 <text x="4613" y="1890" font-size="65" font-weight="700" fill="#1f2328" text-anchor="start" dominant-baseline="middle" transform="rotate(90 4613 1890)">PARTITION 70</text>
 <rect x="5768" y="0" width="30" height="2252" fill="#d8d2c6" stroke="#1f2328" stroke-width="4"/>
 <text x="-330" y="1126" font-size="115" font-weight="700" fill="#1f2328" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -330 1126)">IMPERA A</text>

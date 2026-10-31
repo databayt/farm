@@ -8,8 +8,8 @@ from dataclasses import replace
 
 import params as P
 from joinery import LEG, T12, T18, carcass
-from layout import (AISLE_MIN, CHAIR_GAP, CHAIR_W, GALLEY_D, SOFA_D, SOFA_H, TABLE_D, TABLE_H, TABLE_W, WC_D,
-                    WC_PAN, WORKTOP_D, Layout)
+from layout import (AISLE_MIN, CHAIR_GAP, CHAIR_W, GALLEY_D, SLIDE_LAP, SOFA_D, SOFA_H, TABLE_D, TABLE_H, TABLE_W,
+                    WC_D, WC_PAN, WORKTOP_D, Layout)
 from model import Box, Bought, KeepOut, Kit, Op, Part, Step
 
 STEEL_T = 3.0
@@ -194,9 +194,10 @@ def k1_lining(lo: Layout) -> Kit:
 
 # ------------------------------------------------------------------------------- K2 bathroom
 def k2_bath(lo: Layout) -> Kit:
-    """Shower, WC and basin in one row on end wall B. The partition (along y) closes the bathroom
-    from the galley; a cross wall (along x) with a sliding door closes it from the wash lobby,
-    where the basin stands outside the door under the W1 window."""
+    """Shower and WC in one row on end wall B. The partition (along y) closes the bathroom from the
+    galley; a cross wall (along x) closes it from the lobby under the W1 window, with a sliding door
+    whose leaf runs on a track on the lobby face and parks towards end B. Hands are washed at the
+    galley sink: there is no basin."""
     k = Kit("K2", "Bathroom shell and fixtures", "carpentry + tiling + plumbing", "workshop + site")
     px0, px1 = lo.part_x0, lo.part_x0 + lo.part_t
     cy0, cy1 = lo.bath_y1, lo.bath_y1 + lo.cross_t
@@ -223,17 +224,22 @@ def k2_bath(lo: Layout) -> Kit:
     part("Door jamb (hinge side)", Box(d0, cy0, 0, d0 + T18, cy1 - T18, door_h), step="S07", ex=(-200, 0, 0))
     part("Door jamb (latch side)", Box(d1 - T18, cy0, 0, d1, cy1 - T18, door_h), step="S07", ex=(200, 0, 0))
     part("Door head", Box(d0 + T18, cy0, door_h - T18, d1 - T18, cy1 - T18, door_h), step="S07", ex=(0, 0, 200))
-    k.buy(Bought("K2-DOOR", f"Door leaf {d1 - d0 - 2 * T18:.0f} x 2,030, moisture-resistant, opens into the "
-                 "bathroom, privacy lock", "K2", "doors", "carpentry", 1, "each", "doorleaf",
-                 Box(d0 + T18 + 2, cy0 + 10, 10, d1 - T18 - 2, cy0 + 50, door_h - T18 - 2), step="S07", color="door"))
-    # wet walls: cement board + membrane + tiles inside the bathroom, and a splashback behind the basin
+    # the leaf hangs on the lobby face, closed over the opening and lapping both jambs; open it parks towards end B
+    lx0 = d0 + T18 - SLIDE_LAP
+    lx1 = lx0 + (lo.bleaf[1] - lo.bleaf[0])
+    k.buy(Bought("K2-DOOR", f"Sliding door leaf {lx1 - lx0:.0f} x {door_h + 5:,.0f}, moisture-resistant, flush pulls, "
+                 "privacy hook lock", "K2", "doors", "carpentry", 1, "each", "doorleaf",
+                 Box(lx0, cy1 + 10, 5, lx1, cy1 + 50, door_h + 10), step="S07", color="door"))
+    k.buy(Bought("K2-TRACK", f"Surface sliding-door track {lo.L - d0 - 10:.0f} mm with soft-close, end stop and "
+                 "floor guide, on the cross wall's lobby face", "K2", "hardware", "carpentry", 1, "set", "slidetrack",
+                 Box(d0, cy1, door_h + 10, lo.L - 10, cy1 + 60, door_h + 70), step="S07", color="steel"))
+    # wet walls: cement board + membrane + tiles inside the bathroom
     for wid, nm, b in (
         ("BACK", "back wall", Box(px1, -12, 0, lo.L, 0, lo.H)),
         ("ENDB", "end wall B, built out 30 mm over the concealed WC cistern (stud wall inside the cargo doors)",
          Box(lo.wall_b, 0, 0, lo.wall_b + 12, cy0, lo.H)),
         ("PART", "partition, bath face", Box(px1 - 12, 0, 0, px1, cy0, lo.H)),
         ("CROSS", "cross wall, bath face", Box(px1, cy0 - 12, 0, lo.L, cy0, lo.H)),
-        ("BASIN", "splashback behind the basin (end wall B, wash lobby)", Box(lo.L, cy1, 0, lo.L + 12, lo.W, lo.H)),
     ):
         area = round(max(b.size[0], b.size[1]) * lo.H / 1e6, 2)
         k.buy(Bought(f"K2-CB-{wid}", f"Cement board 12 mm + liquid membrane, {nm}", "K2", "wet walls", "tiling",
@@ -241,7 +247,7 @@ def k2_bath(lo: Layout) -> Kit:
         k.buy(Bought(f"K2-TILE-{wid}", f"Wall tiles + adhesive + grout, {nm}", "K2", "wet walls", "tiling",
                      round(area * 1.1, 2), "m2", "tile"))
     wet_area = (lo.L - px1) * lo.W / 1e6
-    k.buy(Bought("K2-VINYL", "Safety vinyl sheet, coved 100 mm up the walls (bathroom and wash lobby)", "K2",
+    k.buy(Bought("K2-VINYL", "Safety vinyl sheet, coved 100 mm up the walls (bathroom and lobby)", "K2",
                  "finishes", "tiling", round(wet_area * 1.25, 1), "m2", "vinyl", Box(px1, 0, -5, lo.L, lo.W, 0),
                  step="S08", layer="envelope", color="floor"))
     tx0, tx1, ty0, ty1 = lo.tray
@@ -262,37 +268,23 @@ def k2_bath(lo: Layout) -> Kit:
                  "its 30 mm build-out", "K2", "sanitaryware", "plumbing", 1, "set", "wcframe",
                  Box(lo.wall_b + 12, cy - 250, 0, lo.L + 50, cy + 250, 1120), step="S06", layer="envelope",
                  color="steel"))
-    bx0, bx1, by0, by1 = lo.basin
-    k.buy(Bought("K2-BASIN", "Wall basin 400 x 300 + mixer + bottle trap (wash lobby)", "K2", "sanitaryware",
-                 "plumbing", 1, "each", "basin", Box(bx0, by0, 700, bx1, by1, 850), step="S10", color="white"))
-    # mirror cabinet over the basin, no wider than it, so the sliding door can park beside it
-    for nm, b in (("Mirror cabinet side 1", Box(lo.L - 120, by0, 1250, lo.L - 12, by0 + 18, 1900)),
-                  ("Mirror cabinet side 2", Box(lo.L - 120, by1 - 18, 1250, lo.L - 12, by1, 1900)),
-                  ("Mirror cabinet top", Box(lo.L - 120, by0 + 18, 1882, lo.L - 12, by1 - 18, 1900)),
-                  ("Mirror cabinet bottom", Box(lo.L - 120, by0 + 18, 1250, lo.L - 12, by1 - 18, 1268)),
-                  ("Mirror cabinet shelf", Box(lo.L - 110, by0 + 19, 1560, lo.L - 12, by1 - 19, 1578)),
-                  ("Mirror cabinet door", Box(lo.L - 138, by0, 1250, lo.L - 120, by1, 1900))):
-        part(nm, b, step="S10", edges="L2S2", ex=(-250, 0, 0))
-    k.buy(Bought("K2-MIRROR", "Mirror 4 mm bonded to the cabinet door", "K2", "glazing", "carpentry", 1, "each",
-                 "mirror", step="S10"))
     k.buy(Bought("K2-ACC", "Towel rail, robe hook, toilet-roll holder, shower shelf", "K2", "accessories",
                  "carpentry", 1, "set", "bathacc", step="S10"))
     k.keepouts += [
         KeepOut("KO-WC", Box(lo.L - WC_D - 600, cy - 400, 0, lo.L - WC_D, cy + 400, 1200), "WC front clearance 600",
                 "K2-WC"),
         KeepOut("KO-SHOWER", Box(tx0 - 10, ty1, 0, tx1 - 700, ty1 + 600, 1800), "Shower entry 600", "K2-TRAY"),
-        KeepOut("KO-BASIN", Box(bx0 - 600, by0, 0, bx0, by1, 1500), "Standing space at the basin", "K2-BASIN"),
-        KeepOut("KO-BDOOR", Box(d0 + T18, cy0 - (d1 - d0), 0, d1, cy0, 2000),
-                "Door swing into the bathroom (hinged by the partition)", "K2-DOOR"),
+        KeepOut("KO-BDOOR", Box(lo.bleaf[0], cy1 + 50, 0, lo.bleaf[1], cy1 + 110, 2000),
+                "The sliding leaf parks here: keep the lobby wall clear", "K2-DOOR"),
     ]
     k.steps += [
         Step("S06", "K2", "Stand the partition and cross-wall frames and fix the skins",
              [p.id for p in k.parts if p.step == "S06"], {"F": 40}, 2),
-        Step("S07", "K2", "Fit the door frame and hang the bathroom door",
+        Step("S07", "K2", "Fit the door frame, fix the track on the lobby face and hang the sliding door",
              [p.id for p in k.parts if p.step == "S07"], {"F": 16}, 2),
         Step("S08", "K2", "Cement board, membrane and tiles on the wet walls; coved vinyl floor", [], {}, 2),
         Step("S09", "K2", "Set the shower tray, ledge and fixed screen", [], {}, 2),
-        Step("S10", "K2", "Hang the WC, the instant heater in the shower and its hand-shower rail, and the basin and mirror cabinet in the wash lobby",
+        Step("S10", "K2", "Hang the WC, the instant heater in the shower and its hand-shower rail",
              [p.id for p in k.parts if p.step == "S10"], {"F": 12}, 1),
     ]
     return k
@@ -301,7 +293,8 @@ def k2_bath(lo: Layout) -> Kit:
 # ------------------------------------------------------------------------------- K3 kitchen
 def k3_kitchen(lo: Layout) -> Kit:
     """The galley on the bathroom partition: fridge bay, hob base and sink base from the back wall,
-    an overhead cabinet for storage, and a hood under it. Drawn as a back-wall run
+    two wall cabinets over the fridge and the sink, and between them a chimney hood over the hob,
+    its chimney cover up to the ceiling (the founder's reference picture). Drawn as a back-wall run
     (x along the galley, y from the partition), then turned into place."""
     k = Kit("K3", "Kitchen", "carpentry", "workshop")
     D = GALLEY_D
@@ -320,7 +313,11 @@ def k3_kitchen(lo: Layout) -> Kit:
     back = next(p for p in sink if p.name.endswith("back"))
     back.ops.append(Op("cutout", "A", 100, 150, w=(lo.sink[1] - lo.sink[0]) - 200, h=250, joint="service"))
     oz = 1800.0
-    carcass(k, "K3-T", "Overhead cabinet", 0, run, 0, 500, oz, 500, step="S12", doors=2, top="top", legs=False)
+    # the wall cabinets stop either side of the hob, leaving its span to the chimney hood
+    carcass(k, "K3-T", "Wall cabinet (fridge side)", 0, lo.hob[0], 0, 500, oz, 500, step="S12", doors=1, top="top",
+            legs=False)
+    carcass(k, "K3-U", "Wall cabinet (sink side)", lo.hob[1], run, 0, 500, oz, 500, step="S12", doors=1, top="top",
+            legs=False)
     # worktop over the whole run, with sink and hob cut-outs
     wt = Part("K3-WT", "Worktop 38 mm", "K3", "WTOP38", Box(0, 0, LEG + hb, run, WORKTOP_D, 900), step="S13",
               edges="L1", explode=(0, 0, 300))
@@ -329,8 +326,6 @@ def k3_kitchen(lo: Layout) -> Kit:
         Op("cutout", "B", lo.hob[0] + 20, 185, w=560, h=320, joint="hob"),
     ]
     k.add(wt)
-    k.add(Part("K3-HS", "Hood shelf", "K3", "PLY18", Box(lo.hob[0], 0, 1650, lo.hob[1], 480, 1668), step="S14",
-               edges="L1"))
     k.add(Part("K3-PL", "Plinth", "K3", "PLY18", Box(lo.hob[0], 560, 0, run, 578, LEG - 2), step="S13", edges="L1"))
     # a wide black-glass hob after the founder's photo: two zones side by side, knobs at the front left
     k.buy(Bought("K3-HOB", "Two-zone induction hob, zones side by side, black glass 590 x 350, front knobs, about 3.5 kW",
@@ -342,8 +337,13 @@ def k3_kitchen(lo: Layout) -> Kit:
     k.buy(Bought("K3-TAP", "Kitchen mixer tap", "K3", "sanitaryware", "plumbing", 1, "each", "tap", step="S13"))
     k.buy(Bought("K3-FRIDGE", "Under-counter fridge about 90 L (A-class)", "K3", "appliances", "electrical", 1,
                  "each", "fridge", Box(f0 + 10, 40, 0, f1 - 30, 590, 850), step="S13", color="white"))
-    k.buy(Bought("K3-HOOD", "Slim recirculating hood 600 mm, black, charcoal filter", "K3", "appliances", "electrical",
-                 1, "each", "hood", Box(lo.hob[0], 0, 1550, lo.hob[1], 480, 1650), step="S14", color="black"))
+    hcx = (lo.hob[0] + lo.hob[1]) / 2
+    k.buy(Bought("K3-HOOD", "Chimney hood 600 mm, black, recirculating with a charcoal filter", "K3", "appliances",
+                 "electrical", 1, "each", "hood", Box(lo.hob[0], 0, 1550, lo.hob[1], 500, 1650), step="S14",
+                 color="black"))
+    k.buy(Bought("K3-CHIM", "Telescopic chimney cover 260 x 220, hood to the ceiling (comes with the hood)", "K3",
+                 "appliances", "electrical", 1, "each", "chimney", Box(hcx - 130, 0, 1650, hcx + 130, 220, lo.H),
+                 step="S14", color="black"))
     k.buy(Bought("K3-FILTER", "Under-sink drinking-water filter + faucet", "K3", "plumbing", "plumbing", 1, "each",
                  "filter", step="S13"))
     turn(k, lo.part_x0)
@@ -353,12 +353,12 @@ def k3_kitchen(lo: Layout) -> Kit:
         Step("S11", "K3", "Lay the oak planks over the living area (end A to the partition); then assemble the fridge bay, "
              "hob base and sink base on their legs along the partition",
              [p.id for p in k.parts if p.step == "S11"], {}, 2),
-        Step("S12", "K3", "Assemble the overhead cabinet and hang it on the steel rail",
-             [p.id for p in k.parts if p.step == "S12"], {}, 2, "Lift the cabinet up: two people."),
+        Step("S12", "K3", "Assemble the two wall cabinets and hang them on the steel rail, either side of the hob",
+             [p.id for p in k.parts if p.step == "S12"], {}, 2, "Lift each cabinet up: two people."),
         Step("S13", "K3", "Scribe and fix the worktop; drop in the sink and hob; plinth",
              [p.id for p in k.parts if p.step == "S13"], {"F": 12}, 2),
-        Step("S14", "K3", "Fix the hood shelf under the overhead cabinet and hang the hood",
-             [p.id for p in k.parts if p.step == "S14"], {"F": 8}, 2),
+        Step("S14", "K3", "Hang the chimney hood on the partition between the wall cabinets, 650 mm over the hob, "
+             "and fix its chimney cover up to the ceiling", [p.id for p in k.parts if p.step == "S14"], {"F": 8}, 2),
     ]
     return k
 
@@ -502,7 +502,7 @@ def k7_trims(lo: Layout) -> Kit:
         k.add(Part(f"K7-{5 + i:02d}", "Slider jamb reveal", "K7", "PLY12",
                    Box(x, lo.W - 40, 0, x + 12, lo.W, lo.o1_head), step="S18", edges="L1"))
     X, run = lo.part_x0, lo.sink[1]
-    k.add(Part("K7-07", "Ceiling scribe strip over the overhead cabinet", "K7", "PLY12",
+    k.add(Part("K7-07", "Ceiling scribe strip over the wall cabinets", "K7", "PLY12",
                Box(X - 530, 0, 2300, X - 518, run, lo.H), step="S18"))
     k.add(Part("K7-20", "Galley end panel (scribed to the floor on site)", "K7", "PLY12",
                Box(X - GALLEY_D, run, 0, X, run + 12, 900 - 38), step="S18"))
@@ -520,7 +520,7 @@ def k10_steel(lo: Layout) -> Kit:
     k.buy(Bought("K10-W1INF", "W1 infill: 2 mm steel welded into the old door frame (0-1,150), foamed with the walls",
                  "K10", "steel", "welding", 1, "each", "w1infill",
                  Box(lo.o2[0], lo.W, 0, lo.o2[1], lo.W + e, lo.w1_sill), step="S01", layer="envelope", color="steel"))
-    k.buy(Bought("K10-W1WIN", "W1 obscure louvre window 520 x 890 + insect mesh (wash lobby)", "K10", "glazing",
+    k.buy(Bought("K10-W1WIN", "W1 obscure louvre window 520 x 890 + insect mesh (bathroom lobby)", "K10", "glazing",
                  "glazier", 1, "each", "louvre", Box(lo.o2[0], lo.W, lo.w1_sill, lo.o2[1], lo.W + e, lo.w1_head),
                  step="S01", color="glass"))
     k.buy(Bought("K10-ENDB", "Seal and lock the end-B cargo doors (weld tabs, sealant)", "K10", "steel", "welding",

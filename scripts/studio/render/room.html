@@ -11,7 +11,7 @@
 
     &item=<id>  one bedroom piece on its own, three-quarter view, 1200 x 900 (ITEMS below)
                 -> render/bedroom/<id>.webp, for the Bedroom section
-    &item=<sofa|table|chairs|units|fridge|hob|sink|hood|overhead|shower|wc|basin|mirror>  one piece of the
+    &item=<sofa|table|chairs|units|fridge|hob|sink|hood|overhead|shower|wc|door>  one piece of the
                 room on its own: the room is built and every mesh not tagged with it is dropped (TAG below)
                 -> render/<seating|galley|bath>/<id>.webp, for the rails under the Bed one
     &bed=<K4-nn | exploded>  one bed piece, or the whole bed pulled apart, from render/bed/parts.json
@@ -24,15 +24,15 @@
                 wallfan|extract|alarm|earth>  one electrical device on its own -> render/electric/<id>.webp
     &view=plumbing  the plumbing in the same front view (render/scene.json fittings, pipes, systems), opened like a
                 cutaway: the sink base cut at the galley's end, and the bathroom's wet walls stripped to the foam on
-                the steel so the bath, WC and basin pipework shows: line mode draws the room faint,
+                the steel so the shower and WC pipework shows: line mode draws the room faint,
                 every fitting dark and each run in its system's colour, dashed where a wall or the floor hides it,
                 and sets window.TAGS -> render/plumbing-line.png + render/plumbing-tags.json; real mode shows the
                 finished fittings and every pipe the cuts open -> render/plumbing-real.jpg
-    &item=<meter|heater|kitchentap|filter|showerset|cistern|basintap>  one fitting where it stands, everything
+    &item=<meter|heater|kitchentap|filter|showerset|cistern>  one fitting where it stands, everything
                 else dropped; &item=<anglevalve|ppr|upvc|vent> a sample on its own -> render/plumbing/<id>.webp
   A piece on its own renders on a transparent ground (real mode): save the data URL in #out as is. The furniture follows the photos in ~/farm/ikea
-  for look (FRIDHULT sofa, MALM bed with storage boxes, LACK tables, a vessel basin on a black
-  console, a wall-hung WC, a frameless shower screen); sizes come from the design. Pillows, duvet,
+  for look (FRIDHULT sofa, MALM bed with storage boxes, LACK tables, a chimney hood, a sliding
+  bathroom door, a wall-hung WC, a frameless shower screen); sizes come from the design. Pillows, duvet,
   cushions, towels, books, plants and the kettle are render-only props. Textures are drawn
   here procedurally; no photo is copied into the render.
 -->
@@ -68,7 +68,7 @@ const LINE = MODE === "line"
 const BED = Q.get("bed")
 const ITEM = Q.get("item") ?? (BED ? "bedparts" : null)
 // pieces cut out of the room itself: each mesh carries the tag set when it was made
-const ROOM_ITEMS = new Set(["sofa", "table", "chairs", "units", "fridge", "hob", "sink", "hood", "overhead", "shower", "wc", "basin", "mirror"])
+const ROOM_ITEMS = new Set(["sofa", "table", "chairs", "units", "fridge", "hob", "sink", "hood", "overhead", "shower", "wc", "door"])
 let TAG = ""
 const ELEC = Q.get("view") === "electric"
 // electrical devices the rail renders one by one (services.py SIZE)
@@ -76,7 +76,7 @@ const DEVICES = new Set(["board", "inlet", "ceiling", "bulkhead", "strip", "swit
   "socket66", "outlet", "timer", "isolator", "wallfan", "extract", "alarm", "earth"])
 const PLUMB = Q.get("view") === "plumbing"
 // plumbing pieces the rail renders one by one: each fitting where it stands (services.py FIT_SIZE), and samples
-const FITS = new Set(["meter", "heater", "kitchentap", "filter", "showerset", "cistern", "basintap"])
+const FITS = new Set(["meter", "heater", "kitchentap", "filter", "showerset", "cistern"])
 const SAMPLES = new Set(["anglevalve", "ppr", "upvc", "vent"])
 const OPEN = PLUMB && !ITEM // the sink base and the bathroom's wet walls opened, so their pipework shows
 const BEDP = BED || ITEM === "bed" ? await (await fetch(`/public/designs/studio/render/bed/parts.json?${Date.now()}`)).json() : null
@@ -452,7 +452,7 @@ if (OPEN) {
   box(bx0, 0, -e, L + e, H, -e + t, "foam") // back wall, bathroom
   for (let x = bx0 + 0.3; x < L; x += 0.6) box(x, 0, -e + t, x + 0.038, H, -t, "batten")
   box(bx0, H - 0.004, -e, L + e, H + 0.002, 0, "cut")
-  box(L + e - t, 0, 0, L + e, H, W, "foam") // end B, shower room through the wash lobby
+  box(L + e - t, 0, 0, L + e, H, W, "foam") // end B, shower room through the lobby
   for (let z = 0.3; z < W; z += 0.6) { // battens at 600; the cistern frame's posts stand in for them behind the WC
     if (z < m(S.wc[1]) - 0.28 || z > m(S.wc[4]) + 0.28) box(L + t, 0, z, L + e - t, H, z + 0.038, "batten")
   }
@@ -460,7 +460,7 @@ if (OPEN) {
 } else {
   cutWall(bx0, 0, -e, L + e, H, 0, "marble") // back wall, bathroom
   cutWall(wb, 0, 0, L + e, H, cy0, "marble") // end B, bathroom: built out flat over the concealed cistern
-  cutWall(L, 0, cy1, L + e, H, W, "marble") // end B behind the basin
+  cutWall(L, 0, cy1, L + e, H, W, "wall") // end B in the lobby, where the sliding leaf parks
   cutWall(L, 0, cy0, L + e, H, cy1, "wall")
 }
 // front wall off: a low curb either side of the sliding glass (the entrance)
@@ -731,23 +731,25 @@ if (!ITEM || ROOM_ITEMS.has(ITEM) || FITS.has(ITEM)) {
   add(new THREE.TubeGeometry(curve, 40, 0.011, 16, false), "steel")
   fitted(nt, "kitchentap")
   TAG = "overhead"
-  // overhead cabinet with two doors, and the hood under it
-  const [ox0, oy0, oz0, ox1, oy1, oz1] = L3(S.overhead)
-  box(ox0 + 0.02, oy0, oz0, ox1, oy1, oz1, "pine")
-  const half = (oz1 - oz0) / 2
-  for (let i = 0; i < 2; i++) {
-    const z0 = oz0 + i * half
-    box(ox0, oy0 + 0.002, z0 + 0.002, ox0 + 0.02, oy1 - 0.002, z0 + half - 0.002, "pine", 0.004)
-    cyl(ox0 - 0.015, oy0 + 0.06, z0 + half / 2, 0.006, 0.16, "steel", "z", 16)
+  // two wall cabinets, one door each, either side of the hob
+  for (const o of S.overhead) {
+    const [ox0, oy0, oz0, ox1, oy1, oz1] = L3(o)
+    box(ox0 + 0.02, oy0, oz0, ox1, oy1, oz1, "pine")
+    box(ox0, oy0 + 0.002, oz0 + 0.002, ox0 + 0.02, oy1 - 0.002, oz1 - 0.002, "pine", 0.004)
+    cyl(ox0 - 0.015, oy0 + 0.06, oz1 - 0.08, 0.006, 0.16, "steel", "z", 16)
   }
   TAG = "hood"
-  // slim black hood after the founder's photo, on its shelf (K3-HS), a row of small buttons on its front
+  // chimney hood between the cabinets (the founder's reference picture): a stepped canopy over the hob, its
+  // chimney cover up to the ceiling, a row of small buttons on the canopy's front
   const [hdx0, hdy0, hdz0, hdx1, hdy1, hdz1] = L3(S.hood)
-  box(hdx0, hdy0, hdz0, hdx1, hdy1, hdz1, "hoodblack", 0.008)
-  box(hdx0, hdy1, hdz0, hdx1, hdy1 + 0.018, hdz1, "pine", 0.003)
+  const [chx0, , chz0, chx1, chy1, chz1] = L3(S.chimney)
+  const hh = hdy1 - hdy0
+  box(hdx0, hdy0, hdz0, hdx1, hdy0 + hh * 0.45, hdz1, "hoodblack", 0.006)
+  box(hdx0 + (hdx1 - hdx0) * 0.3, hdy0 + hh * 0.45, hdz0 + 0.06, hdx1, hdy1, hdz1 - 0.06, "hoodblack", 0.006)
+  box(chx0, hdy1, chz0, chx1, chy1, chz1, "hoodblack", 0.004)
   if (!LINE) for (let i = 0; i < 4; i++) {
-    const bz = (hdz0 + hdz1) / 2 + 0.04 + i * 0.026
-    box(hdx0 - 0.003, hdy0 + 0.045, bz, hdx0 + 0.001, hdy0 + 0.055, bz + 0.012, "white", 0.002)
+    const bz = (hdz0 + hdz1) / 2 - 0.05 + i * 0.026
+    box(hdx0 - 0.003, hdy0 + 0.015, bz, hdx0 + 0.001, hdy0 + 0.025, bz + 0.012, "white", 0.002)
   }
   TAG = "prop"
   // on the worktop: a kettle and a small plant
@@ -756,7 +758,7 @@ if (!ITEM || ROOM_ITEMS.has(ITEM) || FITS.has(ITEM)) {
   handle.position.set(px0 - 0.22, 0.99, fr0 + 0.33); handle.rotation.set(0, Math.PI / 2, -Math.PI / 2)
 }
 
-// ------------------------------------------------------------ bathroom: shower, WC, basin (look of the photos)
+// ------------------------------------------------------------ bathroom: shower, WC, sliding door (look of the photos)
 if (!ITEM || ROOM_ITEMS.has(ITEM) || FITS.has(ITEM)) {
   TAG = "shower"
   // shower: low tray with a round drain, frameless glass screen; on end wall B a slide rail with the hand shower and,
@@ -802,34 +804,12 @@ if (!ITEM || ROOM_ITEMS.has(ITEM) || FITS.has(ITEM)) {
   cyl(L - 0.45, 0.72, cy0 - 0.05, 0.055, 0.1, "white", "x", 32)
   box(L - 0.52, 0.715, cy0 - 0.012, L - 0.38, 0.725, cy0, "steel")
 
-  TAG = "basin"
-  // basin: white vessel basin on a black metal console with a slatted shelf and two rolled towels
-  const [bx0_, , bz0, bx1_, , bz1] = L3(S.basin)
-  const top = 0.8, cx0 = L - 0.33, cz0 = cy1 + 0.02, cz1 = W - 0.01
-  for (const lx of [cx0, L - 0.02]) for (const lz of [cz0, cz1 - 0.02]) box(lx, 0, lz, lx + 0.02, top, lz + 0.02, "black")
-  box(cx0, top - 0.02, cz0, L, top, cz1, "black") // top frame
-  box(cx0 + 0.005, top, cz0 + 0.005, L - 0.005, top + 0.02, cz1 - 0.005, "marble", 0.004) // stone top
-  box(cx0, 0.24, cz0, cx0 + 0.02, 0.26, cz1, "black"); box(L - 0.02, 0.24, cz0, L, 0.26, cz1, "black")
-  for (let i = 0; i < 6; i++) {
-    const z = cz0 + 0.02 + ((cz1 - cz0 - 0.06) * i) / 5
-    box(cx0, 0.255, z, L, 0.27, z + 0.022, "black") // slats
-  }
-  for (const tz of [cz0 + 0.12, cz0 + 0.25]) cyl(cx0 + 0.15, 0.32, tz, 0.05, 0.24, "towel", "x", 32)
-  const by = top + 0.02
-  // vessel basin: thin ceramic walls; its bowl and drain show from above
-  const vx0 = bx0_ + 0.012, vx1 = bx1_ - 0.03, vz0 = bz0 + 0.03, vz1 = bz1 - 0.03
-  ring(vx0, vz0, vx1, vz1, 0.045, 0.012, by, 0.13, "ceramic")
-  slab(vx0 + 0.006, vz0 + 0.006, vx1 - 0.006, vz1 - 0.006, 0.04, by, 0.02, "ceramic")
-  cyl((vx0 + vx1) / 2, by + 0.0215, (vz0 + vz1) / 2, 0.022, 0.003, "steel", "y", 32)
-  const nb = meshes.length
-  box(L - 0.045, by, (bz0 + bz1) / 2 - 0.015, L - 0.015, by + 0.27, (bz0 + bz1) / 2 + 0.015, "black", 0.006) // tap
-  box(L - 0.12, by + 0.24, (bz0 + bz1) / 2 - 0.013, L - 0.03, by + 0.27, (bz0 + bz1) / 2 + 0.013, "black", 0.006)
-  fitted(nb, "basintap")
-  TAG = "mirror"
-  // a rounded LED mirror above
-  const [mx0, my0, mz0, mx1, my1, mz1] = L3(S.mirror)
-  box(L - 0.03, my0, mz0, L - 0.012, my1 - 0.08, mz1, "led", 0.05)
-  box(L - 0.034, my0 + 0.02, mz0 + 0.02, L - 0.03, my1 - 0.1, mz1 - 0.02, "mirror", 0.04)
+  TAG = "door"
+  // the sliding leaf parked open on the lobby face towards end B, cut low with the cross wall so the WC shows;
+  // a flush pull near its leading edge
+  const [lx0, , lz0, lx1, , lz1] = L3(S.door), lw = lx1 - lx0, px = m(S.bleaf[0])
+  box(px, 0.005, lz0, px + lw, ITEM ? m(S.door[5]) : 0.55, lz1, "pine", 0.004) // 0.55: the cross wall's cut
+  if (ITEM) box(px + 0.05, 0.95, lz1, px + 0.07, 1.15, lz1 + 0.004, "black", 0.002)
 }
 
 // ------------------------------------------------------------ electric: the devices of scene.json's points
@@ -1021,14 +1001,6 @@ if (PLUMB || FITS.has(ITEM) || SAMPLES.has(ITEM)) {
       pb(x0, y - w / 2, h - 40, x1, y + w / 2, h, "steel", 0, true)
       pb(x0 + 4, y - w / 2 + 40, 640, x1 - 4, y + w / 2 - 40, 1060, "white", 6, true)
     },
-    basintap(f) { // the tap is the room's: its cold angle valve on the wall under the top, a tail up, the bottle trap
-      const [x, y] = f.at, wx = S.L
-      for (const dy of [0]) {
-        angleValve(wx, y + dy, 600)
-        hose([[wx - 26, y + dy, 625], [wx - 40, y + dy * 0.5, 720], [x, y + dy * 0.2, 800]])
-      }
-      trap((S.basin[0] + S.basin[3]) / 2, y, 640) // scene.json's basin is a box: x0, y0, z0, x1, y1, z1
-    },
   }
   const SAMPLE = { // pieces carded on their own, at the origin
     anglevalve() { angleValve(0, 0, 0); hose([[-26, 0, 25], [-28, 0, 70], [-40, 0, 125]]) },
@@ -1076,7 +1048,7 @@ if (ITEM) { // a piece on its own: three-quarter view from the front right, a li
   const r = bb.getBoundingSphere(new THREE.Sphere()).radius
   // galley and bathroom pieces face the room's -x side; the chairs are seen from the table; the filter shows its front
   const side = [-1, 0.6, 0.75], view = { chairs: [0.75, 0.6, -1], shower: [-0.6, 0.6, 1], filter: [-0.45, 0.5, 1] }[ITEM]
-    ?? (["units", "fridge", "hob", "sink", "hood", "overhead", "wc", "basin", "mirror"].includes(ITEM) || FITS.has(ITEM)
+    ?? (["units", "fridge", "hob", "sink", "hood", "overhead", "wc"].includes(ITEM) || FITS.has(ITEM)
       ? side : [0.75, 0.6, 1])
   camera.position.copy(mid).addScaledVector(new THREE.Vector3(...view).normalize(), r * 4)
   camera.lookAt(mid)

@@ -1,12 +1,10 @@
 run,system,dn,length_m,fall,note,colour
 D1,soil,110,1.8,1:38,"WC to IC1, 1:40",#8b4a12
 D2,waste,50,1.3,1:34,Shower (90 mm tray waste) joins the soil run,#8b4a12
-D3,waste,40,2.1,1:28,Basin (wash lobby) joins the soil run,#8b4a12
 D4,waste,50,3.3,1:26,Kitchen sink to the grease trap (separate soak pit),#8b4a12
 V1,vent,75,6.7,,Open vent up end B to 900 above the guardrail,#9a9893
 W1,cold,25,2.9,,"Cold main in from the farm, up into the sink base: stop valve, filter, check meter",#2a78d6
 W2,cold,20,1.1,,Cold up end wall B to the heater's foot,#2a78d6
 W3,cold,20,0.1,,Cold to the sink's angle valve,#2a78d6
 W4,cold,20,5,,Cold through the partition and the walls to the WC cistern,#2a78d6
-W5,cold,20,1,,Cold on to the basin,#2a78d6
 H1,hot,15,0.6,,Hot from the heater's top to the hand shower: its own hose,#e34948
