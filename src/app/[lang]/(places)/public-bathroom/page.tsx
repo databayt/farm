@@ -35,7 +35,7 @@ const DOCS = [
 export default function PublicBathroomPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster. For now it is the design model rendered
+      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (brief: ~/Desktop/public-bathroom-nano-banana). For now it is the design model rendered
           from eye level in the courtyard (scripts/site/render/public-bathroom.html?mode=real&hero=1, 2400 x 1340),
           front wall and roof on. The bathroom sits right, so the words keep the open lawn bottom-left. */}
       <PageHero src={`${D}/render/public-bathroom-hero.jpg`} width={2400} height={1340} className="bg-[#c9d6df]" imgClassName="object-[62%_60%]"
