@@ -3,16 +3,23 @@
 // Kinyarwanda version can follow (study/website/implementation-plan.md §9).
 import type { AssetId } from "./assets"
 
-// The index under the 3D: a design page, and a guide with its Kinyarwanda and both printed PDFs. Page paths take
-// the reader's language when rendered (references.tsx); the Kinyarwanda link names its own (hrefLang).
+// The index under the 3D: each place's design page and its docs, which open on its execution plan (D-059), and the
+// docs pages printed in English and Kinyarwanda. Page paths take the reader's language when rendered
+// (references.tsx); the Kinyarwanda link names its own (hrefLang).
 type RefLink = { label: string; href: string; hrefLang?: string }
 const page = (href: string): RefLink => ({ label: "Page", href })
-const guide = (slug: string): RefLink[] => [
-  { label: "Guide", href: `/docs/${slug}` },
-  { label: "Kinyarwanda", href: `/rw/docs/${slug}`, hrefLang: "rw" },
-  { label: "PDF", href: `/guides/${slug}.pdf` },
-  { label: "PDF (RW)", href: `/guides/${slug}-rw.pdf` },
-]
+const docs = (place: string): RefLink => ({ label: "Docs", href: `/docs/${place}` })
+// A printed docs page, its Kinyarwanda and both PDFs, named as scripts/print-docs.mjs names them: studio is
+// studio-plan.pdf, studio/electric is studio-electric.pdf.
+const printed = (path: string): RefLink[] => {
+  const pdf = path.includes("/") ? path.replace("/", "-") : `${path}-plan`
+  return [
+    { label: "English", href: `/docs/${path}` },
+    { label: "Kinyarwanda", href: `/rw/docs/${path}`, hrefLang: "rw" },
+    { label: "PDF", href: `/guides/${pdf}.pdf` },
+    { label: "PDF (RW)", href: `/guides/${pdf}-rw.pdf` },
+  ]
+}
 
 export const copy = {
   meta: {
@@ -59,56 +66,59 @@ export const copy = {
       "Plan of the compound, with the study room at the top and the gates at the bottom. At the top, the 40 ft study room on its deck, and beside it two buildings of their own: a 40 ft galley with a long worktop and two sinks, and a 20 ft public bathroom with two toilet rooms, two hand basins and a urinal. Below it, the row of three 20 ft containers on raised decks facing the courtyard: the farm office next to the bar, then two studios. Down the left, the bar and then the guest-room block in one line, their doors onto the veranda and the courtyard lawn: the stone fire pit with stools round it, a long timber table in front of the middle studio, and six small tents on a camping lawn between the guest rooms and the fire pit, ending at the fire. The study room's end is in line with the guest rooms. At the bottom, the inner gate, a rock road down to the green parking, and the outer gate beside the Digital Farm sign wall. On the lawn between the guest rooms and the parking, the volleyball court, 18 by 9 metres inside its 3 metre free zone, its long side across the plan and the net across its middle. To the left, past a break line, the land drawn close in one band from the study room to the first guest room: half of the vegetable field's two nearest blocks of raised beds behind their fence, turned to run west and cut there. At the cut an arrow links to the whole farm: the field, the nursery and the livestock. Through it all, the garden: big shade trees behind the study room and the galley, between the back row and the studios, beside the bar and the guest rooms, along the rock road and in a grove on the east lawn, and flower beds in the backyard, along each deck, by the guest rooms' windows, at both gates and behind the sign wall. Every name on the plan links to its page.",
     note: "Illustrative plan: containers drawn to size, layout not surveyed. The field is drawn close and cut at half; the farming page has all of it, with the nursery and the livestock.",
   },
-  // Under the 3D: every page the plan links to, with its guide and the printed PDFs (English and Kinyarwanda).
+  // Under the 3D: every page the plan links to, with its docs, and the printed pages (English and Kinyarwanda).
   references: {
     title: "Pages and guides",
-    lead: "Every building and piece of land on the plan has its own page of drawings, and every trade its own guide, printed in English and Kinyarwanda.",
+    lead: "Every building and piece of land on the plan has its own page of drawings and its own docs: the execution plan, the materials and the services. Six docs pages are printed in English and Kinyarwanda.",
     groups: [
       {
         title: "Buildings",
         rows: [
-          { name: "Studio", links: [page("/en/studio"), { label: "Design package", href: "/docs/studio-package" }] },
-          { name: "Guest room", links: [page("/en/guest-room")] },
-          { name: "Office", links: [page("/en/office")] },
-          { name: "Study room", links: [page("/en/study-room")] },
-          { name: "Galley", links: [page("/en/galley")] },
-          { name: "Public bathroom", links: [page("/en/public-bathroom")] },
-          { name: "Bar", links: [page("/en/bar")] },
+          { name: "Studio", links: [page("/en/studio"), docs("studio"), { label: "Design package", href: "/docs/studio-package" }] },
+          { name: "Guest room", links: [page("/en/guest-room"), docs("guest-room")] },
+          { name: "Office", links: [page("/en/office"), docs("office")] },
+          { name: "Study room", links: [page("/en/study-room"), docs("study-room")] },
+          { name: "Galley", links: [page("/en/galley"), docs("galley")] },
+          { name: "Public bathroom", links: [page("/en/public-bathroom"), docs("public-bathroom")] },
+          { name: "Bar", links: [page("/en/bar"), docs("bar")] },
         ],
       },
       {
         title: "Outside",
         rows: [
-          { name: "Camping", links: [page("/en/camp")] },
-          { name: "Parking", links: [page("/en/parking")] },
-          { name: "Volleyball", links: [page("/en/volleyball")] },
-          { name: "Master plan", links: [{ label: "Guide", href: "/docs/master-plan" }, { label: "Drawing", href: "/designs/site/master-plan.svg" }] },
+          { name: "Camping", links: [page("/en/camp"), docs("camp")] },
+          { name: "Parking", links: [page("/en/parking"), docs("parking")] },
+          { name: "Volleyball", links: [page("/en/volleyball"), docs("volleyball")] },
+          { name: "Master plan", links: [{ label: "Docs", href: "/docs/farm/master-plan" }, { label: "Drawing", href: "/designs/site/master-plan.svg" }] },
         ],
       },
       {
         title: "Land",
         rows: [
-          { name: "Vegetable field", links: [page("/en/farming"), ...guide("vegetables")] },
-          { name: "Livestock", links: [page("/en/livestock"), ...guide("livestock")] },
+          { name: "Vegetable field", links: [page("/en/farming"), docs("farming")] },
+          { name: "Livestock", links: [page("/en/livestock"), docs("livestock")] },
         ],
       },
       {
-        title: "Trades",
+        title: "Printed",
         rows: [
-          { name: "Carpenter", links: guide("carpenter") },
-          { name: "Electrician", links: guide("electrician") },
-          { name: "Plumber", links: guide("plumber") },
-          { name: "Power", links: guide("power") },
+          { name: "Studio plan", links: printed("studio") },
+          { name: "Studio electric", links: printed("studio/electric") },
+          { name: "Studio plumbing", links: printed("studio/plumbing") },
+          { name: "Field plan", links: printed("farming") },
+          { name: "Livestock plan", links: printed("livestock") },
+          { name: "Farm electric", links: printed("farm/electric") },
         ],
       },
       {
         title: "The farm",
         rows: [
-          { name: "Start here", links: [{ label: "Guide", href: "/docs" }] },
-          { name: "The farm today", links: [{ label: "Guide", href: "/docs/farm-today" }] },
-          { name: "How it runs", links: [{ label: "Guide", href: "/docs/operations" }] },
-          { name: "The film", links: [{ label: "Guide", href: "/docs/film" }] },
-          { name: "Business model", links: [{ label: "Guide", href: "/docs/business-model" }] },
+          { name: "Start here", links: [{ label: "Docs", href: "/docs" }] },
+          { name: "The farm's plan", links: [docs("farm")] },
+          { name: "The farm today", links: [{ label: "Docs", href: "/docs/farm/today" }] },
+          { name: "How it runs", links: [{ label: "Docs", href: "/docs/operations" }] },
+          { name: "The film", links: [{ label: "Docs", href: "/docs/film" }] },
+          { name: "Business model", links: [{ label: "Docs", href: "/docs/business-model" }] },
         ],
       },
     ],

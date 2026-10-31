@@ -1,6 +1,6 @@
 # Digital Farm: start here
 
-Status: updated 2026-10-29. This page covers November 2026 only. The sidebar shows only what we need this month.
+Status: updated 2026-10-31. This page covers November 2026. The docs are grouped by place, and every place has the same pages: its execution plan, its materials and its services (D-059).
 
 ## The farm in one minute
 
@@ -14,7 +14,7 @@ Status: updated 2026-10-29. This page covers November 2026 only. The sidebar sho
 |---|---|---|
 | 1 (from 29 Oct) | Measure both containers. Book the welder. Finish all welding. | Test the soil and the borehole water. |
 | 2 | Lay the floor sheets, then the battens. | Fence the field. Mark out the beds. |
-| 3 | Electrician and plumber lay cables and pipes. Test and photograph everything. | Build the first 40 beds. Lay the drip lines. |
+| 3 | Electrician and plumber lay cables and pipes. Test and photograph everything. | Build the {{farming.bedsTotal}} beds. Lay the drip lines. |
 | 4 | Spray foam. Then the wall panels. | Start the seedlings. Sow beans and amaranth. |
 
 Dates are a target, not a promise. The order matters more than the dates.
@@ -27,32 +27,27 @@ Dates are a target, not a promise. The order matters more than the dates.
 4. **No power on before the certificate.** A licensed electrician signs the tests first.
 5. **No animals yet.** First register as a keeper, name a vet, check the 200 m distance from the lake, and put up the fence and water.
 
-## The guides, in one line each
+Every place keeps them; [the farm's execution plan](farm/plan.md) holds them for the whole farm.
 
-### Build the studios
+## Every place, in one line
 
-| Guide | Who | What it says, simply |
-|---|---|---|
-| [Carpenter](studio/plan.md) | the carpenter | Measure 7 numbers on day 1. Then floor, battens, wall panels, bathroom, kitchen and bed, in that order. |
-| [Electrician](studio/electric.md) | the electrician | Cables go in after the battens and before the foam. The board and sockets come at the end. |
-| [Plumber](studio/plumbing.md) | the plumber | Pipes go in with the cables, then the 10 bar test. No guest stays until the septic tank passes inspection. |
-| [Power](farm/electric.md) | the owner | Connect to the grid, add solar with batteries, and keep a generator as a spare. This month: ask EUCL for a written quote. |
-
-### Start the field
-
-| Guide | Who | What it says, simply |
-|---|---|---|
-| [Vegetables](grow/vegetables.md) | the farmer | Test the soil and water, fence, build 40 beds, lay drip, start seedlings. First harvest in 4 to 8 weeks. |
-| [Livestock](grow/livestock.md) | the owner | Prepare only this month: register, find a vet, measure the distance from the lake, build the fence and the water. |
-
-### The land
-
-| Guide | What it says, simply |
+| Place | Its execution plan, simply |
 |---|---|
-| [The farm today](farm/today.md) | What is on the land now: the buildings, the water, the power. |
-| [Master plan](farm/master-plan.md) | Where everything goes: the compound on the right, the field on the top-left arm, trees everywhere. |
+| [Studio](studio/plan.md) | Measure the 7 numbers on day 1 and finish all the welding. Then the floor, battens, cables and pipes, foam, linings, bathroom, kitchen and bed, with the roof deck and the stair last. |
+| [Guest room](guest-room/plan.md) | Decide the en-suite first; then the studio's order in the joined pair, three rooms alike. |
+| [Office](office/plan.md) | Survey the signal before any radio is bought: the farm's network starts here. |
+| [Study room](study-room/plan.md) | A long table for eight and a screen; its Wi-Fi comes from the office. |
+| [Galley](galley/plan.md) | Decide gas or electric first; the cook and a kitchen fitter check the layout. |
+| [Public bathroom](public-bathroom/plan.md) | Size the septic tank for its users first; no guest before its inspection. |
+| [Volleyball](volleyball/plan.md) | Level the lawn and cast the footings; then the grass, the lines and the net. |
+| [Parking](parking/plan.md) | Dig, sub-base, bedding, pavers; the lighting duct goes in before the pavers. |
+| [Camping](camp/plan.md) | Pitch, furnish, ready: no power and no water at the pitches. |
+| [Bar](bar/plan.md) | Decide what it serves; the hatch is already framed in the container. |
+| [Farming](farming/plan.md) | Test the soil and the water, fence, build the beds, lay the drip, start the seedlings. The beans and amaranth sown straight into the beds give the first harvest in 4 to 8 weeks. |
+| [Livestock](livestock/plan.md) | Prepare only this month: register, find a vet, measure the distance from the lake, build the fence and the water. |
+| [The farm](farm/plan.md) | The pin or the land title first; then the tests, the power, the water and the septic every place hangs off. |
 
-Every guide is in English and Kinyarwanda, and prints to A4 from the link at its top to share on WhatsApp.
+Seven pages are also in Kinyarwanda, a machine draft until a native speaker reviews it: the studio's plan, materials, electric and plumbing, the farming and the livestock plans, and the farm's electric. All but the studio's materials print to A4 from the link at their top, to share on WhatsApp.
 
 ## What we need from the owner
 
@@ -63,4 +58,4 @@ Every guide is in English and Kinyarwanda, and prints to A4 from the link at its
 
 ## Not this month
 
-These pages are hidden from the sidebar but still open from their links: [how the farm runs](operations.md), [the film](film.md), [the business model](business/model.md), [marketing](business/marketing.md), [the digital farm](business/digital.md), the full studio package ([studio](../study/studio/studio.md)), the [decision log](../study/execution/decision-log.md) and the research study ([study overview](../PROJECT_STATUS.md)).
+These pages are off the sidebar but still open from their links: [how the farm runs](operations.md), [the film](film.md), [the business model](business/model.md), [marketing](business/marketing.md), [the digital farm](business/digital.md), the full studio package ([studio package](../study/studio/studio.md)), the [decision log](../study/execution/decision-log.md), the study's [first 90 days](../study/execution/first-90-days.md) and the research study ([study overview](../PROJECT_STATUS.md)).
