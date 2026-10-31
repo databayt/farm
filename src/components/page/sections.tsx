@@ -9,6 +9,7 @@ import { dictionary, getDictionary } from "@/components/internationalization/dic
 import { LocaleLink as Link } from "@/components/internationalization/locale-link"
 import { getLocale } from "@/components/internationalization/locale"
 import { Button } from "@/components/ui/button"
+import { whatsappHref } from "@/components/home/config"
 
 // The sections of every /en page, in /en/studio's pattern: a full-screen hero photo, the 2D and the 3D, then the
 // rails, the services and the docs cards. One copy here keeps the twelve pages identical in spacing, type and
@@ -32,9 +33,13 @@ export async function PageHero({ src, width, height, alt, title, className, imgC
         <div className="w-full px-4 pt-24 pb-10 md:px-10 md:pb-14">
           <p className="text-sm text-white/80">{t.page.tagline}</p>
           <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-balance text-white md:text-6xl">{title}</h1>
-          <Button asChild className="mt-6">
-            <Link href="/#enquire">{t.page.bookNow}</Link>
-          </Button>
+          {/* Booking is a WhatsApp chat (D-018): no form, no data kept. Until the farm's number is set in
+              components/home/config.ts the button stays off, rather than leading nowhere. */}
+          {whatsappHref && (
+            <Button asChild className="mt-6">
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer">{t.page.bookNow}</a>
+            </Button>
+          )}
         </div>
       </div>
     </section>
