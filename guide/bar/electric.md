@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Every rating is a design value for the chos
 
 Everything the electrician needs to wire the bar: the supply, the circuits, the first fix before the linings close, the second fix, the tests and every point, inside and out.
 
-The wiring drawn: [the bar page](/en/bar#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](electric.rw.md) · The wiring drawn: [the bar page](/en/bar#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
 
 ## At a glance
 

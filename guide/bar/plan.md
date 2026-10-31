@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. The container is on site today; every size 
 
 Every step of fitting out the bar in the red 20 ft container, in the studio's order, from the survey to the first night it opens.
 
-The bar drawn: [the bar page](/en/bar) · Its other pages: [materials](materials.md), [electric](electric.md), [plumbing](plumbing.md) · Each step done in full: [the studio's plan](../studio/plan.md)
+Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The bar drawn: [the bar page](/en/bar) · Its other pages: [materials](materials.md), [electric](electric.md), [plumbing](plumbing.md) · Each step done in full: [the studio's plan](../studio/plan.md)
 
 ## At a glance
 

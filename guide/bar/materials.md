@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Sizes come from bar.json; nothing is source
 
 What the bar needs: its equipment, its electric devices and its plumbing parts, as its page shows them.
 
-The bar drawn: [the bar page](/en/bar) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The bar drawn: [the bar page](/en/bar) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 
