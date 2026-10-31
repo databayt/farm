@@ -4,7 +4,7 @@ Status: placeholders of 2026-10-31: every price is an assumption until three quo
 
 Everything the first {{farming.bedsTotal}} beds need to start: the ground and the beds, the water, the fence, the nursery, the seed and plants, the tools and the people.
 
-The field drawn: [the field page](/en/farming) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The field drawn: [the field page](/en/farming) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 

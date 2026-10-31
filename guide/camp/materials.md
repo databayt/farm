@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Sizes come from camp.json, read off the ren
 
 What one camp needs: the tent and its kit, piece by piece, as its page shows them.
 
-The camp drawn: [the camping page](/en/camp) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The camp drawn: [the camping page](/en/camp) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 

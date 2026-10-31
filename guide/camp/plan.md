@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. The tent is the footage's hexagonal pop-up;
 
 Every step of pitching and furnishing a tent on the camping lawn, for a guest arriving at dusk. The design brings no power and no water to the pitches.
 
-The camp drawn: [the camping page](/en/camp) · Its other page: [materials](materials.md) · Where it sits: [the master plan](../farm/master-plan.md)
+Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The camp drawn: [the camping page](/en/camp) · Its other page: [materials](materials.md) · Where it sits: [the master plan](../farm/master-plan.md)
 
 ## At a glance
 

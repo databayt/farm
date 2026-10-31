@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. The layout is generated (`scripts/site/farm
 
 How the water reaches every bed: from the farm's source, tank and pump through the filter, the main and the supply to one valve per block, then each block's header and two drip lines down every planted bed.
 
-The drip drawn: [the field page](/en/farming#water) · When it happens: [the execution plan](plan.md) · Where the water comes from: [the farm's water](../farm/water.md)
+Kinyarwanda: [soma aya mabwiriza mu Kinyarwanda](water.rw.md) · The drip drawn: [the field page](/en/farming#water) · When it happens: [the execution plan](plan.md) · Where the water comes from: [the farm's water](../farm/water.md)
 
 ## At a glance
 
