@@ -5,6 +5,10 @@
 // (scripts/site/farming.mjs). A line's colour is what it carries, as in the 3D drawing below it, and every line carries
 // its run, so colour never works alone.
 
+import { getWords } from "@/components/internationalization/words"
+
+import { words } from "./words"
+
 type Valve = { id: string; block: string; at: number[]; beds: number }
 type Irrigation = { main: { dn: number; m: number }; pipe32m: number; dripM: number; lines: number; valves: Valve[] }
 
@@ -29,7 +33,8 @@ function Unit({ x, y, title, sub, dashed = false, muted = false, w = 150 }: {
   )
 }
 
-export function WaterDiagram({ irrigation, perBlock, dry }: { irrigation: Irrigation; perBlock: number; dry: [number, number] }) {
+export async function WaterDiagram({ irrigation, perBlock, dry }: { irrigation: Irrigation; perBlock: number; dry: [number, number] }) {
+  const t = (await getWords(words)).water.diagram
   const { main, valves } = irrigation
   // the blocks by column: the middle aisle's first, then the gate end's, as the supply reaches them
   const cols = [...new Set(valves.map((v) => v.block.slice(1)))].sort()
@@ -46,20 +51,21 @@ export function WaterDiagram({ irrigation, perBlock, dry }: { irrigation: Irriga
   )
   const H = 640
   const gateX = W - 65
-  const key: [keyof typeof WATER_COLOUR, string, number][] = [["main", "Main 40 mm", 760], ["supply", "Supply and headers 32 mm", 920],
-    ["drip", "Drip line 16 mm", 1160], ["valve", "Block valve", 1330]]
+  const key: [keyof typeof WATER_COLOUR, string, number][] = [["main", t.key.main, 760], ["supply", t.key.supply, 920],
+    ["drip", t.key.drip, 1160], ["valve", t.key.valve, 1330]]
+  const notes = t.notes(irrigation.lines, irrigation.dripM.toLocaleString("en-US"), irrigation.pipe32m, dry[0], dry[1])
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" className="stroke-foreground h-auto w-full min-w-[960px]"
       strokeWidth={2} strokeLinecap="round" fill="none"
-      aria-label={`Water diagram: the farm's source fills the tank by the compound; its pump pushes the water through a disc filter into a ${main.dn} mm main, ${main.m} m to the field's gate; inside, a 32 mm supply runs along the main path to a valve for each of the ${valves.length} blocks, and each block's header feeds two drip lines down every planted bed`}>
+      aria-label={t.label(main.dn, main.m, valves.length)}>
       {/* the farm's water: the source and the tank with its pump, shared with the compound */}
-      <Unit x={100} y={TOP - 30} title="Source" sub="borehole or mains" dashed />
+      <Unit x={100} y={TOP - 30} title={t.source.title} sub={t.source.sub} dashed />
       {line("main", `M175 ${TOP} H240`)}
-      <Unit x={330} y={TOP - 30} title="Tank + pump" sub="the farm's, by the compound" dashed w={180} />
+      <Unit x={330} y={TOP - 30} title={t.tank.title} sub={t.tank.sub} dashed w={180} />
       {line("main", `M420 ${TOP} H470`)}
-      <Unit x={545} y={TOP - 30} title="Disc filter" sub="F · 1 inch" muted />
+      <Unit x={545} y={TOP - 30} title={t.filter.title} sub={t.filter.sub} muted />
       {line("main", `M620 ${TOP} H680 V${TOP + 70} H${gateX} V${SUP - 30}`, 5)}
-      {label("M1", `${main.dn} mm PE · ${main.m} m, down to the garden walk and along it`, 700, TOP + 92)}
+      {label("M1", t.main(main.dn, main.m), 700, TOP + 92)}
 
       {/* key: a line's colour is what it carries */}
       {key.map(([k, text, x]) => (
@@ -70,9 +76,9 @@ export function WaterDiagram({ irrigation, perBlock, dry }: { irrigation: Irriga
       ))}
 
       {/* the gate, then the supply along the main path to every block's valve */}
-      <Unit x={gateX} y={SUP - 30} title="Gate" sub="the field" muted w={110} />
+      <Unit x={gateX} y={SUP - 30} title={t.gate.title} sub={t.gate.sub} muted w={110} />
       {line("supply", `M${gateX - 55} ${SUP} H${X(0)}`)}
-      {label("S1", "32 mm · along the main path and the aisles", X(0), SUP - 14)}
+      {label("S1", t.supply, X(0), SUP - 14)}
       {order.map((v, i) => (
         <g key={v.id}>
           <circle cx={X(i)} cy={SUP} r={5} stroke="none" style={{ fill: WATER_COLOUR.supply }} />
@@ -81,23 +87,22 @@ export function WaterDiagram({ irrigation, perBlock, dry }: { irrigation: Irriga
           <path d={`M${X(i) - 11} ${VAL} l22 14 v-14 l-22 14 z`} transform={`translate(0 -7)`} style={{ fill: WATER_COLOUR.valve, stroke: WATER_COLOUR.valve }} />
           <text x={X(i) + 18} y={VAL + 5} stroke="none" className="fill-foreground text-[13px] font-semibold">{v.id}</text>
           {line("supply", `M${X(i)} ${VAL + 7} V${BLK}`)}
-          <Block x={X(i)} id={v.block} planted={v.beds} of={perBlock} />
+          <Block x={X(i)} name={t.block(v.block)} sub={t.onDrip(v.beds, perBlock)} planted={v.beds} of={perBlock} />
         </g>
       ))}
 
       <text x={110} y={H - 46} stroke="none" className="fill-muted-foreground text-[14px]">
-        {irrigation.lines} drip lines, {irrigation.dripM.toLocaleString("en-US")} m in all · {irrigation.pipe32m} m of 32 mm supply and
-        headers · in the driest months the beds drink {dry[0]} to {dry[1]} m³ a day, run at dawn or dusk, one block at a time if the flow is short
+        {notes[0]}
       </text>
       <text x={110} y={H - 22} stroke="none" className="fill-muted-foreground text-[14px]">
-        Flush the lines and check every emitter before planting · the source and its flow wait for the 6-hour borehole test · design intent
+        {notes[1]}
       </text>
     </svg>
   )
 }
 
 // A block: its header across the bed ends, then a drip line down each bed, solid when planted, dashed when resting
-function Block({ x, id, planted, of }: { x: number; id: string; planted: number; of: number }) {
+function Block({ x, name, sub, planted, of }: { x: number; name: string; sub: string; planted: number; of: number }) {
   const w = 150, gap = w / of
   return (
     <g>
@@ -107,9 +112,9 @@ function Block({ x, id, planted, of }: { x: number; id: string; planted: number;
           strokeDasharray={k < planted ? undefined : "4 6"} style={{ stroke: k < planted ? WATER_COLOUR.drip : undefined }}
           className={k < planted ? undefined : "stroke-muted-foreground"} />
       ))}
-      <text x={x} y={BLK + 180} textAnchor="middle" stroke="none" className="fill-foreground text-[16px] font-semibold">Block {id}</text>
+      <text x={x} y={BLK + 180} textAnchor="middle" stroke="none" className="fill-foreground text-[16px] font-semibold">{name}</text>
       <text x={x} y={BLK + 200} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[13px]">
-        {planted} of {of} beds on drip
+        {sub}
       </text>
     </g>
   )

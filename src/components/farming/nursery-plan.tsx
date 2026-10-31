@@ -1,4 +1,7 @@
+import { getWords } from "@/components/internationalization/words"
+
 import farming from "./farming.json"
+import { words } from "./words"
 
 // The seedling nursery drawn in the pattern of the studio's plan (public/designs/studio/render/plan.svg): its shade-
 // net walls in a line with the poles solid, the two benches of trays and the path between them, the door at the end
@@ -46,7 +49,10 @@ function DimensionUp({ y0, y1, x }: { y0: number; y1: number; x: number }) {
   )
 }
 
-export function NurseryPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function NurseryPlan({ title, className }: { title?: string; className?: string }) {
+  const w = (await getWords(words)).nursery
+  title ??= w.title
   const L = N.l, W = N.w, b = N.bench, t = N.tray
   const d0 = W / 2 - N.door / 2, d1 = W / 2 + N.door / 2 // the door, in the end toward the field
   const benches = [b.inset, W - b.inset - b.d] // their back edges, along the two long sides
@@ -73,11 +79,11 @@ export function NurseryPlan({ title, className }: { title: string; className?: s
       <circle cx={N.tap.x} cy={N.tap.y} r={0.09} {...line} />
 
       {/* What is where, in one row above, each with its size under it, as the studio's BED 1,640 · SEATING 1,300 */}
-      <text x={f(b.inset + b.l / 2)} y={-0.42} textAnchor="middle" style={label}>SEEDLING TRAYS</text>
-      <text x={f(L - 0.4)} y={-0.42} textAnchor="middle" style={label}>DOOR</text>
+      <text x={f(b.inset + b.l / 2)} y={-0.42} textAnchor="middle" style={label}>{w.labels.trays}</text>
+      <text x={f(L - 0.4)} y={-0.42} textAnchor="middle" style={label}>{w.labels.door}</text>
       <Dimension x0={b.inset} x1={f(b.inset + b.l)} y={-0.2} />
-      <text x={f(b.inset + b.l / 2)} y={f(W / 2 + 0.035)} textAnchor="middle" style={small}>PATH</text>
-      <text x={N.tap.x} y={f(N.tap.y + 0.22)} textAnchor="middle" style={small}>TAP</text>
+      <text x={f(b.inset + b.l / 2)} y={f(W / 2 + 0.035)} textAnchor="middle" style={small}>{w.labels.path}</text>
+      <text x={N.tap.x} y={f(N.tap.y + 0.22)} textAnchor="middle" style={small}>{w.labels.tap}</text>
 
       {/* One thing each: a bench's depth, the path between the benches, a tray, the door, the overall sizes */}
       <DimensionUp y0={benches[0]} y1={f(benches[0] + b.d)} x={-0.2} />

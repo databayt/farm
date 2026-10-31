@@ -1,4 +1,7 @@
+import { getWords } from "@/components/internationalization/words"
+
 import plan from "../../../public/designs/farming/data/plan.json"
+import { words } from "./words"
 
 // The vegetable field drawn in the pattern of the studio's plan (public/designs/studio/render/plan.svg) and seen from
 // the front: the gate and the garden walk to the galley at the bottom, toward the viewer, as the studio's and the
@@ -51,7 +54,10 @@ function DimensionUp({ y0, y1, x }: { y0: number; y1: number; x: number }) {
   )
 }
 
-export function FarmingPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function FarmingPlan({ title, className }: { title?: string; className?: string }) {
+  const w = (await getWords(words)).plan
+  title ??= w.title(plan.bedsTotal, plan.bedsNeeded)
   const W = fy1 - fy0, H = fx1 - fx0 // the fenced field, across and down the page
   const gu = U(gate[1]), gw = 1.5 // the gate, its half width
   const pu = U(mainY) // the main path's middle
@@ -96,8 +102,8 @@ export function FarmingPlan({ title, className }: { title: string; className?: s
       <line x1={f(pu + main / 2)} x2={f(pu + main / 2)} y1={f(H)} y2={f(H + 2.4)} {...line} />
 
       {/* What is where, in one row above, as the studio's BED, SEATING, GALLEY, BATH; the nursery up the yard */}
-      <text x={f(W)} y={f(row)} textAnchor="end" style={small}>NURSERY ↑</text>
-      <text x={f(pu)} y={f(H + 3.6)} textAnchor="middle" style={small}>GATE · TO THE GALLEY</text>
+      <text x={f(W)} y={f(row)} textAnchor="end" style={small}>{w.labels.nursery}</text>
+      <text x={f(pu)} y={f(H + 3.6)} textAnchor="middle" style={small}>{w.labels.gate}</text>
 
       <Dimension x0={0} x1={f(W)} y={f(H + 5.1)} />
       <DimensionUp y0={0} y1={f(H)} x={f(W + 1.5)} />
