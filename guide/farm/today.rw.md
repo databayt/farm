@@ -2,7 +2,7 @@
 
 > **Ubusobanuro:** iyi nyandiko yahinduwe na mudasobwa (machine draft). Igomba gusuzumwa n'umuntu uvuga Ikinyarwanda kavukire mbere yo kuyiha abakozi. Iyo hari itandukaniro, kurikiza iy'Icyongereza.
 
-Status: byavuguruwe ku wa 2026-10-28. Bivuye kuri nyir'umushinga (founder) na nyir'ubutaka (owner), no ku mafoto yo ku wa 2026-10-25 n'ayo ku wa 2026-10-28; nta kintu na kimwe hano kirapimwa.
+Status: byavuguruwe ku wa 2026-10-31. Bivuye kuri nyir'umushinga (founder) na nyir'ubutaka (owner), ku mashusho yafashwe ku wa 2026-10-25 no ku mafoto yakiriwe ku wa 2026-10-28, buri imwe ishyizwe ku butaka n'igitabo cy'amashusho (media register); nta kintu na kimwe hano kirapimwa.
 
 Ifamu icyo ari cyo, aho iri n'ibyamaze kuyubakwaho, kugira ngo amabwiriza yose ahere ku makuru amwe.
 
@@ -14,6 +14,8 @@ English: [read this page in English](today.md)
 - Imiterere ya L icuritse: umurongo mugari hejuru n'igice kirekire iburyo, nk'uko biri ku gishushanyo cy'intoki cya nyir'umushinga. Bibazwe kuri 5 ha, muri rusange ni hafi 280 × 255 m, igice cy'iburyo gifite ubugari bwa hafi m 145 n'umurongo wo hejuru ufite uburebure bwa hafi m 100 [E, bivuye ku gishushanyo cy'intoki gusa].
 - Urugo rw'inyubako (compound: kontineri, ingando, akabari, icyumba cyo kwigiramo) ruri mu gice cy'iburyo. Umurima w'imboga n'amatungo ni ukuboko ko hejuru ibumoso, inyuma y'icyumba cyo kwigiramo (D-027).
 - Ikiyaga kiragaragara hakurya y'isambu y'umuturanyi; ntikiri ku ifamu. Amategeko y'ikiyaga (nta nyubako muri m 50 uvuye ku murongo w'imyuzure, nta nzu y'amatungo muri m 200) birashoboka ko yubahirizwa, ariko azapimwa pin imaze kuboneka [U].
+- **Ubutaka bubiri:** ibyatsi biciye hasi, aho urugo rw'inyubako n'ingando biri, n'umusozi w'itaka ritukura (laterite) utariho ibimera hejuru yabyo, umanuka werekeza ku byatsi, ufite imirwanyasuri, imirongo y'uruzitiro rw'ibiti n'imiferege imanuka igana kuri kontineri [observed 2026-10-25]. Niba umusozi uri imbere mu mbibi ntibiramenyekana [U].
+- **Amazi ava ku musozi abanza:** umuferege uyobora amazi (swale) hejuru y'urugo rw'inyubako mbere y'uko hagira ikintu gishya cyubakwa ku kirenge cy'umusozi [E].
 - Biracyakenewe: pin ya Google Maps y'irembo, cyangwa UPI y'icyangombwa cy'ubutaka, igishushanyo cy'ikibanza (parcel plan) cyayo kikaba ari cyo gitanga imbibi nyazo n'ubuso nyabwo.
 
 ![Igishushanyo cy'intoki cya nyir'umushinga cy'ubutaka: urugo rw'inyubako mu gice cy'iburyo, umurima mu kuboko ko hejuru ibumoso](../../public/designs/site/land-sketch.webp)
@@ -25,7 +27,7 @@ English: [read this page in English](today.md)
 
 ## Ibihagaze uyu munsi
 
-- **Kontineri:** udusanduku dutukura n'umuhondo twa 20 ft kuri deck z'icyuma ziri hejuru nka mm 700, zifite uruzitiro rw'amatiyo atukura; kontineri ebyiri z'umuhondo zifatanye, zifite inzugi enye zitukura buri rumwe rufite idirishya ririho ibyuma (ibyumba by'abashyitsi bizaza); agasanduku k'umuhondo n'aka teal biri munsi y'igisenge kimwe cy'amabati; akazu gatukura ka 20 ft (akabari kazaza).
+- **Kontineri:** udusanduku dutukura n'umuhondo twa 20 ft kuri deck z'icyuma ziri hejuru nka mm 700, zifite uruzitiro rw'amatiyo atukura; kontineri ebyiri z'umuhondo zifatanye, zifite inzugi enye zitukura buri rumwe rufite idirishya ririho ibyuma (ibyumba by'abashyitsi bizaza), byashenzwe imbere: igisenge cyo imbere cyasenywe, inkuta zakuweho ibizitwikiriye, hasi hariho ibizinga by'amazi, bityo ni ukongera kubaka, si ugutunganya imbere gusa; agasanduku k'umuhondo n'aka teal biri munsi y'igisenge kimwe cy'amabati; akazu gatukura ka 20 ft (akabari kazaza).
 - **Inzu y'amatafari** inyuma ya kontineri; icyo izakoreshwa ntikiremezwa [U].
 - **Ibyatsi by'ingando:** amahema ya pop-up, inzitiro z'urubingo, imitaka isakajwe n'iy'amabara, aho bacana umuriro hazengurutse h'isima (fire pit), amatara y'imirongo y'ibirori. Hamaze kwakira ibirori mu gihe cy'izuba, bifite imitaka isakajwe ikodeshejwe, intebe zitwikiriye n'amahema ameze nk'inkuge (dome tents).
 - **Siporo:** urushundura rwa volleyball ku byatsi. Ikibuga giteganyijwe, 18 × 9 m, gishushanyije ku [rupapuro rwacyo](/en/volleyball) no iruhande rw'urugo rw'inyubako ku [gishushanyo cy'ifamu](/#plans).
