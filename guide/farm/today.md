@@ -1,6 +1,6 @@
 # The farm today
 
-Status: updated 2026-10-28. From the founder and the owner, and the photos of 2026-10-25 and 2026-10-28; nothing here is surveyed yet.
+Status: updated 2026-10-31. From the founder and the owner, the footage of 2026-10-25 and the photos received 2026-10-28, each placed on the land by the media register; nothing here is surveyed yet.
 
 What the farm is, where it is and what already stands on it, so every guide starts from the same facts.
 
@@ -12,6 +12,8 @@ Kinyarwanda: [soma iyi paji mu Kinyarwanda](today.rw.md)
 - An upside-down L: a wide strip across the top and a tall block on the right, as in the founder's sketch. Scaled to 5 ha it is about 280 × 255 m overall, the block about 145 m wide and the strip about 100 m deep [E, from the sketch only].
 - The compound (containers, camp, bar, study room) is in the right block. The field for vegetables and livestock is the top-left arm, behind the study room (D-027).
 - The lake is in view across a neighbour's plot; it is not on the farm. The lake rules (no structure within 50 m of the flood line, no livestock house within 200 m) are probably met, but they are measured once there is a pin [U].
+- **Two grounds:** a mown lawn below, where the compound and the camp stand, and a bare laterite hill above it, sloping toward the lawn, with contour ridges, hedge lines and gullies running down toward the containers [observed 2026-10-25]. Whether the hill is inside the boundary is [U].
+- **Water from the hill comes first:** a cut-off swale above the compound before anything new is built at the hill's foot [E].
 - Still needed: a Google Maps pin of the gate, or the land-title UPI, whose parcel plan gives the true boundary and area.
 
 ![The founder's sketch of the land: the compound in the right block, the field in the top-left arm](../../public/designs/site/land-sketch.webp)
@@ -23,7 +25,7 @@ Kinyarwanda: [soma iyi paji mu Kinyarwanda](today.rw.md)
 
 ## What stands today
 
-- **Containers:** red and yellow 20 ft boxes on steel decks about 700 mm up, with red pipe rails; the yellow joined pair, four red doors each with a barred window (the future guest rooms); a yellow and a teal box under one sheet roof; a red 20 ft kiosk (the future bar).
+- **Containers:** red and yellow 20 ft boxes on steel decks about 700 mm up, with red pipe rails; the yellow joined pair, four red doors each with a barred window (the future guest rooms), gutted inside: the ceiling torn down, the walls stripped, the floor stained by water, so a rebuild, not a fit-out; a yellow and a teal box under one sheet roof; a red 20 ft kiosk (the future bar).
 - **A brick building** behind the containers; its use is not decided [U].
 - **The camping lawn:** pop-up tents, reed screens, thatched and coloured umbrellas, a round concrete fire pit, string lights for events. It has already hosted events in the dry season, with hired thatched umbrellas, covered chairs and dome tents.
 - **Sport:** a volleyball net on the lawn. The planned court, 18 × 9 m, is drawn on [its page](/en/volleyball) and beside the compound on [the farm plan](/#plans).
