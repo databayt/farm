@@ -28,7 +28,7 @@
 // content/docs/rw at its English slug, and /rw shows the English page wherever there is none. Links between pages
 // are written without a language, so the page adds the reader's (src/mdx-components.tsx); a guide's link to its own
 // translation names the other language (hrefLang). Old URLs reach their pages through public/_redirects (MOVED).
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { basename, dirname, join, relative, resolve, sep } from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -264,13 +264,36 @@ const SIDEBAR = [
 ]
 const fail = (slug) => { throw new Error(`sync-docs: SIDEBAR lists "${slug}", which is not in PAGES`) }
 
-const listed = PAGES.filter((p) => typeof p !== "string").map((p) => ({ ...p, lang: "en" }))
+// The docs by place (D-059): every place of the site menu, then the farm as a whole, is a folder of the same pages,
+// each from guide/<place>/<kind>.md: its execution plan (plan.md, the folder's index at /docs/<place>), its
+// materials and the services it has. KINDS is their order in the sidebar, where their names come from the
+// dictionaries (docs.kinds); a folder's title is the place's English name.
+const KINDS = ["plan", "today", "master-plan", "materials", "electric", "lighting", "net", "plumbing", "water", "drainage"]
+const PLACES = [...JSON.parse(readFileSync(join(ROOT, "src", "components", "site", "places.json"), "utf8")).places, "farm"]
+const PLACE_NAMES = JSON.parse(readFileSync(join(ROOT, "src", "components", "internationalization", "en.json"), "utf8")).places
+const placePages = PLACES.flatMap((place) => {
+  const dir = join(ROOT, "guide", place)
+  if (!existsSync(dir)) return []
+  const kinds = readdirSync(dir).filter((f) => f.endsWith(".md") && !f.endsWith(".rw.md")).map((f) => f.slice(0, -3))
+  for (const kind of kinds) if (!KINDS.includes(kind)) throw new Error(`sync-docs: guide/${place}/${kind}.md is not a kind of page (KINDS)`)
+  if (!kinds.includes("plan")) throw new Error(`sync-docs: guide/${place} has no plan.md, its execution plan`)
+  return KINDS.filter((kind) => kinds.includes(kind)).map((kind) => ({
+    slug: kind === "plan" ? place : `${place}/${kind}`, file: kind === "plan" ? `${place}/index` : `${place}/${kind}`,
+    src: `guide/${place}/${kind}.md`, place, kind,
+  }))
+})
+const placesIn = [...new Set(placePages.map((p) => p.place))]
+
+const listed = [...placePages, ...PAGES.filter((p) => typeof p !== "string")].map((p) => ({ file: p.slug, ...p, lang: "en" }))
+for (const p of listed) {
+  if (!p.place && placesIn.includes(p.slug)) throw new Error(`sync-docs: "${p.slug}" is a place's folder; rename the page (MOVED)`)
+}
 const toPosix = (p) => p.split(sep).join("/")
 // A Kinyarwanda page X.rw.md beside a listed X.md: the same slug in content/docs/rw (D-058). fumadocs lists only
 // what the English meta.json lists, so a Kinyarwanda page always has an English one.
 const twins = listed
   .filter((p) => p.src?.endsWith(".md") && existsSync(join(ROOT, p.src.replace(/\.md$/, ".rw.md"))))
-  .map((p) => ({ slug: p.slug, lang: "rw", src: p.src.replace(/\.md$/, ".rw.md"), twinOf: p.src }))
+  .map((p) => ({ ...p, lang: "rw", src: p.src.replace(/\.md$/, ".rw.md"), twinOf: p.src }))
 const entries = [...listed, ...twins]
 // one page per slug and language: a repeated slug would silently overwrite the earlier page's .mdx
 const seenSlugs = new Set()
@@ -414,6 +437,16 @@ function blockDirective(line, src) {
     const where = url ? `[download CSV](${url})` : `source \`${toPosix(relative(ROOT, abs))}\``
     return `**${escapeProse(mm[1])}** · ${where}\n\n${csvTable(rows, columns)}`
   }
+  // a component of the site's (a points table, a drawing): <Name title="…" />, the link text its title
+  mm = line.match(COMPONENT)
+  if (mm) {
+    const abs = resolveTarget(src, mm[2])
+    if (!abs.startsWith(join(ROOT, "src", "components") + sep) || !existsSync(abs)) throw new Error(`${src}: no component file ${mm[2]}`)
+    if (!new RegExp(`export (async )?function ${mm[3]}\\b|export const ${mm[3]}\\b`).test(readFileSync(abs, "utf8")))
+      throw new Error(`${src}: ${mm[2]} does not export ${mm[3]}`)
+    if (!new RegExp(`\\b${mm[3]}\\b`).test(MDX_COMPONENTS)) throw new Error(`${src}: register ${mm[3]} in src/mdx-components.tsx`)
+    return `<${mm[3]} title=${attr(mm[1])} />`
+  }
   mm = line.match(/^\s*\[([^\]]+)\]\(([^)\s]+\.glb)\)\s*$/)
   if (mm) {
     const abs = resolveTarget(src, mm[2])
@@ -426,7 +459,11 @@ function blockDirective(line, src) {
   return null
 }
 
-const isDirective = (l) => /^\s*!\[[^\]]*\]\([^)]+\)\s*$/.test(l) || /^\s*\[(Table:[^\]]*|[^\]]+)\]\([^)\s]+\.(csv|glb)\)\s*$/.test(l)
+// [Title](../../src/components/x/docs-sections.tsx#Name) on a line of its own: the component Name, as the docs show it
+const COMPONENT = /^\s*\[([^\]]+)\]\(([^)\s]+\.tsx)#([A-Z]\w*)\)\s*$/
+const MDX_COMPONENTS = readFileSync(join(ROOT, "src", "mdx-components.tsx"), "utf8")
+
+const isDirective = (l) => COMPONENT.test(l) || /^\s*!\[[^\]]*\]\([^)]+\)\s*$/.test(l) || /^\s*\[(Table:[^\]]*|[^\]]+)\]\([^)\s]+\.(csv|glb)\)\s*$/.test(l)
 
 function fromMarkdown(page) {
   const { src, title, description: fixed } = page
@@ -454,7 +491,8 @@ function fromMarkdown(page) {
     const block = blockDirective(line, src)
     return block !== null ? `\n${block}\n` : escapeProse(rewriteLinks(line, page, keep))
   })
-  return `---\ntitle: ${yaml(title ?? heading)}\ndescription: ${yaml(description)}\n---\n\n` +
+  const where = page.place ? `place: ${yaml(page.place)}\nkind: ${yaml(page.kind)}\n` : ""
+  return `---\ntitle: ${yaml(title ?? heading)}\ndescription: ${yaml(description)}\n${where}---\n\n` +
     `{/* Generated by scripts/sync-docs.mjs from ${src}. Edit the source, not this file. */}\n` +
     out.join("\n").replace(/^\n+/, "\n").replace(/\u0000(\d+)\u0000/g, (_, n) => kept[n])
 }
@@ -485,7 +523,9 @@ function parity(enSrc, rwSrc) {
     for (const l of lines) {
       for (const [, t] of l.matchAll(/\]\(([^)\s]+)\)/g)) {
         // a drawing drawn per language (x.en.svg / x.rw.svg) counts as one file
-        const rel = toPosix(relative(ROOT, resolveTarget(src, t.split("#")[0]))).replace(/\.(en|rw)\.svg$/, ".svg")
+        const [path, hash] = t.split("#")
+        const file = toPosix(relative(ROOT, resolveTarget(src, path))).replace(/\.(en|rw)\.svg$/, ".svg")
+        const rel = file.endsWith(".tsx") ? `${file}#${hash}` : file
         // each language links its own printed PDF
         if (!pair.has(rel) && !rel.startsWith("public/guides/") && !/^(https?:|mailto:|#)/.test(t)) links.add(rel)
       }
@@ -542,9 +582,16 @@ for (const page of entries) {
       mdx = mdx.replace("\n\n", `\n\n> **Behind the English page:** ${escapeProse(gaps.join("; "))}. Use the English until this is fixed.\n\n`)
     }
   }
-  writeFileSync(join(OUT, page.lang, `${page.slug}.mdx`), mdx)
+  mkdirSync(dirname(join(OUT, page.lang, page.file)), { recursive: true })
+  writeFileSync(join(OUT, page.lang, `${page.file}.mdx`), mdx)
 }
-const pages = SIDEBAR.filter((s) => s.startsWith("---") || seenSlugs.has(`en:${s}`) || fail(s))
+// a place's folder: its pages after the execution plan (the folder's index), in KINDS order
+for (const place of placesIn) {
+  const pages = placePages.filter((p) => p.place === place && p.kind !== "plan").map((p) => p.kind)
+  writeFileSync(join(OUT, "en", place, "meta.json"), JSON.stringify({ title: PLACE_NAMES[place], pages }, null, 2) + "\n")
+}
+// The sidebar: Start here, the places in the menu's order, then whatever SIDEBAR still lists beside them.
+const pages = ["index", ...placesIn, ...SIDEBAR.filter((s) => s !== "index" && (s.startsWith("---") || seenSlugs.has(`en:${s}`) || fail(s)))]
 // One meta.json, the English one: fumadocs builds the Kinyarwanda tree on the English pages.
 writeFileSync(join(OUT, "en", "meta.json"), JSON.stringify({ title: "Farm docs", pages }, null, 2) + "\n")
 writeFileSync(join(PUBLIC, "_redirects"), redirects())

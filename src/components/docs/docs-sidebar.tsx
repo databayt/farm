@@ -1,15 +1,14 @@
 "use client"
 
-// Ported from hogwarts src/components/docs/docs-sidebar.tsx. The farm study has
-// no audiences, so the role grouping is gone: groups come from the "---Label---"
-// separators in content/docs/meta.json, as in the shadcn docs sidebar.
+// Ported from hogwarts src/components/docs/docs-sidebar.tsx. The farm has no audiences, so the role grouping is
+// gone: the groups are the places (D-059), built on the server in the reader's language (sidebar-groups.ts), and
+// any "---Label---" group meta.json still lists, as in the shadcn docs sidebar.
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronDown } from "lucide-react"
 
-import type { Node, Root } from "fumadocs-core/page-tree"
-
+import type { SidebarGroup as Group, SidebarItem as Item } from "@/components/docs/sidebar-groups"
 import {
   Collapsible,
   CollapsibleContent,
@@ -26,23 +25,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-type TreeNode = Node
-type Item = { url: string; name: React.ReactNode }
-type Group = { id: string; label?: React.ReactNode; items: Item[] }
-
-const STORAGE_KEY = "docs-sidebar-open"
-
-function buildGroups(children: readonly TreeNode[]): Group[] {
-  const groups: Group[] = [{ id: "start", items: [] }]
-  for (const node of children) {
-    if (node.type === "separator") {
-      groups.push({ id: `s:${node.name}`, label: node.name, items: [] })
-    } else if (node.type === "page") {
-      groups[groups.length - 1].items.push({ url: node.url, name: node.name })
-    }
-  }
-  return groups.filter((g) => g.items.length > 0)
-}
+// v2: the place groups (D-059) replaced the groups by kind, whose remembered choices no longer apply
+const STORAGE_KEY = "docs-sidebar-open-v2"
 
 // Remembered open/closed choices live in localStorage, read through
 // useSyncExternalStore so server and client agree (the server sees none).
@@ -72,22 +56,21 @@ function subscribe(notify: () => void) {
 const NONE: Record<string, boolean> = {}
 
 export function DocsSidebar({
-  tree,
+  groups,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  tree: Root
+  groups: Group[]
 }) {
   const pathname = usePathname()
-  const groups = React.useMemo(() => buildGroups(tree.children), [tree])
   const isActive = (url: string) => pathname === url
 
   const stored = React.useSyncExternalStore(subscribe, readStored, () => NONE)
   const setOpen = (id: string, open: boolean) => writeStored({ ...readStored(), [id]: open })
   // The group of the page being read is always open.
   const activeId = groups.find((g) => g.items.some((i) => isActive(i.url)))?.id
-  // Archive groups (the 2026-10 study) start closed; every other group starts open. The server renders
-  // the same defaults (stored is empty there), so there is no hydration mismatch.
-  const isOpen = (id: string) => id === activeId || (stored[id] ?? !id.startsWith("s:Archive"))
+  // The places start closed, so the sidebar reads as their list, and open the one being read; any other group
+  // starts open. The server renders the same defaults (stored is empty there), so there is no hydration mismatch.
+  const isOpen = (group: Group) => group.id === activeId || (stored[group.id] ?? !group.place)
 
   const menu = (items: Item[]) => (
     <SidebarMenu>
@@ -118,7 +101,7 @@ export function DocsSidebar({
               <Collapsible
                 key={group.id}
                 // The visitor's last choice wins; groups start open, the archive closed.
-                open={isOpen(group.id)}
+                open={isOpen(group)}
                 onOpenChange={(open) => setOpen(group.id, open)}
                 className="group/collapsible"
               >
