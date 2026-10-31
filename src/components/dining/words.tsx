@@ -15,7 +15,7 @@ const en = {
   },
   hero: {
     title: "Dinner for the whole house, under one thatch",
-    alt: "A stand-in render of the dining area: a long thatched barrel vault on eucalyptus arches over a low red mud-brick wall, seen from outside the door at the east end, two long tables and benches inside, a string of lamps along the ridge and a serving counter at the far end, on red earth with eucalyptus behind.",
+    alt: "A long vault of golden grass thatch on steel arches over a low red mud-brick wall at golden hour, its open end showing two rustic timber tables with benches, white runners and clay jugs, clay pots on a serving counter at the back and a string of warm bulbs along the ridge; red earth, eucalyptus on the hill behind and unfinished mud-brick walls beyond.",
   },
   plan: {
     title: "Plan: a low mud-brick wall 9.2 by 5.8 m with a door in the east end; overhead, six arches and a ridge pole carry the thatch, its eave outside the long walls; inside, two long tables each with a bench either side, 24 seats, and a serving counter against the west wall.",
@@ -80,7 +80,7 @@ const rw: typeof en = {
   },
   hero: {
     title: "Ifunguro ry'abashyitsi bose, munsi y'igisenge kimwe",
-    alt: "Ishusho y'agateganyo y'aho kurira: igisenge kirekire cy'ibyatsi kimeze nk'umuheto ku mitiba y'inturusu hejuru y'urukuta rugufi rw'amatafari ya rukarakara atukura, kirebwa hanze y'urugi ku ruhande rw'iburasirazuba, imbere ameza abiri maremare n'intebe ndende, amatara ku murongo munsi y'igisenge n'aho bategurira amafunguro ku mpera, ku butaka butukura hari inturusu inyuma.",
+    alt: "Igisenge kirekire cy'ibyatsi by'umuhondo ku miheto y'ibyuma hejuru y'urukuta rugufi rw'amatafari ya rukarakara atukura ku zuba rirenga, impera yacyo ifunguye yerekana ameza abiri y'ibiti afite intebe ndende, imyenda y'umweru n'ibibindi by'ibumba, inkono z'ibumba aho bategurira amafunguro inyuma n'amatara ashyushye ku murongo munsi y'igisenge; ubutaka butukura, inturusu ku musozi inyuma n'inkuta z'amatafari zitararangira kure.",
   },
   plan: {
     title: "Igishushanyo: urukuta rugufi rw'amatafari ya rukarakara rwa m 9.2 kuri 5.8 rufite urugi ku ruhande rw'iburasirazuba; hejuru, imiheto itandatu n'igiti cyo hagati bifata ibyatsi, ibyatsi birenga inkuta ndende; imbere, ameza abiri maremare buri yose afite intebe ndende ku mpande zombi, imyanya 24, n'aho bategurira amafunguro ku rukuta rw'iburengerazuba.",

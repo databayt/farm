@@ -7,7 +7,7 @@ export const DESIGN_BLUR: Record<string, string> = {
   "/designs/camp/render/camp-hero.jpg": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAQAgCdASoQAAkAAsBMJaACdAEQFSd8Yp6AAP7GB6LSSO3RorhpJg7hFU28y7IHpkpqVP+nzr0hErH53tdwzfWlofrTDypcsK/7AAAA",
   "/designs/camp/render/camp-real.webp": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADQAQCdASoQAAcAAsBMJbACdADB8okMAAD90k+cBN6Ql0244ZUMIJ5SIQk4C7KbApqUK/qHO4470rZPHONEwIAA",
   "/designs/compound/render/compound-real.webp": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAQAgCdASoQAAgAAsBMJZgAFgAMqDmhAIEQAP70Ek0h6vY0/W8T1ZQmG/ZKGfnx13jefAsyDGoYRXjqs6Bs/7Y+AqjmZr8AAAA=",
-  "/designs/dining/render/dining-hero.jpg": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADQAQCdASoQAAkAAsBMJbACdGuAAdka2AD+66dJvnlIWABSvizYZare59EepiObJJem1wS1ZD3gabc8SllX80MMqCEc8egxUfN40X9hIzPEVfnWzgAAAA==",
+"/designs/dining/render/dining-hero.jpg": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADQAQCdASoQAAkAAsBMJbACdAECnc9fqAD2R0AnpQ/jksfsgYD/m9DMI26XCJLuVheoxfP6GdCRdBwFy5LC4jB7D9LVp9leL5T1bQvqef8AAA==",
   "/designs/dining/render/dining-real.webp": "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAACQAQCdASoQAAcAAsBMJbACdLoAA5gA/sHVyjta2MCnF4qjz6FPtRVB/2psVU9sAAA=",
   "/designs/farming/render/field-hero.jpg": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADQAQCdASoQAAkAAsBMJaACdAEOJCK+AADOLN8O9CVmg/oMzwEGHqRawIoTuqPdQepy+Y/tboWuekCOlFLnwa13syTXvHuI3MXoNG6CAAA=",
   "/designs/farming/render/field-real.webp": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAACwAQCdASoQAAcAAsBMJYwCdAEOumsAAP70En352Pk4Sie1gyJa9ciyLbe3KatFIjOOz3RYQ3J//O397JgL7tiMXLOHjRAA",

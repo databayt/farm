@@ -32,10 +32,12 @@ export default async function DiningPage() {
   const w = words[lang], t = dictionary(lang).page
   return (
     <main className="w-full flex-1">
-      {/* First screen: a stand-in from the 3D (dining.html?hero=1), the roof whole, from eye level outside the door,
-          until the founder's own Nano Banana render from the brief in ~/Desktop/dining-nano-banana replaces it. The
-          photos have people in them, so none of them is the hero. */}
-      <PageHero src={`${D}/render/dining-hero.jpg`} width={2400} height={1340} className="bg-[#a65b35]" imgClassName="object-[50%_55%]"
+      {/* First screen: the founder's Nano Banana render of the dining area (2026-10-31), made from the brief in
+          ~/Desktop/dining-nano-banana (his photo dn-3279 as the site, the 3D's hero as the layout); master kept at
+          assets/dining/hero-gemini.jpeg (2752 x 1536), cut to 2400 x 1340. It departs from the drawings in two things:
+          the arches read as steel rather than eucalyptus, and the way in is a gap in the front wall, not the east end. The
+          words keep the red ground bottom-left. */}
+      <PageHero src={`${D}/render/dining-hero.jpg`} width={2400} height={1340} className="bg-[#b3653f]" imgClassName="object-[50%_50%]"
         title={w.hero.title}
         alt={w.hero.alt} />
 
