@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31, on the founder's layout of 2026-10-29. The 
 
 Every step of fitting out the farm's office, a lounge and a programmer's workroom, and the network the whole farm starts from.
 
-The office drawn: [the office page](/en/office) · Its other pages: [materials](materials.md), [electric](electric.md) · Each step done in full: [the studio's plan](../studio/plan.md)
+Kinyarwanda: [soma iyi gahunda mu Kinyarwanda](plan.rw.md) · The office drawn: [the office page](/en/office) · Its other pages: [materials](materials.md), [electric](electric.md) · Each step done in full: [the studio's plan](../studio/plan.md)
 
 ## At a glance
 

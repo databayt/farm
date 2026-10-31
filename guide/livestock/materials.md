@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Sizes come from livestock.json; prices appe
 
 What the yard needs: its animals, the yard's fittings, its water and its manure loop, as its page shows them.
 
-The yard drawn: [the livestock page](/en/livestock) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The yard drawn: [the livestock page](/en/livestock) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 

@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. The pipe's size, its depth and every route 
 
 How water reaches the animals: the farm's line to the tank, the buried line to the troughs, the bucket tap, and what the yard drinks a day.
 
-The water drawn: [the livestock page](/en/livestock#water) · When it happens: [the execution plan](plan.md) · Where the water comes from: [the farm's water](../farm/water.md)
+Kinyarwanda: [soma iyi paji mu Kinyarwanda](water.rw.md) · The water drawn: [the livestock page](/en/livestock#water) · When it happens: [the execution plan](plan.md) · Where the water comes from: [the farm's water](../farm/water.md)
 
 ## At a glance
 

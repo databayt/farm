@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Sizes come from office.json; the electrical
 
 What the office needs: its furniture and equipment, its electric devices and the network gear, as its page shows them.
 
-The office drawn: [the office page](/en/office) · When it is needed: [the execution plan](plan.md)
+Kinyarwanda: [soma uru rutonde mu Kinyarwanda](materials.rw.md) · The office drawn: [the office page](/en/office) · When it is needed: [the execution plan](plan.md)
 
 ## What to buy
 

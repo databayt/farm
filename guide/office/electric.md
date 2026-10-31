@@ -4,7 +4,7 @@ Status: design intent of 2026-10-31. Every rating is design intent until a RURA-
 
 Everything the electrician needs to wire the office, and the network the farm starts from: the circuits, the cabinet on its UPS, the first and second fix, the tests and every point.
 
-The wiring and the network drawn: [the office page](/en/office#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
+Kinyarwanda: [soma iyi paji mu Kinyarwanda](electric.rw.md) · The wiring and the network drawn: [the office page](/en/office#electrical) · When it happens: [the execution plan](plan.md) · The method in full: [the studio's electric](../studio/electric.md)
 
 ## At a glance
 
