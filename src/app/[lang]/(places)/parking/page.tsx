@@ -78,13 +78,14 @@ const DOCS = [
 export default function ParkingPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster. For now it is the design model rendered
-          from eye level across the public road (scripts/site/render/parking.html?mode=real&hero=1, 2400 x 1340): the
-          sign wall lit, the gate open on the drive, the rock road and the inner gate seen through it. The sign wall
-          sits left, so the words keep the road bottom-left. */}
-      <PageHero src={`${D}/render/parking-hero.jpg`} width={2400} height={1340} className="bg-[#cfdbe4]" imgClassName="object-[43%_55%]"
+      {/* First screen: the founder's Nano Banana render of the way in (2026-10-31), made from the brief in
+          ~/Desktop/parking-nano-banana; master kept at assets/parking/hero-gemini.jpeg (2752 x 1536), cut to
+          2400 x 1340. It departs from the drawings in three things: the letters stand proud on the stone with no
+          steel panel, a flower bed runs along the wall's foot, and both pillars carry a lantern. The words keep the
+          red road bottom-left. */}
+      <PageHero src={`${D}/render/parking-hero.jpg`} width={2400} height={1340} className="bg-[#b8653a]" imgClassName="object-[50%_50%]"
         title="Parking on grass, just inside the gate"
-        alt="A fieldstone wall under a timber cap with DIGITAL FARM in warm-white LED capitals on a dark steel panel, beside two fieldstone pillars, one with a lantern, and a timber gate braced in an X standing open on a drive of grey stone setts; through it a lawn of grass pavers and a road of setts to a second gate, shade trees over the wall and a line of tall trees in the haze, a green hedge along the boundary and a red dirt road in front." />
+        alt="A fieldstone wall under a timber cap lettered DIGITAL FARM at golden hour, a bed of orange cannas, blue agapanthus and yellow lantana at its foot, beside two fieldstone pillars with lanterns and a honey timber gate braced in an X standing open; a fan of grey granite setts from the red dirt road through the gate onto grass pavers, a white four-by-four parked under broad acacia trees, and a sett road leading on to a second gate among tall eucalyptus." />
 
       {/* 2D, full screen: the way in's plan (src/components/parking/parking-plan.tsx), in the text colour. */}
       <DrawingSection id="plans" title="2D">
