@@ -45,8 +45,11 @@ Do not contact suppliers, buyers or government offices, and send no email, Slack
 | `suppliers.csv` | id, name, category, location, offerings, public_contact, url, prices_published, certification, source_id, verified, notes |
 | `buyers.csv` | id, name, category, location, buys, direct_from_farms, public_contact, url, approach, source_id, status, notes |
 | `assumptions.md` | ID, assumption, value, basis, impact if wrong, validation, status |
+| `media.csv` | id, file, kind, taken, source, place, zone, evidence, people, plates, use, confidence, same_as, notes |
 
 Source reliability grades: `A` official primary · `B` institutional or research · `C` reputable media or business · `D` weak.
+
+`media.csv` says where every photo and clip was taken. `place` is `land` (with the landmark seen in `evidence`), `neighbour`, `elsewhere: <where>`, `reference`, `generated` (AI) or `unknown`. Only a `land` row with high confidence and no recognisable person or plate is shown as "Today"; an `unknown` row is never "the farm" until the founder confirms it. Add each new batch before using any of it.
 
 ## Layout
 
