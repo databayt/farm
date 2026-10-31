@@ -1,4 +1,7 @@
+import { getWords } from "@/components/internationalization/words"
+
 import galley from "./galley.json"
+import { words } from "./words"
 
 // The galley drawn in the pattern of the office plan (src/components/office/office-plan.tsx): thin lines, no
 // colour, bold capitals and dimensions in millimetres. Seen from the courtyard, as the 3D's front view: the
@@ -66,7 +69,11 @@ function Stack({ x, y, words }: { x: number; y: number; words: string[] }) {
   )
 }
 
-export function GalleyPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function GalleyPlan({ title, className }: { title?: string; className?: string }) {
+  const w = await getWords(words)
+  const name = w.plan.labels
+  title ??= w.plan.title
   const L = box.l, H = box.w / 2
   const { x0: ix0, x1: ix1, y0: iy0, y1: iy1 } = box.inner
   const [[s0, s1], [e0, e1]] = fr.doors
@@ -144,28 +151,28 @@ export function GalleyPlan({ title, className }: { title: string; className?: st
       {bins.y.map((y) => <rect key={y} {...rect(bx0, y - bins.w / 2, bx0 + bins.d, y + bins.w / 2)} rx={0.04} {...thin} />)}
       <rect {...rect(plates.x0, plates.y0, ix1, iy1)} {...thin} />
 
-      <text x={f(basin.x0 + 0.05)} y={f(iy1 - basin.d - 0.1)} style={small}>HAND WASH</text>
-      <text x={f((wt.x0 + bowls[0].a) / 2)} y={f(wz + 0.37)} textAnchor="middle" style={small}>HARVEST</text>
-      <Stack x={bowls[0].x} y={f(bowls[0].c0 + 0.2)} words={["PREP", "SINK"]} />
-      <text x={f((bowls[0].b + bowls[1].a) / 2)} y={f(wz + 0.37)} textAnchor="middle" style={small}>PREP BENCH</text>
-      <Stack x={bowls[1].x} y={f(bowls[1].c0 + 0.2)} words={["WASH-UP", "SINK"]} />
-      <text x={f((bowls[1].b + wt.x1) / 2)} y={f(wz + 0.37)} textAnchor="middle" style={small}>DISH DROP</text>
+      <text x={f(basin.x0 + 0.05)} y={f(iy1 - basin.d - 0.1)} style={small}>{name.handWash}</text>
+      <text x={f((wt.x0 + bowls[0].a) / 2)} y={f(wz + 0.37)} textAnchor="middle" style={small}>{name.harvest}</text>
+      <Stack x={bowls[0].x} y={f(bowls[0].c0 + 0.2)} words={name.prepSink} />
+      <text x={f((bowls[0].b + bowls[1].a) / 2)} y={f(wz + 0.37)} textAnchor="middle" style={small}>{name.prepBench}</text>
+      <Stack x={bowls[1].x} y={f(bowls[1].c0 + 0.2)} words={name.washSink} />
+      <text x={f((bowls[1].b + wt.x1) / 2)} y={f(wz + 0.37)} textAnchor="middle" style={small}>{name.dishDrop}</text>
       {cold.units.map((u) => (
-        <text key={u.id} x={f((u.x0 + u.x1) / 2)} y={f(iy0 + cold.d / 2 + 0.04)} textAnchor="middle" style={small}>{u.id.toUpperCase()}</text>
+        <text key={u.id} x={f((u.x0 + u.x1) / 2)} y={f(iy0 + cold.d / 2 + 0.04)} textAnchor="middle" style={small}>{name.units[u.id] ?? u.id.toUpperCase()}</text>
       ))}
-      <text x={f((dry.x0 + dry.x1) / 2)} y={f(iy0 + dry.d / 2 + 0.04)} textAnchor="middle" style={small}>DRY STORE</text>
+      <text x={f((dry.x0 + dry.x1) / 2)} y={f(iy0 + dry.d / 2 + 0.04)} textAnchor="middle" style={small}>{name.dry}</text>
       {line.units.map((u) => (
-        <text key={u.id} x={f((u.x0 + u.x1) / 2)} y={f(lz - 0.07)} textAnchor="middle" style={small}>{u.id.toUpperCase()}</text>
+        <text key={u.id} x={f((u.x0 + u.x1) / 2)} y={f(lz - 0.07)} textAnchor="middle" style={small}>{name.units[u.id] ?? u.id.toUpperCase()}</text>
       ))}
-      <text x={f((hood.x0 + hood.x1) / 2)} y={f(iy0 + hood.d + 0.15)} textAnchor="middle" style={small}>HOOD</text>
-      <text x={f((bench.x0 + bench.x1) / 2)} y={f(iy0 + 0.25)} textAnchor="middle" style={small}>COLD BENCH</text>
-      <text x={f((pass.x0 + pass.x1) / 2)} y={f(iy0 + pass.d - 0.1)} textAnchor="middle" style={small}>PASS</text>
-      <text x={f((cleaning.x0 + cleaning.x1) / 2)} y={f(iy0 + cleaning.d / 2 + 0.04)} textAnchor="middle" style={small}>CLEANING</text>
-      {bins.y.map((y) => <text key={y} x={f(bx0 + bins.d / 2)} y={f(y + 0.04)} textAnchor="middle" style={small}>BIN</text>)}
-      <text x={f((plates.x0 + ix1) / 2)} y={f((plates.y0 + iy1) / 2 + 0.04)} textAnchor="middle" style={small}>PLATES</text>
-      <text x={f((s0 + s1) / 2)} y={f(H + 0.1 + 2 * sd + 0.2)} textAnchor="middle" style={small}>STAFF DOOR</text>
-      <text x={f((e0 + e1) / 2)} y={f(H + 0.1 + 2 * sd + 0.2)} textAnchor="middle" style={small}>SERVICE DOOR</text>
-      <text x={f(L / 2)} y={f(-H - 0.2)} textAnchor="middle" style={label}>GALLEY</text>
+      <text x={f((hood.x0 + hood.x1) / 2)} y={f(iy0 + hood.d + 0.15)} textAnchor="middle" style={small}>{name.hood}</text>
+      <text x={f((bench.x0 + bench.x1) / 2)} y={f(iy0 + 0.25)} textAnchor="middle" style={small}>{name.bench}</text>
+      <text x={f((pass.x0 + pass.x1) / 2)} y={f(iy0 + pass.d - 0.1)} textAnchor="middle" style={small}>{name.pass}</text>
+      <text x={f((cleaning.x0 + cleaning.x1) / 2)} y={f(iy0 + cleaning.d / 2 + 0.04)} textAnchor="middle" style={small}>{name.cleaning}</text>
+      {bins.y.map((y) => <text key={y} x={f(bx0 + bins.d / 2)} y={f(y + 0.04)} textAnchor="middle" style={small}>{name.bin}</text>)}
+      <text x={f((plates.x0 + ix1) / 2)} y={f((plates.y0 + iy1) / 2 + 0.04)} textAnchor="middle" style={small}>{name.plates}</text>
+      <text x={f((s0 + s1) / 2)} y={f(H + 0.1 + 2 * sd + 0.2)} textAnchor="middle" style={small}>{name.staffDoor}</text>
+      <text x={f((e0 + e1) / 2)} y={f(H + 0.1 + 2 * sd + 0.2)} textAnchor="middle" style={small}>{name.serviceDoor}</text>
+      <text x={f(L / 2)} y={f(-H - 0.2)} textAnchor="middle" style={label}>{name.galley}</text>
       <Dimension x0={0} x1={L} y={f(-H - 0.6)} />
       <Dimension x0={wt.x0} x1={wt.x1} y={f(H + 0.1 + 2 * sd + 0.55)} />
       <Rise y0={f(-H)} y1={f(H)} x={f(L + 0.4)} />
