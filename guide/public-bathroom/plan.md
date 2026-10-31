@@ -29,7 +29,7 @@ The bathroom drawn: [the public bathroom page](/en/public-bathroom) · Its other
 1. **Welder:** all the hot work: the door moved to the east end of the front, the windows' frames, before anything that can burn goes in.
 2. **The box:** the outer walls lined on the plinth; the fieldstone landing and its step at the door.
 3. **Plumber:** the first fix: the PP-R supply in the linings 300 mm up, the uPVC drains under the floor and out through the plinth to the inspection chamber; every pipe held at 10 bar for an hour before anything closes over it ([plumbing](plumbing.md)).
-4. **Electrician:** the first fix for the 4 circuits from the board by the cleaner's cupboard; the tests ([electric](electric.md)).
+4. **Electrician:** the first fix for the 4 circuits from the board in the lobby; the tests ([electric](electric.md)).
 5. **Carpenter:** the partitions: timber studs, cement board both sides, 100 mm.
 6. **Tiler:** the floor tiles falling to the lobby's drain, the wall tiles to 1.5 m.
 7. **Plumber and carpenter:** the fittings: the cleaner's cupboard, the two WCs, the basin counter with its mirror, the towels and the urinal ([materials](materials.md)).
