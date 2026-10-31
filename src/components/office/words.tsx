@@ -22,7 +22,7 @@ const en = {
     title: "Plan: a 20 ft container 6,058 by 2,438 mm with a 1,500 mm deck in front and a stair off its corner; inside, one L sofa across the whole cargo-door end and along the back wall, round a low table, and one big programmer's and gamer's desk across the whole far end wall, with a single Studio Display, a Mac Studio and a gaming chair; on the deck, a round ahwa table with two chairs, as in an Egyptian cafe.",
     labels: {
       desk: "DESK", mac: "MAC STUDIO", display: "STUDIO DISPLAY", sofa: "SOFA", table: "TABLE", cafe: "CAFE", glazing: "SLIDING GLAZING",
-      deck: "DECK", stair: "STAIR", office: "OFFICE", cargo: "CARGO", doors: "DOORS",
+      deck: "DECK", stair: "STAIR", office: "OFFICE", cargo: "CARGO", doors: "DOORS", glazingDim: "glazing", stairDim: "stair",
     },
   },
   model: {
@@ -110,7 +110,7 @@ const rw: typeof en = {
     title: "Igishushanyo: ikontineri ya ft 20, mm 6,058 kuri 2,438, ifite urubaho rwa mm 1,500 imbere yayo n'ingazi ku nguni yayo; imbere, sofa imwe imeze nka L ifata impera yose y'inzugi z'ikontineri igakomeza ku rukuta rw'inyuma, izengurutse ameza magufi, n'ameza manini y'umuporogaramu n'uw'imikino afata urukuta rwose rw'impera ya kure, ariho Studio Display imwe, Mac Studio n'intebe y'imikino; ku rubaho, ameza y'ahwa y'uruziga n'intebe ebyiri, nko muri kafe yo mu Misiri.",
     labels: {
       desk: "AMEZA", mac: "MAC STUDIO", display: "STUDIO DISPLAY", sofa: "SOFA", table: "AMEZA MATO", cafe: "KAFE", glazing: "IBIRAHURE BINYERERA",
-      deck: "URUBAHO", stair: "INGAZI", office: "IBIRO", cargo: "INZUGI", doors: "Z'IKONTINERI",
+      deck: "URUBAHO", stair: "INGAZI", office: "IBIRO", cargo: "INZUGI", doors: "Z'IKONTINERI", glazingDim: "ibirahure", stairDim: "ingazi",
     },
   },
   model: {

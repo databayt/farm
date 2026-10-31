@@ -1,10 +1,14 @@
 import { getWords } from "@/components/internationalization/words"
+import { Chain, Dim, HDim, Name, Note, VDim } from "@/components/drawing/dims"
+import { frame, mm, tier } from "@/components/drawing/geometry"
 
 import office from "./office.json"
 import { words } from "./words"
 
-// The office drawn in the pattern of the camp plan (src/components/camp/camp-plan.tsx): thin lines, no
-// colour, bold capitals and dimensions in millimetres. Seen from the deck, as the 3D's front view: the deck
+// The office drawn in the pattern of the camp plan (src/components/camp/camp-plan.tsx): thin lines, no colour, and
+// its dimensions as the studio's plan sets them (src/components/drawing): the back wall's chain (sofa, the open floor,
+// desk), the glazing, the stair and the overall length under the deck, the box and the deck at the far end, and the
+// free floor in front of the sofa. Seen from the deck, as the 3D's front view: the deck
 // and the glazing face down the page (north), the stair end to the left. Units are metres, x from the stair
 // end, y toward the deck, the container's centre line at y = 0.
 
@@ -13,40 +17,17 @@ const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEf
 const medium = { ...thin, strokeWidth: 1.6 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.45 } as const
 const dashed = { ...thin, strokeDasharray: "4 3" } as const
-const label = {
-  fontFamily: "var(--font-sans), ui-sans-serif, system-ui, sans-serif",
-  fontSize: 0.15,
-  fontWeight: 700,
-  letterSpacing: "0.04em",
-  fill: "currentColor",
-} as const
-const small = { ...label, fontSize: 0.1, fontWeight: 600 } as const
 
 const f = (n: number) => +n.toFixed(3)
-const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
 
-function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.06
-  return (
-    <g>
-      <line x1={x0} x2={x1} y1={y} y2={y} {...thin} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f((x0 + x1) / 2)} y={f(y - 0.07)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
-    </g>
-  )
-}
-// the same, standing: the figure reads up the page beside the line
-function Rise({ y0, y1, x }: { y0: number; y1: number; x: number }) {
-  const tick = 0.06, my = f((y0 + y1) / 2)
-  return (
-    <g>
-      <line x1={x} x2={x} y1={y0} y2={y1} {...thin} />
-      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f(x + 0.08)} y={my} transform={`rotate(-90 ${f(x + 0.08)} ${my})`} textAnchor="middle" style={small}>{mm(y1 - y0)}</text>
-    </g>
-  )
-}
+const L = box.l, H = box.w / 2
+const edge = H + deck.d // the deck's outer edge
+const sx = -(deck.stair.risers - 1) * deck.stair.tread // the stair's foot
+// the drawing, then how far its dimensions reach past it (studio mm): the names over the back wall's chain, two
+// tiers under the deck and at the far end, the stair's width beside it
+const { k, viewBox } = frame({ x0: sx, y0: -H, x1: L, y1: edge }, { top: 14, right: 13, bottom: 13, left: 7 })
+const under = deck.d / k // from the front wall down to the deck's edge, in studio mm
 
 // an office chair from above: a seat, its back to one side (toward: the way the sitter faces)
 function Chair({ x, y, toward, s = 0.5 }: { x: number; y: number; toward: "up" | "down" | "left" | "right"; s?: number }) {
@@ -66,15 +47,14 @@ export async function OfficePlan({ title, className }: { title?: string; classNa
   const w = await getWords(words)
   const name = w.plan.labels
   title ??= w.plan.title
-  const L = box.l, H = box.w / 2
   const { x0: ix0, x1: ix1, y0: iy0, y1: iy1 } = box.inner
-  const front = H, edge = H + deck.d, rail = edge - 0.04
-  const st = deck.stair, steps = st.risers - 1, sx = -steps * st.tread
+  const front = H, rail = edge - 0.04
+  const st = deck.stair, steps = st.risers - 1
   const { x0: g0, x1: g1, panels } = glazing
   const pw = (g1 - g0) / panels
   const boards = Array.from({ length: Math.ceil(L / 0.146) }, (_, k) => f(k * 0.146))
   return (
-    <svg viewBox="-1.75 -2.05 8.5 5.75" role="img" aria-label={title} className={className}>
+    <svg viewBox={viewBox} role="img" aria-label={title} className={className}>
       {/* The steel box with its lining, the glazing open in the front wall, the cargo doors at the stair end */}
       <path d={`M${g0} ${front}H0V${-H}H${L}V${front}H${g1}`} {...medium} />
       <path d={`M${g0} ${iy1}H${ix0}V${iy0}H${ix1}V${iy1}H${g1}`} {...thin} />
@@ -122,26 +102,33 @@ export async function OfficePlan({ title, className }: { title?: string; classNa
       ].map((d) => <path key={d} d={d} {...faint} />)}
       <rect {...rect(sofa.table.x0, sofa.table.y0, sofa.table.x1, sofa.table.y1)} rx={0.04} {...thin} />
 
-      <text x={f(ix1 - ws.d / 2)} y={f(iy1 - 0.15)} textAnchor="middle" style={small}>{name.desk}</text>
-      <text x={f(ix1 - 0.08 - ws.mac.w / 2)} y={f(ws.mac.y - ws.mac.w / 2 - 0.06)} textAnchor="middle" style={small}>{name.mac}</text>
-      <text x={f(ix1 - 0.27)} y={0} transform={`rotate(-90 ${f(ix1 - 0.27)} 0)`} textAnchor="middle" style={small}>{name.display}</text>
-      <text x={f((ix0 + sofa.d + sofa.x1 - sofa.arm) / 2)} y={f(iy0 + (sofa.rest + sofa.d) / 2 + 0.035)} textAnchor="middle" style={small}>{name.sofa}</text>
-      <text x={f((sofa.table.x0 + sofa.table.x1) / 2)} y={f((sofa.table.y0 + sofa.table.y1) / 2 + 0.035)} textAnchor="middle" style={small}>{name.table}</text>
+      <Note k={k} x={ix1 - ws.d / 2} y={iy1 - 0.15}>{name.desk}</Note>
+      <Note k={k} x={ix1 - 0.08 - ws.mac.w / 2} y={ws.mac.y - ws.mac.w / 2 - 0.08}>{name.mac}</Note>
+      <Note k={k} x={ix1 - 0.27} y={0} rotate={90}>{name.display}</Note>
+      <Note k={k} x={(ix0 + sofa.d + sofa.x1 - sofa.arm) / 2} y={iy0 + (sofa.rest + sofa.d) / 2}>{name.sofa}</Note>
+      <Note k={k} x={(sofa.table.x0 + sofa.table.x1) / 2} y={(sofa.table.y0 + sofa.table.y1) / 2}>{name.table}</Note>
       {/* The ahwa set on the deck: the round marble table on its pedestal, a chair either side, both looking out over the garden */}
       <circle cx={cafe.table.x} cy={cafe.table.y} r={cafe.table.r} {...thin} />
       <circle cx={cafe.table.x} cy={cafe.table.y} r={0.08} {...faint} />
       {cafe.chairs.map(([x, y]) => <Chair key={x} x={x} y={y} s={cafe.chair.w} toward="down" />)}
-      <text x={cafe.table.x} y={f(cafe.table.y + cafe.table.r + 0.16)} textAnchor="middle" style={small}>{name.cafe}</text>
-      <text x={f((g0 + g1) / 2)} y={f(front - 0.16)} textAnchor="middle" style={small}>{name.glazing}</text>
-      <text x={f(L / 2)} y={f(edge - 0.55)} textAnchor="middle" style={label}>{name.deck}</text>
-      <text x={f(sx + (-sx) / 2)} y={f(edge - st.w - 0.1)} textAnchor="middle" style={small}>{name.stair}</text>
-      <text x={f(L + 0.12)} y={f(-H + 0.3)} style={label}>{name.office}</text>
-      <text x={-0.12} y={f(-0.3)} textAnchor="end" style={small}>{name.cargo}</text>
-      <text x={-0.12} y={f(-0.16)} textAnchor="end" style={small}>{name.doors}</text>
-      <Dimension x0={0} x1={L} y={-H - 0.45} />
-      <Dimension x0={g0} x1={g1} y={edge + 0.4} />
-      <Rise y0={-H} y1={front} x={L + 0.45} />
-      <Rise y0={front} y1={edge} x={L + 0.45} />
+      <Note k={k} x={cafe.table.x} y={cafe.table.y + cafe.table.r + 0.14}>{name.cafe}</Note>
+      <Note k={k} x={(g0 + g1) / 2} y={front - 0.16}>{name.glazing}</Note>
+      <Name k={k} x={L / 2 - 0.6} y={edge - 0.5}>{name.deck}</Name>
+      <Note k={k} x={sx / 2} y={edge - st.w - 0.12}>{name.stair}</Note>
+      <Note k={k} x={-0.12} y={-0.32} anchor="end">{name.cargo}</Note>
+      <Note k={k} x={-0.12} y={-0.18} anchor="end">{name.doors}</Note>
+
+      {/* The back wall: the sofa's long leg, the open floor, the desk across the far end */}
+      <Chain k={k} along="x" at={[ix0, sofa.x1, ix1 - ws.d, ix1]} edge={-H} side="top" names={[name.sofa, null, name.desk]} />
+      {/* Under the deck: the stair's run and the glazing, then the overall length */}
+      <HDim k={k} x0={sx} x1={0} y={edge} side="bottom" prefix={name.stairDim} />
+      <Dim k={k} a={[g0, front]} b={[g1, front]} off={under + tier(1)} label={`${name.glazingDim} ${mm(g1 - g0)}`} />
+      <Dim k={k} a={[0, front]} b={[L, front]} off={under + tier(2)} />
+      {/* The far end: the box and the deck, then both; the stair's width beside it */}
+      <Chain k={k} along="y" at={[-H, front, edge]} edge={L} side="right" overall />
+      <VDim k={k} y0={edge - st.w} y1={edge} x={sx} side="left" />
+      {/* Inside: the free floor between the sofa's long leg and the front wall */}
+      <Dim k={k} a={[(sofa.table.x1 + sofa.x1) / 2, iy0 + sofa.d]} b={[(sofa.table.x1 + sofa.x1) / 2, iy1]} off={0} size={2.2} />
     </svg>
   )
 }
