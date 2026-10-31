@@ -4,10 +4,11 @@
   from the courtyard with its front wall and roof off, built from src/components/public-bathroom/public-bathroom.json
   (the numbers the 2D draws). The box follows the homepage model (scripts/site/render/compound.html, the galley and
   bathroom loop): a teal 20 ft container with ribs on a fieldstone plinth, a red door and two white-framed windows in
-  its front. Inside, tiled to 1.5 m and painted above: the two toilet rooms along the front, the passage behind them
-  with the cleaner's cupboard at its end, the lobby with two basins on a Medium Oak counter, the urinal in a room of
-  its own. The walls across the box are cut low so the passage and the lobby's far end show, as the studio's cross
-  wall (scripts/studio/render/room.html). Rendered two ways:
+  its front, the door at its east end. Inside, tiled to 1.5 m and painted above, one row against the back wall
+  (D-060): the two toilet rooms, each WC facing its door, the urinal in a room of its own, then the basins on a Medium
+  Oak counter across from the door; the corridor along the front with the cleaner's cupboard at its end. The row's
+  front wall is cut low so the rooms show, as the studio's cross wall (scripts/studio/render/room.html). Rendered two
+  ways:
 
     ?mode=line  line drawing on a transparent ground   -> public/designs/public-bathroom/render/public-bathroom-line.png
     ?mode=real  materials, daylight and shadow         -> public/designs/public-bathroom/render/public-bathroom-real.webp
@@ -379,9 +380,9 @@ if (HERO) {
     blk(a0 + 0.18, H + 0.03, a1 - 0.18, H + 0.04, b0 + (b1 - b0) * 0.55, b1 - 0.2, "obscured")
     blk(a0 - f, H, a0, H + 0.055, b0, b1 + f, "red"); blk(a1, H, a1 + f, H + 0.055, b0, b1 + f, "red")
     blk(a0, H, a1, H + 0.055, b1, b1 + f, "red")
-    cyl(a1 - 0.1, H + 0.04, 0.03, b0 + 0.994, 0.012, "chrome", 16).rotation.x = Math.PI / 2 // the rose, the lever on it
-    pipe([a1 - 0.1, b0 + 1.0, H + 0.08], [a1 - 0.24, b0 + 1.0, H + 0.08], 0.011, "chrome")
-    pipe([a1 - 0.1, b0 + 1.0, H + 0.04], [a1 - 0.1, b0 + 1.0, H + 0.08], 0.011, "chrome")
+    cyl(a0 + 0.1, H + 0.04, 0.03, b0 + 0.994, 0.012, "chrome", 16).rotation.x = Math.PI / 2 // the rose, the lever on it
+    pipe([a0 + 0.1, b0 + 1.0, H + 0.08], [a0 + 0.24, b0 + 1.0, H + 0.08], 0.011, "chrome")
+    pipe([a0 + 0.1, b0 + 1.0, H + 0.04], [a0 + 0.1, b0 + 1.0, H + 0.08], 0.011, "chrome")
   }
   // the windows: obscured glass in white frames with a middle bar and a sill
   for (const [a0, a1] of F.windows) {
@@ -401,38 +402,38 @@ if (HERO) {
 }
 
 // ------------------------------------------------------------ partitions, tiled and painted like the walls
-const [r1, r2] = TO.rooms, back = TO.y0, pass = PA.y1 // the toilet rooms' back face, the passage's
-// The walls that run front to back stand full height: between the two toilet rooms, between the second room and the
-// lobby, the urinal room's west wall. The walls across the box are cut low, as the studio's cross wall, so the passage
-// and the lobby's far end show behind them: the toilet rooms' back wall and the urinal room's. The doors are left off
-// so the rooms show.
+const [r1, r2] = TO.rooms, face = TO.y1, hall = PA.y0 // the row's front partition: its face in the rooms, the corridor's
+// The walls between the rooms of the row stand full height, from the back wall to the row's front: between the two
+// toilet rooms, between the second and the urinal room, and the urinal room's east wall, where the lobby starts. The
+// row's front wall is cut low, as the studio's cross wall, so the rooms show behind it. The doors are left off.
 let wallNo = 0
 const part = (fn) => as("walls", [`w${wallNo++}`], fn)
-part(() => lined(r1.x1, pass, r2.x0, iz1, FL, CE))
-part(() => lined(r2.x1, pass, LO.x0, iz1, FL, CE))
-part(() => lined(LO.x1, UR.y0 - t, UR.x0, iz1, FL, CE))
+part(() => lined(r1.x1, iz0, r2.x0, hall, FL, CE))
+part(() => lined(r2.x1, iz0, UR.x0, hall, FL, CE))
+part(() => lined(UR.x1, iz0, LO.x0, hall, FL, CE))
 const cut = FL + 0.55
-for (const [a, b] of spans(ix0, LO.x0, [r1.door, r2.door])) part(() => blk(a, pass, b, back, FL, cut, "walltile"))
-for (const [a, b] of spans(LO.x1, ix1, [UR.door])) part(() => blk(a, UR.y0 - t, b, UR.y0, FL, cut, "walltile"))
+for (const [a, b] of spans(ix0, LO.x0, [r1.door, r2.door, UR.door])) part(() => blk(a, face, b, hall, FL, cut, "walltile"))
 
-// ------------------------------------------------------------ the cleaner's cupboard at the passage's end
+// ------------------------------------------------------------ the cleaner's cupboard at the corridor's end
 as("fittings", ["cupboard"], () => {
-  const [x0, x1, z0, z1] = [CU.x0, CU.x1, PA.y0, PA.y1], zm = (z0 + z1) / 2
-  blk(x0, z0, x1 - 0.02, z1, FL, CE, "oak") // the carcass, floor to ceiling
-  for (const [a, b] of [[z0 + 0.005, zm - 0.003], [zm + 0.003, z1 - 0.005]]) blk(x1 - 0.02, a, x1, b, FL + 0.06, CE - 0.01, "oak") // its two doors
-  for (const z of [zm - 0.04, zm + 0.04]) blk(x1, z - 0.008, x1 + 0.025, z + 0.008, FL + 0.95, FL + 1.15, "black")
+  // floor to ceiling; in the front views it stands in front of the first toilet room, so it is cut low with the row's
+  // front wall
+  const [x0, x1, z0, z1] = [CU.x0, CU.x1, PA.y0, PA.y1], zm = (z0 + z1) / 2, top = HERO || ITEM || TOP ? CE : cut
+  blk(x0, z0, x1 - 0.02, z1, FL, top, "oak") // the carcass
+  for (const [a, b] of [[z0 + 0.005, zm - 0.003], [zm + 0.003, z1 - 0.005]]) blk(x1 - 0.02, a, x1, b, FL + 0.06, Math.min(top, CE - 0.01), "oak") // its two doors
+  if (top === CE) for (const z of [zm - 0.04, zm + 0.04]) blk(x1, z - 0.008, x1 + 0.025, z + 0.008, FL + 0.95, FL + 1.15, "black")
 })
 
-// ------------------------------------------------------------ the toilet rooms: a WC on each west wall, a roll holder beside it
-// a floor-standing WC with its cistern on the wall at x, facing +x into the room
+// ------------------------------------------------------------ the toilet rooms: a WC on each back wall, a roll holder on the west wall
+// a floor-standing WC with its cistern on the back wall at z, centred on x, facing +z toward the door
 function wc(x, z) {
   const W = TO.wc, c = W.cistern, r = W.w / 2
-  soft(x + 0.005, z - c.w / 2, x + c.d, z + c.w / 2, FL + 0.42, FL + c.h, 0.03, "ceramic") // the cistern
-  cyl(x + c.d / 2, z, 0.03, FL + c.h, 0.008, "chrome", 16) // its flush button
-  cyl(x + 0.36, z, 0.12, FL, 0.24, "ceramic", 24, 0.14).scale.x = 1.3 // the foot
-  cyl(x + 0.415, z, r, FL + 0.22, 0.18, "ceramic", 32).scale.x = 1.24 // the bowl, out to W.out
-  cyl(x + 0.42, z, r - 0.005, FL + 0.4, W.seat - 0.4, "seat", 32).scale.x = 1.22 // the seat and lid, down
-  blk(x + c.d, z - 0.12, x + c.d + 0.04, z + 0.12, FL + 0.4, FL + W.seat + 0.01, "seat") // their hinge
+  soft(x - c.w / 2, z + 0.005, x + c.w / 2, z + c.d, FL + 0.42, FL + c.h, 0.03, "ceramic") // the cistern
+  cyl(x, z + c.d / 2, 0.03, FL + c.h, 0.008, "chrome", 16) // its flush button
+  cyl(x, z + 0.36, 0.12, FL, 0.24, "ceramic", 24, 0.14).scale.z = 1.3 // the foot
+  cyl(x, z + 0.415, r, FL + 0.22, 0.18, "ceramic", 32).scale.z = 1.24 // the bowl, out to W.out
+  cyl(x, z + 0.42, r - 0.005, FL + 0.4, W.seat - 0.4, "seat", 32).scale.z = 1.22 // the seat and lid, down
+  blk(x - 0.12, z + c.d, x + 0.12, z + c.d + 0.04, FL + 0.4, FL + W.seat + 0.01, "seat") // their hinge
 }
 // a toilet roll on its holder, on the wall at x, the roll along the wall
 function roll(x, z) {
@@ -441,7 +442,7 @@ function roll(x, z) {
   cyl(x + 0.07, z, 0.055, y - 0.05, 0.1, "white", 20).rotation.x = Math.PI / 2
 }
 TO.rooms.forEach((r, i) => {
-  FIT = true; as("fittings", [i ? "wc2" : "wc"], () => wc(r.x0, TO.wc.y)); FIT = false
+  FIT = true; as("fittings", [i ? "wc2" : "wc"], () => wc(r.x0 + TO.wc.x, iz0)); FIT = false
   as("fittings", [i ? "roll2" : "roll"], () => roll(r.x0, TO.roll.y))
 })
 
@@ -481,12 +482,12 @@ TO.rooms.forEach((r, i) => {
     blk(M.x0, z0, M.x1, z0 + 0.012, FL + M.y0, FL + M.y1, "black")
     blk(M.x0 + 0.015, z0 + 0.012, M.x1 - 0.015, z0 + 0.016, FL + M.y0 + 0.015, FL + M.y1 - 0.015, "mirror")
   })
-  as("fittings", ["towels"], () => { // the paper towels on the back wall past the counter, the lidded bin under them
-    const tx = TW.x, ty = FL + TW.at, bz = z0 + TW.bin + 0.02
-    soft(tx - TW.w / 2, z0, tx + TW.w / 2, z0 + 0.11, ty, ty + 0.36, 0.02, "white")
-    blk(tx - 0.1, z0 + 0.105, tx + 0.1, z0 + 0.115, ty + 0.03, ty + 0.045, "black")
-    cyl(tx, bz, TW.bin, FL, 0.5, "chrome", 28)
-    cyl(tx, bz, TW.bin + 0.005, FL + 0.5, 0.025, "black", 28)
+  as("fittings", ["towels"], () => { // the paper towels on the east end wall beside the counter, the lidded bin under them
+    const wx = TW.x, tz = TW.y, ty = FL + TW.at, bx = wx - TW.bin - 0.02
+    soft(wx - 0.11, tz - TW.w / 2, wx, tz + TW.w / 2, ty, ty + 0.36, 0.02, "white")
+    blk(wx - 0.115, tz - 0.1, wx - 0.105, tz + 0.1, ty + 0.03, ty + 0.045, "black")
+    cyl(bx, tz, TW.bin, FL, 0.5, "chrome", 28)
+    cyl(bx, tz, TW.bin + 0.005, FL + 0.5, 0.025, "black", 28)
   })
   FIT = true
   as("floor", ["floordrain"], () => { // the floor drain: its grate, and in the item its trapped body under the floor
@@ -502,27 +503,27 @@ TO.rooms.forEach((r, i) => {
   FIT = false
 }
 
-// ------------------------------------------------------------ the urinal room: the urinal and the extract fan on the east end wall
+// ------------------------------------------------------------ the urinal room: the urinal and the extract fan on the back wall
 {
-  const x = ix1, z = UR.y, rim = FL + UR.rim, r = UR.w / 2
+  const x = UR.x, z = iz0, rim = FL + UR.rim, r = UR.w / 2
   FIT = true
   as("fittings", ["urinal"], () => {
-    soft(x - 0.1, z - r, x, z + r, FL + 0.36, FL + 1.02, 0.04, "ceramic") // the back
+    soft(x - r, z, x + r, z + 0.1, FL + 0.36, FL + 1.02, 0.04, "ceramic") // the back
     // the bowl: half a cylinder off the back, out to UR.out from the wall
-    add(new THREE.CylinderGeometry(r - 0.02, r - 0.05, rim - FL - 0.38, 28, 1, false, Math.PI, Math.PI), "ceramic",
-      { pos: [x - 0.08, (FL + 0.38 + rim) / 2, z] }).scale.x = (UR.out - 0.08) / (r - 0.02)
+    add(new THREE.CylinderGeometry(r - 0.02, r - 0.05, rim - FL - 0.38, 28, 1, false, -Math.PI / 2, Math.PI), "ceramic",
+      { pos: [x, (FL + 0.38 + rim) / 2, z + 0.08] }).scale.z = (UR.out - 0.08) / (r - 0.02)
   })
   as("fittings", ["urinal", "flushvalve"], () => {
-    pipe([x - 0.04, FL + 1.02, z], [x - 0.04, FL + 1.22, z], 0.012, "chrome") // the flush pipe up to its valve
-    soft(x - 0.075, z - 0.045, x - 0.01, z + 0.045, FL + 1.22, FL + 1.34, 0.01, "chrome")
-    cyl(x - 0.075, z, 0.018, FL + 1.28, 0.012, "black", 16).rotation.z = Math.PI / 2 // its push button
+    pipe([x, FL + 1.02, z + 0.04], [x, FL + 1.22, z + 0.04], 0.012, "chrome") // the flush pipe up to its valve
+    soft(x - 0.045, z + 0.01, x + 0.045, z + 0.075, FL + 1.22, FL + 1.34, 0.01, "chrome")
+    cyl(x, z + 0.075, 0.018, FL + 1.28, 0.012, "black", 16).rotation.x = Math.PI / 2 // its push button
   })
   FIT = false
   DEV = true
   as("fittings", ["fan"], () => {
     const fy = FL + UR.fan.at, fr = UR.fan.r
-    soft(x - 0.04, z - fr, x, z + fr, fy - fr, fy + fr, 0.015, "white") // the fan's grille
-    for (let k = -2; k <= 2; k++) blk(x - 0.045, z - fr + 0.03, x - 0.04, z + fr - 0.03, fy + k * 0.04 - 0.008, fy + k * 0.04 + 0.008, "black")
+    soft(x - fr, z, x + fr, z + 0.04, fy - fr, fy + fr, 0.015, "white") // the fan's grille
+    for (let k = -2; k <= 2; k++) blk(x - fr + 0.03, z + 0.04, x + fr - 0.03, z + 0.045, fy + k * 0.04 - 0.008, fy + k * 0.04 + 0.008, "black")
   })
   DEV = false
 }
@@ -597,10 +598,13 @@ const cableLines = []
 if (ELEC || ["board", "light", "socket", "walllight"].includes(ITEM)) {
   DEV = true
   as("fittings", ["board"], () => { // the unit board: a white box, a smoked window over the breakers
-    const B = EL.board, [x, y, z] = P3(B.at)
-    soft(x - B.w / 2, z, x + B.w / 2, z + B.d, y - B.h / 2, y + B.h / 2, 0.012, "white")
-    blk(x - B.w / 2 + 0.03, z + B.d, x + B.w / 2 - 0.03, z + B.d + 0.004, y - 0.06, y + 0.1, "smoked")
-    for (let k = 0; k < 6; k++) blk(x - 0.11 + k * 0.044, z + B.d - 0.03, x - 0.08 + k * 0.044, z + B.d - 0.002, y - 0.02, y + 0.07, "white")
+    // built facing +z, then turned to face east (+x) when it hangs on a partition
+    const B = EL.board, [x, y, z] = P3(B.at), E = B.face === "east"
+    const box = (a0, c0, a1, c1, y0, y1, name, r) => E ? (r ? soft(x + c0, z - a1, x + c1, z - a0, y0, y1, r, name) : blk(x + c0, z - a1, x + c1, z - a0, y0, y1, name))
+      : (r ? soft(x + a0, z + c0, x + a1, z + c1, y0, y1, r, name) : blk(x + a0, z + c0, x + a1, z + c1, y0, y1, name))
+    box(-B.w / 2, 0, B.w / 2, B.d, y - B.h / 2, y + B.h / 2, "white", 0.012)
+    box(-B.w / 2 + 0.03, B.d, B.w / 2 - 0.03, B.d + 0.004, y - 0.06, y + 0.1, "smoked")
+    for (let k = 0; k < 6; k++) box(-0.11 + k * 0.044, B.d - 0.03, -0.08 + k * 0.044, B.d - 0.002, y - 0.02, y + 0.07, "white")
   })
   for (const p of EL.points) {
     const [x, y, z] = P3(p.at)
@@ -609,7 +613,7 @@ if (ELEC || ["board", "light", "socket", "walllight"].includes(ITEM)) {
       cyl(x, z, 0.135, y - 0.05, 0.006, "panel", 40)
       add(new THREE.SphereGeometry(0.02, 16, 8, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), "white", { pos: [x, y - 0.05, z] })
     })
-    if (p.model === "socket") as("fittings", ["socket"], () => { // a switched double socket on the back wall
+    if (p.model === "socket") as("fittings", ["socket"], () => { // a switched double socket on the wall behind it, facing +z
       soft(x - 0.073, z, x + 0.073, z + 0.012, y - 0.043, y + 0.043, 0.006, "white")
       for (const dx of [-0.035, 0.035]) blk(x + dx - 0.015, z + 0.012, x + dx + 0.015, z + 0.014, y - 0.02, y + 0.012, "black")
     })
@@ -660,7 +664,7 @@ if (TOP) {
   const bb = new THREE.Box3()
   for (const o of meshes) bb.expandByObject(o)
   const mid = bb.getCenter(new THREE.Vector3()), r = bb.getBoundingSphere(new THREE.Sphere()).radius
-  const west = ["wc", "roll", "cupboard"], east = ["urinal", "flushvalve", "fan"]
+  const west = ["roll", "cupboard"], east = ["towels", "board"]
   const view = ITEM === "light" ? [0.5, -0.55, 1] : ITEM === "floordrain" ? [0.35, 1, 0.7] : ITEM === "chamber" ? [0.5, 0.9, 1]
     : west.includes(ITEM) ? [1, 0.55, 0.8] : east.includes(ITEM) ? [-1, 0.55, 0.8] : [0.6, 0.5, 1]
   camera = new THREE.PerspectiveCamera(30, FW / FH, 0.05, 100)
@@ -675,7 +679,7 @@ if (TOP) {
     add(new THREE.SphereGeometry(150, 32, 16), "sky", { noEdges: true })
     scene.fog = new THREE.Fog(0xdfe8ee, 30, 140)
   } else {
-    // the front view, a little from the west end, raised so the passage shows over the cut walls
+    // the front view, a little from the west end, raised so the rooms show over the row's cut front wall
     const target = new THREE.Vector3(L / 2 - 0.1, Y0 + 0.9, 0.4)
     const [el, az, dist] = [THREE.MathUtils.degToRad(56), THREE.MathUtils.degToRad(-14), 32]
     camera.position.set(target.x + dist * Math.cos(el) * Math.sin(az), target.y + dist * Math.sin(el), target.z + dist * Math.cos(el) * Math.cos(az))
@@ -761,7 +765,8 @@ if (LINE) {
     scene.add(seen, hid)
   }
   if (PLUMB) window.TAGS = PL.fittings.map((f) => tagAt(f.point, P3(f.at)))
-  if (ELEC) window.TAGS = [tagAt("DB", P3([EL.board.at[0], EL.board.at[1] + EL.board.d, EL.board.at[2]])),
+  const [bx, by, bz] = EL.board.at, bd = EL.board.d
+  if (ELEC) window.TAGS = [tagAt("DB", P3(EL.board.face === "east" ? [bx + bd, by, bz] : [bx, by + bd, bz])),
     ...EL.points.filter((p) => !["earth", "walllight"].includes(p.model)).map((p) => tagAt(p.point, P3(p.at)))]
   const ink = new THREE.Color(FAINT ? 0x141414 : INK)
   new OutlineEffect(renderer, { defaultThickness: FAINT ? 0.003 : 0.0025, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
@@ -790,11 +795,11 @@ if (LINE) {
     ground.position.set((bb.min.x + bb.max.x) / 2, bb.min.y - 0.002, (bb.min.z + bb.max.z) / 2)
     scene.add(ground)
   }
-  // the rooms' own light, so the deep corners aren't dim: one in each toilet room, the lobby, the passage and the
-  // urinal room; at dusk, the ceiling lights themselves
+  // the rooms' own light, so the deep corners aren't dim: one in each toilet room, the urinal room, the lobby and the
+  // corridor; at dusk, the ceiling lights themselves
   if (!HERO && !ITEM && !TOP) {
     const spots = ELEC ? EL.points.filter((p) => p.model === "light").map((p) => [p.at[0], p.at[1]])
-      : [[(r1.x0 + r1.x1) / 2, 0.5], [(r2.x0 + r2.x1) / 2, 0.5], [(LO.x0 + LO.x1) / 2, 0], [1.6, -0.65], [(UR.x0 + UR.x1) / 2, 0.5]]
+      : [[(r1.x0 + r1.x1) / 2, -0.5], [(r2.x0 + r2.x1) / 2, -0.5], [(UR.x0 + UR.x1) / 2, -0.5], [(LO.x0 + LO.x1) / 2, -0.1], [2.2, (PA.y0 + PA.y1) / 2]]
     for (const [x, z] of spots) {
       const l = new THREE.PointLight(0xfff0d6, ELEC ? 3.5 : 0.8, ELEC ? 4 : 3.5, 2)
       l.position.set(x, CE - (ELEC ? 0.2 : 0.1), z); scene.add(l)

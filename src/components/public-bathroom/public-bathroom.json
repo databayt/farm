@@ -1,5 +1,5 @@
 {
-  "about": "The compound's public bathroom (compound.json units id \"bath\", PUBLIC BATHROOM): a 20 ft container painted teal on a 300 mm fieldstone plinth, beside the galley in the study room's row, its front facing north toward the courtyard. The founder's brief: two toilet rooms, two hand basins and a urinal, sizes assumed, not given (D-022). It serves everyone without a bathroom of their own: the campers in the tents, guests at the bar lounge and the fire pit in the evening, at the volleyball and in the study room by day (guide/operations.md), and the team, as the office, the bar and the galley have none; the studios and the guest rooms have their own (D-029). The outside follows the homepage model (scripts/site/render/compound.html): one door and two high windows in the front. The fittings stand in one row against the back wall, west to east: the two toilet rooms, the urinal room, then the basins straight across from the door, which sits at the east end of the front wall (the homepage model puts it mid-front; it moves here). A corridor along the front wall, under the two windows, joins them. The 2D (public-bathroom-plan.tsx) and the 3D (scripts/site/render/public-bathroom.html) both read this file. Plan in metres, seen from the courtyard and mirrored as the homepage draws the compound (D-022): x to the right from the west end (the galley's side), y toward the courtyard (north), the container's centre line at y = 0; heights above the container's underside unless stated. Every size inside is a design choice, not yet sourced [A], and the plan is not yet checked against Rwanda's rules for public toilets. Revised 2026-10-31 to this one-row layout: the 2D follows it; the 3D, its renders, and the plumbing and electric runs below still draw the earlier layout and are to be redone.",
+  "about": "The compound's public bathroom (compound.json units id \"bath\", PUBLIC BATHROOM): a 20 ft container painted teal on a 300 mm fieldstone plinth, beside the galley in the study room's row, its front facing north toward the courtyard. The founder's brief: two toilet rooms, two hand basins and a urinal, sizes assumed, not given (D-022). It serves everyone without a bathroom of their own: the campers in the tents, guests at the bar lounge and the fire pit in the evening, at the volleyball and in the study room by day (guide/operations.md), and the team, as the office, the bar and the galley have none; the studios and the guest rooms have their own (D-029). The outside follows the homepage model (scripts/site/render/compound.html): one door and two high windows in the front. The fittings stand in one row against the back wall, west to east: the two toilet rooms, the urinal room, then the basins straight across from the door, which sits at the east end of the front wall (the homepage model puts it mid-front; it moves here). A corridor along the front wall, under the two windows, joins them. The 2D (public-bathroom-plan.tsx) and the 3D (scripts/site/render/public-bathroom.html) both read this file. Plan in metres, seen from the courtyard and mirrored as the homepage draws the compound (D-022): x to the right from the west end (the galley's side), y toward the courtyard (north), the container's centre line at y = 0; heights above the container's underside unless stated. Every size inside is a design choice, not yet sourced [A], and the plan is not yet checked against Rwanda's rules for public toilets. Revised 2026-10-31 to this one-row layout (D-060); the 2D, the 3D and the plumbing and electric runs all follow it.",
   "container": {
     "about": "ISO 20 ft, outside, painted teal as on the homepage, on a fieldstone plinth 300 mm high and 100 mm proud all round. The owner's brief (D-029) asks for timber cladding and 40 x 60 cm block stands under the corner castings; the cladding kit is still to be designed, so the shell stays as the homepage draws it until it is. The homepage draws no cargo doors on this box: whichever end has them, they stay shut and are lined over [A]. Linings and tiles leave 5.86 x 2.2 m inside [A]; the floor and ceiling heights are above the container's underside, so the floor stands about 0.45 m above the ground.",
     "l": 6.058,
@@ -105,78 +105,78 @@
         "run": "W1",
         "system": "cold",
         "dn": 25,
-        "note": "The main in from the farm's tank and booster pump, under the back of the plinth and up into the cleaner's cupboard to SV",
-        "paths": [[[0.35, -2.6, -0.6], [0.35, -1.0, -0.6], [0.35, -1.0, 0.35]]]
+        "note": "The main in from the farm's tank and booster pump, under the back of the plinth and the first toilet room's floor, up into the cleaner's cupboard to SV",
+        "paths": [[[0.25, -2.6, -0.6], [0.25, 0.6, -0.6], [0.25, 0.6, 0.3]]]
       },
       {
         "run": "W2",
         "system": "cold",
         "dn": 20,
-        "note": "From SV east along the back wall's lining, 300 mm up, to the east end",
-        "paths": [[[0.35, -1.13, 0.3], [5.99, -1.13, 0.3]]]
+        "note": "From SV along the west end wall's lining, 300 mm up, then east along the back wall's lining, behind every fitting, to the second basin",
+        "paths": [[[0.25, 0.6, 0.3], [0.07, 0.6, 0.3], [0.07, -1.13, 0.3], [5.4, -1.13, 0.3]]]
       },
       {
         "run": "W3",
         "system": "cold",
         "dn": 20,
-        "note": "West from SV and along the west end wall to the first WC's cistern",
-        "paths": [[[0.35, -1.13, 0.3], [0.07, -1.13, 0.3], [0.07, 0.5, 0.3], [0.07, 0.5, 0.5], [0.12, 0.5, 0.5]]]
+        "note": "Off W2, up the back wall to the first WC's cistern",
+        "paths": [[[0.62, -1.13, 0.3], [0.62, -1.13, 0.5], [0.62, -1.06, 0.5]]]
       },
       {
         "run": "W4",
         "system": "cold",
         "dn": 20,
-        "note": "Off W2 through the partition between the toilet rooms to the second WC's cistern",
-        "paths": [[[1.5, -1.13, 0.3], [1.5, 0.5, 0.3], [1.5, 0.5, 0.5], [1.57, 0.5, 0.5]]]
+        "note": "Off W2, up the back wall to the second WC's cistern",
+        "paths": [[[2.07, -1.13, 0.3], [2.07, -1.13, 0.5], [2.07, -1.06, 0.5]]]
       },
       {
         "run": "W5",
         "system": "cold",
         "dn": 20,
         "note": "Off W2, straight up the back wall to the two basin taps",
-        "paths": [[[3.8, -1.13, 0.3], [3.8, -1.13, 0.9], [3.8, -1.04, 0.9]], [[4.5, -1.13, 0.3], [4.5, -1.13, 0.9], [4.5, -1.04, 0.9]]]
+        "paths": [[[4.7, -1.13, 0.3], [4.7, -1.13, 0.9], [4.7, -1.04, 0.9]], [[5.4, -1.13, 0.3], [5.4, -1.13, 0.9], [5.4, -1.04, 0.9]]]
       },
       {
         "run": "W6",
         "system": "cold",
         "dn": 20,
-        "note": "From W2's end along the east end wall into the urinal room, then up to its flush valve",
-        "paths": [[[5.99, -1.13, 0.3], [5.99, 0.6, 0.3], [5.99, 0.6, 1.22], [5.93, 0.6, 1.22]]]
+        "note": "Off W2, straight up the back wall to the urinal's flush valve",
+        "paths": [[[3.45, -1.13, 0.3], [3.45, -1.13, 1.22], [3.45, -1.06, 1.22]]]
       },
       {
         "run": "D1",
         "system": "soil",
         "dn": 110,
         "note": "The first WC, joined by D2, under the toilet rooms and out through the back of the plinth to IC1, 1:40",
-        "paths": [[[0.38, 0.5, 0.0], [0.38, 0.5, -0.25], [2.95, 0.5, -0.25], [2.95, -1.4, -0.25], [2.95, -2.0, -0.45]]]
+        "paths": [[[0.45, -0.85, 0.0], [0.45, -0.85, -0.25], [2.95, -0.85, -0.25], [2.95, -1.4, -0.25], [2.95, -2.0, -0.45]]]
       },
       {
         "run": "D2",
         "system": "soil",
         "dn": 110,
         "note": "The second WC down through the floor into D1",
-        "paths": [[[1.83, 0.5, 0.0], [1.83, 0.5, -0.25]]]
+        "paths": [[[1.9, -0.85, 0.0], [1.9, -0.85, -0.25]]]
       },
       {
         "run": "D3",
         "system": "waste",
         "dn": 40,
         "note": "Each basin's bottle trap into the back wall and down under the floor into D5",
-        "paths": [[[3.8, -0.83, 0.8], [3.8, -0.83, 0.55], [3.8, -1.13, 0.55], [3.8, -1.13, -0.25], [3.8, -0.9, -0.25]], [[4.5, -0.83, 0.8], [4.5, -0.83, 0.55], [4.5, -1.13, 0.55], [4.5, -1.13, -0.25], [4.5, -0.9, -0.25]]]
+        "paths": [[[4.7, -0.83, 0.8], [4.7, -0.83, 0.55], [4.7, -1.13, 0.55], [4.7, -1.13, -0.25], [4.7, -0.9, -0.25]], [[5.4, -0.83, 0.8], [5.4, -0.83, 0.55], [5.4, -1.13, 0.55], [5.4, -1.13, -0.25], [5.4, -0.9, -0.25]]]
       },
       {
         "run": "D4",
         "system": "waste",
         "dn": 50,
         "note": "The lobby's trapped floor drain into D5",
-        "paths": [[[3.95, 0.1, 0.0], [3.95, 0.1, -0.25], [3.95, -0.9, -0.25]]]
+        "paths": [[[4.6, 0.3, 0.0], [4.6, 0.3, -0.25], [4.6, -0.9, -0.25]]]
       },
       {
         "run": "D5",
         "system": "waste",
         "dn": 50,
-        "note": "The urinal, joined by the basins and the floor drain, under the lobby and out through the back of the plinth to IC1, 1:40",
-        "paths": [[[5.82, 0.6, 0.38], [5.82, 0.6, -0.25], [5.82, -0.9, -0.25], [3.15, -0.9, -0.25], [3.15, -1.4, -0.25], [3.15, -2.0, -0.45]]]
+        "note": "The basins and the floor drain, joined by the urinal, under the urinal room and out through the back of the plinth to IC1, 1:40",
+        "paths": [[[5.4, -0.9, -0.25], [3.15, -0.9, -0.25], [3.15, -1.4, -0.25], [3.15, -2.0, -0.45]], [[3.45, -1.03, 0.38], [3.45, -1.03, -0.25], [3.45, -0.9, -0.25]]]
       },
       {
         "run": "V1",
@@ -199,49 +199,49 @@
         "what": "Stop valve, filter and check meter on the main, low in the cleaner's cupboard",
         "size": "DN25",
         "runs": "W1",
-        "at": [0.35, -1.0, 0.35]
+        "at": [0.25, 0.6, 0.3]
       },
       {
         "point": "WC1",
         "what": "First toilet room: the WC's close-coupled cistern, on its angle valve",
         "size": "Dual flush, 110 mm outlet",
         "runs": "W3 D1",
-        "at": [0.21, 0.5, 0.82]
+        "at": [0.45, -1.01, 0.82]
       },
       {
         "point": "WC2",
         "what": "Second toilet room: the WC's close-coupled cistern, on its angle valve",
         "size": "Dual flush, 110 mm outlet",
         "runs": "W4 D2",
-        "at": [1.66, 0.5, 0.82]
+        "at": [1.9, -1.01, 0.82]
       },
       {
         "point": "BT1",
         "what": "Basin push tap that closes itself, and its bottle trap",
         "size": "Cold, 40 mm waste",
         "runs": "W5 D3",
-        "at": [3.8, -1.04, 1.0]
+        "at": [4.7, -1.04, 1.0]
       },
       {
         "point": "BT2",
         "what": "Basin push tap that closes itself, and its bottle trap",
         "size": "Cold, 40 mm waste",
         "runs": "W5 D3",
-        "at": [4.5, -1.04, 1.0]
+        "at": [5.4, -1.04, 1.0]
       },
       {
         "point": "FD",
         "what": "Trapped floor drain in the lobby, the floor falling to it",
         "size": "150 mm grate, 50 mm outlet",
         "runs": "D4",
-        "at": [3.95, 0.1, 0.0]
+        "at": [4.6, 0.3, 0.0]
       },
       {
         "point": "UV",
         "what": "Urinal flush valve, a timed push button, and its trap",
         "size": "Cold, 40 mm trap into the 50 mm run",
         "runs": "W6 D5",
-        "at": [5.92, 0.6, 1.3]
+        "at": [3.45, -1.06, 1.3]
       },
       {
         "point": "IC1",
@@ -260,7 +260,7 @@
     ]
   },
   "electric": {
-    "about": "The bathroom's power, in the studio's conventions (public/designs/studio/data/circuits.csv): a feeder from the farm's site board (guide/trades/power.md) to a small lockable unit board on the passage's back wall beside the cleaner's cupboard, a main switch, surge protection and one 30 mA type A RCBO for each circuit, TT earthing on the building's own rod. Every run goes up into the ceiling void, along it and straight down to its device. The lights are LED ceiling lights with a motion sensor built in, so each room lights when someone walks in and goes dark after a few minutes (finishes); the urinal room's extract fan runs with its light and for 15 minutes after. The light over the door is on a photocell and time switch in the board, on with the path lights from 18:00 (guide/operations.md). One socket by the cupboard for the cleaner. A spare way waits for a shower heater or a hand dryer, should the founder add either. Points: x, y in plan metres; z in metres above the finished floor. Every device, rating and size is a design choice for the electrician to confirm [A]; the feeder's size waits for the site board's design.",
+    "about": "The bathroom's power, in the studio's conventions (public/designs/studio/data/circuits.csv): a feeder from the farm's site board (guide/trades/power.md) to a small lockable unit board in the lobby, on the urinal room's east partition above head height, a main switch, surge protection and one 30 mA type A RCBO for each circuit, TT earthing on the building's own rod. Every run goes up into the ceiling void, along it and straight down to its device. The lights are LED ceiling lights with a motion sensor built in, so each room lights when someone walks in and goes dark after a few minutes (finishes); the urinal room's extract fan runs with its light and for 15 minutes after. The light over the door is on a photocell and time switch in the board, on with the path lights from 18:00 (guide/operations.md). One socket in the corridor by the cupboard, for the cleaner. A spare way waits for a shower heater or a hand dryer, should the founder add either. Points: x, y in plan metres; z in metres above the finished floor. Every device, rating and size is a design choice for the electrician to confirm [A]; the feeder's size waits for the site board's design.",
     "colours": { "lights": "#2a78d6", "sockets": "#eb6834", "spare": "#9a9893" },
     "circuits": [
       {
@@ -270,7 +270,7 @@
         "cable_mm2": 1.5,
         "group": "lights",
         "points": "L1 L2 L3 L4 L5 F1",
-        "paths": [[[1.0, -1.13, 2.05], [1.0, -1.13, 2.3], [1.0, -0.65, 2.3], [5.5, -0.65, 2.3]], [[1.0, -0.65, 2.3], [0.775, -0.65, 2.3], [0.775, 0.5, 2.3]], [[2.225, -0.65, 2.3], [2.225, 0.5, 2.3]], [[4.0, -0.65, 2.3], [4.0, -0.2, 2.3]], [[5.5, -0.65, 2.3], [5.5, 0.5, 2.3]], [[5.5, -0.65, 2.3], [5.99, -0.65, 2.3], [5.99, 0.6, 2.3], [5.99, 0.6, 2.12]]]
+        "paths": [[[4.15, -0.35, 2.05], [4.15, -0.35, 2.3], [4.15, -0.5, 2.3], [0.775, -0.5, 2.3]], [[4.15, -0.35, 2.3], [4.95, -0.35, 2.3], [4.95, -0.1, 2.3]], [[2.225, -0.5, 2.3], [2.225, 0.65, 2.3]], [[3.45, -0.5, 2.3], [3.45, -1.07, 2.3], [3.45, -1.07, 2.12]]]
       },
       {
         "circuit": "C2",
@@ -279,7 +279,7 @@
         "cable_mm2": 1.5,
         "group": "lights",
         "points": "L6",
-        "paths": [[[1.1, -1.13, 2.05], [1.1, -1.13, 2.3], [1.1, -0.85, 2.3], [3.45, -0.85, 2.3], [3.45, 1.17, 2.3], [3.45, 1.17, 2.15]]]
+        "paths": [[[4.15, -0.25, 2.05], [4.15, -0.25, 2.3], [5.4, -0.25, 2.3], [5.4, 1.17, 2.3], [5.4, 1.17, 2.15]]]
       },
       {
         "circuit": "C3",
@@ -288,7 +288,7 @@
         "cable_mm2": 2.5,
         "group": "sockets",
         "points": "P1",
-        "paths": [[[0.9, -1.13, 1.7], [0.9, -1.13, 0.3], [0.75, -1.13, 0.3]]]
+        "paths": [[[4.15, -0.45, 2.05], [4.15, -0.45, 2.25], [4.15, 0.15, 2.25], [0.55, 0.15, 2.25], [0.55, 0.15, 0.3]]]
       },
       {
         "circuit": "C4",
@@ -304,7 +304,8 @@
       "point": "DB",
       "what": "Unit board, lockable: main switch, surge protection, four RCBOs and the photocell time switch",
       "size": "About 300 × 350 × 100 mm",
-      "at": [1.0, -1.1, 1.85],
+      "at": [4.0, -0.35, 1.85],
+      "face": "east",
       "w": 0.3,
       "h": 0.35,
       "d": 0.1
@@ -315,63 +316,63 @@
         "model": "light",
         "circuit": "C1",
         "what": "LED ceiling light with motion sensor, first toilet room",
-        "at": [0.775, 0.5, 2.3]
+        "at": [0.775, -0.5, 2.3]
       },
       {
         "point": "L2",
         "model": "light",
         "circuit": "C1",
         "what": "LED ceiling light with motion sensor, second toilet room",
-        "at": [2.225, 0.5, 2.3]
+        "at": [2.225, -0.5, 2.3]
       },
       {
         "point": "L3",
         "model": "light",
         "circuit": "C1",
-        "what": "LED ceiling light with motion sensor, passage",
-        "at": [1.8, -0.65, 2.3]
+        "what": "LED ceiling light with motion sensor, corridor",
+        "at": [2.225, 0.65, 2.3]
       },
       {
         "point": "L4",
         "model": "light",
         "circuit": "C1",
         "what": "LED ceiling light with motion sensor, lobby",
-        "at": [4.0, -0.2, 2.3]
+        "at": [4.95, -0.1, 2.3]
       },
       {
         "point": "L5",
         "model": "light",
         "circuit": "C1",
         "what": "LED ceiling light with motion sensor, urinal room",
-        "at": [5.5, 0.5, 2.3]
+        "at": [3.45, -0.5, 2.3]
       },
       {
         "point": "F1",
         "model": "fan",
         "circuit": "C1",
         "what": "Extract fan in the urinal room, with its light and a 15-minute run-on",
-        "at": [5.958, 0.6, 2.0]
+        "at": [3.45, -1.1, 2.0]
       },
       {
         "point": "L6",
         "model": "walllight",
         "circuit": "C2",
         "what": "Wall light over the door, outside, IP65",
-        "at": [3.45, 1.22, 2.15]
+        "at": [5.4, 1.22, 2.15]
       },
       {
         "point": "P1",
         "model": "socket",
         "circuit": "C3",
-        "what": "Socket for the cleaner, by the cupboard",
-        "at": [0.75, -1.1, 0.3]
+        "what": "Socket for the cleaner, in the corridor by the cupboard",
+        "at": [0.55, 0.2, 0.3]
       },
       {
         "point": "E1",
         "model": "earth",
         "circuit": "",
         "what": "Earth rod in an inspection pit behind the back wall, below the board",
-        "at": [1.0, -1.8, -0.45]
+        "at": [4.0, -1.8, -0.45]
       }
     ]
   },

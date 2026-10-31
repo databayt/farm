@@ -164,7 +164,7 @@ export function BathWiringDiagram() {
       {/* the main switch, on its side, then the surge protection to earth */}
       <g transform={`rotate(-90 550 ${TOP}) translate(0 -30)`}><Breaker x={550} y={TOP} /></g>
       <text x={550} y={TOP + 66} textAnchor="middle" stroke="none" className="fill-foreground text-[17px] font-semibold">Main switch</text>
-      <text x={550} y={TOP + 88} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">DB · in the passage</text>
+      <text x={550} y={TOP + 88} textAnchor="middle" stroke="none" className="fill-muted-foreground text-[14px]">DB · in the lobby</text>
       <line x1={580} y1={TOP} x2={feed} y2={TOP} />
       <circle cx={820} cy={TOP} r={4} className="fill-foreground" />
       <line x1={820} y1={TOP} x2={820} y2={TOP + 50} />
