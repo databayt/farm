@@ -22,29 +22,6 @@ export const f = (n: number) => +n.toFixed(3)
 export const mm = (m: number) => Math.round(m * 1000).toLocaleString("en-US")
 export const rect = (x0: number, y0: number, x1: number, y1: number) => ({ x: f(x0), y: f(y0), width: f(x1 - x0), height: f(y1 - y0) })
 
-export function Dimension({ x0, x1, y }: { x0: number; x1: number; y: number }) {
-  const tick = 0.17
-  return (
-    <g>
-      <line x1={x0} x2={x1} y1={y} y2={y} {...thin} />
-      {[x0, x1].map((x) => <line key={x} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f((x0 + x1) / 2)} y={f(y - 0.2)} textAnchor="middle" style={small}>{mm(x1 - x0)}</text>
-    </g>
-  )
-}
-// the same, standing: the text turned to read up the page
-export function DimensionUp({ y0, y1, x }: { y0: number; y1: number; x: number }) {
-  const tick = 0.17
-  const cy = f((y0 + y1) / 2)
-  return (
-    <g>
-      <line x1={x} x2={x} y1={y0} y2={y1} {...thin} />
-      {[y0, y1].map((y) => <line key={y} x1={f(x - tick)} x2={f(x + tick)} y1={f(y + tick)} y2={f(y - tick)} {...thin} />)}
-      <text x={f(x - 0.2)} y={cy} textAnchor="middle" transform={`rotate(-90 ${f(x - 0.2)} ${cy})`} style={small}>{mm(y1 - y0)}</text>
-    </g>
-  )
-}
-
 // A player: a disc drawn larger than life so it reads, open for one side and filled for the other, its number inside
 export function Player({ x, y, n, filled = false, r = 0.42 }: { x: number; y: number; n?: number | string; filled?: boolean; r?: number }) {
   return (

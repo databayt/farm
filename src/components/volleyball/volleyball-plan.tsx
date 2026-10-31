@@ -1,11 +1,14 @@
-import { Dimension, DimensionUp, Player, Serve, dashed, f, faint, label, medium, mm, rect, small, thin, tone } from "./court-drawing"
+import { Player, Serve, dashed, f, faint, label, medium, mm, rect, small, thin, tone } from "./court-drawing"
+import { Chain, Dim } from "@/components/drawing/dims"
+import { scaleFor } from "@/components/drawing/geometry"
 import { getWords } from "@/components/internationalization/words"
 
 import volleyball from "./volleyball.json"
 import { words } from "./words"
 
 // The court drawn in the pattern of the livestock plan (src/components/livestock/livestock-plan.tsx): thin lines, no
-// colour, bold capitals and dimensions in millimetres. As on the master plan, the court's length runs across the
+// colour, bold capitals, and its dimensions as the studio's plan sets them (src/components/drawing): the zones along the
+// court's length and across its width, each chain then its whole, and the posts 1 m outside the side lines. As on the master plan, the court's length runs across the
 // page; the benches stand on the far side, up the page, and the open lawn and the viewer of the 3D are down it.
 // Over the plan, a match the way broadcast pictures show one: the court a shade darker than its free zone, twelve
 // players in their rotation order, the serve's flight and the two referees (volleyball.json match).
@@ -14,6 +17,7 @@ import { words } from "./words"
 const { court, net, posts, benches, shade, store, match } = volleyball
 // rotation positions as a team faces the net, front row 4 3 2 from left to right, back row 5 6 1
 const rows = [[4, 3, 2], [5, 6, 1]] as const
+const k = scaleFor(27.2, 23) // the drawing's frame, below
 
 // `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
 export async function VolleyballPlan({ title, className }: { title?: string; className?: string }) {
@@ -119,12 +123,11 @@ export async function VolleyballPlan({ title, className }: { title?: string; cla
       <text x={store.x} y={f(by + 0.5)} textAnchor="middle" style={small}>{name.ballStore}</text>
       <text x={0} y={10.75} textAnchor="middle" style={small}>{name.foot1}</text>
       <text x={0} y={11.55} textAnchor="middle" style={small}>{name.foot2}</text>
-      {[[-FX, -L], [-L, -court.attack], [-court.attack, 0], [0, court.attack], [court.attack, L], [L, FX]].map(([x0, x1]) => (
-        <Dimension key={x0} x0={x0} x1={x1} y={f(FY + 0.85)} />
-      ))}
-      <Dimension x0={-FX} x1={FX} y={f(FY + 1.95)} />
-      {[[-FY, -W], [-W, W], [W, FY]].map(([y0, y1]) => <DimensionUp key={y0} y0={y0} y1={y1} x={f(-FX - 0.85)} />)}
-      <DimensionUp y0={-FY} y1={FY} x={f(-FX - 1.95)} />
+      {/* Along the length: the free zone, the back and front zones each side of the net, then the playing area;
+          across: the free zones and the court, then the whole; the post 1 m outside the side line */}
+      <Chain k={k} along="x" at={[-FX, -L, -court.attack, 0, court.attack, L, FX]} edge={FY} side="bottom" overall />
+      <Chain k={k} along="y" at={[-FY, -W, W, FY]} edge={-FX} side="left" overall />
+      <Dim k={k} a={[-0.9, W]} b={[-0.9, py]} off={0} size={2.2} />
     </svg>
   )
 }
