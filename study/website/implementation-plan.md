@@ -135,6 +135,7 @@ Measures: static generation; Server Components by default; minimal client JS (th
 - **French: not justified by the evidence** (1.9% literacy) unless a buyer or partner asks for it in interviews.
 - **Technical:** design routes so languages can be added without rewrites: `app/[lang]/(site)/...` with a dictionary file per locale and a `proxy.ts` that negotiates locale per the Next.js 16 i18n guide [V GTM-06]. At L0, `lang="en"` and no prefix; add prefixes at L1. `hreflang` tags when more than one language exists. Right-to-left support is not needed.
 - Never auto-translate and publish without a native review.
+- **Revised 2026-10-31 (D-058):** /en and /rw now exist for every page. The shared words and six guides are machine drafts, disclaimed and kept out of search (noindex) until a native speaker reviews them; the page copy stays English on /rw under a notice.
 
 ## 10. Hosting and deployment (Cloudflare lane)
 

@@ -1,7 +1,7 @@
 # Project status
 
 Updated: 2026-10-26 · **Desk work for all seven stages is drafted. Everything site-specific waits for the founder's location and title, and for field work.**
-**Live and public:** https://farm.databayt.org/docs (69 pages) · repo https://github.com/databayt/farm (D-013). Don't add private material (negotiated prices, personal documents).
+**Live and public:** https://farm.databayt.org/en/docs, and in Kinyarwanda at /rw/docs (D-058; machine drafts, unindexed until a native review) · repo https://github.com/databayt/farm (D-013). Don't add private material (negotiated prices, personal documents).
 
 ## Where each stage stands
 

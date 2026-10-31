@@ -5,7 +5,7 @@
 This repo holds two things:
 
 1. `study/` — the feasibility study and business plan for developing an existing 2–10 ha farm near a lake in the broader Kigali region. Internal working documents, built in stages per the brief at `study/brief/master-prompt.txt`.
-2. `src/` — the Next.js 16 app. Today it serves the study at `/docs` (generated from `study/` by `scripts/sync-docs.mjs`; never edit `content/docs` by hand). The public website comes in Stage 6.
+2. `src/` — the Next.js 16 app, in English and Kinyarwanda under `/en` and `/rw` (D-058): the homepage, the place pages, and the docs at `/en/docs` and `/rw/docs` (generated from `guide/` and `study/` by `scripts/sync-docs.mjs`; never edit `content/docs` by hand). Shared words live in `src/components/internationalization/{en,rw}.json`; `rw` is a machine draft until a native review.
 
 Current stage, open questions and next actions: `PROJECT_STATUS.md`. Why things changed: `study/execution/decision-log.md`.
 
@@ -58,7 +58,7 @@ study/registers    sources, prices, suppliers, buyers, assumptions
 study/feasibility  decision matrix, financial model (+ notes)
 study/studio       container studios (generated assets in public/designs/studio)
 study/execution    first 90 days, decision log
-guide/             the maintained execution guides, one per trade: X.md + its Kinyarwanda twin X.rw.md;
+guide/             the maintained execution guides, one per trade: X.md + its Kinyarwanda X.rw.md (/rw/docs);
                    numbers are {{studio.*}} tokens from public/designs/studio/data/dims.json
 scripts/           generators (financial model, studio package, site assets, contact sheets, docs sync)
 ```
