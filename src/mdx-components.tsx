@@ -17,10 +17,11 @@ import { GalleyCircuits, GalleyElectricPoints, GalleyMaterials, GalleyPlumbingPo
 import { GuestRoomCircuits, GuestRoomElectricPoints, GuestRoomMaterials } from "@/components/guest-room/docs-sections"
 import { LivestockStatus, LivestockWaterNeed, LivestockWaterPoints } from "@/components/livestock/docs-sections"
 import { OfficeCircuits, OfficeElectricPoints, OfficeMaterials, OfficeNetworkPoints } from "@/components/office/docs-sections"
-import { ParkingDrainagePoints, ParkingLightingPoints, ParkingStatus } from "@/components/parking/docs-sections"
+import { CampMaterials } from "@/components/camp/docs-sections"
+import { ParkingDrainagePoints, ParkingLightingPoints, ParkingMaterials } from "@/components/parking/docs-sections"
 import { PublicBathroomCircuits, PublicBathroomElectricPoints, PublicBathroomMaterials, PublicBathroomPlumbingPoints, PublicBathroomRuns } from "@/components/public-bathroom/docs-sections"
 import { StudyRoomCircuits, StudyRoomElectricPoints, StudyRoomMaterials } from "@/components/study-room/docs-sections"
-import { VolleyballNetPoints, VolleyballStatus } from "@/components/volleyball/docs-sections"
+import { VolleyballMaterials, VolleyballNetPoints } from "@/components/volleyball/docs-sections"
 import { GuestRoomPlan } from "@/components/guest-room/guest-room-plan"
 import { OfficePlan } from "@/components/office/office-plan"
 import { StudyRoomPlan } from "@/components/study-room/study-room-plan"
@@ -226,8 +227,9 @@ const mdxComponents = {
   StudyRoomCircuits, StudyRoomElectricPoints, StudyRoomMaterials,
   GalleyCircuits, GalleyElectricPoints, GalleyMaterials, GalleyPlumbingPoints, GalleyRuns,
   PublicBathroomCircuits, PublicBathroomElectricPoints, PublicBathroomMaterials, PublicBathroomPlumbingPoints, PublicBathroomRuns,
-  VolleyballNetPoints, VolleyballStatus,
-  ParkingLightingPoints, ParkingDrainagePoints, ParkingStatus,
+  VolleyballMaterials, VolleyballNetPoints,
+  ParkingLightingPoints, ParkingDrainagePoints, ParkingMaterials,
+  CampMaterials,
   BarCircuits, BarElectricPoints, BarMaterials, BarPlumbingPoints, BarRuns,
   FarmingWaterPoints, FarmingPlate, FarmingCalendar, FarmingBom, FarmingStatus,
   LivestockWaterPoints, LivestockWaterNeed, LivestockStatus,

@@ -1,10 +1,12 @@
 import type * as React from "react"
 
 import { PointsLead, PointsTable } from "@/components/docs/points-table"
+import { RailTable } from "@/components/docs/rail-table"
 import { NET_POINTS } from "@/components/volleyball/data"
+import { rails } from "@/components/volleyball/rails"
 
-// The court's reference sections, moved off /en/volleyball onto /docs/volleyball-points as the studio's are
-// (scripts/sync-docs.mjs places them under MDX headings). Each row's id (pt-S1, pt-N…) is where a tag on the page's net
+// The court's reference sections, on its docs pages (D-059: guide/volleyball/*.md embeds them; scripts/sync-docs.mjs
+// renders each as <Name />). Each row's id (pt-S1, pt-N…) is where a tag on the page's net
 // drawing links.
 
 export function VolleyballNetPoints(): React.JSX.Element {
@@ -17,12 +19,7 @@ export function VolleyballNetPoints(): React.JSX.Element {
   )
 }
 
-export function VolleyballStatus(): React.JSX.Element {
-  return (
-    <p className="text-muted-foreground">
-      Design intent. The court, its lines, the net and the posts follow the FIVB Official Volleyball Rules; everything
-      past them is an assumption [A] in volleyball.json. The footings&rsquo; size waits for a builder to see the soil, and
-      nothing for the court is sourced or priced yet.
-    </p>
-  )
+// What to buy: every rail on the page, as one table (the Materials page)
+export function VolleyballMaterials(): React.JSX.Element {
+  return <RailTable rails={rails} />
 }

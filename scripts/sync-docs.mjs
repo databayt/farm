@@ -82,16 +82,6 @@ const PAGES = [
   // components in src/components/<place>/docs-sections.tsx). Off the sidebar; each page's docs cards and tags link here.
   "---The places---",
   {
-    slug: "volleyball-points", title: "Volleyball: net points",
-    description: "The footings, the posts, the winch, the net and the antennae, where each is and its size, and where the design stands.",
-    sections: [["Net points", "VolleyballNetPoints"], ["Status", "VolleyballStatus"]],
-  },
-  {
-    slug: "parking-points", title: "Parking: lighting and drainage points",
-    description: "Every lamp, duct, fall, trench and pit at the way in, where each is and its size, and where the design stands.",
-    sections: [["Lighting points", "ParkingLightingPoints"], ["Drainage points", "ParkingDrainagePoints"], ["Status", "ParkingStatus"]],
-  },
-  {
     slug: "farming-plan", title: "Farming: plate, calendar, water and materials",
     description: "What the galley needs from the field, the planting calendar, the drip's water points, the bill of materials to start, and where the plan stands.",
     sections: [["Water points", "FarmingWaterPoints"], ["What the galley needs", "FarmingPlate"],
@@ -516,6 +506,7 @@ const MOVED = {
   // each place's points page (D-057), now its Electric page with its points, circuits and plan beside it
   "guest-room-points": "guest-room/electric", "office-points": "office/electric", "study-room-points": "study-room/electric",
   "galley-points": "galley/electric", "public-bathroom-points": "public-bathroom/electric", "bar-points": "bar/electric",
+  "volleyball-points": "volleyball/net", "parking-points": "parking/lighting",
 }
 // printed guides renamed with their pages: public/guides/<old>[-rw].pdf is now <new>[-rw].pdf
 const MOVED_PDFS = { carpenter: "studio-plan", electrician: "studio-electric", plumber: "studio-plumbing", power: "farm-electric" }

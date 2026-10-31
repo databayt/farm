@@ -1,10 +1,12 @@
 import type * as React from "react"
 
 import { PointsLead, PointsTable } from "@/components/docs/points-table"
+import { RailTable } from "@/components/docs/rail-table"
 import { DRAIN_POINTS, LIGHT_POINTS } from "@/components/parking/data"
+import { rails } from "@/components/parking/rails"
 
-// The way in's reference sections, moved off /en/parking onto /docs/parking-points as the studio's are
-// (scripts/sync-docs.mjs places them under MDX headings). Each row's id (pt-EB, pt-T1…) is where a tag on the page's
+// The way in's reference sections, on its docs pages (D-059: guide/parking/*.md embeds them; scripts/sync-docs.mjs
+// renders each as <Name />). Each row's id (pt-EB, pt-T1…) is where a tag on the page's
 // lighting or drainage drawing links.
 
 const COLUMNS = [{ label: "What" }, { label: "Where", muted: true }, { label: "Size" }]
@@ -27,12 +29,7 @@ export function ParkingDrainagePoints(): React.JSX.Element {
   )
 }
 
-export function ParkingStatus(): React.JSX.Element {
-  return (
-    <p className="text-muted-foreground">
-      Design intent [A] until a builder sees the ground: how the parking is built, drained and lit comes from
-      parking.json. The soil&rsquo;s soakage is not tested yet, so a percolation test on site sizes the soakaway pit, or
-      says the trench must run on to a ditch. Nothing at the way in is sourced or priced yet.
-    </p>
-  )
+// What to buy: every rail on the page, as one table (the Materials page)
+export function ParkingMaterials(): React.JSX.Element {
+  return <RailTable rails={rails} />
 }

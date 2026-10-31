@@ -1,10 +1,11 @@
 import type { Metadata } from "next"
 import { LocaleLink as Link } from "@/components/internationalization/locale-link"
 
-import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection, railCards } from "@/components/page/sections"
+import { DocsSection, DrawingSection, ModelSection, PageHero, RailSection, ServiceSection } from "@/components/page/sections"
 import { BuildUp } from "@/components/docs/build-up"
+import { drainRail, lightRail, partsRail } from "@/components/parking/rails"
 import { TaggedFigure } from "@/components/docs/tagged-figure"
-import { blocks, D, DRAIN_POINTS, e, feedM, lampM, LIGHT_POINTS, m, paverM2, stripSetts, subM3, x0, x1, y0, y1 } from "@/components/parking/data"
+import { blocks, D, DRAIN_POINTS, e, feedM, lampM, LIGHT_POINTS, m, subM3, x0, x1, y0, y1 } from "@/components/parking/data"
 import { DrainageDiagram } from "@/components/parking/drainage-diagram"
 import { LightingDiagram } from "@/components/parking/lighting-diagram"
 import { ParkingPlan } from "@/components/parking/parking-plan"
@@ -14,8 +15,8 @@ import lightTags from "../../../../../public/designs/parking/render/light-tags.j
 import topPieces from "../../../../../public/designs/parking/render/top-pieces.json"
 
 // The way in, in /en/studio's pattern: the hero, the 2D and the 3D, then how the green parking is built, its parts, the
-// two services it needs, the lights and where the rain goes, and the docs cards; the points tables and the status are
-// on /docs/parking-points. Every drawing reads
+// two services it needs, the lights and where the rain goes, and the docs cards; the points tables are
+// on its docs pages (/docs/parking). Every drawing reads
 // src/components/parking/parking.json, in compound.json's true metres: the outer gate off the public road, the sign
 // wall lettered DIGITAL FARM, the green parking with its five bays under shade trees, and the start of the rock road
 // to the inner gate. What the plan leaves open (a full house, a minibus's turn, reversing out) is in the json; how it is
@@ -26,53 +27,14 @@ export const metadata: Metadata = {
   description: "Five bays on grass pavers under shade trees, just inside the gate and the DIGITAL FARM sign wall, at the Digital Farm near Kigali.",
 }
 
-const { parking: PK, build: B, drainage: DR, lighting: LT } = parking
+const { parking: PK, build: B, drainage: DR } = parking
 
-// The Parts rail: each part rendered on its own by scripts/site/render/parking.html?item=<id>, from the model's own
-// meshes or a patch of them. Nothing at the way in is sourced or priced yet, so no card names a shop or a price.
-const partsRail = () => railCards(`${D}/render/item`, [
-  { id: "gate", title: "Outer gate", size: `${m(parking.gate.x[1] - parking.gate.x[0])} between the pillars, leaves ${m(parking.gate.leaf)} high`,
-    note: "Two timber leaves of vertical boards on a frame braced in an X, black iron strap hinges and a latch, opening inward; fieldstone pillars 600 mm square under timber caps." },
-  { id: "sign", title: "Sign wall", size: `${m(parking.sign.box[2] - parking.sign.box[0])} long, ${m(parking.sign.h)} high, ${m(parking.sign.box[3] - parking.sign.box[1])} thick`,
-    note: "Fieldstone under a timber cap; on its road face a dark steel panel with DIGITAL FARM in warm-white LED capitals." },
-  { id: "lantern", title: "Pillar lantern", size: "About 140 mm square, 260 mm high, on the pillar's cap",
-    note: "L1 on the outer gate's left pillar, L2 on the inner gate's right one: outdoor-rated, on the dusk-to-dawn circuit below." },
-  { id: "pavers", title: "Grass pavers", size: `${m(B.paver.l)} × ${m(B.paver.w)} × ${m(B.paver.h)} mm blocks, ${Math.round(paverM2)} m², about ${blocks.toLocaleString("en-US")} blocks`,
-    note: "Concrete blocks with sixteen open cells, laid butted on the bedding, the cells filled with topsoil and seeded. Shown with the front row not yet grown." },
-  { id: "setts", title: "Granite setts", size: `About 100 mm; ${stripSetts} in the bay strips, and the turn and the rock road`,
-    note: "Grey granite in mixed tones, laid by hand on sand: in segmental arcs on the turn and the rock road, in single rows between the bays." },
-  { id: "stop", title: `Wheel stops × ${PK.bays.length - 1}`, size: `${m(PK.stops.l)} long, ${m(PK.stops.r * 2)} across`,
-    note: "Barked and oiled eucalyptus logs, pinned to the ground 450 mm from the far edge." },
-  { id: "tree", title: `Shade trees × ${parking.trees.list.length}`, size: `About ${parking.trees.h} m tall at planting, the crown from ${parking.trees.crown} m`,
-    note: "Young broad-canopied trees; the species is not chosen yet (the render brief names neem and acacia)." },
-])
-const lightRail = () => railCards(`${D}/render/item`, [
-  { id: "enclosure", title: "Box on the sign wall", size: `${m(LT.box.w)} × ${m(LT.box.h[1] - LT.box.h[0])} × ${m(LT.box.d)} mm, IP65`,
-    note: "EB · an isolator, a dusk-to-dawn photocell with a timer, and the 24 V driver for the letters; the ducts come up into it from below." },
-  { id: "sign", title: "Sign letters", size: `Panel ${m(parking.sign.box[2] - parking.sign.box[0] - 2 * parking.sign.panel.inset)} × ${m(parking.sign.panel.y1 - parking.sign.panel.y0)} mm`,
-    note: "SG · DIGITAL FARM in warm-white LED capitals at 24 V from the driver in the box." },
-  { id: "lantern", title: "Lanterns × 2", size: "About 140 mm square, 260 mm high",
-    note: "L1 on the outer gate, fed from the box; L2 on the inner gate, teed off the feed on its way down." },
-  { id: "duct", title: "Duct and cable", size: `${m(LT.duct.d)} mm duct, about ${feedM + lampM} m, ${m(LT.duct.depth)} mm down`,
-    note: "LF, LD · outdoor armoured cable in a buried duct with a draw wire, a warning tape laid over it." },
-])
-const drainRail = () => railCards(`${D}/render/item`, [
-  { id: "layers", title: "The build-up", size: `Pavers ${m(B.paver.h)}, bedding ${m(B.bedding)}, sub-base ${m(B.subbase)} mm`,
-    note: `P · the parking cut open: about ${Math.round(subM3)} m³ of crushed stone under the pavers holds the rain while it soaks away.` },
-  { id: "pavers", title: "Grass pavers", size: `${Math.round(paverM2)} m² of open cells`,
-    note: "P · the rain falls through the grass in the cells, so the lot needs no gully." },
-  { id: "trench", title: "Gravel trench", size: `${m(DR.trench.w)} × ${m(DR.trench.depth)} mm, ${(DR.trench.y[1] - DR.trench.y[0]).toFixed(1)} m long, a ${m(DR.trench.pipe)} mm perforated pipe`,
-    note: "T1 · across the west end, 400 mm outside the edging: clean 20 to 40 mm stone in geotextile, falling 1 in 100 to the pit." },
-  { id: "soakaway", title: "Soakaway pit", size: `${DR.pit.size} × ${DR.pit.size} m, ${DR.pit.depth} m deep, a slab cover`,
-    note: "SK · stone in a geotextile wrap; sized again after a percolation test on site." },
-])
-
-// The way in's own docs page first, as the studio's are, then the guides behind the page.
+// The parking's docs pages, as the docs sidebar groups them (D-059), linked from the end of this page.
 const DOCS = [
-  { href: "/docs/parking-points", title: "Lighting and drainage points", text: "Every lamp, duct, fall, trench and pit on the drawings above, with where it is and its size, and where the design stands." },
-  { href: "/docs/master-plan", title: "Master plan", text: "The whole farm on one sheet: where the way in sits, the paths and the services; the gate's position still to confirm." },
-  { href: "/docs/site-inspection", title: "Site inspection", text: "The one structured site visit that measures the ground the parking, its drainage and its ducts are designed on." },
-  { href: "/docs/power", title: "Power", text: "Where the farm's power comes from, with the outdoor lights among the loads that must never stop." },
+  { href: "/docs/parking", title: "Execution plan", text: "Every step of building the way in: the green parking, its edging and strips, the lights and the drain." },
+  { href: "/docs/parking/materials", title: "Materials", text: "The gate, the sign, the pavers, the setts and the trees, the lights and the drainage, each with its size." },
+  { href: "/docs/parking/lighting", title: "Lighting", text: "The feed down the rock road, the box on the sign wall, the lanterns and the letters, with every point." },
+  { href: "/docs/parking/drainage", title: "Drainage", text: "The pavers and the sub-base as the drain, the falls, the trench and the soakaway, with every point." },
 ]
 
 export default function ParkingPage() {
@@ -138,14 +100,14 @@ export default function ParkingPage() {
           then each part on its own. All from parking.html?view=light and ?item=. */}
       <ServiceSection id="lighting" title="Lighting"
         diagram={<LightingDiagram feedM={feedM} lampM={lampM} />}
-        figure={<TaggedFigure table="/docs/parking-points" src={`${D}/render/light-line.png`} aspect={lightTags.aspect} tags={lightTags.tags}
+        figure={<TaggedFigure table="/docs/parking/lighting" src={`${D}/render/light-line.png`} aspect={lightTags.aspect} tags={lightTags.tags}
           alt="Line drawing of the way in from beyond the road with the lighting's ducts: the feed in dark blue coming down beside the rock road and across under the parking's open end to the box behind the sign wall, the lantern cable in blue along behind the hedge and up the gate's left pillar, and the letters' link in orange through the wall."
           info={Object.fromEntries(LIGHT_POINTS.map((p) => [p.id, { label: p.what, colour: p.colour }]))} />}
         note={<>
           Every run is underground in a duct, drawn here through the wall and the gate that hide it. The circuit is the
           farm&rsquo;s outdoor lights, protected at the compound&rsquo;s board; the box on the sign wall switches it at dusk.
           Each tag opens its row in the{" "}
-          <Link href="/docs/parking-points#lighting-points" className="underline underline-offset-4">points table</Link>. Outside the drawing: the inner
+          <Link href="/docs/parking/lighting#points" className="underline underline-offset-4">points table</Link>. Outside the drawing: the inner
           gate&rsquo;s lantern (L2) and the board the feed leaves from.
         </>}
         real={{ src: `${D}/render/light-real.webp`, width: 2400, height: 1100,
@@ -159,14 +121,14 @@ export default function ParkingPage() {
           then each part on its own. All from parking.html?view=drain and ?item=. */}
       <ServiceSection id="drainage" title="Drainage"
         diagram={<DrainageDiagram box={PK.box} build={B} drainage={DR} />}
-        figure={<TaggedFigure table="/docs/parking-points" src={`${D}/render/drain-line.png`} aspect={drainTags.aspect} tags={drainTags.tags}
+        figure={<TaggedFigure table="/docs/parking/drainage" src={`${D}/render/drain-line.png`} aspect={drainTags.aspect} tags={drainTags.tags}
           alt="Line drawing of the way in from beyond the road with arrows of fall: three long arrows along the parking to its west end, two through the gate back to the road and four across the rock road to its edges, the gravel trench in dark blue across the west end and the soakaway pit by the hedge in light blue."
           info={Object.fromEntries(DRAIN_POINTS.map((p) => [p.id, { label: p.what, colour: p.colour }]))} />}
         note={<>
           The pavers and the stone under them are the drain: the rain soaks in where it falls. A storm heavier than the
           stone holds runs along the lot to its west end, into the trench and on to the soakaway. The turn sheds back to the
           road, so the road&rsquo;s water stays out. Each tag opens its row in the{" "}
-          <Link href="/docs/parking-points#drainage-points" className="underline underline-offset-4">points table</Link>. The soil&rsquo;s soakage is not
+          <Link href="/docs/parking/drainage#points" className="underline underline-offset-4">points table</Link>. The soil&rsquo;s soakage is not
           tested yet: a percolation test on site sizes the pit, or says the trench must run on to a ditch.
         </>}
         real={{ src: `${D}/render/drain-real.webp`, width: 2400, height: 1100,
@@ -174,7 +136,7 @@ export default function ParkingPage() {
           alt: "The same view rendered in daylight: the grass-paver parking in its fieldstone edging, a strip of grey stone across the lawn at its west end and a square concrete cover by the hedge, the sign wall, the gate and the start of the rock road." }}
         rail={drainRail()} />
 
-      <DocsSection cards={DOCS} />
+      <DocsSection cards={DOCS} ownPlan />
     </main>
   )
 }
