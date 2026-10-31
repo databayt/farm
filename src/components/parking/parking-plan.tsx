@@ -1,7 +1,9 @@
 import { Chain, Dim, HDim, VDim } from "@/components/drawing/dims"
 import { scaleFor } from "@/components/drawing/geometry"
+import { getWords } from "@/components/internationalization/words"
 
 import parking from "./parking.json"
+import { words } from "./words"
 
 // The way in drawn in the pattern of the livestock plan (src/components/livestock/livestock-plan.tsx): thin lines,
 // no colour, bold capitals, and its dimensions as the studio's plan sets them (src/components/drawing): the bays and
@@ -64,7 +66,11 @@ function Hedge({ x0, x1 }: { x0: number; x1: number }) {
 const VIEW = { x: 1.9, y: -6.1, w: 33.2, h: 15.5 }
 const k = scaleFor(VIEW.w, VIEW.h)
 
-export function ParkingPlan({ title, className }: { title: string; className?: string }) {
+// `title` (the drawing's accessible name) defaults to the page's; the docs pass the guide's own.
+export async function ParkingPlan({ title, className }: { title?: string; className?: string }) {
+  const w = (await getWords(words)).plan
+  const name = w.labels
+  title ??= w.title
   const [px0, py0, px1, py1] = lot.box
   const e = lot.edging.w
   const [gl, gr] = gate.x
@@ -147,17 +153,17 @@ export function ParkingPlan({ title, className }: { title: string; className?: s
       ))}
 
       {bays.map((b) => <text key={b.n} x={b.cx} y={Y(py1 - lot.strips.l - 0.85)} textAnchor="middle" style={small}>{b.n}</text>)}
-      <text x={bays[1].cx} y={Y(stopY - 0.62)} textAnchor="middle" style={{ ...small, ...halo }}>WHEEL STOP</text>
-      <text x={27.6} y={Y(-1.6)} textAnchor="middle" style={{ ...label, ...halo }}>PARKING</text>
-      <text x={27.6} y={Y(-2.25)} textAnchor="middle" style={{ ...small, ...halo }}>GRASS PAVERS</text>
-      <text x={27.1} y={Y(3.6)} style={label}>ROCK ROAD</text>
-      <text x={27.1} y={Y(3.05)} style={{ ...small, ...halo }}>TO THE INNER GATE</text>
-      <text x={f((gl + gr) / 2)} y={Y(gate.y - 0.62)} textAnchor="middle" style={{ ...label, ...halo }}>GATE</text>
-      <text x={13.6} y={Y(sy1 + 0.55)} textAnchor="middle" style={label}>SIGN WALL</text>
-      <text x={f((sx0 + sx1) / 2)} y={f(Y(sy0) + 0.4)} textAnchor="middle" style={small}>DIGITAL FARM IN LED LETTERS</text>
-      <text x={31.4} y={Y(hedge.y + hedge.w / 2 + 0.5)} textAnchor="middle" style={small}>HEDGE</text>
-      <text x={trees.list[1][0]} y={f(Y(trees.list[1][1]) - 0.5)} textAnchor="middle" style={{ ...small, ...halo }}>SHADE TREE</text>
-      <text x={29.5} y={f(Y(road.edge) + 1.45)} textAnchor="middle" style={label}>PUBLIC ROAD</text>
+      <text x={bays[1].cx} y={Y(stopY - 0.62)} textAnchor="middle" style={{ ...small, ...halo }}>{name.stop}</text>
+      <text x={27.6} y={Y(-1.6)} textAnchor="middle" style={{ ...label, ...halo }}>{name.parking}</text>
+      <text x={27.6} y={Y(-2.25)} textAnchor="middle" style={{ ...small, ...halo }}>{name.pavers}</text>
+      <text x={27.1} y={Y(3.6)} style={label}>{name.road}</text>
+      <text x={27.1} y={Y(3.05)} style={{ ...small, ...halo }}>{name.inner}</text>
+      <text x={f((gl + gr) / 2)} y={Y(gate.y - 0.62)} textAnchor="middle" style={{ ...label, ...halo }}>{name.gate}</text>
+      <text x={13.6} y={Y(sy1 + 0.55)} textAnchor="middle" style={label}>{name.wall}</text>
+      <text x={f((sx0 + sx1) / 2)} y={f(Y(sy0) + 0.4)} textAnchor="middle" style={small}>{name.letters}</text>
+      <text x={31.4} y={Y(hedge.y + hedge.w / 2 + 0.5)} textAnchor="middle" style={small}>{name.hedge}</text>
+      <text x={trees.list[1][0]} y={f(Y(trees.list[1][1]) - 0.5)} textAnchor="middle" style={{ ...small, ...halo }}>{name.tree}</text>
+      <text x={29.5} y={f(Y(road.edge) + 1.45)} textAnchor="middle" style={label}>{name.public}</text>
 
       {/* The far edge: the five bays and the open east end, then the parking's width */}
       <Chain k={k} along="x" at={[...lot.bays, px1]} edge={Y(py1)} side="top" overall />
