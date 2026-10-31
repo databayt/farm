@@ -35,12 +35,13 @@ const DOCS = [
 export default function PublicBathroomPage() {
   return (
     <main className="w-full flex-1">
-      {/* First screen: a STAND-IN until the founder's Nano Banana remaster (brief: ~/Desktop/public-bathroom-nano-banana). For now it is the design model rendered
-          from eye level in the courtyard (scripts/site/render/public-bathroom.html?mode=real&hero=1, 2400 x 1340),
-          front wall and roof on. The bathroom sits right, so the words keep the open lawn bottom-left. */}
-      <PageHero src={`${D}/render/public-bathroom-hero.jpg`} width={2400} height={1340} className="bg-[#c9d6df]" imgClassName="object-[62%_60%]"
+      {/* First screen: the founder's Nano Banana render of the bathroom (2026-10-31), made from the brief in
+          ~/Desktop/public-bathroom-nano-banana; master kept at assets/public-bathroom/hero-gemini.jpeg (2752 x 1536),
+          cut to 2400 x 1340. It departs from the drawings in three things: the door opens out, not in; only one of the
+          two basins shows through it; and flower beds run along both ends. The words keep the lawn bottom-left. */}
+      <PageHero src={`${D}/render/public-bathroom-hero.jpg`} width={2400} height={1340} className="bg-[#2f6a74]" imgClassName="object-[50%_55%]"
         title="Toilets and hand basins for the camp"
-        alt="A teal shipping container on a fieldstone plinth on a green lawn under a blue sky: two small white-framed windows of frosted glass and a red door with a frosted glass panel and a lamp above it, a concrete-capped stone landing and step in front of the door." />
+        alt="A teal shipping container on a low fieldstone plinth on a mown lawn at golden hour, two small white-framed windows of frosted glass high on its left and a red door open at its right end under a glowing wall lamp; through the door a white basin on a honey oak counter under a mirror, white wall tiles and a soap dispenser; a stone landing with a concrete cap and one step, terracotta pots of herbs, beds of cannas and bougainvillea at both ends, and acacia trees and banana leaves behind." />
 
       {/* 2D, full screen: the bathroom's plan (src/components/public-bathroom/public-bathroom-plan.tsx), in the text
           colour. */}
@@ -127,7 +128,7 @@ export default function PublicBathroomPage() {
           alt: "The same view rendered with the floor, the wall tiles and the plinth see-through: the brown drains under the toilet rooms, the urinal room and the lobby, from each WC, the urinal, the basins and the floor drain, out through the back; the blue supply along the back wall and up to the cisterns, the urinal's valve and the taps; the grey vent rising behind the back wall." }}
         rail={plumbingRail()} />
 
-      <DocsSection cards={DOCS} ownPlan />
+      <DocsSection cards={DOCS} />
     </main>
   )
 }
