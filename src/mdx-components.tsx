@@ -19,6 +19,7 @@ import { GuestRoomCircuits, GuestRoomElectricPoints, GuestRoomMaterials } from "
 import { LivestockMaterials, LivestockWaterNeed, LivestockWaterPoints } from "@/components/livestock/docs-sections"
 import { OfficeCircuits, OfficeElectricPoints, OfficeMaterials, OfficeNetworkPoints } from "@/components/office/docs-sections"
 import { CampMaterials } from "@/components/camp/docs-sections"
+import { DiningMaterials } from "@/components/dining/docs-sections"
 import { ParkingDrainagePoints, ParkingLightingPoints, ParkingMaterials } from "@/components/parking/docs-sections"
 import { PublicBathroomCircuits, PublicBathroomElectricPoints, PublicBathroomMaterials, PublicBathroomPlumbingPoints, PublicBathroomRuns } from "@/components/public-bathroom/docs-sections"
 import { StudyRoomCircuits, StudyRoomElectricPoints, StudyRoomMaterials } from "@/components/study-room/docs-sections"
@@ -31,6 +32,7 @@ import { PublicBathroomPlan } from "@/components/public-bathroom/public-bathroom
 import { VolleyballPlan } from "@/components/volleyball/volleyball-plan"
 import { ParkingPlan } from "@/components/parking/parking-plan"
 import { CampPlan } from "@/components/camp/camp-plan"
+import { DiningPlan } from "@/components/dining/dining-plan"
 import { BarPlan } from "@/components/bar/bar-plan"
 import { FarmingPlan } from "@/components/farming/farming-plan"
 import { NurseryPlan } from "@/components/farming/nursery-plan"
@@ -229,6 +231,7 @@ const mdxComponents = {
   OfficeCircuits, OfficeElectricPoints, OfficeMaterials, OfficeNetworkPoints,
   StudyRoomCircuits, StudyRoomElectricPoints, StudyRoomMaterials,
   GalleyCircuits, GalleyElectricPoints, GalleyMaterials, GalleyPlumbingPoints, GalleyRuns,
+  DiningMaterials,
   PublicBathroomCircuits, PublicBathroomElectricPoints, PublicBathroomMaterials, PublicBathroomPlumbingPoints, PublicBathroomRuns,
   VolleyballMaterials, VolleyballNetPoints,
   ParkingLightingPoints, ParkingDrainagePoints, ParkingMaterials,
@@ -242,6 +245,7 @@ const mdxComponents = {
   OfficePlan: sheet(OfficePlan),
   StudyRoomPlan: sheet(StudyRoomPlan),
   GalleyPlan: sheet(GalleyPlan),
+  DiningPlan: sheet(DiningPlan),
   PublicBathroomPlan: sheet(PublicBathroomPlan),
   VolleyballPlan: sheet(VolleyballPlan),
   ParkingPlan: sheet(ParkingPlan),

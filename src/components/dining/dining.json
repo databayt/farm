@@ -1,0 +1,53 @@
+{
+  "about": "The dining area, as /en/camp is one camp: the founder's photos of 2026-10-31 (media dn-3279 to dn-3282) show it going up on the farm, a low mud-brick wall round a rectangle with bent eucalyptus poles arched over it and steel mesh being tied on. The founder chose (D-069): it seats a full house of 24 at once, and the mesh takes a grass thatch. The 2D (dining-plan.tsx) and the 3D (scripts/site/render/dining.html) both read this file. Plan in metres: x along the length (east to the right), y toward the front wall, the middle at 0,0. Every size is read off the photos against the people in them (AS-31), not measured: the Day 1 sheet in guide/dining/plan.md measures them.",
+  "wall": {
+    "about": "Sun-dried mud brick (rukarakara) laid in earth mortar, standing today. The outline is to its outer faces; it stops at sill height, so the view goes out over it under the eave.",
+    "length": 9.2,
+    "width": 5.8,
+    "t": 0.4,
+    "h": 1.0,
+    "course": 0.15,
+    "door": { "about": "A gap in the east end wall, the way in from the rooms and the galley; not seen in the photos.", "w": 1.0 }
+  },
+  "frame": {
+    "about": "Eucalyptus poles bent into arches across the width, set into the top of the long walls, a straight ridge pole along the crown and a purlin each side tying them, as the photos show. The photos show about six arches.",
+    "arches": 6,
+    "crown": 3.0,
+    "pole": 0.05,
+    "purlin": 0.55
+  },
+  "mesh": {
+    "about": "Welded steel mesh tied over the arches with wire, in the photos about 150 mm square, carrying the thatch.",
+    "grid": 0.15
+  },
+  "thatch": {
+    "about": "Grass thatch tied to the mesh in courses, 250 mm thick, running past the walls' outer faces so the rain drips clear of the earth wall. The two ends stay open above the wall.",
+    "t": 0.25,
+    "eave": 0.3
+  },
+  "floor": {
+    "about": "Compacted laterite (murram) inside the walls, 100 mm, raised a little above the ground outside so rain runs out through the door.",
+    "t": 0.1
+  },
+  "tables": {
+    "about": "Two long timber tables along the length, each seating six a side on two benches: 24 at once.",
+    "w": 0.8,
+    "l": 3.6,
+    "h": 0.75,
+    "y": 1.15,
+    "x": 0,
+    "seats": 6
+  },
+  "bench": { "about": "A plain timber bench each side of each table.", "w": 0.3, "h": 0.45, "gap": 0.1 },
+  "counter": {
+    "about": "A serving counter against the west end wall, where the galley's dishes are set out for a buffet.",
+    "w": 0.6,
+    "l": 2.4,
+    "h": 0.9
+  },
+  "lights": {
+    "about": "A string of warm lamps hung along the ridge. Where its power comes from is not designed (an open question).",
+    "count": 12,
+    "drop": 0.35
+  }
+}

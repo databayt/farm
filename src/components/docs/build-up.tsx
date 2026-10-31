@@ -215,7 +215,7 @@ export function BuildUp({ title, base, baseAlt, aspect, builds, stages }: {
             <canvas ref={canvas} role="img" aria-label={builds.map((b) => b.label).join(" ")} className="absolute inset-0 size-full" />
           </div>
         </div>
-        <div className={cx("grid gap-4", { 3: "md:grid-cols-3", 4: "md:grid-cols-4", 5: "md:grid-cols-5" }[n])}>
+        <div className={cx("grid gap-4", { 3: "md:grid-cols-3", 4: "md:grid-cols-4", 5: "md:grid-cols-5", 6: "md:grid-cols-3 lg:grid-cols-6" }[n])}>
           {stages.map((s, i) => (
             <div key={s.title} className={cx("border-t-2 pt-3 transition-opacity duration-500",
               i === active ? "border-foreground opacity-100" : "border-border hidden opacity-40 md:block")}>

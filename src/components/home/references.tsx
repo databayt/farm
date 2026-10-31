@@ -35,6 +35,7 @@ const GROUPS: { id: Group; rows: { id: Row; links: RefLink[] }[] }[] = [
       { id: "office", links: [page("/en/office"), docs("office")] },
       { id: "study-room", links: [page("/en/study-room"), docs("study-room")] },
       { id: "galley", links: [page("/en/galley"), docs("galley")] },
+      { id: "dining", links: [page("/en/dining"), docs("dining")] },
       { id: "public-bathroom", links: [page("/en/public-bathroom"), docs("public-bathroom")] },
       { id: "bar", links: [page("/en/bar"), docs("bar")] },
     ],

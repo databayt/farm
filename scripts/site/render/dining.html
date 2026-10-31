@@ -1,0 +1,537 @@
+<!doctype html>
+<!--
+  /en/dining's 3D, in the pattern of the camp's (camp.html): the dining area seen from the front, built from
+  src/components/dining/dining.json (the numbers the 2D draws). It follows the founder's photos of 2026-10-31
+  (media dn-3279 to dn-3282): a low mud-brick wall, eucalyptus arches across it with a ridge pole and purlins, steel
+  mesh tied over them, here finished as the founder chose (D-069): a grass thatch on the mesh, two long tables for 24
+  and a serving counter. Rendered two ways:
+
+    ?mode=line  line drawing on a transparent ground   -> public/designs/dining/render/dining-line.png
+    ?mode=real  materials, daylight and shadow         -> public/designs/dining/render/dining-real.webp
+
+  In both the thatch and the mesh are on the back half only, so the room shows under the bare front arches. And,
+  for the page's other sections (real mode):
+
+    ?mode=real&hero=1   the roof whole, from eye level outside the door, 2400 x 1340 -> the stand-in dining-hero.jpg
+    ?mode=real&build=<ground|wall|frame|mesh|thatch|floor|furnish>  the area from the south-east, one layer at a time
+                on a transparent ground (the ground opaque), every earlier layer hiding what it hides but drawn by
+                its own render, 2400 x 1300 -> render/build-<layer>.webp; window.TAGS holds each piece's rectangle as
+                fractions of the picture, saved by render.mjs's fourth argument as render/build-pieces.json (its
+                "tags"), for the Build section
+    ?mode=real&item=<wall|arch|mesh|thatch|table|bench|counter|lights>  one part on its own, three-quarter view,
+                1200 x 900, transparent ground with only its shadow -> render/item/<id>.webp
+
+  Serve the repo root on a spare port, open this page at 2400 x 1100, and once body[data-ready] is set
+  save the data URL in #out.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+html,body{margin:0;background:#fff}
+#out{display:block;width:2400px;height:auto}
+</style>
+<script type="importmap">
+{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
+</script>
+</head>
+<body>
+<img id="out" alt="">
+<script type="module">
+import * as THREE from "three"
+import { OutlineEffect } from "three/addons/effects/OutlineEffect.js"
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js"
+import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js"
+import { LineMaterial } from "three/addons/lines/LineMaterial.js"
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js"
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
+import { GTAOPass } from "three/addons/postprocessing/GTAOPass.js"
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
+
+const Q = new URLSearchParams(location.search)
+const ITEM = Q.get("item"), BUILD = Q.get("build")
+const LINE = Q.get("mode") !== "real" && !ITEM && !BUILD
+const HERO = !LINE && !ITEM && !BUILD && Q.get("hero") === "1"
+const CUT = !HERO && !BUILD && !ITEM // the model view: thatch and mesh on the back half only
+const [FW, FH] = HERO ? [2400, 1340] : BUILD ? [2400, 1300] : ITEM ? [1200, 900] : [2400, 1100]
+const C = await (await fetch(`/src/components/dining/dining.json?${Date.now()}`)).json()
+const INK = "#2b2a26", PAGE = "#ffffff"
+const LAYERS = ["ground", "wall", "frame", "mesh", "thatch", "floor", "furnish"]
+// plan (x east, y toward the front wall) -> three: x = x, y = height, z = y; the camera stands in front, at +z
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: true })
+renderer.setClearColor(0xffffff, 0)
+renderer.setPixelRatio(1)
+renderer.setSize(FW, FH)
+renderer.outputColorSpace = THREE.SRGBColorSpace
+if (!LINE) {
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.shadowMap.enabled = true
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+}
+const scene = new THREE.Scene()
+
+// ------------------------------------------------------------ the numbers
+const { wall: Wl, frame: F, mesh: M, thatch: Th, floor: Fl, tables: Tb, bench: Bn, counter: Ct, lights: Lt } = C
+const L2 = Wl.length / 2, W2 = Wl.width / 2, t = Wl.t, H = Wl.h
+const IX = L2 - t, IZ = W2 - t // the inside faces
+const A = W2 - t / 2, R = F.crown - H // the arches stand on the walls' middles and rise R over them
+const archY = (z) => H + R * Math.sqrt(Math.max(0, 1 - (z / A) ** 2))
+const archXs = Array.from({ length: F.arches }, (_, i) => -L2 + t / 2 + (i * (Wl.length - t)) / (F.arches - 1))
+const FY = Fl.t // the floor's top
+const BAY = ITEM === "mesh" || ITEM === "thatch" ? 0.9 : null // a part of the roof on its own: one bay, 1.8 m of it
+
+// ------------------------------------------------------------ procedural textures (real mode)
+let seed = 7
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+function tex(draw, w = 512, h = 512) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h
+  seed = 7
+  draw(c.getContext("2d"), w, h)
+  const tx = new THREE.CanvasTexture(c)
+  tx.colorSpace = THREE.SRGBColorSpace
+  tx.wrapS = tx.wrapT = THREE.RepeatWrapping
+  tx.anisotropy = 8
+  return tx
+}
+const T = LINE ? {} : {
+  // sun-dried mud brick in earth mortar, as the photos: uneven courses, soft edges, the mortar the same earth
+  brick: tex((g, w, h) => {
+    g.fillStyle = "#8e4f30"; g.fillRect(0, 0, w, h)
+    const rows = 8, bh = h / rows
+    for (let r = 0; r < rows; r++) {
+      let x = r % 2 ? -w / 8 : 0
+      while (x < w) {
+        const bw = w / 4 * (0.85 + rnd() * 0.3)
+        const l = 44 + rnd() * 14
+        g.fillStyle = `hsl(${18 + rnd() * 6}, ${42 + rnd() * 10}%, ${l * 0.75}%)`
+        g.beginPath(); g.roundRect(x + 3, r * bh + 3, bw - 6, bh - 6, 6); g.fill()
+        x += bw
+      }
+    }
+    for (let i = 0; i < 9000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(255,220,190,0.10)" : "rgba(40,15,5,0.12)"; g.fillRect(rnd() * w, rnd() * h, 2, 2) }
+  }, 512, 512),
+  earth: tex((g, w, h) => {
+    g.fillStyle = "#a65b35"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 30000; i++) {
+      const v = rnd()
+      g.fillStyle = v > 0.66 ? "rgba(210,140,95,0.35)" : v > 0.33 ? "rgba(90,40,20,0.3)" : "rgba(160,170,90,0.10)"
+      g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2)
+    }
+  }),
+  murram: tex((g, w, h) => {
+    g.fillStyle = "#b06a43"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 26000; i++) { g.fillStyle = rnd() > 0.5 ? "rgba(225,160,110,0.30)" : "rgba(80,35,15,0.25)"; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2) }
+  }),
+  // grass thatch in courses: straw streaks running down the slope, a darker butt line every course
+  thatch: tex((g, w, h) => {
+    g.fillStyle = "#b8975a"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 5000; i++) {
+      const x = rnd() * w, y = rnd() * h, l = 20 + rnd() * 50
+      g.strokeStyle = rnd() > 0.5 ? `rgba(230,200,140,${0.2 + rnd() * 0.3})` : `rgba(90,65,30,${0.15 + rnd() * 0.25})`
+      g.lineWidth = 1 + rnd() * 1.5
+      g.beginPath(); g.moveTo(x, y); g.lineTo(x + (rnd() - 0.5) * 6, y + l); g.stroke()
+    }
+    for (let k = 0; k < 4; k++) { g.fillStyle = "rgba(70,50,25,0.35)"; g.fillRect(0, (k + 1) * h / 4 - 6, w, 6) }
+  }, 512, 512),
+  wood: tex((g, w, h) => {
+    g.fillStyle = "#8a5a34"; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 160; i++) { g.strokeStyle = `rgba(${rnd() > 0.5 ? "60,35,15" : "170,120,75"},${0.15 + rnd() * 0.2})`; g.lineWidth = 1 + rnd() * 2; const y = rnd() * h; g.beginPath(); g.moveTo(0, y); g.bezierCurveTo(w / 3, y + (rnd() - 0.5) * 10, (2 * w) / 3, y + (rnd() - 0.5) * 10, w, y); g.stroke() }
+  }, 512, 128),
+  sky: tex((g, w, h) => {
+    const gr = g.createLinearGradient(0, 0, 0, h)
+    gr.addColorStop(0, "#5f8fc4"); gr.addColorStop(0.55, "#a9c6e2"); gr.addColorStop(1, "#e9dcc4")
+    g.fillStyle = gr; g.fillRect(0, 0, w, h)
+    for (let i = 0; i < 14; i++) { // fair-weather cumulus, as the photos
+      const x = rnd() * w, y = h * (0.15 + rnd() * 0.35), s = 30 + rnd() * 60
+      for (let j = 0; j < 7; j++) { g.fillStyle = "rgba(255,255,255,0.55)"; g.beginPath(); g.arc(x + (rnd() - 0.5) * s * 2, y + (rnd() - 0.5) * s * 0.4, s * (0.4 + rnd() * 0.5), 0, 7); g.fill() }
+    }
+  }, 1024, 512),
+}
+
+// ------------------------------------------------------------ materials
+const MAT = {}
+function mat(name) {
+  if (MAT[name]) return MAT[name]
+  let x
+  if (LINE) {
+    x = new THREE.MeshBasicMaterial({ color: PAGE, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })
+    if (["pole", "wire", "cable"].includes(name)) x.userData.outlineParameters = { visible: false }
+  } else {
+    const std = (o) => new THREE.MeshStandardMaterial(o)
+    x = {
+      brick: () => std({ map: T.brick, roughness: 0.95 }),
+      ground: () => std({ map: T.earth, roughness: 1 }),
+      murram: () => std({ map: T.murram, roughness: 1 }),
+      pole: () => std({ color: "#9a8466", roughness: 0.8 }), // peeled eucalyptus
+      wire: () => std({ color: "#7a3f22", roughness: 0.6, metalness: 0.5 }), // the mesh, rusting as in the photos
+      thatch: () => std({ map: T.thatch, roughness: 1, side: THREE.DoubleSide }),
+      wood: () => std({ map: T.wood, roughness: 0.6 }),
+      top: () => std({ map: T.wood, color: "#d8b48a", roughness: 0.5 }), // the counter's top, oiled
+      cable: () => std({ color: "#222222", roughness: 0.5 }),
+      lamp: () => std({ color: "#fff3d6", roughness: 0.3, emissive: "#ffc56a", emissiveIntensity: HERO ? 2.2 : 1.2 }),
+      clay: () => std({ color: "#a8653d", roughness: 0.6 }),
+      cloth: () => std({ color: "#c9b58f", roughness: 0.95 }),
+      leaf: () => std({ color: "#5d7a3a", roughness: 0.9 }),
+      bark: () => std({ color: "#a89a86", roughness: 0.9 }),
+    }[name]?.() ?? std({ color: "#cccccc", roughness: 0.8 })
+  }
+  x.name = name
+  return (MAT[name] = x)
+}
+
+// ------------------------------------------------------------ geometry helpers (metres)
+const meshes = []
+const lines = [] // line mode's drawn lines: the mesh's wires, the brick courses, the thatch's courses
+let CUR = { layer: null, item: null, piece: null }
+const part = (layer, item, piece = null) => (CUR = { layer, item, piece })
+function add(geo, name, opts = {}) {
+  const mesh = new THREE.Mesh(geo, mat(name))
+  mesh.castShadow = !LINE && name !== "ground"
+  mesh.receiveShadow = !LINE
+  if (opts.pos) mesh.position.set(...opts.pos)
+  if (opts.rot) mesh.rotation.set(...opts.rot)
+  if (opts.noEdges) mesh.userData.noEdges = true
+  Object.assign(mesh.userData, CUR)
+  scene.add(mesh)
+  meshes.push(mesh)
+  return mesh
+}
+function blk(xa, za, xb, zb, y0, y1, name, opts) {
+  const [x0, x1, z0, z1] = [Math.min(xa, xb), Math.max(xa, xb), Math.min(za, zb), Math.max(za, zb)]
+  const g = new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0)
+  if (name === "brick") { // the courses' texture at true size on every face
+    const uv = g.attributes.uv, n = g.attributes.normal
+    for (let i = 0; i < uv.count; i++) {
+      const sx = Math.abs(n.getX(i)) > 0.5 ? z1 - z0 : x1 - x0, sy = Math.abs(n.getY(i)) > 0.5 ? z1 - z0 : y1 - y0
+      uv.setXY(i, (uv.getX(i) * sx) / 1.2, (uv.getY(i) * sy) / (Wl.course * 8))
+    }
+  }
+  return add(g, name, { pos: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2], ...opts })
+}
+function pipe(a, b, r, name, seg = 8) {
+  const P = new THREE.Vector3(...a), B = new THREE.Vector3(...b)
+  const mesh = add(new THREE.CylinderGeometry(r, r, P.distanceTo(B), seg), name, { pos: P.clone().add(B).multiplyScalar(0.5).toArray() })
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.sub(P).normalize())
+  return mesh
+}
+function tube(points, r, name, seg = 64, radial = 8) {
+  return add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(...p))), seg, r, radial), name)
+}
+function drawn(segs, width = 1) { // line mode only: segments [[a, b], …] in world metres
+  if (!LINE) return
+  const g = new LineSegmentsGeometry().setPositions(segs.flatMap(([a, b]) => [...a, ...b]))
+  const l = new LineSegments2(g, new LineMaterial({ color: INK, linewidth: width }))
+  l.material.resolution.set(FW, FH); l.material.userData.outlineParameters = { visible: false }
+  Object.assign(l.userData, CUR)
+  scene.add(l); lines.push(l)
+}
+// the arch's curve at x, from wall to wall, a little out from the poles' axis by `out`
+const arcPts = (x, out = 0, n = 48, z0 = -A, z1 = A) => Array.from({ length: n + 1 }, (_, i) => {
+  // even steps along the angle read better than along z near the springing
+  const a = Math.acos(z0 / A), b = Math.acos(z1 / A), u = a + ((b - a) * i) / n
+  return [x, H + (R + out) * Math.sin(u), (A + out) * Math.cos(u)]
+})
+
+// ------------------------------------------------------------ the ground round it
+if (!ITEM && !LINE) {
+  part("ground", null)
+  T.earth.repeat.set(12, 12)
+  add(new THREE.CircleGeometry(40, 64), "ground", { rot: [-Math.PI / 2, 0, 0], pos: [0, 0, 0] })
+}
+if (HERO) {
+  scene.background = T.sky
+  // eucalyptus beyond, as in the photos: pale trunks and loose crowns on the slope behind
+  for (let i = 0; i < 26; i++) {
+    const x = -40 + rnd() * 50, z = -26 - rnd() * 20, h = 8 + rnd() * 8
+    pipe([x, 0, z], [x + (rnd() - 0.5), h, z], 0.12 + rnd() * 0.1, "bark", 6)
+    for (let j = 0; j < 4; j++) {
+      const s = add(new THREE.IcosahedronGeometry(1.2 + rnd() * 1.2, 1), "leaf", { pos: [x + (rnd() - 0.5) * 2, h - 1 + rnd() * 2.5, z + (rnd() - 0.5) * 2] })
+      s.scale.y = 1.4
+    }
+  }
+}
+
+// ------------------------------------------------------------ the wall, standing today
+{
+  const top = H, dw = Wl.door.w / 2
+  part("wall", "wall", "south"); blk(-L2, W2 - t, L2, W2, 0, top, "brick")
+  part("wall", "wall", "north"); blk(-L2, -W2, L2, -W2 + t, 0, top, "brick")
+  part("wall", "wall", "west"); blk(-L2, -IZ, -L2 + t, IZ, 0, top, "brick")
+  part("wall", "wall", "east-n"); blk(L2 - t, -IZ, L2, -dw, 0, top, "brick")
+  part("wall", "wall", "east-s"); blk(L2 - t, dw, L2, IZ, 0, top, "brick")
+  // line mode: the courses on the faces the camera sees
+  part("wall", "wall", null)
+  const segs = []
+  for (let y = Wl.course; y < top - 0.01; y += Wl.course) {
+    segs.push([[-L2, y, W2], [L2, y, W2]], [[-L2, y, W2], [-L2, y, -W2]], [[L2, y, W2], [L2, y, dw]], [[-L2 + t, y, -IZ], [L2 - t, y, -IZ]])
+  }
+  drawn(segs, 0.6)
+}
+
+// ------------------------------------------------------------ the frame, standing today
+for (const [i, x] of archXs.entries()) {
+  part("frame", "arch", `arch-${i}`)
+  tube(arcPts(x), F.pole, "pole")
+}
+{
+  part("frame", "arch", "ridge")
+  const x0 = -L2 + 0.05, x1 = L2 - 0.05
+  pipe([x0, F.crown, 0], [x1, F.crown, 0], F.pole * 0.9, "pole")
+  // a purlin each side, halfway up the rise
+  const zp = A * Math.sqrt(1 - F.purlin ** 2)
+  for (const s of [-1, 1]) pipe([x0, H + R * F.purlin, s * zp], [x1, H + R * F.purlin, s * zp], F.pole * 0.8, "pole")
+}
+
+// ------------------------------------------------------------ the mesh, being tied on today
+{
+  part("mesh", "mesh")
+  const back = CUT ? 0 : A // the model view meshes the back half only
+  const out = F.pole + 0.01
+  const x0 = BAY ? -BAY : -L2 + t / 2, x1 = BAY ? BAY : L2 - t / 2
+  const r = LINE ? 0 : 0.004
+  // wires across, every grid step along the length
+  const across = [], along = []
+  for (let x = x0; x <= x1 + 1e-6; x += M.grid) across.push(arcPts(x, out, 40, -A, back))
+  // wires along, every grid step round the arch
+  const arc = arcPts(0, out, 400, -A, back)
+  let s = 0, next = 0
+  for (let i = 0; i < arc.length; i++) {
+    if (i) s += Math.hypot(arc[i][1] - arc[i - 1][1], arc[i][2] - arc[i - 1][2])
+    if (s >= next) { along.push(arc[i]); next += M.grid }
+  }
+  if (LINE) {
+    const segs = []
+    for (const p of across) for (let i = 1; i < p.length; i++) segs.push([p[i - 1], p[i]])
+    for (const [, y, z] of along) segs.push([[x0, y, z], [x1, y, z]])
+    drawn(segs, 0.5)
+  } else {
+    for (const p of across) tube(p, r, "wire", 40, 3)
+    for (const [, y, z] of along) pipe([x0, y, z], [x1, y, z], r, "wire", 3)
+  }
+}
+
+// ------------------------------------------------------------ the thatch on the mesh
+{
+  part("thatch", "thatch")
+  const back = CUT ? Math.PI / 2 : 0 // the angle from the back springing that the thatch reaches (0: over the top)
+  const a0 = A + F.pole + 0.02, r0 = R + F.pole + 0.02, a1 = a0 + Th.t, r1 = r0 + Th.t
+  const pts = []
+  const n = 48, u0 = Math.PI, u1 = back
+  // outer surface from the back eave over to the front (or to the crown), then back along the inner surface
+  const eave = W2 + Th.eave
+  pts.push(new THREE.Vector2(-eave, H - 0.18))
+  for (let i = 0; i <= n; i++) { const u = u0 + ((u1 - u0) * i) / n; pts.push(new THREE.Vector2(a1 * Math.cos(u), H + r1 * Math.sin(u))) }
+  if (!CUT) pts.push(new THREE.Vector2(eave, H - 0.18), new THREE.Vector2(eave - 0.06, H - 0.24))
+  for (let i = n; i >= 0; i--) { const u = u0 + ((u1 - u0) * i) / n; pts.push(new THREE.Vector2(a0 * Math.cos(u), H + r0 * Math.sin(u))) }
+  pts.push(new THREE.Vector2(-eave + 0.06, H - 0.24))
+  const len = BAY ? 2 * BAY : Wl.length + 0.3
+  const g = new THREE.ExtrudeGeometry(new THREE.Shape(pts), { depth: len, bevelEnabled: false, curveSegments: 1 })
+  // the shape's x is plan y (three z), its y is height; extruded along three x
+  g.rotateY(-Math.PI / 2); g.translate(len / 2, 0, 0)
+  // the straws run down the slope: u along the length, v round the arch
+  const pos = g.attributes.position, uv = g.attributes.uv
+  for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / 1.5, Math.atan2(pos.getY(i) - H, pos.getZ(i)) * 2.2)
+  add(g, "thatch")
+  // line mode: a course line every half metre round the outer surface
+  const segs = []
+  for (let i = 1; i < 12; i++) {
+    const u = u0 + ((u1 - u0) * i) / 12
+    segs.push([[-len / 2, H + r1 * Math.sin(u), a1 * Math.cos(u)], [len / 2, H + r1 * Math.sin(u), a1 * Math.cos(u)]])
+  }
+  drawn(segs, 0.6)
+}
+
+// ------------------------------------------------------------ the floor and the room
+part("floor", null, "floor")
+blk(-IX, -IZ, IX, IZ, 0, FY, "murram")
+// the door's sill: the floor runs out through the gap
+blk(IX, -Wl.door.w / 2, L2, Wl.door.w / 2, 0, FY * 0.6, "murram")
+const benchY = (s) => [s * (Tb.y - Tb.w / 2 - Bn.gap - Bn.w / 2), s * (Tb.y + Tb.w / 2 + Bn.gap + Bn.w / 2)]
+for (const [ti, s] of [[0, -1], [1, 1]]) {
+  // a table: a plank top on four square legs, a rail under the top
+  part("furnish", "table", `table-${ti}`)
+  const cz = s * Tb.y, x0 = Tb.x - Tb.l / 2, x1 = Tb.x + Tb.l / 2, z0 = cz - Tb.w / 2, z1 = cz + Tb.w / 2
+  blk(x0, z0, x1, z1, FY + Tb.h - 0.04, FY + Tb.h, "wood")
+  for (const x of [x0 + 0.08, x1 - 0.13]) for (const z of [z0 + 0.06, z1 - 0.11]) blk(x, z, x + 0.05, z + 0.05, FY, FY + Tb.h - 0.04, "wood")
+  blk(x0 + 0.08, z0 + 0.06, x1 - 0.08, z0 + 0.09, FY + Tb.h - 0.14, FY + Tb.h - 0.04, "wood")
+  blk(x0 + 0.08, z1 - 0.09, x1 - 0.08, z1 - 0.06, FY + Tb.h - 0.14, FY + Tb.h - 0.04, "wood")
+  // on the table, a cloth runner and a clay jug, as laid for dinner
+  blk(x0 + 0.2, cz - 0.15, x1 - 0.2, cz + 0.15, FY + Tb.h, FY + Tb.h + 0.004, "cloth")
+  add(new THREE.CylinderGeometry(0.05, 0.07, 0.2, 16), "clay", { pos: [Tb.x, FY + Tb.h + 0.1, cz] })
+  for (const [bi, bz] of benchY(s).entries()) {
+    part("furnish", "bench", `bench-${ti}-${bi}`)
+    blk(x0, bz - Bn.w / 2, x1, bz + Bn.w / 2, FY + Bn.h - 0.04, FY + Bn.h, "wood")
+    for (const x of [x0 + 0.15, x1 - 0.19]) blk(x, bz - Bn.w / 2 + 0.03, x + 0.04, bz + Bn.w / 2 - 0.03, FY, FY + Bn.h - 0.04, "wood")
+  }
+}
+{
+  // the serving counter against the west wall: a timber case, an oiled top, a shelf below
+  part("furnish", "counter", "counter")
+  const x0 = -IX, x1 = -IX + Ct.w, z0 = -Ct.l / 2, z1 = Ct.l / 2
+  blk(x0, z0, x1, z1, FY + Ct.h - 0.04, FY + Ct.h, "top")
+  blk(x0, z0, x1 - 0.04, z0 + 0.04, FY, FY + Ct.h - 0.04, "wood")
+  blk(x0, z1 - 0.04, x1 - 0.04, z1, FY, FY + Ct.h - 0.04, "wood")
+  blk(x1 - 0.06, z0, x1, z1, FY + 0.1, FY + Ct.h - 0.04, "wood")
+  blk(x0, z0, x1 - 0.06, z1, FY + 0.2, FY + 0.23, "wood")
+  // dishes set out: three clay pots on the top
+  for (const z of [-0.7, 0, 0.7]) add(new THREE.CylinderGeometry(0.16, 0.12, 0.14, 20), "clay", { pos: [x0 + Ct.w / 2, FY + Ct.h + 0.07, z] })
+}
+{
+  // a string of lamps along the ridge, each on a short drop
+  part("furnish", "lights", "lights")
+  const x0 = -L2 + 0.6, x1 = L2 - 0.6
+  for (let i = 0; i < Lt.count; i++) {
+    const x = x0 + (i * (x1 - x0)) / (Lt.count - 1)
+    pipe([x, F.crown - F.pole, 0], [x, F.crown - Lt.drop, 0], 0.004, "cable", 4)
+    add(new THREE.SphereGeometry(0.05, 16, 10), "lamp", { pos: [x, F.crown - Lt.drop - 0.04, 0] })
+    if (!LINE && (HERO || i % 3 === 1) && !BUILD) {
+      const l = new THREE.PointLight(0xffc27a, HERO ? 1.6 : 0.8, 5, 2)
+      l.position.set(x, F.crown - Lt.drop - 0.1, 0); scene.add(l)
+    }
+  }
+}
+
+// ------------------------------------------------------------ one layer, or one part
+const parts = [...meshes, ...lines]
+if (ITEM) {
+  const pick = { arch: (u) => u.piece === "arch-0", wall: (u) => u.piece === "west", mesh: (u) => u.item === "mesh", thatch: (u) => u.item === "thatch" }[ITEM]
+  for (const m of parts) m.visible = pick ? pick(m.userData) : [ITEM, `${ITEM}-0`, `${ITEM}-0-0`].includes(m.userData.piece)
+}
+if (BUILD) {
+  const at = LAYERS.indexOf(BUILD)
+  for (const m of parts) {
+    const k = LAYERS.indexOf(m.userData.layer)
+    m.visible = k <= at
+    // an earlier layer hides what lies behind it, but its own render draws it
+    if (k < at && m.material) { m.material = m.material.clone(); m.material.colorWrite = false; m.renderOrder = -1 } // drawn first, so it hides
+  }
+  if (BUILD === "ground") renderer.setClearColor(0xffffff, 1)
+}
+if (ITEM === "lights") for (const m of meshes) if (m.position.x > -1.5) m.visible = false // four lamps of the string
+if (ITEM && !LINE) { // a part on its own: a transparent ground that takes only its shadow
+  const g = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: 0.18 }))
+  g.rotation.x = -Math.PI / 2; g.position.y = ITEM === "table" || ITEM === "bench" || ITEM === "counter" ? FY - 0.001 : -0.001; g.receiveShadow = true
+  scene.add(g)
+}
+
+// ------------------------------------------------------------ the camera
+let camera
+scene.updateMatrixWorld(true)
+if (HERO) {
+  // eye level outside the door, a few steps back and to the south, looking west down the room
+  camera = new THREE.PerspectiveCamera(42, FW / FH, 0.2, 400)
+  camera.position.set(L2 + 7.5, 1.55, 3.6)
+  camera.lookAt(-1.5, 1.45, -0.2)
+} else {
+  const bb = new THREE.Box3()
+  for (const o of meshes) if (o.visible && !o.geometry.type.startsWith("Circle") && o.userData.layer !== "ground") bb.expandByObject(o)
+  if (BUILD) bb.setFromCenterAndSize(new THREE.Vector3(0, 1.4, 0), new THREE.Vector3(Wl.length + 0.8, 3.2, Wl.width + 0.8))
+  const target = bb.getCenter(new THREE.Vector3())
+  // the model view from the front, a little left; the build from the south-east, so the room shows through the open
+  // east end; a part from the front left, three-quarter
+  const [el, az, dist] = BUILD ? [28, 62, 30] : ITEM ? [26, -32, 14] : [28, -16, 34]
+  const e = THREE.MathUtils.degToRad(el), z = THREE.MathUtils.degToRad(az)
+  camera = new THREE.PerspectiveCamera(22, FW / FH, 0.2, 300)
+  camera.position.set(target.x + dist * Math.cos(e) * Math.sin(z), target.y + dist * Math.sin(e), target.z + dist * Math.cos(e) * Math.cos(z))
+  camera.lookAt(target)
+  camera.updateMatrixWorld(); camera.updateProjectionMatrix()
+  const px = project(bb)
+  const pad = ITEM ? 1.12 : 1.08
+  let w = (px[2] - px[0]) * pad, h = (px[3] - px[1]) * (ITEM ? pad : 1.12)
+  if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
+  camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
+  camera.updateProjectionMatrix()
+}
+// a box's corners on the picture, in pixels: [x0, y0, x1, y1]
+function project(bb) {
+  let px = [Infinity, Infinity, -Infinity, -Infinity]
+  for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
+    const p = new THREE.Vector3(xx, yy, zz).project(camera)
+    const X = ((p.x + 1) / 2) * FW, Y = ((1 - p.y) / 2) * FH
+    px = [Math.min(px[0], X), Math.min(px[1], Y), Math.max(px[2], X), Math.max(px[3], Y)]
+  }
+  return px
+}
+if (BUILD) {
+  // each piece's rectangle on the picture [x, y, w, h], as fractions, in the order it is laid
+  const rect = (pick, m = 6) => {
+    const bb = new THREE.Box3()
+    for (const o of meshes) if (pick(o.userData)) bb.expandByObject(o)
+    const p = project(bb)
+    const x0 = Math.max(0, p[0] - m), y0 = Math.max(0, p[1] - m), x1 = Math.min(FW, p[2] + m), y1 = Math.min(FH, p[3] + m)
+    return [+(x0 / FW).toFixed(5), +(y0 / FH).toFixed(5), +((x1 - x0) / FW).toFixed(5), +((y1 - y0) / FH).toFixed(5)]
+  }
+  const pieces = (layer) => [...new Set(meshes.filter((o) => o.userData.layer === layer && o.userData.piece).map((o) => o.userData.piece))]
+  window.TAGS = {
+    wall: pieces("wall").map((p) => rect((u) => u.piece === p)),
+    frame: pieces("frame").map((p) => rect((u) => u.piece === p)),
+    mesh: [rect((u) => u.layer === "mesh")],
+    thatch: [rect((u) => u.layer === "thatch")],
+    floor: [rect((u) => u.layer === "floor")],
+    furnish: pieces("furnish").map((p) => rect((u) => u.piece === p)),
+  }
+}
+
+// ------------------------------------------------------------ render
+if (LINE) {
+  const lineMat = new LineMaterial({ color: INK, linewidth: 1.4 })
+  lineMat.resolution.set(FW, FH)
+  lineMat.userData.outlineParameters = { visible: false }
+  for (const o of meshes) {
+    if (o.userData.noEdges || !o.visible) continue
+    if (["pole", "cable"].includes(o.material.name) || o.geometry.type === "TubeGeometry") continue
+    const g = new LineSegmentsGeometry().fromEdgesGeometry(new THREE.EdgesGeometry(o.geometry, 30))
+    const l = new LineSegments2(g, lineMat)
+    l.matrixAutoUpdate = false; l.matrix.copy(o.matrixWorld)
+    scene.add(l)
+  }
+  // the poles and the lamps' drops drawn as their centre lines, a little heavier than the mesh, in place of the
+  // round meshes (whose own faces would hide them)
+  const segs = []
+  for (const o of meshes) if (o.visible && ["pole", "cable"].includes(o.material.name)) {
+    if (o.geometry.type === "TubeGeometry") {
+      const p = o.geometry.parameters.path.getPoints(64)
+      for (let i = 1; i < p.length; i++) segs.push([p[i - 1].toArray(), p[i].toArray()])
+    } else {
+      const h = o.geometry.parameters.height / 2
+      segs.push([new THREE.Vector3(0, -h, 0).applyMatrix4(o.matrixWorld).toArray(), new THREE.Vector3(0, h, 0).applyMatrix4(o.matrixWorld).toArray()])
+    }
+    o.visible = false
+  }
+  const g = new LineSegmentsGeometry().setPositions(segs.flat(2))
+  const lm = new LineMaterial({ color: INK, linewidth: 2.2 }); lm.resolution.set(FW, FH); lm.userData.outlineParameters = { visible: false }
+  scene.add(new LineSegments2(g, lm))
+  const ink = new THREE.Color(INK)
+  new OutlineEffect(renderer, { defaultThickness: 0.003, defaultColor: [ink.r, ink.g, ink.b] }).render(scene, camera)
+} else {
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
+  scene.environmentIntensity = HERO ? 0.35 : 0.45
+  scene.add(new THREE.HemisphereLight(0xeaf1ff, 0x8a5a3a, HERO ? 0.7 : 0.9))
+  // late afternoon from the south-west, as the photos' light, low enough to reach under the eave
+  const sun = new THREE.DirectionalLight(HERO ? 0xffd2a0 : 0xfff0d8, HERO ? 3.0 : 2.7)
+  sun.position.set(...(ITEM ? [-6, 9, 7] : [-9, 8, 10]))
+  sun.castShadow = true
+  sun.shadow.mapSize.set(4096, 4096)
+  Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 50 })
+  sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4
+  scene.add(sun)
+  const composer = new EffectComposer(renderer)
+  composer.setSize(FW, FH)
+  composer.addPass(new RenderPass(scene, camera))
+  if (!BUILD && !ITEM) {
+    const ao = new GTAOPass(scene, camera, FW, FH)
+    ao.blendIntensity = 0.8
+    ao.updateGtaoMaterial({ radius: 0.3, distanceExponent: 1.5, thickness: 1, scale: 1 })
+    composer.addPass(ao)
+  }
+  composer.addPass(new OutputPass())
+  composer.render()
+}
+document.getElementById("out").src = renderer.domElement.toDataURL("image/png")
+document.body.dataset.ready = "1"
+</script>
+</body>
+</html>
