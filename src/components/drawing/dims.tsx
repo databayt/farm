@@ -61,14 +61,16 @@ export function VDim({ k, y0, y1, x, side = "left", at = 1, label, prefix, size 
 
 /**
  * A chain along one edge: a dimension between each pair of neighbours in `at`, the names (bold capitals) beyond the
- * line over each piece, then the overall at the next tier when `overall` is set, as the studio's zone chain on its
+ * line over each piece, then the overall when `overall` is set (the next tier, or past the names), as the studio's zone chain on its
  * back wall. `along` is the axis the chain runs on; `edge` the other coordinate of the measured edge.
  */
 export function Chain({ k, along, at, edge, side, tier: t = 1, names, overall = false, size = STUDIO.figure }: {
   k: number; along: "x" | "y"; at: readonly number[]; edge: number; side: Side; tier?: number
-  names?: readonly (string | null)[]; overall?: boolean; size?: number
+  names?: readonly (string | null)[]; overall?: boolean | number; size?: number
 }): React.JSX.Element {
   const pieces = at.slice(1).map((v, i) => [at[i], v] as const)
+  // the overall: the next tier, or the one past the names when the chain has them (a number sets the tier)
+  const ot = typeof overall === "number" ? overall : names?.some(Boolean) ? t + 2 : t + 1
   const nameOff = (tier(t) + STUDIO.names) * k * (side === "top" || side === "left" ? -1 : 1)
   return (
     <g>
@@ -82,9 +84,9 @@ export function Chain({ k, along, at, edge, side, tier: t = 1, names, overall = 
           ? <Name key={`n${i}`} k={k} x={mid} y={edge + nameOff}>{n}</Name>
           : <Name key={`n${i}`} k={k} x={edge + nameOff} y={mid} rotate={90}>{n}</Name>
       })}
-      {overall && (along === "x"
-        ? <HDim k={k} x0={at[0]} x1={at[at.length - 1]} y={edge} side={side === "top" ? "top" : "bottom"} at={t + 1} size={size} />
-        : <VDim k={k} y0={at[0]} y1={at[at.length - 1]} x={edge} side={side === "right" ? "right" : "left"} at={t + 1} size={size} />)}
+      {overall !== false && (along === "x"
+        ? <HDim k={k} x0={at[0]} x1={at[at.length - 1]} y={edge} side={side === "top" ? "top" : "bottom"} at={ot} size={size} />
+        : <VDim k={k} y0={at[0]} y1={at[at.length - 1]} x={edge} side={side === "right" ? "right" : "left"} at={ot} size={size} />)}
     </g>
   )
 }

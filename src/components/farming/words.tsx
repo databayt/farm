@@ -20,7 +20,7 @@ const en = {
   },
   plan: {
     title: (total: number, needed: number) => `Plan, seen from the gate: the field as it starts, the two rows of blocks nearest the gate, ${total} raised beds 1.2 by 10 m in blocks of ten either side of a 2 m main path inside a fence 53,500 by 22,500 mm; ${needed} planted this season (solid) and the rest resting (dashed); the gate at the front onto the garden walk to the galley; the nursery up the yard.`,
-    labels: { nursery: "NURSERY ↑", gate: "GATE · TO THE GALLEY" },
+    labels: { nursery: "NURSERY ↑", gate: "GATE · TO THE GALLEY", beds: "BEDS", path: "PATH" },
   },
   model: {
     caption: "Rendered from the design model: the field as it starts, one season, the fruit row behind",
@@ -173,7 +173,7 @@ const rw: typeof en = {
   },
   plan: {
     title: (total, needed) => `Igishushanyo, kirebwa uturutse ku irembo: umurima uko utangira, imirongo ibiri y'amatsinda y'uturima yegereye irembo, uturima tuzamuye ${total} twa m 1.2 kuri 10 mu matsinda y'uturima icumi ku mpande zombi z'inzira nkuru ya m 2, imbere y'uruzitiro rwa mm 53,500 kuri 22,500; ${needed} muri two duterwa muri iki gihembwe (umurongo wuzuye) n'utundi turuhuka (utudomo); irembo imbere rigana ku nzira y'ubusitani ijya ku gikoni gikuru; ubuhumbikiro hejuru mu rugo.`,
-    labels: { nursery: "UBUHUMBIKIRO ↑", gate: "IREMBO · KU GIKONI GIKURU" },
+    labels: { nursery: "UBUHUMBIKIRO ↑", gate: "IREMBO · KU GIKONI GIKURU", beds: "UTURIMA", path: "INZIRA" },
   },
   model: {
     caption: "Byakozwe uhereye ku gishushanyo mbonera: umurima uko utangira, igihembwe kimwe, umurongo w'ibiti by'imbuto inyuma",
