@@ -4,6 +4,8 @@ Status: updated 2026-10-28. From the founder and the owner, and the photos of 20
 
 What the farm is, where it is and what already stands on it, so every guide starts from the same facts.
 
+Kinyarwanda: [soma iyi paji mu Kinyarwanda](today.rw.md)
+
 ## The land
 
 - About 5 ha [founder, 2026-10-28; not surveyed].
