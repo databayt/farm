@@ -1,6 +1,8 @@
 import compound from "../home/compound.json"
 import bathroom from "../public-bathroom/public-bathroom.json"
 import { getWords } from "@/components/internationalization/words"
+import { HDim } from "@/components/drawing/dims"
+import { scaleFor } from "@/components/drawing/geometry"
 
 import { words } from "./words"
 
@@ -35,6 +37,7 @@ export const LAWN = {
 }
 
 const f = (n: number) => +n.toFixed(3)
+const k = scaleFor(39, 34.5) // the drawing's frame, below
 const thin = { fill: "none", stroke: "currentColor", strokeWidth: 0.75, vectorEffect: "non-scaling-stroke" } as const
 const medium = { ...thin, strokeWidth: 1.8 } as const
 const faint = { ...thin, strokeWidth: 0.5, strokeOpacity: 0.5 } as const
@@ -116,6 +119,9 @@ export async function CampLawn({ title, className }: { title?: string; className
       <text x={f(pitX + 0.6)} y={f(pitY + outdoor.firePitSeats.ring + 1.4)} style={small}>
         {name.fromTents(LAWN.pitNear, LAWN.pitFar)}
       </text>
+      {/* The camping lawn's width, over the tents */}
+      <HDim k={k} x0={Math.min(...tents.map(([x]) => x)) - t} x1={Math.max(...tents.map(([x]) => x)) + t}
+        y={Math.min(...tents.map(([, y]) => y)) - t * Math.sin(Math.PI / 3)} side="top" />
     </svg>
   )
 }

@@ -23,7 +23,7 @@ const en = {
   },
   plan: {
     title: "Plan: a hexagonal tent 2.8 m across, its door rolled up; inside, a floor chair and a folded throw on the left, a futon with a cushion and two stacked cushions on the right, a striped rug in the middle with a tea board, and a lantern at the back.",
-    labels: { floorChair: "FLOOR CHAIR", futon: "FUTON", rug: "RUG", door: "DOOR", tent: "TENT" },
+    labels: { floorChair: "FLOOR CHAIR", futon: "FUTON", rug: "RUG", door: "DOOR", tent: "TENT", doorDim: "door", futonDim: "futon" },
   },
   model: {
     lineAlt: "Line drawing of the camp from the front with the front walls off: the floor chair, the futon with its cushion, the stacked cushions, the throw, the tea board on the rug and the lantern at the back.",
@@ -100,7 +100,7 @@ const rw: typeof en = {
   },
   plan: {
     title: "Igishushanyo: ihema rya mpandeshatu-ebyiri rya m 2.8 z'umurambararo, urugi rwaryo ruzingiye hejuru; imbere, intebe yo hasi n'igitambaro cyo kwiyorosa gizinze ibumoso, matela ifite umusego n'imisego ibiri igeretse iburyo, itapi y'imirongo hagati iriho urubaho rw'icyayi, n'itara inyuma.",
-    labels: { floorChair: "INTEBE YO HASI", futon: "MATELA", rug: "ITAPI", door: "URUGI", tent: "IHEMA" },
+    labels: { floorChair: "INTEBE YO HASI", futon: "MATELA", rug: "ITAPI", door: "URUGI", tent: "IHEMA", doorDim: "umuryango", futonDim: "matela" },
   },
   model: {
     lineAlt: "Igishushanyo cy'imirongo cy'aho bakambika kirebwa imbere, inkuta z'imbere zakuweho: intebe yo hasi, matela n'umusego wayo, imisego igeretse, igitambaro cyo kwiyorosa, urubaho rw'icyayi ku itapi n'itara inyuma.",
