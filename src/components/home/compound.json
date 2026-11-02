@@ -206,12 +206,35 @@
         [45, -0.5, 2.6],
         [50.5, -5.5, 2.2],
         [20, 6.5, 2.2],
-        [34, 5.5, 2.4],
         [35, 12.5, 2.0]
       ],
       "parking": [[13.8, 1.7, 2.1], [30, -1.6, 2.0]],
       "parkingH": 4.5,
       "parkingCrown": 2.2
+    },
+    "fruit": {
+      "about": "The fruit trees of the founder's A1 picture (2026-11-02, D-071): [x, y, crown radius], in this file's frame after the spread. Mangoes drawn 6 m tall with the crown from 1.6 m, oranges 3.6 m with the crown from 0.8 m, banana clumps 2.4 to 3.4 m [A]: two mangoes and three oranges on the front lawn, an orange by the rock road in the place of a shade tree, and bananas along the field's side and on the east lawn. They keep at least 1 m off the volleyball court's free zone and clear of the tents, the decks, the parking and the paths. Varieties are not chosen [A].",
+      "mangoH": 6,
+      "mangoCrown": 1.6,
+      "orangeH": 3.6,
+      "orangeCrown": 0.8,
+      "mango": [
+        [-17.5, -5.8, 2.0],
+        [11, 8.5, 2.6]
+      ],
+      "orange": [
+        [-11, -6, 1.5],
+        [-5.5, -6, 1.5],
+        [0, -6, 1.5],
+        [33.5, 6, 1.8]
+      ],
+      "banana": [
+        [-18.5, 15, 1.4],
+        [-19, 27, 1.4],
+        [52, 22.5, 1.4],
+        [52, 1.5, 1.4],
+        [47.5, 31, 1.4]
+      ]
     },
     "flowers": {
       "about": "[x0, y0, x1, y1]: flower beds, 30 cm high with a timber edge [A]: in the backyard between the back row's containers, along the front of each deck (the steps kept open), beside the guest rooms' windows on the veranda, at the bar, either side of the inner gate, along the parking's north edge, behind the sign wall and beside the outer gate.",

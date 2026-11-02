@@ -285,7 +285,7 @@ function ledTexture() {
 // deepteal, forest and navy are the remastered heroes' paints, for the film's references (?paint=, walk mode)
 const PAINT = { saffron: "#d9a21b", oxide: "#8a3227", teal: "#3e8a86", deepteal: "#1e6a6c", forest: "#1d4d47", navy: "#27386b" }
 // thin parts get crease lines but no silhouette, so railings and slats stay fine in the line drawing
-const THIN = new Set(["tape", "net", "wire", "red", "white-frame", "steel", "black", "slat", "cable", "louvre", "frame-saffron", "frame-oxide", "frame-teal", "frame-deepteal", "frame-forest", "frame-navy"])
+const THIN = new Set(["tape", "net", "wire", "red", "white-frame", "steel", "black", "slat", "cable", "louvre", "frame-saffron", "frame-oxide", "frame-teal", "frame-deepteal", "frame-forest", "frame-navy", "bananaleaf"])
 const MAT = {}
 function mat(name) {
   if (MAT[name]) return MAT[name]
@@ -354,6 +354,11 @@ function mat(name) {
       bark: () => std({ color: "#c9baa3", roughness: 0.9 }),
       leaf: () => std({ color: "#5f7c46", roughness: 0.9 }),
       leaf2: () => std({ color: "#6f8a52", roughness: 0.9 }),
+      leaf3: () => std({ color: "#3f6234", roughness: 0.7 }), // the fruit trees' dense, glossy crowns
+      mango: () => std({ color: "#e7a33a", roughness: 0.5 }),
+      orange: () => std({ color: "#f0821f", roughness: 0.45 }),
+      bananastem: () => std({ color: "#8c9a57", roughness: 0.8 }),
+      bananaleaf: () => std({ color: "#6ea443", roughness: 0.7, side: THREE.DoubleSide }),
       gum: () => std({ color: "#7a8d68", roughness: 0.9 }), // eucalyptus grey-green
       cushion: () => std({ color: "#e9e3d6", roughness: 0.95 }),
       tape: () => std({ color: "#f4f3ee", roughness: 0.8 }), // the court's webbing lines
@@ -888,10 +893,46 @@ function shadeTree(x, z, r, height, crown) {
     ellipsoid(x + Math.cos(a) * d, hc + up * rh * 0.9, z + Math.sin(a) * d, r * s, r * s * 0.75, r * s, k % 3 ? "leaf" : "leaf2")
   }
 }
+// A fruit tree (compound.json garden.fruit, D-071): a short trunk under a dense, dark crown that starts low, its
+// fruit dotted over the crown in the real render.
+function fruitTree(x, z, r, height, crown, fruit) {
+  const rh = (height - crown) / 2, hc = crown + rh, trunk = 0.07 + r * 0.03
+  cyl(x, z, trunk, G, crown + 0.3, "bark", 10, trunk * 0.8)
+  ellipsoid(x, hc, z, r * 0.8, rh * 0.95, r * 0.8, "leaf3")
+  for (let k = 0; k < 12; k++) {
+    const a = (k / 12) * Math.PI * 2 * 2.3 + grnd() * 0.8, up = (k % 3) / 2 - 0.4, d = r * (0.45 + grnd() * 0.15)
+    const s = 0.34 + grnd() * 0.1
+    ellipsoid(x + Math.cos(a) * d, hc + up * rh * 0.8, z + Math.sin(a) * d, r * s, r * s * 0.8, r * s, k % 2 ? "leaf3" : "leaf")
+  }
+  if (LINE) return // at this scale fruit would only clutter the line drawing
+  const size = fruit === "mango" ? 0.1 : 0.08
+  for (let k = 0, n = Math.round(r * 10); k < n; k++) {
+    const a = grnd() * Math.PI * 2, e = (grnd() - 0.35) * 1.1
+    add(new THREE.SphereGeometry(size, 8, 6), fruit, { pos: [x + Math.cos(a) * Math.cos(e) * r * 0.84, hc + Math.sin(e) * rh * 0.9, z + Math.sin(a) * Math.cos(e) * r * 0.84] })
+  }
+}
+// A banana clump: a few stems, each crowned with long leaves arching out and down.
+function banana(x, z, r) {
+  for (let k = 0; k < 6; k++) {
+    const a = (k / 6) * Math.PI * 2 + grnd() * 0.5, d = k ? r * (0.2 + grnd() * 0.25) : 0
+    const h = 2.4 + grnd() * 1.0, sx = x + Math.cos(a) * d, sz = z + Math.sin(a) * d
+    cyl(sx, sz, 0.1, G, h, "bananastem", 8, 0.07)
+    for (let j = 0; j < 5; j++) {
+      const b = (j / 5) * Math.PI * 2 + grnd(), len = r * (0.9 + grnd() * 0.4), droop = 0.35 + grnd() * 0.35
+      const leaf = add(new THREE.BoxGeometry(len, 0.02, 0.34), "bananaleaf", {
+        pos: [sx + Math.cos(b) * len * 0.45 * Math.cos(droop), G + h - Math.sin(droop) * len * 0.45, sz + Math.sin(b) * len * 0.45 * Math.cos(droop)],
+      })
+      leaf.rotation.set(0, -b, -droop)
+    }
+  }
+}
 {
-  const { trees, flowers } = C.garden
+  const { trees, flowers, fruit } = C.garden
   for (const [x, z, r] of trees.list) shadeTree(x, z, r, trees.h, trees.crown)
   for (const [x, z, r] of trees.parking) shadeTree(x, z, r, trees.parkingH, trees.parkingCrown)
+  for (const [x, z, r] of fruit.mango) fruitTree(x, z, r, fruit.mangoH, fruit.mangoCrown, "mango")
+  for (const [x, z, r] of fruit.orange) fruitTree(x, z, r, fruit.orangeH, fruit.orangeCrown, "orange")
+  for (const [x, z, r] of fruit.banana) banana(x, z, r)
   const BLOOMS = ["bloom", "bloom2", "bloom3", "bloom4"]
   for (const [x0, z0, x1, z1] of flowers.list) {
     const h = flowers.h, e = 0.06

@@ -442,7 +442,8 @@ function Continues({ w }: { w: W }) {
 }
 
 // The garden (compound.json garden), from the outer gate to the backyard: each big tree a scalloped crown over
-// its trunk, as plans draw trees, and each flower bed its edge with blooms dotted inside. Drawn under everything,
+// its trunk, as plans draw trees, each fruit tree the same with its fruit ringed inside, each banana clump its
+// fanned leaves, and each flower bed its edge with blooms dotted inside. Drawn under everything,
 // so a crown never hides a name.
 function Tree({ at: [cx, cy], r }: { at: Point; r: number }) {
   const n = Math.max(9, Math.round(r * 5))
@@ -452,6 +453,42 @@ function Tree({ at: [cx, cy], r }: { at: Point; r: number }) {
   return (
     <g>
       <path d={d} {...thin} />
+      <circle cx={f(cx)} cy={f(cy)} r={0.18} fill="currentColor" />
+    </g>
+  )
+}
+
+// A fruit tree (compound.json garden.fruit, D-071): a shade tree's scalloped crown with its fruit ringed inside.
+function FruitTree({ at: [cx, cy], r, fruit }: { at: Point; r: number; fruit: number }) {
+  return (
+    <g>
+      <Tree at={[cx, cy]} r={r} />
+      {Array.from({ length: fruit }, (_, k) => {
+        const a = (2 * Math.PI * k) / fruit + 0.4
+        return <circle key={k} cx={f(cx + r * 0.58 * Math.cos(a))} cy={f(cy + r * 0.58 * Math.sin(a))} r={0.17} {...thin} />
+      })}
+    </g>
+  )
+}
+
+// A banana clump, as plans draw bananas and palms: long leaves fanning out from the stems.
+function Banana({ at: [cx, cy], r }: { at: Point; r: number }) {
+  const n = 7
+  return (
+    <g>
+      {Array.from({ length: n }, (_, k) => {
+        const a = (2 * Math.PI * k) / n + 0.3
+        const [tx, ty] = [cx + r * Math.cos(a), cy + r * Math.sin(a)]
+        const [mx, my] = [cx + r * 0.55 * Math.cos(a), cy + r * 0.55 * Math.sin(a)]
+        const [nx, ny] = [-Math.sin(a) * r * 0.2, Math.cos(a) * r * 0.2]
+        return (
+          <path
+            key={k}
+            d={`M${f(cx)} ${f(cy)}Q${f(mx + nx)} ${f(my + ny)} ${f(tx)} ${f(ty)}Q${f(mx - nx)} ${f(my - ny)} ${f(cx)} ${f(cy)}Z`}
+            {...thin}
+          />
+        )
+      })}
       <circle cx={f(cx)} cy={f(cy)} r={0.18} fill="currentColor" />
     </g>
   )
@@ -480,6 +517,15 @@ function Garden() {
     <g>
       {[...garden.trees.list, ...garden.trees.parking].map(([x, y, r]) => (
         <Tree key={`${x}-${y}`} at={T([x, y])} r={r} />
+      ))}
+      {garden.fruit.mango.map(([x, y, r]) => (
+        <FruitTree key={`m${x}-${y}`} at={T([x, y])} r={r} fruit={6} />
+      ))}
+      {garden.fruit.orange.map(([x, y, r]) => (
+        <FruitTree key={`o${x}-${y}`} at={T([x, y])} r={r} fruit={4} />
+      ))}
+      {garden.fruit.banana.map(([x, y, r]) => (
+        <Banana key={`b${x}-${y}`} at={T([x, y])} r={r} />
       ))}
       {garden.flowers.list.map((b) => (
         <Flowers key={b.join()} box={flip(b)} />
