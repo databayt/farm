@@ -4,7 +4,7 @@
 //   previz/<shot>/start.jpg, end.jpg   1280 x 720, the founder's layout reference for a shot's Nano Banana still
 //   previz.mp4                         a timing animatic of the shots the model can show, 12 fps, 640 x 360
 //   scenes/<id>.jpg                    with --scenes: 1920 x 1080 layout references for the scene images
-//                                      (film/scenes.mjs: the whole farm's views and the walk), in the heroes' paints
+//                                      (film/scenes.mjs: the whole farm's views and the walk)
 //   node scripts/site/walk.mjs [--no-animatic] [--scenes] [shot-id …]
 // The model has no lake, road or sky: what lies beyond it is a flat pale sky.
 import { spawnSync } from "node:child_process"
@@ -13,7 +13,7 @@ import { join } from "node:path"
 import sharp from "sharp"
 
 import { cdp, launch, lock, LOCK, openPage, quit, ROOT, serve } from "./chrome.mjs"
-import { PAINTS, SCENES, VIEWS } from "./film/scenes.mjs"
+import { SCENES, VIEWS } from "./film/scenes.mjs"
 import { SHOTS } from "./film/shots.mjs"
 
 const args = process.argv.slice(2)
@@ -43,9 +43,9 @@ const server = await serve()
 const browser$ = launch()
 try {
   const browser = await cdp(await browser$.ws)
-  // the scene images' layout references, 1920 x 1080, in the heroes' paints
+  // the scene images' layout references, 1920 x 1080
   if (scenes) {
-    const page = await openPage(browser, server, "scripts/site/render/compound.html", `mode=real&walk=1&w=1920&h=1080&paint=${PAINTS}`, { width: 1920, height: 1080 })
+    const page = await openPage(browser, server, "scripts/site/render/compound.html", "mode=real&walk=1&w=1920&h=1080", { width: 1920, height: 1080 })
     const dir = join(OUT, "scenes")
     mkdirSync(dir, { recursive: true })
     for (const s of [...VIEWS, ...SCENES].filter((x) => x.cam && (!only.length || only.includes(x.id)))) {

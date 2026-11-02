@@ -6,7 +6,7 @@ export const DESIGN_BLUR: Record<string, string> = {
   "/designs/bar/render/water-real.webp": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADwAQCdASoQAAcAAsBMJbACdAEDYZqvKAAA/o0A6a/d+CDHqADfL2GflU9nrmvdZ8qvypzaoIikr4AA",
   "/designs/camp/render/camp-hero.jpg": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAQAgCdASoQAAkAAsBMJaACdAEQFSd8Yp6AAP7GB6LSSO3RorhpJg7hFU28y7IHpkpqVP+nzr0hErH53tdwzfWlofrTDypcsK/7AAAA",
   "/designs/camp/render/camp-real.webp": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADQAQCdASoQAAcAAsBMJbACdADB8okMAAD90k+cBN6Ql0244ZUMIJ5SIQk4C7KbApqUK/qHO4470rZPHONEwIAA",
-  "/designs/compound/render/compound-real.webp": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAAAwAgCdASoQAAgAAsBMJZAC7AEPh9q2Vd7cAAD+9BJoEPV689PddWDpDdcJ9ALDhEy5bE2q5lpdA2+lLlpbyEQdvyuXQwkh5QAAAA==",
+  "/designs/compound/render/compound-real.webp": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAQAgCdASoQAAgAAsBMJZgC7AEPhzaf2qwAAP70EmgQ9Xr6aYkr43dXyBmPs1hee+APOD7Ke3TQDLHP8X9olNHcLZ/vb8rl33dR4/AA",
 "/designs/dining/render/dining-hero.jpg": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADQAQCdASoQAAkAAsBMJbACdAECnc9fqAD2R0AnpQ/jksfsgYD/m9DMI26XCJLuVheoxfP6GdCRdBwFy5LC4jB7D9LVp9leL5T1bQvqef8AAA==",
   "/designs/dining/render/dining-real.webp": "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAACQAQCdASoQAAcAAsBMJbACdLoAA5gA/sHVyjta2MCnF4qjz6FPtRVB/2psVU9sAAA=",
   "/designs/farming/render/field-hero.jpg": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADQAQCdASoQAAkAAsBMJaACdAEOJCK+AADOLN8O9CVmg/oMzwEGHqRawIoTuqPdQepy+Y/tboWuekCOlFLnwa13syTXvHuI3MXoNG6CAAA=",

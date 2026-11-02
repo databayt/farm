@@ -6,7 +6,7 @@
 //   SCENES  the walk at eye level, a cameraman's stops from the lake plot to the far end, in one light
 //
 // cam: [pos, look, fov] in compound.json's frame after the spread (x east, y south, h up, metres), rendered by
-// walk.mjs --scenes from the homepage 3D (compound.html?walk=1) painted in the heroes' colours (PAINTS), as each
+// walk.mjs --scenes from the homepage 3D (compound.html?walk=1), in the heroes' colours since D-072, as each
 // image's layout reference. A scene with no cam has no place in the 3D yet; its photo is its reference.
 
 import { readFileSync } from "node:fs"
@@ -21,9 +21,6 @@ const say = (n) => ["no", "one", "two", "three", "four", "five", "six", "seven",
 export const TREES =
   `${say(FRUIT.mango.length)} mango trees heavy with fruit, ${say(FRUIT.orange.length)} orange trees full of oranges ` +
   `and ${say(FRUIT.banana.length)} banana clumps`
-
-// The remastered heroes' paints, where they differ from the homepage 3D's (compound.html PAINT)
-export const PAINTS = "rooms:forest,office:navy,study:deepteal,galley:deepteal,bath:deepteal"
 
 // The light every image shares: the lake plot's, where the film starts
 export const LIGHT = "assets/hero/desktop.jpeg"
