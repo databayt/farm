@@ -9,7 +9,18 @@
 // walk.mjs --scenes from the homepage 3D (compound.html?walk=1) painted in the heroes' colours (PAINTS), as each
 // image's layout reference. A scene with no cam has no place in the 3D yet; its photo is its reference.
 
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
+
 const HERO = (place, file = `${place}-hero.jpg`) => `public/designs/${place}/render/${file}`
+
+// The farm's fruit trees, counted from compound.json (D-071: the founder's A1 picture), so every prompt names the same
+// number and kinds the homepage 2D and 3D draw
+const FRUIT = JSON.parse(readFileSync(join(import.meta.dirname, "../../../src/components/home/compound.json"), "utf8")).garden.fruit
+const say = (n) => ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"][n] ?? String(n)
+export const TREES =
+  `${say(FRUIT.mango.length)} mango trees heavy with fruit, ${say(FRUIT.orange.length)} orange trees full of oranges ` +
+  `and ${say(FRUIT.banana.length)} banana clumps`
 
 // The remastered heroes' paints, where they differ from the homepage 3D's (compound.html PAINT)
 export const PAINTS = "rooms:forest,office:navy,study:deepteal,galley:deepteal,bath:deepteal"
@@ -43,7 +54,8 @@ const EVERY_PLACE =
   "the navy OFFICE with its glass front on a timber deck; the red BAR with its open hatch and deck; in the back row the teal STUDY ROOM with its glass front, " +
   "the long teal GALLEY and the teal PUBLIC BATHROOM; the white CAMP tents round a round stone fire pit with log stools and a long timber table; " +
   "the VOLLEYBALL court on the lawn; at the front the gravel PARKING, the gravel road, the timber gates and the stone sign wall; beside the farm, " +
-  "behind its own fence, the vegetable FIELD."
+  "behind its own fence, the vegetable FIELD. " +
+  `Its fruit trees, exactly where image 1 shows them and no more: ${TREES}; every other tree is a big shade tree.`
 
 const LAND =
   "Around it, the real land of image 3: red laterite earth, a lush mown lawn, big shade trees and flower beds along the decks, " +

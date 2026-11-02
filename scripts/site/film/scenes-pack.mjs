@@ -12,7 +12,7 @@ import { extname, join } from "node:path"
 import sharp from "sharp"
 
 import { ROOT } from "../chrome.mjs"
-import { LIGHT, PLACES, SCENES, SITE, VIEWS } from "./scenes.mjs"
+import { LIGHT, PLACES, SCENES, SITE, TREES, VIEWS } from "./scenes.mjs"
 
 const DIR = process.argv[2] ?? join(homedir(), "Desktop", "farm-scenes-nano-banana")
 const LAYOUTS = join(ROOT, "assets/film/scenes")
@@ -81,7 +81,16 @@ for (const v of VIEWS) {
   copyFileSync(places, join(dir, "2-places.jpg"))
   await jpeg(abs(SITE), join(dir, "3-the-land.jpg"))
   await jpeg(abs(LIGHT), join(dir, "4-the-light.jpg"))
-  writeFileSync(join(dir, "prompt.txt"), prompt(`${v.id}: ${v.title}`, ["Attach 1-layout.jpg, 2-places.jpg, 3-the-land.jpg and 4-the-light.jpg, in that order, then paste:", "", v.prompt]))
+  // every view after A1 is the same farm as A1: its picture is the fifth reference
+  const farm = v.id !== "A1-front" && existsSync(A1)
+  if (farm) copyFileSync(A1, join(dir, "5-the-farm.jpg"))
+  const text = farm
+    ? `${v.prompt} It is the same farm as image 5 (made from above the gate): the same buildings, colours, trees and fruit trees, only seen from this angle.`
+    : v.prompt
+  const attach = farm
+    ? "Attach 1-layout.jpg, 2-places.jpg, 3-the-land.jpg, 4-the-light.jpg and 5-the-farm.jpg, in that order, then paste:"
+    : "Attach 1-layout.jpg, 2-places.jpg, 3-the-land.jpg and 4-the-light.jpg, in that order, then paste:"
+  writeFileSync(join(dir, "prompt.txt"), prompt(`${v.id}: ${v.title}`, [attach, "", text]))
   console.log(`A  ${v.id}`)
 }
 
@@ -120,7 +129,7 @@ for (const s of SCENES) {
       : "",
     photos.length ? `Every building and object looks exactly like the photo${photos.length > 1 ? "s" : ""} (${photos.join(", ")}): the same colours, materials, windows and doors.` : "",
     existsSync(A1)
-      ? `The same warm late-afternoon light and colours as image ${n - 1} (the light), and the same farm as image ${n} (the farm from above): its trees, its fruit trees (mangoes, oranges, bananas) and its flowers.`
+      ? `The same warm late-afternoon light and colours as image ${n - 1} (the light), and the same farm as image ${n} (the farm from above): its shade trees, its flowers and its fruit trees (${TREES} on the whole farm). Any fruit tree in view stands where image ${s.cam ? 1 : n} shows it; add none, remove none.`
       : `The same warm late-afternoon light and colours as image ${n} (the light), and the same farm as the A1-front picture (the last image).`,
     `Lush lawn, big shade trees, flowers. No people, ${animals ? "" : "no animals, "}no cars, no text or letters${s.id === "03-gate" ? " except the sign wall's own DIGITAL FARM letters" : ""}. 16:9.`,
   ].filter(Boolean).join(" ")
@@ -154,7 +163,7 @@ For each folder:
   4. If it drifts, paste one FOLLOW-UP from the bottom of prompt.txt.
   5. Save the best result in the same folder as master.jpg (the largest size offered).
 
-${existsSync(A1) ? "A1-front is made: it fixes the look of the whole farm, its fruit trees included (D-071), and every part B\nfolder carries it as its last image (the-farm)." : "Start with A1-front: it fixes the look of the whole farm, and every part B picture is matched to it."}
+${existsSync(A1) ? "A1-front is made: it fixes the look of the whole farm, its fruit trees included (D-071), and every part B\nfolder and every other angle carries it as its last image (the-farm)." : "Start with A1-front: it fixes the look of the whole farm, and every part B picture is matched to it."}
 Then A2 to A6, then B02 to B19 in order (B01 is the homepage picture itself, already saved).
 A rerun of the folders keeps every master.jpg you have saved.
 
@@ -163,7 +172,9 @@ The references:
   2-places.jpg     every place's photo, named. The names are labels only; they must not appear in the picture.
   the-land         the real farm from the hill (2026-10-25): the earth, the tree line, the lake beyond.
   the-light        the lake picture: the light every scene shares, where the film starts.
-  the-farm         your A1 picture: the same farm, trees and fruit trees, in every part B scene.
+  the-farm         your A1 picture: the same farm, trees and fruit trees, in every other picture.
+
+The fruit trees are the same everywhere (D-071), on the homepage 2D and 3D and in every prompt: ${TREES}.
 
 The dining area and the livestock are not on the plan yet, so they appear only in their own scenes (B17, B19).
 
