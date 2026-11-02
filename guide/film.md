@@ -1,6 +1,6 @@
 # The film
 
-Status: 2026-11-02. The homepage film is a walk (D-070). It starts as the homepage hero, at the lake plot, and plays in the hero itself when someone clicks "Watch film". The cut is live with slow pushes on the place heroes; each of the founder's Veo clips replaces its push as it arrives.
+Status: 2026-11-02. The homepage film is a walk (D-070). It starts as the homepage hero, at the lake plot, and plays in the hero itself when someone clicks "Watch film". The cut is live with slow pushes on the place heroes. Next, the founder makes the group of scene images in Nano Banana (no API); then they are edited into the film.
 
 A walk of about 80 seconds. It leaves the lake plot, takes the road to the compound, goes through the gate, the parking and the inner gate, and passes every place as the homepage 2D lays them out. Each place looks as its remastered hero does. Short vertical reels can be cut from the same material.
 
@@ -45,6 +45,15 @@ The list lives in `scripts/site/film/shots.mjs`; the previz, the founder's folde
 | 16 | 4 | The field | its hero |
 | 17 | 3 | Livestock | its hero |
 | 18 | 8 | The farm from above, the lake in the distance; then back to the lake picture | a Nano Banana still, made first |
+
+## The scene images
+
+The film is edited from one group of pictures, made in Nano Banana from the folders in `~/Desktop/farm-scenes-nano-banana/` (`node scripts/site/walk.mjs --scenes`, then `node scripts/site/film/scenes-pack.mjs`; the list is `scripts/site/film/scenes.mjs`):
+
+- **Part A, the whole farm:** six angles: from above the gate, straight down, over the field, over the east lawn, from behind the back row, and low over the courtyard. Each has the full area and every place in it.
+- **Part B, the walk:** eighteen stops at eye level, a cameraman's walk from the lake plot to the livestock, in the lake picture's light and matched to the A1 picture.
+
+Each folder holds the homepage 3D at that angle, painted in the places' remastered colours (where everything stands), a board of every place's photo (how each looks), the real land from the hill and the light, plus the prompt.
 
 ## Steps
 

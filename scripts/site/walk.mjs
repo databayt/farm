@@ -3,7 +3,9 @@
 // (gitignored, local working space):
 //   previz/<shot>/start.jpg, end.jpg   1280 x 720, the founder's layout reference for a shot's Nano Banana still
 //   previz.mp4                         a timing animatic of the shots the model can show, 12 fps, 640 x 360
-//   node scripts/site/walk.mjs [--no-animatic] [shot-id …]
+//   scenes/<id>.jpg                    with --scenes: 1920 x 1080 layout references for the scene images
+//                                      (film/scenes.mjs: the whole farm's views and the walk), in the heroes' paints
+//   node scripts/site/walk.mjs [--no-animatic] [--scenes] [shot-id …]
 // The model has no lake, road or sky: what lies beyond it is a flat pale sky.
 import { spawnSync } from "node:child_process"
 import { mkdirSync, rmSync, writeFileSync } from "node:fs"
@@ -11,10 +13,12 @@ import { join } from "node:path"
 import sharp from "sharp"
 
 import { cdp, launch, lock, LOCK, openPage, quit, ROOT, serve } from "./chrome.mjs"
+import { PAINTS, SCENES, VIEWS } from "./film/scenes.mjs"
 import { SHOTS } from "./film/shots.mjs"
 
 const args = process.argv.slice(2)
-const animatic = !args.includes("--no-animatic")
+const scenes = args.includes("--scenes")
+const animatic = !args.includes("--no-animatic") && !scenes
 const only = args.filter((a) => !a.startsWith("--"))
 const shots = SHOTS.filter((s) => s.cam && (!only.length || only.includes(s.id)))
 const OUT = join(ROOT, "assets/film")
@@ -28,8 +32,8 @@ const at = ([from, to], t) => {
   return [mix(from[0], to[0], k), mix(from[1], to[1], k), from[2] + (to[2] - from[2]) * k]
 }
 
-async function frame(page, [pos, look, fov], width, height, file) {
-  const url = await page.evaluate(`window.shoot(${JSON.stringify(pos)}, ${JSON.stringify(look)}, ${fov})`)
+async function frame(page, [pos, look, fov], width, height, file, fit = false) {
+  const url = await page.evaluate(`window.shoot(${JSON.stringify(pos)}, ${JSON.stringify(look)}, ${fov}, ${fit})`)
   const png = Buffer.from(url.slice(url.indexOf(",") + 1), "base64")
   await sharp(png).resize(width, height).flatten({ background: SKY }).jpeg({ quality: 86, mozjpeg: true }).toFile(file)
 }
@@ -39,8 +43,18 @@ const server = await serve()
 const browser$ = launch()
 try {
   const browser = await cdp(await browser$.ws)
+  // the scene images' layout references, 1920 x 1080, in the heroes' paints
+  if (scenes) {
+    const page = await openPage(browser, server, "scripts/site/render/compound.html", `mode=real&walk=1&w=1920&h=1080&paint=${PAINTS}`, { width: 1920, height: 1080 })
+    const dir = join(OUT, "scenes")
+    mkdirSync(dir, { recursive: true })
+    for (const s of [...VIEWS, ...SCENES].filter((x) => x.cam && (!only.length || only.includes(x.id)))) {
+      await frame(page, s.cam, 1920, 1080, join(dir, `${s.id}.jpg`), !!s.fit)
+      console.log(`scenes/${s.id}.jpg`)
+    }
+  }
   // stills at 1280 x 720
-  {
+  if (!scenes) {
     const page = await openPage(browser, server, "scripts/site/render/compound.html", "mode=real&walk=1&w=1280&h=720", { width: 1280, height: 720 })
     for (const s of shots) {
       const dir = join(OUT, "previz", s.id)
@@ -69,7 +83,7 @@ try {
     rmSync(tmp, { recursive: true, force: true })
     console.log(`${out}: ${n} frames, ${(n / FPS).toFixed(1)} s, rendered in ${((Date.now() - started) / 1000).toFixed(0)} s`)
   }
-  writeFileSync(join(OUT, "previz", "shots.json"), JSON.stringify(shots.map(({ id, seconds, cam }) => ({ id, seconds, cam })), null, 1) + "\n")
+  if (!scenes) writeFileSync(join(OUT, "previz", "shots.json"), JSON.stringify(shots.map(({ id, seconds, cam }) => ({ id, seconds, cam })), null, 1) + "\n")
   browser.close()
 } finally {
   rmSync(LOCK, { recursive: true, force: true })

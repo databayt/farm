@@ -56,6 +56,12 @@ const C = await (await fetch(`/src/components/home/compound.json?${Date.now()}`)
 // the neighbours the 2D draws beside the compound, from their own pages' data (compound.json neighbours)
 const [VB, FP] = await Promise.all(["/src/components/volleyball/volleyball.json", "/public/designs/farming/data/plan.json"].map(async (u) => (await fetch(`${u}?${Date.now()}`)).json()))
 const N = C.neighbours
+// ?paint=rooms:forest,office:navy repaints units by id (the film's references follow the remastered heroes)
+for (const kv of (Q.get("paint") ?? "").split(",").filter(Boolean)) {
+  const [id, paint] = kv.split(":")
+  const u = C.units.find((x) => x.id === id)
+  if (u) u.paint = paint
+}
 const INK = "#2b2a26", PAGE = "#f7f5ef" // the farm theme's soil and chalk
 const HC = 2.591 // a container's height
 // The 2D sets the compound apart sideways for a wide screen (compound.json's spread), every building at its
@@ -246,7 +252,7 @@ const T = LINE ? {} : {
 // metres one tile of each texture covers [along, across]
 const TILE = { corr: [0.278, 2.6], boards: [1.4, 1.4], grass: [9, 9], meadow: [16, 16], murram: [4, 4],
   pavers: [0.4, 0.4], setts: [1.6, 1.6], stone: [1, 1], water: [12, 12] }
-const MAP = { saffron: "corr", oxide: "corr", teal: "corr", timber: "boards", lawn: "grass", meadow: "meadow",
+const MAP = { saffron: "corr", oxide: "corr", teal: "corr", deepteal: "corr", forest: "corr", navy: "corr", timber: "boards", lawn: "grass", meadow: "meadow",
   murram: "murram", pavers: "pavers", setts: "setts", stone: "stone", water: "water" }
 
 // DIGITAL FARM for the sign's panel, sized to it: LED letters in warm white with their glow on dark steel,
@@ -276,9 +282,10 @@ function ledTexture() {
 }
 
 // ------------------------------------------------------------ materials
-const PAINT = { saffron: "#d9a21b", oxide: "#8a3227", teal: "#3e8a86" }
+// deepteal, forest and navy are the remastered heroes' paints, for the film's references (?paint=, walk mode)
+const PAINT = { saffron: "#d9a21b", oxide: "#8a3227", teal: "#3e8a86", deepteal: "#1e6a6c", forest: "#1d4d47", navy: "#27386b" }
 // thin parts get crease lines but no silhouette, so railings and slats stay fine in the line drawing
-const THIN = new Set(["tape", "net", "wire", "red", "white-frame", "steel", "black", "slat", "cable", "louvre", "frame-saffron", "frame-oxide", "frame-teal"])
+const THIN = new Set(["tape", "net", "wire", "red", "white-frame", "steel", "black", "slat", "cable", "louvre", "frame-saffron", "frame-oxide", "frame-teal", "frame-deepteal", "frame-forest", "frame-navy"])
 const MAT = {}
 function mat(name) {
   if (MAT[name]) return MAT[name]
@@ -310,6 +317,10 @@ function mat(name) {
       "frame-saffron": () => std({ color: tint(PAINT.saffron, 0.86), roughness: 0.5, metalness: 0.2 }),
       "frame-oxide": () => std({ color: tint(PAINT.oxide, 0.86), roughness: 0.5, metalness: 0.2 }),
       "frame-teal": () => std({ color: tint(PAINT.teal, 0.86), roughness: 0.5, metalness: 0.2 }),
+      ...Object.fromEntries(["deepteal", "forest", "navy"].flatMap((k) => [
+        [k, () => std({ map: T.corr, color: PAINT[k], roughness: 0.55, metalness: 0.15 })],
+        [`frame-${k}`, () => std({ color: tint(PAINT[k], 0.86), roughness: 0.5, metalness: 0.2 })],
+      ])),
       red: () => std({ color: "#7e2f26", roughness: 0.45, metalness: 0.35 }), // railings, door and window frames
       "white-frame": () => std({ color: "#f1f0eb", roughness: 0.4 }), // the sliding doors' frames, white as on site
       concrete: () => std({ color: "#c9c5bc", roughness: 0.85 }), // the fire pit's cap
@@ -968,13 +979,27 @@ if (Q.has("walk")) {
   window.PLAN = C
   camera.clearViewOffset()
   camera.near = 0.1
-  window.shoot = (pos, look, fov = 50) => {
+  // fit: frame the whole model tightly from this angle, as the front view does
+  window.shoot = (pos, look, fov = 50, fit = false) => {
     camera.fov = fov
     camera.aspect = FW / FH
     camera.position.set(-pos[0], pos[2], pos[1])
     camera.lookAt(-look[0], look[2], look[1])
+    camera.clearViewOffset()
     camera.updateProjectionMatrix()
     camera.updateMatrixWorld()
+    if (fit) {
+      let q = [Infinity, Infinity, -Infinity, -Infinity]
+      for (const xx of [bb.min.x, bb.max.x]) for (const yy of [bb.min.y, bb.max.y]) for (const zz of [bb.min.z, bb.max.z]) {
+        const v = new THREE.Vector3(xx, yy, zz).project(camera)
+        const X = ((v.x + 1) / 2) * FW, Y = ((1 - v.y) / 2) * FH
+        q = [Math.min(q[0], X), Math.min(q[1], Y), Math.max(q[2], X), Math.max(q[3], Y)]
+      }
+      let fw = (q[2] - q[0]) * 1.04, fh = (q[3] - q[1]) * 1.06
+      if (fw / fh > FW / FH) fh = (fw * FH) / FW; else fw = (fh * FW) / FH
+      camera.setViewOffset(FW, FH, (q[0] + q[2]) / 2 - fw / 2, (q[1] + q[3]) / 2 - fh / 2, fw, fh)
+      camera.updateProjectionMatrix()
+    }
     draw()
     return renderer.domElement.toDataURL("image/png")
   }
