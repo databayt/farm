@@ -1,6 +1,6 @@
 # The business model
 
-Status: first model of 2026-10-28. Every rate and occupancy is an assumption [A] until 10 comparable listings near the farm are collected and the first 3 months are measured.
+Status: first model of 2026-10-28; the study room's line redone on 2026-11-02 (D-073). Every rate and occupancy is an assumption [A] until 10 comparable listings near the farm are collected and the first 3 months are measured.
 
 What the farm sells, what drives each line, where it breaks even, and why it can keep itself going.
 
@@ -11,7 +11,7 @@ What the farm sells, what drives each line, where it breaks even, and why it can
 | Stays | 2 studios, 3 en-suite rooms, 6 tents | nights sold × nightly rate |
 | Food and drink | breakfast and dinner from the galley, the cigar and whisky lounge | guests × spend per day |
 | Events | night camps, birthdays, team days, retreats, small weddings | events per month × net per event |
-| The study room | day passes, workshops, school groups | days booked |
+| The study room | courses for one company's team, small retreats, funded cohorts; day passes for staying guests ([its business](study-room.md)) | room days sold × what each day leaves |
 | Activities | volleyball, the woodland walk, the field and the animals | packages sold with stays and events |
 | The field | surplus eggs, vegetables and live animals | what the galley doesn't use |
 
@@ -24,11 +24,11 @@ What the farm sells, what drives each line, where it breaks even, and why it can
 | Tents | 6 × 15,000 a night × 25% | about 8.2M |
 | Food and drink | about 2,700 guest-days × 10,000 | about 27M |
 | Events | 2 a month × 500,000 net | about 12M |
-| Study room | 4 days a month × 100,000 | about 4.8M |
+| Study room | the farm's part only: 6 room days a month × 8 people × 25,000, plus 10 day passes ([its business](study-room.md)); databayt's tuition, about 14.4M, is not the farm's | about 15.6M |
 | Field surplus | eggs, vegetables, live goats | about 2M |
-| **Total** | | **about 84M** |
+| **Total** | | **about 94M** |
 
-Method [E]: each line is units × rate × days × occupancy; guest-days count 2 guests per studio, room and tent at their occupancy. Costs to set against it [A]: the team of about 7 at about 150,000 a month each (about 12.6M a year), food at about 35% of food sales (about 9.6M), power (about 13.6M a year from the grid alone, about half that with the [solar system](../farm/electric.md)), listing fees, upkeep and the septic desludging.
+Method [E]: each line is units × rate × days × occupancy; guest-days count 2 guests per studio, room and tent at their occupancy. The study room's groups buy their beds and meals on the stays' and food lines, inside the occupancy above. Costs to set against it [A]: the team of about 7 at about 150,000 a month each (about 12.6M a year), food at about 35% of food sales (about 9.6M), power (about 13.6M a year from the grid alone, about half that with the [solar system](../farm/electric.md)), listing fees, upkeep and the septic desludging.
 
 ## When it breaks even
 

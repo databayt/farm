@@ -18,7 +18,7 @@ Live: https://farm.databayt.org in English and Kinyarwanda (D-058; the Kinyarwan
 | Studios (2) | the carpenter on site; the Day 1 survey taken 2026-10-31 | revision B from the survey, then the floor, battens, first fix, foam | a spray-foam contractor |
 | Guest rooms (3) | the joined 40 ft pair, gutted | strip to the steel, find the leak, three en-suite rooms (D-061) | the block's survey |
 | Office | a lit 20 ft unit with a desk | the L sofa and the big desk | which equipment is already owned |
-| Study room | not on site yet [U] | a long table for eight and a 65-inch screen (D-065) | nothing |
+| Study room | not on site yet [U] | a long table for eight and a 65-inch screen (D-065); then a pilot course for one team ([its business](guide/business/study-room.md), D-073) | RTB's answer on short courses; who sells the courses |
 | Galley | not on site yet [U] | the worktop and an LPG cooking line, its cylinders in a cage outside (D-065) | an LPG installer |
 | Public bathroom | not on site yet [U] | one row against the back wall (D-060) | the septic sized for its users |
 | Bar | the red kiosk, its hatch framed | the work counter, the back bar, the deck and its lounge (D-065) | which coffee machine |
@@ -38,6 +38,7 @@ The bar's and the parking's hero images still show their old designs (stools, gr
 3. **Soil:** one test before planting; Bugesera's soils are acid and poor, so lime and compost are likely.
 4. **The septic:** sized for every user to RS 143:2019; a sealed tank or a soak pit, as the district allows.
 5. **The RDB licence** for the stays, the bar and the meals.
+6. **The study room's courses:** RTB's written answer on whether a company's short courses need its authorisation, RRA's on the tax of a package, and the split between databayt and the farm (D-073).
 
 ## Where things are
 

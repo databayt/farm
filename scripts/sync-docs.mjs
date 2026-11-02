@@ -61,6 +61,7 @@ const UNPUBLISHED = [
   { slug: "film", src: "guide/film.md" },
   "---Business---",
   { slug: "business-model", src: "guide/business/model.md" },
+  { slug: "business-study-room", src: "guide/business/study-room.md" },
   { slug: "marketing", src: "guide/business/marketing.md" },
   { slug: "digital", src: "guide/business/digital.md" },
   "---Studio package---",
