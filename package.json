@@ -17,7 +17,9 @@
     "site:refs": "node scripts/site/refs.mjs",
     "site:assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/site/build-assets.mjs",
     "site:hero": "node scripts/site/hero.mjs",
-    "site:blur": "node scripts/site/design-blur.mjs"
+    "site:blur": "node scripts/site/design-blur.mjs",
+    "site:walk": "node scripts/site/walk.mjs",
+    "site:film": "node scripts/site/film/film.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

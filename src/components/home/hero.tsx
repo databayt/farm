@@ -4,6 +4,7 @@ import { ArrowDown } from "lucide-react"
 
 import { getLocale } from "@/components/internationalization/locale"
 
+import { FILM } from "./film.generated"
 import { HERO } from "./hero.generated"
 import { WatchFilm } from "./watch-film"
 import { words } from "./words"
@@ -42,20 +43,39 @@ export async function Hero() {
     <section
       id="top"
       aria-labelledby="hero-title"
-      className="bg-soil text-chalk relative isolate flex h-[100svh] min-h-[600px] flex-col justify-end overflow-hidden"
+      className="group/hero bg-soil text-chalk relative isolate flex h-[100svh] min-h-[600px] flex-col justify-end overflow-hidden"
     >
       <HeroPicture alt={alt} />
+      {/* The film (D-070) plays here, in the picture's place: its first and last seconds are this picture at this
+          crop, so Watch film seems to set the picture moving, with no player. It loads only from the button. */}
+      <video
+        id="hero-film"
+        aria-hidden
+        tabIndex={-1}
+        playsInline
+        preload="none"
+        className="farm-settle absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-700 data-[on]:opacity-100 data-[on]:transition-none"
+      >
+        <source src={FILM.portrait.src} media="(orientation: portrait)" type="video/mp4" />
+        <source src={FILM.landscape.src} type="video/mp4" />
+      </video>
+      <p
+        aria-hidden
+        className="pointer-events-none absolute top-5 left-4 text-xs tracking-[0.12em] uppercase opacity-0 drop-shadow-[0_1px_6px_rgb(0_0_0/0.6)] transition-opacity duration-700 group-data-[film]/hero:opacity-90 md:left-10"
+      >
+        {w.captions.concept}
+      </p>
       {/* A little shade at the top for the header; the words get theirs from the band below. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/45 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/45 to-transparent transition-opacity duration-700 group-data-[film]/hero:opacity-0"
       />
       {/* The header turns solid once this line scrolls past the top. */}
       <div id="hero-sentinel" aria-hidden className="pointer-events-none absolute inset-x-0 top-[60%] h-px" />
 
       {/* Placed as on /en/studio: bottom left, on a band that darkens toward the foot, at the page's
           edge padding (px-4, md:px-10), not in a centred column. */}
-      <div className="relative w-full bg-gradient-to-t from-black/70 via-black/35 to-transparent px-4 pt-24 pb-24 md:px-10 md:pb-32">
+      <div className="relative w-full bg-gradient-to-t from-black/70 via-black/35 to-transparent px-4 pt-24 pb-24 transition-[opacity,visibility] duration-700 group-data-[film]/hero:invisible group-data-[film]/hero:opacity-0 md:px-10 md:pb-32">
         <h1
           id="hero-title"
           className={`${display.className} farm-intro text-[clamp(3rem,7vw,6rem)] leading-[0.95] font-medium tracking-[0.01em] uppercase drop-shadow-[0_2px_24px_rgb(0_0_0/0.25)]`}
@@ -67,13 +87,13 @@ export async function Hero() {
           ))}
         </h1>
         <div className="farm-intro-3 mt-8 flex flex-wrap items-center gap-x-10 gap-y-5 text-[15px] tracking-[0.02em] uppercase">
-          <WatchFilm labels={{ watch: w.hero.watch, close: w.hero.closeFilm, today: w.captions.today }} className="text-soil inline-flex h-14 cursor-pointer items-center gap-5 bg-[rgb(214_207_190/0.92)] px-7 uppercase backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]" />
+          <WatchFilm labels={{ watch: w.hero.watch, close: w.hero.closeFilm }} className="text-soil inline-flex h-14 cursor-pointer items-center gap-5 bg-[rgb(214_207_190/0.92)] px-7 uppercase backdrop-blur-sm transition-colors hover:bg-[rgb(226_220_205)]" />
         </div>
       </div>
 
       <a
         href="#plans"
-        className="farm-intro-3 absolute inset-x-0 bottom-8 mx-auto hidden w-fit items-center gap-2 text-xs tracking-[0.12em] uppercase opacity-90 transition-opacity hover:opacity-100 lg:inline-flex"
+        className="farm-intro-3 absolute inset-x-0 bottom-8 mx-auto hidden w-fit items-center gap-2 text-xs tracking-[0.12em] uppercase opacity-90 transition-opacity hover:opacity-100 group-data-[film]/hero:invisible group-data-[film]/hero:opacity-0 lg:inline-flex"
       >
         {scroll}
         <ArrowDown className="size-3.5" aria-hidden />

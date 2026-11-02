@@ -8,7 +8,7 @@ import type { Nav } from "@/components/site/nav"
 // Fixed over the hero, and nothing in it but a short two-line hamburger at the start that opens the site menu full
 // screen (components/site-menu.tsx; the docs link lives inside it). Light on the film while it fills
 // the screen; once the hero has mostly scrolled away (#hero-sentinel) the button gets a chalk disc
-// so it stays legible over the page, with no bar behind it.
+// so it stays legible over the page, with no bar behind it. It steps aside while the hero's film plays (html[data-film]).
 export function Header({ nav }: { nav: Nav }) {
   const ref = React.useRef<HTMLElement>(null)
 
@@ -26,7 +26,7 @@ export function Header({ nav }: { nav: Nav }) {
   return (
     <header
       ref={ref}
-      className="group/header text-chalk pointer-events-none fixed inset-x-0 top-0 z-50 h-(--header-height) transition-colors duration-300 data-[solid]:text-soil"
+      className="group/header text-chalk pointer-events-none fixed inset-x-0 top-0 z-50 h-(--header-height) transition-[color,opacity,visibility] duration-300 data-[solid]:text-soil [html[data-film]_&]:invisible [html[data-film]_&]:opacity-0"
     >
       <div className="flex h-full w-full items-center justify-start px-4 md:px-10">
         <SiteMenu
