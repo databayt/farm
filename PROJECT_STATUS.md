@@ -1,11 +1,11 @@
 # Project status
 
-Updated: 2026-10-31. **The farm is past its unknowns: the land, the start and the places are known. What is still open is the land title, the soil and water tests, and one or two decisions per place.**
+Updated: 2026-11-02. **The farm is past its unknowns: the land, the start and the places are known. What is still open is the land title, the soil and water tests, and one or two decisions per place.**
 Live: https://farm.databayt.org in English and Kinyarwanda (D-058; the Kinyarwanda is a machine draft) · repo https://github.com/databayt/farm, public (D-013): add nothing private.
 
 ## What we know
 
-- **The land:** about 5 ha in Gashora, Bugesera, an hour from Kigali, an upside-down L in the founder's sketch (D-027) [E, sketch only]. Two grounds: a mown lawn where the containers and the camp stand, and a bare laterite hill above it whose gullies run down to the containers [observed 2026-10-25]. The lake is in view across a neighbour's plot, not on the farm.
+- **The land:** about 5 ha in Gashora, Bugesera, an hour from Kigali, an upside-down L in the founder's sketch (D-027) [E, sketch only]. Two grounds: a mown lawn where the containers and the camp stand, and a bare laterite hill above it whose gullies run down to the containers [observed 2026-10-25]. The compound's plot looks at the lake across a neighbour's plot; the water's edge is ours on a second plot, about 5 minutes by road (D-070).
 - **What stands:** the containers on site, the camp that already hosts events, a steel gate on a concrete apron, a lit office unit, and low unfinished brick walls ([the farm today](guide/farm/today.md)). The joined 40 ft pair is gutted inside: a rebuild, not a fit-out.
 - **The media:** every photo and clip the founder and the site team sent is placed in `study/registers/media.csv`: the land, the neighbour's shore, elsewhere, a reference, AI-made or unknown. Only the land is shown as "Today".
 - **The start:** every place in the first build, each at its minimum (founder, 2026-10-31). The studios and the guest rooms go first (D-026, D-061); the carpenter has been on site since 2026-10-29.
@@ -33,7 +33,7 @@ The bar's and the parking's hero images still show their old designs (stools, gr
 
 ## Still open
 
-1. **The pin or the land-title UPI** (gate G0): the boundary, the title and the distance to the lake. A location tag on the founder's own photos may already give the pin.
+1. **The pin or the land-title UPI** (gate G0), for both plots: the boundaries, the titles and the distance to the lake. A location tag on the founder's own photos may already give the pin.
 2. **Water:** the borehole's yield through June to August and its quality; the field needs 2.8 to 3.6 m³ a day in the driest months [E].
 3. **Soil:** one test before planting; Bugesera's soils are acid and poor, so lime and compost are likely.
 4. **The septic:** sized for every user to RS 143:2019; a sealed tank or a soak pit, as the district allows.
