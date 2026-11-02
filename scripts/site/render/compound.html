@@ -19,6 +19,9 @@
   Serve the repo root (python3 -m http.server <port>), open this page at 2400 x 1260, and once
   body[data-ready] is set save the data URL in #out: it has a transparent ground, flattened onto the
   page colour (#f7f5ef) when it is converted. Containers are ISO sizes; the rest is illustrative.
+
+    ?mode=real&walk=1&w=&h=  the film's previz: window.shoot(pos, look, fov) renders one frame from a walking
+                             camera (scripts/site/walk.mjs, D-070)
 -->
 <html>
 <head>
@@ -48,7 +51,7 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js"
 
 const Q = new URLSearchParams(location.search)
 const LINE = Q.get("mode") !== "real"
-const [FW, FH] = [2400, 1260]
+const [FW, FH] = [Number(Q.get("w")) || 2400, Number(Q.get("h")) || 1260] // the film's previz asks for its own size
 const C = await (await fetch(`/src/components/home/compound.json?${Date.now()}`)).json()
 // the neighbours the 2D draws beside the compound, from their own pages' data (compound.json neighbours)
 const [VB, FP] = await Promise.all(["/src/components/volleyball/volleyball.json", "/public/designs/farming/data/plan.json"].map(async (u) => (await fetch(`${u}?${Date.now()}`)).json()))
@@ -917,6 +920,7 @@ if (w / h > FW / FH) h = (w * FH) / FW; else w = (h * FW) / FH
 camera.setViewOffset(FW, FH, (px[0] + px[2]) / 2 - w / 2, (px[1] + px[3]) / 2 - h / 2, w, h)
 
 // ------------------------------------------------------------ render
+let draw
 if (LINE) {
   // crease lines from the geometry, silhouettes from the outline effect, both in the page's ink
   // both sides: the mirrored model turns the line quads round
@@ -932,7 +936,7 @@ if (LINE) {
   }
   const ink = new THREE.Color(INK)
   const effect = new OutlineEffect(renderer, { defaultThickness: 0.0024, defaultColor: [ink.r, ink.g, ink.b] })
-  effect.render(scene, camera)
+  draw = () => effect.render(scene, camera)
 } else {
   const pmrem = new THREE.PMREMGenerator(renderer)
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
@@ -955,9 +959,29 @@ if (LINE) {
   ao.updateGtaoMaterial({ radius: 0.6, distanceExponent: 1.5, thickness: 1.5, scale: 1 })
   composer.addPass(ao)
   composer.addPass(new OutputPass())
-  composer.render()
+  draw = () => composer.render()
 }
-document.getElementById("out").src = renderer.domElement.toDataURL("image/png")
+if (Q.has("walk")) {
+  // The film's previz (scripts/site/walk.mjs, D-070): the same model through a walking camera. Points come in
+  // compound.json's frame after the spread (x east, y south, h up), which PLAN holds; the model is mirrored, so
+  // x goes in as -x. Each call renders one frame and returns it as a PNG data URL (transparent sky).
+  window.PLAN = C
+  camera.clearViewOffset()
+  camera.near = 0.1
+  window.shoot = (pos, look, fov = 50) => {
+    camera.fov = fov
+    camera.aspect = FW / FH
+    camera.position.set(-pos[0], pos[2], pos[1])
+    camera.lookAt(-look[0], look[2], look[1])
+    camera.updateProjectionMatrix()
+    camera.updateMatrixWorld()
+    draw()
+    return renderer.domElement.toDataURL("image/png")
+  }
+} else {
+  draw()
+  document.getElementById("out").src = renderer.domElement.toDataURL("image/png")
+}
 document.body.dataset.ready = "1"
 </script>
 </body>
