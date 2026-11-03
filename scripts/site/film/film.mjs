@@ -17,7 +17,8 @@
 // crops both alike and the picture starts to move with no visible jump. Colour goes through BT.709 and is tagged so.
 //
 // Outputs:
-//   assets/film/film.mp4, film-portrait.mp4    H.264, faststart (video stays out of git and the Worker)
+//   assets/film/film.mp4, film-portrait.mp4    H.264, faststart (video stays out of git and the Worker), copied into
+//                                              ~/Desktop/farm-film as digital-farm-film(-phone).mp4
 //   cdn.databayt.org/farm/home/film.mp4 …      published with media.sh, which needs the CDN's AWS credentials
 //   src/components/home/film.generated.ts      the URLs (content-hashed), sizes and which shots are clips
 import { execFileSync } from "node:child_process"
@@ -209,6 +210,11 @@ async function cut(form) {
 
 const made = {}
 for (const form of Object.keys(FORMS)) made[form] = await cut(form)
+// a copy of the cut in the founder's folder, beside the photos it is made from (named so it is never collected as his)
+if (existsSync(DESK)) {
+  copyFileSync(made.landscape.out, join(DESK, "digital-farm-film.mp4"))
+  copyFileSync(made.portrait.out, join(DESK, "digital-farm-film-phone.mp4"))
+}
 
 // ------------------------------------------------------------ publish + the manifest
 const url = (form) => {
