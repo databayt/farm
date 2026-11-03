@@ -1,6 +1,6 @@
 # The film
 
-Status: 2026-11-03. The homepage film is a walk (D-070). It starts as the homepage hero, at the lake plot, and plays in the hero itself when someone clicks "Watch film". The live cut is made from the founder's scene images (the whole farm from six angles, the road, the inner gate, the camp, the studios) and the place heroes, each with a slow camera move. Next, the founder makes the clips in Flow or the Gemini app (Veo, no API) from the folders in `~/Desktop/film-walk/`; each clip replaces its still with no code change.
+Status: 2026-11-03. The homepage film is a walk (D-070). It starts as the homepage hero, at the lake plot, and plays in the hero itself when someone clicks "Watch film". The live cut is made from the founder's scene images (the whole farm from six angles, the road, the inner gate, the camp, the studios) and the place heroes, each with a slow camera move. Next, the founder makes the film himself in Gemini or Flow (Veo, no API) from one folder, `~/Desktop/farm-film/`: the 21 photos in order and one prompt. His film replaces the stills with no code change.
 
 A walk of about 80 seconds. It leaves the lake plot, takes the road to the farm, rises over the gate to show the whole farm, comes down through the inner gate and passes every place as the homepage 2D lays them out, then flies over the farm from every side and back to the lake. Each place looks as its remastered hero does. Short vertical reels can be cut from the same material.
 
@@ -26,24 +26,24 @@ The lake is ours: a second plot about 5 minutes by road from the compound (D-070
 
 ## The walk, shot by shot
 
-The list lives in `scripts/site/film/shots.mjs`; the founder's folders and the cut both read it. A joined shot ends on the next shot's picture, so its clip (Flow's "Frames to video") runs on into the next one and the clips read as one camera.
+The list lives in `scripts/site/film/shots.mjs`; the founder's folder and the cut both read it. The photo numbers in `~/Desktop/farm-film/` are the shot numbers.
 
-| # | Seconds | Shot | Starts from | Joined to |
-|---|---|---|---|---|
-| 01 | 6 | The lake plot: the hero comes alive and turns onto the road | the homepage hero itself | 02 |
-| 02 | 5 | The road beside the lake, toward the sign wall and the gate | scene B02 | 03 |
-| 03 | 7 | Up over the gate: the whole farm | scene A1 | 04 |
-| 04 | 5 | Down through the inner gate into the courtyard | scene B06 | 05 |
-| 05 | 5 | The camp and the fire pit | scene B07 | 06 |
-| 06 | 5 | Between the studios | scene B08 | |
-| 07 | 5 | Low over the courtyard, down to the office | scene A6 | 08 |
-| 08–10 | 4 each | The office, the bar, the guest rooms | their heroes | |
-| 11–13 | 3 each | The back row: the study room, the galley, the public bathroom | their heroes | |
-| 14–17 | 3 each | Volleyball, dining under the thatch, the field, livestock | their heroes | |
-| 18 | 4 | Over the field | scene A3 | 19 |
-| 19 | 5 | Straight down, like the plan | scene A2, cut above the sign | 20 |
-| 20 | 4 | From behind the back row | scene A5 | 21 |
-| 21 | 6 | Toward the lake, and back to the hero | scene A4, cut toward the lake | 01 |
+| # | Seconds | Shot | Photo |
+|---|---|---|---|
+| 01 | 6 | The lake plot: the hero comes alive and turns toward the road | the homepage hero itself |
+| 02 | 5 | The road beside the lake, toward the sign wall and the gate | scene B02 |
+| 03 | 7 | Up over the gate: the whole farm | scene A1 |
+| 04 | 5 | Down through the inner gate into the courtyard | scene B06 |
+| 05 | 5 | The camp and the fire pit | scene B07 |
+| 06 | 5 | Between the studios | scene B08 |
+| 07 | 5 | Low over the courtyard | scene A6 |
+| 08–10 | 4 each | The office, the bar, the guest rooms | their heroes |
+| 11–13 | 3 each | The back row: the study room, the galley, the public bathroom | their heroes |
+| 14–17 | 3 each | Volleyball, dining under the thatch, the field, livestock | their heroes |
+| 18 | 4 | Over the field | scene A3 |
+| 19 | 5 | Straight down, like the plan | scene A2, cut above the sign |
+| 20 | 4 | From behind the back row | scene A5 |
+| 21 | 6 | Toward the lake, and back to the hero | scene A4, cut toward the lake |
 
 The office shot uses its hero: its scene image (B10) came out with the 3D model's blocky flowers in its planters. The parking, the terrace and the other walk scenes are not made yet; the aerials and the heroes cover them.
 
@@ -59,9 +59,9 @@ Each folder holds the homepage 3D at that angle, painted in the places' remaster
 ## Steps
 
 1. **Scene images:** the founder's pictures go into `~/Desktop/farm-scenes-nano-banana/<scene>/master.jpg`; `node scripts/site/film/scenes-pack.mjs` copies them into `assets/film/masters/` (local, gitignored).
-2. **Folders:** `node scripts/site/film/packs.mjs` writes one folder per shot to `~/Desktop/film-walk/`. Each holds `1-start.jpg`, for a joined shot `2-end.jpg` (the next shot's picture), and `prompt.txt`: the Veo prompt for Flow's "Frames to video", and one for the Gemini app with the first picture only.
-3. **Clips:** the founder makes each clip and saves it as `clip.mp4` in its folder. Shot 01 also gets an upright clip for phones.
-4. **Cut:** `pnpm site:film` collects the clips and cuts the film. Each shot plays its clip (a joined clip in full, 8 seconds), or a slow move on its picture until the clip exists. The film opens and closes on the hero's own picture, at its crop. It publishes `cdn.databayt.org/farm/home/film.mp4` and `film-portrait.mp4`, and writes `src/components/home/film.generated.ts`.
+2. **The folder:** `node scripts/site/film/packs.mjs` writes `~/Desktop/farm-film/`: the 21 photos, numbered in the film's order, and `prompt.txt`, one prompt for the whole film with a line per photo.
+3. **The film:** the founder attaches the photos, pastes the prompt and saves the result there as `film.mp4`. If his app takes one photo at a time, he makes a clip per photo and saves it by its number (`03.mp4`).
+4. **Cut:** `pnpm site:film` collects them and cuts the film: his whole film between the hero's opening and close, or each shot's clip, or a slow move on its photo until the clip exists. The film opens and closes on the hero's own picture, at its crop. It publishes `cdn.databayt.org/farm/home/film.mp4` and `film-portrait.mp4`, and writes `src/components/home/film.generated.ts`.
 5. **Check:** no faces, no plates, no AI-made text; the start shows no jump when Watch film is clicked; then deploy.
 6. **Previz** (optional): `pnpm site:walk` renders the place shots' start and end from the 3D model into `assets/film/previz/`.
 

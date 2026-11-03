@@ -4,14 +4,13 @@
 //
 //   pnpm site:film [--no-publish]
 //
-// Inputs (gitignored):
-//   ~/Desktop/film-walk/<shot>/clip.mp4, clip-portrait.mp4, 1-start.jpg   the founder's Veo clips and stills
-//                                                                          (packs.mjs), copied into assets/film
-//   assets/film/music.(mp3|m4a|wav)                                       an optional music bed with a free licence
-// Each shot plays its clip where one exists, and a slow push on its start image where none does (the founder's scene
-// images in assets/film/masters, or a place's hero); a shot with neither is left out, so the film works at every
-// step and each clip swaps in with no code change. A joined clip (one that ends on the next shot's picture) plays in
-// full, so the walk runs on from one clip into the next.
+// Inputs (gitignored), the founder's videos in ~/Desktop/farm-film (packs.mjs), copied into assets/film/clips:
+//   film.mp4                       the whole film, made from all the photos: it plays between the opening and the close
+//   03.mp4, 03-upright.mp4 …       or one clip per photo, by its number (an upright one for phones, if made)
+//   assets/film/music.(mp3|m4a|wav)  an optional music bed with a free licence
+// Without the whole film, each shot plays its clip where one exists, and a slow push on its photo where none does (the
+// founder's scene images in assets/film/masters, or a place's hero); a shot with neither is left out, so the film
+// works at every step and each clip swaps in with no code change.
 //
 // The film opens and closes on the hero's own picture, resized exactly as scripts/site/hero.mjs serves it, and is cut
 // at the hero's aspect (1920 x 1072 wide; 1080 x 2332 upright, the mobile picture's shape), so the hero's object-cover
@@ -22,7 +21,7 @@
 //   cdn.databayt.org/farm/home/film.mp4 …      published with media.sh, which needs the CDN's AWS credentials
 //   src/components/home/film.generated.ts      the URLs (content-hashed), sizes and which shots are clips
 import { execFileSync } from "node:child_process"
-import { copyFileSync, existsSync, mkdirSync, rmSync, statSync, writeFileSync } from "node:fs"
+import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import sharp from "sharp"
@@ -41,7 +40,7 @@ const FORMS = {
   landscape: { size: [1920, 1072], up: 3, still: "public/site/hero/desktop-1920.webp", crf: 28, rate: 3 },
   portrait: { size: [1080, 2332], up: 2, still: "public/site/hero/mobile-1920.webp", crf: 30, rate: 2.5 },
 }
-const DESK = join(homedir(), "Desktop", "film-walk")
+const DESK = join(homedir(), "Desktop", "farm-film")
 const FILM = join(ROOT, "assets", "film")
 const WORK = join(FILM, "cut")
 const MEDIA_SH = process.env.MEDIA_SH ?? join(homedir(), ".claude", "skills", "edit", "scripts", "media.sh")
@@ -53,20 +52,26 @@ const probe = (file, entries) =>
   execFileSync("ffprobe", ["-v", "error", ...entries, "-of", "json", file]).toString()
 const hasAudio = (file) => JSON.parse(probe(file, ["-select_streams", "a", "-show_entries", "stream=index"])).streams?.length > 0
 
-// ------------------------------------------------------------ the founder's clips and stills, collected
+// ------------------------------------------------------------ the founder's videos, collected
 mkdirSync(join(FILM, "clips"), { recursive: true })
-mkdirSync(join(FILM, "stills"), { recursive: true })
 const newer = (from, to) => existsSync(from) && (!existsSync(to) || statSync(from).mtimeMs > statSync(to).mtimeMs)
-for (const s of SHOTS) {
-  for (const [name, to] of [["clip.mp4", `clips/${s.id}.mp4`], ["clip-portrait.mp4", `clips/${s.id}-portrait.mp4`], ["1-start.jpg", `stills/${s.id}.jpg`]]) {
-    if (name === "1-start.jpg" && s.start) continue // the pack's copy of a start we already hold
-    const from = join(DESK, s.id, name)
-    if (newer(from, join(FILM, to))) {
-      copyFileSync(from, join(FILM, to))
-      console.log(`collected ${s.id}/${name}`)
-    }
-  }
+const collect = (name, to) => {
+  if (!newer(join(DESK, name), join(FILM, "clips", to))) return
+  copyFileSync(join(DESK, name), join(FILM, "clips", to))
+  console.log(`collected ${name}`)
 }
+const videos = existsSync(DESK) ? readdirSync(DESK).filter((f) => /\.(mp4|mov)$/i.test(f)) : []
+const whole = videos.find((f) => /^film\.(mp4|mov)$/i.test(f))
+if (whole) collect(whole, "film.mp4")
+for (const [i, s] of SHOTS.entries()) {
+  const n = String(i + 1).padStart(2, "0")
+  const mine = videos.filter((f) => new RegExp(`^${n}([-_ .]|$)`).test(f))
+  const up = mine.find((f) => /upright|portrait/i.test(f))
+  const wide = mine.find((f) => f !== up)
+  if (wide) collect(wide, `${s.id}.mp4`)
+  if (up) collect(up, `${s.id}-portrait.mp4`)
+}
+const WHOLE = whole ? join(FILM, "clips", "film.mp4") : null
 const clipOf = (s, form) => {
   const own = join(FILM, "clips", `${s.id}${form === "portrait" ? "-portrait" : ""}.mp4`)
   if (existsSync(own)) return own
@@ -74,7 +79,7 @@ const clipOf = (s, form) => {
   return existsSync(wide) ? wide : null // an upright cut crops the wide clip
 }
 const stillOf = (s, form) => {
-  const own = form === "portrait" && s.portrait ? join(ROOT, s.portrait) : s.start ? join(ROOT, s.start) : join(FILM, "stills", `${s.id}.jpg`)
+  const own = join(ROOT, form === "portrait" && s.portrait ? s.portrait : s.start)
   return existsSync(own) ? own : null // a scene image not made yet (or not on this machine): the shot waits
 }
 
@@ -140,7 +145,13 @@ async function cut(form) {
   }
   add("00-open", OPEN.hold, 0, (o) => hold(still, OPEN.hold, o), null)
   const used = []
-  for (const s of SHOTS) {
+  // the founder's whole film, made from all the photos, plays in full between the opening and the close
+  if (WHOLE) {
+    const len = Number(JSON.parse(probe(WHOLE, ["-show_entries", "format=duration"])).format.duration)
+    add("film", len, OPEN.fade, (o) => clip(WHOLE, len, form, o), WHOLE)
+    used.push({ id: "film", source: "clip" })
+  }
+  for (const s of WHOLE ? [] : SHOTS) {
     const c = clipOf(s, form)
     const f = c ? null : stillOf(s, form)
     if (!c && !f) continue
@@ -148,9 +159,8 @@ async function cut(form) {
     // the first shot's start is the hero's master, so its push opens on the picture the film fades from; an upright
     // clip of its own is already upright (px only places a slice of a wide one)
     const own = form === "portrait" && c?.endsWith("-portrait.mp4")
-    const len = c ? (s.clipSeconds ?? s.seconds) : s.seconds
-    if (c) add(s.id, len, fade, (o) => clip(c, len, form, o, own ? 0.5 : (s.px ?? 0.5)), c)
-    else add(s.id, len, fade, (o) => push(f, len, s.push, form, o, { frame: f === join(ROOT, s.start ?? "") ? s.frame : null, px: s.px }), null)
+    if (c) add(s.id, s.seconds, fade, (o) => clip(c, s.seconds, form, o, own ? 0.5 : (s.px ?? 0.5)), c)
+    else add(s.id, s.seconds, fade, (o) => push(f, s.seconds, s.push, form, o, { frame: f === join(ROOT, s.start) ? s.frame : null, px: s.px }), null)
     used.push({ id: s.id, source: c ? "clip" : "still" })
   }
   add("99-close", CLOSE.hold, CLOSE.fade, (o) => hold(still, CLOSE.hold, o), null)
