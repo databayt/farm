@@ -1,6 +1,6 @@
 # The study room's business
 
-Status: first model of 2026-11-02 (D-073). Prices marked [V] are rates other places publish; every price of ours, every booking and every cost is an assumption [A] until a pilot course and the first three months are measured. The research behind it: [the study room's market](../../study/research/study-room-market.md).
+Status: first model of 2026-11-02 (D-073). On 2026-11-03 the venues, the fit-out's shop prices and the start before the room opens were added. Prices marked [V] are rates other places publish; every price of ours, every booking and every cost is an assumption [A] until a pilot course and the first three months are measured. The research behind it: [the study room's market](../../study/research/study-room-market.md).
 
 What the study room sells, to whom, at what price, and how many days a month it must fill.
 
@@ -48,13 +48,18 @@ So [E]: two markets, Kigali's small teams now and Bugesera's employers and schoo
 | A Kigali hotel (Ubumwe Grande) | full day per person, minimum six: room, kit, two tea breaks, lunch | USD 50 (about RWF 73,800) | [V MICE-22], converted [E] |
 | The same hotel | a 15-seat boardroom's hire | USD 500 (about RWF 738,000) | [V MICE-23], converted [E] |
 | Another Kigali hotel (Sainte Famille) | full day per person | 42,000–45,000, currency not printed | [U MICE-24] |
+| A third Kigali hotel (Kigali Marriott) | two coffee breaks and lunch, per person; the room's hire is not published | USD 58 (about RWF 85,600) | [V MICE-47], converted [E MICE-P46] |
+| A Kigali hub's boardroom (Impact Hub), 12 seats | a 9-hour day | RWF 280,000 (35,000 a person for eight) | [U MICE-P49], from a search snippet; the page now returns an error |
+| A small Kigali workspace (IR'ZA), 6 seats | a meeting room | RWF 10,000 an hour (80,000 for eight hours) | [V MICE-P36], [E MICE-P37] |
+| A Kimironko hub (Madar Hub) | a training room's hire | RWF 40,000, the unit not stated | [V MICE-P39] |
+| A guest house near Muhanga (Azizi Life) | a meeting space for staying guests | USD 20 (about RWF 29,500), once per stay | [V MICE-52], converted [E MICE-P57] |
 | A Kigali coworking space (CcHUB) | a desk for a day | RWF 9,000 before VAT | [V MICE-01] |
 | A Bugesera eco-lodge (Bugesera Lodge) | a night with breakfast for one; a four-course meal for a guest who does not stay | USD 60; USD 25 (about RWF 88,600; 36,900) | [V LOC-77], "$" taken as USD, converted [E] |
 | Any Bugesera venue | a meeting room or a day package | none published | [U] |
 | Local AI courses | per person, two days to ten weeks | RWF 30,000–120,000 | [U EDU-25, EDU-26, EDU-27] |
 | databayt's team | an hour of a developer's time | USD 10 (about RWF 14,800) | [V SKL-08], converted [E] |
 
-Most Kigali hotels quote on request and publish no rate [V MICE-28, MICE-29, MICE-31]; the 10 comparable venues are still to be collected (see [the first 90 days](#the-first-90-days)).
+Most Kigali hotels quote on request and publish no rate [V MICE-28, MICE-29, MICE-31]. Of the venues within two hours of Kigali checked on 2026-11-03, nine publish a meeting price, and all but one are in Kigali; the venues checked in Bugesera, at Lake Muhazi and in Rwamagana list rooms, not meeting rates (MICE-43 to MICE-52). So [E]: the room at RWF 25,000 a person a day (200,000 for eight) sits below a Kigali hub's boardroom (280,000) and the hotels' day packages, and its meals at RWF 15,000 against a Kigali hotel's catering at about 85,600.
 
 ## What we charge [A AS-32, AS-33]
 
@@ -99,7 +104,19 @@ From month 7, once the first courses have run:
 
 What the groups bring to the rest of the farm, each month [E]: 24 nights (two courses and the retreat, eight people, one night each) at about RWF 30,000 a bed, 24 dinners and breakfasts at 15,000, and 48 lunch days at 15,000: about **RWF 1.8M a month** on the stays' and food lines, part of the 45% occupancy the [business model](model.md) already assumes.
 
-The room's own fixed costs (its share of the internet, upkeep and the screen's replacement, and its marketing) are about RWF 120,000 a month [A AS-36]: less than half a course day covers them. What a month leaves after them, about RWF 1.5M, is what pays back the fit-out, which is not priced yet ([materials](../study-room/materials.md)): months to pay back = the fit-out's cost ÷ 1.5M.
+The room's own fixed costs (its share of the internet, upkeep and the screen's replacement, and its marketing) are about RWF 120,000 a month [A AS-36]: less than half a course day covers them. What a month leaves after them, about RWF 1.5M, is what pays back the fit-out.
+
+**The fit-out.** Priced on 2026-11-03 from what Kigali shops publish, the room's furniture, screen and devices come to about **RWF 5.0M to 11.8M** [E, from FIT-P01 to FIT-P37].
+- **The low end:** local solid-wood pieces and a 65-inch Sayona screen.
+- **The high end:** imported furniture and a Samsung screen.
+- **Payback:** about **3 to 8 base months** [E].
+
+What the range leaves out:
+- **The lectern,** which no shop prices.
+- **The container's own conversion:** the floor, the linings and the electrics, which follow the studio's list.
+- **Delivery.**
+
+The long table, 3.6 × 0.75 m, is not sold ready-made: the tables on sale are 2.2 × 1.0 m and 3.2 × 1.1 m. So it is a carpenter's piece [E]. Written quotes come next ([materials](../study-room/materials.md)).
 
 The first year is lower [A AS-35]: one pilot course at half the tuition and one retreat in months 1–3 (about 1.1M); one course, one retreat and the passes a month in months 4–6 (about 1.5M a month); the base month from month 7. That is about RWF 20M from the room in year one.
 
@@ -156,16 +173,38 @@ The research's [rules](../../study/research/study-room-market.md#4-the-rules), i
 4. **Free and cheap courses** in Kigali: kLab's free coworking and the GIZ centre's free event space [V EDU-01, EDU-04], sponsored and free bootcamps [U EDU-13, EDU-24, EDU-28].
 5. **The founder's time:** each course day is a day not spent on the products.
 6. **The internet:** eight laptops, the screen and a trainer on a video call share the office's 4G router and its failover ([the office](../office/electric.md)).
-7. **The rules:** no paying guest before the RDB tourism licence, and no advertised course before RTB's written answer (above).
+7. **The rules:**
+   - no paying guest before the RDB tourism licence;
+   - no advertised course before RTB's written answer;
+   - no paid course before the company is registered and the trainer holds a permit that allows paid work (see "Before the room opens").
 8. **Later competition:** from about 2028, the airport city's conference hotels and convention centre, and the economic zone's own training institute [V LOC-57, LOC-70]; and today the free Imbuto Hub for young people's courses [V LOC-85].
+
+## Before the room opens
+
+Proposed on 2026-11-03, for the founder to settle [A].
+
+The room is not on site yet [U]. A group that stays the night also needs the guest rooms, the septic's inspection and the RDB licence. The course does not have to wait for any of them:
+
+- **The same course, at the client's office in Kigali.**
+  - databayt sells the tuition alone: RWF 300,000 a course day for up to eight [A AS-33], or RWF 75,000 a person for two days.
+  - The client provides the room, the screen and the Wi-Fi.
+  - The farm earns nothing from these courses yet.
+- **It tests the riskiest assumption first:** that a Kigali team pays for the course, before the fit-out is bought.
+- **Each course finds the room's first groups.** A team that took the course in its own office is the first to be offered the two-day course with a night at the farm, once the room opens.
+
+It waits on three things, none of them the room:
+
+1. **The company's registration,** so that invoices carry a tax number.
+2. **A permit that lets the trainer do paid work.** A visitor visa is for purposes other than work [V REG-59], and the business-entrepreneur permit needs the company's registration certificate [V REG-60].
+3. **RTB's written answer** before any course is advertised (rule 1 above). Until then, courses are closed and sold to one organisation at a time.
 
 ## The first 90 days
 
-1. **Ask RTB and RRA in writing:** does a company's short professional course need RTB's authorisation, and how are tuition, room hire, meals and room nights taxed in one package (the research's open questions)?
-2. **Price the fit-out:** quotes for the room's lines ([materials](../study-room/materials.md)), so the payback can be worked.
-3. **Write one course:** "AI at work", two days, its one-page offer in English with the three day prices.
-4. **Collect 10 comparable venues** within two hours of Kigali: the day rate, what it includes, the date.
-5. **Draft, do not send,** an offer to 10 prospects from the [buyers register](../../study/registers/buyers.csv): small teams in Kigali, NGOs that tendered training, the economic zone's developer and factories, the schools near the farm. The founder approves each message.
+1. **Ask RTB and RRA in writing:** does a company's short professional course need RTB's authorisation, and how are tuition, room hire, meals and room nights taxed in one package (the research's open questions)? *Both letters were drafted on 2026-11-03. RRA's waits for the company's tax number.*
+2. **Price the fit-out:** quotes for the room's lines ([materials](../study-room/materials.md)), so the payback can be worked. *Shop prices were collected on 2026-11-03 (FIT-P01 to FIT-P37), so the payback above is a first range. Written quotes come next.*
+3. **Write one course:** "AI at work", two days, its one-page offer in English with the three day prices. *Written on 2026-11-03, together with a one-day version, a three-hour briefing for managers and a two-day course for developers. databayt keeps them.*
+4. **Collect 10 comparable venues** within two hours of Kigali: the day rate, what it includes, the date. *Nine with a published price were found on 2026-11-03 (MICE-43 to MICE-52).*
+5. **Draft, do not send,** an offer to 10 prospects from the [buyers register](../../study/registers/buyers.csv): small teams in Kigali, NGOs that tendered training, the economic zone's developer and factories, the schools near the farm. The founder approves each message. *Drafted on 2026-11-03 for 20 organisations in Kigali, 8 of them from the register. None has been sent.*
 6. **Run a pilot** for one friendly team at half the tuition, and measure: the room's afternoon temperature, the Wi-Fi with every laptop and the screen, the travel time, the meals, what they would pay.
 7. **Settle the split** between databayt and the farm, and who holds each licence and tax registration.
 8. **After 3 months,** replace each [A] above with what was measured, and record the change in the decision log.
