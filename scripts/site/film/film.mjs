@@ -8,8 +8,10 @@
 //   ~/Desktop/film-walk/<shot>/clip.mp4, clip-portrait.mp4, 1-start.jpg   the founder's Veo clips and stills
 //                                                                          (packs.mjs), copied into assets/film
 //   assets/film/music.(mp3|m4a|wav)                                       an optional music bed with a free licence
-// Each shot plays its clip where one exists, and a slow push on its start image where none does; a shot with neither
-// is left out, so the film works at every step and each clip swaps in with no code change.
+// Each shot plays its clip where one exists, and a slow push on its start image where none does (the founder's scene
+// images in assets/film/masters, or a place's hero); a shot with neither is left out, so the film works at every
+// step and each clip swaps in with no code change. A joined clip (one that ends on the next shot's picture) plays in
+// full, so the walk runs on from one clip into the next.
 //
 // The film opens and closes on the hero's own picture, resized exactly as scripts/site/hero.mjs serves it, and is cut
 // at the hero's aspect (1920 x 1072 wide; 1080 x 2332 upright, the mobile picture's shape), so the hero's object-cover
@@ -35,8 +37,9 @@ const CLOSE = { fade: 1.2, hold: 2.0 } // back to the picture at the end
 const FORMS = {
   // still: the hero's picture as the page serves it (scripts/site/hero.mjs), so the film's first frame is what the
   // reader is looking at when they click, compression and all
-  landscape: { size: [1920, 1072], up: 3, still: "public/site/hero/desktop-1920.webp", crf: 28 },
-  portrait: { size: [1080, 2332], up: 2, still: "public/site/hero/mobile-1920.webp", crf: 30 },
+  // rate: the most a second may take, so the film streams on a phone's connection (it loads only from the button)
+  landscape: { size: [1920, 1072], up: 3, still: "public/site/hero/desktop-1920.webp", crf: 28, rate: 3 },
+  portrait: { size: [1080, 2332], up: 2, still: "public/site/hero/mobile-1920.webp", crf: 30, rate: 2.5 },
 }
 const DESK = join(homedir(), "Desktop", "film-walk")
 const FILM = join(ROOT, "assets", "film")
@@ -71,10 +74,8 @@ const clipOf = (s, form) => {
   return existsSync(wide) ? wide : null // an upright cut crops the wide clip
 }
 const stillOf = (s, form) => {
-  if (form === "portrait" && s.portrait) return join(ROOT, s.portrait)
-  if (s.start) return join(ROOT, s.start)
-  const made = join(FILM, "stills", `${s.id}.jpg`)
-  return existsSync(made) ? made : null
+  const own = form === "portrait" && s.portrait ? join(ROOT, s.portrait) : s.start ? join(ROOT, s.start) : join(FILM, "stills", `${s.id}.jpg`)
+  return existsSync(own) ? own : null // a scene image not made yet (or not on this machine): the shot waits
 }
 
 // ------------------------------------------------------------ one segment per shot
@@ -88,8 +89,13 @@ function hold(png, seconds, out) {
   run(["-loop", "1", "-framerate", String(FPS), "-i", png, "-t", seconds.toFixed(3),
     "-vf", "scale=out_color_matrix=bt709:out_range=tv,format=yuv444p", "-c:v", "libx264", "-crf", "10", "-preset", "fast", ...BT709, "-an", out])
 }
+// The part of a picture a shot uses (frame), then the film's shape cut from it, centred at px across (an upright cut
+// takes a narrow slice of a wide picture: px says which).
+const crop = (W, H, frame, px = 0.5) =>
+  (frame ? `crop=iw*${frame[2] - frame[0]}:ih*${frame[3] - frame[1]}:iw*${frame[0]}:ih*${frame[1]},` : "") +
+  `scale=${W}:${H}:force_original_aspect_ratio=increase:flags=lanczos,crop=${W}:${H}:'max(0,min(iw-ow,${px}*iw-ow/2))':'(ih-oh)/2'`
 // A slow push on a still, smooth because zoompan works on a copy several times the film's size.
-function push(file, seconds, [from, to], form, out) {
+function push(file, seconds, [from, to], form, out, { frame, px } = {}) {
   const { size: [w, h], up } = FORMS[form]
   const [W, H] = [w * up, h * up]
   const n = Math.round(seconds * FPS)
@@ -99,16 +105,16 @@ function push(file, seconds, [from, to], form, out) {
   const x = `max(0\\,min(iw-iw/zoom\\,${lerp(from[1], to[1])}*iw-iw/zoom/2))`
   const y = `max(0\\,min(ih-ih/zoom\\,${lerp(from[2], to[2])}*ih-ih/zoom/2))`
   run(["-i", file, "-vf",
-    `scale=${W}:${H}:force_original_aspect_ratio=increase:flags=lanczos,crop=${W}:${H},` +
+    `${crop(W, H, frame, form === "portrait" ? px : 0.5)},` +
       `zoompan=z='${z}':x='${x}':y='${y}':d=${n}:s=${w}x${h}:fps=${FPS},` +
       "scale=out_color_matrix=bt709:out_range=tv,format=yuv444p",
     "-frames:v", String(n), "-c:v", "libx264", "-crf", "10", "-preset", "fast", ...BT709, "-an", out])
 }
 // A clip: its first seconds, at the film's frame rate and size (cover), held on its last frame if it runs short.
-function clip(file, seconds, form, out) {
+function clip(file, seconds, form, out, px = 0.5) {
   const { size: [w, h] } = FORMS[form]
   run(["-i", file, "-vf",
-    `fps=${FPS},scale=${w}:${h}:force_original_aspect_ratio=increase:flags=lanczos,crop=${w}:${h},setsar=1,` +
+    `fps=${FPS},${crop(w, h, null, form === "portrait" ? px : 0.5)},setsar=1,` +
       `tpad=stop_mode=clone:stop_duration=${seconds},format=yuv444p`,
     "-t", seconds.toFixed(3), "-c:v", "libx264", "-crf", "10", "-preset", "fast", ...BT709, "-an", out])
 }
@@ -139,9 +145,12 @@ async function cut(form) {
     const f = c ? null : stillOf(s, form)
     if (!c && !f) continue
     const fade = parts.length === 1 ? OPEN.fade : DISSOLVE
-    // the first shot's start is the hero's master, so its push opens on the picture the film fades from
-    if (c) add(s.id, s.seconds, fade, (o) => clip(c, s.seconds, form, o), c)
-    else add(s.id, s.seconds, fade, (o) => push(f, s.seconds, s.push, form, o), null)
+    // the first shot's start is the hero's master, so its push opens on the picture the film fades from; an upright
+    // clip of its own is already upright (px only places a slice of a wide one)
+    const own = form === "portrait" && c?.endsWith("-portrait.mp4")
+    const len = c ? (s.clipSeconds ?? s.seconds) : s.seconds
+    if (c) add(s.id, len, fade, (o) => clip(c, len, form, o, own ? 0.5 : (s.px ?? 0.5)), c)
+    else add(s.id, len, fade, (o) => push(f, len, s.push, form, o, { frame: f === join(ROOT, s.start ?? "") ? s.frame : null, px: s.px }), null)
     used.push({ id: s.id, source: c ? "clip" : "still" })
   }
   add("99-close", CLOSE.hold, CLOSE.fade, (o) => hold(still, CLOSE.hold, o), null)
@@ -174,12 +183,13 @@ async function cut(form) {
   }
   // the frames carry BT.709 all the way, so the browser draws them in the colours of the picture underneath
   graph.push(`${v}setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv[vout]`)
-  const { crf } = FORMS[form]
+  const { crf, rate } = FORMS[form]
   const out = join(FILM, form === "portrait" ? "film-portrait.mp4" : "film.mp4")
-  // the opening frames near-lossless, so the swap from the picture to the film shows nothing
+  // the opening frames near-lossless, so the swap from the picture to the film shows nothing (the buffer holds six
+  // seconds at the cap, so the first frame can take what it needs: at twice, frame 0 drifted to 4.9/255 upright)
   const opening = Math.round(OPEN.hold * FPS)
   run([...inputs, ...audios, ...(music ? ["-i", music] : []), "-filter_complex", graph.join(";"),
-    "-map", "[vout]", "-c:v", "libx264", "-preset", "slow", "-crf", String(crf), "-maxrate", "4M", "-bufsize", "8M",
+    "-map", "[vout]", "-c:v", "libx264", "-preset", "slow", "-crf", String(crf), "-maxrate", `${rate}M`, "-bufsize", `${rate * 6}M`,
     "-x264-params", `zones=0,${opening},q=12`,
     "-profile:v", "high", "-pix_fmt", "yuv420p", "-g", String(FPS * 2), ...BT709, ...audioArgs, "-movflags", "+faststart", out])
   const [w, h] = FORMS[form].size

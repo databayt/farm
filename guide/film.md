@@ -1,8 +1,8 @@
 # The film
 
-Status: 2026-11-02. The homepage film is a walk (D-070). It starts as the homepage hero, at the lake plot, and plays in the hero itself when someone clicks "Watch film". The cut is live with slow pushes on the place heroes. Next, the founder makes the group of scene images in Nano Banana (no API); then they are edited into the film.
+Status: 2026-11-03. The homepage film is a walk (D-070). It starts as the homepage hero, at the lake plot, and plays in the hero itself when someone clicks "Watch film". The live cut is made from the founder's scene images (the whole farm from six angles, the road, the inner gate, the camp, the studios) and the place heroes, each with a slow camera move. Next, the founder makes the clips in Flow or the Gemini app (Veo, no API) from the folders in `~/Desktop/film-walk/`; each clip replaces its still with no code change.
 
-A walk of about 80 seconds. It leaves the lake plot, takes the road to the compound, goes through the gate, the parking and the inner gate, and passes every place as the homepage 2D lays them out. Each place looks as its remastered hero does. Short vertical reels can be cut from the same material.
+A walk of about 80 seconds. It leaves the lake plot, takes the road to the farm, rises over the gate to show the whole farm, comes down through the inner gate and passes every place as the homepage 2D lays them out, then flies over the farm from every side and back to the lake. Each place looks as its remastered hero does. Short vertical reels can be cut from the same material.
 
 ## What we have
 
@@ -10,6 +10,7 @@ A walk of about 80 seconds. It leaves the lake plot, takes the road to the compo
 |---|---|---|
 | The homepage hero, the lake plot remastered | `assets/hero/desktop.jpeg`, `mobile.jpeg` | The film's first and last frame |
 | Every place's remastered hero | `public/designs/<place>/render/<place>-hero.jpg` | Each place in the film |
+| The founder's scene images (Nano Banana): A1–A6, B02, B06–B08 | `assets/film/masters/<scene>.jpg` (local) | The road, the walk in and the aerials |
 | The 3D compound with a walking camera | `scripts/site/render/compound.html?walk=1` | The previz: where each shot stands |
 | 23 iPhone clips and 23 photos, 2026-10-25 (1920 × 1080, 10-bit HDR) | `assets/library/footage/2026-10-25/` (private) | References for the road, the gate and the light |
 | The owner's and SIDA's WhatsApp photos and clips | `assets/library/whatsapp/` (private) | References only: WhatsApp shrinks video to about 368 × 656 |
@@ -25,26 +26,26 @@ The lake is ours: a second plot about 5 minutes by road from the compound (D-070
 
 ## The walk, shot by shot
 
-The list lives in `scripts/site/film/shots.mjs`; the previz, the founder's folders and the cut all read it.
+The list lives in `scripts/site/film/shots.mjs`; the founder's folders and the cut both read it. A joined shot ends on the next shot's picture, so its clip (Flow's "Frames to video") runs on into the next one and the clips read as one camera.
 
-| # | Seconds | Shot | Starts from |
-|---|---|---|---|
-| 01 | 8 | The lake plot: the hero comes alive and turns toward the road | the homepage hero itself |
-| 02 | 6 | The road along the palm row, the lake between the trunks | a Nano Banana still, made first |
-| 03 | 5 | The gate beside the DIGITAL FARM sign wall | the parking's hero |
-| 04 | 4 | The parking: gravel bays in timber, solar lamps | a Nano Banana still, made first |
-| 05 | 5 | Through the inner gate into the courtyard | a Nano Banana still, made first |
-| 06 | 5 | The camp and the fire pit | the camp's hero |
-| 07 | 6 | The studios, up to a roof terrace | the studio's hero |
-| 08 | 4 | The office | the office's hero |
-| 09 | 5 | The guest rooms | the guest room's hero |
-| 10 | 5 | The bar | the bar's hero |
-| 11–13 | 3 each | The back row: the study room, the galley, the public bathroom | their heroes |
-| 14 | 4 | Volleyball | its hero |
-| 15 | 4 | Dining under the thatch | its hero |
-| 16 | 4 | The field | its hero |
-| 17 | 3 | Livestock | its hero |
-| 18 | 8 | The farm from above, the lake in the distance; then back to the lake picture | a Nano Banana still, made first |
+| # | Seconds | Shot | Starts from | Joined to |
+|---|---|---|---|---|
+| 01 | 6 | The lake plot: the hero comes alive and turns onto the road | the homepage hero itself | 02 |
+| 02 | 5 | The road beside the lake, toward the sign wall and the gate | scene B02 | 03 |
+| 03 | 7 | Up over the gate: the whole farm | scene A1 | 04 |
+| 04 | 5 | Down through the inner gate into the courtyard | scene B06 | 05 |
+| 05 | 5 | The camp and the fire pit | scene B07 | 06 |
+| 06 | 5 | Between the studios | scene B08 | |
+| 07 | 5 | Low over the courtyard, down to the office | scene A6 | 08 |
+| 08–10 | 4 each | The office, the bar, the guest rooms | their heroes | |
+| 11–13 | 3 each | The back row: the study room, the galley, the public bathroom | their heroes | |
+| 14–17 | 3 each | Volleyball, dining under the thatch, the field, livestock | their heroes | |
+| 18 | 4 | Over the field | scene A3 | 19 |
+| 19 | 5 | Straight down, like the plan | scene A2, cut above the sign | 20 |
+| 20 | 4 | From behind the back row | scene A5 | 21 |
+| 21 | 6 | Toward the lake, and back to the hero | scene A4, cut toward the lake | 01 |
+
+The office shot uses its hero: its scene image (B10) came out with the 3D model's blocky flowers in its planters. The parking, the terrace and the other walk scenes are not made yet; the aerials and the heroes cover them.
 
 ## The scene images
 
@@ -57,11 +58,12 @@ Each folder holds the homepage 3D at that angle, painted in the places' remaster
 
 ## Steps
 
-1. **Previz:** `pnpm site:walk` renders each shot's start and end from the 3D model, plus a timing animatic, into `assets/film/`.
-2. **Folders:** `node scripts/site/film/packs.mjs` writes one folder per shot to `~/Desktop/film-walk/`. Each holds the frame to animate, the references for a still and `prompt.txt`.
-3. **Clips:** the founder makes each clip in the Gemini app or Flow (Veo) and saves it as `clip.mp4` in its folder. Shot 01 also gets an upright clip for phones.
-4. **Cut:** `pnpm site:film` collects the clips and cuts the film. Each shot plays its clip, or a slow push on its picture until the clip exists. The film opens and closes on the hero's own picture, at its crop. It publishes `cdn.databayt.org/farm/home/film.mp4` and `film-portrait.mp4`, and writes `src/components/home/film.generated.ts`.
+1. **Scene images:** the founder's pictures go into `~/Desktop/farm-scenes-nano-banana/<scene>/master.jpg`; `node scripts/site/film/scenes-pack.mjs` copies them into `assets/film/masters/` (local, gitignored).
+2. **Folders:** `node scripts/site/film/packs.mjs` writes one folder per shot to `~/Desktop/film-walk/`. Each holds `1-start.jpg`, for a joined shot `2-end.jpg` (the next shot's picture), and `prompt.txt`: the Veo prompt for Flow's "Frames to video", and one for the Gemini app with the first picture only.
+3. **Clips:** the founder makes each clip and saves it as `clip.mp4` in its folder. Shot 01 also gets an upright clip for phones.
+4. **Cut:** `pnpm site:film` collects the clips and cuts the film. Each shot plays its clip (a joined clip in full, 8 seconds), or a slow move on its picture until the clip exists. The film opens and closes on the hero's own picture, at its crop. It publishes `cdn.databayt.org/farm/home/film.mp4` and `film-portrait.mp4`, and writes `src/components/home/film.generated.ts`.
 5. **Check:** no faces, no plates, no AI-made text; the start shows no jump when Watch film is clicked; then deploy.
+6. **Previz** (optional): `pnpm site:walk` renders the place shots' start and end from the 3D model into `assets/film/previz/`.
 
 ## Film on the next site visit
 
