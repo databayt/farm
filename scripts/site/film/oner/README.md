@@ -24,10 +24,11 @@ It runs free and local: onnxruntime on the CPU for depth, WebGL in headless Chro
    - The model is Depth Anything V2 Base, ONNX, kept at `assets/film/oner/models/`.
    - The env is `uv venv assets/film/oner/.venv` with onnxruntime, numpy, pillow and scipy.
 
-2. More detail where the camera goes close (the animals, the field, the gate, the road):
+2. More detail where the camera zooms toward the gates (the gate photo and the road):
 
    ```sh
-   assets/film/oner/.venv/bin/python -I scripts/site/film/oner/sr.py 17:4 16:2 P:2 02:2
+   assets/film/oner/.venv/bin/python -I scripts/site/film/oner/sr.py P:2 02:2
+   assets/film/oner/.venv/bin/python -I scripts/site/film/oner/depth.py gate   # the clean leaf, and P without its own leaves
    ```
 
    The model is Real-ESRGAN, ONNX (`SceneWorks/real-esrgan-onnx`), kept at `assets/film/oner/models/realesrgan/`.
@@ -75,7 +76,9 @@ It runs free and local: onnxruntime on the CPU for depth, WebGL in headless Chro
   lossless copies of the served hero, so the first and last frames match the page exactly. Rerun `depth.py` and it keeps
   them.
 - `GATES` in `legs.mjs` measures the two gates in P (the parking page's photo). The renderer turns each leaf on its hinge
-  in 3D and draws it from the photo's own open leaf. The left leaf is the mirror of the right.
+  in 3D as a rigid board, drawn last from `fg/gate-leaf.png`: the photo's open leaf, straightened. The left leaf is
+  the mirror of the right. Each leaf opens until its free edge reaches the photo's own leaf, and the photo's own leaves
+  are taken out of P (`depth.py gate`, kept in `photo-gates.jpg`).
 - The film's 2:14 runs as the founder told it: the lakeside plot, the road with the lake on the right, the gate on the
   left, then the places further and further from the lake. Drone views 18 and 21 are out because they show the lake on
   the wrong side.

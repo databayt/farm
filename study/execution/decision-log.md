@@ -276,3 +276,15 @@ Revised the same day, after the founder's review of the first cut:
 - **Dropped:** drone views 18 and 21 put the lake on the wrong side of the farm, and 07 is out for time.
 - **The camera:** it never slows to a stop. It moves about twice as fast, always turning the same way between places.
 - **Close-ups:** it goes in close on the field's plants and on the goats and sheep. Those photos are upscaled locally (Real-ESRGAN) so they hold up close.
+
+Revised a second time, after the founder's review of that cut (same day):
+- **Camera:** back to a calm pace, gentle and slower at each place. The fast, always-moving camera and the close-ups of the field and the animals are undone.
+- **The opening:**
+  - The film starts on the hero and zooms straight out to the cameraman, standing on the road and facing the lake.
+  - The camera moves left onto the track and goes forward a little.
+  - It finds the second land on its left and turns to it gently.
+- **The gates:** one continuous shot from the outer gate up the drive to the inner gate. There is no cutaway to another picture.
+  - The volleyball lawn now comes after the camp.
+  - The leaves are rigid boards turning on their hinges, drawn from one clean leaf.
+  - The photo's own leaves are taken out of it, so nothing bends or shows twice.
+- **Length:** 2:14, as before.

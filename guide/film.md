@@ -7,11 +7,11 @@ Status: 2026-11-04. The homepage film is one continuous take (D-074). It starts 
 - The founder's copy is `digital-farm-film.mp4` in `~/Desktop/farm-film/`.
 
 The film runs 2 minutes 14 seconds, to the end of the song's singing. The journey is the founder's:
-1. **The first land:** the hero is the cameraman's view from the road, zoomed in on the lakeside plot. He zooms back to show it, then turns left.
-2. **The road:** he goes down it with the lake on the right, to the second land's gate on the left.
-3. **The outer gate:** it opens slowly, and he goes in, past the volleyball lawn, and up the drive.
+1. **The first land:** the hero is the cameraman's view from the road, zoomed in on the lake. He zooms straight out: he is on the road, facing the lake.
+2. **The road:** the camera moves left onto the track and goes forward a little. It finds the second land on its left and turns to it gently.
+3. **The outer gate:** it opens slowly, and he walks in and on up the drive, in the one shot.
 4. **The inner gate:** it opens too.
-5. **The places:** every one in turn, further and further from the lake, close on the field's plants and on the goats and sheep.
+5. **The places:** every one in turn, further and further from the lake, the camera calm and slower at each.
 6. **Home:** the drone rises over the map of the farm and flies back over the gate to the lake.
 
 ## What we have
@@ -42,24 +42,22 @@ The journey lives in `scripts/site/film/oner/legs.mjs`. The photo numbers are th
 
 | Seconds | Place | Into the next |
 |---|---|---|
-| 0–8 | 01 the hero: the lakeside plot, zoomed in from the road | the camera zooms back out into the road |
-| 1–26 | 02 the lakeside plot behind the fence, then the road, the lake on the right, the gate on the left | turning to the gate, matched on the sign wall |
-| 22–33 | P the outer gate, face on: it opens, and the camera walks in | past a pine |
-| 30–38 | 14 the volleyball lawn inside the gate | past mango leaves |
-| 36–46 | P up the drive: the inner gate opens | a dive through it |
-| 43–55 | 04 the inner gate, then 05 the camp | walking on (the fire pit) |
-| 53–93 | 10, 09, 08, 06, 11, 12, 13, 15: guest rooms, bar, office, studios, study room, galley, public bathroom, dining | past a tree each time; the study room's teal box turns into the galley's |
-| 90–102 | 16 the field, close among the beds, the plants and the baskets | past mango leaves |
-| 99–111 | 17 the livestock, close on the goats and the sheep | a rise: the farm below |
-| 108–121 | 19 straight down, the map, turning half round | matched drone views |
-| 119–129 | 20 from behind the back row, toward the gate and the lake beyond it | over the trees to the lake |
-| 125–134 | 01 the lake plot: it settles on the hero's frame as the singing ends | — |
+| 0–9 | 01 the hero: the lake, zoomed in from the road | the camera zooms straight out into the road |
+| 1.5–23 | 02 facing the lake from the road, then left onto the track and forward, the gate on the left | a gentle turn to the gate, matched on the sign wall |
+| 20–46 | P the outer gate, face on: it opens, he walks in and up the drive, and the inner gate opens | a dive through the inner gate |
+| 43–57 | 04 the inner gate, then 05 the camp | walking on (the fire pit) |
+| 54–68 | 14 the volleyball lawn, 10 the guest rooms | past a tree each time |
+| 65–113 | 09, 08, 06, 11, 12, 13, 15, 16: bar, office, studios, study room, galley, public bathroom, dining, field | past a tree each time; the study room's teal box turns into the galley's |
+| 110–118 | 17 the livestock by their shed | a rise: the farm below |
+| 115–125 | 19 straight down, the map, turning half round | matched drone views |
+| 123–130 | 20 from behind the back row, toward the gate and the lake beyond it | over the trees to the lake |
+| 126–134 | 01 the lake: it settles on the hero's frame as the singing ends | — |
 
 Drone views 18 and 21 show the lake beyond the far side of the farm, the wrong side, so they are out; 07 is out for time.
 
 Five photos were in another light and are relit to the farm's afternoon from their own depth: 08 the office, 14 volleyball, 15 dining, 16 the field and 17 the livestock.
 
-Four photos are upscaled locally (Real-ESRGAN, `sr.py`) so the camera can go close: 17 at four times, and 16, P and 02 at twice. The founder's photos are never changed; the working copies are in `assets/film/oner/scenes/`.
+Two photos are upscaled locally (Real-ESRGAN, `sr.py`), P and 02 at twice, for the camera's zoom toward the gates. The founder's photos are never changed; the working copies are in `assets/film/oner/scenes/`. The gates' leaves are one clean leaf (`fg/gate-leaf.png`, the photo's own leaf straightened), turned on their hinges; the photo's own leaves are taken out of P.
 
 ## The scene images
 

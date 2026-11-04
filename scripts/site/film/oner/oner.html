@@ -47,6 +47,8 @@ uniform Scene uS[2];
 uniform int uLeafSlot, uLeafCount;
 uniform mat3 uLeafInv[4], uLeafSrc[4];
 uniform vec2 uLeafSoft[4];
+uniform float uLeafShade[4];
+uniform sampler2D uLeafTex;
 uniform sampler2D uPhoto0, uBg0, uDepth0, uBgd0, uMask0, uPhoto1, uBg1, uDepth1, uBgd1, uMask1, uOcc;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -102,22 +104,7 @@ vec3 scene(int k, vec2 s, out float valid, out float far) {
   vec2 uv = solve(k, d, false, disp);
   vec3 m = tex(k, 2, uv);
   vec3 c = tex(k, 0, breeze(k, uv, m));
-  if (k == uLeafSlot) {
-    vec3 q = uS[k].pre * vec3(s.x * uAspect, s.y, 1.0);
-    vec2 p = q.xy / q.z;
-    for (int i = 0; i < 4; i++) {
-      if (i >= uLeafCount) break;
-      vec3 st = uLeafInv[i] * vec3(p, 1.0);
-      vec2 a = st.xy / st.z;
-      vec2 soft = uLeafSoft[i];
-      float w = smoothstep(-soft.x, soft.x, a.x) * smoothstep(-soft.x, soft.x, 1.0 - a.x) * smoothstep(-soft.y, soft.y, a.y) * smoothstep(-soft.y, soft.y, 1.0 - a.y);
-      if (w > 0.0) {
-        vec3 lu = uLeafSrc[i] * vec3(clamp(a, 0.0, 1.0), 1.0);
-        c = mix(c, tex(k, 0, lu.xy / lu.z), w);
-        if (w > 0.5) disp = max(disp, 0.5); // a leaf is near: walking on, it goes with the near things
-      }
-    }
-  }
+
   // where a near thing's edge opens up as the camera moves, the background filled in behind it
   float edge = m.r * smoothstep(0.03, 0.08, length(uS[k].C));
   if (edge > 0.02) {
@@ -129,6 +116,23 @@ vec3 scene(int k, vec2 s, out float valid, out float far) {
   float inBox = step(wb.x, uv.x) * step(uv.x, wb.z) * step(wb.y, uv.y) * step(uv.y, wb.w);
   float sp = pow(noise(uv * vec2(260.0, 1400.0) + vec2(uTime * 1.3, 0.0)), 14.0);
   c += inBox * smoothstep(0.2, 0.6, m.b) * uLife * sp * 0.35 * vec3(1.0, 0.97, 0.9);
+  // the gate's leaves, rigid boards turning on their hinges, over everything behind them
+  if (k == uLeafSlot) {
+    vec3 q = uS[k].pre * vec3(s.x * uAspect, s.y, 1.0);
+    vec2 p = q.xy / q.z;
+    for (int i = 0; i < 4; i++) {
+      if (i >= uLeafCount) break;
+      vec3 st = uLeafInv[i] * vec3(p, 1.0);
+      vec2 a = st.xy / st.z;
+      vec2 soft = uLeafSoft[i];
+      float w = smoothstep(-soft.x, soft.x, a.x) * smoothstep(-soft.x, soft.x, 1.0 - a.x) * smoothstep(-soft.y, soft.y, a.y) * smoothstep(-soft.y, soft.y, 1.0 - a.y);
+      if (w > 0.0) {
+        vec3 lu = uLeafSrc[i] * vec3(clamp(a, 0.0, 1.0), 1.0);
+        c = mix(c, texture(uLeafTex, lu.xy / lu.z).rgb * uLeafShade[i], w);
+        if (w > 0.5) disp = max(disp, 0.5);
+      }
+    }
+  }
   float e = uS[k].feather;
   float inside = min(min(uv.x, 1.0 - uv.x), min(uv.y, 1.0 - uv.y));
   valid = smoothstep(-0.002, e, inside + min(e, 0.004)); // the photo's own rim counts as inside it
@@ -389,38 +393,41 @@ function squareTo(q) {
 // Each gate opens inward on two leaves hinged at its pillars: in 3D, at the gate's depth, a leaf turned by `a` from
 // shut has its free edge pulled back by its width times sin(a). The leaf's picture is the photo's open right leaf
 // (the left is its mirror), mapped corner to corner; at the photo's own angle the leaf lands where the photo has it.
+// The angle a leaf stands at when open: where its free edge lands on the photo's own open leaf (rigid: nothing bends).
+const openAngles = new Map()
+function openAngle(g, id, z, hx, Lw) {
+  if (openAngles.has(g)) return openAngles.get(g)
+  const target = g.leaf[1][0]
+  const uAt = (a) => toUvXYZ(id, [hx - Lw * Math.cos(a), 0, z + Lw * Math.sin(a)])[0]
+  let lo = 10 * D2R, hi = 89 * D2R
+  for (let i = 0; i < 40; i++) { const mid = (lo + hi) / 2; if (uAt(mid) < target) lo = mid; else hi = mid }
+  openAngles.set(g, (lo + hi) / 2)
+  return (lo + hi) / 2
+}
 function gateLeaves(id, cam, t) {
   const out = []
   const gates = GATES.filter((g) => g.scene === id).sort((a, b) => a.disp - b.disp) // far first: near leaves on top
   for (const g of gates) {
     const z = Zof(g.disp, def(id).zfar)
-    const a = (g.open * D2R) * ease(clamp01((t - g.at[0]) / (g.at[1] - g.at[0])))
-    const [hl, hr] = [point3(id, [g.hinge[0], g.top], z), point3(id, [g.hinge[1], g.top], z)]
-    const Lw = (hr[0] - hl[0]) / 2
-    const yTop = point3(id, [0.5, g.top], z)[1], yBot = point3(id, [0.5, g.bottom], z)[1]
-    // the model's open free edge against the photo's: the difference, eased in as the leaf opens, lands it exactly
-    const free = (hx, side, ang) => [hx + side * Lw * Math.cos(ang), z + Lw * Math.sin(ang)]
-    const [fxo, fzo] = free(hr[0], -1, g.open * D2R)
-    const mTop = toUvXYZ(id, [fxo, yTop, fzo]), mBot = toUvXYZ(id, [fxo, yBot, fzo]) // same height, further away
-    const fix = Math.pow(a / (g.open * D2R), 2)
-    const dTop = [(g.leaf[1][0] - mTop[0]) * fix, (g.leaf[1][1] - mTop[1]) * fix]
-    const dBot = [(g.leaf[2][0] - mBot[0]) * fix, (g.leaf[2][1] - mBot[1]) * fix]
-    const src = squareTo(g.leaf) // leaf (s along from the hinge, t down) -> the photo's open leaf
-    for (const side of [-1, 1]) { // -1: the right leaf (its free edge goes left), +1: the left leaf, mirrored
+    const hl = point3(id, [g.hinge[0], g.top], z), hr = point3(id, [g.hinge[1], g.top], z)
+    const Lw = ((hr[0] - hl[0]) / 2) * 1.004 // the two leaves meet in the middle, a hair over
+    const yT = point3(id, [0.5, g.top], z)[1], yB = point3(id, [0.5, g.bottom], z)[1]
+    const grow = (yB - yT) * 0.03 // a touch taller than the photo's leaf, so its old place never shows
+    const top = yT - grow, bot = yB + grow * 0.5
+    const open = openAngle(g, id, z, hr[0], Lw)
+    const a = open * ease(clamp01((t - g.at[0]) / (g.at[1] - g.at[0])))
+    for (const side of [-1, 1]) { // -1: the right leaf (its free edge goes left), +1: the left leaf, its mirror
       const hx = side < 0 ? hr[0] : hl[0]
-      const [fx, fz] = free(hx, side, a)
-      const ft = toUvXYZ(id, [fx, yTop, fz]), fb = toUvXYZ(id, [fx, yBot, fz])
-      // the right leaf takes the correction as measured, the left (its mirror) with the sideways part mirrored
-      const ftu = [ft[0] + (side < 0 ? dTop[0] : -dTop[0]), ft[1] + dTop[1]]
-      const fbu = [fb[0] + (side < 0 ? dBot[0] : -dBot[0]), fb[1] + dBot[1]]
-      // back to 3D at the corners' own depths, then into the frame through the camera
-      const toFrame = ([u, v], zz) => projectXYZ(id, cam, point3(id, [u, v], zz))
-      const ht = toFrame([side < 0 ? g.hinge[1] : g.hinge[0], g.top], z), hb = toFrame([side < 0 ? g.hinge[1] : g.hinge[0], g.bottom], z)
-      const quad = [ht, toFrame(ftu, fz), toFrame(fbu, fz), hb]
-      const dst = squareTo(quad)
+      const fx = hx + side * Lw * Math.cos(a), fz = z + Lw * Math.sin(a)
+      const at = (x, y, zz) => projectXYZ(id, cam, [x, y, zz])
+      const quad = [at(hx, top, z), at(fx, top, fz), at(fx, bot, fz), at(hx, bot, z)]
       const wpx = Math.hypot(quad[1][0] - quad[0][0], quad[1][1] - quad[0][1]) * H
       const hpx = Math.hypot(quad[3][0] - quad[0][0], quad[3][1] - quad[0][1]) * H
-      out.push({ inv: inv3(dst), src, soft: [0.8 / Math.max(wpx, 1), 0.8 / Math.max(hpx, 1)] })
+      if (wpx < 0.5) continue // edge on: nothing to draw
+      // the texture has its hinge on the right: the right leaf reads it hinge-first from the right, the left mirrored
+      const src = side < 0 ? [[-1, 0, 1], [0, 1, 0], [0, 0, 1]] : I3
+      // a leaf turned from the light is a little darker
+      out.push({ inv: inv3(squareTo(quad)), src, soft: [0.8 / Math.max(wpx, 1), 0.8 / Math.max(hpx, 1)], shade: 1 - 0.12 * Math.sin(a) })
     }
   }
   return out
@@ -450,13 +457,22 @@ function views(t) {
   const j = A.join
   const p = clamp01((t - j.at) / j.dur)
   if (j.type === "pass") return { A, camA, preA: I3, featherA: 0.004, B, camB, preB: I3, featherB: 0.004, j, p }
-  const pairs = FORM === "portrait" && j.pairsPortrait ? j.pairsPortrait : j.pairs
+  let pairs = FORM === "portrait" && j.pairsPortrait ? j.pairsPortrait : j.pairs
+  // lock: the photo zoomed out of sits exactly where the next one's camera sees it at the join's start (its points are
+  // taken from that camera, so nothing jumps when the next camera takes over)
+  if (j.lock) {
+    if (!j._auto) {
+      const camB0 = camAt(ib, j.at)
+      j._auto = pairs.map(([, b]) => { const s = project(B.scene, camB0, b); return [s[0] / ASPECT, s[1]] })
+    }
+    pairs = pairs.map(([, b], k) => [j._auto[k], b])
+  }
   const pa = pairs.map(([a]) => project(A.scene, camA, a)), pb = pairs.map(([, b]) => project(B.scene, camB, b))
   const G = similarity(pa, pb, !!j.rotate) // a turn of the picture is a roll: never on a slanted view
   // align: "scale" keeps only the size match, about the frame's centre, so the move can't pull against the turn
   if (j.align === "scale") { G.ca = [ASPECT / 2, 0.5]; G.cb = [ASPECT / 2, 0.5] }
   const inner = j.type === "zoom" ? (G.s < 1 ? 1 : 0) : -1
-  const e = ramp(p)
+  const e = j.lock ? ramp(clamp01(p / j.lock)) : ramp(p) // lock: matched early, then the next photo's camera leads
   // the frame's view moves from a's own (p = 0) to b's own (p = 1), the matched points held together, at a steady rate
   const m = [G.ca[0] + (G.cb[0] - G.ca[0]) * e, G.ca[1] + (G.cb[1] - G.ca[1]) * e]
   const Wm = simMat(Math.pow(G.s, e), G.th * e, m, G.ca)
@@ -502,7 +518,13 @@ function bindLeaves(slot, id, cam, t) {
     gl.uniformMatrix3fv(U(`uLeafInv[${i}]`), false, new Float32Array(T(l.inv).flat()))
     gl.uniformMatrix3fv(U(`uLeafSrc[${i}]`), false, new Float32Array(T(l.src).flat()))
     gl.uniform2f(U(`uLeafSoft[${i}]`), l.soft[0], l.soft[1])
+    gl.uniform1f(U(`uLeafShade[${i}]`), l.shade)
   })
+  if (leaves.length) {
+    gl.activeTexture(gl.TEXTURE11)
+    gl.bindTexture(gl.TEXTURE_2D, leafTex.tex)
+    gl.uniform1i(U("uLeafTex"), 11)
+  }
 }
 
 window.frame = async (n) => {
@@ -605,6 +627,7 @@ window.speedProfile = async (step = 1) => {
   }
   return out
 }
+const leafTex = await occluderTex("gate-leaf")
 window.FRAMES = Math.round(LENGTH * FPS)
 window.RENDERER = (() => { const d = gl.getExtension("WEBGL_debug_renderer_info"); return d ? gl.getParameter(d.UNMASKED_RENDERER_WEBGL) : "?" })()
 await window.frame(0)

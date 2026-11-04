@@ -185,6 +185,74 @@ def occluder(src_id, box, name, near=0.5, blur=2.5):
     print(f"fg/{name}.png  {w}x{h}  cover {a.mean() * 100:.0f}%")
 
 
+def gate_leaf():
+    """The gates' timber leaf, face on: the photo's open right leaf (in P) straightened to its rectangle, its rim trimmed.
+    Hinge on the right, as in the photo; the renderer mirrors it for the left leaf and turns both on their hinges."""
+    sc = OUT / "scenes" / "P"
+    keep = sc / "photo-gates.jpg"  # the picture with its own open leaves, before gate_clear takes them out
+    src = Image.open(keep if keep.exists() else sc / "photo-src.jpg").convert("RGB")
+    W, H = src.size
+    quad = [(0.886, 0.4296), (0.8186, 0.4255), (0.8186, 0.6034), (0.886, 0.6417)]  # hinge top, free top, free bottom, hinge bottom
+    quad = [(u * W, v * H) for u, v in quad]
+    TW, TH = 616, 512
+    dst = [(TW, 0), (0, 0), (0, TH), (TW, TH)]
+    A, B = [], []
+    for (x, y), (X, Y) in zip(dst, quad):
+        A += [[x, y, 1, 0, 0, 0, -X * x, -X * y], [0, 0, 0, x, y, 1, -Y * x, -Y * y]]
+        B += [X, Y]
+    c = np.linalg.solve(np.array(A, float), np.array(B, float))
+    leaf = src.transform((TW, TH), Image.PERSPECTIVE, tuple(c), Image.BICUBIC)
+    i = 8  # the rim: a few pixels of hedge where the leaf meets its surroundings
+    leaf = leaf.crop((i, i // 2, TW - i // 2, TH - i // 2)).resize((TW, TH), Image.LANCZOS)
+    (OUT / "fg").mkdir(parents=True, exist_ok=True)
+    leaf.save(OUT / "fg" / "gate-leaf.png")
+    print(f"fg/gate-leaf.png  {TW}x{TH}")
+
+
+def push_pull(img, hole):
+    """Fills the hole from what surrounds it, smoothly: averages down a pyramid of the known pixels, then back up."""
+    levels = [(img * (~hole)[..., None], (~hole).astype(np.float32))]
+    while min(levels[-1][1].shape) > 4:
+        c, w = levels[-1]
+        h2, w2 = c.shape[0] // 2 * 2, c.shape[1] // 2 * 2
+        c4 = c[:h2, :w2].reshape(h2 // 2, 2, w2 // 2, 2, 3).sum((1, 3))
+        w4 = w[:h2, :w2].reshape(h2 // 2, 2, w2 // 2, 2).sum((1, 3))
+        levels.append((c4, w4))
+    fill = levels[-1][0] / np.maximum(levels[-1][1], 1e-6)[..., None]
+    for c, w in reversed(levels[:-1]):
+        up = np.asarray(Image.fromarray(np.clip(fill, 0, 1e6).astype(np.float32)[..., 0]).resize((c.shape[1], c.shape[0]), Image.BILINEAR))
+        ups = [np.asarray(Image.fromarray(fill[..., k].astype(np.float32)).resize((c.shape[1], c.shape[0]), Image.BILINEAR)) for k in range(3)]
+        up = np.stack(ups, -1)
+        known = w > 0
+        fill = np.where(known[..., None], c / np.maximum(w, 1e-6)[..., None], up)
+    return np.where(hole[..., None], fill, img)
+
+
+def gate_clear():
+    """Takes the photo's own open leaves out of P (the renderer draws every leaf, turning on its hinge, over the
+    gates), so no ghost of a leaf shows where the photo's perspective and a rigid leaf don't quite agree."""
+    sc = OUT / "scenes" / "P"
+    keep = sc / "photo-gates.jpg"
+    if not keep.exists():
+        Image.open(sc / "photo-src.jpg").save(keep, quality=97, subsampling=0)
+    leaves = [[(0.886, 0.4296), (0.8186, 0.4255), (0.8186, 0.6034), (0.886, 0.6417)],
+              [(0.7914, 0.4304), (0.7811, 0.4265), (0.7811, 0.4921), (0.7914, 0.4956)]]
+    for name in ("photo-src.jpg", "bg-src.jpg"):
+        f = sc / name
+        im = Image.open(keep if name == "photo-src.jpg" else f).convert("RGB")
+        W, H = im.size
+        from PIL import ImageDraw
+        m = Image.new("L", (W, H), 0)
+        d = ImageDraw.Draw(m)
+        for q in leaves:
+            d.polygon([(u * W, v * H) for u, v in q], fill=255)
+        hole = nd.binary_dilation(np.asarray(m) > 0, iterations=max(3, W // 600))
+        a = np.asarray(im, np.float32) / 255.0
+        out = push_pull(a, hole)
+        Image.fromarray((np.clip(out, 0, 1) * 255 + 0.5).astype(np.uint8)).save(f, quality=95, subsampling=0)
+    print("P: the photo's own gate leaves taken out (kept in photo-gates.jpg)")
+
+
 def main():
     want = sys.argv[1:]
     opts = ort.SessionOptions()
@@ -194,6 +262,9 @@ def main():
         if want and sid not in want:
             continue
         scene(sess, sid, src)
+    if not want or "gate" in want:
+        gate_leaf()
+        gate_clear()
     if not want or "fg" in want:
         occluder("01", (0.1, 0.0, 0.3, 0.86), "trunk", near=0.55)
         occluder("06", (0.8, 0.0, 1.0, 0.46), "leaves", near=0.5)
