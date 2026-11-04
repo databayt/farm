@@ -19,8 +19,6 @@ const en = {
   skip: "Skip to the plan",
   captions: {
     today: "Today · 2026-10-25",
-    // over the hero while its film plays (film.md rule 2: anything AI-made is a concept)
-    concept: "Concept film · made with AI from the plan",
   },
   hero: {
     // Two lines, as the founder set them.
@@ -175,7 +173,6 @@ const rw: typeof en = {
   skip: "Simbuka ujye ku gishushanyo",
   captions: {
     today: "Uyu munsi · 2026-10-25",
-    concept: "Filime y'igitekerezo · yakozwe na AI hashingiwe ku gishushanyo",
   },
   hero: {
     headline: ["Ahantu", "ho gutuza"],

@@ -1,0 +1,614 @@
+<!doctype html>
+<!-- The one-take film's renderer (D-074): legs.mjs's journey through the depth scenes of depth.py, drawn one frame at a
+     time by render.mjs. ?form=landscape|portrait  ?w=&h= (a smaller proxy). window.frame(n) draws frame n.
+     WebGL2, one full-screen pass. Each pixel is traced back through the moving camera into the photo: depth parallax by
+     fixed-point steps on its depth map, and the filled background where a near thing's edge opens up. While one shot
+     hands over to the next, both are drawn and blended by the join's mask. Nothing is generated: every pixel is the
+     founder's photos (and the near trunk and leaves the camera passes are cut from them too). -->
+<html>
+<head>
+<meta charset="utf-8" />
+<style>html, body { margin: 0; background: #000; overflow: hidden } canvas { display: block }</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script type="module">
+import { FPS, GATES, LENGTH, SCENES, SHOTS } from "./legs.mjs"
+
+const Q = new URLSearchParams(location.search)
+const FORM = Q.get("form") ?? "landscape"
+const W = Number(Q.get("w") ?? (FORM === "portrait" ? 1080 : 1920))
+const H = Number(Q.get("h") ?? (FORM === "portrait" ? 2332 : 1072))
+const ASPECT = W / H
+const ROOT = "../../../../assets/film/oner/"
+
+const canvas = document.getElementById("c")
+canvas.width = W
+canvas.height = H
+const gl = canvas.getContext("webgl2", { antialias: false, preserveDrawingBuffer: true, premultipliedAlpha: false })
+if (!gl) throw new Error("no WebGL2")
+gl.getExtension("OES_texture_float_linear")
+
+// ------------------------------------------------------------ the shader
+const VS = `#version 300 es
+in vec2 p; out vec2 o;
+void main() { o = vec2(p.x * 0.5 + 0.5, 0.5 - p.y * 0.5); gl_Position = vec4(p, 0.0, 1.0); }`
+
+const FS = `#version 300 es
+precision highp float;
+in vec2 o; out vec4 frag;
+uniform float uAspect, uTime, uLife, uGrain;
+uniform int uCount, uType, uInner;
+uniform float uSide, uRadius, uSweep, uInnerFade, uSeamX, uSeamSoft, uOccX, uOccW, uOccH, uOccY, uOccBlur, uOccShade, uOccFlip;
+uniform vec2 uAnchor;
+struct Scene { mat3 R; vec3 C; float tx, ty, zoom, zfar, leaves, feather; vec4 water; mat3 pre; };
+uniform Scene uS[2];
+// a gate's timber leaves, swinging on their hinges: frame -> leaf (s, t), and leaf (s, t) -> the photo's open leaf
+uniform int uLeafSlot, uLeafCount;
+uniform mat3 uLeafInv[4], uLeafSrc[4];
+uniform vec2 uLeafSoft[4];
+uniform sampler2D uPhoto0, uBg0, uDepth0, uBgd0, uMask0, uPhoto1, uBg1, uDepth1, uBgd1, uMask1, uOcc;
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) { vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1, 0)), u.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), u.x), u.y); }
+float Z(float d, float zfar) { return 1.0 / (d * (1.0 - 1.0 / zfar) + 1.0 / zfar); }
+
+float depthAt(int k, vec2 uv, bool bg) {
+  if (k == 0) return bg ? texture(uBgd0, uv).r : texture(uDepth0, uv).r;
+  return bg ? texture(uBgd1, uv).r : texture(uDepth1, uv).r;
+}
+// the ray through screen point s of scene k's camera, in the photo camera's frame
+vec3 ray(int k, vec2 s) {
+  Scene S = uS[k];
+  vec3 q = S.pre * vec3(s.x * uAspect, s.y, 1.0);
+  vec2 ss = vec2(q.x / q.z / uAspect, q.y / q.z);
+  float tyv = S.ty / S.zoom, txv = tyv * uAspect;
+  return S.R * vec3((ss.x * 2.0 - 1.0) * txv, (ss.y * 2.0 - 1.0) * tyv, 1.0);
+}
+vec2 toUv(int k, vec3 X) { return vec2(X.x / X.z / uS[k].tx, X.y / X.z / uS[k].ty) * 0.5 + 0.5; }
+// where the ray meets the photo's depth surface: fixed-point steps from the point at infinity
+vec2 solve(int k, vec3 d, bool bg, out float disp) {
+  vec3 C = uS[k].C;
+  vec2 uv = toUv(k, d);
+  disp = 0.0;
+  if (dot(C, C) < 1e-10) { disp = depthAt(k, uv, bg); return uv; } // a still camera: the photo as it is
+  for (int i = 0; i < 8; i++) {
+    disp = depthAt(k, uv, bg);
+    float lam = (Z(disp, uS[k].zfar) - C.z) / d.z;
+    uv = mix(uv, toUv(k, C + lam * d), 0.85);
+  }
+  return uv;
+}
+vec2 breeze(int k, vec2 uv, vec3 m) {
+  float t = uTime;
+  float lv = m.g * uS[k].leaves * uLife;
+  vec2 sw = vec2(noise(uv * vec2(7.0, 5.0) + vec2(t * 0.35, t * 0.12)) - 0.5, noise(uv * vec2(6.0, 4.0) + vec2(13.0 + t * 0.27, 7.0)) - 0.5);
+  uv += sw * lv * 0.0016 * (1.15 - uv.y * 0.6);
+  vec4 wb = uS[k].water;
+  float inBox = step(wb.x, uv.x) * step(uv.x, wb.z) * step(wb.y, uv.y) * step(uv.y, wb.w);
+  float wv = inBox * smoothstep(0.2, 0.6, m.b) * uLife;
+  uv.y += wv * sin(uv.y * 2400.0 + t * 2.4 + 3.0 * noise(uv * vec2(30.0, 300.0) + t * 0.4)) * 0.00045;
+  uv.x += wv * (noise(uv * vec2(40.0, 600.0) + t * 0.6) - 0.5) * 0.0012;
+  return uv;
+}
+vec3 tex(int k, int which, vec2 uv) {
+  if (k == 0) return which == 0 ? texture(uPhoto0, uv).rgb : which == 1 ? texture(uBg0, uv).rgb : texture(uMask0, uv).rgb;
+  return which == 0 ? texture(uPhoto1, uv).rgb : which == 1 ? texture(uBg1, uv).rgb : texture(uMask1, uv).rgb;
+}
+vec3 scene(int k, vec2 s, out float valid, out float far) {
+  vec3 d = ray(k, s);
+  float disp;
+  vec2 uv = solve(k, d, false, disp);
+  vec3 m = tex(k, 2, uv);
+  vec3 c = tex(k, 0, breeze(k, uv, m));
+  if (k == uLeafSlot) {
+    vec3 q = uS[k].pre * vec3(s.x * uAspect, s.y, 1.0);
+    vec2 p = q.xy / q.z;
+    for (int i = 0; i < 4; i++) {
+      if (i >= uLeafCount) break;
+      vec3 st = uLeafInv[i] * vec3(p, 1.0);
+      vec2 a = st.xy / st.z;
+      vec2 soft = uLeafSoft[i];
+      float w = smoothstep(-soft.x, soft.x, a.x) * smoothstep(-soft.x, soft.x, 1.0 - a.x) * smoothstep(-soft.y, soft.y, a.y) * smoothstep(-soft.y, soft.y, 1.0 - a.y);
+      if (w > 0.0) {
+        vec3 lu = uLeafSrc[i] * vec3(clamp(a, 0.0, 1.0), 1.0);
+        c = mix(c, tex(k, 0, lu.xy / lu.z), w);
+        if (w > 0.5) disp = max(disp, 0.5); // a leaf is near: walking on, it goes with the near things
+      }
+    }
+  }
+  // where a near thing's edge opens up as the camera moves, the background filled in behind it
+  float edge = m.r * smoothstep(0.03, 0.08, length(uS[k].C));
+  if (edge > 0.02) {
+    float bd;
+    vec2 bu = solve(k, d, true, bd);
+    c = mix(c, tex(k, 1, breeze(k, bu, m)), clamp(edge * 1.5, 0.0, 1.0));
+  }
+  vec4 wb = uS[k].water;
+  float inBox = step(wb.x, uv.x) * step(uv.x, wb.z) * step(wb.y, uv.y) * step(uv.y, wb.w);
+  float sp = pow(noise(uv * vec2(260.0, 1400.0) + vec2(uTime * 1.3, 0.0)), 14.0);
+  c += inBox * smoothstep(0.2, 0.6, m.b) * uLife * sp * 0.35 * vec3(1.0, 0.97, 0.9);
+  float e = uS[k].feather;
+  float inside = min(min(uv.x, 1.0 - uv.x), min(uv.y, 1.0 - uv.y));
+  valid = smoothstep(-0.002, e, inside + min(e, 0.004)); // the photo's own rim counts as inside it
+  far = 1.0 - disp;
+  return c;
+}
+vec4 occluder(vec2 s) {
+  // a near trunk or leaves, cut from the photos, passing close to the lens (motion-blurred across)
+  vec4 acc = vec4(0.0);
+  for (int i = -3; i <= 3; i++) {
+    vec2 q = vec2((s.x - uOccX + float(i) * uOccBlur / 6.0) * uAspect / uOccW, (s.y - uOccY) / uOccH) + 0.5;
+    if (uOccFlip > 0.5) q.x = 1.0 - q.x;
+    vec4 c = (q.x < 0.0 || q.x > 1.0 || q.y < 0.0 || q.y > 1.0) ? vec4(0.0) : texture(uOcc, q);
+    acc += vec4(c.rgb * c.a, c.a);
+  }
+  acc /= 7.0;
+  return vec4(acc.a > 0.0 ? acc.rgb / acc.a : vec3(0.0), acc.a);
+}
+void main() {
+  float vA, fA, vB, fB;
+  vec3 a = scene(0, o, vA, fA);
+  vec3 col = a;
+  if (uCount == 2) {
+    vec3 b = scene(1, o, vB, fB);
+    float n = noise(o * vec2(9.0, 5.0)) - 0.5;
+    float wA = 1.0;
+    if (uType == 0) {
+      // pass: the next place takes over behind the near thing crossing the frame
+      float x = (o.x - uSeamX) * uSide;
+      wA = smoothstep(-uSeamSoft, uSeamSoft, -x);
+    } else if (uType == 1) {
+      // a matched rise or dive: the frame moves between the two framings with the matched points held together; the
+      // inner picture (the one the camera dives into, or rises out of) shows only while it nearly fills the frame,
+      // far things first, through its soft edge
+      float fi = uInner == 1 ? fB : fA;
+      float skew = (uInner == 1 ? -0.3 * fi : -0.3 * (1.0 - fi)) + n * 0.08;
+      float f = clamp(uInnerFade + 4.0 * uInnerFade * (1.0 - uInnerFade) * skew, 0.0, 1.0); // exact at 0 and 1
+      wA = uInner == 1 ? 1.0 - f * vB : f * vA;
+    } else {
+      // far things first, the near last, in a narrow band
+      wA = 1.0 - smoothstep(uSweep - 0.06, uSweep + 0.06, fA + n * 0.05);
+    }
+    if (uType != 1) wA *= vA;
+    float wB = (1.0 - wA) * vB;
+    if (wA + wB < 0.0001) { wA = 1.0; wB = 0.0; } // past both photos' edges: this photo's own rim, never black
+    col = (a * wA + b * wB) / max(wA + wB, 0.0001);
+    if (uType == 0) {
+      vec4 oc = occluder(o);
+      col = mix(col, oc.rgb * uOccShade, oc.a);
+    }
+  }
+  col += (hash(o * vec2(1931.0, 1171.0) + fract(uTime * 7.31)) - 0.5) * uGrain;
+  frag = vec4(clamp(col, 0.0, 1.0), 1.0);
+}`
+
+function compile(type, src) {
+  const s = gl.createShader(type)
+  gl.shaderSource(s, src)
+  gl.compileShader(s)
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s))
+  return s
+}
+const prog = gl.createProgram()
+gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS))
+gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS))
+gl.linkProgram(prog)
+if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog))
+gl.useProgram(prog)
+gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer())
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
+gl.enableVertexAttribArray(gl.getAttribLocation(prog, "p"))
+gl.vertexAttribPointer(gl.getAttribLocation(prog, "p"), 2, gl.FLOAT, false, 0, 0)
+const locs = new Map()
+const U = (n) => (locs.has(n) ? locs.get(n) : (locs.set(n, gl.getUniformLocation(prog, n)), locs.get(n)))
+
+// ------------------------------------------------------------ textures, loaded when first needed
+async function bitmap(url) {
+  return createImageBitmap(await (await fetch(url)).blob(), { premultiplyAlpha: "none", colorSpaceConversion: "none" })
+}
+function texture(source, w, h, half) {
+  const t = gl.createTexture()
+  gl.bindTexture(gl.TEXTURE_2D, t)
+  if (half) gl.texImage2D(gl.TEXTURE_2D, 0, gl.R16F, w, h, 0, gl.RED, gl.HALF_FLOAT, source)
+  else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, source)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+  return t
+}
+const keyOf = (id) => (FORM === "portrait" && id === "01" ? "01p" : id)
+const cache = new Map()
+async function load(id) {
+  const key = keyOf(id)
+  if (cache.has(key)) return cache.get(key)
+  const dir = ROOT + "scenes/" + key + "/"
+  const meta = await (await fetch(dir + "meta.json")).json()
+  const [photo, bg, mask, depth, bgd] = await Promise.all([bitmap(dir + (meta.photo ?? "photo.jpg")), bitmap(dir + "bg.jpg"), bitmap(dir + "mask.png"),
+    fetch(dir + "depth.f16").then((r) => r.arrayBuffer()), fetch(dir + "bgdepth.f16").then((r) => r.arrayBuffer())])
+  const s = { key, meta, aspect: meta.width / meta.height, photo: texture(photo), bg: texture(bg), mask: texture(mask),
+    depth: texture(new Uint16Array(depth), meta.dw, meta.dh, true), bgd: texture(new Uint16Array(bgd), meta.dw, meta.dh, true) }
+  for (const b of [photo, bg, mask]) b.close()
+  cache.set(key, s)
+  return s
+}
+function keepOnly(keys) {
+  for (const [key, s] of cache) if (!keys.has(key)) {
+    for (const t of [s.photo, s.bg, s.mask, s.depth, s.bgd]) gl.deleteTexture(t)
+    cache.delete(key)
+  }
+}
+const occ = {}
+async function occluderTex(name) {
+  if (!occ[name]) {
+    const b = await bitmap(ROOT + "fg/" + name + ".png")
+    occ[name] = { tex: texture(b), aspect: b.width / b.height }
+    b.close()
+  }
+  return occ[name]
+}
+
+// ------------------------------------------------------------ the camera
+const CH = ["cx", "cy", "zoom", "roll", "x", "y", "z"]
+const DEF = { cx: 0.5, cy: 0.5, zoom: 1, roll: 0, x: 0, y: 0, z: 0 }
+for (const s of SHOTS) {
+  let prev = { ...DEF }
+  s.keys = s.keys.map(([t, k]) => { prev = { ...prev, ...k }; return [t, prev] })
+}
+// non-uniform Catmull-Rom through the keys (speed carries across them), held before the first and after the last
+function spline(keys, t, ch) {
+  const n = keys.length
+  if (t <= keys[0][0]) return keys[0][1][ch]
+  if (t >= keys[n - 1][0]) return keys[n - 1][1][ch]
+  let i = 0
+  while (keys[i + 1][0] < t) i++
+  const [t1, k1] = keys[i], [t2, k2] = keys[i + 1]
+  const v1 = k1[ch], v2 = k2[ch]
+  const [t0, v0] = i > 0 ? [keys[i - 1][0], keys[i - 1][1][ch]] : [t1 - (t2 - t1), v1 - (v2 - v1)]
+  const [t3, v3] = i + 2 < n ? [keys[i + 2][0], keys[i + 2][1][ch]] : [t2 + (t2 - t1), v2 + (v2 - v1)]
+  const u = (t - t1) / (t2 - t1)
+  const m1 = ((v2 - v0) / (t2 - t0)) * (t2 - t1)
+  const m2 = ((v3 - v1) / (t3 - t1)) * (t2 - t1)
+  const u2 = u * u, u3 = u2 * u
+  return (2 * u3 - 3 * u2 + 1) * v1 + (u3 - 2 * u2 + u) * m1 + (-2 * u3 + 3 * u2) * v2 + (u3 - u2) * m2
+}
+const camOf = (shot, t) => Object.fromEntries(CH.map((ch) => [ch, spline(shot.keys, t, ch)]))
+const D2R = Math.PI / 180
+const def = (id) => SCENES[keyOf(id)] ?? SCENES[id]
+function optics(id) {
+  const tx = Math.tan((def(id).hfov * D2R) / 2)
+  const aspect = cache.get(keyOf(id))?.aspect ?? 1.79
+  return { tx, ty: tx / aspect }
+}
+const mul = (A, B) => A.map((r) => B[0].map((_, j) => r.reduce((s, v, k) => s + v * B[k][j], 0)))
+const T = (A) => A[0].map((_, j) => A.map((r) => r[j]))
+const app = (M, v) => M.map((r) => r[0] * v[0] + r[1] * v[1] + r[2] * v[2])
+// virtual camera ray -> photo camera ray, from the framing (the photo point cx, cy at the centre) and the roll
+function rotation(id, c) {
+  const { tx, ty } = optics(id)
+  const yaw = Math.atan((c.cx - 0.5) * 2 * tx), pitch = Math.atan((c.cy - 0.5) * 2 * ty * Math.cos(yaw)), roll = c.roll * D2R
+  const [cy, sy, cp, sp, cr, sr] = [Math.cos(yaw), Math.sin(yaw), Math.cos(pitch), Math.sin(pitch), Math.cos(roll), Math.sin(roll)]
+  return mul(mul([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]], [[1, 0, 0], [0, cp, sp], [0, -sp, cp]]), [[cr, -sr, 0], [sr, cr, 0], [0, 0, 1]])
+}
+// a photo point -> the frame (x in [0, ASPECT], y in [0, 1])
+function project(id, c, [u, v]) {
+  const { tx, ty } = optics(id)
+  const q = app(T(rotation(id, c)), [(u - 0.5) * 2 * tx, (v - 0.5) * 2 * ty, 1])
+  const tyv = ty / c.zoom, txv = tyv * ASPECT
+  return [((q[0] / q[2]) / txv * 0.5 + 0.5) * ASPECT, (q[1] / q[2]) / tyv * 0.5 + 0.5]
+}
+// a frame point (sx, sy in [0, 1]) -> the photo (no parallax)
+function unproject(id, c, sx, sy) {
+  const { tx, ty } = optics(id)
+  const tyv = ty / c.zoom, txv = tyv * ASPECT
+  const d = app(rotation(id, c), [(sx * 2 - 1) * txv, (sy * 2 - 1) * tyv, 1])
+  return [(d[0] / d[2] / tx) * 0.5 + 0.5, (d[1] / d[2] / ty) * 0.5 + 0.5]
+}
+// the least zoom that keeps the whole frame inside the photo (the camera never sees past its edge)
+const RIM = [[0, 0], [0.5, 0], [1, 0], [1, 0.5], [1, 1], [0.5, 1], [0, 1], [0, 0.5], [0.25, 0], [0.75, 0], [0.25, 1], [0.75, 1], [0, 0.25], [0, 0.75], [1, 0.25], [1, 0.75]]
+function cover(id, c) {
+  const margin = Math.hypot(c.x, c.y, c.z) * 0.12 // none for a still camera: the hero's own frame stays the picture
+  const fits = (z) => RIM.every(([sx, sy]) => {
+    const [u, v] = unproject(id, { ...c, zoom: z }, sx, sy)
+    return u >= margin - 1e-6 && u <= 1 - margin + 1e-6 && v >= margin - 1e-6 && v <= 1 - margin + 1e-6
+  })
+  if (fits(c.zoom)) return c
+  const [cu, cv] = unproject(id, c, 0.5, 0.5)
+  if (cu < 0.05 || cu > 0.95 || cv < 0.05 || cv > 0.95) return c // looking past the photo on purpose (a turn)
+  let lo = c.zoom, hi = c.zoom * 4
+  if (!fits(hi)) return c
+  for (let i = 0; i < 18; i++) { const mid = (lo + hi) / 2; if (fits(mid)) hi = mid; else lo = mid }
+  return { ...c, zoom: hi }
+}
+
+// a similarity b-frame -> a-frame fitted to point pairs (rotation only when the join allows it)
+function similarity(pa, pb, rotate) {
+  const n = pa.length
+  const ca = pa.reduce((s, p) => [s[0] + p[0] / n, s[1] + p[1] / n], [0, 0])
+  const cb = pb.reduce((s, p) => [s[0] + p[0] / n, s[1] + p[1] / n], [0, 0])
+  let sxx = 0, sxy = 0, sbb = 0
+  for (let i = 0; i < n; i++) {
+    const ax = pa[i][0] - ca[0], ay = pa[i][1] - ca[1], bx = pb[i][0] - cb[0], by = pb[i][1] - cb[1]
+    sxx += ax * bx + ay * by
+    sxy += ay * bx - ax * by
+    sbb += bx * bx + by * by
+  }
+  const a = sxx / sbb, b = rotate ? sxy / sbb : 0
+  return { s: Math.hypot(a, b), th: Math.atan2(b, a), ca, cb }
+}
+const simMat = (s, th, from, to) => {
+  const c = Math.cos(th) * s, si = Math.sin(th) * s
+  return [[c, -si, to[0] - c * from[0] + si * from[1]], [si, c, to[1] - si * from[0] - c * from[1]], [0, 0, 1]]
+}
+const inv3 = (m) => {
+  const [a, b, c] = m[0], [d, e, f] = m[1], [g, h, i] = m[2]
+  const A = e * i - f * h, B = -(d * i - f * g), C = d * h - e * g
+  const det = a * A + b * B + c * C
+  return [[A / det, -(b * i - c * h) / det, (b * f - c * e) / det], [B / det, (a * i - c * g) / det, -(a * f - c * d) / det], [C / det, -(a * h - b * g) / det, (a * e - b * d) / det]]
+}
+const I3 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+const clamp01 = (x) => Math.min(1, Math.max(0, x))
+const ease = (x) => x * x * (3 - 2 * x)
+const ease5 = (x) => x * x * x * (x * (x * 6 - 15) + 10)
+// steady progress: linear, with short smooth starts and ends (the speed never jumps, and most of the way it is even)
+const ramp = (x, r = 0.18) => {
+  x = clamp01(x)
+  const v = 1 / (1 - r)
+  return x < r ? (v * x * x) / (2 * r) : x > 1 - r ? 1 - (v * (1 - x) * (1 - x)) / (2 * r) : v * (x - r / 2)
+}
+
+// a photo point at a depth (near units) -> the frame, through a camera that turns, zooms and moves
+const Zof = (disp, zfar) => 1 / (disp * (1 - 1 / zfar) + 1 / zfar)
+function point3(id, [u, v], z) {
+  const { tx, ty } = optics(id)
+  return [(u - 0.5) * 2 * tx * z, (v - 0.5) * 2 * ty * z, z]
+}
+function projectXYZ(id, c, X) {
+  const { ty } = optics(id)
+  const q = app(T(rotation(id, c)), [X[0] - c.x, X[1] - c.y, X[2] - c.z])
+  const tyv = ty / c.zoom, txv = tyv * ASPECT
+  return [((q[0] / q[2]) / txv * 0.5 + 0.5) * ASPECT, (q[1] / q[2]) / tyv * 0.5 + 0.5]
+}
+function toUvXYZ(id, X) {
+  const { tx, ty } = optics(id)
+  return [(X[0] / X[2] / tx) * 0.5 + 0.5, (X[1] / X[2] / ty) * 0.5 + 0.5]
+}
+// the homography taking the unit square's corners (0,0) (1,0) (1,1) (0,1) to a quad
+function squareTo(q) {
+  const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = q
+  const dx1 = x1 - x2, dx2 = x3 - x2, dy1 = y1 - y2, dy2 = y3 - y2
+  const sx = x0 - x1 + x2 - x3, sy = y0 - y1 + y2 - y3
+  const det = dx1 * dy2 - dx2 * dy1
+  const g = (sx * dy2 - dx2 * sy) / det, hh = (dx1 * sy - sx * dy1) / det
+  return [[x1 - x0 + g * x1, x3 - x0 + hh * x3, x0], [y1 - y0 + g * y1, y3 - y0 + hh * y3, y0], [g, hh, 1]]
+}
+
+// ------------------------------------------------------------ the gates' leaves
+// Each gate opens inward on two leaves hinged at its pillars: in 3D, at the gate's depth, a leaf turned by `a` from
+// shut has its free edge pulled back by its width times sin(a). The leaf's picture is the photo's open right leaf
+// (the left is its mirror), mapped corner to corner; at the photo's own angle the leaf lands where the photo has it.
+function gateLeaves(id, cam, t) {
+  const out = []
+  const gates = GATES.filter((g) => g.scene === id).sort((a, b) => a.disp - b.disp) // far first: near leaves on top
+  for (const g of gates) {
+    const z = Zof(g.disp, def(id).zfar)
+    const a = (g.open * D2R) * ease(clamp01((t - g.at[0]) / (g.at[1] - g.at[0])))
+    const [hl, hr] = [point3(id, [g.hinge[0], g.top], z), point3(id, [g.hinge[1], g.top], z)]
+    const Lw = (hr[0] - hl[0]) / 2
+    const yTop = point3(id, [0.5, g.top], z)[1], yBot = point3(id, [0.5, g.bottom], z)[1]
+    // the model's open free edge against the photo's: the difference, eased in as the leaf opens, lands it exactly
+    const free = (hx, side, ang) => [hx + side * Lw * Math.cos(ang), z + Lw * Math.sin(ang)]
+    const [fxo, fzo] = free(hr[0], -1, g.open * D2R)
+    const mTop = toUvXYZ(id, [fxo, yTop, fzo]), mBot = toUvXYZ(id, [fxo, yBot, fzo]) // same height, further away
+    const fix = Math.pow(a / (g.open * D2R), 2)
+    const dTop = [(g.leaf[1][0] - mTop[0]) * fix, (g.leaf[1][1] - mTop[1]) * fix]
+    const dBot = [(g.leaf[2][0] - mBot[0]) * fix, (g.leaf[2][1] - mBot[1]) * fix]
+    const src = squareTo(g.leaf) // leaf (s along from the hinge, t down) -> the photo's open leaf
+    for (const side of [-1, 1]) { // -1: the right leaf (its free edge goes left), +1: the left leaf, mirrored
+      const hx = side < 0 ? hr[0] : hl[0]
+      const [fx, fz] = free(hx, side, a)
+      const ft = toUvXYZ(id, [fx, yTop, fz]), fb = toUvXYZ(id, [fx, yBot, fz])
+      // the right leaf takes the correction as measured, the left (its mirror) with the sideways part mirrored
+      const ftu = [ft[0] + (side < 0 ? dTop[0] : -dTop[0]), ft[1] + dTop[1]]
+      const fbu = [fb[0] + (side < 0 ? dBot[0] : -dBot[0]), fb[1] + dBot[1]]
+      // back to 3D at the corners' own depths, then into the frame through the camera
+      const toFrame = ([u, v], zz) => projectXYZ(id, cam, point3(id, [u, v], zz))
+      const ht = toFrame([side < 0 ? g.hinge[1] : g.hinge[0], g.top], z), hb = toFrame([side < 0 ? g.hinge[1] : g.hinge[0], g.bottom], z)
+      const quad = [ht, toFrame(ftu, fz), toFrame(fbu, fz), hb]
+      const dst = squareTo(quad)
+      const wpx = Math.hypot(quad[1][0] - quad[0][0], quad[1][1] - quad[0][1]) * H
+      const hpx = Math.hypot(quad[3][0] - quad[0][0], quad[3][1] - quad[0][1]) * H
+      out.push({ inv: inv3(dst), src, soft: [0.8 / Math.max(wpx, 1), 0.8 / Math.max(hpx, 1)] })
+    }
+  }
+  return out
+}
+
+// ------------------------------------------------------------ the cameras at a moment
+// During a pass the next photo turns with this one at the same speed on screen; its own keys give everything else.
+function camAt(i, t) {
+  const S = SHOTS[i], P = SHOTS[i - 1], j = P?.join
+  let c = camOf(S, t)
+  if (j?.type === "pass" && t < j.at + j.dur) {
+    const end = j.at + j.dur
+    const a = camOf(P, t), aEnd = camOf(P, end), bEnd = camOf(S, end)
+    const k = (a.zoom / c.zoom) * (optics(P.scene).tx / optics(S.scene).tx)
+    c = { ...c, cx: bEnd.cx + (a.cx - aEnd.cx) * k }
+  }
+  return cover(S.scene, c)
+}
+// what the frame shows at time t: one or two shots, their cameras, how they are warped and blended
+function views(t) {
+  const on = SHOTS.map((s, i) => [s, i]).filter(([s]) => t >= s.from && t < s.to)
+  const [[A, ia]] = on
+  const camA = camAt(ia, t)
+  if (on.length === 1) return { A, camA, preA: I3, featherA: 0.004 }
+  const [[B, ib]] = [on[1]]
+  const camB = camAt(ib, t)
+  const j = A.join
+  const p = clamp01((t - j.at) / j.dur)
+  if (j.type === "pass") return { A, camA, preA: I3, featherA: 0.004, B, camB, preB: I3, featherB: 0.004, j, p }
+  const pairs = FORM === "portrait" && j.pairsPortrait ? j.pairsPortrait : j.pairs
+  const pa = pairs.map(([a]) => project(A.scene, camA, a)), pb = pairs.map(([, b]) => project(B.scene, camB, b))
+  const G = similarity(pa, pb, !!j.rotate) // a turn of the picture is a roll: never on a slanted view
+  // align: "scale" keeps only the size match, about the frame's centre, so the move can't pull against the turn
+  if (j.align === "scale") { G.ca = [ASPECT / 2, 0.5]; G.cb = [ASPECT / 2, 0.5] }
+  const inner = j.type === "zoom" ? (G.s < 1 ? 1 : 0) : -1
+  const e = ramp(p)
+  // the frame's view moves from a's own (p = 0) to b's own (p = 1), the matched points held together, at a steady rate
+  const m = [G.ca[0] + (G.cb[0] - G.ca[0]) * e, G.ca[1] + (G.cb[1] - G.ca[1]) * e]
+  const Wm = simMat(Math.pow(G.s, e), G.th * e, m, G.ca)
+  const Gm = simMat(G.s, G.th, G.cb, G.ca)
+  // a dive's next photo comes in near the end, when it nearly fills the frame; a rise's photo goes early, while it still
+  // does (or when the join says); its soft edge comes and goes with it, so the frame's rim never jumps
+  const [f0, f1] = j.fade ?? (inner === 1 ? [0.66, 0.96] : [0.02, 0.38])
+  const fadeIn = inner === 1 ? ease(clamp01((p - f0) / (f1 - f0))) : inner === 0 ? 1 - ease(clamp01((p - f0) / (f1 - f0))) : 1
+  // a rise's photo is already shrinking before it fades: its edge softens from the start, so it never reads as a card
+  const soft = inner === 0 ? 0.12 * ease(clamp01(p / 0.12)) * Math.min(1, fadeIn * 4)
+    : 0.07 * Math.min(1, 4 * fadeIn * (1 - fadeIn) + (inner === 1 ? 1 - fadeIn : 0) * (p < f0 ? 1 : 0))
+  const rim = inner === -1 ? 0.12 * 4 * p * (1 - p) : 0
+  return { A, camA, preA: Wm, featherA: inner === 0 ? Math.max(0.004, soft) : Math.max(0.004, rim),
+    B, camB, preB: mul(inv3(Gm), Wm), featherB: inner === 1 ? Math.max(0.004, soft) : Math.max(0.004, rim), j, p, inner, fadeIn, m }
+}
+
+// ------------------------------------------------------------ one frame
+function bind(slot, id, c, pre, feather) {
+  const s = cache.get(keyOf(id))
+  const { tx, ty } = optics(id)
+  const sc = def(id)
+  gl.uniformMatrix3fv(U(`uS[${slot}].R`), false, new Float32Array(T(rotation(id, c)).flat()))
+  gl.uniform3f(U(`uS[${slot}].C`), c.x, c.y, c.z)
+  gl.uniform1f(U(`uS[${slot}].tx`), tx)
+  gl.uniform1f(U(`uS[${slot}].ty`), ty)
+  gl.uniform1f(U(`uS[${slot}].zoom`), c.zoom)
+  gl.uniform1f(U(`uS[${slot}].zfar`), sc.zfar)
+  gl.uniform1f(U(`uS[${slot}].leaves`), sc.leaves ?? 0.4)
+  gl.uniform1f(U(`uS[${slot}].feather`), feather)
+  gl.uniform4fv(U(`uS[${slot}].water`), sc.water ?? [2, 2, 2, 2])
+  gl.uniformMatrix3fv(U(`uS[${slot}].pre`), false, new Float32Array(T(pre).flat()))
+  ;["uPhoto", "uBg", "uDepth", "uBgd", "uMask"].forEach((n, i) => {
+    gl.activeTexture(gl.TEXTURE0 + slot * 5 + i)
+    gl.bindTexture(gl.TEXTURE_2D, [s.photo, s.bg, s.depth, s.bgd, s.mask][i])
+    gl.uniform1i(U(n + slot), slot * 5 + i)
+  })
+}
+function bindLeaves(slot, id, cam, t) {
+  const leaves = slot < 0 ? [] : gateLeaves(id, cam, t)
+  gl.uniform1i(U("uLeafSlot"), leaves.length ? slot : -1)
+  gl.uniform1i(U("uLeafCount"), Math.min(4, leaves.length))
+  leaves.slice(0, 4).forEach((l, i) => {
+    gl.uniformMatrix3fv(U(`uLeafInv[${i}]`), false, new Float32Array(T(l.inv).flat()))
+    gl.uniformMatrix3fv(U(`uLeafSrc[${i}]`), false, new Float32Array(T(l.src).flat()))
+    gl.uniform2f(U(`uLeafSoft[${i}]`), l.soft[0], l.soft[1])
+  })
+}
+
+window.frame = async (n) => {
+  const t = Math.min(n / FPS, LENGTH - 1e-3)
+  for (const s of SHOTS.filter((s) => s.to > t && s.from < t + 3)) await load(s.scene)
+  keepOnly(new Set(SHOTS.filter((s) => s.to > t - 0.1 && s.from < t + 3).map((s) => keyOf(s.scene))))
+  // the hero's own frames stay exactly the picture (no breeze, no grain) at the start and the end
+  const life = Math.min(ease(clamp01((t - 1.6) / 2)), ease(clamp01((LENGTH - 1.2 - t) / 2.5)))
+  gl.uniform1f(U("uAspect"), ASPECT)
+  gl.uniform1f(U("uTime"), t)
+  gl.uniform1f(U("uLife"), life)
+  gl.uniform1f(U("uGrain"), 0.013 * life)
+  const v = views(t)
+  bind(0, v.A.scene, v.camA, v.preA, v.featherA)
+  const gateIn = GATES.some((g) => g.scene === v.A.scene) ? 0 : v.B && GATES.some((g) => g.scene === v.B.scene) ? 1 : -1
+  if (!v.B) {
+    gl.uniform1i(U("uCount"), 1)
+  } else {
+    bind(1, v.B.scene, v.camB, v.preB, v.featherB)
+    gl.uniform1i(U("uCount"), 2)
+    const j = v.j
+    if (j.type === "pass") {
+      gl.uniform1i(U("uType"), 0)
+      gl.uniform1f(U("uSide"), j.side)
+      const o = await occluderTex(j.occ ?? "trunk")
+      const h = j.scale ?? 1.5
+      const w = h * o.aspect
+      const q = ease(v.p) * 0.25 + v.p * 0.75 // a near thing crosses at a steady speed
+      const x0 = j.side < 0 ? -w / ASPECT / 2 - 0.02 : 1 + w / ASPECT / 2 + 0.02
+      const x1 = j.side < 0 ? 1 + w / ASPECT / 2 + 0.02 : -w / ASPECT / 2 - 0.02
+      const occX = x0 + (x1 - x0) * q
+      gl.uniform1f(U("uOccX"), occX)
+      // the seam sits under the near thing's solid part (its bark, or the leaves' thickest)
+      const bark = (j.occ ?? "trunk") === "trunk" ? 0.39 : 0.72
+      gl.uniform1f(U("uSeamX"), occX + (bark - 0.5) * (w / ASPECT) * (j.flip ? -1 : 1))
+      gl.uniform1f(U("uSeamSoft"), (j.occ ?? "trunk") === "trunk" ? 0.01 : 0.05)
+      gl.uniform1f(U("uOccW"), w)
+      gl.uniform1f(U("uOccH"), h)
+      gl.uniform1f(U("uOccY"), j.y ?? 0.42)
+      gl.uniform1f(U("uOccBlur"), (Math.abs(x1 - x0) / j.dur / FPS) * 1.4)
+      gl.uniform1f(U("uOccShade"), j.shade ?? 0.72)
+      gl.uniform1f(U("uOccFlip"), j.flip ? 1 : 0)
+      gl.activeTexture(gl.TEXTURE10)
+      gl.bindTexture(gl.TEXTURE_2D, o.tex)
+      gl.uniform1i(U("uOcc"), 10)
+    } else if (j.type === "zoom") {
+      gl.uniform1i(U("uType"), 1)
+      gl.uniform1i(U("uInner"), v.inner)
+      gl.uniform2f(U("uAnchor"), v.m[0] / ASPECT, v.m[1])
+      gl.uniform1f(U("uInnerFade"), v.fadeIn)
+    } else {
+      gl.uniform1i(U("uType"), 2)
+      gl.uniform1f(U("uSweep"), 1.1 - 1.25 * ease(clamp01((v.p - 0.06) / 0.88)))
+    }
+  }
+  bindLeaves(gateIn, gateIn === 0 ? v.A.scene : gateIn === 1 ? v.B.scene : null, gateIn === 0 ? v.camA : v.camB, t)
+  gl.viewport(0, 0, W, H)
+  gl.drawArrays(gl.TRIANGLES, 0, 3)
+  gl.finish()
+  return [v.A.scene, v.B?.scene].filter(Boolean).join("+")
+}
+
+// How fast the frame moves: a grid over the photo on screen most (at a middle depth), from one frame to the next, in
+// frame heights per second. Read from the cameras, so grain and the breeze don't count.
+function grid(t) {
+  const v = views(t)
+  const useB = v.B && (v.j.type === "pass" ? v.p > 0.5 : v.inner === 1 ? v.fadeIn > 0.5 : v.inner === 0 ? v.fadeIn < 0.5 : v.p > 0.5)
+  const [id, cam, pre] = useB ? [v.B.scene, v.camB, v.preB] : [v.A.scene, v.camA, v.preA]
+  const back = inv3(pre)
+  const z = Zof(0.35, def(id).zfar)
+  const pts = []
+  for (let gy = 0; gy < 5; gy++) for (let gx = 0; gx < 7; gx++) {
+    // points spread over what the frame shows now, held in the photo
+    const sx = 0.1 + gx * 0.8 / 6, sy = 0.15 + gy * 0.7 / 4
+    pts.push(unproject(id, cam, sx, sy))
+  }
+  return { id, key: useB ? v.B : v.A, pts, z }
+}
+function screenOf(t, id, uvs, z, key) {
+  const v = views(t)
+  const [cam, pre] = v.B && v.B === key ? [v.camB, v.preB] : [v.camA, v.preA]
+  const back = inv3(pre)
+  return uvs.map((uv) => {
+    const s = projectXYZ(id, cam, point3(id, uv, z))
+    const o = app(back, [s[0], s[1], 1])
+    return [o[0] / o[2], o[1] / o[2]]
+  })
+}
+window.speedProfile = async (step = 1) => {
+  const out = []
+  for (let n = 0; n < Math.round(LENGTH * FPS) - 1; n += step) {
+    const t0 = n / FPS, t1 = (n + 1) / FPS
+    for (const s of SHOTS.filter((s) => s.to > t0 && s.from <= t1)) await load(s.scene)
+    const g = grid(t0)
+    const v1 = views(t1)
+    if (![v1.A, v1.B].includes(g.key)) { out.push([t0, null]); continue }
+    const a = screenOf(t0, g.id, g.pts, g.z, g.key), b = screenOf(t1, g.id, g.pts, g.z, g.key)
+    const d = a.reduce((acc, p, i) => acc + Math.hypot(b[i][0] - p[0], b[i][1] - p[1]), 0) / a.length
+    out.push([t0, d * FPS])
+  }
+  return out
+}
+window.FRAMES = Math.round(LENGTH * FPS)
+window.RENDERER = (() => { const d = gl.getExtension("WEBGL_debug_renderer_info"); return d ? gl.getParameter(d.UNMASKED_RENDERER_WEBGL) : "?" })()
+await window.frame(0)
+document.body.dataset.ready = "1"
+</script>
+</body>
+</html>

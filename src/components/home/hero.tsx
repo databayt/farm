@@ -59,12 +59,6 @@ export async function Hero() {
         <source src={FILM.portrait.src} media="(orientation: portrait)" type="video/mp4" />
         <source src={FILM.landscape.src} type="video/mp4" />
       </video>
-      <p
-        aria-hidden
-        className="pointer-events-none absolute top-5 left-4 text-xs tracking-[0.12em] uppercase opacity-0 drop-shadow-[0_1px_6px_rgb(0_0_0/0.6)] transition-opacity duration-700 group-data-[film]/hero:opacity-90 md:left-10"
-      >
-        {w.captions.concept}
-      </p>
       {/* A little shade at the top for the header; the words get theirs from the band below. */}
       <div
         aria-hidden

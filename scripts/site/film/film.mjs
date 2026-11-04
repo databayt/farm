@@ -2,7 +2,7 @@
 // The homepage film (D-070): the cut of scripts/site/film/shots.mjs, which the hero plays in place when someone
 // clicks "Watch film" (src/components/home/watch-film.tsx).
 //
-//   pnpm site:film [--no-publish]
+//   pnpm site:film [--no-publish] [--oner]
 //
 // Inputs (gitignored), the founder's videos in ~/Desktop/farm-film (packs.mjs), copied into assets/film/clips:
 //   film.mp4                       the whole film, made from all the photos: it plays between the opening and the close
@@ -30,6 +30,9 @@ import { ROOT } from "../chrome.mjs"
 import { DISSOLVE, SHOTS } from "./shots.mjs"
 
 const PUBLISH = !process.argv.includes("--no-publish")
+// --oner: the one-take film (scripts/site/film/oner, D-074), rendered at the hero's two sizes, opening and closing on
+// its picture and carrying its song: it is only encoded for the web here, with no holds or cut of its own
+const ONER = process.argv.includes("--oner")
 const FPS = 24
 const OPEN = { hold: 1.1, fade: 0.5 } // the hero's picture, still, then into the first shot
 const CLOSE = { fade: 1.2, hold: 2.0 } // back to the picture at the end
@@ -129,8 +132,28 @@ function sound(file, seconds, out) {
   else run(["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-t", seconds.toFixed(3), out])
 }
 
+// ------------------------------------------------------------ the one-take film, as rendered
+function oner(form) {
+  const src = join(FILM, "oner", "out", `film-${form}.mp4`)
+  if (!existsSync(src)) throw new Error(`no ${src}: render it first (scripts/site/film/oner: render.mjs, then finish.mjs)`)
+  const { streams, format } = JSON.parse(probe(src, ["-show_entries", "stream=codec_type,r_frame_rate:format=duration"]))
+  const [num, den] = streams.find((st) => st.codec_type === "video").r_frame_rate.split("/").map(Number)
+  const fps = num / den
+  const len = Number(format.duration)
+  const { size: [w, h], crf, rate } = FORMS[form]
+  const out = join(FILM, form === "portrait" ? "film-portrait.mp4" : "film.mp4")
+  // the hero's still seconds near-lossless, so the swap from the picture to the film shows nothing
+  run(["-i", src, "-map", "0:v", "-map", "0:a", "-vf", "setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv",
+    "-c:v", "libx264", "-preset", "slow", "-crf", String(crf), "-maxrate", `${rate}M`, "-bufsize", `${rate * 6}M`,
+    "-x264-params", `zones=0,${Math.round(1.8 * fps)},q=12`, "-profile:v", "high", "-pix_fmt", "yuv420p", "-g", String(Math.round(fps * 2)),
+    ...BT709, "-c:a", "copy", "-movflags", "+faststart", out])
+  console.log(`${form}: ${out}  ${w}×${h}  ${len.toFixed(1)} s  ${(statSync(out).size / 1e6).toFixed(1)} MB  sound: yes`)
+  return { out, width: w, height: h, seconds: Number(len.toFixed(2)), bytes: statSync(out).size, sound: true, used: [{ id: "oner", source: "render" }] }
+}
+
 // ------------------------------------------------------------ the cut
 async function cut(form) {
+  if (ONER) return oner(form)
   const dir = join(WORK, form)
   rmSync(dir, { recursive: true, force: true })
   mkdirSync(dir, { recursive: true })
