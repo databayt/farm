@@ -33,6 +33,12 @@ const REFS = {
   yard: { name: "the-yard.jpg", file: "public/designs/livestock/render/livestock-hero.jpg", what: "the yard's photo (D-045)" },
   light: { name: "the-light.jpg", file: LIGHT, what: "the lake picture: the light every scene shares" },
   farm: { name: "the-farm.jpg", file: "assets/film/masters/A1-front.jpg", what: "the A1 picture: the same farm, trees and fruit trees" },
+  // the second round (founder, 2026-11-07: "get all the assets we mastered"): the first eight are mastered too now
+  hill: { name: "the-hill.jpg", file: "assets/ecosystem/masters/02-the-slope.jpg", what: "picture 02: the hill as designed, hedges and terraces" },
+  whole: { name: "the-whole.jpg", file: "assets/ecosystem/masters/08-from-above.jpg", what: "picture 08: the whole land from above the hill" },
+  back: { name: "the-back.jpg", file: "assets/film/masters/A5-back.jpg", what: "the A5 picture: the farm from behind the back row" },
+  side: { name: "the-side.jpg", file: "assets/film/masters/A3-left.jpg", what: "the A3 picture: the farm from the field's side" },
+  east: { name: "the-east.jpg", file: "assets/film/masters/A4-right.jpg", what: "the A4 picture: the farm from the east lawn's side" },
 }
 
 // ------------------------------------------------------------ the ecosystem's parts, named the same in every prompt
@@ -173,6 +179,100 @@ const SPOTS = [
       `of tall Napier grass and fodder shrubs, then the vegetable field on its low terraces across the slope, the ` +
       `grass channels down the old gullies and the swale just above the farm. Beyond, the farm's buildings, tents and ` +
       `lawn exactly as image 1 shows them, then the tree line and the lake.`,
+  },
+  {
+    id: "09-the-hill-from-the-farm",
+    title: "The hill from the farm",
+    before: "assets/survey-2026-10-25/IMG_3160_v00.jpg",
+    attach: ["photo", "places", "hill", "light", "farm"],
+    farmInView: true,
+    animals: true,
+    note:
+      "Looking up from the farm's back corner: the hill holds its rain on contour hedges, the field's terraces lie " +
+      "low on the slope and the goats' and sheep's yard sits near the top.",
+    see: (n) =>
+      `The concrete pad in front becomes the farm's own ground at its back corner: mown lawn, a gravel path and ` +
+      `flower beds, the young trees grown into big shade trees. Beyond them the hill rises exactly as image ` +
+      `${n("hill")} (the hill) shows it, seen from below: ${HEDGE} across the slope one every 15 to 25 metres, ` +
+      `${MULCH} between them, the vegetable field on low terraces at the slope's foot, ${CHANNEL} down the old gully, ` +
+      `and near the top the small grass-thatched shed and rail yard of the goats and sheep.`,
+  },
+  {
+    id: "10-the-lawn-to-the-lake",
+    title: "The east lawn to the lake",
+    before: "assets/survey-2026-10-25/IMG_3174_p.jpg",
+    attach: ["photo", "places", "east", "light", "farm"],
+    note:
+      "The east lawn mown, the volleyball court where the pole stands, a live fence of Gliricidia and fodder " +
+      "shrubs on the boundary, and the lake plot kept natural beyond it.",
+    see: (n) =>
+      `At eye level on the farm's east lawn, looking toward the lake, as image ${n("east")} shows this side from the ` +
+      `air: the lawn mown, the VOLLEYBALL court of image ${n("places")} where the lone pole stands, with its net and ` +
+      `white lines; along the boundary a live fence of Gliricidia and leafy fodder shrubs with flowers at its foot ` +
+      `instead of today's scrub; beyond it the lake plot kept natural, its row of tall trees and tall grass, and the ` +
+      `lake shining between the trunks. No containers or tents in this view.`,
+  },
+  {
+    id: "11-the-foot-of-the-hill",
+    title: "The foot of the hill",
+    before: "assets/survey-2026-10-25/IMG_3195_v00.jpg",
+    crop: [0, 160, 720, 1280], // leaves out a person and a neighbour's brick wall on the right
+    attach: ["photo", "hill", "light", "farm"],
+    note:
+      "The bare ground at the hill's foot becomes the track to the yard, edged with fieldstones and gravelled, " +
+      "with the swale at the slope's foot and contour hedges up the hill.",
+    see: (n) =>
+      `The bare trodden ground in front becomes the track up to the yard: fine gravel edged with a line of ` +
+      `fieldstones, mown grass either side. At the slope's foot runs ${SWALE}. The hillside behind is planted as ` +
+      `image ${n("hill")} (the hill) shows it: ${HEDGE}, ${MULCH} between them; the trees along the top have grown.`,
+  },
+  {
+    id: "12-the-gully-from-below",
+    title: "The gully from below",
+    before: "assets/survey-2026-10-25/IMG_3196_v00.jpg",
+    attach: ["photo", "hill", "light", "farm"],
+    note:
+      "The gully beside the track becomes a grass channel with fieldstone steps, the track is edged and " +
+      "gravelled, and the slope above holds contour hedges and grown fruit trees.",
+    see: (n) =>
+      `The eroded gully on the left becomes ${CHANNEL}, the bush beside it grown full. The track on the right stays ` +
+      `a track, edged with fieldstones and covered in fine gravel. The slope above is planted as image ${n("hill")} ` +
+      `(the hill) shows it: ${HEDGE}, ${MULCH} between them; the young trees on it have grown into mango, avocado ` +
+      `and shade trees.`,
+  },
+  {
+    id: "13-from-the-lake",
+    title: "From over the lake (made after 08)",
+    from: "08-from-above",
+    attach: ["from", "back", "places", "light", "farm"],
+    farmInView: true,
+    note:
+      "The whole land from over the water: the lake plot kept natural, the tall tree row, the farm, then the hill " +
+      "with its hedges, terraced field and the yard at the top.",
+    see: (n) =>
+      `Image 1 is our whole land from above the hill (a concept picture). Make the same land from the other side: a ` +
+      `drone about 50 metres up over the lake, looking back across the shore at the farm and the hill. In front, the ` +
+      `water and the lake plot's natural shore with reeds, tall grass and its row of tall trees; then the farm, its ` +
+      `buildings, tents and lawn exactly as image 1 and image ${n("back")} show them and each like its photo on ` +
+      `image ${n("places")} (labels only); then the hill rising behind with the contour hedges, the vegetable field ` +
+      `on its low terraces, the grass channels and the yard with its thatched shed at the top, all as on image 1.`,
+  },
+  {
+    id: "14-the-long-side",
+    title: "The land from its long side (made after 08)",
+    from: "08-from-above",
+    attach: ["from", "side", "places", "light", "farm"],
+    farmInView: true,
+    note:
+      "The whole land from its long side: the hill with the yard, hedges and terraced field, the swale above the " +
+      "farm, the farm itself and the lake beyond.",
+    see: (n) =>
+      `Image 1 is our whole land from above the hill (a concept picture). Make the same land as a high drone ` +
+      `photograph from its long side, about 70 metres up, from the field's side of the farm as on image ${n("side")}, ` +
+      `so the hill, the farm and the lake lie across the picture in the order image 1 has them: the hill with the ` +
+      `yard and its thatched shed, the contour hedges and the terraced vegetable field; the swale just above the ` +
+      `farm; the farm's buildings, tents and lawn exactly as image 1 and image ${n("side")} show them, each like its ` +
+      `photo on image ${n("places")} (labels only); the tree row and the lake beyond.`,
   },
 ]
 
@@ -356,7 +456,7 @@ for (const s of SPOTS.filter((x) => x.before)) {
 
 const RULE = "═".repeat(72)
 const blocks = []
-const jobs = [] // the same eight, for kun's runner
+const jobs = [] // the same jobs, for kun's runner
 for (const s of SPOTS) {
   const names = s.attach.map((k) => nameOf(s, k))
   const prompt = text(s)
@@ -372,7 +472,7 @@ const legend = Object.values(REFS)
   .join("\n")
 const head = `Digital Farm — the land as one ecosystem${" ".repeat(32)}${today}
 
-Eight new outlooks of the farm as one system (D-075): the hill holds its rain on a swale, contour hedges and grass
+Fourteen outlooks of the farm as one system (D-075): the hill holds its rain on a swale, contour hedges and grass
 channels; the vegetable field lies on low terraces across the slope, with the goats' and sheep's yard above it; the
 lake plot stays natural. They are made like the scene masters: the look from what is mastered, the positions from
 your photos of the land (2026-10-25). Every result is a concept picture, never "today".
@@ -384,7 +484,7 @@ This text is the record, and your way to make one yourself:
   3. Paste its text.
   4. If it drifts, paste one follow-up from the bottom.
   5. Save the best result in this folder under its "Save as" name (the largest size offered).
-Make 01 before 08: picture 08 is made from 01-after.jpg.
+Make 01 before 08, and 08 before 13 and 14: each is made from the earlier result.
 
   NN-<spot>.jpg    your photo of the spot: only its positions are used, the camera, the slope, the lake's side.
 ${legend}
